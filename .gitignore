@@ -1,0 +1,7 @@
+node_modules
+config.json
+bin
+storage/
+config_*.json
+test.sqlite
+sessions/

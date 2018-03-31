@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": [
+      "es7"
+    ],
+    "sourceMap": true,
+    "removeComments": false,
+    "experimentalDecorators": true,
+    "typeRoots": [
+      "node_modules/yamdbf/node_modules/discord.js/typings"
+    ],
+    "plugins": [
+      {
+        "name": "tslint-language-service"
+      }
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "bower_components",
+    "jspm_packages",
+    "tmp",
+    "temp",
+    "bin",
+    "docs",
+    "pkg",
+    "examples",
+    "server"
+  ]
+}
