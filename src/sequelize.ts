@@ -13,7 +13,7 @@ export interface IDBMember extends ISequelizeBaseType {
   name: string;
 }
 
-export const members = sequelize.define('member', {
+export const members = sequelize.define<any, any>('member', {
   id: { type: Sequelize.STRING, primaryKey: true },
   name: Sequelize.STRING
 });
@@ -24,7 +24,7 @@ export interface IDBGuild extends ISequelizeBaseType {
   icon: string;
 }
 
-export const guilds = sequelize.define('guild', {
+export const guilds = sequelize.define<any, any>('guild', {
   id: { type: Sequelize.STRING, primaryKey: true },
   name: Sequelize.STRING,
   icon: Sequelize.STRING,
@@ -103,6 +103,7 @@ inviteCodes.belongsTo(members, { as: 'inviter' });
 export interface IDBRank extends ISequelizeBaseType {
   id: number;
   roleId: string;
+  roleName: string;
   numInvites: number;
   description: string;
 }
@@ -110,6 +111,7 @@ export interface IDBRank extends ISequelizeBaseType {
 export const ranks = sequelize.define<any, any>('rank',
   {
     roleId: Sequelize.STRING,
+    roleName: Sequelize.STRING,
     numInvites: Sequelize.INTEGER,
     description: Sequelize.STRING,
   }, {
@@ -134,7 +136,7 @@ export interface IDBPresence extends ISequelizeBaseType {
   memberId: string;
 }
 
-export const presences = sequelize.define('presence', {
+export const presences = sequelize.define<any, any>('presence', {
   status: {
     type: Sequelize.ENUM,
     values: ['on', 'off']
