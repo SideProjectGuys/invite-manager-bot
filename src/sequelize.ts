@@ -100,6 +100,19 @@ export const inviteCodes = sequelize.define<any, any>('inviteCode', {
 inviteCodes.belongsTo(guilds);
 inviteCodes.belongsTo(members, { as: 'inviter' });
 
+export interface IDBCustomInvite extends ISequelizeBaseType {
+  id: number;
+}
+
+export const customInvites = sequelize.define<any, any>('customInvite', {
+  amount: Sequelize.INTEGER,
+  reason: Sequelize.STRING,
+});
+
+customInvites.belongsTo(guilds);
+customInvites.belongsTo(members);
+customInvites.belongsTo(members, { as: 'creator' });
+
 export interface IDBRank extends ISequelizeBaseType {
   id: number;
   roleId: string;

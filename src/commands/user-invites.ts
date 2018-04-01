@@ -1,7 +1,7 @@
 import { Command, Message, Logger, logger } from 'yamdbf';
 import { RichEmbed } from 'discord.js';
 import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
-import { inviteCodes, ranks, IDBRank } from '../sequelize';
+import { inviteCodes, ranks, IDBRank, customInvites } from '../sequelize';
 import { IMClient } from '../client';
 
 export default class extends Command<IMClient> {
@@ -22,14 +22,21 @@ export default class extends Command<IMClient> {
   public async action(message: Message, args: string[]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    const personalInvitesCount = await inviteCodes.sum('uses', {
+    const invAmount = await inviteCodes.sum('uses', {
       where: {
         guildId: message.guild.id,
         inviterId: message.author.id,
       }
-    });
+    }) || 0;
+    const customInvAmount = await customInvites.sum('amount', {
+      where: {
+        guildId: message.guild.id,
+        memberId: message.author.id,
+      }
+    }) || 0;
+    const totalInvites = invAmount + customInvAmount;
 
-    let textMessage = `You have **${personalInvitesCount}** invites!\n`;
+    let textMessage = `You have **${totalInvites}** invites! (**${customInvAmount}** bonus)\n`;
 
     let nextRankName = '';
     let nextRank: IDBRank = null;
@@ -44,7 +51,7 @@ export default class extends Command<IMClient> {
     allRanks.forEach(r => {
       let role = message.guild.roles.get(r.roleId);
       if (role) {
-        if (r.numInvites <= personalInvitesCount) { // Rank needs less/equal invites, so we add add role
+        if (r.numInvites <= totalInvites) { // Rank needs less/equal invites, so we add add role
           if (!message.member.roles.has(role.id)) {
             rolesToAdd.push(role.id);
           }
@@ -74,7 +81,7 @@ export default class extends Command<IMClient> {
     }
 
     if (nextRank) {
-      let nextRankPointsDiff = nextRank.numInvites - personalInvitesCount;
+      let nextRankPointsDiff = nextRank.numInvites - totalInvites;
       textMessage += 'You need **' + nextRankPointsDiff + '** more invites to reach **' + nextRankName + '** rank!';
     } else {
       if (allRanks.length !== 0) {
