@@ -28,7 +28,7 @@ export default class extends Command<Client> {
     if (message.guild.embedEnabled === undefined) {
       embedText = 'Unknown if embeds are enabled. If you can\'t see the bot responses, please make sure to enable rich embeds in your settings.';
     } else if (!message.guild.embedEnabled) {
-      embedText = 'Embeds are disabled. You will most likely not see the bot resonses. Please enable rich embeds in your settings.';
+      embedText = 'Embeds are disabled. You will most likely not see the bot responses. Please enable rich embeds in your settings.';
     }
     if (embedText) embed.addField('Rich Embeds', embedText);
 
