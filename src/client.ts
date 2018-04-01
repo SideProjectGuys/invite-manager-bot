@@ -3,7 +3,8 @@ import * as path from 'path';
 import { commandUsage } from 'yamdbf-command-usage';
 
 import { MessageQueue } from './utils/MessageQueue';
-import { sequelize } from './sequelize';
+import { sequelize, joins, settings, inviteCodes, members, customInvites } from './sequelize';
+import { GuildMember, TextChannel } from 'discord.js';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -52,6 +53,69 @@ export class IMClient extends Client {
 		this.activityInterval = setInterval(() => {
 			this.setActivity();
 		}, 30000);
+	}
+
+	@on('guildMemberAdd')
+	private async _onGuildMemberAdd(member: GuildMember): Promise<void> {
+		let join = await this.findJoin(member.id, member.guild.id, member.joinedTimestamp, 2000);
+		if (!join) {
+			join = await this.findJoin(member.id, member.guild.id, member.joinedTimestamp, 5000);
+		}
+
+		if (!join) {
+			console.log(`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`);
+			return;
+		}
+
+		const joinChannelSetting = await settings.find({
+			where: {
+				guildId: member.guild.id,
+				key: 'joinMessageChannel'
+			}
+		});
+
+		if (!joinChannelSetting) {
+			console.log(`Guild ${member.guild.id} has no join message channel`);
+			return;
+		}
+
+		const inviter = join.exactMatch.inviter;
+
+		const invAmount = await inviteCodes.sum('uses', {
+			where: {
+				guildId: member.guild.id,
+				inviterId: inviter.id,
+			}
+		}) || 0;
+		const customInvAmount = await customInvites.sum('amount', {
+			where: {
+				guildId: member.guild.id,
+				memberId: inviter.id,
+			}
+		}) || 0;
+		const totalInvites = invAmount + customInvAmount;
+
+		const inviteChannel = member.guild.channels.get(joinChannelSetting.value) as TextChannel;
+		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.name} (${totalInvites} invites)`);
+	}
+
+	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
+		return new Promise((resolve, reject) => {
+			setTimeout(async () => {
+				resolve(await joins.find({
+					where: {
+						memberId,
+						guildId,
+						createdAt,
+					},
+					include: [{
+						model: inviteCodes,
+						as: 'exactMatch',
+						include: [{ model: members, as: 'inviter' }]
+					}]
+				}));
+			}, timeOut);
+		});
 	}
 
 	private setActivity() {

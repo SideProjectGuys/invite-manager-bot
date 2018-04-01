@@ -16,7 +16,7 @@ export default class extends Command<IMClient> {
 			desc: 'Adds invites to a member',
 			usage: '<prefix>add-invites @user amountOfInvites (reason)',
 			info: '',
-			// callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			guildOnly: true
 		});
 	}
@@ -31,29 +31,29 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
+		const invAmount = await inviteCodes.sum('uses', {
+			where: {
+				guildId: message.guild.id,
+				inviterId: user.id,
+			}
+		}) || 0;
+		const customInvAmount = await customInvites.sum('amount', {
+			where: {
+				guildId: message.guild.id,
+				memberId: user.id,
+			}
+		}) || 0;
+		const totalInvites = invAmount + customInvAmount + amount;
+
 		await customInvites.create({
 			guildId: message.guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
 			amount,
 			reason,
-		}).then(async inv => {
-			const invAmount = await inviteCodes.sum('uses', {
-				where: {
-					guildId: message.guild.id,
-					inviterId: message.author.id,
-				}
-			}) || 0;
-			const customInvAmount = await customInvites.sum('amount', {
-				where: {
-					guildId: message.guild.id,
-					memberId: message.author.id,
-				}
-			}) || 0;
-			const totalInvites = invAmount + customInvAmount;
-
-			const msg = amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;
-			message.channel.send(msg + ` <@${user.id}> now at: **${totalInvites}** invites`);
 		});
+
+		const msg = amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;
+		message.channel.send(msg + ` <@${user.id}>, now at: **${totalInvites}** invites`);
 	}
 }

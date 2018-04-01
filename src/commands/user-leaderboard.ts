@@ -2,7 +2,7 @@ import { Command, CommandDecorators, Message, Middleware, Logger, logger } from 
 import { Channel, RichEmbed } from 'discord.js';
 import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
 import { IMemberInviteCount } from '../interfaces';
-import { inviteCodes, sequelize, members } from '../sequelize';
+import { inviteCodes, sequelize, members, customInvites } from '../sequelize';
 import { IMClient } from '../client';
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -33,32 +33,61 @@ export default class extends Command<IMClient> {
       where.channelId = channel.id;
     }
 
-    let invites = await inviteCodes.findAll({
+    let codeInvs = await inviteCodes.findAll({
       attributes: [
-        'inviterId',
         [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
       ],
       where,
       group: 'inviteCode.inviterId',
-      order: [[sequelize.fn('sum', sequelize.col('inviteCode.uses')) as any, 'DESC']],
       include: [{ model: members, as: 'inviter' }]
     });
-    invites = invites.filter(inv => parseInt(inv.get('totalUses')) > 0);
-    console.log(invites);
+    let customInvs = await customInvites.findAll({
+      attributes: [
+        [sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
+      ],
+      where: {
+        guildId: message.guild.id,
+      },
+      group: 'customInvite.memberId',
+      include: [members]
+    });
+
+    const invs: { [x: string]: { name: string, code: number, bonus: number } } = {};
+    codeInvs.forEach(inv => {
+      invs[inv.inviter.id] = {
+        name: inv.inviter.name,
+        code: parseInt(inv.get('totalUses')),
+        bonus: 0,
+      };
+    });
+    customInvs.forEach(inv => {
+      if (invs[inv.member.id]) {
+        invs[inv.member.id].bonus = parseInt(inv.get('totalAmount'));
+      } else {
+        invs[inv.member.id] = {
+          name: inv.member.name,
+          code: 0,
+          bonus: parseInt(inv.get('totalAmount')),
+        };
+      }
+    });
+    const keys = Object.keys(invs)
+      .filter(k => invs[k].bonus + invs[k].code > 0)
+      .sort((a, b) => (invs[b].code + invs[b].bonus) - (invs[a].code + invs[a].bonus));
 
     let str = `Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}\n\n`;
+
+    console.log(invs);
 
     // TODO: Compare to 1 day ago
     // let upSymbol = '🔺';
     // let downSymbol = '🔻';
     // let neutralSymbol = '▪️';
-    if (invites.length === 0) {
+    if (keys.length === 0) {
       str += 'No invites!';
     } else {
-      invites.forEach((inv, i) => {
-        if (i < 50) {
-          str += (i + 1) + ' ▪️ **' + inv.inviter.name + '** ' + inv.get('totalUses') + ' invites\n';
-        }
+      keys.slice(0, 50).forEach((k, i) => {
+        str += `${(i + 1)} ▪️ ** ${invs[k].name}** ${invs[k].code + invs[k].bonus} invites (**${invs[k].bonus}** bonus)\n`;
       });
     }
 

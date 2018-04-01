@@ -22,23 +22,19 @@ export default class extends Command<Client> {
   public async action(message: Message, args: string[]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    const js: any[] = await sequelize.query(`
-      SELECT
-        code,
-        exactMatch,
-        possibleMatches,
-        count(j.id) AS totalJoins,
-        j.memberId,
-        m.name as memberName,
-        GROUP_CONCAT(m2.id SEPARATOR ',') AS inviterIds,
-        GROUP_CONCAT(m2.name SEPARATOR ',') AS inviterNames
-      FROM joins j
-      LEFT JOIN members m on m.id = j.memberId
-      LEFT JOIN inviteCodes ic ON ic.code = j.exactMatch
-      LEFT JOIN members m2 ON m2.id = ic.inviterId
-      WHERE j.guildId = ?
-      GROUP BY j.memberId
-    `, { replacements: [message.guild.id], type: sequelize.QueryTypes.SELECT });
+    const js = await joins.findAll({
+      where: {
+        guildId: message.guild.id
+      },
+      include: [
+        members,
+        {
+          model: inviteCodes,
+          as: 'exactMatch',
+          include: [{ model: members, as: 'inviter' }]
+        }
+      ]
+    });
 
     if (js.length > 0) {
       const suspiciousJoins = js

@@ -43,40 +43,6 @@ export const settings = sequelize.define<any, any>('setting',
 );
 settings.belongsTo(guilds);
 
-export interface IDBJoin extends ISequelizeBaseType {
-  id: number;
-  exactMatch: string;
-  possibleMatches: string;
-  guildId: string;
-  memberId: string;
-}
-
-export const joins = sequelize.define<any, any>('join',
-  {
-    exactMatch: Sequelize.STRING,
-    possibleMatches: Sequelize.STRING,
-  }, {
-    indexes: [{
-      unique: true,
-      fields: ['guildId', 'memberId', 'createdAt']
-    }],
-  }
-);
-
-joins.belongsTo(guilds);
-joins.belongsTo(members);
-
-export interface IDBLeave extends ISequelizeBaseType {
-  id: number;
-  guildId: string;
-  inviterId: string;
-}
-
-export const leaves = sequelize.define<any, any>('leave', {});
-
-leaves.belongsTo(guilds);
-leaves.belongsTo(members);
-
 export interface IDBInviteCode extends ISequelizeBaseType {
   id: number;
   exactMatch: string;
@@ -86,7 +52,7 @@ export interface IDBInviteCode extends ISequelizeBaseType {
 }
 
 export const inviteCodes = sequelize.define<any, any>('inviteCode', {
-  code: Sequelize.STRING,
+  code: { type: Sequelize.STRING, primaryKey: true },
   channelId: Sequelize.STRING,
   isNative: Sequelize.BOOLEAN,
   reason: Sequelize.STRING,
@@ -99,6 +65,40 @@ export const inviteCodes = sequelize.define<any, any>('inviteCode', {
 
 inviteCodes.belongsTo(guilds);
 inviteCodes.belongsTo(members, { as: 'inviter' });
+
+export interface IDBJoin extends ISequelizeBaseType {
+  id: number;
+  exactMatch: string;
+  possibleMatches: string;
+  guildId: string;
+  memberId: string;
+}
+
+export const joins = sequelize.define<any, any>('join',
+  {
+    possibleMatches: Sequelize.STRING,
+  }, {
+    indexes: [{
+      unique: true,
+      fields: ['guildId', 'memberId', 'createdAt']
+    }],
+  }
+);
+
+joins.belongsTo(guilds);
+joins.belongsTo(members);
+joins.belongsTo(inviteCodes, { as: 'exactMatch' });
+
+export interface IDBLeave extends ISequelizeBaseType {
+  id: number;
+  guildId: string;
+  inviterId: string;
+}
+
+export const leaves = sequelize.define<any, any>('leave', {});
+
+leaves.belongsTo(guilds);
+leaves.belongsTo(members);
 
 export interface IDBCustomInvite extends ISequelizeBaseType {
   id: number;
