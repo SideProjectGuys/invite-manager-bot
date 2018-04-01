@@ -1,4 +1,4 @@
-import { Command, GuildSettings, Message, Logger, logger } from 'yamdbf';
+import { Command, Message, Logger, logger } from 'yamdbf';
 import { RichEmbed } from 'discord.js';
 import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
 import { inviteCodes, ranks, IDBRank } from '../sequelize';
@@ -14,7 +14,7 @@ export default class extends Command<IMClient> {
       aliases: ['invite', 'rank'],
       desc: 'Show personal invites',
       usage: '<prefix>invites',
-      clientPermissions: ['MANAGE_GUILD', 'MANAGE_ROLES'],
+      clientPermissions: ['MANAGE_GUILD'],
       guildOnly: true
     });
   }
@@ -65,8 +65,14 @@ export default class extends Command<IMClient> {
     });
 
     if (rolesToAdd.length > 0) {
-      message.member.addRoles(rolesToAdd);
+      if (message.guild.me.hasPermission('MANAGE_ROLES')) {
+        message.member.addRoles(rolesToAdd);
+      } else {
+        // TODO: Notify user about the fact that he deserves a promotion, but it
+        // cannot be given to him because of missing permissions
+      }
     }
+
     if (nextRank) {
       let nextRankPointsDiff = nextRank.numInvites - personalInvitesCount;
       textMessage += 'You need **' + nextRankPointsDiff + '** more invites to reach **' + nextRankName + '** rank!';
