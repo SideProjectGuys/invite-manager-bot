@@ -25,7 +25,8 @@ export interface IDBGuild extends ISequelizeBaseType {
 
 export const guilds = sequelize.define('guild', {
   id: { type: Sequelize.STRING, primaryKey: true },
-  name: Sequelize.STRING
+  name: Sequelize.STRING,
+  icon: Sequelize.STRING,
 });
 
 export const settings = sequelize.define('setting', {
@@ -42,7 +43,7 @@ export interface IDBJoin extends ISequelizeBaseType {
   memberId: string;
 }
 
-export const joins = sequelize.define('join',
+export const joins = sequelize.define<any, any>('join',
   {
     exactMatch: Sequelize.STRING,
     possibleMatches: Sequelize.STRING,
@@ -76,7 +77,7 @@ export interface IDBInviteCode extends ISequelizeBaseType {
   memberId: string;
 }
 
-export const inviteCodes = sequelize.define('inviteCode', {
+export const inviteCodes = sequelize.define<any, any>('inviteCode', {
   code: Sequelize.STRING,
   channelId: Sequelize.STRING,
   isNative: Sequelize.BOOLEAN,

@@ -1,6 +1,7 @@
 import { Client, Command, GuildStorage, Message, Logger, logger } from 'yamdbf';
 import { RichEmbed } from 'discord.js';
 import { createEmbed, getMembersByInviteCodes } from '../utils/util';
+import { inviteCodes, joins, members, sequelize } from '../sequelize';
 
 export default class extends Command<Client> {
   @logger('Command')
@@ -12,7 +13,7 @@ export default class extends Command<Client> {
       aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
       desc: 'Show which person joined this server multiple times and by whom he was invited',
       usage: '<prefix>fake',
-      callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+      // callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
       clientPermissions: ['MANAGE_GUILD'],
       guildOnly: true
     });
@@ -21,23 +22,35 @@ export default class extends Command<Client> {
   public async action(message: Message, args: string[]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    const storage: GuildStorage = message.guild.storage;
-    let invites = await storage.get(`members`);
-    if (invites) {
-      let suspiciousMembers: { userID: string, nofJoins: number, invitedBy: string[] }[] = [];
-      Object.keys(invites).forEach(key => {
-        if (invites[key].joins) {
-          if (invites[key].joins.length > 1) {
-            suspiciousMembers.push({ userID: key, nofJoins: invites[key].joins.length, invitedBy: invites[key].joins.map((j: any) => j.inviteCodesUsed) });
-          }
-        }
-      });
-      suspiciousMembers = suspiciousMembers.sort((a, b) => a.nofJoins - b.nofJoins);
+    const js = await joins.findAll({
+      attributes: [
+        'exactMatch',
+        'possibleMatches',
+        [sequelize.fn('count', sequelize.col('join.id')), 'totalJoins']
+      ],
+      where: {
+        guildId: message.guild.id,
+      },
+      group: ['join.memberId'],
+      include: [
+        members,
+        { model: inviteCodes, where: { exactMatch: 'code' }, required: false },
+      ],
+    });
+
+    console.log(js.map(j => j.get({ plain: true })));
+
+    if (js.length > 0) {
+      const suspiciousMembers = js
+        .filter(j => parseInt(j.get('totalJoins')) > 1)
+        .sort((a, b) => a.get('totalJoins') - b.get('totalJoins'));
+
       const embed = new RichEmbed();
       embed.setTitle('Fake invites:');
       let description = '';
       let guildWithAllMembers = await message.guild.fetchMembers();
-      for (let m of suspiciousMembers) {
+
+      /*for (let m of suspiciousMembers) {
         let members = await getMembersByInviteCodes(guildWithAllMembers, m.invitedBy);
         let membersInvitedStrings: string[] = [];
         let occurances = members.reduce((a: any, b) => {
@@ -61,7 +74,7 @@ export default class extends Command<Client> {
       }
       embed.setDescription(description);
       createEmbed(message.client, embed);
-      message.channel.send({ embed });
+      message.channel.send({ embed });*/
     } else {
       message.channel.send(`No fake invites detected so far.`);
     }

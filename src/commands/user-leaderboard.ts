@@ -1,11 +1,13 @@
-import { Client, Command, CommandDecorators, Message, Middleware, Logger, logger } from 'yamdbf';
+import { Command, CommandDecorators, Message, Middleware, Logger, logger } from 'yamdbf';
 import { Channel, RichEmbed } from 'discord.js';
 import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
 import { IMemberInviteCount } from '../interfaces';
+import { inviteCodes, sequelize, members } from '../sequelize';
+import { IMClient } from '../client';
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
   @logger('Command')
   private readonly _logger: Logger;
 
@@ -24,56 +26,45 @@ export default class extends Command<Client> {
   public async action(message: Message, [channel]: [Channel]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    message.guild.fetchInvites().then(async invs => {
-      invs = await subtractClearedCountFromInvites(message.guild.storage, invs);
-      let tempInvites: { [key: string]: IMemberInviteCount } = {};
+    const where: { guildId: string, channelId?: string } = {
+      guildId: message.guild.id,
+    };
+    if (channel) {
+      where.channelId = channel.id;
+    }
 
-      invs = invs.filter(i => !i.temporary); // No temporary invites
-      invs = invs.filter(i => !!i.inviter); // Need to have valid inviter or we ignore it
-      if (channel) {
-        invs = invs.filter(i => i.channel.id === channel.id); // Filter channel
-      }
-
-      invs.forEach(i => {
-        if (!tempInvites[i.inviter.id]) {
-          tempInvites[i.inviter.id] = {
-            name: i.inviter.username,
-            invites: 0
-          };
-        }
-        tempInvites[i.inviter.id].invites += i.uses;
-      });
-
-      let leaderboard: IMemberInviteCount[] = [];
-      Object.keys(tempInvites).forEach(ti => {
-        leaderboard.push(tempInvites[ti]);
-      });
-      leaderboard = leaderboard.filter(l => l.invites > 0).sort((a, b) => {
-        return b.invites - a.invites;
-      });
-
-      let str = `Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}\n\n`;
-
-      // TODO: Compare to 1 day ago
-      // let upSymbol = '🔺';
-      // let downSymbol = '🔻';
-      // let neutralSymbol = '▪️';
-      if (leaderboard.length === 0) {
-        str += 'No invites!';
-      } else {
-        leaderboard.forEach((l, i) => {
-          if (i < 50) {
-            str += (i + 1) + ' ▪️ **' + l.name + '** ' + l.invites + ' invites\n';
-          }
-        });
-      }
-
-      const embed = new RichEmbed()
-        .setDescription(str);
-
-      createEmbed(message.client, embed);
-
-      message.channel.send({ embed });
+    let invites = await inviteCodes.findAll({
+      attributes: [
+        'inviterId',
+        [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
+      ],
+      where,
+      group: 'inviteCode.inviterId',
+      order: [[sequelize.fn('sum', sequelize.col('inviteCode.uses')) as any, 'DESC']],
+      include: [{ model: members, as: 'inviter' }]
     });
+    invites = invites.filter(inv => parseInt(inv.get('totalUses')) > 0);
+    console.log(invites);
+
+    let str = `Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}\n\n`;
+
+    // TODO: Compare to 1 day ago
+    // let upSymbol = '🔺';
+    // let downSymbol = '🔻';
+    // let neutralSymbol = '▪️';
+    if (invites.length === 0) {
+      str += 'No invites!';
+    } else {
+      invites.forEach((inv, i) => {
+        if (i < 50) {
+          str += (i + 1) + ' ▪️ **' + inv.inviter.name + '** ' + inv.get('totalUses') + ' invites\n';
+        }
+      });
+    }
+
+    const embed = new RichEmbed().setDescription(str);
+    createEmbed(message.client, embed);
+
+    message.channel.send({ embed });
   }
 }
