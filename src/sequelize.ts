@@ -21,6 +21,7 @@ export const members = sequelize.define('member', {
 export interface IDBGuild extends ISequelizeBaseType {
   id: string;
   name: string;
+  icon: string;
 }
 
 export const guilds = sequelize.define('guild', {
@@ -29,10 +30,17 @@ export const guilds = sequelize.define('guild', {
   icon: Sequelize.STRING,
 });
 
-export const settings = sequelize.define('setting', {
-  key: Sequelize.STRING,
-  value: Sequelize.STRING,
-});
+export const settings = sequelize.define<any, any>('setting',
+  {
+    key: Sequelize.STRING,
+    value: Sequelize.STRING,
+  }, {
+    indexes: [{
+      unique: true,
+      fields: ['guildId', 'key']
+    }],
+  }
+);
 settings.belongsTo(guilds);
 
 export interface IDBJoin extends ISequelizeBaseType {
@@ -64,7 +72,7 @@ export interface IDBLeave extends ISequelizeBaseType {
   inviterId: string;
 }
 
-export const leaves = sequelize.define('leave', {});
+export const leaves = sequelize.define<any, any>('leave', {});
 
 leaves.belongsTo(guilds);
 leaves.belongsTo(members);
