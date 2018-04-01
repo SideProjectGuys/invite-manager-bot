@@ -16,7 +16,7 @@ export default class extends Command<IMClient> {
       aliases: ['show-config', 'showConfig'],
       desc: 'Show config of this server.',
       usage: '<prefix>config (key (value))',
-      // callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+      callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
       hidden: true,
       guildOnly: true
     });
