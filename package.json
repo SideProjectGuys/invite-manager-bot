@@ -7,11 +7,10 @@
     "start": "npm run build && node ./bin/bot.js",
     "build": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "tslint --project tsconfig.json --config tslint.json",
+    "lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
     "nxv": "node ./scripts/npm-exact-versions.js"
   },
   "pre-commit": [
-    "lint",
     "nxv"
   ],
   "repository": {
@@ -34,7 +33,7 @@
     "express-session": "1.15.6",
     "helmet": "3.12.0",
     "moment": "2.22.0",
-    "mysql2": "^1.5.3",
+    "mysql2": "1.5.3",
     "passport": "0.4.0",
     "passport-discord": "0.1.3",
     "sequelize": "4.37.5",
