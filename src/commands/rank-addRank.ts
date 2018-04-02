@@ -29,7 +29,6 @@ export default class extends Command<IMClient> {
     await ranks.insertOrUpdate({
       guildId: role.guild.id,
       roleId: role.id,
-      roleName: role.name,
       numInvites: invites,
       description: description,
     }).then(created => {

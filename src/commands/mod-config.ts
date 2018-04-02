@@ -3,7 +3,7 @@ import { RichEmbed, User } from 'discord.js';
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 import { createEmbed } from '../utils/util';
-import { settings } from '../sequelize';
+import { settings, SettingsKeys } from '../sequelize';
 import { IMClient } from '../client';
 
 export default class extends Command<IMClient> {
@@ -23,30 +23,48 @@ export default class extends Command<IMClient> {
   }
 
   @using(resolve('key: String, value: String'))
-  public async action(message: Message, [key, value]: [string, string]): Promise<any> {
+  public async action(message: Message, [key, _value]: [string, string]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
     if (key) {
-      const set = await settings.find({
-        where: {
-          guildId: message.guild.id,
-          key: key,
-        }
-      });
-
-      if (!set) {
-        message.channel.send(`No config setting called '${key}' found.`);
+      const dbKey = Object.keys(SettingsKeys).find(k => k.toLowerCase() === key.toLocaleLowerCase());
+      if (!dbKey) {
+        message.channel.send(`No config setting called '${dbKey}' found.`);
         return;
       }
 
-      if (value) {
-        const oldVal = set.value;
-        set.value = value;
-        set.save();
+      const set = await settings.find({
+        where: {
+          guildId: message.guild.id,
+          key: dbKey,
+        }
+      });
 
-        message.channel.send(`Changed **${key}** from **${oldVal}** to **${value}**`);
+      if (_value) {
+        const isNone = _value === 'none' || _value === 'empty' || _value === 'null';
+        const value = isNone ? null : _value;
+
+        if (set) {
+          const oldVal = set.value;
+          set.value = value;
+          set.save();
+
+          message.channel.send(`Changed **${dbKey}** from **${oldVal}** to **${value}**`);
+        } else {
+          settings.create({
+            guildId: message.guild.id,
+            key: dbKey,
+            value,
+          });
+
+          message.channel.send(`Set **${dbKey}** to **${value}**`);
+        }
       } else {
-        message.channel.send(`Config **${key}** is set to **${set.value}**`);
+        if (!set) {
+          message.channel.send(`Config **${dbKey}** is not set, please set a value.`);
+        } else {
+          message.channel.send(`Config **${dbKey}** is set to **${set.value}**`);
+        }
       }
     } else {
       const sets = await settings.findAll({

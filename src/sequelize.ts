@@ -30,9 +30,23 @@ export const guilds = sequelize.define<any, any>('guild', {
   icon: Sequelize.STRING,
 });
 
+export enum SettingsKeys {
+  PREFIX = 'prefix',
+  JOIN_MESSAGE_CHANNEL = 'joinMessageChannel',
+  LANG = 'lang',
+  MOD_ROLE = 'modRole',
+  MOD_CHANNEL = 'modChannel',
+}
+
 export const settings = sequelize.define<any, any>('setting',
   {
-    key: Sequelize.STRING,
+    key: Sequelize.ENUM(
+      SettingsKeys.PREFIX,
+      SettingsKeys.JOIN_MESSAGE_CHANNEL,
+      SettingsKeys.LANG,
+      SettingsKeys.MOD_ROLE,
+      SettingsKeys.MOD_CHANNEL,
+    ),
     value: Sequelize.STRING,
   }, {
     indexes: [{
@@ -116,7 +130,6 @@ customInvites.belongsTo(members, { as: 'creator' });
 export interface IDBRank extends ISequelizeBaseType {
   id: number;
   roleId: string;
-  roleName: string;
   numInvites: number;
   description: string;
 }
@@ -124,7 +137,6 @@ export interface IDBRank extends ISequelizeBaseType {
 export const ranks = sequelize.define<any, any>('rank',
   {
     roleId: Sequelize.STRING,
-    roleName: Sequelize.STRING,
     numInvites: Sequelize.INTEGER,
     description: Sequelize.STRING,
   }, {
