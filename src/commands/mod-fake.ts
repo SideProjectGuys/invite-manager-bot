@@ -1,6 +1,6 @@
 import { Client, Command, GuildStorage, Message, Logger, logger } from 'yamdbf';
 import { RichEmbed } from 'discord.js';
-import { createEmbed, getMembersByInviteCodes } from '../utils/util';
+import { createEmbed } from '../utils/util';
 import { inviteCodes, joins, members, sequelize } from '../sequelize';
 
 export default class extends Command<Client> {
@@ -23,9 +23,15 @@ export default class extends Command<Client> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
     const js = await joins.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
+        [sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch->inviter`.id SEPARATOR \',\'')), 'inviterIds'],
+        [sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch->inviter`.name SEPARATOR \',\'')), 'inviterNames'],
+      ],
       where: {
         guildId: message.guild.id
       },
+      group: ['join.memberId'],
       include: [
         members,
         {
@@ -38,8 +44,8 @@ export default class extends Command<Client> {
 
     if (js.length > 0) {
       const suspiciousJoins = js
-        .filter(j => j.totalJoins > 1)
-        .sort((a, b) => a.totalJoins - b.totalJoins);
+        .filter(j => j.get('totalJoins') > 1)
+        .sort((a, b) => a.get('totalJoins') - b.get('totalJoins'));
 
       const embed = new RichEmbed();
       embed.setTitle('Fake invites:');
@@ -47,15 +53,18 @@ export default class extends Command<Client> {
 
       for (let join of suspiciousJoins) {
         const invs: { [x: string]: number } = {};
-        join.inviterIds.split(',').forEach((id: string) => {
+        join.get('inviterIds').split(',').forEach((id: string) => {
           if (invs[id]) {
             invs[id]++;
           } else {
             invs[id] = 1;
           }
         });
-        const invText = Object.keys(invs).map(id => `<@${id}> (**${invs[id]} times**)`).join(', ');
-        description += `<@${join.memberId}> joined **${join.totalJoins} times**, invited by: ${invText}\n`;
+        const invText = Object.keys(invs).map(id => {
+          const timesText = invs[id] > 1 ? ` (**${invs[id]}** times)` : '';
+          return `<@${id}>${timesText}`;
+        }).join(', ');
+        description += `<@${join.member.id}> joined **${join.get('totalJoins')} times**, invited by: ${invText}\n`;
       }
       if (suspiciousJoins.length === 0) {
         description = 'There have been no fake invites since the bot has been added to this server.';

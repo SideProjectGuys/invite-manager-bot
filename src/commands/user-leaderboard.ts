@@ -1,7 +1,6 @@
 import { Command, CommandDecorators, Message, Middleware, Logger, logger } from 'yamdbf';
 import { Channel, RichEmbed } from 'discord.js';
-import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
-import { IMemberInviteCount } from '../interfaces';
+import { createEmbed } from '../utils/util';
 import { inviteCodes, sequelize, members, customInvites } from '../sequelize';
 import { IMClient } from '../client';
 const { resolve } = Middleware;

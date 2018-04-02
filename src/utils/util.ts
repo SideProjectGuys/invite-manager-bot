@@ -1,6 +1,7 @@
 import { Guild, GuildStorage } from 'yamdbf';
 import { Client, RichEmbed, Invite, Collection, GuildMember } from 'discord.js';
 import { EStrings } from '../enums';
+import { inviteCodes, customInvites, ranks, IDBRank } from '../sequelize';
 
 export function createEmbed(client: Client, embed: RichEmbed, color = '#00AE86'): RichEmbed {
   embed.setColor(color);
@@ -11,26 +12,6 @@ export function createEmbed(client: Client, embed: RichEmbed, color = '#00AE86')
   }
   embed.setTimestamp();
   return embed;
-}
-
-export function getInviteCounts(invs: Collection<string, Invite>): { [key: string]: number } {
-  invs = invs.filter(i => !i.temporary); // Filter out temporary invite codes
-  invs = invs.filter(i => !!i.inviter); // Need to have valid inviter or we ignore it
-  let localInvites: { [key: string]: number } = {};
-  invs.forEach(value => {
-    localInvites[value.code] = value.uses;
-  });
-  return localInvites;
-}
-
-export function getInviteOwners(invs: Collection<string, Invite>): { [key: string]: string } {
-  invs = invs.filter(i => !i.temporary); // Filter out temporary invite codes
-  invs = invs.filter(i => !!i.inviter); // Need to have valid inviter or we ignore it
-  let localInvites: { [key: string]: string } = {};
-  invs.forEach(value => {
-    localInvites[value.code] = value.inviter.id;
-  });
-  return localInvites;
 }
 
 export async function subtractClearedCountFromInvites(storage: GuildStorage, invs: Collection<string, Invite>) {
@@ -45,27 +26,69 @@ export async function subtractClearedCountFromInvites(storage: GuildStorage, inv
   return invs;
 }
 
-export function compareInvites(oldObj: { [key: string]: number }, newObj: { [key: string]: number }): string[] {
-  let inviteCodesUsed: string[] = [];
-  Object.keys(newObj).forEach(key => {
-    if (newObj[key] !== 0 /* ignore new empty invites */ && oldObj[key] !== newObj[key]) {
-      inviteCodesUsed.push(key);
-    }
-  });
-  return inviteCodesUsed;
+export async function getInviteCounts(guildId: string, memberId: string): Promise<{ code: number, custom: number }> {
+  return {
+    code: await inviteCodes.sum('uses', {
+      where: {
+        guildId: guildId,
+        inviterId: memberId,
+      }
+    }) || 0,
+    custom: await customInvites.sum('amount', {
+      where: {
+        guildId: guildId,
+        memberId: memberId,
+      }
+    }) || 0,
+  };
 }
 
-export async function getMembersByInviteCodes(guild: Guild, codes: string[]) {
-  let inviteCodes = await guild.storage.get(EStrings.ALL_INVITE_CODES);
-  let membersArray: GuildMember[] = [];
-  codes.forEach(c => {
-    let userId = inviteCodes[c];
-    if (userId) {
-      let member = guild.members.get(userId);
-      if (member) {
-        membersArray.push(member);
-      }
+export async function promoteIfQualified(guild: Guild, member: GuildMember, totalInvites: number) {
+  let nextRankName = '';
+  let nextRank: IDBRank = null;
+
+  let rolesToAdd: string[] = [];
+  const allRanks = await ranks.findAll({
+    where: {
+      guildId: guild.id,
     }
   });
-  return membersArray;
+
+  allRanks.forEach(r => {
+    let role = guild.roles.get(r.roleId);
+    if (role) {
+      if (r.numInvites <= totalInvites) { // Rank needs less/equal invites, so we add add role
+        if (!member.roles.has(role.id)) {
+          rolesToAdd.push(role.id);
+        }
+      } else { // Rank requires more invites
+        if (nextRank) {
+          if (r.numInvites < nextRank.numInvites) { // Next rank is the one with lowest invites needed
+            nextRank = r;
+            nextRankName = role.name;
+          }
+        } else {
+          nextRank = r;
+          nextRankName = role.name;
+        }
+      }
+    } else {
+      console.log('ROLE DOESNT EXIST');
+    }
+  });
+
+  if (rolesToAdd.length > 0) {
+    if (guild.me.hasPermission('MANAGE_ROLES')) {
+      member.addRoles(rolesToAdd);
+    } else {
+      // TODO: Notify user about the fact that he deserves a promotion, but it
+      // cannot be given to him because of missing permissions
+    }
+  }
+
+  return {
+    numRanks: allRanks.length,
+    nextRank,
+    nextRankName,
+  };
 }

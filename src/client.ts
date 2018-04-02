@@ -5,6 +5,7 @@ import { commandUsage } from 'yamdbf-command-usage';
 import { MessageQueue } from './utils/MessageQueue';
 import { sequelize, joins, settings, inviteCodes, members, customInvites } from './sequelize';
 import { GuildMember, TextChannel } from 'discord.js';
+import { promoteIfQualified, getInviteCounts } from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -81,19 +82,13 @@ export class IMClient extends Client {
 
 		const inviter = join.exactMatch.inviter;
 
-		const invAmount = await inviteCodes.sum('uses', {
-			where: {
-				guildId: member.guild.id,
-				inviterId: inviter.id,
-			}
-		}) || 0;
-		const customInvAmount = await customInvites.sum('amount', {
-			where: {
-				guildId: member.guild.id,
-				memberId: inviter.id,
-			}
-		}) || 0;
-		const totalInvites = invAmount + customInvAmount;
+		const invites = await getInviteCounts(inviter.guild.id, inviter.id);
+		const totalInvites = invites.code + invites.custom;
+
+		const origInviter = await member.guild.fetchMember(inviter.id);
+		if (!origInviter.user.bot) {
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(inviter.guild, inviter, totalInvites);
+		}
 
 		const inviteChannel = member.guild.channels.get(joinChannelSetting.value) as TextChannel;
 		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.name} (${totalInvites} invites)`);

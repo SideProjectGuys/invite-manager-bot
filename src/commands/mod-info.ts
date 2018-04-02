@@ -3,8 +3,9 @@ import { RichEmbed, User } from 'discord.js';
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 import * as moment from 'moment';
-import { createEmbed } from '../utils/util';
+import { createEmbed, getInviteCounts } from '../utils/util';
 import { EStrings } from '../enums';
+import { joins, inviteCodes, members, sequelize, customInvites } from '../sequelize';
 
 export default class extends Command<Client> {
   @logger('Command')
@@ -27,82 +28,104 @@ export default class extends Command<Client> {
   public async action(message: Message, [user]: [User]): Promise<any> {
     this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    const storage: GuildStorage = message.guild.storage;
-    // const settings: GuildSettings = message.guild.storage.settings;
-
     let member = message.guild.members.get(user.id);
 
     // TODO: Show current rank
     // let ranks = await settings.get('ranks');
     if (member) {
-      // let memberJoins = await storage.get(`members.${member.id}.joins`);
+      const invites = await getInviteCounts(member.guild.id, member.id);
 
-      message.guild.fetchInvites().then(async invs => {
-        invs = invs.filter(i => !i.temporary);
-        invs = invs.filter(i => !!i.inviter); // Need to have valid inviter or we ignore it
-        let personalInvites = invs.filter(i => i.inviter.id === member.id);
-        let inviteCount = personalInvites.reduce((p, v) => v.uses + p, 0);
+      const embed = new RichEmbed().setTitle(member.user.username);
 
-        const embed = new RichEmbed().setTitle(member.user.username);
-        let joinedAgo = moment(member.joinedAt).fromNow();
-        embed.addField('Joined', joinedAgo, true);
-        embed.addField('Invites', inviteCount, true);
+      const joinedAgo = moment(member.joinedAt).fromNow();
+      embed.addField('Last joined', joinedAgo, true);
+      embed.addField('Invites', (invites.code + invites.custom) + ` (${invites.custom} bonus)`, true);
 
-        let invitedBy = 'unknown (this only works for new members)';
-        let joins = await storage.get(`members.${member.id}.joins`);
-        if (joins) {
-          let joinCount = joins.length;
-          embed.addField('Joined', `${joinCount} times`, true);
-          let lastJoin = joins[joins.length - 1];
-          if (lastJoin) {
-            let codesUsed = lastJoin.inviteCodesUsed;
-            if (codesUsed.length > 1) {
-              invitedBy = 'Could not match inviter (multiple possibilities)';
-            } else if (codesUsed.length === 1) {
-              let inviter = await storage.get(`${EStrings.ALL_INVITE_CODES}.${codesUsed[0]}`);
-              if (inviter) {
-                let inviterMember = message.guild.members.get(inviter);
-                if (inviterMember) {
-                  invitedBy = `<@${inviterMember.user.id}>`;
-                }
-              }
-            }
-          }
+      const joinCount = Math.max(await joins.count({
+        where: {
+          guildId: member.guild.id,
+          memberId: member.id,
         }
+      }), 1);
+      embed.addField('Joined', `${joinCount} times`, true);
 
-        let allMembers = await storage.get(`members`);
-        let allInviteCodes = await storage.get(EStrings.ALL_INVITE_CODES);
-        let trackedInviteCount = 0;
-        let stillOnServerCount = 0;
-        Object.keys(allMembers).forEach(key => {
-          let tempMemberJoins = allMembers[key].joins;
-          if (tempMemberJoins && tempMemberJoins.length > 0) {
-            let tempInvite = tempMemberJoins[tempMemberJoins.length - 1];
-            if (tempInvite && tempInvite.inviteCodesUsed && tempInvite.inviteCodesUsed.length === 1) {
-              let inviteCode = tempInvite.inviteCodesUsed[0];
-              let inviterUserId = allInviteCodes[inviteCode];
-              if (inviterUserId && inviterUserId === member.id) {
-                let inviter = message.guild.members.get(inviterUserId);
-                if (inviter) {
-                  stillOnServerCount++;
-                }
-                trackedInviteCount++;
-              }
-            }
+      const js = await joins.findAll({
+        where: {
+          guildId: message.guild.id,
+          memberId: user.id,
+        },
+        order: [['createdAt', 'DESC']],
+        include: [{
+          model: inviteCodes,
+          as: 'exactMatch',
+          include: [{ model: members, as: 'inviter' }]
+        }],
+      });
+
+      if (js.length > 0) {
+        const joinTimes: { [x: string]: { [x: string]: number } } = {};
+
+        js.forEach(join => {
+          const text = moment(join.createdAt).fromNow();
+          if (!joinTimes[text]) {
+            joinTimes[text] = {};
+          }
+
+          const id = join.exactMatch.inviter.id;
+          if (joinTimes[text][id]) {
+            joinTimes[text][id]++;
+          } else {
+            joinTimes[text][id] = 1;
           }
         });
-        embed.addField('Invited by', invitedBy, true);
 
-        if (stillOnServerCount === 0 && trackedInviteCount === 0) {
-          embed.addField('Invited people still on the server (since bot joined)', `User did not invite any members since this bot joined.`);
-        } else {
-          embed.addField('Invited people still on the server (since bot joined)', `**${stillOnServerCount}** still here out of **${trackedInviteCount}** invited members.`);
-        }
+        const joinText = Object.keys(joinTimes).map(time => {
+          const joinTime = joinTimes[time];
 
-        createEmbed(message.client, embed);
+          const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
+          const totalText = total > 1 ? `**${total}** times ` : '';
 
-        message.channel.send({ embed });
+          const invText = Object.keys(joinTime).map(id => {
+            const timesText = joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
+            return `<@${id}>${timesText}`;
+          }).join(', ');
+          return `${totalText}**${time}**, invited by: ${invText}`;
+        }).join('\n');
+        embed.addField('Joins', joinText);
+      } else {
+        embed.addField('Joins', 'unknown (this only works for new members)');
+      }
+
+      const customInvs = await customInvites.findAll({
+        where: {
+          guildId: member.guild.id,
+          memberId: member.id,
+        },
+        order: [['createdAt', 'DESC']],
       });
+
+      if (customInvs.length > 0) {
+        let customInvText = '';
+        customInvs.forEach(inv => {
+          const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
+          customInvText += `**${inv.amount}** from <@${inv.creatorId}> ${moment(inv.createdAt).fromNow()}${reasonText}\n`;
+        });
+        embed.addField('Bonus invites', customInvText);
+      } else {
+        embed.addField('Bonus invites', 'This member has received no bonuses so far');
+      }
+
+      // invitedByText = 'Could not match inviter (multiple possibilities)';
+
+      /*if (stillOnServerCount === 0 && trackedInviteCount === 0) {
+        embed.addField('Invited people still on the server (since bot joined)', `User did not invite any members since this bot joined.`);
+      } else {
+        embed.addField('Invited people still on the server (since bot joined)', `**${stillOnServerCount}** still here out of **${trackedInviteCount}** invited members.`);
+      }*/
+
+      createEmbed(message.client, embed);
+
+      message.channel.send({ embed });
     } else {
       message.channel.send('User is not part of your guild');
     }

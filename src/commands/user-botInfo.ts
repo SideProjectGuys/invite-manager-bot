@@ -22,10 +22,10 @@ export default class extends Command<IMClient> {
 
     // TODO: This is currently multiplied by the shard count, which is ok for guilds,
     // but inaccurate for the members count
+    const guildCount = this.client.shard ? message.client.guilds.size * this.client.shard.count : message.client.guilds.size;
+
     const embed = new RichEmbed();
-    embed.addField('Guilds', message.client.guilds.size * this.client.shard.count, true);
-    let allMembersCount = message.client.guilds.reduce((p, v) => v.memberCount + p, 0) * this.client.shard.count;
-    embed.addField('Members', allMembersCount, true);
+    embed.addField('Guilds', guildCount, true);
     if (config.botSupport) embed.addField('Support Discord', config.botSupport);
     if (config.botAdd) embed.addField('Add bot to your server', config.botAdd);
     if (config.botWebsite) embed.addField('Bot website', config.botWebsite);
