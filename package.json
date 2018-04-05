@@ -52,6 +52,7 @@
     "gulp-typescript": "4.0.2",
     "pre-commit": "1.2.2",
     "tslint": "5.9.1",
-    "typescript": "2.8.1"
+    "typescript": "2.8.1",
+    "typestrict": "^0.0.8"
   }
 }
