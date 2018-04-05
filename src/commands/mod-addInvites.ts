@@ -1,8 +1,10 @@
-import { Command, CommandDecorators, Message, Middleware, Logger, logger } from 'yamdbf';
 import { Role, User } from 'discord.js';
+import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+
 import { IMClient } from '../client';
-import { ranks, customInvites, inviteCodes } from '../sequelize';
+import { customInvites, inviteCodes, ranks } from '../sequelize';
 import { getInviteCounts, promoteIfQualified } from '../utils/util';
+
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 

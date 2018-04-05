@@ -1,36 +1,45 @@
-import { Command, Message, Logger, logger } from 'yamdbf';
 import { RichEmbed } from 'discord.js';
-import { createEmbed } from '../utils/util';
+import { Command, Logger, logger, Message } from 'yamdbf';
+
 import { IMClient } from '../client';
+import { createEmbed } from '../utils/util';
+
 const config = require('../../config.json');
 
 export default class extends Command<IMClient> {
-  @logger('Command')
-  private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
-  public constructor() {
-    super({
-      name: 'botInfo',
-      aliases: ['bot-info'],
-      desc: 'Show info about the bot',
-      usage: '<prefix>botInfo'
-    });
-  }
+	public constructor() {
+		super({
+			name: 'botInfo',
+			aliases: ['bot-info'],
+			desc: 'Show info about the bot',
+			usage: '<prefix>botInfo'
+		});
+	}
 
-  public async action(message: Message, args: string[]): Promise<any> {
-    this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+	public async action(message: Message, args: string[]): Promise<any> {
+		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-    // TODO: This is currently multiplied by the shard count, which is ok for guilds,
-    // but inaccurate for the members count
-    const guildCount = this.client.shard ? message.client.guilds.size * this.client.shard.count : message.client.guilds.size;
+		// TODO: This is currently multiplied by the shard count, which is ok for guilds,
+		// but inaccurate for the members count
+		const guildCount = this.client.shard ? message.client.guilds.size * this.client.shard.count :
+			message.client.guilds.size;
 
-    const embed = new RichEmbed();
-    embed.addField('Guilds', guildCount, true);
-    if (config.botSupport) embed.addField('Support Discord', config.botSupport);
-    if (config.botAdd) embed.addField('Add bot to your server', config.botAdd);
-    if (config.botWebsite) embed.addField('Bot website', config.botWebsite);
-    createEmbed(message.client, embed);
+		const embed = new RichEmbed();
+		embed.addField('Guilds', guildCount, true);
+		if (config.botSupport) {
+			embed.addField('Support Discord', config.botSupport);
+		}
+		if (config.botAdd) {
+			embed.addField('Add bot to your server', config.botAdd);
+		}
+		if (config.botWebsite) {
+			embed.addField('Bot website', config.botWebsite);
+		}
+		createEmbed(message.client, embed);
 
-    message.channel.send({ embed });
-  }
+		message.channel.send({ embed });
+	}
 }

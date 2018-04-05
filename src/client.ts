@@ -1,11 +1,11 @@
-import { Client, ListenerUtil, Guild } from 'yamdbf';
+import { GuildMember, TextChannel } from 'discord.js';
 import * as path from 'path';
+import { Client, Guild, ListenerUtil } from 'yamdbf';
 import { commandUsage } from 'yamdbf-command-usage';
 
+import { customInvites, inviteCodes, joins, members, sequelize, settings } from './sequelize';
 import { MessageQueue } from './utils/MessageQueue';
-import { sequelize, joins, settings, inviteCodes, members, customInvites } from './sequelize';
-import { GuildMember, TextChannel } from 'discord.js';
-import { promoteIfQualified, getInviteCounts } from './utils/util';
+import { getInviteCounts, promoteIfQualified } from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -25,7 +25,8 @@ export class IMClient extends Client {
 				ratelimit: '2/5s',
 				disableBase: ['setlang', 'blacklist', 'eval', 'eval:ts', 'limit', 'reload', 'ping', 'help'],
 				plugins: [commandUsage(config.commandLogChannel)],
-			}, {
+			},
+			{
 				disabledEvents: [
 					'TYPING_START',
 					'USER_UPDATE',
@@ -51,9 +52,10 @@ export class IMClient extends Client {
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
 		this.setActivity();
-		this.activityInterval = setInterval(() => {
-			this.setActivity();
-		}, 30000);
+		this.activityInterval = setInterval(
+			() => this.setActivity(),
+			30000
+		);
 	}
 
 	@on('guildMemberAdd')
@@ -96,20 +98,23 @@ export class IMClient extends Client {
 
 	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
 		return new Promise((resolve, reject) => {
-			setTimeout(async () => {
-				resolve(await joins.find({
-					where: {
-						memberId,
-						guildId,
-						createdAt,
-					},
-					include: [{
-						model: inviteCodes,
-						as: 'exactMatch',
-						include: [{ model: members, as: 'inviter' }]
-					}]
-				}));
-			}, timeOut);
+			setTimeout(
+				async () => {
+					resolve(await joins.find({
+						where: {
+							memberId,
+							guildId,
+							createdAt,
+						},
+						include: [{
+							model: inviteCodes,
+							as: 'exactMatch',
+							include: [{ model: members, as: 'inviter' }]
+						}]
+					}));
+				},
+				timeOut
+			);
 		});
 	}
 
