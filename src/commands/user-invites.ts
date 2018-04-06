@@ -24,15 +24,14 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		const invites = await getInviteCounts(message.guild.id, message.author.id);
-		const totalInvites = invites.code + invites.custom;
 
-		let textMessage = `You have **${totalInvites}** invites! (**${invites.custom}** bonus)\n`;
+		let textMessage = `You have **${invites.total}** invites! (**${invites.custom}** bonus)\n`;
 
 		if (!message.member.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, message.member, totalInvites);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, message.member, invites.total);
 
 			if (nextRank) {
-				let nextRankPointsDiff = nextRank.numInvites - totalInvites;
+				let nextRankPointsDiff = nextRank.numInvites - invites.total;
 				textMessage += 'You need **' + nextRankPointsDiff + '** more invites to reach **' + nextRankName + '** rank!';
 			} else {
 				if (numRanks > 0) {

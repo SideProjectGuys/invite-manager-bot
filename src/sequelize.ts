@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize';
-const config = require('../../config.json');
+const config = require('../config.json');
 
 export const sequelize = new Sequelize(config.sequelize);
 
@@ -109,6 +109,7 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	reason?: string;
 	guildId: string;
 	inviterId: string;
+	inviter?: MemberInstance;
 }
 export interface InviteCodeInstance extends Sequelize.Instance<InviteCodeAttributes>, InviteCodeAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
@@ -139,9 +140,12 @@ members.hasMany(inviteCodes, { foreignKey: 'inviterId' });
 export interface JoinAttributes extends BaseAttributes {
 	id: number;
 	exactMatchCode: string;
+	exactMatch?: InviteCodeInstance;
 	possibleMatches: string;
 	guildId: string;
+	guild?: GuildInstance;
 	memberId: string;
+	member?: MemberInstance;
 }
 export interface JoinInstance extends Sequelize.Instance<JoinAttributes>, JoinAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
@@ -199,9 +203,12 @@ export interface CustomInviteAttributes extends BaseAttributes {
 	id: number;
 	amount: number;
 	reason: string;
+	generated: boolean;
 	guildId: string;
 	memberId: string;
+	member?: MemberInstance;
 	creatorId: string;
+	creator?: MemberInstance;
 }
 export interface CustomInviteInstance extends Sequelize.Instance<CustomInviteAttributes>, CustomInviteAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
@@ -212,6 +219,7 @@ export interface CustomInviteInstance extends Sequelize.Instance<CustomInviteAtt
 export const customInvites = sequelize.define<CustomInviteInstance, CustomInviteAttributes>('customInvite', {
 	amount: Sequelize.INTEGER,
 	reason: Sequelize.STRING,
+	generated: Sequelize.BOOLEAN,
 });
 
 customInvites.belongsTo(guilds);

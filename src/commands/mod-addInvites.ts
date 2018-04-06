@@ -36,18 +36,20 @@ export default class extends Command<IMClient> {
 		}
 
 		const invites = await getInviteCounts(message.guild.id, member.id);
-		const totalInvites = invites.code + invites.custom + amount;
+		const totalInvites = invites.total + amount;
 
 		if (!user.bot) {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, member, totalInvites);
 		}
 
 		await customInvites.create({
+			id: null,
 			guildId: message.guild.id,
 			memberId: member.id,
 			creatorId: message.author.id,
 			amount,
 			reason,
+			generated: false,
 		});
 
 		const msg = amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;

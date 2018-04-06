@@ -29,6 +29,7 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		await ranks.insertOrUpdate({
+			id: null,
 			guildId: role.guild.id,
 			roleId: role.id,
 			numInvites: invites,

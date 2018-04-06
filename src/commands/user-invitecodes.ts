@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
 import { inviteCodes, members } from '../sequelize';
-import { createEmbed, subtractClearedCountFromInvites } from '../utils/util';
+import { createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')

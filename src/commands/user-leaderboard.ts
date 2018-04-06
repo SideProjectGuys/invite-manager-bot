@@ -1,5 +1,5 @@
 import { Channel, RichEmbed } from 'discord.js';
-import { Op } from 'sequelize';
+import { FindOptionsAttributesArray, Op } from 'sequelize';
 import { Command, CommandDecorators, KeyedStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
@@ -12,6 +12,24 @@ const { using } = CommandDecorators;
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const neutralSymbol = '▪️';
+
+// Extra attributes for the sequelize queries
+const attrs: FindOptionsAttributesArray = [
+	[
+		sequelize.fn(
+			'sum',
+			sequelize.fn('if', sequelize.col('customInvite.generated'), 0, sequelize.col('customInvite.amount'))
+		),
+		'totalBonus'
+	],
+	[
+		sequelize.fn(
+			'sum',
+			sequelize.fn('if', sequelize.col('customInvite.generated'), sequelize.col('customInvite.amount'), 0)
+		),
+		'totalAuto'
+	]
+];
 
 export default class extends Command<IMClient> {
 	@logger('Command')
@@ -47,10 +65,8 @@ export default class extends Command<IMClient> {
 			group: 'inviteCode.inviterId',
 			include: [{ model: members, as: 'inviter' }]
 		});
-		const bonusInvs = await customInvites.findAll({
-			attributes: [
-				[sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
-			],
+		const customInvs = await customInvites.findAll({
+			attributes: attrs,
 			where: {
 				guildId: message.guild.id,
 			},
@@ -58,27 +74,30 @@ export default class extends Command<IMClient> {
 			include: [members]
 		});
 
-		const invs: { [x: string]: { name: string, code: number, bonus: number, oldCode: number, oldBonus: number } } = {};
+		const invs: { [x: string]: { name: string, total: number, bonus: number, oldTotal: number, oldBonus: number } } = {};
 		codeInvs.forEach(inv => {
 			const id = inv.inviter.id;
 			invs[id] = {
 				name: inv.inviter.name,
-				code: parseInt(inv.get('totalUses'), 10),
+				total: parseInt(inv.get('totalUses'), 10),
 				bonus: 0,
-				oldCode: 0,
+				oldTotal: 0,
 				oldBonus: 0,
 			};
 		});
-		bonusInvs.forEach(inv => {
+		customInvs.forEach(inv => {
 			const id = inv.member.id;
+			const bonus = parseInt(inv.get('totalBonus'), 10);
+			const auto = parseInt(inv.get('totalAuto'), 10);
 			if (invs[id]) {
-				invs[id].bonus = parseInt(inv.get('totalAmount'), 10);
+				invs[id].total += bonus + auto;
+				invs[id].bonus = bonus;
 			} else {
 				invs[id] = {
 					name: inv.member.name,
-					code: 0,
-					bonus: parseInt(inv.get('totalAmount'), 10),
-					oldCode: 0,
+					total: bonus + auto,
+					bonus: bonus,
+					oldTotal: 0,
 					oldBonus: 0,
 				};
 			}
@@ -101,11 +120,8 @@ export default class extends Command<IMClient> {
 				include: [{ model: members, as: 'inviter' }]
 			}],
 		});
-
 		const oldBonusInvs = await customInvites.findAll({
-			attributes: [
-				[sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
-			],
+			attributes: attrs,
 			where: {
 				guildId: message.guild.id,
 				createdAt: {
@@ -119,39 +135,41 @@ export default class extends Command<IMClient> {
 		oldCodeInvs.forEach(inv => {
 			const id = inv.exactMatch.inviter.id;
 			if (invs[id]) {
-				invs[id].oldCode = parseInt(inv.get('totalJoins'), 10);
+				invs[id].oldTotal = parseInt(inv.get('totalJoins'), 10);
 			} else {
 				invs[id] = {
 					name: inv.exactMatch.inviter.name,
-					code: 0,
+					total: 0,
 					bonus: 0,
-					oldCode: parseInt(inv.get('totalJoins'), 10),
+					oldTotal: parseInt(inv.get('totalJoins'), 10),
 					oldBonus: 0,
 				};
 			}
 		});
 		oldBonusInvs.forEach(inv => {
 			const id = inv.member.id;
+			const bonus = parseInt(inv.get('totalBonus'), 10);
+			const auto = parseInt(inv.get('totalAuto'), 10);
 			if (invs[id]) {
-				invs[id].oldBonus = parseInt(inv.get('totalAmount'), 10);
+				invs[id].oldTotal += bonus + auto;
+				invs[id].oldBonus = bonus;
 			} else {
 				invs[id] = {
 					name: inv.member.name,
-					code: 0,
+					total: 0,
 					bonus: 0,
-					oldCode: 0,
-					oldBonus: parseInt(inv.get('totalAmount'), 10),
+					oldTotal: bonus + auto,
+					oldBonus: bonus,
 				};
 			}
 		});
 
 		const keys = Object.keys(invs)
-			.filter(k => invs[k].bonus + invs[k].code > 0)
-			.sort((a, b) => (invs[b].code + invs[b].bonus) - (invs[a].code + invs[a].bonus));
+			.filter(k => invs[k].total > 0)
+			.sort((a, b) => invs[b].total - invs[a].total);
 
-		const leaderboard24hAgo = [...keys].sort((a, b) =>
-			(invs[b].code + invs[b].bonus - (invs[b].oldCode + invs[b].oldBonus)) -
-			(invs[a].code + invs[a].bonus - (invs[a].oldCode + invs[a].oldBonus)));
+		const leaderboard24hAgo = [...keys].sort(
+			(a, b) => (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal));
 
 		let str = '(changes compared to 1 day ago)\n\n';
 
@@ -166,10 +184,9 @@ export default class extends Command<IMClient> {
 				const posChange = (prevPos - i) - 1;
 
 				const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
-				const total = inv.code + inv.bonus;
 
 				const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-				str += `**${pos}.** (${posText}) ${symbol} <@${k}> **${total}** invites (**${inv.bonus}** bonus)\n`;
+				str += `**${pos}.** (${posText}) ${symbol} <@${k}> **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
 			});
 		}
 

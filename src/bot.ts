@@ -7,7 +7,11 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 
 const client = new IMClient();
 
-sequelize.sync({ alter: true }).then(() => client.start());
+console.log('Syncing database...');
+sequelize.sync({ alter: true }).then(() => {
+	console.log('Starting bot...');
+	client.start();
+});
 
 /*client.on('guildMemberAdd', async member => {
 	let storage: GuildStorage = client.storage.guilds.get(member.guild.id);

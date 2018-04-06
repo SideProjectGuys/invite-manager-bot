@@ -85,15 +85,14 @@ export class IMClient extends Client {
 		const inviter = join.exactMatch.inviter;
 
 		const invites = await getInviteCounts(inviter.guild.id, inviter.id);
-		const totalInvites = invites.code + invites.custom;
 
 		const origInviter = await member.guild.fetchMember(inviter.id);
 		if (!origInviter.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(inviter.guild, inviter, totalInvites);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(inviter.guild, inviter, invites.total);
 		}
 
 		const inviteChannel = member.guild.channels.get(joinChannelSetting.value) as TextChannel;
-		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.name} (${totalInvites} invites)`);
+		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.name} (${invites.total} invites)`);
 	}
 
 	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {

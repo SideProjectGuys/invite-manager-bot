@@ -26,20 +26,39 @@ export function createEmbed(client: Client, embed: RichEmbed, color: string = '#
 	return invs;
 }*/
 
-export async function getInviteCounts(guildId: string, memberId: string): Promise<{ code: number, custom: number }> {
+export async function getInviteCounts(guildId: string, memberId: string):
+	Promise<{ code: number, custom: number, auto: number, total: number }> {
+
+	const codePromise = inviteCodes.sum('uses', {
+		where: {
+			guildId: guildId,
+			inviterId: memberId,
+		}
+	});
+	const customPromise = customInvites.sum('amount', {
+		where: {
+			guildId: guildId,
+			memberId: memberId,
+			generated: false,
+		}
+	});
+	const autoPromise = customInvites.sum('amount', {
+		where: {
+			guildId: guildId,
+			memberId: memberId,
+			generated: true,
+		}
+	});
+	const values = await Promise.all([codePromise, customPromise, autoPromise]);
+	const code = values[0] || 0;
+	const custom = values[1] || 0;
+	const auto = values[2] || 0;
+
 	return {
-		code: await inviteCodes.sum('uses', {
-			where: {
-				guildId: guildId,
-				inviterId: memberId,
-			}
-		}) || 0,
-		custom: await customInvites.sum('amount', {
-			where: {
-				guildId: guildId,
-				memberId: memberId,
-			}
-		}) || 0,
+		code,
+		custom,
+		auto,
+		total: code + custom + auto,
 	};
 }
 

@@ -5,7 +5,7 @@ import { IMClient } from '../client';
 import { settings, SettingsKeys } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
-const { resolve, expect } = Middleware;
+const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {

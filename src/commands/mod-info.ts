@@ -2,7 +2,6 @@ import { RichEmbed, User } from 'discord.js';
 import * as moment from 'moment';
 import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { EStrings } from '../enums';
 import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
 import { createEmbed, getInviteCounts } from '../utils/util';
 
@@ -19,7 +18,7 @@ export default class extends Command<Client> {
 			aliases: ['showinfo'],
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			// callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});
@@ -41,14 +40,17 @@ export default class extends Command<Client> {
 
 			const joinedAgo = moment(member.joinedAt).fromNow();
 			embed.addField('Last joined', joinedAgo, true);
-			embed.addField('Invites', (invites.code + invites.custom) + ` (${invites.custom} bonus)`, true);
+			embed.addField('Invites', invites.total + ` (${invites.custom} bonus)`, true);
 
-			const joinCount = Math.max(await joins.count({
-				where: {
-					guildId: member.guild.id,
-					memberId: member.id,
-				}
-			}), 1);
+			const joinCount = Math.max(
+				await joins.count({
+					where: {
+						guildId: member.guild.id,
+						memberId: member.id,
+					}
+				}),
+				1
+			);
 			embed.addField('Joined', `${joinCount} times`, true);
 
 			const js = await joins.findAll({
@@ -102,6 +104,7 @@ export default class extends Command<Client> {
 				where: {
 					guildId: member.guild.id,
 					memberId: member.id,
+					generated: false,
 				},
 				order: [['createdAt', 'DESC']],
 			});
