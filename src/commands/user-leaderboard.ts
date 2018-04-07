@@ -121,8 +121,10 @@ export default class extends Command<IMClient> {
 				include: [{
 					attributes: ['name'],
 					model: members,
-					as: 'inviter'
-				}]
+					as: 'inviter',
+					required: true,
+				}],
+				required: true,
 			}],
 		});
 		const oldBonusInvs = await customInvites.findAll({
