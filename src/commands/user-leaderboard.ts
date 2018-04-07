@@ -11,7 +11,7 @@ const { using } = CommandDecorators;
 
 const upSymbol = '🔺';
 const downSymbol = '🔻';
-const neutralSymbol = '▪️';
+const neutralSymbol = '🔹';
 
 // Extra attributes for the sequelize queries
 const attrs: FindOptionsAttributesArray = [
@@ -113,11 +113,16 @@ export default class extends Command<IMClient> {
 					[Op.gt]: new Date(new Date().getTime() - (24 * 60 * 60 * 1000))
 				}
 			},
-			group: ['exactMatch.inviterId'],
+			group: ['exactMatch.code', 'exactMatch.inviterId'],
 			include: [{
+				attributes: ['inviterId'],
 				model: inviteCodes,
 				as: 'exactMatch',
-				include: [{ model: members, as: 'inviter' }]
+				include: [{
+					attributes: ['name'],
+					model: members,
+					as: 'inviter'
+				}]
 			}],
 		});
 		const oldBonusInvs = await customInvites.findAll({
