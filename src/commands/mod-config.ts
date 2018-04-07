@@ -29,9 +29,10 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		if (key) {
-			const dbKey = Object.keys(SettingsKeys).find(k => k.toLowerCase() === key.toLocaleLowerCase()) as SettingsKeys;
+			const dbKey = Object.keys(SettingsKeys)
+				.find((k: any) => SettingsKeys[k].toLowerCase() === key.toLowerCase()) as SettingsKeys;
 			if (!dbKey) {
-				message.channel.send(`No config setting called '${dbKey}' found.`);
+				message.channel.send(`No config setting called '${key}' found.`);
 				return;
 			}
 

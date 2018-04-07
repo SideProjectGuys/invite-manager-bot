@@ -18,7 +18,7 @@ export default class extends Command<Client> {
 			aliases: ['showinfo'],
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
-			// callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});

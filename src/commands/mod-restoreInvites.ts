@@ -12,7 +12,7 @@ export default class extends Command<Client> {
 			aliases: ['unclear-invites', 'restore-invites', 'restoreInvites'],
 			desc: 'Restore all invites',
 			usage: '<prefix>restoreInvites',
-			// callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			guildOnly: true
 		});
 	}

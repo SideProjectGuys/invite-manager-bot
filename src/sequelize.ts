@@ -131,11 +131,11 @@ guilds.hasMany(channels);
 // Settings
 // ------------------------------------
 export enum SettingsKeys {
-	PREFIX = 'prefix',
-	JOIN_MESSAGE_CHANNEL = 'joinMessageChannel',
-	LANG = 'lang',
-	MOD_ROLE = 'modRole',
-	MOD_CHANNEL = 'modChannel',
+	prefix = 'prefix',
+	joinMessageChannel = 'joinMessageChannel',
+	lang = 'lang',
+	modRole = 'modRole',
+	modChannel = 'modChannel',
 }
 
 export interface SettingAttributes extends BaseAttributes {
@@ -151,11 +151,11 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
 		key: Sequelize.ENUM(
-			SettingsKeys.PREFIX,
-			SettingsKeys.JOIN_MESSAGE_CHANNEL,
-			SettingsKeys.LANG,
-			SettingsKeys.MOD_ROLE,
-			SettingsKeys.MOD_CHANNEL,
+			SettingsKeys.prefix,
+			SettingsKeys.joinMessageChannel,
+			SettingsKeys.lang,
+			SettingsKeys.modRole,
+			SettingsKeys.modChannel,
 		),
 		value: Sequelize.STRING,
 	},

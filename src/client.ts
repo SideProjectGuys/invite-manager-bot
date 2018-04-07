@@ -81,18 +81,18 @@ export class IMClient extends Client {
 			console.log(`Guild ${member.guild.id} has no join message channel`);
 			return;
 		}
+		const joinChannel = joinChannelSetting.value.substr(2, joinChannelSetting.value.length - 3);
 
-		const inviter = join.exactMatch.inviter;
-
-		const invites = await getInviteCounts(inviter.guild.id, inviter.id);
+		const inviter = await member.guild.fetchMember(join.exactMatch.inviter.id);
+		const invites = await getInviteCounts(member.guild.id, inviter.id);
 
 		const origInviter = await member.guild.fetchMember(inviter.id);
 		if (!origInviter.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(inviter.guild, inviter, invites.total);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
 		}
 
-		const inviteChannel = member.guild.channels.get(joinChannelSetting.value) as TextChannel;
-		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.name} (${invites.total} invites)`);
+		const inviteChannel = member.guild.channels.get(joinChannel) as TextChannel;
+		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.displayName} (${invites.total} invites)`);
 	}
 
 	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
