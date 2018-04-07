@@ -1,9 +1,10 @@
 import { Channel, RichEmbed } from 'discord.js';
+import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 import { Command, CommandDecorators, KeyedStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
+import { customInvites, inviteCodes, joins, leaves, members, sequelize } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -105,7 +106,7 @@ export default class extends Command<IMClient> {
 
 		const oldCodeInvs = await joins.findAll({
 			attributes: [
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins']
+				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
 			],
 			where: {
 				guildId: message.guild.id,
@@ -122,7 +123,7 @@ export default class extends Command<IMClient> {
 					attributes: ['name'],
 					model: members,
 					as: 'inviter',
-					required: true,
+					required: true
 				}],
 				required: true,
 			}],
@@ -173,16 +174,58 @@ export default class extends Command<IMClient> {
 
 		const keys = Object.keys(invs)
 			.filter(k => invs[k].total > 0)
-			.sort((a, b) => invs[b].total - invs[a].total);
+			.sort((a, b) => {
+				const diff = invs[b].total - invs[a].total;
+				return diff !== 0 ? diff : invs[a].name.localeCompare(invs[b].name);
+			});
 
-		const leaderboard24hAgo = [...keys].sort(
-			(a, b) => (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal));
+		const leaderboard24hAgo = [...keys].sort((a, b) => {
+			const diff = (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal);
+			return diff !== 0 ? diff : invs[a].name.localeCompare(invs[b].name);
+		});
 
 		let str = '(changes compared to 1 day ago)\n\n';
 
 		if (keys.length === 0) {
 			str += 'No invites!';
 		} else {
+			const lastJoinAndLeave = await members.findAll({
+				attributes: [
+					'id',
+					'name',
+					[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
+					[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt'],
+				],
+				where: { id: keys },
+				group: ['member.id'],
+				include: [
+					{
+						attributes: [],
+						model: joins,
+						where: { guildId: message.guild.id },
+						required: false,
+					},
+					{
+						attributes: [],
+						model: leaves,
+						where: { guildId: message.guild.id },
+						required: false,
+					}
+				]
+			});
+			const stillInServer: { [x: string]: boolean } = {};
+			lastJoinAndLeave.forEach(jal => {
+				if (!jal.get('lastLeftAt')) {
+					stillInServer[jal.id] = true;
+					return;
+				}
+				if (!jal.get('lastJoinedAt')) {
+					stillInServer[jal.id] = false;
+					return;
+				}
+				stillInServer[jal.get('id')] = moment(jal.get('lastLeftAt')).isBefore(moment(jal.get('lastJoinedAt')));
+			});
+
 			keys.slice(0, 50).forEach((k, i) => {
 				const inv = invs[k];
 
@@ -190,10 +233,11 @@ export default class extends Command<IMClient> {
 				const prevPos = leaderboard24hAgo.indexOf(k) + 1;
 				const posChange = (prevPos - i) - 1;
 
+				const name = stillInServer[k] ? `<@${k}>` : inv.name;
 				const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
 
 				const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-				str += `**${pos}.** (${posText}) ${symbol} <@${k}> **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
+				str += `**${pos}.** (${posText}) ${symbol} ${name} **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
 			});
 		}
 
