@@ -31,7 +31,7 @@ export default class extends Command<IMClient> {
 
 		const invites = await getInviteCounts(message.guild.id, target.id);
 
-		let subject = target.id === message.author.id ? `<@${target.id}> has` : 'You have';
+		let subject = target.id === message.author.id ? 'You have' : `<@${target.id}> has`;
 		let textMessage = `${subject} **${invites.total}** invites! (**${invites.custom}** bonus)\n`;
 
 		if (!message.member.user.bot) {
@@ -39,7 +39,7 @@ export default class extends Command<IMClient> {
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
-				subject = target.id === message.author.id ? `<@${target.id}> needs` : 'You need';
+				subject = target.id === message.author.id ? 'You need' : `<@${target.id}> needs`;
 				textMessage += `${subject} **${nextRankPointsDiff}** more invites to reach **${nextRankName}** rank!`;
 			} else {
 				if (numRanks > 0) {
