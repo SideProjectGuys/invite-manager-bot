@@ -1,9 +1,12 @@
-import { RichEmbed } from 'discord.js';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { RichEmbed, User } from 'discord.js';
+import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
 import { customInvites, inviteCodes, ranks } from '../sequelize';
 import { createEmbed, getInviteCounts, promoteIfQualified } from '../utils/util';
+
+const { resolve } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command')
@@ -14,34 +17,41 @@ export default class extends Command<IMClient> {
 			name: 'invites',
 			aliases: ['invite', 'rank'],
 			desc: 'Show personal invites',
-			usage: '<prefix>invites',
+			usage: '<prefix>invites (user)',
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});
 	}
 
-	public async action(message: Message, args: string[]): Promise<any> {
+	@using(resolve('user: User'))
+	public async action(message: Message, [user]: [User]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-		const invites = await getInviteCounts(message.guild.id, message.author.id);
+		let target = user ? user : message.author;
 
-		let textMessage = `You have **${invites.total}** invites! (**${invites.custom}** bonus)\n`;
+		const invites = await getInviteCounts(message.guild.id, target.id);
+
+		let subject = target.id === message.author.id ? `<@${target.id}> has` : 'You have';
+		let textMessage = `${subject} **${invites.total}** invites! (**${invites.custom}** bonus)\n`;
 
 		if (!message.member.user.bot) {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, message.member, invites.total);
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
-				textMessage += 'You need **' + nextRankPointsDiff + '** more invites to reach **' + nextRankName + '** rank!';
+				subject = target.id === message.author.id ? `<@${target.id}> needs` : 'You need';
+				textMessage += `${subject} **${nextRankPointsDiff}** more invites to reach **${nextRankName}** rank!`;
 			} else {
 				if (numRanks > 0) {
-					textMessage += 'Congratulations, you currently have the highest rank!';
+					textMessage += (target.id === message.author.id) ?
+						`Congratulations, you currently have the highest rank!` :
+						`<@${target.id} currently has the highest rank!`;
 				}
 			}
 		}
 
 		const embed = new RichEmbed();
-		embed.setTitle(message.author.username);
+		embed.setTitle(target.username);
 		embed.setDescription(textMessage);
 		createEmbed(message.client, embed);
 
