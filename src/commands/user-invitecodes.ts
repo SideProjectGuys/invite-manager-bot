@@ -28,12 +28,20 @@ export default class extends Command<Client> {
 			where: {
 				guildId: message.guild.id,
 			},
-			include: [{ model: members, as: 'inviter', where: { id: message.author.id }, required: true }]
+			include: [{
+				model: members,
+				as: 'inviter',
+				where: {
+					id: message.author.id
+				},
+				required: true
+			}]
 		});
 
-		let temporaryInvites = codes.filter(i => i.maxAge > 0);
-		let permanentInvites = codes.filter(i => i.maxAge === 0);
-		let recommendedCode = permanentInvites.reduce((max, val) => val.uses > max.uses ? val : max, permanentInvites[0]);
+		const validCodes = codes.filter(c => moment(c.createdAt).add(c.maxAge, 'second').isAfter(moment()));
+		const temporaryInvites = validCodes.filter(i => i.maxAge > 0);
+		const permanentInvites = validCodes.filter(i => i.maxAge === 0);
+		const recommendedCode = permanentInvites.reduce((max, val) => val.uses > max.uses ? val : max, permanentInvites[0]);
 
 		const embed = new RichEmbed();
 		embed.setTitle(`You have the following codes on the server ${message.guild.name}`);
@@ -65,7 +73,7 @@ export default class extends Command<Client> {
 			temporaryInvites.forEach(i => {
 				embed.addField(
 					`${i.code} (${i.maxAge > 0 ? 'Temporary' : 'Permanent'})`,
-					`**Uses**: ${i.uses}\n**Max Age**:${i.maxAge}\n**Max Uses**: ${i.maxUses}\n` +
+					`**Uses**: ${i.uses}\n**Max Age**:${moment.duration(i.maxAge).humanize()}\n**Max Uses**: ${i.maxUses}\n` +
 					`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(i.createdAt).add(i.maxAge, 's').fromNow()}`,
 					true
 				);
