@@ -36,11 +36,16 @@ export default class extends Command<Client> {
 			include: [
 				members,
 				{
+					attributes: ['inviterId'],
 					model: inviteCodes,
 					as: 'exactMatch',
-					include: [{ model: members, as: 'inviter' }]
+					include: [{
+						attributes: ['id', 'name'],
+						model: members,
+						as: 'inviter',
+					}],
 				}
-			]
+			],
 		});
 
 		if (js.length > 0) {
