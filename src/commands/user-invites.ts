@@ -2,7 +2,7 @@ import { RichEmbed, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, inviteCodes, ranks } from '../sequelize';
+import { customInvites, ranks } from '../sequelize';
 import { createEmbed, getInviteCounts, promoteIfQualified } from '../utils/util';
 
 const { resolve } = Middleware;

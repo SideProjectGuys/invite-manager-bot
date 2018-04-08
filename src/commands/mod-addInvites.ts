@@ -2,7 +2,7 @@ import { Role, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, inviteCodes, ranks } from '../sequelize';
+import { customInvites, ranks } from '../sequelize';
 import { getInviteCounts, promoteIfQualified } from '../utils/util';
 
 const { resolve, expect } = Middleware;
