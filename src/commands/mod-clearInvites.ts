@@ -43,15 +43,16 @@ export default class extends Command<Client> {
 				guildId: message.guild.id,
 			},
 			group: 'inviteCode.inviterId',
+			raw: true,
 		});
 
 		let total = 0;
 		const uses: { [x: string]: number } = {};
-		invs.forEach(inv => {
+		invs.forEach((inv: any) => {
 			if (!uses[inv.inviterId]) {
 				uses[inv.inviterId] = 0;
 			}
-			const totalUses = parseInt(inv.get('totalUses'), 10);
+			const totalUses = parseInt(inv.totalUses, 10);
 			total += totalUses;
 			uses[inv.inviterId] += totalUses;
 		});
@@ -67,13 +68,14 @@ export default class extends Command<Client> {
 					generated: false,
 				},
 				group: 'customInvite.memberId',
+				raw: true,
 			});
 
-			customInvs.forEach(inv => {
+			customInvs.forEach((inv: any) => {
 				if (!uses[inv.memberId]) {
 					uses[inv.memberId] = 0;
 				}
-				const totalAmount = parseInt(inv.get('totalAmount'), 10);
+				const totalAmount = parseInt(inv.totalAmount, 10);
 				total += totalAmount;
 				uses[inv.memberId] += totalAmount;
 			});

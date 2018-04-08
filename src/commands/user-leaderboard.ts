@@ -16,6 +16,7 @@ const neutralSymbol = '🔹';
 
 // Extra attributes for the sequelize queries
 const attrs: FindOptionsAttributesArray = [
+	'memberId',
 	[
 		sequelize.fn(
 			'sum',
@@ -60,11 +61,17 @@ export default class extends Command<IMClient> {
 
 		const codeInvs = await inviteCodes.findAll({
 			attributes: [
+				'inviterId',
 				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
 			],
 			where,
 			group: 'inviteCode.inviterId',
-			include: [{ model: members, as: 'inviter' }]
+			include: [{
+				attributes: ['name'],
+				model: members,
+				as: 'inviter',
+			}],
+			raw: true,
 		});
 		const customInvs = await customInvites.findAll({
 			attributes: attrs,
@@ -72,30 +79,34 @@ export default class extends Command<IMClient> {
 				guildId: message.guild.id,
 			},
 			group: 'customInvite.memberId',
-			include: [members]
+			include: [{
+				attributes: ['name'],
+				model: members,
+			}],
+			raw: true,
 		});
 
 		const invs: { [x: string]: { name: string, total: number, bonus: number, oldTotal: number, oldBonus: number } } = {};
-		codeInvs.forEach(inv => {
-			const id = inv.inviter.id;
+		codeInvs.forEach((inv: any) => {
+			const id = inv.inviterId;
 			invs[id] = {
-				name: inv.inviter.name,
-				total: parseInt(inv.get('totalUses'), 10),
+				name: inv['inviter.name'],
+				total: parseInt(inv.totalUses, 10),
 				bonus: 0,
 				oldTotal: 0,
 				oldBonus: 0,
 			};
 		});
-		customInvs.forEach(inv => {
-			const id = inv.member.id;
-			const bonus = parseInt(inv.get('totalBonus'), 10);
-			const auto = parseInt(inv.get('totalAuto'), 10);
+		customInvs.forEach((inv: any) => {
+			const id = inv.memberId;
+			const bonus = parseInt(inv.totalBonus, 10);
+			const auto = parseInt(inv.totalAuto, 10);
 			if (invs[id]) {
 				invs[id].total += bonus + auto;
 				invs[id].bonus = bonus;
 			} else {
 				invs[id] = {
-					name: inv.member.name,
+					name: inv['member.name'],
 					total: bonus + auto,
 					bonus: bonus,
 					oldTotal: 0,
@@ -114,7 +125,7 @@ export default class extends Command<IMClient> {
 					[Op.gt]: new Date(new Date().getTime() - (24 * 60 * 60 * 1000))
 				}
 			},
-			group: ['exactMatch.code', 'exactMatch.inviterId'],
+			group: ['exactMatch.inviterId'],
 			include: [{
 				attributes: ['inviterId'],
 				model: inviteCodes,
@@ -123,10 +134,11 @@ export default class extends Command<IMClient> {
 					attributes: ['name'],
 					model: members,
 					as: 'inviter',
-					required: true
+					required: true,
 				}],
 				required: true,
 			}],
+			raw: true,
 		});
 		const oldBonusInvs = await customInvites.findAll({
 			attributes: attrs,
@@ -137,27 +149,31 @@ export default class extends Command<IMClient> {
 				}
 			},
 			group: ['memberId'],
-			include: [members]
+			include: [{
+				attributes: ['name'],
+				model: members,
+			}],
+			raw: true,
 		});
 
-		oldCodeInvs.forEach(inv => {
+		oldCodeInvs.forEach((inv: any) => {
 			const id = inv.exactMatch.inviter.id;
 			if (invs[id]) {
-				invs[id].oldTotal = parseInt(inv.get('totalJoins'), 10);
+				invs[id].oldTotal = parseInt(inv.totalJoins, 10);
 			} else {
 				invs[id] = {
 					name: inv.exactMatch.inviter.name,
 					total: 0,
 					bonus: 0,
-					oldTotal: parseInt(inv.get('totalJoins'), 10),
+					oldTotal: parseInt(inv.totalJoins, 10),
 					oldBonus: 0,
 				};
 			}
 		});
-		oldBonusInvs.forEach(inv => {
+		oldBonusInvs.forEach((inv: any) => {
 			const id = inv.member.id;
-			const bonus = parseInt(inv.get('totalBonus'), 10);
-			const auto = parseInt(inv.get('totalAuto'), 10);
+			const bonus = parseInt(inv.totalBonus, 10);
+			const auto = parseInt(inv.totalAuto, 10);
 			if (invs[id]) {
 				invs[id].oldTotal += bonus + auto;
 				invs[id].oldBonus = bonus;
@@ -211,19 +227,20 @@ export default class extends Command<IMClient> {
 						where: { guildId: message.guild.id },
 						required: false,
 					}
-				]
+				],
+				raw: true,
 			});
 			const stillInServer: { [x: string]: boolean } = {};
-			lastJoinAndLeave.forEach(jal => {
-				if (!jal.get('lastLeftAt')) {
+			lastJoinAndLeave.forEach((jal: any) => {
+				if (!jal.lastLeftAt) {
 					stillInServer[jal.id] = true;
 					return;
 				}
-				if (!jal.get('lastJoinedAt')) {
+				if (!jal.lastJoinedAt) {
 					stillInServer[jal.id] = false;
 					return;
 				}
-				stillInServer[jal.get('id')] = moment(jal.get('lastLeftAt')).isBefore(moment(jal.get('lastJoinedAt')));
+				stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
 			});
 
 			keys.slice(0, 50).forEach((k, i) => {

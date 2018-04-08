@@ -29,16 +29,18 @@ export default class extends Command<Client> {
 				guildId: message.guild.id,
 			},
 			include: [{
+				attributes: [],
 				model: members,
 				as: 'inviter',
 				where: {
 					id: message.author.id
 				},
 				required: true
-			}]
+			}],
+			raw: true,
 		});
 
-		const validCodes = codes.filter(c => moment(c.createdAt).add(c.maxAge, 'second').isAfter(moment()));
+		const validCodes = codes.filter(c => c.maxAge === 0 || moment(c.createdAt).add(c.maxAge, 'second').isAfter(moment()));
 		const temporaryInvites = validCodes.filter(i => i.maxAge > 0);
 		const permanentInvites = validCodes.filter(i => i.maxAge === 0);
 		const recommendedCode = permanentInvites.reduce((max, val) => val.uses > max.uses ? val : max, permanentInvites[0]);

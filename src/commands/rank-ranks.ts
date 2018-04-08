@@ -25,7 +25,8 @@ export default class extends Command<Client> {
 			where: {
 				guildId: message.guild.id,
 			},
-			order: ['numInvites']
+			order: ['numInvites'],
+			raw: true,
 		});
 
 		let output = '';

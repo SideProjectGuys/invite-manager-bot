@@ -33,7 +33,7 @@ export async function getInviteCounts(guildId: string, memberId: string):
 		where: {
 			guildId: guildId,
 			inviterId: memberId,
-		}
+		},
 	});
 	const customPromise = customInvites.sum('amount', {
 		where: {
@@ -70,7 +70,8 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	const allRanks = await ranks.findAll({
 		where: {
 			guildId: guild.id,
-		}
+		},
+		raw: true,
 	});
 
 	allRanks.forEach(r => {

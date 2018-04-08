@@ -25,41 +25,42 @@ export default class extends Command<Client> {
 
 		const js = await joins.findAll({
 			attributes: [
+				'memberId',
 				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
-				[sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch->inviter`.id SEPARATOR \',\'')), 'inviterIds'],
-				[sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch->inviter`.name SEPARATOR \',\'')), 'inviterNames'],
+				[sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch`.`inviterId` SEPARATOR \',\'')), 'inviterIds'],
 			],
 			where: {
 				guildId: message.guild.id
 			},
 			group: ['join.memberId'],
 			include: [
-				members,
 				{
-					attributes: ['inviterId'],
+					attributes: [],
+					model: members,
+					required: true,
+				},
+				{
+					attributes: [],
 					model: inviteCodes,
 					as: 'exactMatch',
-					include: [{
-						attributes: ['id', 'name'],
-						model: members,
-						as: 'inviter',
-					}],
+					required: true,
 				}
 			],
+			raw: true,
 		});
 
 		if (js.length > 0) {
 			const suspiciousJoins = js
-				.filter(j => j.get('totalJoins') > 1)
-				.sort((a, b) => a.get('totalJoins') - b.get('totalJoins'));
+				.filter((j: any) => parseInt(j.totalJoins, 10) > 1)
+				.sort((a: any, b: any) => parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10));
 
 			const embed = new RichEmbed();
 			embed.setTitle('Fake invites:');
 			let description = '';
 
-			for (let join of suspiciousJoins) {
+			suspiciousJoins.forEach((join: any) => {
 				const invs: { [x: string]: number } = {};
-				join.get('inviterIds').split(',').forEach((id: string) => {
+				join.inviterIds.split(',').forEach((id: string) => {
 					if (invs[id]) {
 						invs[id]++;
 					} else {
@@ -70,8 +71,8 @@ export default class extends Command<Client> {
 					const timesText = invs[id] > 1 ? ` (**${invs[id]}** times)` : '';
 					return `<@${id}>${timesText}`;
 				}).join(', ');
-				description += `<@${join.member.id}> joined **${join.get('totalJoins')} times**, invited by: ${invText}\n`;
-			}
+				description += `<@${join.memberId}> joined **${join.totalJoins} times**, invited by: ${invText}\n`;
+			});
 			if (suspiciousJoins.length === 0) {
 				description = 'There have been no fake invites since the bot has been added to this server.';
 			}

@@ -47,35 +47,44 @@ export default class extends Command<Client> {
 					where: {
 						guildId: member.guild.id,
 						memberId: member.id,
-					}
+					},
 				}),
 				1
 			);
 			embed.addField('Joined', `${joinCount} times`, true);
 
 			const js = await joins.findAll({
+				attributes: [
+					'createdAt',
+				],
 				where: {
 					guildId: message.guild.id,
 					memberId: user.id,
 				},
 				order: [['createdAt', 'DESC']],
 				include: [{
+					attributes: ['inviterId'],
 					model: inviteCodes,
 					as: 'exactMatch',
-					include: [{ model: members, as: 'inviter' }]
+					include: [{
+						attributes: [],
+						model: members,
+						as: 'inviter'
+					}]
 				}],
+				raw: true,
 			});
 
 			if (js.length > 0) {
 				const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-				js.forEach(join => {
+				js.forEach((join: any) => {
 					const text = moment(join.createdAt).fromNow();
 					if (!joinTimes[text]) {
 						joinTimes[text] = {};
 					}
 
-					const id = join.exactMatch.inviter.id;
+					const id = join['exactMatch.inviterId'];
 					if (joinTimes[text][id]) {
 						joinTimes[text][id]++;
 					} else {
@@ -87,7 +96,7 @@ export default class extends Command<Client> {
 					const joinTime = joinTimes[time];
 
 					const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
-					const totalText = total > 1 ? `**${total}** times ` : '';
+					const totalText = total > 1 ? `**${total}** times ` : 'once ';
 
 					const invText = Object.keys(joinTime).map(id => {
 						const timesText = joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
@@ -107,6 +116,7 @@ export default class extends Command<Client> {
 					generated: false,
 				},
 				order: [['createdAt', 'DESC']],
+				raw: true,
 			});
 
 			if (customInvs.length > 0) {
