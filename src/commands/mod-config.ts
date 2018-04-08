@@ -36,42 +36,29 @@ export default class extends Command<IMClient> {
 				return;
 			}
 
-			const set = await settings.find({
-				where: {
-					guildId: message.guild.id,
-					key: dbKey,
-				}
-			});
+			const sets = message.guild.storage.settings;
+			const val = await sets.get(dbKey);
 
 			if (_value) {
 				const isNone = _value === 'none' || _value === 'empty' || _value === 'null';
 				const value = isNone ? null : _value;
 
-				// Special handling for prefix
-				if (key === SettingsKeys.prefix) {
-					await message.guild.storage.settings.set('prefix', value);
-				}
+				// Set the setting through our storage provider
+				await message.guild.storage.settings.set(key, value);
 
-				if (set) {
-					const oldVal = set.value;
-					set.value = value;
-					set.save();
+				// Set new value
+				sets.set(dbKey, value);
 
-					message.channel.send(`Changed **${dbKey}** from **${oldVal}** to **${value}**`);
+				if (val) {
+					message.channel.send(`Changed **${dbKey}** from **${val}** to **${value}**`);
 				} else {
-					settings.create({
-						guildId: message.guild.id,
-						key: dbKey,
-						value,
-					});
-
 					message.channel.send(`Set **${dbKey}** to **${value}**`);
 				}
 			} else {
-				if (!set) {
+				if (!val) {
 					message.channel.send(`Config **${dbKey}** is not set, please set a value.`);
 				} else {
-					message.channel.send(`Config **${dbKey}** is set to **${set.value}**`);
+					message.channel.send(`Config **${dbKey}** is set to **${val}**`);
 				}
 			}
 		} else {

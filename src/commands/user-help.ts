@@ -1,6 +1,7 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, GuildSettings, Logger, logger, Message, Middleware } from 'yamdbf';
+import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
+import { settings, SettingsKeys } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -23,36 +24,43 @@ export default class extends Command<Client> {
 	@using(resolve('command: Command'))
 	public async action(message: Message, [command]: [Command]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
-		const settings: GuildSettings = message.guild.storage.settings;
-		const guildPrefix = await settings.get('prefix');
 
 		const embed = new RichEmbed();
 
-		let commands = this.client.commands
-			.filter(c => c.name !== 'groups')
-			.filter(c => c.name !== 'shortcuts');
-
-		let allCommands = commands.filter(c => !c.ownerOnly);
-		allCommands = allCommands.filter(c => !c.hidden);
-		allCommands.forEach(c => c.usage = c.usage.replace('<prefix>', guildPrefix));
+		const prefix = await this.client.getPrefix(message.guild);
 
 		let description = '';
 
 		if (command) {
-			description += `Command: **${command.name}**\n\n`;
-			description += `\`${command.usage}\`\n\n`;
+			const cmd = {
+				...command,
+				usage: command.usage.replace('<prefix>', prefix),
+			};
+
+			description += `Command: **${cmd.name}**\n\n`;
+			description += `\`${cmd.usage}\`\n\n`;
 			description += `**Alises**\n`;
-			description += `${command.aliases}\n\n`;
+			description += `${cmd.aliases}\n\n`;
 			description += `**Description**\n`;
-			description += `${command.desc}\n\n`;
+			description += `${cmd.desc}\n\n`;
 			description += `**Additional Info**\n`;
-			description += `${command.info}\n\n`;
+			description += `${cmd.info}\n\n`;
 			description += `**Permissions required by user**\n`;
-			description += `${command.callerPermissions.length > 0 ? command.callerPermissions : 'None'}\n\n`;
+			description += `${cmd.callerPermissions.length > 0 ? cmd.callerPermissions : 'None'}\n\n`;
 			description += `**Permissions required by the bot**\n`;
-			description += `${command.clientPermissions.length > 0 ? command.clientPermissions : 'None'}\n\n`;
+			description += `${cmd.clientPermissions.length > 0 ? cmd.clientPermissions : 'None'}\n\n`;
 		} else {
-			let publicCommands = allCommands.filter(c => c.callerPermissions.length === 0);
+			let commands = this.client.commands
+				.filter(c => c.name !== 'groups')
+				.filter(c => c.name !== 'shortcuts')
+				.filter(c => !c.ownerOnly)
+				.filter(c => !c.hidden)
+				.map(c => ({
+					...c,
+					usage: c.usage.replace('<prefix>', prefix),
+				}));
+
+			let publicCommands = commands.filter(c => c.callerPermissions.length === 0);
 
 			description += '**Everyone:**\n\n';
 			publicCommands.forEach(c => {
@@ -60,7 +68,7 @@ export default class extends Command<Client> {
 			});
 
 			if (message.member.hasPermission('ADMINISTRATOR')) {
-				let adminCommands = allCommands.filter(c => c.callerPermissions.indexOf('ADMINISTRATOR') >= 0);
+				let adminCommands = commands.filter(c => c.callerPermissions.indexOf('ADMINISTRATOR') >= 0);
 
 				description += '\n**Mods only:**\n\n';
 
