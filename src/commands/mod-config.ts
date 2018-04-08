@@ -47,6 +47,11 @@ export default class extends Command<IMClient> {
 				const isNone = _value === 'none' || _value === 'empty' || _value === 'null';
 				const value = isNone ? null : _value;
 
+				// Special handling for prefix
+				if (key === SettingsKeys.prefix) {
+					await message.guild.storage.settings.set('prefix', value);
+				}
+
 				if (set) {
 					const oldVal = set.value;
 					set.value = value;
