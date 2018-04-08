@@ -157,12 +157,12 @@ export default class extends Command<IMClient> {
 		});
 
 		oldCodeInvs.forEach((inv: any) => {
-			const id = inv.exactMatch.inviter.id;
+			const id = inv['exactMatch.inviterId'];
 			if (invs[id]) {
 				invs[id].oldTotal = parseInt(inv.totalJoins, 10);
 			} else {
 				invs[id] = {
-					name: inv.exactMatch.inviter.name,
+					name: inv['exactMatch.inviter.name'],
 					total: 0,
 					bonus: 0,
 					oldTotal: parseInt(inv.totalJoins, 10),
@@ -171,7 +171,7 @@ export default class extends Command<IMClient> {
 			}
 		});
 		oldBonusInvs.forEach((inv: any) => {
-			const id = inv.member.id;
+			const id = inv.memberId;
 			const bonus = parseInt(inv.totalBonus, 10);
 			const auto = parseInt(inv.totalAuto, 10);
 			if (invs[id]) {
@@ -179,7 +179,7 @@ export default class extends Command<IMClient> {
 				invs[id].oldBonus = bonus;
 			} else {
 				invs[id] = {
-					name: inv.member.name,
+					name: inv['member.name'],
 					total: 0,
 					bonus: 0,
 					oldTotal: bonus + auto,
