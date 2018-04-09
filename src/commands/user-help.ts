@@ -50,6 +50,8 @@ export default class extends Command<Client> {
 			description += `**Permissions required by the bot**\n`;
 			description += `${cmd.clientPermissions.length > 0 ? cmd.clientPermissions : 'None'}\n\n`;
 		} else {
+			let botMember = message.guild.me;
+
 			let commands = this.client.commands
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
@@ -60,11 +62,16 @@ export default class extends Command<Client> {
 					usage: c.usage.replace('<prefix>', prefix),
 				}));
 
+			const alertSymbol = '⚠️';
+
 			let publicCommands = commands.filter(c => c.callerPermissions.length === 0);
 
 			description += '**Everyone:**\n\n';
 			publicCommands.forEach(c => {
-				description += `\`${c.usage}\` ${c.desc}\n`;
+				let missingPermission = c.clientPermissions.find(cp => {
+					return !botMember.hasPermission(cp);
+				});
+				description += `\`${c.usage}\` ${c.desc}${ missingPermission ? alertSymbol + ' _Missing \`' + missingPermission + '\` permission!_\n' : '\n' }`;
 			});
 
 			if (message.member.hasPermission('ADMINISTRATOR')) {
@@ -73,8 +80,11 @@ export default class extends Command<Client> {
 				description += '\n**Mods only:**\n\n';
 
 				adminCommands.forEach(c => {
-					description += `\`${c.usage}\` ${c.desc}\n`;
-				});
+					let missingPermission = c.clientPermissions.find(cp => {
+						return !botMember.hasPermission(cp);
+					});
+					description += `\`${c.usage}\` ${c.desc}${ missingPermission ? alertSymbol + ' _Missing \`' + missingPermission + '\` permission!_\n' : '\n' }`;
+					});
 			}
 		}
 
