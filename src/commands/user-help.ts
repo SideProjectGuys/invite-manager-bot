@@ -29,14 +29,13 @@ export default class extends Command<Client> {
 
 		const prefix = await this.client.getPrefix(message.guild);
 
-		let description = '';
-
 		if (command) {
 			const cmd = {
 				...command,
 				usage: command.usage.replace('<prefix>', prefix),
 			};
 
+			let description = '';
 			description += `Command: **${cmd.name}**\n\n`;
 			description += `\`${cmd.usage}\`\n\n`;
 			description += `**Alises**\n`;
@@ -49,6 +48,9 @@ export default class extends Command<Client> {
 			description += `${cmd.callerPermissions.length > 0 ? cmd.callerPermissions : 'None'}\n\n`;
 			description += `**Permissions required by the bot**\n`;
 			description += `${cmd.clientPermissions.length > 0 ? cmd.clientPermissions : 'None'}\n\n`;
+
+			embed.addField(`Command: **${cmd.name}**`, description);
+
 		} else {
 			let botMember = message.guild.me;
 
@@ -62,33 +64,42 @@ export default class extends Command<Client> {
 					usage: c.usage.replace('<prefix>', prefix),
 				}));
 
-			const alertSymbol = '⚠️';
-
 			let publicCommands = commands.filter(c => c.callerPermissions.length === 0);
+			let availablePublicCommands = publicCommands.filter(c => botMember.hasPermissions(c.clientPermissions));
+			let unavailablePublicCommands = publicCommands.filter(c => !botMember.hasPermissions(c.clientPermissions));
 
-			description += '**Everyone:**\n\n';
-			publicCommands.forEach(c => {
-				let missingPermission = c.clientPermissions.find(cp => {
-					return !botMember.hasPermission(cp);
-				});
-				description += `\`${c.usage}\` ${c.desc}${ missingPermission ? alertSymbol + ' _Missing \`' + missingPermission + '\` permission!_\n' : '\n' }`;
+			let description = '';
+			availablePublicCommands.forEach(c => {
+				description += `\`${c.usage}\` ${c.desc}`;
 			});
+			embed.addField(`Everyone`, description);
 
 			if (message.member.hasPermission('ADMINISTRATOR')) {
 				let adminCommands = commands.filter(c => c.callerPermissions.indexOf('ADMINISTRATOR') >= 0);
 
-				description += '\n**Mods only:**\n\n';
-
+				let adminDescription = '';
 				adminCommands.forEach(c => {
+					adminDescription += `\`${c.usage}\` ${c.desc}`;
+				});
+
+				embed.addField(`Mods only`, adminDescription);
+			}
+
+			if (unavailablePublicCommands.length > 0) {
+
+				const alertSymbol = '⚠️';
+
+				let unavailableDescription = '';
+				unavailablePublicCommands.forEach(c => {
 					let missingPermission = c.clientPermissions.find(cp => {
 						return !botMember.hasPermission(cp);
 					});
-					description += `\`${c.usage}\` ${c.desc}${ missingPermission ? alertSymbol + ' _Missing \`' + missingPermission + '\` permission!_\n' : '\n' }`;
-					});
+					unavailableDescription +=
+						`\`${c.usage}\` ${c.desc} ${alertSymbol + ' *Missing \`' + missingPermission + '\` permission!*\n'}`;
+				});
+				embed.addField(`Unavailable commands (missing permissions)`, unavailableDescription);
 			}
 		}
-
-		embed.setDescription(description);
 
 		embed.addField('Links', `[Support Discord](${config.botSupport}) | ` +
 			`[Invite this bot to your server](${config.botAdd}) | [Website](${config.botWebsite})`);
