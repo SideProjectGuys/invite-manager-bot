@@ -70,7 +70,7 @@ export default class extends Command<Client> {
 
 			let description = '';
 			availablePublicCommands.forEach(c => {
-				description += `\`${c.usage}\` ${c.desc}`;
+				description += `\`${c.usage}\` ${c.desc}\n`;
 			});
 			embed.addField(`Everyone`, description);
 
@@ -79,7 +79,7 @@ export default class extends Command<Client> {
 
 				let adminDescription = '';
 				adminCommands.forEach(c => {
-					adminDescription += `\`${c.usage}\` ${c.desc}`;
+					adminDescription += `\`${c.usage}\` ${c.desc}\n`;
 				});
 
 				embed.addField(`Mods only`, adminDescription);
