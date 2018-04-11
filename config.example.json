@@ -1,6 +1,6 @@
 {
 	"discordToken": "",
-	"owner": "",
+	"owners": [],
 	"botName": "InviteManager (Beta)",
 	"botAdd": "https://invitemanager.co/add-bot/",
 	"botSupport": "https://discord.gg/Am6p2Hs",
@@ -8,6 +8,8 @@
 	"commandLogChannel": "",
 	"feedbackChannel": "",
 	"logChannel": "",
+	"dmChannel": "",
+	"dmGuild": "",
 	"sequelize": {
 		"dialect": "mysql",
 		"server": "localhost",

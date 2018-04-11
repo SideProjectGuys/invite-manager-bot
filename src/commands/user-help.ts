@@ -17,7 +17,8 @@ export default class extends Command<Client> {
 		super({
 			name: 'help',
 			desc: 'Display help',
-			usage: '<prefix>help (command)'
+			usage: '<prefix>help (command)',
+			guildOnly: true,
 		});
 	}
 

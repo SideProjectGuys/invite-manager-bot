@@ -1,4 +1,5 @@
-import { GuildMember, TextChannel } from 'discord.js';
+import { DMChannel, GuildMember, Message, RichEmbed, TextChannel } from 'discord.js';
+import * as moment from 'moment';
 import * as path from 'path';
 import { Client, Guild, GuildSettings, GuildStorage, ListenerUtil } from 'yamdbf';
 import { commandUsage } from 'yamdbf-command-usage';
@@ -6,7 +7,7 @@ import { commandUsage } from 'yamdbf-command-usage';
 import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKeys } from './sequelize';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
-import { getInviteCounts, promoteIfQualified } from './utils/util';
+import { createEmbed, getInviteCounts, promoteIfQualified } from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -22,11 +23,12 @@ export class IMClient extends Client {
 				provider: IMStorageProvider,
 				commandsDir: path.join(__dirname, 'commands'),
 				token: config.discordToken,
-				owner: config.owner,
+				owner: config.owners,
 				pause: true,
 				ratelimit: '2/5s',
 				disableBase: ['setlang', 'setprefix', 'blacklist', 'eval', 'eval:ts', 'limit', 'reload', 'ping', 'help'],
 				plugins: [commandUsage(config.commandLogChannel)],
+				unknownCommandError: false,
 			},
 			{
 				disabledEvents: [
@@ -57,6 +59,27 @@ export class IMClient extends Client {
 			() => this.setActivity(),
 			30000
 		);
+	}
+
+	@on('message')
+	private async _onMessage(message: Message) {
+		if (message.author.id === this.user.id) {
+			return;
+		}
+
+		if (message.channel instanceof DMChannel) {
+			const user = message.author;
+			const channel = this.channels.get(config.dmChannel) as TextChannel;
+
+			if (channel) {
+				const embed = new RichEmbed();
+				embed.setAuthor(`${user.username}-${user.discriminator}`, user.avatarURL);
+				embed.addField('user id', user.id);
+				embed.setDescription(message.content);
+				createEmbed(message.client, embed);
+				channel.send({ embed });
+			}
+		}
 	}
 
 	@on('guildMemberAdd')
