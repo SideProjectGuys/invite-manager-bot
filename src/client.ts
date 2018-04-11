@@ -1,9 +1,9 @@
 import { GuildMember, TextChannel } from 'discord.js';
 import * as path from 'path';
-import { Client, Guild, ListenerUtil } from 'yamdbf';
+import { Client, Guild, GuildSettings, GuildStorage, ListenerUtil } from 'yamdbf';
 import { commandUsage } from 'yamdbf-command-usage';
 
-import { customInvites, inviteCodes, joins, members, sequelize, settings } from './sequelize';
+import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKeys } from './sequelize';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
 import { getInviteCounts, promoteIfQualified } from './utils/util';
@@ -71,29 +71,90 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const joinChannelSetting = await settings.find({
-			where: {
-				guildId: member.guild.id,
-				key: 'joinMessageChannel'
-			}
-		});
+		const inviterId = join['exactMatch.inviterId'];
+		const inviterName = join['exactMatch.inviter.name'];
 
-		if (!joinChannelSetting) {
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
+		const joinMessageFormat = await sets.get(SettingsKeys.joinMessage) as string;
+		const joinChannelId = await sets.get(SettingsKeys.joinMessageChannel) as string;
+
+		if (!joinChannelId) {
 			console.log(`Guild ${member.guild.id} has no join message channel`);
 			return;
 		}
-		const joinChannel = joinChannelSetting.value.substr(2, joinChannelSetting.value.length - 3);
+		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
+		if (!joinChannel) {
+			console.log(`Guild ${member.guild.id} has invalid join message channel ${joinChannelId}`);
+			return;
+		}
 
-		const inviter = await member.guild.fetchMember(join.exactMatch.inviter.id);
-		const invites = await getInviteCounts(member.guild.id, inviter.id);
+		const invites = await getInviteCounts(member.guild.id, inviterId);
+		const inviter = await member.guild.fetchMember(inviterId);
 
-		const origInviter = await member.guild.fetchMember(inviter.id);
-		if (!origInviter.user.bot) {
+		if (inviter && !inviter.user.bot) {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
 		}
 
-		const inviteChannel = member.guild.channels.get(joinChannel) as TextChannel;
-		inviteChannel.send(`<@${member.user.id}> was invited by ${inviter.displayName} (${invites.total} invites)`);
+		let msg;
+		if (joinMessageFormat) {
+			msg = joinMessageFormat
+				.replace('{memberName}', member.displayName)
+				.replace('{memberMention}', `<@${member.id}>`)
+				.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
+				.replace('{inviterMention}', `<@${inviterId}>`)
+				.replace('{numInvites}', invites.total.toString());
+		} else {
+			msg = `<@${member.user.id}> **joined**; ` +
+				`Invited by ${inviter ? inviter.displayName : inviterName} (${invites.total} invites)`;
+		}
+
+		joinChannel.send(msg);
+	}
+
+	@on('guildMemberRemove')
+	private async _onGuildMemberRemove(member: GuildMember): Promise<void> {
+		let join = await this.findJoin(member.id, member.guild.id, member.joinedTimestamp, 2000);
+		if (!join) {
+			join = await this.findJoin(member.id, member.guild.id, member.joinedTimestamp, 5000);
+		}
+
+		if (!join) {
+			console.log(`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`);
+			return;
+		}
+
+		const inviterId = join['exactMatch.inviterId'];
+		const inviterName = join['exactMatch.inviter.name'];
+
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
+		const leaveMessageFormat = await sets.get(SettingsKeys.leaveMessage) as string;
+		const leaveChannelId = await sets.get(SettingsKeys.leaveMessageChannel) as string;
+
+		if (!leaveChannelId) {
+			console.log(`Guild ${member.guild.id} has no leave message channel`);
+			return;
+		}
+		const leaveChannel = member.guild.channels.get(leaveChannelId) as TextChannel;
+		if (!leaveChannel) {
+			console.log(`Guild ${member.guild.id} has invalid leave message channel ${leaveChannelId}`);
+			return;
+		}
+
+		const inviter = await member.guild.fetchMember(inviterId);
+
+		let msg;
+		if (leaveMessageFormat) {
+			msg = leaveMessageFormat
+				.replace('{memberName}', member.displayName)
+				.replace('{memberMention}', `<@${member.id}>`)
+				.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
+				.replace('{inviterMention}', `<@${inviterId}>`);
+		} else {
+			msg = `<@${member.id}> **left**; ` +
+				`Invited by ${inviter ? inviter.displayName : inviterName}`;
+		}
+
+		leaveChannel.send(msg);
 	}
 
 	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
@@ -101,16 +162,23 @@ export class IMClient extends Client {
 			setTimeout(
 				async () => {
 					resolve(await joins.find({
+						attributes: [],
 						where: {
 							memberId,
 							guildId,
 							createdAt,
 						},
 						include: [{
+							attributes: ['inviterId'],
 							model: inviteCodes,
 							as: 'exactMatch',
-							include: [{ model: members, as: 'inviter' }]
-						}]
+							include: [{
+								attributes: ['name'],
+								model: members,
+								as: 'inviter',
+							}]
+						}],
+						raw: true,
 					}));
 				},
 				timeOut

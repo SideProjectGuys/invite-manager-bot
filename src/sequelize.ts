@@ -132,7 +132,10 @@ guilds.hasMany(channels);
 // ------------------------------------
 export enum SettingsKeys {
 	prefix = 'prefix',
+	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',
+	leaveMessage = 'leaveMessage',
+	leaveMessageChannel = 'leaveMessageChannel',
 	lang = 'lang',
 	modRole = 'modRole',
 	modChannel = 'modChannel',
@@ -157,7 +160,7 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKeys.modRole,
 			SettingsKeys.modChannel,
 		),
-		value: Sequelize.STRING,
+		value: Sequelize.TEXT,
 	},
 	{
 		timestamps: true,
@@ -185,7 +188,6 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	reason?: string;
 	guildId: string;
 	inviterId: string;
-	inviter?: MemberInstance;
 }
 export interface InviteCodeInstance extends Sequelize.Instance<InviteCodeAttributes>, InviteCodeAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
@@ -224,17 +226,16 @@ members.hasMany(inviteCodes, { foreignKey: 'inviterId' });
 export interface JoinAttributes extends BaseAttributes {
 	id: number;
 	exactMatchCode: string;
-	exactMatch?: InviteCodeInstance;
 	possibleMatches: string;
 	guildId: string;
-	guild?: GuildInstance;
 	memberId: string;
-	member?: MemberInstance;
+	leaveId: number;
 }
 export interface JoinInstance extends Sequelize.Instance<JoinAttributes>, JoinAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getExactMatch: Sequelize.BelongsToGetAssociationMixin<InviteCodeInstance>;
+	getLeave: Sequelize.HasOneGetAssociationMixin<LeaveInstance>;
 }
 
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(
@@ -268,10 +269,12 @@ export interface LeaveAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
 	memberId: string;
+	joinId: number;
 }
 export interface LeaveInstance extends Sequelize.Instance<LeaveAttributes>, LeaveAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+	getJoin: Sequelize.BelongsToGetAssociationMixin<JoinInstance>;
 }
 
 export const leaves = sequelize.define<LeaveInstance, LeaveAttributes>(
@@ -280,6 +283,10 @@ export const leaves = sequelize.define<LeaveInstance, LeaveAttributes>(
 	{
 		timestamps: true,
 		paranoid: true,
+		indexes: [{
+			unique: true,
+			fields: ['guildId', 'memberId', 'joinId']
+		}],
 	}
 );
 
@@ -288,6 +295,9 @@ guilds.hasMany(leaves);
 
 leaves.belongsTo(members);
 members.hasMany(leaves);
+
+leaves.belongsTo(joins);
+joins.hasOne(leaves);
 
 // ------------------------------------
 // Custom Invites
@@ -299,9 +309,7 @@ export interface CustomInviteAttributes extends BaseAttributes {
 	generated: boolean;
 	guildId: string;
 	memberId: string;
-	member?: MemberInstance;
 	creatorId: string;
-	creator?: MemberInstance;
 }
 export interface CustomInviteInstance extends Sequelize.Instance<CustomInviteAttributes>, CustomInviteAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
