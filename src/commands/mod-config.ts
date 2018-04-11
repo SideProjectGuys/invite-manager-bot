@@ -86,7 +86,7 @@ export default class extends Command<IMClient> {
 				}
 			} else {
 				if (!val) {
-					message.channel.send(`Config **${key}** is not set, please set a value.`);
+					message.channel.send(`Config **${key}** is not set.`);
 				} else {
 					message.channel.send(`Config **${key}** is set to **${val}**`);
 				}
@@ -118,6 +118,10 @@ export default class extends Command<IMClient> {
 	}
 
 	private fromDbValue(key: SettingsKeys, value: string): string {
+		if (value === undefined || value === null) {
+			return value;
+		}
+
 		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
 			return `<#${value}>`;
 		}
