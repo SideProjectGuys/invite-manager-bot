@@ -243,7 +243,7 @@ export default class extends Command<IMClient> {
 				stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
 			});
 
-			keys.slice(0, 50).forEach((k, i) => {
+			keys.slice(0, 25).forEach((k, i) => {
 				const inv = invs[k];
 
 				const pos = i + 1;
