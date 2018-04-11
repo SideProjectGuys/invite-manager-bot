@@ -12,16 +12,7 @@ export class IMStorageProvider extends StorageProvider {
 		this.name = name;
 	}
 
-	public async init() {
-		console.log(`${this.name} init`);
-	}
-
-	public async clear() {
-		console.log(`${this.name} clear`);
-	}
-
 	public async get(key: string) {
-		console.log(`${this.name} get ${key}`);
 		if (this.name !== 'guild_settings') {
 			return '{}';
 		}
@@ -45,7 +36,6 @@ export class IMStorageProvider extends StorageProvider {
 	}
 
 	public async set(key: string, value: string) {
-		console.log(`${this.name} set ${key} = ${value}`);
 		if (this.name !== 'guild_settings') {
 			return;
 		}
@@ -64,11 +54,6 @@ export class IMStorageProvider extends StorageProvider {
 	}
 
 	public async keys() {
-		console.log(`${this.name} keys`);
 		return new Promise<string[]>((resolve) => resolve([]));
-	}
-
-	public async remove(key: string) {
-		console.log(`${this.name} remove ${key}`);
 	}
 }
