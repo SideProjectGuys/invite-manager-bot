@@ -28,6 +28,10 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		let target = user ? user : message.author;
+		if (!message.member) {
+			this._logger.log(`ERROR: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
+			return;
+		}
 
 		const invites = await getInviteCounts(message.guild.id, target.id);
 
