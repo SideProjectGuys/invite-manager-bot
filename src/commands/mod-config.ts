@@ -1,12 +1,42 @@
-import { RichEmbed, User } from 'discord.js';
+import { Channel, Guild, RichEmbed, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
 import { settings, SettingsKeys } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
-const { resolve } = Middleware;
+const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
+
+// Used to resolve and expect the correct arguments depending on the config key
+const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
+	return function (message: Message, args: string[]) {
+		const key = args[0];
+		if (!key) {
+			return [message, args];
+		}
+
+		const dbKey = Object.keys(SettingsKeys)
+			.find((k: any) => SettingsKeys[k].toLowerCase() === key.toLowerCase()) as SettingsKeys;
+		if (!dbKey) {
+			throw Error(`No config setting called '${key}' found.`);
+		}
+
+		const value = args[1];
+		if (!value) {
+			// tslint:disable-next-line:no-invalid-this
+			return func('key: String').call(this, message, args);
+		}
+
+		if (dbKey === SettingsKeys.joinMessageChannel || dbKey === SettingsKeys.leaveMessageChannel) {
+			// tslint:disable-next-line:no-invalid-this
+			return func('key: String, ...value?: Channel').call(this, message, args);
+		} else {
+			// tslint:disable-next-line:no-invalid-this
+			return func('key: String, ...value?: String').call(this, message, args);
+		}
+	};
+};
 
 export default class extends Command<IMClient> {
 	@logger('Command')
@@ -15,8 +45,8 @@ export default class extends Command<IMClient> {
 	public constructor() {
 		super({
 			name: 'config',
-			aliases: ['show-config', 'showConfig'],
-			desc: 'Show config of this server.',
+			aliases: ['set', 'get', 'show-config', 'showConfig', 'changeConfig', 'change-config'],
+			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key (value))',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			hidden: true,
@@ -24,41 +54,41 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@using(resolve('key: String, value: String'))
-	public async action(message: Message, [key, _value]: [string, string]): Promise<any> {
+	@using(checkArgsMiddleware(resolve))
+	@using(checkArgsMiddleware(expect))
+	public async action(message: Message, [key, rawValue]: [SettingsKeys, any]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		if (key) {
-			const dbKey = Object.keys(SettingsKeys)
-				.find((k: any) => SettingsKeys[k].toLowerCase() === key.toLowerCase()) as SettingsKeys;
-			if (!dbKey) {
-				message.channel.send(`No config setting called '${key}' found.`);
-				return;
-			}
-
 			const sets = message.guild.storage.settings;
-			const val = await sets.get(dbKey);
+			const val = this.fromDbValue(key, await sets.get(key));
 
-			if (_value) {
-				const isNone = _value === 'none' || _value === 'empty' || _value === 'null';
-				const value = isNone ? null : _value;
+			if (rawValue) {
+				const isNone = rawValue === 'none' || rawValue === 'empty' || rawValue === 'null';
+				const parsedValue = isNone ? null : this.toDbValue(message.guild, key, rawValue);
+				if (!parsedValue.value) {
+					message.channel.send(parsedValue.error);
+					return;
+				}
+
+				const value = parsedValue.value;
 
 				// Set the setting through our storage provider
 				await message.guild.storage.settings.set(key, value);
 
 				// Set new value
-				sets.set(dbKey, value);
+				sets.set(key, value);
 
 				if (val) {
-					message.channel.send(`Changed **${dbKey}** from **${val}** to **${value}**`);
+					message.channel.send(`Changed **${key}** from **${val}** to **${rawValue}**`);
 				} else {
-					message.channel.send(`Set **${dbKey}** to **${value}**`);
+					message.channel.send(`Set **${key}** to **${rawValue}**`);
 				}
 			} else {
 				if (!val) {
-					message.channel.send(`Config **${dbKey}** is not set, please set a value.`);
+					message.channel.send(`Config **${key}** is not set, please set a value.`);
 				} else {
-					message.channel.send(`Config **${dbKey}** is set to **${val}**`);
+					message.channel.send(`Config **${key}** is set to **${val}**`);
 				}
 			}
 		} else {
@@ -71,11 +101,26 @@ export default class extends Command<IMClient> {
 			const embed = new RichEmbed();
 
 			sets.forEach(set => {
-				embed.addField(set.key, set.value);
+				embed.addField(set.key, this.fromDbValue(set.key, set.value));
 			});
 
 			createEmbed(message.client, embed);
 			message.channel.send({ embed });
 		}
+	}
+
+	private toDbValue(guild: Guild, key: SettingsKeys, value: any): { value?: string, error?: string } {
+		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
+			return { value: (value as Channel).id };
+		}
+
+		return { value };
+	}
+
+	private fromDbValue(key: SettingsKeys, value: string): string {
+		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
+			return `<#${value}>`;
+		}
+		return value;
 	}
 }
