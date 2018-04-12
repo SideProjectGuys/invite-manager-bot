@@ -192,12 +192,12 @@ export default class extends Command<IMClient> {
 			.filter(k => invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
-				return diff !== 0 ? diff : invs[a].name.localeCompare(invs[b].name);
+				return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
 			});
 
 		const leaderboard24hAgo = [...keys].sort((a, b) => {
 			const diff = (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal);
-			return diff !== 0 ? diff : invs[a].name.localeCompare(invs[b].name);
+			return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
 		});
 
 		let str = '(changes compared to 1 day ago)\n\n';
