@@ -35,7 +35,10 @@ export class IMClient extends Client {
 					'TYPING_START',
 					'USER_UPDATE',
 					'PRESENCE_UPDATE',
-				]
+				],
+				messageCacheMaxSize: 10,
+				messageCacheLifetime: 60,
+				messageSweepInterval: 60,
 			}
 		);
 
