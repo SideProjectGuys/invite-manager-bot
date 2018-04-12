@@ -59,8 +59,8 @@ export default class extends Command<IMClient> {
 	public async action(message: Message, [key, rawValue]: [SettingsKeys, any]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
+		const sets = message.guild.storage.settings;
 		if (key) {
-			const sets = message.guild.storage.settings;
 			const val = this.fromDbValue(key, await sets.get(key));
 
 			if (rawValue) {
@@ -92,17 +92,26 @@ export default class extends Command<IMClient> {
 				}
 			}
 		} else {
-			const sets = await settings.findAll({
-				where: {
-					guildId: message.guild.id,
-				}
-			});
-
 			const embed = new RichEmbed();
 
-			sets.forEach(set => {
-				embed.addField(set.key, this.fromDbValue(set.key, set.value));
-			});
+			embed.setTitle('Your config settings');
+			embed.setDescription('Below are all the config settings of your server.\n' +
+				'Use `!config <key> <value>` to set the config <key> to <value>');
+
+			const notSet = [];
+			const keys = Object.keys(SettingsKeys);
+			for (let i = 0; i < keys.length; i++) {
+				const val = await sets.get(keys[i]);
+				if (val) {
+					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKeys, val), true);
+				} else {
+					notSet.push(keys[i]);
+				}
+			}
+
+			if (notSet.length > 0) {
+				embed.addField('----- These config keys are not set -----', notSet.join('\n'));
+			}
 
 			createEmbed(message.client, embed);
 			message.channel.send({ embed });

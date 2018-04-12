@@ -68,7 +68,11 @@ export class IMStorageProvider extends StorageProvider {
 	}
 
 	public async keys() {
-		return new Promise<string[]>((resolve) => resolve([]));
+		if (this.name !== 'guild_settings') {
+			return new Promise<string[]>((resolve) => resolve([]));
+		}
+
+		return new Promise<string[]>((resolve) => resolve(Object.keys(SettingsKeys)));
 	}
 
 	public async remove(key: string) {
