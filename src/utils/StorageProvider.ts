@@ -52,17 +52,19 @@ export class IMStorageProvider extends StorageProvider {
 			return;
 		}
 
+		const changed = value !== this.cache[key];
 		this.cache[key] = value;
 
-		// TODO: Maybe we can debounce this
-		const config = JSON.parse(value);
-		const sets = Object.keys(config).map((k: SettingsKeys) => ({ guildId: key, key: k, value: config[k] }));
-		settings.bulkCreate(
-			sets,
-			{
-				updateOnDuplicate: ['value']
-			}
-		);
+		if (changed) {
+			const config = JSON.parse(value);
+			const sets = Object.keys(config).map((k: SettingsKeys) => ({ guildId: key, key: k, value: config[k] }));
+			settings.bulkCreate(
+				sets,
+				{
+					updateOnDuplicate: ['value']
+				}
+			);
+		}
 	}
 
 	public async keys() {
