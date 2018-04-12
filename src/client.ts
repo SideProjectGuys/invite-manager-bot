@@ -61,6 +61,17 @@ export class IMClient extends Client {
 		);
 	}
 
+	@on('guildCreate')
+	private async _onGuildCreate(guild: Guild): Promise<void> {
+		this.messageQueue.addMessage(`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`);
+
+	}
+
+	@on('guildDelete')
+	private async _onGuildDelete(guild: Guild): Promise<void> {
+		this.messageQueue.addMessage(`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`);
+	}
+
 	@on('message')
 	private async _onMessage(message: Message) {
 		if (message.author.id === this.user.id) {
