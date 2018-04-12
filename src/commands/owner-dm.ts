@@ -43,7 +43,7 @@ export default class extends Command<Client> {
 			.then(() => {
 				message.react('👍');
 			})
-			.catch(err => {
+			.catch((err: any) => {
 				message.reply(`ERROR ${err.code}: ${err.message}`);
 				message.react('👎');
 			});

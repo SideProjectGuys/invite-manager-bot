@@ -66,8 +66,8 @@ export default class extends Command<Client> {
 				}));
 
 			let publicCommands = commands.filter(c => c.callerPermissions.length === 0);
-			let availablePublicCommands = publicCommands.filter(c => botMember.hasPermissions(c.clientPermissions));
-			let unavailablePublicCommands = publicCommands.filter(c => !botMember.hasPermissions(c.clientPermissions));
+			let availablePublicCommands = publicCommands.filter(c => botMember.hasPermission(c.clientPermissions));
+			let unavailablePublicCommands = publicCommands.filter(c => !botMember.hasPermission(c.clientPermissions));
 
 			let description = '';
 			availablePublicCommands.forEach(c => {
