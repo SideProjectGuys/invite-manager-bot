@@ -36,20 +36,18 @@ export default class extends Command<Client> {
 				usage: command.usage.replace('<prefix>', prefix),
 			};
 
-			let description = '';
-			description += `**Usage**\n`;
-			description += `\`${cmd.usage}\`\n\n`;
-			description += `${cmd.info}\n\n`;
-			description += `**Alises**\n`;
-			description += `${cmd.aliases}\n\n`;
-			description += `**Description**\n`;
-			description += `${cmd.desc}\n\n`;
-			description += `**Permissions required by user**\n`;
-			description += `${cmd.callerPermissions.length > 0 ? cmd.callerPermissions : 'None'}\n\n`;
-			description += `**Permissions required by the bot**\n`;
-			description += `${cmd.clientPermissions.length > 0 ? cmd.clientPermissions : 'None'}\n\n`;
-
-			embed.addField(`Command: **${cmd.name}**`, description);
+			embed.addField('Command', cmd.name);
+			embed.addField('Usage', cmd.usage + '\n\n' + cmd.info);
+			embed.addField('Alises', cmd.aliases.join(', '), true);
+			embed.addField('Description', cmd.desc, true);
+			embed.addField(
+				'User permissions',
+				cmd.callerPermissions.length > 0 ? cmd.callerPermissions.join(', ') : 'None'
+			);
+			embed.addField(
+				'Bot permissions',
+				cmd.clientPermissions.length > 0 ? cmd.clientPermissions.join(', ') : 'None'
+			);
 
 		} else {
 			embed.setDescription('This is a list of commands you can use. You can get more info about a specific ' +
