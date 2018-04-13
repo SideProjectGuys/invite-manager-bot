@@ -25,8 +25,8 @@ export default class extends Command<IMClient> {
 
 		// TODO: This is currently multiplied by the shard count, which is ok for guilds,
 		// but inaccurate for the members count
-		const guildCount = this.client.shard ? message.client.guilds.size * this.client.shard.count :
-			message.client.guilds.size;
+		const guildCount = this.client.shard && this.client.shard.count > 1 ?
+			'~' + (message.client.guilds.size * this.client.shard.count) : message.client.guilds.size;
 
 		const embed = new RichEmbed();
 		embed.addField('Guilds', guildCount, true);
