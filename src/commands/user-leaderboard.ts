@@ -1,18 +1,22 @@
-import { Channel, RichEmbed } from 'discord.js';
+import { Channel, GuildMember, MessageReaction, RichEmbed } from 'discord.js';
 import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 import { Command, CommandDecorators, KeyedStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, inviteCodes, joins, leaves, members, sequelize } from '../sequelize';
+import { customInvites, inviteCodes, joins, leaves, MemberAttributes, members, sequelize } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
+const timeDiff = 24 * 60 * 60 * 1000;  // 1 day
+const usersPerPage = 10;
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const neutralSymbol = '🔹';
+
+type InvCacheType = { [x: string]: { name: string, total: number, bonus: number, oldTotal: number, oldBonus: number } };
 
 // Extra attributes for the sequelize queries
 const attrs: FindOptionsAttributesArray = [
@@ -42,8 +46,9 @@ export default class extends Command<IMClient> {
 			name: 'leaderboard',
 			aliases: ['top'],
 			desc: 'Show members with most invites.',
-			usage: '<prefix>leaderboard (#channel)',
+			usage: '<prefix>leaderboard (page) (#channel)',
 			info: '`' +
+				'page      Which page of the leaderboard to get.\n' +
 				'#channel  Will count only invites for this channel.' +
 				'`',
 			clientPermissions: ['MANAGE_GUILD'],
@@ -51,12 +56,14 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@using(resolve('channel: Channel'))
-	public async action(message: Message, [channel]: [Channel]): Promise<any> {
+	@using(resolve('page: Number, channel: Channel'))
+	public async action(message: Message, [_page, channel]: [number, Channel]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
+		const guildId = message.guild.id;
+
 		const where: { guildId: string, channelId?: string } = {
-			guildId: message.guild.id,
+			guildId,
 		};
 		if (channel) {
 			where.channelId = channel.id;
@@ -79,7 +86,7 @@ export default class extends Command<IMClient> {
 		const customInvs = await customInvites.findAll({
 			attributes: attrs,
 			where: {
-				guildId: message.guild.id,
+				guildId,
 			},
 			group: 'customInvite.memberId',
 			include: [{
@@ -89,7 +96,7 @@ export default class extends Command<IMClient> {
 			raw: true,
 		});
 
-		const invs: { [x: string]: { name: string, total: number, bonus: number, oldTotal: number, oldBonus: number } } = {};
+		const invs: InvCacheType = {};
 		codeInvs.forEach((inv: any) => {
 			const id = inv.inviterId;
 			invs[id] = {
@@ -123,9 +130,9 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
 			],
 			where: {
-				guildId: message.guild.id,
+				guildId,
 				createdAt: {
-					[Op.gt]: new Date(new Date().getTime() - (24 * 60 * 60 * 1000))
+					[Op.gt]: new Date(new Date().getTime() - timeDiff)
 				}
 			},
 			group: ['exactMatch.inviterId'],
@@ -146,9 +153,9 @@ export default class extends Command<IMClient> {
 		const oldBonusInvs = await customInvites.findAll({
 			attributes: attrs,
 			where: {
-				guildId: message.guild.id,
+				guildId,
 				createdAt: {
-					[Op.gt]: new Date(new Date().getTime() - (24 * 60 * 60 * 1000))
+					[Op.gt]: new Date(new Date().getTime() - timeDiff)
 				}
 			},
 			group: ['memberId'],
@@ -198,73 +205,124 @@ export default class extends Command<IMClient> {
 				return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
 			});
 
-		const leaderboard24hAgo = [...keys].sort((a, b) => {
+		const oldKeys = [...keys].sort((a, b) => {
 			const diff = (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal);
 			return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
 		});
 
+		if (keys.length === 0) {
+			const embed = new RichEmbed().setDescription('No invites!');
+			embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
+			createEmbed(this.client, embed);
+			return;
+		}
+
+		const lastJoinAndLeave = await members.findAll({
+			attributes: [
+				'id',
+				'name',
+				[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
+				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt'],
+			],
+			where: { id: keys },
+			group: ['member.id'],
+			include: [
+				{
+					attributes: [],
+					model: joins,
+					where: { guildId },
+					required: false,
+				},
+				{
+					attributes: [],
+					model: leaves,
+					where: { guildId },
+					required: false,
+				}
+			],
+			raw: true,
+		});
+		const stillInServer: { [x: string]: boolean } = {};
+		lastJoinAndLeave.forEach((jal: any) => {
+			if (!jal.lastLeftAt) {
+				stillInServer[jal.id] = true;
+				return;
+			}
+			if (!jal.lastJoinedAt) {
+				stillInServer[jal.id] = false;
+				return;
+			}
+			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
+		});
+
+		const maxPage = Math.ceil(keys.length / usersPerPage);
+		const page = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
+
+		this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page, maxPage, channel, message);
+	}
+
+	async showLeaderboardPage(
+		invs: InvCacheType,
+		keys: string[],
+		oldKeys: string[],
+		stillInServer: { [x: string]: boolean },
+		page: number,
+		maxPage: number,
+		channel: Channel,
+		prevMsg: Message) {
+
 		let str = '(changes compared to 1 day ago)\n\n';
 
-		if (keys.length === 0) {
-			str += 'No invites!';
-		} else {
-			const lastJoinAndLeave = await members.findAll({
-				attributes: [
-					'id',
-					'name',
-					[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
-					[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt'],
-				],
-				where: { id: keys },
-				group: ['member.id'],
-				include: [
-					{
-						attributes: [],
-						model: joins,
-						where: { guildId: message.guild.id },
-						required: false,
-					},
-					{
-						attributes: [],
-						model: leaves,
-						where: { guildId: message.guild.id },
-						required: false,
-					}
-				],
-				raw: true,
-			});
-			const stillInServer: { [x: string]: boolean } = {};
-			lastJoinAndLeave.forEach((jal: any) => {
-				if (!jal.lastLeftAt) {
-					stillInServer[jal.id] = true;
-					return;
-				}
-				if (!jal.lastJoinedAt) {
-					stillInServer[jal.id] = false;
-					return;
-				}
-				stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
-			});
+		keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
+			const inv = invs[k];
 
-			keys.slice(0, 25).forEach((k, i) => {
-				const inv = invs[k];
+			const pos = i + 1;
+			const prevPos = oldKeys.indexOf(k) + 1;
+			const posChange = (prevPos - i) - 1;
 
-				const pos = i + 1;
-				const prevPos = leaderboard24hAgo.indexOf(k) + 1;
-				const posChange = (prevPos - i) - 1;
+			const name = stillInServer[k] ? `<@${k}>` : inv.name;
+			const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
 
-				const name = stillInServer[k] ? `<@${k}>` : inv.name;
-				const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
+			const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
+			str += `**${pos}.** (${posText}) ${symbol} ${name} **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
+		});
 
-				const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-				str += `**${pos}.** (${posText}) ${symbol} ${name} **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
-			});
+		if (page > 0 || page < maxPage - 1) {
+			str += `\n\nPage ${page + 1}/${maxPage}`;
 		}
 
 		const embed = new RichEmbed().setDescription(str);
 		embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
-		createEmbed(message.client, embed);
+		createEmbed(this.client, embed);
 
-		message.channel.send({ embed });
+		if (prevMsg.editable && prevMsg.author.id === this.client.user.id) {
+			prevMsg.edit({ embed });
+		} else {
+			prevMsg = await prevMsg.channel.send({ embed }) as Message;
+		}
+
+		if (page > 0) {
+			await prevMsg.react(upSymbol);
+		}
+		if (page < maxPage - 1) {
+			await prevMsg.react(downSymbol);
+		}
+		if (page > 0 || page < maxPage - 1) {
+			const filter = (reaction: MessageReaction, user: GuildMember) =>
+				user.id !== this.client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
+
+			prevMsg.awaitReactions(filter, { max: 1, time: 15000 })
+				.then(collected => {
+					const upReaction = collected.get(upSymbol);
+					const ups = upReaction ? upReaction.count : 0;
+					const downReaciton = collected.get(downSymbol);
+					const downs = downReaciton ? downReaciton.count : 0;
+					if (ups > downs) {
+						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page - 1, maxPage, channel, prevMsg);
+					} else if (downs > ups) {
+						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page + 1, maxPage, channel, prevMsg);
+					}
+				});
+		}
 	}
 }
