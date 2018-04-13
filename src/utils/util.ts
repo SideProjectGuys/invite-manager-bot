@@ -3,6 +3,13 @@ import { Guild, GuildStorage } from 'yamdbf';
 
 import { customInvites, inviteCodes, RankInstance, ranks } from '../sequelize';
 
+export enum CommandGroup {
+	Invites = 'Invites',
+	Ranks = 'Ranks',
+	Admin = 'Admin',
+	Other = 'Other',
+}
+
 export function createEmbed(client: Client, embed: RichEmbed, color: string = '#00AE86'): RichEmbed {
 	embed.setColor(color);
 	if (client) {
@@ -13,18 +20,6 @@ export function createEmbed(client: Client, embed: RichEmbed, color: string = '#
 	embed.setTimestamp();
 	return embed;
 }
-
-/*export async function subtractClearedCountFromInvites(storage: GuildStorage, invs: Collection<string, Invite>) {
-	let clearedInvites = await storage.get(EStrings.CLEARED_INVITES);
-	if (clearedInvites) {
-		invs.forEach(v => {
-			if (clearedInvites[v.code]) {
-				v.uses = v.uses - clearedInvites[v.code];
-			}
-		});
-	}
-	return invs;
-}*/
 
 export async function getInviteCounts(guildId: string, memberId: string):
 	Promise<{ code: number, custom: number, auto: number, total: number }> {

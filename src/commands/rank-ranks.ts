@@ -2,7 +2,7 @@ import { RichEmbed } from 'discord.js';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
 import { ranks } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -11,9 +11,10 @@ export default class extends Command<Client> {
 	public constructor() {
 		super({
 			name: 'ranks',
-			aliases: ['showranks', 'show-ranks'],
+			aliases: ['show-ranks', 'showRanks'],
 			desc: 'Show all ranks.',
 			usage: '<prefix>show-ranks',
+			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}

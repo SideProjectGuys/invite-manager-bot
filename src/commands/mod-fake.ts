@@ -2,7 +2,7 @@ import { RichEmbed } from 'discord.js';
 import { Client, Command, GuildStorage, Logger, logger, Message } from 'yamdbf';
 
 import { inviteCodes, joins, members, sequelize } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -12,10 +12,11 @@ export default class extends Command<Client> {
 		super({
 			name: 'fake',
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
-			desc: 'Show which person joined this server multiple times and by whom he was invited',
+			desc: 'Help find users trying to cheat.',
 			usage: '<prefix>fake',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Admin,
 			guildOnly: true
 		});
 	}

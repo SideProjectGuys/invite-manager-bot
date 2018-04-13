@@ -2,7 +2,7 @@ import { RichEmbed } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { settings, SettingsKeys } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -37,14 +37,13 @@ export default class extends Command<Client> {
 			};
 
 			let description = '';
-			description += `Command: **${cmd.name}**\n\n`;
+			description += `**Usage**\n`;
 			description += `\`${cmd.usage}\`\n\n`;
+			description += `${cmd.info}\n\n`;
 			description += `**Alises**\n`;
 			description += `${cmd.aliases}\n\n`;
 			description += `**Description**\n`;
 			description += `${cmd.desc}\n\n`;
-			description += `**Additional Info**\n`;
-			description += `${cmd.info}\n\n`;
 			description += `**Permissions required by user**\n`;
 			description += `${cmd.callerPermissions.length > 0 ? cmd.callerPermissions : 'None'}\n\n`;
 			description += `**Permissions required by the bot**\n`;
@@ -53,52 +52,51 @@ export default class extends Command<Client> {
 			embed.addField(`Command: **${cmd.name}**`, description);
 
 		} else {
-			let botMember = message.guild.me;
+			embed.setDescription('This is a list of commands you can use. You can get more info about a specific ' +
+				`command by using \`${prefix}help <command>\` (e.g. \`${prefix}help add-ranks\`)\n\n` +
+				`Arguments are listed after the command. Parentheses \`()\` indicate an **optional** argument. ` +
+				`(e.g. \`(reason)\` means the \`reason\` is optional)\n\n`);
 
-			let commands = this.client.commands
+			const commands = this.client.commands
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
-				.filter(c => !c.ownerOnly)
-				.filter(c => !c.hidden)
+				.filter(c => !c.ownerOnly && !c.hidden)
+				.filter(c => message.member.hasPermission(c.callerPermissions))
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix),
-				}));
+				}))
+				.sort((a, b) => a.name.localeCompare(b.name));
 
-			let publicCommands = commands.filter(c => c.callerPermissions.length === 0);
-			let availablePublicCommands = publicCommands.filter(c => botMember.hasPermission(c.clientPermissions));
-			let unavailablePublicCommands = publicCommands.filter(c => !botMember.hasPermission(c.clientPermissions));
+			Object.keys(CommandGroup).forEach(group => {
+				const cmds = commands.filter(c => c.group === group);
+				if (cmds.length === 0) {
+					return;
+				}
 
-			let description = '';
-			availablePublicCommands.forEach(c => {
-				description += `\`${c.usage}\` ${c.desc}\n`;
+				let descr = '';
+				const len = cmds.reduce((acc, c) => Math.max(acc, c.usage.length), 0);
+				cmds.forEach(c => descr += `\`${c.usage}  ${' '.repeat(len - c.usage.length)}${c.desc}\`\n`);
+				embed.addField(group, descr);
 			});
-			embed.addField(`Everyone`, description);
 
 			if (message.member.hasPermission('ADMINISTRATOR')) {
-				let adminCommands = commands.filter(c => c.callerPermissions.indexOf('ADMINISTRATOR') >= 0);
+				const botMember = message.guild.me;
+				const unavailableCommands = commands.filter(c => !botMember.hasPermission(c.clientPermissions));
 
-				let adminDescription = '';
-				adminCommands.forEach(c => {
-					adminDescription += `\`${c.usage}\` ${c.desc}\n`;
-				});
+				if (unavailableCommands.length > 0) {
+					const alertSymbol = '⚠️';
 
-				embed.addField(`Mods only`, adminDescription);
-			}
-
-			if (unavailablePublicCommands.length > 0) {
-
-				const alertSymbol = '⚠️';
-
-				let unavailableDescription = '';
-				unavailablePublicCommands.forEach(c => {
-					let missingPermission = c.clientPermissions.find(cp => {
-						return !botMember.hasPermission(cp);
+					let unavailableDescription = '';
+					unavailableCommands.forEach(c => {
+						let missingPermission = c.clientPermissions.find(cp => {
+							return !botMember.hasPermission(cp);
+						});
+						unavailableDescription +=
+							`\`${prefix}${c.name}\`  ${alertSymbol} *Missing \`${missingPermission}\` permission!*\n`;
 					});
-					unavailableDescription +=
-						`\`${c.usage}\` ${c.desc} ${alertSymbol + ' *Missing \`' + missingPermission + '\` permission!*\n'}`;
-				});
-				embed.addField(`Unavailable commands (missing permissions)`, unavailableDescription);
+					embed.addField(`Unavailable commands (missing permissions)`, unavailableDescription);
+				}
 			}
 		}
 

@@ -2,7 +2,7 @@ import { RichEmbed } from 'discord.js';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 const config = require('../../config.json');
 
@@ -15,7 +15,8 @@ export default class extends Command<IMClient> {
 			name: 'botInfo',
 			aliases: ['bot-info'],
 			desc: 'Show info about the bot',
-			usage: '<prefix>botInfo'
+			usage: '<prefix>botInfo',
+			group: CommandGroup.Other,
 		});
 	}
 

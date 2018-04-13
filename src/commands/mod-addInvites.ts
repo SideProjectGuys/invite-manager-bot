@@ -3,7 +3,7 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { customInvites, ranks } from '../sequelize';
-import { getInviteCounts, promoteIfQualified } from '../utils/util';
+import { CommandGroup, getInviteCounts, promoteIfQualified } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -16,10 +16,16 @@ export default class extends Command<IMClient> {
 		super({
 			name: 'add-invites',
 			aliases: ['addInvites'],
-			desc: 'Adds invites to a member',
-			usage: '<prefix>add-invites @user amountOfInvites (reason)',
-			info: '',
+			desc: 'Adds/Removes invites to/from a member',
+			usage: '<prefix>add-invites @user amount (reason)',
+			info: '`' +
+				'@user    The user that will receive/lose the bonus invites\n' +
+				'amount   The amount of invites the user will get/lose.\n' +
+				'           Use a negative (-) number to remove invites.\n' +
+				'reason   The reason why the user is receiving/losing the invites.' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

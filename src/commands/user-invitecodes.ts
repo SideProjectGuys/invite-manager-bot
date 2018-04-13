@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
 import { inviteCodes, members } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -14,9 +14,10 @@ export default class extends Command<Client> {
 			name: 'invite-codes',
 			aliases: ['invite-code', 'get-invite-codes', 'getInviteCode', 'invite-codes',
 				'inviteCodes', 'InviteCode', 'getInviteCode', 'get-invite-code', 'showInviteCode', 'show-invite-code'],
-			desc: 'Get a list of all your active invite codes',
+			desc: 'Get a list of all your invite codes',
 			usage: '<prefix>invite-codes',
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

@@ -1,6 +1,7 @@
 import { Client, Command, GuildStorage, Logger, logger, Message } from 'yamdbf';
 
 import { customInvites } from '../sequelize';
+import { CommandGroup } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -8,11 +9,12 @@ export default class extends Command<Client> {
 
 	public constructor() {
 		super({
-			name: 'restoreInvites',
-			aliases: ['unclear-invites', 'restore-invites', 'restoreInvites'],
-			desc: 'Restore all invites',
-			usage: '<prefix>restoreInvites',
+			name: 'restore-invites',
+			aliases: ['restoreInvites', 'unclear-invites', 'unclearInvites'],
+			desc: 'Restore all previously cleared invites',
+			usage: '<prefix>restore-invites',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

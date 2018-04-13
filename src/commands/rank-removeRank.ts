@@ -2,6 +2,7 @@ import { Role } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { ranks } from '../sequelize';
+import { CommandGroup } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -13,10 +14,14 @@ export default class extends Command<Client> {
 	public constructor() {
 		super({
 			name: 'remove-rank',
-			aliases: ['removerank'],
+			aliases: ['removeRank'],
 			desc: 'Remove a rank',
 			usage: '<prefix>remove-rank @role',
+			info: '`' +
+				'@role  The for which you want to remove the rank.' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}

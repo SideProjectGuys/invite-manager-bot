@@ -1,7 +1,7 @@
 import { RichEmbed, User } from 'discord.js';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -11,9 +11,10 @@ export default class extends Command<Client> {
 		super({
 			name: 'diagnose',
 			aliases: ['guide', 'setup', 'diag', 'test', 'testBot', 'test-bot'],
-			desc: 'Bot will run some checks and show a list of issues that might exist on this server (e.g. permissions).',
+			desc: 'Check for problems (e.g. missing permissions)',
 			usage: '<prefix>diagnose',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			group: CommandGroup.Admin,
 			guildOnly: true
 		});
 	}

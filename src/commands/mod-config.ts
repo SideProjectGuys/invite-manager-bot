@@ -3,7 +3,7 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { settings, SettingsKeys } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -48,9 +48,13 @@ export default class extends Command<IMClient> {
 			aliases: ['set', 'get', 'show-config', 'showConfig', 'changeConfig', 'change-config'],
 			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key (value))',
+			info: '`' +
+				'key    The config setting which you want to show/change.' +
+				'value  The new value of the setting.' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			hidden: true,
-			guildOnly: true
+			group: CommandGroup.Admin,
+			guildOnly: true,
 		});
 	}
 

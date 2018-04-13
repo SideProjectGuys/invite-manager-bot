@@ -1,7 +1,7 @@
 import { RichEmbed, TextChannel } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -17,7 +17,8 @@ export default class extends Command<Client> {
 			name: 'feedback',
 			aliases: ['suggestion', 'suggestions'],
 			desc: 'Give feedback about the bot to the developers',
-			usage: '<prefix>feedback [message]',
+			usage: '<prefix>feedback <message>',
+			group: CommandGroup.Other,
 			guildOnly: true
 		});
 	}

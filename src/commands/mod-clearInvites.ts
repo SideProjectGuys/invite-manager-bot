@@ -1,6 +1,7 @@
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { CustomInviteAttributes, CustomInviteInstance, customInvites, inviteCodes, sequelize } from '../sequelize';
+import { CommandGroup } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -11,12 +12,16 @@ export default class extends Command<Client> {
 
 	public constructor() {
 		super({
-			name: 'clearInvites',
-			aliases: ['clear-invites'],
-			desc: 'Clear all previous invites!',
-			usage: '<prefix>clearInvites (clearBonus)',
+			name: 'clear-invites',
+			aliases: ['clearInvites'],
+			desc: 'Clear all invites on the server',
+			usage: '<prefix>clear-invites (clearBonus)',
+			info: '`' +
+				'clearBonus  Pass \'true\' if you want to also remove bonus invites\n' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

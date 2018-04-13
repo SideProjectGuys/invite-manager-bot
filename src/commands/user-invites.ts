@@ -3,7 +3,7 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { customInvites, ranks } from '../sequelize';
-import { createEmbed, getInviteCounts, promoteIfQualified } from '../utils/util';
+import { CommandGroup, createEmbed, getInviteCounts, promoteIfQualified } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -17,8 +17,12 @@ export default class extends Command<IMClient> {
 			name: 'invites',
 			aliases: ['invite', 'rank'],
 			desc: 'Show personal invites',
-			usage: '<prefix>invites (user)',
+			usage: '<prefix>invites (@user)',
+			info: '`' +
+				'@user  The user for whom you want to show invites.' +
+				'`',
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

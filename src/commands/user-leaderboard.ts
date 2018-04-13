@@ -41,8 +41,11 @@ export default class extends Command<IMClient> {
 		super({
 			name: 'leaderboard',
 			aliases: ['top'],
-			desc: 'Show members with most invites. You can pass it a channel and only invites in that channel will be counted.',
+			desc: 'Show members with most invites.',
 			usage: '<prefix>leaderboard (#channel)',
+			info: '`' +
+				'#channel  Will count only invites for this channel.' +
+				'`',
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});

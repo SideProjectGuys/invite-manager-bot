@@ -3,6 +3,7 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { ranks, roles } from '../sequelize';
+import { CommandGroup } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -14,11 +15,16 @@ export default class extends Command<IMClient> {
 	public constructor() {
 		super({
 			name: 'add-rank',
-			aliases: ['addrank', 'setrank', 'set-rank'],
+			aliases: ['addRank', 'set-rank', 'setRank'],
 			desc: 'Add a new rank',
-			usage: '<prefix>add-rank @role invitesNeeded (description)',
-			info: '',
+			usage: '<prefix>add-rank @role invites (info)',
+			info: '`' +
+				'@role    The role which the user will receive when reaching this rank\n' +
+				'invites  The amount of invites needed to reach the rank\n' +
+				'info     A decription that users will see so they know more about this rank' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}

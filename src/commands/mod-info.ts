@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
-import { createEmbed, getInviteCounts } from '../utils/util';
+import { CommandGroup, createEmbed, getInviteCounts } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -18,8 +18,12 @@ export default class extends Command<Client> {
 			aliases: ['showinfo'],
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
+			info: '`' +
+				'@user  The user for whom you want to see additional info.' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Admin,
 			guildOnly: true
 		});
 	}

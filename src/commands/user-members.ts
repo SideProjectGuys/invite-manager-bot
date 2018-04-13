@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
-import { createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -13,6 +13,7 @@ export default class extends Command<Client> {
 			aliases: ['member', 'membersCount'],
 			desc: 'Show member count of current server.',
 			usage: '<prefix>members',
+			group: CommandGroup.Other,
 			guildOnly: true
 		});
 	}
