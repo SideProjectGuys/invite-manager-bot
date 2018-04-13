@@ -332,8 +332,14 @@ export default class extends Command<IMClient> {
 					} else if (downs > ups) {
 						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page + 1, maxPage, channel, prevMsg);
 					} else {
-						prevMsg.reactions.get(upSymbol).remove(this.client.user);
-						prevMsg.reactions.get(downSymbol).remove(this.client.user);
+						const reactUp = prevMsg.reactions.get(upSymbol);
+						if (reactUp) {
+							reactUp.remove(this.client.user);
+						}
+						const reactDown = prevMsg.reactions.get(downSymbol);
+						if (reactDown) {
+							reactDown.remove(this.client.user);
+						}
 					}
 				});
 		}
