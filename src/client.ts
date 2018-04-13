@@ -36,9 +36,9 @@ export class IMClient extends Client {
 					'USER_UPDATE',
 					'PRESENCE_UPDATE',
 				],
-				messageCacheMaxSize: 10,
-				messageCacheLifetime: 60,
-				messageSweepInterval: 60,
+				messageCacheMaxSize: 2,
+				messageCacheLifetime: 10,
+				messageSweepInterval: 30,
 			}
 		);
 
