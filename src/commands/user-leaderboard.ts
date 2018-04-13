@@ -275,8 +275,8 @@ export default class extends Command<IMClient> {
 
 		keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
 			const inv = invs[k];
+			const pos = (page * usersPerPage) + i + 1;
 
-			const pos = i + 1;
 			const prevPos = oldKeys.indexOf(k) + 1;
 			const posChange = (prevPos - i) - 1;
 
@@ -303,9 +303,19 @@ export default class extends Command<IMClient> {
 
 		if (page > 0) {
 			await prevMsg.react(upSymbol);
+		} else {
+			const react = prevMsg.reactions.get(upSymbol);
+			if (react) {
+				react.remove(this.client.user);
+			}
 		}
 		if (page < maxPage - 1) {
 			await prevMsg.react(downSymbol);
+		} else {
+			const react = prevMsg.reactions.get(downSymbol);
+			if (react) {
+				react.remove(this.client.user);
+			}
 		}
 		if (page > 0 || page < maxPage - 1) {
 			const filter = (reaction: MessageReaction, user: GuildMember) =>
@@ -321,6 +331,9 @@ export default class extends Command<IMClient> {
 						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page - 1, maxPage, channel, prevMsg);
 					} else if (downs > ups) {
 						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page + 1, maxPage, channel, prevMsg);
+					} else {
+						prevMsg.reactions.get(upSymbol).remove(this.client.user);
+						prevMsg.reactions.get(downSymbol).remove(this.client.user);
 					}
 				});
 		}
