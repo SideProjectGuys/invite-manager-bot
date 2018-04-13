@@ -309,6 +309,7 @@ export default class extends Command<IMClient> {
 				react.remove(this.client.user);
 			}
 		}
+
 		if (page < maxPage - 1) {
 			await prevMsg.react(downSymbol);
 		} else {
@@ -317,6 +318,7 @@ export default class extends Command<IMClient> {
 				react.remove(this.client.user);
 			}
 		}
+
 		if (page > 0 || page < maxPage - 1) {
 			const filter = (reaction: MessageReaction, user: GuildMember) =>
 				user.id !== this.client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
