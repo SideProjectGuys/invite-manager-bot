@@ -50,6 +50,12 @@ export default class extends Command<Client> {
 			);
 
 		} else {
+			let messageMember = message.member;
+			if (!messageMember) {
+				this._logger.log(`INFO: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
+				messageMember = await message.guild.fetchMember(message.author.id);
+			}
+
 			embed.setDescription('This is a list of commands you can use. You can get more info about a specific ' +
 				`command by using \`${prefix}help <command>\` (e.g. \`${prefix}help add-ranks\`)\n\n` +
 				`Arguments are listed after the command. Parentheses \`()\` indicate an **optional** argument. ` +
@@ -59,7 +65,7 @@ export default class extends Command<Client> {
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
 				.filter(c => !c.ownerOnly && !c.hidden)
-				.filter(c => message.member.hasPermission(c.callerPermissions))
+				.filter(c => messageMember.hasPermission(c.callerPermissions))
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix),
@@ -78,7 +84,7 @@ export default class extends Command<Client> {
 				embed.addField(group, descr);
 			});
 
-			if (message.member.hasPermission('ADMINISTRATOR')) {
+			if (messageMember.hasPermission('ADMINISTRATOR')) {
 				const botMember = message.guild.me;
 				const unavailableCommands = commands.filter(c => !botMember.hasPermission(c.clientPermissions));
 

@@ -32,18 +32,19 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		let target = user ? user : message.author;
-		if (!message.member) {
-			this._logger.log(`ERROR: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
-			return;
-		}
 
 		const invites = await getInviteCounts(message.guild.id, target.id);
 
 		let subject = target.id === message.author.id ? 'You have' : `<@${target.id}> has`;
 		let textMessage = `${subject} **${invites.total}** invites! (**${invites.custom}** bonus)\n`;
 
-		if (!message.member.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, message.member, invites.total);
+		if (!message.author.bot) {
+			let messageMember = message.member;
+			if (!messageMember) {
+				this._logger.log(`INFO: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
+				messageMember = await message.guild.fetchMember(message.author.id);
+			}
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, messageMember, invites.total);
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
