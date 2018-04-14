@@ -38,6 +38,7 @@ export default class extends Command<Client> {
 			embedFeedback.setAuthor(`${message.author.username}#${message.author.discriminator}`, message.author.avatarURL);
 			embedFeedback.addField('Guild', `${message.guild.id} - ${message.guild.name}`);
 			embedFeedback.addField('Message', `${feedback}`);
+			embedFeedback.addField('User ID', message.author.id);
 			createEmbed(message.client, embedFeedback);
 			channel.send({ embed: embedFeedback }).then(() => {
 				const embed = new RichEmbed();
