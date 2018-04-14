@@ -187,7 +187,7 @@ export class IMClient extends Client {
 				.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
 				.replace('{inviterMention}', `<@${inviterId}>`);
 		} else {
-			msg = `<@${member.id}> **left**; ` +
+			msg = `${member.displayName} **left**; ` +
 				`Invited by ${inviter ? inviter.displayName : inviterName}`;
 		}
 
