@@ -273,6 +273,18 @@ export default class extends Command<IMClient> {
 
 		let str = '(changes compared to 1 day ago)\n\n';
 
+		// Show leaderboard as a table
+		const asTable = false;
+
+		// Collect texts first to possibly make a table
+		const lines: string[][] = [];
+		const lengths: number[] = [2, 7, 5, 8, 6];
+
+		if (asTable) {
+			lines.push(['#', 'Change', 'Name', 'Invites', 'Bonus']);
+			lines.push(['--', '-------', '-----', '--------', '------']);
+		}
+
 		keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
 			const inv = invs[k];
 			const pos = (page * usersPerPage) + i + 1;
@@ -280,13 +292,41 @@ export default class extends Command<IMClient> {
 			const prevPos = oldKeys.indexOf(k) + 1;
 			const posChange = (prevPos - i) - 1;
 
-			const name = stillInServer[k] ? `<@${k}>` : inv.name;
+			const name = /*stillInServer[k] ? `<@${k}>` :*/ `${inv.name}`;
 			const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
 
 			const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-			str += `**${pos}.** (${posText}) ${symbol} ${name} **${inv.total}** invites (**${inv.bonus}** bonus)\n`;
+			const line = [
+				`${pos}.`,
+				`${symbol} (${posText})`,
+				name,
+				`${inv.total}`,
+				`${inv.bonus}`,
+			];
+			lines.push(line);
+			lengths.forEach((l, pIndex) => lengths[pIndex] = Math.max(l, line[pIndex].length));
 		});
 
+		// Put string together
+		if (asTable) {
+			str += '`';
+		}
+		lines.forEach(line => {
+			if (asTable) {
+				line.forEach((part, partIndex) => {
+					str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
+				});
+			} else {
+				str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
+			}
+
+			str += '\n';
+		});
+		if (asTable) {
+			str += '--`';
+		}
+
+		// Add page number if required
 		if (page > 0 || page < maxPage - 1) {
 			str += `\n\nPage ${page + 1}/${maxPage}`;
 		}
