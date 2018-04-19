@@ -2,8 +2,8 @@ import { Channel, Guild, RichEmbed, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { settings, SettingsKeys } from '../sequelize';
-import { CommandGroup, createEmbed } from '../utils/util';
+import { ActivityAction, settings, SettingsKeys } from '../sequelize';
+import { CommandGroup, createEmbed, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -45,7 +45,7 @@ export default class extends Command<IMClient> {
 	public constructor() {
 		super({
 			name: 'config',
-			aliases: ['set', 'get', 'show-config', 'showConfig', 'changeConfig', 'change-config'],
+			aliases: ['set', 'change', 'get', 'show'],
 			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key (value))',
 			info: '`' +
@@ -65,17 +65,22 @@ export default class extends Command<IMClient> {
 
 		const sets = message.guild.storage.settings;
 		if (key) {
-			const val = this.fromDbValue(key, await sets.get(key));
+			const oldVal = await sets.get(key);
+			const oldRawVal = this.fromDbValue(key, oldVal);
 
 			if (rawValue) {
-				const isNone = rawValue === 'none' || rawValue === 'empty' || rawValue === 'null';
-				const parsedValue = isNone ? null : this.toDbValue(message.guild, key, rawValue);
-				if (!parsedValue.value) {
+				const parsedValue = this.toDbValue(message.guild, key, rawValue);
+				if (parsedValue.error) {
 					message.channel.send(parsedValue.error);
 					return;
 				}
 
 				const value = parsedValue.value;
+
+				if (value === oldVal) {
+					message.channel.send(`Config **${key}** is already set to **${rawValue}**`);
+					return;
+				}
 
 				// Set the setting through our storage provider
 				await message.guild.storage.settings.set(key, value);
@@ -83,16 +88,26 @@ export default class extends Command<IMClient> {
 				// Set new value
 				sets.set(key, value);
 
-				if (val) {
-					message.channel.send(`Changed **${key}** from **${val}** to **${rawValue}**`);
+				await logAction(ActivityAction.config, message.guild.id, message.author.id, {
+					key,
+					oldValue: oldRawVal,
+					newValue: rawValue,
+				});
+
+				if (oldVal) {
+					if (value) {
+						message.channel.send(`Changed **${key}** from **${oldRawVal}** to **${rawValue}**`);
+					} else {
+						message.channel.send(`Config **${key}** cleared and reset to **default**`);
+					}
 				} else {
 					message.channel.send(`Set **${key}** to **${rawValue}**`);
 				}
 			} else {
-				if (!val) {
+				if (!oldVal) {
 					message.channel.send(`Config **${key}** is not set.`);
 				} else {
-					message.channel.send(`Config **${key}** is set to **${val}**`);
+					message.channel.send(`Config **${key}** is set to **${oldRawVal}**`);
 				}
 			}
 		} else {
@@ -123,6 +138,10 @@ export default class extends Command<IMClient> {
 	}
 
 	private toDbValue(guild: Guild, key: SettingsKeys, value: any): { value?: string, error?: string } {
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			return { value: null };
+		}
+
 		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
 			return { value: (value as Channel).id };
 		}

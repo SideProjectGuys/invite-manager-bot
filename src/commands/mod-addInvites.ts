@@ -2,8 +2,8 @@ import { Role, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, ranks } from '../sequelize';
-import { CommandGroup, getInviteCounts, promoteIfQualified } from '../utils/util';
+import { ActivityAction, customInvites, ranks } from '../sequelize';
+import { CommandGroup, getInviteCounts, logAction, promoteIfQualified } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -48,7 +48,7 @@ export default class extends Command<IMClient> {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, member, totalInvites);
 		}
 
-		await customInvites.create({
+		const createdInv = await customInvites.create({
 			id: null,
 			guildId: message.guild.id,
 			memberId: member.id,
@@ -56,6 +56,13 @@ export default class extends Command<IMClient> {
 			amount,
 			reason,
 			generated: false,
+		});
+
+		await logAction(ActivityAction.addInvites, message.guild.id, message.author.id, {
+			customInviteId: createdInv.id,
+			targetId: member.id,
+			amount,
+			reason,
 		});
 
 		const msg = amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;

@@ -1,7 +1,7 @@
 import { Client, Command, GuildStorage, Logger, logger, Message } from 'yamdbf';
 
-import { customInvites } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { ActivityAction, customInvites } from '../sequelize';
+import { CommandGroup, logAction } from '../utils/util';
 
 export default class extends Command<Client> {
 	@logger('Command')
@@ -22,12 +22,16 @@ export default class extends Command<Client> {
 	public async action(message: Message, args: string[]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-		await customInvites.destroy({
+		const num = await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
 				generated: true,
 				reason: 'clear_invites',
 			}
+		});
+
+		await logAction(ActivityAction.restoreInvites, message.guild.id, message.author.id, {
+			num,
 		});
 
 		message.channel.send(`Restored all invites.`);

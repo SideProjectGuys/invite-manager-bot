@@ -1,7 +1,7 @@
 import { Client, Collection, GuildMember, Invite, RichEmbed } from 'discord.js';
 import { Guild, GuildStorage } from 'yamdbf';
 
-import { customInvites, inviteCodes, RankInstance, ranks } from '../sequelize';
+import { customInvites, inviteCodes, RankInstance, ranks, ActivityAction, activities } from '../sequelize';
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -106,4 +106,14 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 		nextRank,
 		nextRankName,
 	};
+}
+
+export function logAction(action: ActivityAction, guildId: string, memberId: string, data: any) {
+	return activities.create({
+		id: null,
+		action,
+		guildId,
+		memberId,
+		data,
+	});
 }

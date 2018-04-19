@@ -1,7 +1,10 @@
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { CustomInviteAttributes, CustomInviteInstance, customInvites, inviteCodes, sequelize } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import {
+	ActivityAction, CustomInviteAttributes, CustomInviteInstance,
+	customInvites, inviteCodes, sequelize
+} from '../sequelize';
+import { CommandGroup, logAction } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -86,8 +89,6 @@ export default class extends Command<Client> {
 			});
 		}
 
-		console.log(uses);
-
 		const newInvs: CustomInviteAttributes[] = [];
 		Object.keys(uses).forEach(memberId => {
 			newInvs.push({
@@ -101,7 +102,11 @@ export default class extends Command<Client> {
 			});
 		});
 
-		await customInvites.bulkCreate(newInvs);
+		const createdInvs = await customInvites.bulkCreate(newInvs);
+
+		await logAction(ActivityAction.clearInvites, message.guild.id, message.author.id, {
+			customInviteIds: createdInvs.map(inv => inv.id),
+		});
 
 		message.channel.send(`Cleared ${total} invites!`);
 	}

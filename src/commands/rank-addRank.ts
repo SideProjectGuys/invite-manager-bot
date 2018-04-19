@@ -2,8 +2,8 @@ import { Role } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { ranks, roles } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { ActivityAction, ranks, roles } from '../sequelize';
+import { CommandGroup, logAction } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -42,20 +42,32 @@ export default class extends Command<IMClient> {
 			createdAt: role.createdAt
 		});
 
-		await ranks.insertOrUpdate({
-			id: null,
-			guildId: role.guild.id,
+		const res = await ranks.insertOrUpdate(
+			{
+				id: null,
+				guildId: role.guild.id,
+				roleId: role.id,
+				numInvites: invites,
+				description,
+			},
+			{
+				returning: true,
+			}
+		);
+
+		await logAction(ActivityAction.addRank, message.guild.id, message.author.id, {
+			rankId: res[0].id,
 			roleId: role.id,
 			numInvites: invites,
-			description: description,
-		}).then(created => {
-			if (!created) {
-				message.channel.send(`Rank ${role.toString()} updated: Now needs ${invites} ` +
-					`and has the following description: "${description ? description : ''}"`);
-			} else {
-				message.channel.send(`Added rank ${role.toString()} which needs ${invites} ` +
-					`and has the following description: "${description ? description : ''}"`);
-			}
+			description,
 		});
+
+		if (!res[1]) {
+			message.channel.send(`Rank ${role.toString()} updated: Now needs ${invites} ` +
+				`and has the following description: "${description ? description : ''}"`);
+		} else {
+			message.channel.send(`Added rank ${role.toString()} which needs ${invites} ` +
+				`and has the following description: "${description ? description : ''}"`);
+		}
 	}
 }

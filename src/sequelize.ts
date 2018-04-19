@@ -22,6 +22,7 @@ export interface MemberInstance extends Sequelize.Instance<MemberAttributes>, Me
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	// TODO: get custom invites via creatorId
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
+	getActivities: Sequelize.HasManyGetAssociationsMixin<ActivityInstance>;
 }
 
 export const members = sequelize.define<MemberInstance, MemberAttributes>(
@@ -54,6 +55,7 @@ export interface GuildInstance extends Sequelize.Instance<GuildAttributes>, Guil
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	getRanks: Sequelize.HasManyGetAssociationsMixin<RankInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
+	getActivities: Sequelize.HasManyGetAssociationsMixin<ActivityInstance>;
 }
 
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
@@ -155,7 +157,10 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	{
 		key: Sequelize.ENUM(
 			SettingsKeys.prefix,
+			SettingsKeys.joinMessage,
 			SettingsKeys.joinMessageChannel,
+			SettingsKeys.leaveMessage,
+			SettingsKeys.leaveMessageChannel,
 			SettingsKeys.lang,
 			SettingsKeys.modRole,
 			SettingsKeys.modChannel,
@@ -381,8 +386,8 @@ roles.hasMany(ranks);
 // Presences
 // ------------------------------------
 export enum PresenceStatus {
-	ONLINE = 'on',
-	OFFLINE = 'off'
+	on = 'on',
+	off = 'off'
 }
 
 export interface PresenceAttributes extends BaseAttributes {
@@ -399,10 +404,10 @@ export interface PresenceInstance extends Sequelize.Instance<PresenceAttributes>
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: {
-			type: Sequelize.ENUM,
-			values: ['on', 'off']
-		}
+		status: Sequelize.ENUM(
+			PresenceStatus.on,
+			PresenceStatus.off,
+		)
 	},
 	{
 		timestamps: true,
@@ -415,3 +420,52 @@ guilds.hasMany(presences);
 
 presences.belongsTo(members);
 members.hasMany(presences);
+
+// ------------------------------------
+// Activity
+// ------------------------------------
+export enum ActivityAction {
+	addInvites = 'addInvites',
+	clearInvites = 'clearInvites',
+	restoreInvites = 'restoreInvites',
+	config = 'config',
+	addRank = 'addRank',
+	removeRank = 'removeRank',
+}
+
+export interface ActivityAttributes extends BaseAttributes {
+	id: number;
+	action: ActivityAction;
+	data: any;
+	guildId: string;
+	memberId: string;
+}
+export interface ActivityInstance extends Sequelize.Instance<ActivityAttributes>, ActivityAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const activities = sequelize.define<ActivityInstance, ActivityAttributes>(
+	'activity',
+	{
+		action: Sequelize.ENUM(
+			ActivityAction.addInvites,
+			ActivityAction.addRank,
+			ActivityAction.clearInvites,
+			ActivityAction.config,
+			ActivityAction.removeRank,
+			ActivityAction.restoreInvites,
+		),
+		data: Sequelize.JSON,
+	},
+	{
+		timestamps: true,
+		paranoid: true,
+	}
+);
+
+activities.belongsTo(guilds);
+guilds.hasMany(activities);
+
+activities.belongsTo(members);
+members.hasMany(activities);
