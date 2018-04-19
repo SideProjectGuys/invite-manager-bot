@@ -18,17 +18,16 @@ export default class extends Command<Client> {
 			name: 'help',
 			desc: 'Display help',
 			usage: '<prefix>help (command)',
-			guildOnly: true,
 		});
 	}
 
 	@using(resolve('command: Command'))
 	public async action(message: Message, [command]: [Command]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(`${message.guild ? message.guild.name : 'DM'} (${message.author.username}): ${message.content}`);
 
 		const embed = new RichEmbed();
 
-		const prefix = await this.client.getPrefix(message.guild);
+		const prefix = message.guild ? await this.client.getPrefix(message.guild) : '!';
 
 		if (command) {
 			const cmd = {
@@ -51,7 +50,7 @@ export default class extends Command<Client> {
 
 		} else {
 			let messageMember = message.member;
-			if (!messageMember) {
+			if (message.guild && !messageMember) {
 				this._logger.log(`INFO: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
 				messageMember = await message.guild.fetchMember(message.author.id);
 			}
@@ -65,7 +64,7 @@ export default class extends Command<Client> {
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
 				.filter(c => !c.ownerOnly && !c.hidden)
-				.filter(c => messageMember.hasPermission(c.callerPermissions))
+				.filter(c => !message.guild || messageMember.hasPermission(c.callerPermissions))
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix),
@@ -84,7 +83,7 @@ export default class extends Command<Client> {
 				embed.addField(group, descr);
 			});
 
-			if (messageMember.hasPermission('ADMINISTRATOR')) {
+			if (message.guild && messageMember.hasPermission('ADMINISTRATOR')) {
 				const botMember = message.guild.me;
 				const unavailableCommands = commands.filter(c => !botMember.hasPermission(c.clientPermissions));
 
@@ -109,6 +108,6 @@ export default class extends Command<Client> {
 
 		createEmbed(message.client, embed);
 
-		message.channel.send({ embed });
+		message.reply({ embed });
 	}
 }

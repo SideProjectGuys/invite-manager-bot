@@ -77,7 +77,13 @@ export class IMClient extends Client {
 
 	@on('message')
 	private async _onMessage(message: Message) {
+		// Skip if this is our own message
 		if (message.author.id === this.user.id) {
+			return;
+		}
+
+		// Skip if this is a valid bot command
+		if (this.commands.get(message.content)) {
 			return;
 		}
 
