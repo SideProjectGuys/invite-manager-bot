@@ -447,10 +447,11 @@ export enum LogAction {
 
 export interface LogAttributes extends BaseAttributes {
 	id: number;
-	action: LogAction;
-	data: any;
 	guildId: string;
 	memberId: string;
+	action: LogAction;
+	message: string;
+	data: any;
 }
 export interface LogInstance extends Sequelize.Instance<LogAttributes>, LogAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
@@ -468,6 +469,7 @@ export const logs = sequelize.define<LogInstance, LogAttributes>(
 			LogAction.removeRank,
 			LogAction.restoreInvites,
 		),
+		message: Sequelize.STRING,
 		data: Sequelize.JSON,
 	},
 	{

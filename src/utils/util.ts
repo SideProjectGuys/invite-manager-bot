@@ -1,7 +1,7 @@
-import { Client, Collection, GuildMember, Invite, Message, MessageReaction, RichEmbed } from 'discord.js';
-import { Guild, GuildStorage } from 'yamdbf';
+import { Client, Collection, GuildMember, Invite, MessageReaction, RichEmbed, TextChannel } from 'discord.js';
+import { Guild, GuildStorage, Message } from 'yamdbf';
 
-import { customInvites, inviteCodes, LogAction, logs, RankInstance, ranks } from '../sequelize';
+import { customInvites, inviteCodes, LogAction, logs, RankInstance, ranks, SettingsKey } from '../sequelize';
 
 export const defaultJoinMessage = '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)';
 export const defaultLeaveMessage = '{memberName} **left**; Invited by **{inviterName}**';
@@ -111,12 +111,27 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	};
 }
 
-export function logAction(action: LogAction, guildId: string, memberId: string, data: any) {
-	return logs.create({
+export async function logAction(message: Message, action: LogAction, data: any) {
+	const logChannelId = await message.guild.storage.settings.get(SettingsKey.logChannel) as string;
+	if (logChannelId) {
+		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
+		if (logChannel) {
+			const embed = new RichEmbed().setTitle('Log Action');
+			createEmbed(message.client, embed);
+			embed.addField('Action', action, true);
+			embed.addField('Cause', `<@${message.author.id}>`, true);
+			embed.addField('Command', message.content);
+			embed.addField('Data', '`' + JSON.stringify(data, null, 2) + '`');
+			await logChannel.send({ embed });
+		}
+	}
+
+	return await logs.create({
 		id: null,
+		guildId: message.guild.id,
+		memberId: message.author.id,
 		action,
-		guildId,
-		memberId,
+		message: message.content,
 		data,
 	});
 }

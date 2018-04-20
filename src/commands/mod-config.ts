@@ -90,7 +90,7 @@ export default class extends Command<IMClient> {
 						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
 
 					// Log the settings change
-					await logAction(LogAction.config, message.guild.id, message.author.id, {
+					await logAction(message, LogAction.config, {
 						key,
 						oldValue: oldVal,
 						newValue: value,

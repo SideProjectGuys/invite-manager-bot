@@ -41,7 +41,7 @@ export default class extends Command<Client> {
 			}
 		});
 
-		await logAction(LogAction.restoreInvites, message.guild.id, message.author.id, {
+		await logAction(message, LogAction.restoreInvites, {
 			...memberId && { targetId: memberId },
 			num,
 		});

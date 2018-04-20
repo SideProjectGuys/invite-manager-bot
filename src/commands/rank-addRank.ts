@@ -55,7 +55,7 @@ export default class extends Command<IMClient> {
 			}
 		);
 
-		await logAction(LogAction.addRank, message.guild.id, message.author.id, {
+		await logAction(message, LogAction.addRank, {
 			rankId: res[0].id,
 			roleId: role.id,
 			numInvites: invites,

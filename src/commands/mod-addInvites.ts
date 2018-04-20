@@ -58,7 +58,7 @@ export default class extends Command<IMClient> {
 			generated: false,
 		});
 
-		await logAction(LogAction.addInvites, message.guild.id, message.author.id, {
+		await logAction(message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
 			targetId: member.id,
 			amount,

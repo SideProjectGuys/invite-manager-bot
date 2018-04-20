@@ -108,7 +108,7 @@ export default class extends Command<Client> {
 
 		const createdInvs = await customInvites.bulkCreate(newInvs);
 
-		await logAction(LogAction.clearInvites, message.guild.id, message.author.id, {
+		await logAction(message, LogAction.clearInvites, {
 			customInviteIds: createdInvs.map(inv => inv.id),
 			...memberId && { targetId: memberId },
 		});
