@@ -18,7 +18,7 @@ export default class extends Command<Client> {
 		super({
 			name: 'clear-invites',
 			aliases: ['clearInvites'],
-			desc: 'Clear all invites of the server/a user',
+			desc: 'Clear invites of the server/a user',
 			usage: '<prefix>clear-invites (@user) (clearBonus)',
 			info: '`' +
 				'@user  The user to clear all invites from\n' +
