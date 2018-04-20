@@ -2,7 +2,7 @@ import { Role, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { ActivityAction, customInvites, ranks } from '../sequelize';
+import { customInvites, LogAction, ranks } from '../sequelize';
 import { CommandGroup, getInviteCounts, logAction, promoteIfQualified } from '../utils/util';
 
 const { resolve, expect } = Middleware;
@@ -58,7 +58,7 @@ export default class extends Command<IMClient> {
 			generated: false,
 		});
 
-		await logAction(ActivityAction.addInvites, message.guild.id, message.author.id, {
+		await logAction(LogAction.addInvites, message.guild.id, message.author.id, {
 			customInviteId: createdInv.id,
 			targetId: member.id,
 			amount,

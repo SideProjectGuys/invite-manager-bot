@@ -2,7 +2,7 @@ import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'disc
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { ActivityAction, settings, SettingsKeys } from '../sequelize';
+import { LogAction, settings, SettingsKeys } from '../sequelize';
 import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -94,7 +94,7 @@ export default class extends Command<IMClient> {
 						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
 
 					// Log the settings change
-					await logAction(ActivityAction.config, message.guild.id, message.author.id, {
+					await logAction(LogAction.config, message.guild.id, message.author.id, {
 						key,
 						oldValue: oldRawVal,
 						newValue: rawValue,

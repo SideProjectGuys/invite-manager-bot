@@ -2,8 +2,8 @@ import { User } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import {
-	ActivityAction, CustomInviteAttributes, CustomInviteInstance,
-	customInvites, inviteCodes, sequelize
+	CustomInviteAttributes, CustomInviteInstance, customInvites,
+	inviteCodes, LogAction, sequelize
 } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
 
@@ -108,7 +108,7 @@ export default class extends Command<Client> {
 
 		const createdInvs = await customInvites.bulkCreate(newInvs);
 
-		await logAction(ActivityAction.clearInvites, message.guild.id, message.author.id, {
+		await logAction(LogAction.clearInvites, message.guild.id, message.author.id, {
 			customInviteIds: createdInvs.map(inv => inv.id),
 			...memberId && { targetId: memberId },
 		});

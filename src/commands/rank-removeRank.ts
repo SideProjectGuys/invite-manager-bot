@@ -1,7 +1,7 @@
 import { Role } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { ranks, ActivityAction } from '../sequelize';
+import { LogAction, ranks } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
 
 const { resolve, expect } = Middleware;
@@ -41,7 +41,7 @@ export default class extends Command<Client> {
 		if (rank) {
 			await rank.destroy();
 
-			await logAction(ActivityAction.removeRank, message.guild.id, message.author.id, {
+			await logAction(LogAction.removeRank, message.guild.id, message.author.id, {
 				rankId: rank.id,
 				roleId: role.id,
 			});

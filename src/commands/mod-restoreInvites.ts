@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
 import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { ActivityAction, customInvites } from '../sequelize';
+import { customInvites, LogAction } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -41,7 +41,7 @@ export default class extends Command<Client> {
 			}
 		});
 
-		await logAction(ActivityAction.restoreInvites, message.guild.id, message.author.id, {
+		await logAction(LogAction.restoreInvites, message.guild.id, message.author.id, {
 			...memberId && { targetId: memberId },
 			num,
 		});

@@ -22,7 +22,7 @@ export interface MemberInstance extends Sequelize.Instance<MemberAttributes>, Me
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	// TODO: get custom invites via creatorId
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
-	getActivities: Sequelize.HasManyGetAssociationsMixin<ActivityInstance>;
+	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
 }
 
 export const members = sequelize.define<MemberInstance, MemberAttributes>(
@@ -55,7 +55,7 @@ export interface GuildInstance extends Sequelize.Instance<GuildAttributes>, Guil
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	getRanks: Sequelize.HasManyGetAssociationsMixin<RankInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
-	getActivities: Sequelize.HasManyGetAssociationsMixin<ActivityInstance>;
+	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
 }
 
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
@@ -141,6 +141,7 @@ export enum SettingsKeys {
 	lang = 'lang',
 	modRole = 'modRole',
 	modChannel = 'modChannel',
+	logChannel = 'logChannel',
 }
 
 export interface SettingAttributes extends BaseAttributes {
@@ -164,6 +165,7 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKeys.lang,
 			SettingsKeys.modRole,
 			SettingsKeys.modChannel,
+			SettingsKeys.logChannel,
 		),
 		value: Sequelize.TEXT,
 	},
@@ -422,9 +424,9 @@ presences.belongsTo(members);
 members.hasMany(presences);
 
 // ------------------------------------
-// Activity
+// Logs
 // ------------------------------------
-export enum ActivityAction {
+export enum LogAction {
 	addInvites = 'addInvites',
 	clearInvites = 'clearInvites',
 	restoreInvites = 'restoreInvites',
@@ -433,28 +435,28 @@ export enum ActivityAction {
 	removeRank = 'removeRank',
 }
 
-export interface ActivityAttributes extends BaseAttributes {
+export interface LogAttributes extends BaseAttributes {
 	id: number;
-	action: ActivityAction;
+	action: LogAction;
 	data: any;
 	guildId: string;
 	memberId: string;
 }
-export interface ActivityInstance extends Sequelize.Instance<ActivityAttributes>, ActivityAttributes {
+export interface LogInstance extends Sequelize.Instance<LogAttributes>, LogAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 }
 
-export const activities = sequelize.define<ActivityInstance, ActivityAttributes>(
-	'activity',
+export const logs = sequelize.define<LogInstance, LogAttributes>(
+	'log',
 	{
 		action: Sequelize.ENUM(
-			ActivityAction.addInvites,
-			ActivityAction.addRank,
-			ActivityAction.clearInvites,
-			ActivityAction.config,
-			ActivityAction.removeRank,
-			ActivityAction.restoreInvites,
+			LogAction.addInvites,
+			LogAction.addRank,
+			LogAction.clearInvites,
+			LogAction.config,
+			LogAction.removeRank,
+			LogAction.restoreInvites,
 		),
 		data: Sequelize.JSON,
 	},
@@ -464,8 +466,8 @@ export const activities = sequelize.define<ActivityInstance, ActivityAttributes>
 	}
 );
 
-activities.belongsTo(guilds);
-guilds.hasMany(activities);
+logs.belongsTo(guilds);
+guilds.hasMany(logs);
 
-activities.belongsTo(members);
-members.hasMany(activities);
+logs.belongsTo(members);
+members.hasMany(logs);
