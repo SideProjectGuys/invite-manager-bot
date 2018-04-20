@@ -1,6 +1,6 @@
 import { IStorageProvider, StorageProvider } from 'yamdbf';
 
-import { settings, SettingsKeys } from '../sequelize';
+import { settings, SettingsKey } from '../sequelize';
 
 export class IMStorageProvider extends StorageProvider implements IStorageProvider {
 
@@ -23,7 +23,7 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 				raw: true,
 			});
 
-			const cache: { [x: string]: { [key in SettingsKeys]: string } } = {};
+			const cache: { [x: string]: { [key in SettingsKey]: string } } = {};
 			sets.forEach(set => {
 				if (!cache[set.guildId]) {
 					cache[set.guildId] = {} as any;
@@ -33,8 +33,8 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 
 			Object.keys(cache).forEach(guildId => {
 				const obj = cache[guildId];
-				if (!obj[SettingsKeys.prefix]) {
-					obj[SettingsKeys.prefix] = '!';
+				if (!obj[SettingsKey.prefix]) {
+					obj[SettingsKey.prefix] = '!';
 				}
 				const str = JSON.stringify(obj);
 				this.cache[guildId] = str;
@@ -73,11 +73,11 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 				}
 			});
 
-			const obj: { [k in SettingsKeys]: string } = {} as any;
+			const obj: { [k in SettingsKey]: string } = {} as any;
 			sets.forEach(set => obj[set.key] = set.value);
 
-			if (!obj[SettingsKeys.prefix]) {
-				obj[SettingsKeys.prefix] = '!';
+			if (!obj[SettingsKey.prefix]) {
+				obj[SettingsKey.prefix] = '!';
 			}
 
 			const str = JSON.stringify(obj);
@@ -96,8 +96,8 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 			if (changed) {
 				const config = JSON.parse(value);
 				const sets = Object.keys(config)
-					.filter(k => k in SettingsKeys)
-					.map((k: SettingsKeys) => ({ guildId: key, key: k, value: config[k] }));
+					.filter(k => k in SettingsKey)
+					.map((k: SettingsKey) => ({ guildId: key, key: k, value: config[k] }));
 				settings.bulkCreate(
 					sets,
 					{

@@ -2,7 +2,7 @@ import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'disc
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { LogAction, settings, SettingsKeys } from '../sequelize';
+import { LogAction, settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -16,8 +16,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return [message, args];
 		}
 
-		const dbKey = Object.keys(SettingsKeys)
-			.find((k: any) => SettingsKeys[k].toLowerCase() === key.toLowerCase()) as SettingsKeys;
+		const dbKey = Object.keys(SettingsKey)
+			.find((k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()) as SettingsKey;
 		if (!dbKey) {
 			throw Error(`No config setting called '${key}' found.`);
 		}
@@ -28,7 +28,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return func('key: String').call(this, message, args);
 		}
 
-		if (dbKey === SettingsKeys.joinMessageChannel || dbKey === SettingsKeys.leaveMessageChannel) {
+		if (dbKey === SettingsKey.joinMessageChannel || dbKey === SettingsKey.leaveMessageChannel) {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String, ...value?: Channel').call(this, message, args);
 		} else {
@@ -60,7 +60,7 @@ export default class extends Command<IMClient> {
 
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
-	public async action(message: Message, [key, rawValue]: [SettingsKeys, any]): Promise<any> {
+	public async action(message: Message, [key, rawValue]: [SettingsKey, any]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		const sets = message.guild.storage.settings;
@@ -133,11 +133,11 @@ export default class extends Command<IMClient> {
 				'Use `!config <key> <value>` to set the config <key> to <value>');
 
 			const notSet = [];
-			const keys = Object.keys(SettingsKeys);
+			const keys = Object.keys(SettingsKey);
 			for (let i = 0; i < keys.length; i++) {
 				const val = await sets.get(keys[i]);
 				if (val) {
-					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKeys, val));
+					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKey, val));
 				} else {
 					notSet.push(keys[i]);
 				}
@@ -152,33 +152,33 @@ export default class extends Command<IMClient> {
 		}
 	}
 
-	private toDbValue(guild: Guild, key: SettingsKeys, value: any): { value?: string, error?: string } {
+	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string, error?: string } {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			return { value: null };
 		}
 
-		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
+		if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel) {
 			return { value: (value as Channel).id };
 		}
 
 		return { value };
 	}
 
-	private fromDbValue(key: SettingsKeys, value: string): string {
+	private fromDbValue(key: SettingsKey, value: string): string {
 		if (value === undefined || value === null) {
 			return value;
 		}
 
-		if (key === SettingsKeys.joinMessageChannel || key === SettingsKeys.leaveMessageChannel) {
+		if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel) {
 			return `<#${value}>`;
 		}
 		return value;
 	}
 
-	private after(member: GuildMember, embed: RichEmbed, key: SettingsKeys, value: any): void {
+	private after(member: GuildMember, embed: RichEmbed, key: SettingsKey, value: any): void {
 		const me = member.guild.me;
 
-		if (key === SettingsKeys.joinMessage) {
+		if (key === SettingsKey.joinMessage) {
 			const val = value ? value : defaultJoinMessage;
 			embed.addField(
 				'Preview',
@@ -190,7 +190,7 @@ export default class extends Command<IMClient> {
 					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
 			);
 		}
-		if (key === SettingsKeys.leaveMessage) {
+		if (key === SettingsKey.leaveMessage) {
 			const val = value ? value : defaultLeaveMessage;
 			embed.addField(
 				'Preview',

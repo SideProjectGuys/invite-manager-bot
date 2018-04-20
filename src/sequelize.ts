@@ -132,7 +132,7 @@ guilds.hasMany(channels);
 // ------------------------------------
 // Settings
 // ------------------------------------
-export enum SettingsKeys {
+export enum SettingsKey {
 	prefix = 'prefix',
 	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',
@@ -144,8 +144,12 @@ export enum SettingsKeys {
 	logChannel = 'logChannel',
 }
 
+export function getSettingsType(key: SettingsKey) {
+	return typeof String;
+}
+
 export interface SettingAttributes extends BaseAttributes {
-	key: SettingsKeys;
+	key: SettingsKey;
 	value: string;
 	guildId: string;
 }
@@ -157,15 +161,15 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
 		key: Sequelize.ENUM(
-			SettingsKeys.prefix,
-			SettingsKeys.joinMessage,
-			SettingsKeys.joinMessageChannel,
-			SettingsKeys.leaveMessage,
-			SettingsKeys.leaveMessageChannel,
-			SettingsKeys.lang,
-			SettingsKeys.modRole,
-			SettingsKeys.modChannel,
-			SettingsKeys.logChannel,
+			SettingsKey.prefix,
+			SettingsKey.joinMessage,
+			SettingsKey.joinMessageChannel,
+			SettingsKey.leaveMessage,
+			SettingsKey.leaveMessageChannel,
+			SettingsKey.lang,
+			SettingsKey.modRole,
+			SettingsKey.modChannel,
+			SettingsKey.logChannel,
 		),
 		value: Sequelize.TEXT,
 	},

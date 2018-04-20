@@ -4,7 +4,7 @@ import * as path from 'path';
 import { Client, Guild, GuildSettings, GuildStorage, ListenerUtil } from 'yamdbf';
 import { commandUsage } from 'yamdbf-command-usage';
 
-import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKeys } from './sequelize';
+import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKey } from './sequelize';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
 import {
@@ -121,7 +121,7 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const joinChannelId = await sets.get(SettingsKeys.joinMessageChannel) as string;
+		const joinChannelId = await sets.get(SettingsKey.joinMessageChannel) as string;
 
 		if (!joinChannelId) {
 			console.log(`Guild ${member.guild.id} has no join message channel`);
@@ -140,7 +140,7 @@ export class IMClient extends Client {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
 		}
 
-		let joinMessageFormat = await sets.get(SettingsKeys.joinMessage) as string;
+		let joinMessageFormat = await sets.get(SettingsKey.joinMessage) as string;
 		if (!joinMessageFormat) {
 			joinMessageFormat = defaultJoinMessage;
 		}
@@ -171,7 +171,7 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const leaveChannelId = await sets.get(SettingsKeys.leaveMessageChannel) as string;
+		const leaveChannelId = await sets.get(SettingsKey.leaveMessageChannel) as string;
 
 		if (!leaveChannelId) {
 			console.log(`Guild ${member.guild.id} has no leave message channel`);
@@ -185,7 +185,7 @@ export class IMClient extends Client {
 
 		const inviter = await member.guild.fetchMember(inviterId);
 
-		let leaveMessageFormat = await sets.get(SettingsKeys.leaveMessage) as string;
+		let leaveMessageFormat = await sets.get(SettingsKey.leaveMessage) as string;
 		if (!leaveMessageFormat) {
 			leaveMessageFormat = defaultLeaveMessage;
 		}

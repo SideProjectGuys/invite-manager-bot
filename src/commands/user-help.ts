@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { settings, SettingsKeys } from '../sequelize';
+import { settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
