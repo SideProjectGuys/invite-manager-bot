@@ -72,7 +72,10 @@ export default class extends Command<Client> {
 					const timesText = invs[id] > 1 ? ` (**${invs[id]}** times)` : '';
 					return `<@${id}>${timesText}`;
 				}).join(', ');
-				description += `<@${join.memberId}> joined **${join.totalJoins} times**, invited by: ${invText}\n`;
+				let newFakeText = `<@${join.memberId}> joined **${join.totalJoins} times**, invited by: ${invText}\n`;
+				if (description.length + newFakeText.length < 2048) {
+					description += newFakeText;
+				}
 			});
 			if (suspiciousJoins.length === 0) {
 				description = 'There have been no fake invites since the bot has been added to this server.';
