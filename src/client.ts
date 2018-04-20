@@ -77,13 +77,14 @@ export class IMClient extends Client {
 
 	@on('message')
 	private async _onMessage(message: Message) {
-		// Skip if this is our own message
-		if (message.author.id === this.user.id) {
+		// Skip if this is our own message, bot message or empty messages
+		if (message.author.id === this.user.id || message.author.bot || !message.content.length) {
 			return;
 		}
 
-		// Skip if this is a valid bot command
-		if (this.commands.get(message.content)) {
+		// Skip if this is a valid bot command 
+		// (technically we ignore all prefixes, but bot only responds to default one)
+		if (this.commands.get(message.content) || this.commands.get(message.content.substring(1))) {
 			return;
 		}
 
