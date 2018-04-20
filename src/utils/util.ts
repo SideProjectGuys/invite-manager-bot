@@ -3,6 +3,9 @@ import { Guild, GuildStorage } from 'yamdbf';
 
 import { activities, ActivityAction, customInvites, inviteCodes, RankInstance, ranks } from '../sequelize';
 
+export const defaultJoinMessage = '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)';
+export const defaultLeaveMessage = '{memberName} **left**; Invited by **{inviterName}**';
+
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',

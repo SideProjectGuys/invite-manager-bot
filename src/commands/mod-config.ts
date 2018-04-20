@@ -1,9 +1,9 @@
-import { Channel, Guild, RichEmbed, User } from 'discord.js';
+import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'discord.js';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
 import { ActivityAction, settings, SettingsKeys } from '../sequelize';
-import { CommandGroup, createEmbed, logAction } from '../utils/util';
+import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -64,9 +64,14 @@ export default class extends Command<IMClient> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		const sets = message.guild.storage.settings;
+		const prefix = await sets.get('prefix');
+
 		if (key) {
-			const oldVal = await sets.get(key);
+			let oldVal = await sets.get(key);
 			const oldRawVal = this.fromDbValue(key, oldVal);
+
+			const embed = new RichEmbed().setTitle(key);
+			createEmbed(this.client, embed);
 
 			if (rawValue) {
 				const parsedValue = this.toDbValue(message.guild, key, rawValue);
@@ -78,43 +83,53 @@ export default class extends Command<IMClient> {
 				const value = parsedValue.value;
 
 				if (value === oldVal) {
-					message.channel.send(`Config **${key}** is already set to **${rawValue}**`);
-					return;
-				}
-
-				// Set the setting through our storage provider
-				await message.guild.storage.settings.set(key, value);
-
-				// Set new value
-				sets.set(key, value);
-
-				await logAction(ActivityAction.config, message.guild.id, message.author.id, {
-					key,
-					oldValue: oldRawVal,
-					newValue: rawValue,
-				});
-
-				if (oldVal) {
-					if (value) {
-						message.channel.send(`Changed **${key}** from **${oldRawVal}** to **${rawValue}**`);
-					} else {
-						message.channel.send(`Config **${key}** cleared and reset to **default**`);
-					}
+					embed.setDescription(`This config is already set to that value`);
+					embed.addField('Current Value', rawValue);
 				} else {
-					message.channel.send(`Set **${key}** to **${rawValue}**`);
+					// Set new value
+					sets.set(key, value);
+
+					embed.setDescription(`This config has been changed.\n` +
+						`Use \`${prefix}config ${key} <value>\` to change it again.` +
+						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
+
+					// Log the settings change
+					await logAction(ActivityAction.config, message.guild.id, message.author.id, {
+						key,
+						oldValue: oldRawVal,
+						newValue: rawValue,
+					});
+
+					if (oldVal) {
+						embed.addField('Previous Value', oldRawVal);
+					}
+
+					embed.addField('New Value', value ? rawValue : 'None');
+					oldVal = value;                                              // Update value for future use
 				}
 			} else {
-				if (!oldVal) {
-					message.channel.send(`Config **${key}** is not set.`);
+				if (oldVal) {
+					embed.setDescription(`This config is currently set.\n` +
+						`Use \`${prefix}config ${key} <value>\` to change it.` +
+						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
+					embed.addField('Current Value', oldRawVal);
 				} else {
-					message.channel.send(`Config **${key}** is set to **${oldRawVal}**`);
+					embed.setDescription(`This config is currently **not** set / set to the **default**.\n` +
+						`Use \`${prefix}config ${key} <value>\` to set it.`);
 				}
 			}
+
+			// Do any post processing, such as example messages
+			// If we updated a config setting, then 'oldVal' is now the new value
+			this.after(message.member, embed, key, oldVal);
+
+			message.channel.send({ embed });
 		} else {
 			const embed = new RichEmbed();
 
 			embed.setTitle('Your config settings');
 			embed.setDescription('Below are all the config settings of your server.\n' +
+				'Use `!config <key>` to view a single setting\n' +
 				'Use `!config <key> <value>` to set the config <key> to <value>');
 
 			const notSet = [];
@@ -122,7 +137,7 @@ export default class extends Command<IMClient> {
 			for (let i = 0; i < keys.length; i++) {
 				const val = await sets.get(keys[i]);
 				if (val) {
-					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKeys, val), true);
+					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKeys, val));
 				} else {
 					notSet.push(keys[i]);
 				}
@@ -158,5 +173,32 @@ export default class extends Command<IMClient> {
 			return `<#${value}>`;
 		}
 		return value;
+	}
+
+	private after(member: GuildMember, embed: RichEmbed, key: SettingsKeys, value: any): void {
+		const me = member.guild.me;
+
+		if (key === SettingsKeys.joinMessage) {
+			const val = value ? value : defaultJoinMessage;
+			embed.addField(
+				'Preview',
+				val
+					.replace('{memberName}', member.displayName)
+					.replace('{memberMention}', `<@${member.id}>`)
+					.replace('{inviterName}', me.displayName)
+					.replace('{inviterMention}', `<@${me.id}>`)
+					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
+			);
+		}
+		if (key === SettingsKeys.leaveMessage) {
+			const val = value ? value : defaultLeaveMessage;
+			embed.addField(
+				'Preview',
+				val
+					.replace('{memberName}', member.displayName)
+					.replace('{inviterName}', me.displayName)
+					.replace('{inviterMention}', `<@${me.id}>`)
+			);
+		}
 	}
 }

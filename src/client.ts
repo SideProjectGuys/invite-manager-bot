@@ -7,7 +7,9 @@ import { commandUsage } from 'yamdbf-command-usage';
 import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKeys } from './sequelize';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
-import { createEmbed, getInviteCounts, promoteIfQualified } from './utils/util';
+import {
+	createEmbed, defaultJoinMessage, defaultLeaveMessage, getInviteCounts, promoteIfQualified
+} from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -119,7 +121,6 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const joinMessageFormat = await sets.get(SettingsKeys.joinMessage) as string;
 		const joinChannelId = await sets.get(SettingsKeys.joinMessageChannel) as string;
 
 		if (!joinChannelId) {
@@ -139,18 +140,17 @@ export class IMClient extends Client {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
 		}
 
-		let msg;
-		if (joinMessageFormat) {
-			msg = joinMessageFormat
-				.replace('{memberName}', member.displayName)
-				.replace('{memberMention}', `<@${member.id}>`)
-				.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
-				.replace('{inviterMention}', `<@${inviterId}>`)
-				.replace('{numInvites}', invites.total.toString());
-		} else {
-			msg = `<@${member.user.id}> **joined**; ` +
-				`Invited by ${inviter ? inviter.displayName : inviterName} (${invites.total} invites)`;
+		let joinMessageFormat = await sets.get(SettingsKeys.joinMessage) as string;
+		if (!joinMessageFormat) {
+			joinMessageFormat = defaultJoinMessage;
 		}
+
+		const msg = joinMessageFormat
+			.replace('{memberName}', member.displayName)
+			.replace('{memberMention}', `<@${member.id}>`)
+			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
+			.replace('{inviterMention}', `<@${inviterId}>`)
+			.replace('{numInvites}', invites.total.toString());
 
 		joinChannel.send(msg);
 	}
@@ -171,7 +171,6 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const leaveMessageFormat = await sets.get(SettingsKeys.leaveMessage) as string;
 		const leaveChannelId = await sets.get(SettingsKeys.leaveMessageChannel) as string;
 
 		if (!leaveChannelId) {
@@ -186,17 +185,15 @@ export class IMClient extends Client {
 
 		const inviter = await member.guild.fetchMember(inviterId);
 
-		let msg;
-		if (leaveMessageFormat) {
-			msg = leaveMessageFormat
-				.replace('{memberName}', member.displayName)
-				.replace('{memberMention}', `<@${member.id}>`)
-				.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
-				.replace('{inviterMention}', `<@${inviterId}>`);
-		} else {
-			msg = `${member.displayName} **left**; ` +
-				`Invited by ${inviter ? inviter.displayName : inviterName}`;
+		let leaveMessageFormat = await sets.get(SettingsKeys.leaveMessage) as string;
+		if (!leaveMessageFormat) {
+			leaveMessageFormat = defaultLeaveMessage;
 		}
+
+		const msg = leaveMessageFormat
+			.replace('{memberName}', member.displayName)
+			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
+			.replace('{inviterMention}', `<@${inviterId}>`);
 
 		leaveChannel.send(msg);
 	}
