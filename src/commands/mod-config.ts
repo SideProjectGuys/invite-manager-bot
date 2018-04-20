@@ -47,7 +47,7 @@ export default class extends Command<IMClient> {
 			name: 'config',
 			aliases: ['set', 'change', 'get', 'show'],
 			desc: 'Show and change the config of the server',
-			usage: '<prefix>config (key (value))',
+			usage: '<prefix>config (key) (value)',
 			info: '`' +
 				'key    The config setting which you want to show/change.' +
 				'value  The new value of the setting.' +
