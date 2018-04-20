@@ -5,7 +5,7 @@ import { Command, CommandDecorators, KeyedStorage, Logger, logger, Message, Midd
 
 import { IMClient } from '../client';
 import { customInvites, inviteCodes, joins, leaves, MemberAttributes, members, sequelize } from '../sequelize';
-import { createEmbed } from '../utils/util';
+import { createEmbed, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -256,134 +256,68 @@ export default class extends Command<IMClient> {
 		});
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);
-		const page = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
+		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page, maxPage, channel, message);
-	}
+		// Show the leaderboard as a paginated list
+		showPaginated(this.client, message, p, maxPage, page => {
+			let str = '(changes compared to 1 day ago)\n\n';
 
-	async showLeaderboardPage(
-		invs: InvCacheType,
-		keys: string[],
-		oldKeys: string[],
-		stillInServer: { [x: string]: boolean },
-		page: number,
-		maxPage: number,
-		channel: Channel,
-		prevMsg: Message) {
+			// Show leaderboard as a table
+			const asTable = false;
 
-		let str = '(changes compared to 1 day ago)\n\n';
+			// Collect texts first to possibly make a table
+			const lines: string[][] = [];
+			const lengths: number[] = [2, 7, 5, 8, 6];
 
-		// Show leaderboard as a table
-		const asTable = false;
-
-		// Collect texts first to possibly make a table
-		const lines: string[][] = [];
-		const lengths: number[] = [2, 7, 5, 8, 6];
-
-		if (asTable) {
-			lines.push(['#', 'Change', 'Name', 'Invites', 'Bonus']);
-			lines.push(['--', '-------', '-----', '--------', '------']);
-		}
-
-		keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
-			const inv = invs[k];
-			const pos = (page * usersPerPage) + i + 1;
-
-			const prevPos = oldKeys.indexOf(k) + 1;
-			const posChange = (prevPos - i) - 1;
-
-			const name = /*stillInServer[k] ? `<@${k}>` :*/ `${inv.name}`;
-			const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
-
-			const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-			const line = [
-				`${pos}.`,
-				`${symbol} (${posText})`,
-				name,
-				`${inv.total}`,
-				`${inv.bonus}`,
-			];
-			lines.push(line);
-			lengths.forEach((l, pIndex) => lengths[pIndex] = Math.max(l, line[pIndex].length));
-		});
-
-		// Put string together
-		if (asTable) {
-			str += '`';
-		}
-		lines.forEach(line => {
 			if (asTable) {
-				line.forEach((part, partIndex) => {
-					str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
-				});
-			} else {
-				str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
+				lines.push(['#', 'Change', 'Name', 'Invites', 'Bonus']);
+				lines.push(['--', '-------', '-----', '--------', '------']);
 			}
 
-			str += '\n';
+			keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
+				const inv = invs[k];
+				const pos = (page * usersPerPage) + i + 1;
+
+				const prevPos = oldKeys.indexOf(k) + 1;
+				const posChange = (prevPos - i) - 1;
+
+				const name = /*stillInServer[k] ? `<@${k}>` :*/ `${inv.name}`;
+				const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
+
+				const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
+				const line = [
+					`${pos}.`,
+					`${symbol} (${posText})`,
+					name,
+					`${inv.total}`,
+					`${inv.bonus}`,
+				];
+				lines.push(line);
+				lengths.forEach((l, pIndex) => lengths[pIndex] = Math.max(l, line[pIndex].length));
+			});
+
+			// Put string together
+			if (asTable) {
+				str += '`';
+			}
+			lines.forEach(line => {
+				if (asTable) {
+					line.forEach((part, partIndex) => {
+						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
+					});
+				} else {
+					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
+				}
+
+				str += '\n';
+			});
+			if (asTable) {
+				str += '--`';
+			}
+
+			return new RichEmbed()
+				.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`)
+				.setDescription(str);
 		});
-		if (asTable) {
-			str += '--`';
-		}
-
-		// Add page number if required
-		if (page > 0 || page < maxPage - 1) {
-			str += `\n\nPage ${page + 1}/${maxPage}`;
-		}
-
-		const embed = new RichEmbed().setDescription(str);
-		embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
-		createEmbed(this.client, embed);
-
-		if (prevMsg.editable && prevMsg.author.id === this.client.user.id) {
-			prevMsg.edit({ embed });
-		} else {
-			prevMsg = await prevMsg.channel.send({ embed }) as Message;
-		}
-
-		if (page > 0) {
-			await prevMsg.react(upSymbol);
-		} else {
-			const react = prevMsg.reactions.get(upSymbol);
-			if (react) {
-				react.remove(this.client.user);
-			}
-		}
-
-		if (page < maxPage - 1) {
-			await prevMsg.react(downSymbol);
-		} else {
-			const react = prevMsg.reactions.get(downSymbol);
-			if (react) {
-				react.remove(this.client.user);
-			}
-		}
-
-		if (page > 0 || page < maxPage - 1) {
-			const filter = (reaction: MessageReaction, user: GuildMember) =>
-				user.id !== this.client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
-
-			prevMsg.awaitReactions(filter, { max: 1, time: 15000 })
-				.then(collected => {
-					const upReaction = collected.get(upSymbol);
-					const ups = upReaction ? upReaction.count : 0;
-					const downReaciton = collected.get(downSymbol);
-					const downs = downReaciton ? downReaciton.count : 0;
-					if (ups > downs) {
-						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page - 1, maxPage, channel, prevMsg);
-					} else if (downs > ups) {
-						this.showLeaderboardPage(invs, keys, oldKeys, stillInServer, page + 1, maxPage, channel, prevMsg);
-					} else {
-						const reactUp = prevMsg.reactions.get(upSymbol);
-						if (reactUp) {
-							reactUp.remove(this.client.user);
-						}
-						const reactDown = prevMsg.reactions.get(downSymbol);
-						if (reactDown) {
-							reactDown.remove(this.client.user);
-						}
-					}
-				});
-		}
 	}
 }

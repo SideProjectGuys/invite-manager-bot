@@ -1,7 +1,7 @@
-import { Client, Collection, GuildMember, Invite, RichEmbed } from 'discord.js';
+import { Client, Collection, GuildMember, Invite, Message, MessageReaction, RichEmbed } from 'discord.js';
 import { Guild, GuildStorage } from 'yamdbf';
 
-import { customInvites, inviteCodes, RankInstance, ranks, ActivityAction, activities } from '../sequelize';
+import { activities, ActivityAction, customInvites, inviteCodes, RankInstance, ranks } from '../sequelize';
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -116,4 +116,74 @@ export function logAction(action: ActivityAction, guildId: string, memberId: str
 		memberId,
 		data,
 	});
+}
+
+const upSymbol = '🔺';
+const downSymbol = '🔻';
+export async function showPaginated(
+	client: Client,
+	prevMsg: Message,
+	page: number,
+	maxPage: number,
+	render: (page: number, maxPage: number) => RichEmbed) {
+
+	// Create embed for this page
+	const embed = render(page, maxPage);
+	createEmbed(client, embed);
+
+	// Add page number if required
+	// if (page > 0 || page < maxPage - 1) {
+	embed.setDescription(embed.description + `\n\nPage ${page + 1}/${maxPage}`);
+	// }
+
+	if (prevMsg.editable && prevMsg.author.id === client.user.id) {
+		prevMsg.edit({ embed });
+	} else {
+		prevMsg = await prevMsg.channel.send({ embed }) as Message;
+	}
+
+	// if (page > 0) {
+	await prevMsg.react(upSymbol);
+	/*} else {
+		const react = prevMsg.reactions.get(upSymbol);
+		if (react) {
+			react.remove(client.user);
+		}
+	}*/
+
+	// if (page < maxPage - 1) {
+	await prevMsg.react(downSymbol);
+	/*} else {
+		const react = prevMsg.reactions.get(downSymbol);
+		if (react) {
+			react.remove(client.user);
+		}
+	}*/
+
+	// if (page > 0 || page < maxPage - 1) {
+	const filter = (reaction: MessageReaction, user: GuildMember) =>
+		user.id !== client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
+
+	prevMsg.awaitReactions(filter, { max: 1, time: 15000 })
+		.then(collected => {
+			const upReaction = collected.get(upSymbol);
+			const ups = upReaction ? upReaction.count : 0;
+			const downReaciton = collected.get(downSymbol);
+			const downs = downReaciton ? downReaciton.count : 0;
+			if (ups > downs) {
+				showPaginated(client, prevMsg, page - 1, maxPage, render);
+			} else if (downs > ups) {
+				showPaginated(client, prevMsg, page + 1, maxPage, render);
+			} else {
+				const reactUp = prevMsg.reactions.get(upSymbol);
+				if (reactUp) {
+					reactUp.remove(client.user);
+				}
+				const reactDown = prevMsg.reactions.get(downSymbol);
+				if (reactDown) {
+					reactDown.remove(client.user);
+				}
+			}
+		});
+	// }
 }
