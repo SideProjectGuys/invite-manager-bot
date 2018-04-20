@@ -2,7 +2,7 @@ import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'disc
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { LogAction, settings, SettingsKey } from '../sequelize';
+import { getSettingsType, LogAction, settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -28,13 +28,9 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return func('key: String').call(this, message, args);
 		}
 
-		if (dbKey === SettingsKey.joinMessageChannel || dbKey === SettingsKey.leaveMessageChannel) {
-			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: Channel').call(this, message, args);
-		} else {
-			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, args);
-		}
+		const type = getSettingsType(dbKey);
+		// tslint:disable-next-line:no-invalid-this
+		return func(`key: String, ...value?: ${type}`).call(this, message, args);
 	};
 };
 
@@ -90,14 +86,14 @@ export default class extends Command<IMClient> {
 					sets.set(key, value);
 
 					embed.setDescription(`This config has been changed.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it again.` +
+						`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
 						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
 
 					// Log the settings change
 					await logAction(LogAction.config, message.guild.id, message.author.id, {
 						key,
-						oldValue: oldRawVal,
-						newValue: rawValue,
+						oldValue: oldVal,
+						newValue: value,
 					});
 
 					if (oldVal) {
@@ -108,9 +104,11 @@ export default class extends Command<IMClient> {
 					oldVal = value;                                              // Update value for future use
 				}
 			} else {
+				// If we have no new value, just print the old one
+				// Check if the old one is set
 				if (oldVal) {
 					embed.setDescription(`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it.` +
+						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
 						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
 					embed.addField('Current Value', oldRawVal);
 				} else {
@@ -157,7 +155,8 @@ export default class extends Command<IMClient> {
 			return { value: null };
 		}
 
-		if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel) {
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
 			return { value: (value as Channel).id };
 		}
 
@@ -169,9 +168,11 @@ export default class extends Command<IMClient> {
 			return value;
 		}
 
-		if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel) {
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
 			return `<#${value}>`;
 		}
+
 		return value;
 	}
 

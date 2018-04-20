@@ -1,4 +1,5 @@
 import * as Sequelize from 'sequelize';
+
 const config = require('../config.json');
 
 export const sequelize = new Sequelize(config.sequelize);
@@ -145,7 +146,12 @@ export enum SettingsKey {
 }
 
 export function getSettingsType(key: SettingsKey) {
-	return typeof String;
+	if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel ||
+		key === SettingsKey.modChannel || key === SettingsKey.logChannel) {
+
+		return 'Channel';
+	}
+	return 'String';
 }
 
 export interface SettingAttributes extends BaseAttributes {

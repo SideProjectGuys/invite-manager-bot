@@ -1,7 +1,7 @@
 import { Client, Collection, GuildMember, Invite, Message, MessageReaction, RichEmbed } from 'discord.js';
 import { Guild, GuildStorage } from 'yamdbf';
 
-import { activities, ActivityAction, customInvites, inviteCodes, RankInstance, ranks } from '../sequelize';
+import { customInvites, inviteCodes, LogAction, logs, RankInstance, ranks } from '../sequelize';
 
 export const defaultJoinMessage = '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)';
 export const defaultLeaveMessage = '{memberName} **left**; Invited by **{inviterName}**';
@@ -111,8 +111,8 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	};
 }
 
-export function logAction(action: ActivityAction, guildId: string, memberId: string, data: any) {
-	return activities.create({
+export function logAction(action: LogAction, guildId: string, memberId: string, data: any) {
+	return logs.create({
 		id: null,
 		action,
 		guildId,
