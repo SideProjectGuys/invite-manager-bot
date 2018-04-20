@@ -28,6 +28,11 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return func('key: String').call(this, message, args);
 		}
 
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			// tslint:disable-next-line:no-invalid-this
+			return func('key: String, ...value?: String').call(this, message, args);
+		}
+
 		const type = getSettingsType(dbKey);
 		// tslint:disable-next-line:no-invalid-this
 		return func(`key: String, ...value?: ${type}`).call(this, message, args);
@@ -69,7 +74,7 @@ export default class extends Command<IMClient> {
 			const embed = new RichEmbed().setTitle(key);
 			createEmbed(this.client, embed);
 
-			if (rawValue) {
+			if (typeof rawValue !== typeof undefined) {
 				const parsedValue = this.toDbValue(message.guild, key, rawValue);
 				if (parsedValue.error) {
 					message.channel.send(parsedValue.error);
@@ -158,6 +163,9 @@ export default class extends Command<IMClient> {
 		const type = getSettingsType(key);
 		if (type === 'Channel') {
 			return { value: (value as Channel).id };
+		}
+		if (type === 'Boolean') {
+			return { value: value ? 'true' : 'false' };
 		}
 
 		return { value };

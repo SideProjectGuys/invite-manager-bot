@@ -12,8 +12,8 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'botInfo',
-			aliases: ['bot-info'],
+			name: 'bot-info',
+			aliases: ['botInfo'],
 			desc: 'Show info about the bot',
 			usage: '<prefix>botInfo',
 			group: CommandGroup.Other,

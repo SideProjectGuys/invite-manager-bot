@@ -113,10 +113,10 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 
 	public async keys() {
 		if (this.name === 'guild_settings') {
-			return new Promise<string[]>((resolve) => resolve(Object.keys(this.cache)));
+			return Object.keys(this.cache);
 		}
 
-		return new Promise<string[]>((resolve) => resolve([]));
+		return [];
 	}
 
 	public async remove(key: string) {

@@ -5,6 +5,7 @@ import { Client, Guild, GuildSettings, GuildStorage, ListenerUtil } from 'yamdbf
 import { commandUsage } from 'yamdbf-command-usage';
 
 import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKey } from './sequelize';
+import { BooleanResolver } from './utils/BooleanResolver';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
 import {
@@ -23,6 +24,9 @@ export class IMClient extends Client {
 		super(
 			{
 				provider: IMStorageProvider,
+				customResolvers: [
+					BooleanResolver
+				],
 				commandsDir: path.join(__dirname, 'commands'),
 				token: config.discordToken,
 				owner: config.owners,

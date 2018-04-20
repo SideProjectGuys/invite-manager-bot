@@ -143,6 +143,7 @@ export enum SettingsKey {
 	modRole = 'modRole',
 	modChannel = 'modChannel',
 	logChannel = 'logChannel',
+	getUpdates = 'getUpdates',
 }
 
 export function getSettingsType(key: SettingsKey) {
@@ -150,6 +151,9 @@ export function getSettingsType(key: SettingsKey) {
 		key === SettingsKey.modChannel || key === SettingsKey.logChannel) {
 
 		return 'Channel';
+	}
+	if (key === SettingsKey.getUpdates) {
+		return 'Boolean';
 	}
 	return 'String';
 }
@@ -176,6 +180,7 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.modRole,
 			SettingsKey.modChannel,
 			SettingsKey.logChannel,
+			SettingsKey.getUpdates,
 		),
 		value: Sequelize.TEXT,
 	},
