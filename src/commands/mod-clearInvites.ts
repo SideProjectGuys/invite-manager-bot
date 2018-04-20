@@ -1,3 +1,4 @@
+import { User } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import {
@@ -17,9 +18,10 @@ export default class extends Command<Client> {
 		super({
 			name: 'clear-invites',
 			aliases: ['clearInvites'],
-			desc: 'Clear all invites on the server',
-			usage: '<prefix>clear-invites (clearBonus)',
+			desc: 'Clear all invites of the server/a user',
+			usage: '<prefix>clear-invites (@user) (clearBonus)',
 			info: '`' +
+				'@user  The user to clear all invites from\n' +
 				'clearBonus  Pass \'true\' if you want to also remove bonus invites\n' +
 				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
@@ -29,9 +31,11 @@ export default class extends Command<Client> {
 		});
 	}
 
-	@using(resolve('clearBonus: Boolean'))
-	public async action(message: Message, [clearBonus]: [boolean]): Promise<any> {
+	@using(resolve('user: User, clearBonus: Boolean'))
+	public async action(message: Message, [user, clearBonus]: [User, boolean]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+
+		const memberId = user ? user.id : null;
 
 		// First clear any previous clear_invites customInvites we might have
 		await customInvites.destroy({
@@ -39,6 +43,7 @@ export default class extends Command<Client> {
 				guildId: message.guild.id,
 				generated: true,
 				reason: 'clear_invites',
+				...memberId && { memberId },
 			}
 		});
 
@@ -49,19 +54,18 @@ export default class extends Command<Client> {
 			],
 			where: {
 				guildId: message.guild.id,
+				...memberId && { inviterId: memberId },
 			},
 			group: 'inviteCode.inviterId',
 			raw: true,
 		});
 
-		let total = 0;
 		const uses: { [x: string]: number } = {};
 		invs.forEach((inv: any) => {
 			if (!uses[inv.inviterId]) {
 				uses[inv.inviterId] = 0;
 			}
 			const totalUses = parseInt(inv.totalUses, 10);
-			total += totalUses;
 			uses[inv.inviterId] += totalUses;
 		});
 
@@ -73,6 +77,7 @@ export default class extends Command<Client> {
 				],
 				where: {
 					guildId: message.guild.id,
+					...memberId && { memberId },
 					generated: false,
 				},
 				group: 'customInvite.memberId',
@@ -84,17 +89,16 @@ export default class extends Command<Client> {
 					uses[inv.memberId] = 0;
 				}
 				const totalAmount = parseInt(inv.totalAmount, 10);
-				total += totalAmount;
 				uses[inv.memberId] += totalAmount;
 			});
 		}
 
 		const newInvs: CustomInviteAttributes[] = [];
-		Object.keys(uses).forEach(memberId => {
+		Object.keys(uses).forEach(memId => {
 			newInvs.push({
 				id: null,
-				memberId,
-				amount: -uses[memberId],
+				memberId: memId,
+				amount: -uses[memId],
 				reason: 'clear_invites',
 				generated: true,
 				guildId: message.guild.id,
@@ -106,8 +110,9 @@ export default class extends Command<Client> {
 
 		await logAction(ActivityAction.clearInvites, message.guild.id, message.author.id, {
 			customInviteIds: createdInvs.map(inv => inv.id),
+			...memberId && { targetId: memberId },
 		});
 
-		message.channel.send(`Cleared ${total} invites!`);
+		message.channel.send(`Cleared invites for ${createdInvs.length} users!`);
 	}
 }
