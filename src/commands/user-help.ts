@@ -108,6 +108,6 @@ export default class extends Command<Client> {
 
 		createEmbed(message.client, embed);
 
-		message.reply({ embed });
+		message.channel.send({ embed });
 	}
 }
