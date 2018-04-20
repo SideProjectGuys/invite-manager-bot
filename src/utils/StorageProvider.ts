@@ -90,18 +90,22 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 
 	public async set(key: string, value: string) {
 		if (this.name === 'guild_settings') {
-			const changed = value !== this.cache[key];
-			this.cache[key] = value;
-
-			if (changed) {
+			// Check if the value changed
+			if (value !== this.cache[key]) {
+				const oldConfig = JSON.parse(this.cache[key]);
 				const config = JSON.parse(value);
+
+				this.cache[key] = value;
+
+				// Filter out valid configs, and only the ones that changed
 				const sets = Object.keys(config)
-					.filter(k => k in SettingsKey)
+					.filter(k => k in SettingsKey && config[k] !== oldConfig[k])
 					.map((k: SettingsKey) => ({ guildId: key, key: k, value: config[k] }));
+
 				settings.bulkCreate(
 					sets,
 					{
-						updateOnDuplicate: ['value']
+						updateOnDuplicate: ['value', 'updatedAt']
 					}
 				);
 			}
