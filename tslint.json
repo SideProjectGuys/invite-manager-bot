@@ -14,7 +14,7 @@
 			"check-space"
 		],
 		"curly": true,
-		"eofline": false,
+		"eofline": true,
 		"forin": true,
 		"indent": [
 			true,
@@ -25,16 +25,15 @@
 			"never-prefix"
 		],
 		"jsdoc-format": true,
-		"jsx-boolean-value": [
-			true,
-			"never"
-		],
-		"jsx-no-lambda": false,
-		"jsx-no-multiline-js": false,
 		"label-position": true,
 		"max-line-length": [
 			true,
 			120
+		],
+		"member-access": [
+			true,
+			"check-accessor",
+			"check-constructor"
 		],
 		"member-ordering": [
 			true,
@@ -47,18 +46,24 @@
 			}
 		],
 		"no-arg": true,
-		"no-bitwise": false,
+		"no-bitwise": true,
+		"no-conditional-assignment": true,
 		"no-consecutive-blank-lines": true,
 		"no-construct": true,
 		"no-debugger": true,
 		"no-duplicate-variable": true,
 		"no-empty": true,
 		"no-eval": true,
+		"no-inferrable-types": [
+			false
+		],
+		"no-parameter-properties": true,
 		"no-shadowed-variable": true,
 		"no-string-literal": true,
 		"no-switch-case-fall-through": true,
-		"no-trailing-whitespace": false,
+		"no-trailing-whitespace": true,
 		"no-unused-expression": true,
+		"no-unused-variable": true,
 		"no-use-before-declare": true,
 		"one-line": [
 			true,
@@ -75,8 +80,7 @@
 		],
 		"quotemark": [
 			true,
-			"single",
-			"jsx-double"
+			"single"
 		],
 		"radix": true,
 		"semicolon": [
@@ -94,7 +98,8 @@
 		"typedef": [
 			true,
 			"parameter",
-			"property-declaration"
+			"property-declaration",
+			"member-variable-declaration"
 		],
 		"typedef-whitespace": [
 			true,
@@ -106,12 +111,12 @@
 				"variable-declaration": "nospace"
 			}
 		],
+		"use-isnan": true,
 		"variable-name": [
 			true,
 			"ban-keywords",
 			"check-format",
-			"allow-leading-underscore",
-			"allow-pascal-case"
+			"allow-leading-underscore"
 		],
 		"whitespace": [
 			true,
