@@ -87,6 +87,12 @@ export default class extends Command<IMClient> {
 					embed.setDescription(`This config is already set to that value`);
 					embed.addField('Current Value', rawValue);
 				} else {
+					const error = this.validate(message, key, value);
+					if (error) {
+						message.channel.send(error);
+						return;
+					}
+
 					// Set new value
 					sets.set(key, value);
 
@@ -124,7 +130,7 @@ export default class extends Command<IMClient> {
 
 			// Do any post processing, such as example messages
 			// If we updated a config setting, then 'oldVal' is now the new value
-			this.after(message.member, embed, key, oldVal);
+			this.after(message, embed, key, oldVal);
 
 			message.channel.send({ embed });
 		} else {
@@ -155,6 +161,7 @@ export default class extends Command<IMClient> {
 		}
 	}
 
+	// Convert a raw value into something we can save in the database
 	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string, error?: string } {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			return { value: null };
@@ -171,6 +178,7 @@ export default class extends Command<IMClient> {
 		return { value };
 	}
 
+	// Convert a DB value into a human readable value
 	private fromDbValue(key: SettingsKey, value: string): string {
 		if (value === undefined || value === null) {
 			return value;
@@ -184,16 +192,44 @@ export default class extends Command<IMClient> {
 		return value;
 	}
 
-	private after(member: GuildMember, embed: RichEmbed, key: SettingsKey, value: any): void {
-		const me = member.guild.me;
+	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
+	private validate(message: Message, key: SettingsKey, value: any): string | null {
+		if (value === null || value === undefined) {
+			return null;
+		}
+
+		const type = getSettingsType(key);
+
+		if (type === 'Channel') {
+			const channel = value as Channel;
+			if (!message.guild.me.permissionsIn(channel).has('VIEW_CHANNEL')) {
+				return `I don't have permission to **view** that channel`;
+			}
+			if (!message.guild.me.permissionsIn(channel).has('READ_MESSAGES')) {
+				return `I don't have permission to **read messages** in that channel`;
+			}
+			if (!message.guild.me.permissionsIn(channel).has('SEND_MESSAGES')) {
+				return `I don't have permission to **send messages** in that channel`;
+			}
+			if (!message.guild.me.permissionsIn(channel).has('EMBED_LINKS')) {
+				return `I don't have permission to **embed links** in that channel`;
+			}
+		}
+
+		return null;
+	}
+
+	// Attach additional information for a config value, such as examples
+	private after(message: Message, embed: RichEmbed, key: SettingsKey, value: any): void {
+		const me = message.member.guild.me;
 
 		if (key === SettingsKey.joinMessage) {
 			const val = value ? value : defaultJoinMessage;
 			embed.addField(
 				'Preview',
 				val
-					.replace('{memberName}', member.displayName)
-					.replace('{memberMention}', `<@${member.id}>`)
+					.replace('{memberName}', message.member.displayName)
+					.replace('{memberMention}', `<@${message.member.id}>`)
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)
 					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
@@ -204,7 +240,7 @@ export default class extends Command<IMClient> {
 			embed.addField(
 				'Preview',
 				val
-					.replace('{memberName}', member.displayName)
+					.replace('{memberName}', message.member.displayName)
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)
 			);
