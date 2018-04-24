@@ -103,8 +103,18 @@ export default class extends Command<Client> {
 			}
 		}
 
-		embed.addField('Links', `[Support Discord](${config.botSupport}) | ` +
-			`[Invite this bot to your server](${config.botAdd}) | [Website](${config.botWebsite})`);
+		let linksArray = [];
+		if (config.botSupport) {
+			linksArray.push(`[Support Discord](${config.botSupport})`);
+		}
+		if (config.botAdd) {
+			linksArray.push(`[Invite this bot to your server](${config.botAdd})`);
+		}
+		if (config.botWebsite) {
+			linksArray.push(`[Website](${config.botWebsite})`);
+		}
+
+		embed.addField('Links', linksArray.join(` | `));
 
 		createEmbed(message.client, embed);
 

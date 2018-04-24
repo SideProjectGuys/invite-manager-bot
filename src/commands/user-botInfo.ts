@@ -39,6 +39,9 @@ export default class extends Command<IMClient> {
 		if (config.botWebsite) {
 			embed.addField('Bot website', config.botWebsite);
 		}
+		if (config.botPatreon) {
+			embed.addField('Patreon', config.botPatreon);
+		}
 		createEmbed(message.client, embed);
 
 		message.channel.send({ embed });

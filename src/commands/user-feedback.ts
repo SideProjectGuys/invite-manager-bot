@@ -42,10 +42,25 @@ export default class extends Command<Client> {
 			createEmbed(message.client, embedFeedback);
 			channel.send({ embed: embedFeedback }).then(() => {
 				const embed = new RichEmbed();
-				embed.setDescription('Thank you for your feedback! ' +
-					'If you need personal assistance please join our support discord server.');
-				embed.addField('Links', `[Support Discord](${config.botSupport}) | ' + 
-					'[Invite this bot to your server](${config.botAdd}) | [Website](${config.botWebsite})`);
+				embed.setDescription(`Thank you for your feedback! ` +
+					`If you need personal assistance please join our support discord server.`);
+
+				let linksArray = [];
+				if (config.botSupport) {
+					linksArray.push(`[Support Discord](${config.botSupport})`);
+				}
+				if (config.botAdd) {
+					linksArray.push(`[Invite this bot to your server](${config.botAdd})`);
+				}
+				if (config.botWebsite) {
+					linksArray.push(`[Website](${config.botWebsite})`);
+				}
+				if (config.botPatreon) {
+					linksArray.push(`[Patreon](${config.botPatreon})`);
+				}
+
+				embed.addField(`Links`, linksArray.join(` | `));
+
 				createEmbed(message.client, embed);
 				message.channel.send({ embed });
 			});
