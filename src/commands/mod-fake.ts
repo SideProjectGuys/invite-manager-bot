@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js';
 import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { inviteCodes, joins, members, sequelize } from '../sequelize';
+import { inviteCodes, JoinAttributes, JoinInstance, joins, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -10,8 +10,7 @@ const { using } = CommandDecorators;
 const usersPerPage = 20;
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -19,10 +18,7 @@ export default class extends Command<Client> {
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
 			desc: 'Help find users trying to cheat.',
 			usage: '<prefix>fake (page)',
-			info: '`' +
-				'page  Which page of the fake list to get.\n' +
-				'`',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
+			info: '`' + 'page  Which page of the fake list to get.\n' + '`',
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
 			guildOnly: true
@@ -33,11 +29,20 @@ export default class extends Command<Client> {
 	public async action(message: Message, [_page]: [number]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-		const js = await joins.findAll({
+		type ExtendedJoin = JoinAttributes & { memberName: string; totalJoins: string; inviterIds: string | null };
+
+		const js: ExtendedJoin[] = (await joins.findAll({
 			attributes: [
 				'memberId',
+				[sequelize.literal('`member`.`name`'), 'memberName'],
 				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
-				[sequelize.fn('GROUP_CONCAT', sequelize.literal('`exactMatch`.`inviterId` SEPARATOR \',\'')), 'inviterIds'],
+				[
+					sequelize.fn(
+						'GROUP_CONCAT',
+						sequelize.literal('CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"')
+					),
+					'inviterIds'
+				]
 			],
 			where: {
 				guildId: message.guild.id
@@ -45,19 +50,27 @@ export default class extends Command<Client> {
 			group: ['join.memberId'],
 			include: [
 				{
-					attributes: [],
+					attributes: ['name'],
 					model: members,
-					required: true,
+					required: true
 				},
 				{
 					attributes: [],
 					model: inviteCodes,
 					as: 'exactMatch',
 					required: true,
+					include: [
+						{
+							attributes: [],
+							as: 'inviter',
+							model: members,
+							required: true
+						}
+					]
 				}
 			],
-			raw: true,
-		});
+			raw: true
+		})) as any;
 
 		if (js.length <= 0) {
 			message.channel.send(`No fake invites detected so far.`);
@@ -65,8 +78,8 @@ export default class extends Command<Client> {
 		}
 
 		const suspiciousJoins = js
-			.filter((j: any) => parseInt(j.totalJoins, 10) > 1)
-			.sort((a: any, b: any) => parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10));
+			.filter((j: ExtendedJoin) => parseInt(j.totalJoins, 10) > 1)
+			.sort((a: ExtendedJoin, b: ExtendedJoin) => parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10));
 
 		if (suspiciousJoins.length === 0) {
 			message.channel.send(`There have been no fake invites since the bot has been added to this server.`);
@@ -79,28 +92,33 @@ export default class extends Command<Client> {
 		showPaginated(this.client, message, p, maxPage, page => {
 			let description = '';
 
-			suspiciousJoins.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((join: any) => {
+			suspiciousJoins.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((join: ExtendedJoin) => {
+				if (!join.inviterIds) {
+					return;
+				}
+
 				const invs: { [x: string]: number } = {};
-				join.inviterIds.split(',').forEach((id: string) => {
-					if (invs[id]) {
-						invs[id]++;
+				join.inviterIds.split('\t').forEach((idName: string) => {
+					const name = idName.split('|', 2)[1];
+					if (invs[name]) {
+						invs[name]++;
 					} else {
-						invs[id] = 1;
+						invs[name] = 1;
 					}
 				});
-				const invText = Object.keys(invs).map(id => {
-					const timesText = invs[id] > 1 ? ` (**${invs[id]}** times)` : '';
-					return `<@${id}>${timesText}`;
-				}).join(', ');
-				let newFakeText = `<@${join.memberId}> joined **${join.totalJoins} times**, invited by: ${invText}\n`;
+				const invText = Object.keys(invs)
+					.map(name => {
+						const timesText = invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
+						return `**${name}**${timesText}`;
+					})
+					.join(', ');
+				let newFakeText = `**${join.memberName}** joined **${join.totalJoins} times**, invited by: ${invText}\n`;
 				if (description.length + newFakeText.length < 2048) {
 					description += newFakeText;
 				}
 			});
 
-			return new RichEmbed()
-				.setTitle('Fake invites')
-				.setDescription(description);
+			return new RichEmbed().setTitle('Fake invites').setDescription(description);
 		});
 	}
 }
