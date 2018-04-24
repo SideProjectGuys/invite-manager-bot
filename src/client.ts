@@ -9,7 +9,11 @@ import { BooleanResolver } from './utils/BooleanResolver';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
 import {
-	createEmbed, defaultJoinMessage, defaultLeaveMessage, getInviteCounts, promoteIfQualified
+	createEmbed,
+	defaultJoinMessage,
+	defaultLeaveMessage,
+	getInviteCounts,
+	promoteIfQualified
 } from './utils/util';
 
 const { on, once } = ListenerUtil;
@@ -24,9 +28,7 @@ export class IMClient extends Client {
 		super(
 			{
 				provider: IMStorageProvider,
-				customResolvers: [
-					BooleanResolver
-				],
+				customResolvers: [BooleanResolver],
 				commandsDir: path.join(__dirname, 'commands'),
 				token: config.discordToken,
 				owner: config.owners,
@@ -34,17 +36,13 @@ export class IMClient extends Client {
 				ratelimit: '2/5s',
 				disableBase: ['setlang', 'setprefix', 'blacklist', 'eval', 'eval:ts', 'limit', 'reload', 'ping', 'help'],
 				plugins: [commandUsage(config.commandLogChannel)],
-				unknownCommandError: false,
+				unknownCommandError: false
 			},
 			{
-				disabledEvents: [
-					'TYPING_START',
-					'USER_UPDATE',
-					'PRESENCE_UPDATE',
-				],
+				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
-				messageSweepInterval: 30,
+				messageSweepInterval: 30
 			}
 		);
 
@@ -64,16 +62,12 @@ export class IMClient extends Client {
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
 		this.setActivity();
-		this.activityInterval = setInterval(
-			() => this.setActivity(),
-			30000
-		);
+		this.activityInterval = setInterval(() => this.setActivity(), 30000);
 	}
 
 	@on('guildCreate')
 	private async _onGuildCreate(guild: Guild): Promise<void> {
 		this.messageQueue.addMessage(`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`);
-
 	}
 
 	@on('guildDelete')
@@ -88,7 +82,7 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Skip if this is a valid bot command 
+		// Skip if this is a valid bot command
 		// (technically we ignore all prefixes, but bot only responds to default one)
 		if (this.commands.get(message.content) || this.commands.get(message.content.substring(1))) {
 			return;
@@ -125,7 +119,7 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const joinChannelId = await sets.get(SettingsKey.joinMessageChannel) as string;
+		const joinChannelId = (await sets.get(SettingsKey.joinMessageChannel)) as string;
 
 		if (!joinChannelId) {
 			console.log(`Guild ${member.guild.id} has no join message channel`);
@@ -144,7 +138,7 @@ export class IMClient extends Client {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
 		}
 
-		let joinMessageFormat = await sets.get(SettingsKey.joinMessage) as string;
+		let joinMessageFormat = (await sets.get(SettingsKey.joinMessage)) as string;
 		if (!joinMessageFormat) {
 			joinMessageFormat = defaultJoinMessage;
 		}
@@ -175,7 +169,7 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
-		const leaveChannelId = await sets.get(SettingsKey.leaveMessageChannel) as string;
+		const leaveChannelId = (await sets.get(SettingsKey.leaveMessageChannel)) as string;
 
 		if (!leaveChannelId) {
 			console.log(`Guild ${member.guild.id} has no leave message channel`);
@@ -189,45 +183,55 @@ export class IMClient extends Client {
 
 		const inviter = await member.guild.fetchMember(inviterId);
 
-		let leaveMessageFormat = await sets.get(SettingsKey.leaveMessage) as string;
+		let leaveMessageFormat = (await sets.get(SettingsKey.leaveMessage)) as string;
 		if (!leaveMessageFormat) {
 			leaveMessageFormat = defaultLeaveMessage;
+		}
+
+		let invites = { code: 0, custom: 0, auto: 0, total: 0 };
+		if (leaveMessageFormat.indexOf('{numInvites}') > 0) {
+			invites = await getInviteCounts(member.guild.id, inviter.id);
 		}
 
 		const msg = leaveMessageFormat
 			.replace('{memberName}', member.displayName)
 			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
-			.replace('{inviterMention}', `<@${inviterId}>`);
+			.replace('{inviterMention}', `<@${inviterId}>`)
+			.replace('{numInvites}', invites.total.toString());
 
 		leaveChannel.send(msg);
 	}
 
 	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
 		return new Promise((resolve, reject) => {
-			setTimeout(
-				async () => {
-					resolve(await joins.find({
+			const func = async () => {
+				resolve(
+					await joins.find({
 						attributes: [],
 						where: {
 							memberId,
 							guildId,
-							createdAt,
+							createdAt
 						},
-						include: [{
-							attributes: ['inviterId'],
-							model: inviteCodes,
-							as: 'exactMatch',
-							include: [{
-								attributes: ['name'],
-								model: members,
-								as: 'inviter',
-							}]
-						}],
-						raw: true,
-					}));
-				},
-				timeOut
-			);
+						include: [
+							{
+								attributes: ['inviterId'],
+								model: inviteCodes,
+								as: 'exactMatch',
+								include: [
+									{
+										attributes: ['name'],
+										model: members,
+										as: 'inviter'
+									}
+								]
+							}
+						],
+						raw: true
+					})
+				);
+			};
+			setTimeout(func, timeOut);
 		});
 	}
 
