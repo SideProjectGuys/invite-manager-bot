@@ -10,14 +10,15 @@ const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function (message: Message, args: string[]) {
+	return function(message: Message, args: string[]) {
 		const key = args[0];
 		if (!key) {
 			return [message, args];
 		}
 
-		const dbKey = Object.keys(SettingsKey)
-			.find((k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()) as SettingsKey;
+		const dbKey = Object.keys(SettingsKey).find(
+			(k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()
+		) as SettingsKey;
 		if (!dbKey) {
 			throw Error(`No config setting called '${key}' found.`);
 		}
@@ -40,8 +41,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 };
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -49,13 +49,11 @@ export default class extends Command<IMClient> {
 			aliases: ['set', 'change', 'get', 'show'],
 			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key) (value)',
-			info: '`' +
-				'key    The config setting which you want to show/change.' +
-				'value  The new value of the setting.' +
-				'`',
+			info:
+				'`' + 'key    The config setting which you want to show/change.' + 'value  The new value of the setting.' + '`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Admin,
-			guildOnly: true,
+			guildOnly: true
 		});
 	}
 
@@ -96,15 +94,17 @@ export default class extends Command<IMClient> {
 					// Set new value
 					sets.set(key, value);
 
-					embed.setDescription(`This config has been changed.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
-						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
+					embed.setDescription(
+						`This config has been changed.\n` +
+							`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
+							`Use \`${prefix}config ${key} none\` to reset it to the default.`
+					);
 
 					// Log the settings change
 					await logAction(message, LogAction.config, {
 						key,
 						oldValue: oldVal,
-						newValue: value,
+						newValue: value
 					});
 
 					if (oldVal) {
@@ -112,19 +112,23 @@ export default class extends Command<IMClient> {
 					}
 
 					embed.addField('New Value', value ? rawValue : 'None');
-					oldVal = value;                                              // Update value for future use
+					oldVal = value; // Update value for future use
 				}
 			} else {
 				// If we have no new value, just print the old one
 				// Check if the old one is set
 				if (oldVal) {
-					embed.setDescription(`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-						`Use \`${prefix}config ${key} none\` to reset it to the default.`);
+					embed.setDescription(
+						`This config is currently set.\n` +
+							`Use \`${prefix}config ${key} <value>\` to change it.\n` +
+							`Use \`${prefix}config ${key} none\` to reset it to the default.`
+					);
 					embed.addField('Current Value', oldRawVal);
 				} else {
-					embed.setDescription(`This config is currently **not** set / set to the **default**.\n` +
-						`Use \`${prefix}config ${key} <value>\` to set it.`);
+					embed.setDescription(
+						`This config is currently **not** set / set to the **default**.\n` +
+							`Use \`${prefix}config ${key} <value>\` to set it.`
+					);
 				}
 			}
 
@@ -137,9 +141,11 @@ export default class extends Command<IMClient> {
 			const embed = new RichEmbed();
 
 			embed.setTitle('Your config settings');
-			embed.setDescription('Below are all the config settings of your server.\n' +
-				'Use `!config <key>` to view a single setting\n' +
-				'Use `!config <key> <value>` to set the config <key> to <value>');
+			embed.setDescription(
+				'Below are all the config settings of your server.\n' +
+					'Use `!config <key>` to view a single setting\n' +
+					'Use `!config <key> <value>` to set the config <key> to <value>'
+			);
 
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
@@ -162,7 +168,7 @@ export default class extends Command<IMClient> {
 	}
 
 	// Convert a raw value into something we can save in the database
-	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string, error?: string } {
+	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string; error?: string } {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			return { value: null };
 		}
@@ -243,6 +249,7 @@ export default class extends Command<IMClient> {
 					.replace('{memberName}', message.member.displayName)
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)
+					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
 			);
 		}
 	}
