@@ -7,6 +7,7 @@ export const sequelize = new Sequelize(config.sequelize);
 export interface BaseAttributes {
 	createdAt?: Date | number | string;
 	updatedAt?: Date | number | string;
+	deletedAt?: Date | number | string;
 }
 
 // ------------------------------------
@@ -34,7 +35,7 @@ export const members = sequelize.define<MemberInstance, MemberAttributes>(
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -64,11 +65,11 @@ export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
 	{
 		id: { type: Sequelize.STRING, primaryKey: true },
 		name: Sequelize.STRING,
-		icon: Sequelize.STRING,
+		icon: Sequelize.STRING
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -91,11 +92,11 @@ export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	{
 		id: { type: Sequelize.STRING, primaryKey: true },
 		name: Sequelize.STRING,
-		color: Sequelize.STRING({ length: 7 }),
+		color: Sequelize.STRING({ length: 7 })
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -119,11 +120,11 @@ export const channels = sequelize.define<ChannelInstance, ChannelAttributes>(
 	'channel',
 	{
 		id: { type: Sequelize.STRING, primaryKey: true },
-		name: Sequelize.STRING,
+		name: Sequelize.STRING
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -143,13 +144,20 @@ export enum SettingsKey {
 	modRole = 'modRole',
 	modChannel = 'modChannel',
 	logChannel = 'logChannel',
-	getUpdates = 'getUpdates',
+	getUpdates = 'getUpdates'
+}
+
+export enum Lang {
+	en_us = 'en_us'
 }
 
 export function getSettingsType(key: SettingsKey) {
-	if (key === SettingsKey.joinMessageChannel || key === SettingsKey.leaveMessageChannel ||
-		key === SettingsKey.modChannel || key === SettingsKey.logChannel) {
-
+	if (
+		key === SettingsKey.joinMessageChannel ||
+		key === SettingsKey.leaveMessageChannel ||
+		key === SettingsKey.modChannel ||
+		key === SettingsKey.logChannel
+	) {
 		return 'Channel';
 	}
 	if (key === SettingsKey.getUpdates) {
@@ -180,17 +188,19 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.modRole,
 			SettingsKey.modChannel,
 			SettingsKey.logChannel,
-			SettingsKey.getUpdates,
+			SettingsKey.getUpdates
 		),
-		value: Sequelize.TEXT,
+		value: Sequelize.TEXT
 	},
 	{
 		timestamps: true,
 		paranoid: true,
-		indexes: [{
-			unique: true,
-			fields: ['guildId', 'key']
-		}],
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'key']
+			}
+		]
 	}
 );
 settings.belongsTo(guilds);
@@ -225,11 +235,11 @@ export const inviteCodes = sequelize.define<InviteCodeInstance, InviteCodeAttrib
 		maxAge: Sequelize.INTEGER,
 		maxUses: Sequelize.INTEGER,
 		uses: Sequelize.INTEGER,
-		temporary: Sequelize.BOOLEAN,
+		temporary: Sequelize.BOOLEAN
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -263,15 +273,17 @@ export interface JoinInstance extends Sequelize.Instance<JoinAttributes>, JoinAt
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 	'join',
 	{
-		possibleMatches: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		possibleMatches: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
 	},
 	{
 		timestamps: true,
 		paranoid: true,
-		indexes: [{
-			unique: true,
-			fields: ['guildId', 'memberId', 'createdAt']
-		}],
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'memberId', 'createdAt']
+			}
+		]
 	}
 );
 
@@ -305,10 +317,12 @@ export const leaves = sequelize.define<LeaveInstance, LeaveAttributes>(
 	{
 		timestamps: true,
 		paranoid: true,
-		indexes: [{
-			unique: true,
-			fields: ['guildId', 'memberId', 'joinId']
-		}],
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'memberId', 'joinId']
+			}
+		]
 	}
 );
 
@@ -344,12 +358,11 @@ export const customInvites = sequelize.define<CustomInviteInstance, CustomInvite
 	{
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
-		generated: Sequelize.BOOLEAN,
-	}
-	,
+		generated: Sequelize.BOOLEAN
+	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -381,15 +394,17 @@ export const ranks = sequelize.define<RankInstance, RankAttributes>(
 	'rank',
 	{
 		numInvites: Sequelize.INTEGER,
-		description: Sequelize.STRING,
+		description: Sequelize.STRING
 	},
 	{
 		timestamps: true,
 		paranoid: true,
-		indexes: [{
-			unique: true,
-			fields: ['guildId', 'roleId']
-		}],
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'roleId']
+			}
+		]
 	}
 );
 
@@ -421,14 +436,11 @@ export interface PresenceInstance extends Sequelize.Instance<PresenceAttributes>
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: Sequelize.ENUM(
-			PresenceStatus.on,
-			PresenceStatus.off,
-		)
+		status: Sequelize.ENUM(PresenceStatus.on, PresenceStatus.off)
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 
@@ -447,7 +459,8 @@ export enum LogAction {
 	restoreInvites = 'restoreInvites',
 	config = 'config',
 	addRank = 'addRank',
-	removeRank = 'removeRank',
+	updateRank = 'updateRank',
+	removeRank = 'removeRank'
 }
 
 export interface LogAttributes extends BaseAttributes {
@@ -472,14 +485,15 @@ export const logs = sequelize.define<LogInstance, LogAttributes>(
 			LogAction.clearInvites,
 			LogAction.config,
 			LogAction.removeRank,
-			LogAction.restoreInvites,
+			LogAction.updateRank,
+			LogAction.restoreInvites
 		),
 		message: Sequelize.STRING,
-		data: Sequelize.JSON,
+		data: Sequelize.JSON
 	},
 	{
 		timestamps: true,
-		paranoid: true,
+		paranoid: true
 	}
 );
 

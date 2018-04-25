@@ -9,8 +9,7 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -18,7 +17,8 @@ export default class extends Command<IMClient> {
 			aliases: ['addRank', 'set-rank', 'setRank'],
 			desc: 'Add a new rank',
 			usage: '<prefix>add-rank @role invites (info)',
-			info: '`' +
+			info:
+				'`' +
 				'@role    The role which the user will receive when reaching this rank\n' +
 				'invites  The amount of invites needed to reach the rank\n' +
 				'info     A decription that users will see so they know more about this rank' +
@@ -42,32 +42,37 @@ export default class extends Command<IMClient> {
 			createdAt: role.createdAt
 		});
 
-		const res = await ranks.insertOrUpdate(
+		const [rank, isNew] = await ranks.insertOrUpdate(
 			{
 				id: null,
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
 				description,
+				deletedAt: null // This resets the `deletedAt` timestamp in case this rank was previously deleted
 			},
 			{
-				returning: true,
+				returning: true
 			}
 		);
 
-		await logAction(message, LogAction.addRank, {
-			rankId: res[0].id,
+		await logAction(message, isNew ? LogAction.addRank : LogAction.updateRank, {
+			rankId: rank.id,
 			roleId: role.id,
 			numInvites: invites,
-			description,
+			description
 		});
 
-		if (!res[1]) {
-			message.channel.send(`Rank ${role.toString()} updated: Now needs ${invites} ` +
-				`and has the following description: "${description ? description : ''}"`);
+		if (!isNew) {
+			message.channel.send(
+				`Rank ${role.toString()} updated: Now needs ${invites} ` +
+					`and has the following description: "${description ? description : ''}"`
+			);
 		} else {
-			message.channel.send(`Added rank ${role.toString()} which needs ${invites} ` +
-				`and has the following description: "${description ? description : ''}"`);
+			message.channel.send(
+				`Added rank ${role.toString()} which needs ${invites} ` +
+					`and has the following description: "${description ? description : ''}"`
+			);
 		}
 	}
 }
