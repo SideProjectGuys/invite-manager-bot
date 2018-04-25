@@ -3,14 +3,11 @@ import { Guild, GuildStorage, Message } from 'yamdbf';
 
 import { customInvites, inviteCodes, LogAction, logs, RankInstance, ranks, SettingsKey } from '../sequelize';
 
-export const defaultJoinMessage = '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)';
-export const defaultLeaveMessage = '{memberName} **left**; Invited by **{inviterName}**';
-
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
 	Admin = 'Admin',
-	Other = 'Other',
+	Other = 'Other'
 }
 
 export function createEmbed(client: Client, embed: RichEmbed, color: string = '#00AE86'): RichEmbed {
@@ -24,27 +21,28 @@ export function createEmbed(client: Client, embed: RichEmbed, color: string = '#
 	return embed;
 }
 
-export async function getInviteCounts(guildId: string, memberId: string):
-	Promise<{ code: number, custom: number, auto: number, total: number }> {
-
+export async function getInviteCounts(
+	guildId: string,
+	memberId: string
+): Promise<{ code: number; custom: number; auto: number; total: number }> {
 	const codePromise = inviteCodes.sum('uses', {
 		where: {
 			guildId: guildId,
-			inviterId: memberId,
-		},
+			inviterId: memberId
+		}
 	});
 	const customPromise = customInvites.sum('amount', {
 		where: {
 			guildId: guildId,
 			memberId: memberId,
-			generated: false,
+			generated: false
 		}
 	});
 	const autoPromise = customInvites.sum('amount', {
 		where: {
 			guildId: guildId,
 			memberId: memberId,
-			generated: true,
+			generated: true
 		}
 	});
 	const values = await Promise.all([codePromise, customPromise, autoPromise]);
@@ -56,7 +54,7 @@ export async function getInviteCounts(guildId: string, memberId: string):
 		code,
 		custom,
 		auto,
-		total: code + custom + auto,
+		total: code + custom + auto
 	};
 }
 
@@ -67,21 +65,24 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	let rolesToAdd: string[] = [];
 	const allRanks = await ranks.findAll({
 		where: {
-			guildId: guild.id,
+			guildId: guild.id
 		},
-		raw: true,
+		raw: true
 	});
 
 	allRanks.forEach(r => {
 		let role = guild.roles.get(r.roleId);
 		if (role) {
-			if (r.numInvites <= totalInvites) { // Rank needs less/equal invites, so we add add role
+			if (r.numInvites <= totalInvites) {
+				// Rank needs less/equal invites, so we add add role
 				if (!member.roles.has(role.id)) {
 					rolesToAdd.push(role.id);
 				}
-			} else { // Rank requires more invites
+			} else {
+				// Rank requires more invites
 				if (nextRank) {
-					if (r.numInvites < nextRank.numInvites) { // Next rank is the one with lowest invites needed
+					if (r.numInvites < nextRank.numInvites) {
+						// Next rank is the one with lowest invites needed
 						nextRank = r;
 						nextRankName = role.name;
 					}
@@ -107,12 +108,12 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	return {
 		numRanks: allRanks.length,
 		nextRank,
-		nextRankName,
+		nextRankName
 	};
 }
 
 export async function logAction(message: Message, action: LogAction, data: any) {
-	const logChannelId = await message.guild.storage.settings.get(SettingsKey.logChannel) as string;
+	const logChannelId = (await message.guild.storage.settings.get(SettingsKey.logChannel)) as string;
 	if (logChannelId) {
 		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
 		if (logChannel) {
@@ -132,7 +133,7 @@ export async function logAction(message: Message, action: LogAction, data: any) 
 		memberId: message.author.id,
 		action,
 		message: message.content,
-		data,
+		data
 	});
 }
 
@@ -143,8 +144,8 @@ export async function showPaginated(
 	prevMsg: Message,
 	page: number,
 	maxPage: number,
-	render: (page: number, maxPage: number) => RichEmbed) {
-
+	render: (page: number, maxPage: number) => RichEmbed
+) {
 	// Create embed for this page
 	const embed = render(page, maxPage);
 	createEmbed(client, embed);
@@ -157,7 +158,7 @@ export async function showPaginated(
 	if (prevMsg.editable && prevMsg.author.id === client.user.id) {
 		prevMsg.edit({ embed });
 	} else {
-		prevMsg = await prevMsg.channel.send({ embed }) as Message;
+		prevMsg = (await prevMsg.channel.send({ embed })) as Message;
 	}
 
 	if (page > 0) {
@@ -182,26 +183,25 @@ export async function showPaginated(
 		const filter = (reaction: MessageReaction, user: GuildMember) =>
 			user.id !== client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
 
-		prevMsg.awaitReactions(filter, { max: 1, time: 15000 })
-			.then(collected => {
-				const upReaction = collected.get(upSymbol);
-				const ups = upReaction ? upReaction.count : 0;
-				const downReaciton = collected.get(downSymbol);
-				const downs = downReaciton ? downReaciton.count : 0;
-				if (ups > downs) {
-					showPaginated(client, prevMsg, page - 1, maxPage, render);
-				} else if (downs > ups) {
-					showPaginated(client, prevMsg, page + 1, maxPage, render);
-				} else {
-					const reactUp = prevMsg.reactions.get(upSymbol);
-					if (reactUp) {
-						reactUp.remove(client.user);
-					}
-					const reactDown = prevMsg.reactions.get(downSymbol);
-					if (reactDown) {
-						reactDown.remove(client.user);
-					}
+		prevMsg.awaitReactions(filter, { max: 1, time: 15000 }).then(collected => {
+			const upReaction = collected.get(upSymbol);
+			const ups = upReaction ? upReaction.count : 0;
+			const downReaciton = collected.get(downSymbol);
+			const downs = downReaciton ? downReaciton.count : 0;
+			if (ups > downs) {
+				showPaginated(client, prevMsg, page - 1, maxPage, render);
+			} else if (downs > ups) {
+				showPaginated(client, prevMsg, page + 1, maxPage, render);
+			} else {
+				const reactUp = prevMsg.reactions.get(upSymbol);
+				if (reactUp) {
+					reactUp.remove(client.user);
 				}
-			});
+				const reactDown = prevMsg.reactions.get(downSymbol);
+				if (reactDown) {
+					reactDown.remove(client.user);
+				}
+			}
+		});
 	}
 }

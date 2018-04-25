@@ -2,8 +2,16 @@ import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'disc
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { getSettingsType, Lang, LogAction, settings, SettingsKey } from '../sequelize';
-import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
+import {
+	defaultSettings,
+	getSettingsType,
+	Lang,
+	LeaderboardStyle,
+	LogAction,
+	settings,
+	SettingsKey
+} from '../sequelize';
+import { CommandGroup, createEmbed, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -20,23 +28,34 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			(k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as SettingsKey;
 		if (!dbKey) {
-			throw Error(`No config setting called '${key}' found.`);
+			throw Error(`No config setting called **${key}** found.`);
 		}
 
 		const value = args[1];
 		if (!value) {
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String').call(this, message, args);
+			return func('key: String').call(this, message, [dbKey]);
 		}
 
-		if (value === 'none' || value === 'empty' || value === 'null' || value === 'default') {
+		if (value === 'default') {
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, args);
+			return func('key: String, ...value?: String').call(this, message, [dbKey, value]);
+		}
+
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			if (defaultSettings[dbKey] !== null) {
+				throw Error(
+					`The config setting **${dbKey}** can not be cleared. ` +
+						`You can use \`config ${dbKey} default\` to reset it to the default value.`
+				);
+			}
+			// tslint:disable-next-line:no-invalid-this
+			return func('key: String, ...value?: String').call(this, message, [dbKey, value]);
 		}
 
 		const type = getSettingsType(dbKey);
 		// tslint:disable-next-line:no-invalid-this
-		return func(`key: String, ...value?: ${type}`).call(this, message, args);
+		return func(`key: String, ...value?: ${type}`).call(this, message, [dbKey, value]);
 	};
 };
 
@@ -121,13 +140,13 @@ export default class extends Command<IMClient> {
 					embed.setDescription(
 						`This config is currently set.\n` +
 							`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-							`Use \`${prefix}config ${key} none\` to reset it to the default.`
+							`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
+							(defaultSettings[key] === null ? `Use \`${prefix}config ${key} none\` to clear it.` : '')
 					);
 					embed.addField('Current Value', oldRawVal);
 				} else {
 					embed.setDescription(
-						`This config is currently **not** set / set to the **default**.\n` +
-							`Use \`${prefix}config ${key} <value>\` to set it.`
+						`This config is currently **not** set.\nUse \`${prefix}config ${key} <value>\` to set it.`
 					);
 				}
 			}
@@ -159,7 +178,7 @@ export default class extends Command<IMClient> {
 			}
 
 			if (notSet.length > 0) {
-				embed.addField('----- These settings are not set/set to the default -----', notSet.join('\n'));
+				embed.addField('----- These settings are not set -----', notSet.join('\n'));
 			}
 
 			createEmbed(message.client, embed);
@@ -169,7 +188,10 @@ export default class extends Command<IMClient> {
 
 	// Convert a raw value into something we can save in the database
 	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string; error?: string } {
-		if (value === 'none' || value === 'empty' || value === 'null' || value === 'default') {
+		if (value === 'default') {
+			return { value: defaultSettings[key] };
+		}
+		if (value === 'none' || value === 'empty' || value === 'null') {
 			return { value: null };
 		}
 
@@ -223,8 +245,18 @@ export default class extends Command<IMClient> {
 		}
 		if (key === SettingsKey.lang) {
 			if (!Lang[value]) {
-				const langs = Object.keys(Lang).join(', ');
-				return `Invalid language '${value}'. I currently only support the following languages: ${langs}`;
+				const langs = Object.keys(Lang)
+					.map(k => `**${k}**`)
+					.join(', ');
+				return `Invalid language **${value}**. The following languages are supported: ${langs}`;
+			}
+		}
+		if (key === SettingsKey.leaderboardStyle) {
+			if (!LeaderboardStyle[value]) {
+				const styles = Object.keys(LeaderboardStyle)
+					.map(k => `**${k}**`)
+					.join(', ');
+				return `Invalid leaderboard style **${value}**. The following styles are supported: ${styles}`;
 			}
 		}
 
@@ -235,11 +267,10 @@ export default class extends Command<IMClient> {
 	private after(message: Message, embed: RichEmbed, key: SettingsKey, value: any): void {
 		const me = message.member.guild.me;
 
-		if (key === SettingsKey.joinMessage) {
-			const val = value ? value : defaultJoinMessage;
+		if (key === SettingsKey.joinMessage && value) {
 			embed.addField(
 				'Preview',
-				val
+				value
 					.replace('{memberName}', message.member.displayName)
 					.replace('{memberMention}', `<@${message.member.id}>`)
 					.replace('{inviterName}', me.displayName)
@@ -247,11 +278,10 @@ export default class extends Command<IMClient> {
 					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
 			);
 		}
-		if (key === SettingsKey.leaveMessage) {
-			const val = value ? value : defaultLeaveMessage;
+		if (key === SettingsKey.leaveMessage && value) {
 			embed.addField(
 				'Preview',
-				val
+				value
 					.replace('{memberName}', message.member.displayName)
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)

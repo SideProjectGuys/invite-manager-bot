@@ -144,11 +144,18 @@ export enum SettingsKey {
 	modRole = 'modRole',
 	modChannel = 'modChannel',
 	logChannel = 'logChannel',
-	getUpdates = 'getUpdates'
+	getUpdates = 'getUpdates',
+	leaderboardStyle = 'leaderboardStyle'
 }
 
 export enum Lang {
 	en_us = 'en_us'
+}
+
+export enum LeaderboardStyle {
+	normal = 'normal',
+	table = 'table',
+	mentions = 'mentions'
 }
 
 export function getSettingsType(key: SettingsKey) {
@@ -165,6 +172,20 @@ export function getSettingsType(key: SettingsKey) {
 	}
 	return 'String';
 }
+
+export const defaultSettings: { [k in SettingsKey]: string } = {
+	prefix: '!',
+	lang: 'en_us',
+	joinMessage: '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
+	joinMessageChannel: null,
+	leaveMessage: '{memberName} **left**; Invited by **{inviterName}**',
+	leaveMessageChannel: null,
+	modRole: null,
+	modChannel: null,
+	logChannel: null,
+	getUpdates: 'true',
+	leaderboardStyle: 'normal'
+};
 
 export interface SettingAttributes extends BaseAttributes {
 	key: SettingsKey;

@@ -1,19 +1,7 @@
 import { IStorageProvider, StorageProvider } from 'yamdbf';
 
-import { settings, SettingsKey } from '../sequelize';
+import { defaultSettings, settings, SettingsKey } from '../sequelize';
 
-const defaultSettings: { [k in SettingsKey]: string } = {
-	prefix: '!',
-	lang: 'en_us',
-	joinMessage: null,
-	joinMessageChannel: null,
-	leaveMessage: null,
-	leaveMessageChannel: null,
-	modRole: null,
-	modChannel: null,
-	logChannel: null,
-	getUpdates: 'true'
-};
 const defaultSettingsStr = JSON.stringify(defaultSettings);
 
 export class IMStorageProvider extends StorageProvider implements IStorageProvider {
@@ -39,7 +27,12 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 			const cache: { [x: string]: { [key in SettingsKey]: string } } = {};
 			sets.forEach(set => {
 				if (!cache[set.guildId]) {
-					cache[set.guildId] = {} as any;
+					cache[set.guildId] = { ...defaultSettings };
+				}
+				// Skip any empty values that aren't allowed to be empty.
+				// This is a backward fix to insert any missing non-empty settings for guilds that don't have them yet.
+				if (set.value === null && defaultSettings[set.key] !== null) {
+					return;
 				}
 				cache[set.guildId][set.key] = set.value;
 			});
@@ -82,8 +75,10 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 				}
 			});
 
-			const obj: { [k in SettingsKey]: string } = defaultSettings;
-			sets.forEach(set => (obj[set.key] = set.value));
+			const obj: { [k in SettingsKey]: string } = { ...defaultSettings };
+			sets.forEach(set => {
+				obj[set.key] = set.value;
+			});
 
 			const str = JSON.stringify(obj);
 			this.cache[key] = str;
