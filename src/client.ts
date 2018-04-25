@@ -8,13 +8,7 @@ import { customInvites, inviteCodes, joins, members, sequelize, settings, Settin
 import { BooleanResolver } from './utils/BooleanResolver';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
-import {
-	createEmbed,
-	defaultJoinMessage,
-	defaultLeaveMessage,
-	getInviteCounts,
-	promoteIfQualified
-} from './utils/util';
+import { createEmbed, getInviteCounts, promoteIfQualified } from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -118,6 +112,12 @@ export class IMClient extends Client {
 
 		const inviterId = join['exactMatch.inviterId'];
 		const inviterName = join['exactMatch.inviter.name'];
+		const inviter: GuildMember = await member.guild.fetchMember(inviterId).catch(() => null);
+		const invites = await getInviteCounts(member.guild.id, inviterId);
+
+		if (inviter && !inviter.user.bot) {
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
+		}
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
 		const joinChannelId = (await sets.get(SettingsKey.joinMessageChannel)) as string;
@@ -126,22 +126,17 @@ export class IMClient extends Client {
 			console.log(`Guild ${member.guild.id} has no join message channel`);
 			return;
 		}
+
 		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
 		if (!joinChannel) {
 			console.log(`Guild ${member.guild.id} has invalid join message channel ${joinChannelId}`);
 			return;
 		}
 
-		const invites = await getInviteCounts(member.guild.id, inviterId);
-		const inviter: GuildMember = await member.guild.fetchMember(inviterId).catch(() => null);
-
-		if (inviter && !inviter.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
-		}
-
-		let joinMessageFormat = (await sets.get(SettingsKey.joinMessage)) as string;
+		const joinMessageFormat = (await sets.get(SettingsKey.joinMessage)) as string;
 		if (!joinMessageFormat) {
-			joinMessageFormat = defaultJoinMessage;
+			console.log(`Guild ${member.guild.id} has no join message`);
+			return;
 		}
 
 		const msg = joinMessageFormat
@@ -184,11 +179,13 @@ export class IMClient extends Client {
 
 		const inviter = await member.guild.fetchMember(inviterId).catch(() => null);
 
-		let leaveMessageFormat = (await sets.get(SettingsKey.leaveMessage)) as string;
+		const leaveMessageFormat = (await sets.get(SettingsKey.leaveMessage)) as string;
 		if (!leaveMessageFormat) {
-			leaveMessageFormat = defaultLeaveMessage;
+			console.log(`Guild ${member.guild.id} has no leave message`);
+			return;
 		}
 
+		// This is an optimization to only fetch the number if invites if the variable is used in the message
 		let invites = { code: 0, custom: 0, auto: 0, total: 0 };
 		if (leaveMessageFormat.indexOf('{numInvites}') > 0) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
