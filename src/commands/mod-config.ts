@@ -2,7 +2,7 @@ import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'disc
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { getSettingsType, LogAction, settings, SettingsKey } from '../sequelize';
+import { getSettingsType, Lang, LogAction, settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, defaultJoinMessage, defaultLeaveMessage, logAction } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -29,7 +29,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return func('key: String').call(this, message, args);
 		}
 
-		if (value === 'none' || value === 'empty' || value === 'null') {
+		if (value === 'none' || value === 'empty' || value === 'null' || value === 'default') {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String, ...value?: String').call(this, message, args);
 		}
@@ -159,7 +159,7 @@ export default class extends Command<IMClient> {
 			}
 
 			if (notSet.length > 0) {
-				embed.addField('----- These config keys are not set -----', notSet.join('\n'));
+				embed.addField('----- These settings are not set/set to the default -----', notSet.join('\n'));
 			}
 
 			createEmbed(message.client, embed);
@@ -169,7 +169,7 @@ export default class extends Command<IMClient> {
 
 	// Convert a raw value into something we can save in the database
 	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string; error?: string } {
-		if (value === 'none' || value === 'empty' || value === 'null') {
+		if (value === 'none' || value === 'empty' || value === 'null' || value === 'default') {
 			return { value: null };
 		}
 
@@ -219,6 +219,12 @@ export default class extends Command<IMClient> {
 			}
 			if (!message.guild.me.permissionsIn(channel).has('EMBED_LINKS')) {
 				return `I don't have permission to **embed links** in that channel`;
+			}
+		}
+		if (key === SettingsKey.lang) {
+			if (!Lang[value]) {
+				const langs = Object.keys(Lang).join(', ');
+				return `Invalid language '${value}'. I currently only support the following languages: ${langs}`;
 			}
 		}
 
