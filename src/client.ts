@@ -132,7 +132,7 @@ export class IMClient extends Client {
 		}
 
 		const invites = await getInviteCounts(member.guild.id, inviterId);
-		const inviter = await member.guild.fetchMember(inviterId);
+		const inviter: GuildMember = await member.guild.fetchMember(inviterId).catch(() => null);
 
 		if (inviter && !inviter.user.bot) {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
@@ -181,7 +181,7 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const inviter = await member.guild.fetchMember(inviterId);
+		const inviter = await member.guild.fetchMember(inviterId).catch(() => null);
 
 		let leaveMessageFormat = (await sets.get(SettingsKey.leaveMessage)) as string;
 		if (!leaveMessageFormat) {
@@ -190,7 +190,7 @@ export class IMClient extends Client {
 
 		let invites = { code: 0, custom: 0, auto: 0, total: 0 };
 		if (leaveMessageFormat.indexOf('{numInvites}') > 0) {
-			invites = await getInviteCounts(member.guild.id, inviter.id);
+			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
 
 		const msg = leaveMessageFormat
