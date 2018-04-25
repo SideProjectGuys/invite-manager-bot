@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
+import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { customInvites, LogAction } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
@@ -8,8 +8,7 @@ const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -17,9 +16,7 @@ export default class extends Command<Client> {
 			aliases: ['restoreInvites', 'unclear-invites', 'unclearInvites'],
 			desc: 'Restore all previously cleared invites',
 			usage: '<prefix>restore-invites (@user)',
-			info: '`' +
-				'@user  The user to restore all invites to\n' +
-				'`',
+			info: '`' + '@user  The user to restore all invites to\n' + '`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
@@ -37,13 +34,13 @@ export default class extends Command<Client> {
 				guildId: message.guild.id,
 				generated: true,
 				reason: 'clear_invites',
-				...memberId && { memberId },
+				...(memberId && { memberId })
 			}
 		});
 
 		await logAction(message, LogAction.restoreInvites, {
-			...memberId && { targetId: memberId },
-			num,
+			...(memberId && { targetId: memberId }),
+			num
 		});
 
 		message.channel.send(`Restored invites for ${num} users.`);

@@ -1,6 +1,6 @@
 import { RichEmbed, User } from 'discord.js';
 import * as moment from 'moment';
-import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
+import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, getInviteCounts } from '../utils/util';
@@ -9,8 +9,7 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -18,9 +17,7 @@ export default class extends Command<Client> {
 			aliases: ['showinfo'],
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
-			info: '`' +
-				'@user  The user for whom you want to see additional info.' +
-				'`',
+			info: '`' + '@user  The user for whom you want to see additional info.' + '`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
@@ -50,33 +47,35 @@ export default class extends Command<Client> {
 				await joins.count({
 					where: {
 						guildId: member.guild.id,
-						memberId: member.id,
-					},
+						memberId: member.id
+					}
 				}),
 				1
 			);
 			embed.addField('Joined', `${joinCount} times`, true);
 
 			const js = await joins.findAll({
-				attributes: [
-					'createdAt',
-				],
+				attributes: ['createdAt'],
 				where: {
 					guildId: message.guild.id,
-					memberId: user.id,
+					memberId: user.id
 				},
 				order: [['createdAt', 'DESC']],
-				include: [{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					include: [{
-						attributes: [],
-						model: members,
-						as: 'inviter'
-					}]
-				}],
-				raw: true,
+				include: [
+					{
+						attributes: ['inviterId'],
+						model: inviteCodes,
+						as: 'exactMatch',
+						include: [
+							{
+								attributes: [],
+								model: members,
+								as: 'inviter'
+							}
+						]
+					}
+				],
+				raw: true
 			});
 
 			if (js.length > 0) {
@@ -96,18 +95,22 @@ export default class extends Command<Client> {
 					}
 				});
 
-				const joinText = Object.keys(joinTimes).map(time => {
-					const joinTime = joinTimes[time];
+				const joinText = Object.keys(joinTimes)
+					.map(time => {
+						const joinTime = joinTimes[time];
 
-					const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
-					const totalText = total > 1 ? `**${total}** times ` : 'once ';
+						const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
+						const totalText = total > 1 ? `**${total}** times ` : 'once ';
 
-					const invText = Object.keys(joinTime).map(id => {
-						const timesText = joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
-						return `<@${id}>${timesText}`;
-					}).join(', ');
-					return `${totalText}**${time}**, invited by: ${invText}`;
-				}).join('\n');
+						const invText = Object.keys(joinTime)
+							.map(id => {
+								const timesText = joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
+								return `<@${id}>${timesText}`;
+							})
+							.join(', ');
+						return `${totalText}**${time}**, invited by: ${invText}`;
+					})
+					.join('\n');
 				embed.addField('Joins', joinText);
 			} else {
 				embed.addField('Joins', 'unknown (this only works for new members)');
@@ -117,17 +120,19 @@ export default class extends Command<Client> {
 				where: {
 					guildId: member.guild.id,
 					memberId: member.id,
-					generated: false,
+					generated: false
 				},
 				order: [['createdAt', 'DESC']],
-				raw: true,
+				raw: true
 			});
 
 			if (customInvs.length > 0) {
 				let customInvText = '';
 				customInvs.forEach(inv => {
 					const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
-					customInvText += `**${inv.amount}** from <@${inv.creatorId}> ${moment(inv.createdAt).fromNow()}${reasonText}\n`;
+					customInvText += `**${inv.amount}** from <@${inv.creatorId}> ${moment(
+						inv.createdAt
+					).fromNow()}${reasonText}\n`;
 				});
 				embed.addField('Bonus invites', customInvText);
 			} else {

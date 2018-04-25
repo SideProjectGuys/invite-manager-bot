@@ -1,7 +1,7 @@
 import { Channel, GuildMember, MessageReaction, RichEmbed } from 'discord.js';
 import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
-import { Command, CommandDecorators, KeyedStorage, Logger, logger, Message, Middleware } from 'yamdbf';
+import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
 import { customInvites, inviteCodes, joins, leaves, MemberAttributes, members, sequelize } from '../sequelize';
@@ -10,13 +10,13 @@ import { createEmbed, showPaginated } from '../utils/util';
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
-const timeDiff = 24 * 60 * 60 * 1000;  // 1 day
+const timeDiff = 24 * 60 * 60 * 1000; // 1 day
 const usersPerPage = 10;
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const neutralSymbol = '🔹';
 
-type InvCacheType = { [x: string]: { name: string, total: number, bonus: number, oldTotal: number, oldBonus: number } };
+type InvCacheType = { [x: string]: { name: string; total: number; bonus: number; oldTotal: number; oldBonus: number } };
 
 // Extra attributes for the sequelize queries
 const attrs: FindOptionsAttributesArray = [
@@ -38,8 +38,7 @@ const attrs: FindOptionsAttributesArray = [
 ];
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -47,7 +46,8 @@ export default class extends Command<IMClient> {
 			aliases: ['top'],
 			desc: 'Show members with most invites.',
 			usage: '<prefix>leaderboard (page) (#channel)',
-			info: '`' +
+			info:
+				'`' +
 				'page      Which page of the leaderboard to get.\n' +
 				'#channel  Will count only invites for this channel.' +
 				'`',
@@ -62,38 +62,39 @@ export default class extends Command<IMClient> {
 
 		const guildId = message.guild.id;
 
-		const where: { guildId: string, channelId?: string } = {
-			guildId,
+		const where: { guildId: string; channelId?: string } = {
+			guildId
 		};
 		if (channel) {
 			where.channelId = channel.id;
 		}
 
 		const codeInvs = await inviteCodes.findAll({
-			attributes: [
-				'inviterId',
-				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
-			],
+			attributes: ['inviterId', [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']],
 			where,
 			group: 'inviteCode.inviterId',
-			include: [{
-				attributes: ['name'],
-				model: members,
-				as: 'inviter',
-			}],
-			raw: true,
+			include: [
+				{
+					attributes: ['name'],
+					model: members,
+					as: 'inviter'
+				}
+			],
+			raw: true
 		});
 		const customInvs = await customInvites.findAll({
 			attributes: attrs,
 			where: {
-				guildId,
+				guildId
 			},
 			group: 'customInvite.memberId',
-			include: [{
-				attributes: ['name'],
-				model: members,
-			}],
-			raw: true,
+			include: [
+				{
+					attributes: ['name'],
+					model: members
+				}
+			],
+			raw: true
 		});
 
 		const invs: InvCacheType = {};
@@ -104,7 +105,7 @@ export default class extends Command<IMClient> {
 				total: parseInt(inv.totalUses, 10),
 				bonus: 0,
 				oldTotal: 0,
-				oldBonus: 0,
+				oldBonus: 0
 			};
 		});
 		customInvs.forEach((inv: any) => {
@@ -120,15 +121,13 @@ export default class extends Command<IMClient> {
 					total: bonus + auto,
 					bonus: bonus,
 					oldTotal: 0,
-					oldBonus: 0,
+					oldBonus: 0
 				};
 			}
 		});
 
 		const oldCodeInvs = await joins.findAll({
-			attributes: [
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
-			],
+			attributes: [[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins']],
 			where: {
 				guildId,
 				createdAt: {
@@ -136,19 +135,23 @@ export default class extends Command<IMClient> {
 				}
 			},
 			group: ['exactMatch.inviterId'],
-			include: [{
-				attributes: ['inviterId'],
-				model: inviteCodes,
-				as: 'exactMatch',
-				include: [{
-					attributes: ['name'],
-					model: members,
-					as: 'inviter',
-					required: true,
-				}],
-				required: true,
-			}],
-			raw: true,
+			include: [
+				{
+					attributes: ['inviterId'],
+					model: inviteCodes,
+					as: 'exactMatch',
+					include: [
+						{
+							attributes: ['name'],
+							model: members,
+							as: 'inviter',
+							required: true
+						}
+					],
+					required: true
+				}
+			],
+			raw: true
 		});
 		const oldBonusInvs = await customInvites.findAll({
 			attributes: attrs,
@@ -159,11 +162,13 @@ export default class extends Command<IMClient> {
 				}
 			},
 			group: ['memberId'],
-			include: [{
-				attributes: ['name'],
-				model: members,
-			}],
-			raw: true,
+			include: [
+				{
+					attributes: ['name'],
+					model: members
+				}
+			],
+			raw: true
 		});
 
 		oldCodeInvs.forEach((inv: any) => {
@@ -176,7 +181,7 @@ export default class extends Command<IMClient> {
 					total: 0,
 					bonus: 0,
 					oldTotal: parseInt(inv.totalJoins, 10),
-					oldBonus: 0,
+					oldBonus: 0
 				};
 			}
 		});
@@ -193,7 +198,7 @@ export default class extends Command<IMClient> {
 					total: 0,
 					bonus: 0,
 					oldTotal: bonus + auto,
-					oldBonus: bonus,
+					oldBonus: bonus
 				};
 			}
 		});
@@ -202,12 +207,12 @@ export default class extends Command<IMClient> {
 			.filter(k => invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
-				return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
+				return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
 			});
 
 		const oldKeys = [...keys].sort((a, b) => {
-			const diff = (invs[b].total - invs[b].oldTotal) - (invs[a].total - invs[a].oldTotal);
-			return diff !== 0 ? diff : (invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0);
+			const diff = invs[b].total - invs[b].oldTotal - (invs[a].total - invs[a].oldTotal);
+			return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
 		});
 
 		if (keys.length === 0) {
@@ -222,7 +227,7 @@ export default class extends Command<IMClient> {
 				'id',
 				'name',
 				[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
-				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt'],
+				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt']
 			],
 			where: { id: keys },
 			group: ['member.id'],
@@ -231,16 +236,16 @@ export default class extends Command<IMClient> {
 					attributes: [],
 					model: joins,
 					where: { guildId },
-					required: false,
+					required: false
 				},
 				{
 					attributes: [],
 					model: leaves,
 					where: { guildId },
-					required: false,
+					required: false
 				}
 			],
-			raw: true,
+			raw: true
 		});
 		const stillInServer: { [x: string]: boolean } = {};
 		lastJoinAndLeave.forEach((jal: any) => {
@@ -276,24 +281,18 @@ export default class extends Command<IMClient> {
 
 			keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
 				const inv = invs[k];
-				const pos = (page * usersPerPage) + i + 1;
+				const pos = page * usersPerPage + i + 1;
 
 				const prevPos = oldKeys.indexOf(k) + 1;
-				const posChange = (prevPos - i) - 1;
+				const posChange = prevPos - i - 1;
 
 				const name = /*stillInServer[k] ? `<@${k}>` :*/ `${inv.name}`;
-				const symbol = posChange > 0 ? upSymbol : (posChange < 0 ? downSymbol : neutralSymbol);
+				const symbol = posChange > 0 ? upSymbol : posChange < 0 ? downSymbol : neutralSymbol;
 
-				const posText = posChange > 0 ? '+' + posChange : (posChange === 0 ? '--' : posChange);
-				const line = [
-					`${pos}.`,
-					`${symbol} (${posText})`,
-					name,
-					`${inv.total}`,
-					`${inv.bonus}`,
-				];
+				const posText = posChange > 0 ? '+' + posChange : posChange === 0 ? '--' : posChange;
+				const line = [`${pos}.`, `${symbol} (${posText})`, name, `${inv.total}`, `${inv.bonus}`];
 				lines.push(line);
-				lengths.forEach((l, pIndex) => lengths[pIndex] = Math.max(l, line[pIndex].length));
+				lengths.forEach((l, pIndex) => (lengths[pIndex] = Math.max(l, line[pIndex].length)));
 			});
 
 			// Put string together

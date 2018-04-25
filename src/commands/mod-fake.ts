@@ -1,5 +1,5 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, GuildStorage, Logger, logger, Message, Middleware } from 'yamdbf';
+import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { inviteCodes, JoinAttributes, JoinInstance, joins, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
