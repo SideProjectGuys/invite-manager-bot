@@ -4,7 +4,17 @@ import { FindOptionsAttributesArray, Op } from 'sequelize';
 import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, inviteCodes, joins, leaves, MemberAttributes, members, sequelize } from '../sequelize';
+import {
+	customInvites,
+	inviteCodes,
+	joins,
+	LeaderboardStyle,
+	leaves,
+	MemberAttributes,
+	members,
+	sequelize,
+	SettingsKey
+} from '../sequelize';
 import { createEmbed, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -263,18 +273,17 @@ export default class extends Command<IMClient> {
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
+		const style: LeaderboardStyle = await message.guild.storage.settings.get(SettingsKey.leaderboardStyle);
+
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {
 			let str = '(changes compared to 1 day ago)\n\n';
-
-			// Show leaderboard as a table
-			const asTable = false;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
 			const lengths: number[] = [2, 7, 5, 8, 6];
 
-			if (asTable) {
+			if (style === LeaderboardStyle.table) {
 				lines.push(['#', 'Change', 'Name', 'Invites', 'Bonus']);
 				lines.push(['--', '-------', '-----', '--------', '------']);
 			}
@@ -286,7 +295,7 @@ export default class extends Command<IMClient> {
 				const prevPos = oldKeys.indexOf(k) + 1;
 				const posChange = prevPos - i - 1;
 
-				const name = /*stillInServer[k] ? `<@${k}>` :*/ `${inv.name}`;
+				const name = style === LeaderboardStyle.mentions && stillInServer[k] ? `<@${k}>` : `${inv.name}`;
 				const symbol = posChange > 0 ? upSymbol : posChange < 0 ? downSymbol : neutralSymbol;
 
 				const posText = posChange > 0 ? '+' + posChange : posChange === 0 ? '--' : posChange;
@@ -296,21 +305,23 @@ export default class extends Command<IMClient> {
 			});
 
 			// Put string together
-			if (asTable) {
+			if (style === LeaderboardStyle.table) {
 				str += '`';
 			}
 			lines.forEach(line => {
-				if (asTable) {
+				if (style === LeaderboardStyle.table) {
 					line.forEach((part, partIndex) => {
 						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
 					});
-				} else {
+				} else if (style === LeaderboardStyle.normal) {
+					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
+				} else if (style === LeaderboardStyle.mentions) {
 					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
 				}
 
 				str += '\n';
 			});
-			if (asTable) {
+			if (style === LeaderboardStyle.table) {
 				str += '--`';
 			}
 
