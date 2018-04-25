@@ -84,7 +84,8 @@ export class IMClient extends Client {
 
 		// Skip if this is a valid bot command
 		// (technically we ignore all prefixes, but bot only responds to default one)
-		if (this.commands.get(message.content) || this.commands.get(message.content.substring(1))) {
+		const cmd = message.content.split(' ')[0].toLowerCase();
+		if (this.commands.get(cmd) || this.commands.get(cmd.substring(1))) {
 			return;
 		}
 
