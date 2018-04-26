@@ -154,10 +154,10 @@ client.on('message', message => {
     console.log(data.datasets[0].data);
 
     return chartNode.drawChart({
-        type: 'line',
-        data: data,
-        options: options
-      })
+      type: 'line',
+      data: data,
+      options: options
+    })
       .then(() => {
         // chart is created
 
@@ -192,7 +192,7 @@ client.on('message', message => {
         // ./testimage.png
       });
 
-  }).catch(console.log);
+  }).catch(console.error);
 
 
 });

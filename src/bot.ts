@@ -2,7 +2,7 @@ import { IMClient } from './client';
 import { sequelize } from './sequelize';
 
 process.on('unhandledRejection', (reason: any, p: any) => {
-	console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+	console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
 const client = new IMClient();

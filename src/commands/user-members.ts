@@ -49,6 +49,6 @@ export default class extends Command<Client> {
 			createEmbed(message.client, embed);
 
 			message.channel.send({ embed });
-		}).catch(console.log);
+		}).catch(console.error);
 	}
 }

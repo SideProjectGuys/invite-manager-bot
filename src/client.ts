@@ -259,7 +259,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(reconnecting)`);
 		} catch (e) {
-			console.log('DISCORD RECONNECTING:', e);
+			console.error('DISCORD RECONNECTING:', e);
 		}
 	}
 
@@ -269,7 +269,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(disconnect)`);
 		} catch (e) {
-			console.log('DISCORD DISCONNECT:', e);
+			console.error('DISCORD DISCONNECT:', e);
 		}
 	}
 
@@ -279,7 +279,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(resume):${replayed}`);
 		} catch (e) {
-			console.log('DISCORD RESUME:', e);
+			console.error('DISCORD RESUME:', e);
 		}
 	}
 
@@ -289,7 +289,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(guildUnavailable):${guild.id} ${guild.name} ${guild.memberCount}`);
 		} catch (e) {
-			console.log('DISCORD GUILD_UNAVAILABLE:', e);
+			console.error('DISCORD GUILD_UNAVAILABLE:', e);
 		}
 	}
 
@@ -299,7 +299,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(warn):${JSON.stringify(info)}`);
 		} catch (e) {
-			console.log('DISCORD WARNING:', e);
+			console.error('DISCORD WARNING:', e);
 		}
 	}
 
@@ -309,7 +309,7 @@ export class IMClient extends Client {
 		try {
 			this.messageQueue.addMessage(`EVENT(error):${JSON.stringify(error)}`);
 		} catch (e) {
-			console.log('DISCORD ERROR:', e);
+			console.error('DISCORD ERROR:', e);
 		}
 	}
 }
