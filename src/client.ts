@@ -85,15 +85,30 @@ export class IMClient extends Client {
 
 		if (message.channel instanceof DMChannel) {
 			const user = message.author;
-			const channel = this.channels.get(config.dmChannel) as TextChannel;
+			const dmChannel = this.channels.get(config.dmChannel) as TextChannel;
 
-			if (channel) {
+			let oldMessages = await message.channel.fetchMessages({ limit: 1 });
+			const isInitialMessage = oldMessages.size === 0;
+			if (isInitialMessage) {
+				const initialMessage =
+					`Hi there, thanks for writing me!\n\n` +
+					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?ref=initial-dm \n\n` +
+					`If you need help, you can either write me here (try "help") or join our discord support server: https://discord.gg/Z7rtDpe.\n\n` +
+					`Have a good day!`;
+				const embed = new RichEmbed();
+				embed.setDescription(initialMessage);
+				createEmbed(message.client, embed);
+				user.send({ embed });
+			}
+
+			if (dmChannel) {
 				const embed = new RichEmbed();
 				embed.setAuthor(`${user.username}-${user.discriminator}`, user.avatarURL);
-				embed.addField('user id', user.id);
+				embed.addField('User ID', user.id, true);
+				embed.addField('Initial message', isInitialMessage, true);
 				embed.setDescription(message.content);
 				createEmbed(message.client, embed);
-				channel.send({ embed });
+				dmChannel.send({ embed });
 			}
 		}
 	}
