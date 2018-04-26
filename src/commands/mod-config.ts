@@ -31,15 +31,17 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			throw Error(`No config setting called **${key}** found.`);
 		}
 
-		const value = args.slice(1).join(' ');
+		const value = args[1];
 		if (!value) {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String').call(this, message, [dbKey]);
 		}
 
+		const newArgs = ([dbKey] as any[]).concat(args.slice(1));
+
 		if (value === 'default') {
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, [dbKey, value]);
+			return func('key: String, ...value?: String').call(this, message, newArgs);
 		}
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
@@ -50,12 +52,12 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				);
 			}
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, [dbKey, value]);
+			return func('key: String, ...value?: String').call(this, message, newArgs);
 		}
 
 		const type = getSettingsType(dbKey);
 		// tslint:disable-next-line:no-invalid-this
-		return func(`key: String, ...value?: ${type}`).call(this, message, [dbKey, value]);
+		return func(`key: String, ...value?: ${type}`).call(this, message, newArgs);
 	};
 };
 
