@@ -1,9 +1,14 @@
 import { User } from 'discord.js';
+import { Op } from 'sequelize';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import {
-	CustomInviteAttributes, CustomInviteInstance, customInvites,
-	inviteCodes, LogAction, sequelize
+	CustomInviteAttributes,
+	CustomInviteInstance,
+	customInvites,
+	inviteCodes,
+	LogAction,
+	sequelize
 } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
 
@@ -11,8 +16,7 @@ const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -20,9 +24,10 @@ export default class extends Command<Client> {
 			aliases: ['clearInvites'],
 			desc: 'Clear invites of the server/a user',
 			usage: '<prefix>clear-invites (@user) (clearBonus)',
-			info: '`' +
+			info:
+				'`' +
 				'@user  The user to clear all invites from\n' +
-				'clearBonus  Pass \'true\' if you want to also remove bonus invites\n' +
+				"clearBonus  Pass 'true' if you want to also remove bonus invites\n" +
 				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
@@ -43,21 +48,21 @@ export default class extends Command<Client> {
 				guildId: message.guild.id,
 				generated: true,
 				reason: 'clear_invites',
-				...memberId && { memberId },
+				...(memberId && { memberId })
 			}
 		});
 
 		const invs = await inviteCodes.findAll({
-			attributes: [
-				'inviterId',
-				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
-			],
+			attributes: ['inviterId', [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']],
 			where: {
 				guildId: message.guild.id,
-				...memberId && { inviterId: memberId },
+				inviterId: {
+					[Op.ne]: null,
+					...(memberId && { [Op.eq]: memberId })
+				}
 			},
 			group: 'inviteCode.inviterId',
-			raw: true,
+			raw: true
 		});
 
 		const uses: { [x: string]: number } = {};
@@ -71,17 +76,14 @@ export default class extends Command<Client> {
 
 		if (clearBonus) {
 			const customInvs = await customInvites.findAll({
-				attributes: [
-					'memberId',
-					[sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
-				],
+				attributes: ['memberId', [sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']],
 				where: {
 					guildId: message.guild.id,
-					...memberId && { memberId },
-					generated: false,
+					...(memberId && { memberId }),
+					generated: false
 				},
 				group: 'customInvite.memberId',
-				raw: true,
+				raw: true
 			});
 
 			customInvs.forEach((inv: any) => {
@@ -102,7 +104,7 @@ export default class extends Command<Client> {
 				reason: 'clear_invites',
 				generated: true,
 				guildId: message.guild.id,
-				creatorId: null,
+				creatorId: null
 			});
 		});
 
@@ -110,7 +112,7 @@ export default class extends Command<Client> {
 
 		await logAction(message, LogAction.clearInvites, {
 			customInviteIds: createdInvs.map(inv => inv.id),
-			...memberId && { targetId: memberId },
+			...(memberId && { targetId: memberId })
 		});
 
 		message.channel.send(`Cleared invites for ${createdInvs.length} users!`);
