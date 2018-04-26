@@ -42,19 +42,34 @@ export default class extends Command<IMClient> {
 			createdAt: role.createdAt
 		});
 
-		const [rank, isNew] = await ranks.insertOrUpdate(
-			{
+		let rank = await ranks.find({
+			where: {
+				guildId: role.guild.id,
+				roleId: role.id
+			},
+			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
+		});
+
+		let isNew = false;
+		if (rank) {
+			if (rank.deletedAt !== null) {
+				isNew = true;
+			}
+			rank.numInvites = invites;
+			rank.description = description;
+			rank.setDataValue('deletedAt', null);
+			rank.save();
+		} else {
+			rank = await ranks.create({
 				id: null,
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
 				description,
-				deletedAt: null // This resets the `deletedAt` timestamp in case this rank was previously deleted
-			},
-			{
-				returning: true
-			}
-		);
+				deletedAt: null
+			});
+			isNew = true;
+		}
 
 		await logAction(message, isNew ? LogAction.addRank : LogAction.updateRank, {
 			rankId: rank.id,
