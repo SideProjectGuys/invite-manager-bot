@@ -87,8 +87,8 @@ export class IMClient extends Client {
 			const user = message.author;
 			const dmChannel = this.channels.get(config.dmChannel) as TextChannel;
 
-			let oldMessages = await message.channel.fetchMessages({ limit: 1 });
-			const isInitialMessage = oldMessages.size === 0;
+			let oldMessages = await message.channel.fetchMessages({ limit: 2 });
+			const isInitialMessage = oldMessages.size <= 1;
 			if (isInitialMessage) {
 				const initialMessage =
 					`Hi there, thanks for writing me!\n\n` +
