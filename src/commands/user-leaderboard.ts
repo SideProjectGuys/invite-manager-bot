@@ -229,6 +229,7 @@ export default class extends Command<IMClient> {
 			const embed = new RichEmbed().setDescription('No invites!');
 			embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
 			createEmbed(this.client, embed);
+			message.channel.send({ embed });
 			return;
 		}
 
