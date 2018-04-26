@@ -31,7 +31,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			throw Error(`No config setting called **${key}** found.`);
 		}
 
-		const value = args[1];
+		const value = args.slice(1).join(' ');
 		if (!value) {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String').call(this, message, [dbKey]);
