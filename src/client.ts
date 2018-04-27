@@ -93,8 +93,8 @@ export class IMClient extends Client {
 				const initialMessage =
 					`Hi there, thanks for writing me!\n\n` +
 					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?ref=initial-dm \n\n` +
-					`If you need help, you can either write me here (try "help") or join our discord support server: https://discord.gg/Z7rtDpe.\n\n` +
-					`Have a good day!`;
+					`If you need help, you can either write me here (try "help") or join our discord support server: ` +
+					`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
 				const embed = new RichEmbed();
 				embed.setDescription(initialMessage);
 				createEmbed(message.client, embed);

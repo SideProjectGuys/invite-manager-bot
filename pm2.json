@@ -1,7 +1,9 @@
 {
-  "apps": [{
-    "name": "discord-invite-manager",
-    "script": "bin/bot.js",
-    "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS"
-  }]
+	"apps": [
+		{
+			"name": "bot",
+			"script": "bin/bot.js",
+			"log_date_format": "YYYY-MM-DD HH:mm:ss.SSS"
+		}
+	]
 }
