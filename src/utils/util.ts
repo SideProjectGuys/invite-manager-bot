@@ -1,7 +1,24 @@
-import { Client, Collection, GuildMember, Invite, MessageReaction, RichEmbed, TextChannel } from 'discord.js';
-import { Guild, GuildStorage, Message } from 'yamdbf';
+import {
+	Client,
+	DMChannel,
+	GroupDMChannel,
+	GuildMember,
+	MessageReaction,
+	RichEmbed,
+	TextChannel,
+	User
+} from 'discord.js';
+import { Guild, Message } from 'yamdbf';
 
-import { customInvites, inviteCodes, LogAction, logs, RankInstance, ranks, SettingsKey } from '../sequelize';
+import {
+	customInvites,
+	inviteCodes,
+	LogAction,
+	logs,
+	RankInstance,
+	ranks,
+	SettingsKey
+} from '../sequelize';
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -10,7 +27,8 @@ export enum CommandGroup {
 	Other = 'Other'
 }
 
-export function createEmbed(client: Client, embed: RichEmbed, color: string = '#00AE86'): RichEmbed {
+export function createEmbed(client: Client, color: string = '#00AE86'): RichEmbed {
+	const embed = new RichEmbed();
 	embed.setColor(color);
 	if (client) {
 		embed.setFooter('InviteManager.co', client.user.avatarURL);
@@ -19,6 +37,58 @@ export function createEmbed(client: Client, embed: RichEmbed, color: string = '#
 	}
 	embed.setTimestamp();
 	return embed;
+}
+
+function convertEmbedToPlain(embed: RichEmbed) {
+	const url = embed.url ? `(${embed.url})` : '';
+	const authorUrl = embed.author && embed.author.url ? `(${embed.author.url})` : '';
+
+	return (
+		'**Embedded links are disabled for this channel.\n' +
+		'Please tell an admin to enable them in the server settings.**\n\n' +
+		(embed.author ? `_${embed.author.name}_ ${authorUrl}\n` : '') +
+		(embed.title ? `**${embed.title}** ${url}\n` : '') +
+		(embed.description ? embed.description + '\n' : '') +
+		(embed.fields && embed.fields.length
+			? '\n\n' + embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') + '\n\n'
+			: '') +
+		(embed.footer ? `_${embed.footer.text}_` : '')
+	);
+}
+
+export function sendEmbed(
+	target: User | TextChannel | DMChannel | GroupDMChannel,
+	embed: RichEmbed,
+	fallbackUser?: User
+) {
+	return new Promise<Message | Message[]>((resolve, reject) => {
+		target
+			.send({ embed })
+			.then(resolve)
+			.catch(() => {
+				const content = convertEmbedToPlain(embed);
+				target
+					.send(content)
+					.then(resolve)
+					.catch(err => {
+						if (!fallbackUser) {
+							return reject(err);
+						}
+
+						fallbackUser
+							.send(
+								'**I do not have permissions to post to that channel.\n' +
+									`Please tell an admin to allow me to send messages in the channel.**\n\n`,
+								{ embed }
+							)
+							.then(resolve)
+							.catch(err2 => {
+								console.log(err2);
+								reject(err2);
+							});
+					});
+			});
+	});
 }
 
 export async function getInviteCounts(
@@ -117,13 +187,13 @@ export async function logAction(message: Message, action: LogAction, data: any) 
 	if (logChannelId) {
 		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
 		if (logChannel) {
-			const embed = new RichEmbed().setTitle('Log Action');
-			createEmbed(message.client, embed);
+			const embed = createEmbed(message.client);
+			embed.setTitle('Log Action');
 			embed.addField('Action', action, true);
 			embed.addField('Cause', `<@${message.author.id}>`, true);
 			embed.addField('Command', message.content);
 			embed.addField('Data', '`' + JSON.stringify(data, null, 2) + '`');
-			await logChannel.send({ embed });
+			sendEmbed(logChannel, embed);
 		}
 	}
 
@@ -148,7 +218,6 @@ export async function showPaginated(
 ) {
 	// Create embed for this page
 	const embed = render(page, maxPage);
-	createEmbed(client, embed);
 
 	// Add page number if required
 	if (page > 0 || page < maxPage - 1) {
@@ -158,7 +227,7 @@ export async function showPaginated(
 	if (prevMsg.editable && prevMsg.author.id === client.user.id) {
 		prevMsg.edit({ embed });
 	} else {
-		prevMsg = (await prevMsg.channel.send({ embed })) as Message;
+		prevMsg = (await sendEmbed(prevMsg.channel, embed, prevMsg.author)) as Message;
 	}
 
 	if (page > 0) {
@@ -181,7 +250,8 @@ export async function showPaginated(
 
 	if (page > 0 || page < maxPage - 1) {
 		const filter = (reaction: MessageReaction, user: GuildMember) =>
-			user.id !== client.user.id && (reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
+			user.id !== client.user.id &&
+			(reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
 
 		prevMsg.awaitReactions(filter, { max: 1, time: 15000 }).then(collected => {
 			const upReaction = collected.get(upSymbol);

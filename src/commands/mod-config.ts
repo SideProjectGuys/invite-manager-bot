@@ -11,7 +11,7 @@ import {
 	settings,
 	SettingsKey
 } from '../sequelize';
-import { CommandGroup, createEmbed, logAction } from '../utils/util';
+import { CommandGroup, createEmbed, logAction, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -71,7 +71,10 @@ export default class extends Command<IMClient> {
 			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key) (value)',
 			info:
-				'`' + 'key    The config setting which you want to show/change.' + 'value  The new value of the setting.' + '`',
+				'`' +
+				'key    The config setting which you want to show/change.' +
+				'value  The new value of the setting.' +
+				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Admin,
 			guildOnly: true
@@ -90,8 +93,8 @@ export default class extends Command<IMClient> {
 			let oldVal = await sets.get(key);
 			const oldRawVal = this.fromDbValue(key, oldVal);
 
-			const embed = new RichEmbed().setTitle(key);
-			createEmbed(this.client, embed);
+			const embed = createEmbed(this.client);
+			embed.setTitle(key);
 
 			if (typeof rawValue !== typeof undefined) {
 				const parsedValue = this.toDbValue(message.guild, key, rawValue);
@@ -143,7 +146,9 @@ export default class extends Command<IMClient> {
 						`This config is currently set.\n` +
 							`Use \`${prefix}config ${key} <value>\` to change it.\n` +
 							`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
-							(defaultSettings[key] === null ? `Use \`${prefix}config ${key} none\` to clear it.` : '')
+							(defaultSettings[key] === null
+								? `Use \`${prefix}config ${key} none\` to clear it.`
+								: '')
 					);
 					embed.addField('Current Value', oldRawVal);
 				} else {
@@ -157,9 +162,9 @@ export default class extends Command<IMClient> {
 			// If we updated a config setting, then 'oldVal' is now the new value
 			this.after(message, embed, key, oldVal);
 
-			message.channel.send({ embed });
+			sendEmbed(message.channel, embed, message.author);
 		} else {
-			const embed = new RichEmbed();
+			const embed = createEmbed(this.client);
 
 			embed.setTitle('Your config settings');
 			embed.setDescription(
@@ -183,13 +188,16 @@ export default class extends Command<IMClient> {
 				embed.addField('----- These settings are not set -----', notSet.join('\n'));
 			}
 
-			createEmbed(message.client, embed);
-			message.channel.send({ embed });
+			sendEmbed(message.channel, embed, message.author);
 		}
 	}
 
 	// Convert a raw value into something we can save in the database
-	private toDbValue(guild: Guild, key: SettingsKey, value: any): { value?: string; error?: string } {
+	private toDbValue(
+		guild: Guild,
+		key: SettingsKey,
+		value: any
+	): { value?: string; error?: string } {
 		if (value === 'default') {
 			return { value: defaultSettings[key] };
 		}

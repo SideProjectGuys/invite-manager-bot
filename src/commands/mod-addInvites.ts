@@ -3,14 +3,20 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { customInvites, LogAction, ranks } from '../sequelize';
-import { CommandGroup, getInviteCounts, logAction, promoteIfQualified } from '../utils/util';
+import {
+	CommandGroup,
+	createEmbed,
+	getInviteCounts,
+	logAction,
+	promoteIfQualified,
+	sendEmbed
+} from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -18,7 +24,8 @@ export default class extends Command<IMClient> {
 			aliases: ['addInvites'],
 			desc: 'Adds/Removes invites to/from a member',
 			usage: '<prefix>add-invites @user amount (reason)',
-			info: '`' +
+			info:
+				'`' +
 				'@user    The user that will receive/lose the bonus invites\n' +
 				'amount   The amount of invites the user will get/lose.\n' +
 				'           Use a negative (-) number to remove invites.\n' +
@@ -32,7 +39,10 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
-	public async action(message: Message, [user, amount, reason]: [User, number, string]): Promise<any> {
+	public async action(
+		message: Message,
+		[user, amount, reason]: [User, number, string]
+	): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
 		const member = await message.guild.fetchMember(user.id);
@@ -45,7 +55,11 @@ export default class extends Command<IMClient> {
 		const totalInvites = invites.total + amount;
 
 		if (!user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, member, totalInvites);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
+				message.guild,
+				member,
+				totalInvites
+			);
 		}
 
 		const createdInv = await customInvites.create({
@@ -55,17 +69,23 @@ export default class extends Command<IMClient> {
 			creatorId: message.author.id,
 			amount,
 			reason,
-			generated: false,
+			generated: false
 		});
 
 		await logAction(message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
 			targetId: member.id,
 			amount,
-			reason,
+			reason
 		});
 
-		const msg = amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;
-		message.channel.send(msg + ` <@${member.id}>, now at: **${totalInvites}** invites`);
+		const msg =
+			amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;
+
+		const embed = createEmbed(this.client);
+		embed.setTitle(`<@${member.id}>`);
+		embed.setDescription(msg + ` <@${member.id}>, now at: **${totalInvites}** invites`);
+
+		sendEmbed(message.channel, embed, message.author);
 	}
 }

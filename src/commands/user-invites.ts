@@ -3,14 +3,19 @@ import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 
 
 import { IMClient } from '../client';
 import { customInvites, ranks } from '../sequelize';
-import { CommandGroup, createEmbed, getInviteCounts, promoteIfQualified } from '../utils/util';
+import {
+	CommandGroup,
+	createEmbed,
+	getInviteCounts,
+	promoteIfQualified,
+	sendEmbed
+} from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -18,9 +23,7 @@ export default class extends Command<IMClient> {
 			aliases: ['invite', 'rank'],
 			desc: 'Show personal invites',
 			usage: '<prefix>invites (@user)',
-			info: '`' +
-				'@user  The user for whom you want to show invites.' +
-				'`',
+			info: '`' + '@user  The user for whom you want to show invites.' + '`',
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
@@ -41,10 +44,18 @@ export default class extends Command<IMClient> {
 		if (!message.author.bot) {
 			let messageMember = message.member;
 			if (!messageMember) {
-				this._logger.log(`INFO: ${message.guild.name} (${message.author.username}): ${message.content} HAS NO MEMBER`);
+				this._logger.log(
+					`INFO: ${message.guild.name} (${message.author.username}): ${
+						message.content
+					} HAS NO MEMBER`
+				);
 				messageMember = await message.guild.fetchMember(message.author.id);
 			}
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(message.guild, messageMember, invites.total);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
+				message.guild,
+				messageMember,
+				invites.total
+			);
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
@@ -52,18 +63,18 @@ export default class extends Command<IMClient> {
 				textMessage += `${subject} **${nextRankPointsDiff}** more invites to reach **${nextRankName}** rank!`;
 			} else {
 				if (numRanks > 0) {
-					textMessage += (target.id === message.author.id) ?
-						`Congratulations, you currently have the highest rank!` :
-						`<@${target.id} currently has the highest rank!`;
+					textMessage +=
+						target.id === message.author.id
+							? `Congratulations, you currently have the highest rank!`
+							: `<@${target.id} currently has the highest rank!`;
 				}
 			}
 		}
 
-		const embed = new RichEmbed();
+		const embed = createEmbed(this.client);
 		embed.setTitle(target.username);
 		embed.setDescription(textMessage);
-		createEmbed(message.client, embed);
 
-		message.channel.send({ embed });
+		sendEmbed(message.channel, embed, message.author);
 	}
 }

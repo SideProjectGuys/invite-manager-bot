@@ -15,7 +15,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../sequelize';
-import { createEmbed, showPaginated } from '../utils/util';
+import { createEmbed, sendEmbed, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -26,7 +26,9 @@ const upSymbol = '🔺';
 const downSymbol = '🔻';
 const neutralSymbol = '🔹';
 
-type InvCacheType = { [x: string]: { name: string; total: number; bonus: number; oldTotal: number; oldBonus: number } };
+type InvCacheType = {
+	[x: string]: { name: string; total: number; bonus: number; oldTotal: number; oldBonus: number };
+};
 
 // Extra attributes for the sequelize queries
 const attrs: FindOptionsAttributesArray = [
@@ -34,14 +36,24 @@ const attrs: FindOptionsAttributesArray = [
 	[
 		sequelize.fn(
 			'sum',
-			sequelize.fn('if', sequelize.col('customInvite.generated'), 0, sequelize.col('customInvite.amount'))
+			sequelize.fn(
+				'if',
+				sequelize.col('customInvite.generated'),
+				0,
+				sequelize.col('customInvite.amount')
+			)
 		),
 		'totalBonus'
 	],
 	[
 		sequelize.fn(
 			'sum',
-			sequelize.fn('if', sequelize.col('customInvite.generated'), sequelize.col('customInvite.amount'), 0)
+			sequelize.fn(
+				'if',
+				sequelize.col('customInvite.generated'),
+				sequelize.col('customInvite.amount'),
+				0
+			)
 		),
 		'totalAuto'
 	]
@@ -80,7 +92,10 @@ export default class extends Command<IMClient> {
 		}
 
 		const codeInvs = await inviteCodes.findAll({
-			attributes: ['inviterId', [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']],
+			attributes: [
+				'inviterId',
+				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
+			],
 			where,
 			group: 'inviteCode.inviterId',
 			include: [
@@ -226,10 +241,10 @@ export default class extends Command<IMClient> {
 		});
 
 		if (keys.length === 0) {
-			const embed = new RichEmbed().setDescription('No invites!');
+			const embed = createEmbed(this.client);
+			embed.setDescription('No invites!');
 			embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
-			createEmbed(this.client, embed);
-			message.channel.send({ embed });
+			sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
@@ -274,7 +289,9 @@ export default class extends Command<IMClient> {
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		const style: LeaderboardStyle = await message.guild.storage.settings.get(SettingsKey.leaderboardStyle);
+		const style: LeaderboardStyle = await message.guild.storage.settings.get(
+			SettingsKey.leaderboardStyle
+		);
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {
@@ -296,7 +313,8 @@ export default class extends Command<IMClient> {
 				const prevPos = oldKeys.indexOf(k) + 1;
 				const posChange = prevPos - i - 1;
 
-				const name = style === LeaderboardStyle.mentions && stillInServer[k] ? `<@${k}>` : `${inv.name}`;
+				const name =
+					style === LeaderboardStyle.mentions && stillInServer[k] ? `<@${k}>` : `${inv.name}`;
 				const symbol = posChange > 0 ? upSymbol : posChange < 0 ? downSymbol : neutralSymbol;
 
 				const posText = posChange > 0 ? '+' + posChange : posChange === 0 ? '--' : posChange;
@@ -314,10 +332,10 @@ export default class extends Command<IMClient> {
 					line.forEach((part, partIndex) => {
 						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
 					});
-				} else if (style === LeaderboardStyle.normal) {
-					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
-				} else if (style === LeaderboardStyle.mentions) {
-					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${line[4]}** bonus)`;
+				} else if (style === LeaderboardStyle.normal || style === LeaderboardStyle.mentions) {
+					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${
+						line[4]
+					}** bonus)`;
 				}
 
 				str += '\n';
@@ -326,7 +344,7 @@ export default class extends Command<IMClient> {
 				str += '--`';
 			}
 
-			return new RichEmbed()
+			return createEmbed(this.client)
 				.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`)
 				.setDescription(str);
 		});

@@ -27,7 +27,7 @@ export default class extends Command<Client> {
 			info:
 				'`' +
 				'@user  The user to clear all invites from\n' +
-				"clearBonus  Pass 'true' if you want to also remove bonus invites\n" +
+				`clearBonus  Pass 'true' if you want to also remove bonus invites\n` +
 				'`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
@@ -53,7 +53,10 @@ export default class extends Command<Client> {
 		});
 
 		const invs = await inviteCodes.findAll({
-			attributes: ['inviterId', [sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']],
+			attributes: [
+				'inviterId',
+				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
+			],
 			where: {
 				guildId: message.guild.id,
 				inviterId: {
@@ -76,7 +79,10 @@ export default class extends Command<Client> {
 
 		if (clearBonus) {
 			const customInvs = await customInvites.findAll({
-				attributes: ['memberId', [sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']],
+				attributes: [
+					'memberId',
+					[sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
+				],
 				where: {
 					guildId: message.guild.id,
 					...(memberId && { memberId }),

@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
 import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
-import { CommandGroup, createEmbed, getInviteCounts } from '../utils/util';
+import { CommandGroup, createEmbed, getInviteCounts, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -37,7 +37,8 @@ export default class extends Command<Client> {
 		if (member) {
 			const invites = await getInviteCounts(member.guild.id, member.id);
 
-			const embed = new RichEmbed().setTitle(member.user.username);
+			const embed = createEmbed(this.client);
+			embed.setTitle(member.user.username);
 
 			const joinedAgo = moment(member.joinedAt).fromNow();
 			embed.addField('Last joined', joinedAgo, true);
@@ -142,16 +143,14 @@ export default class extends Command<Client> {
 			// invitedByText = 'Could not match inviter (multiple possibilities)';
 
 			/*if (stillOnServerCount === 0 && trackedInviteCount === 0) {
-				embed.addField('Invited people still on the server (since bot joined)', 
+				embed.addField('Invited people still on the server (since bot joined)',
 				`User did not invite any members since this bot joined.`);
 			} else {
-				embed.addField('Invited people still on the server (since bot joined)', 
+				embed.addField('Invited people still on the server (since bot joined)',
 				`**${stillOnServerCount}** still here out of **${trackedInviteCount}** invited members.`);
 			}*/
 
-			createEmbed(message.client, embed);
-
-			message.channel.send({ embed });
+			sendEmbed(message.channel, embed, message.author);
 		} else {
 			message.channel.send('User is not part of your guild');
 		}

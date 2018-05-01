@@ -3,17 +3,26 @@ import * as moment from 'moment';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
 import { inviteCodes, members } from '../sequelize';
-import { CommandGroup, createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
 			name: 'invite-codes',
-			aliases: ['invite-code', 'get-invite-codes', 'getInviteCode', 'invite-codes',
-				'inviteCodes', 'InviteCode', 'getInviteCode', 'get-invite-code', 'showInviteCode', 'show-invite-code'],
+			aliases: [
+				'invite-code',
+				'get-invite-codes',
+				'getInviteCode',
+				'invite-codes',
+				'inviteCodes',
+				'InviteCode',
+				'getInviteCode',
+				'get-invite-code',
+				'showInviteCode',
+				'show-invite-code'
+			],
 			desc: 'Get a list of all your invite codes',
 			usage: '<prefix>invite-codes',
 			clientPermissions: ['MANAGE_GUILD'],
@@ -27,31 +36,44 @@ export default class extends Command<Client> {
 
 		const codes = await inviteCodes.findAll({
 			where: {
-				guildId: message.guild.id,
+				guildId: message.guild.id
 			},
-			include: [{
-				attributes: [],
-				model: members,
-				as: 'inviter',
-				where: {
-					id: message.author.id
-				},
-				required: true
-			}],
-			raw: true,
+			include: [
+				{
+					attributes: [],
+					model: members,
+					as: 'inviter',
+					where: {
+						id: message.author.id
+					},
+					required: true
+				}
+			],
+			raw: true
 		});
 
-		const validCodes = codes.filter(c => c.maxAge === 0 || moment(c.createdAt).add(c.maxAge, 'second').isAfter(moment()));
+		const validCodes = codes.filter(
+			c =>
+				c.maxAge === 0 ||
+				moment(c.createdAt)
+					.add(c.maxAge, 'second')
+					.isAfter(moment())
+		);
 		const temporaryInvites = validCodes.filter(i => i.maxAge > 0);
 		const permanentInvites = validCodes.filter(i => i.maxAge === 0);
-		const recommendedCode = permanentInvites.reduce((max, val) => val.uses > max.uses ? val : max, permanentInvites[0]);
+		const recommendedCode = permanentInvites.reduce(
+			(max, val) => (val.uses > max.uses ? val : max),
+			permanentInvites[0]
+		);
 
-		const embed = new RichEmbed();
+		const embed = createEmbed(this.client);
 		embed.setTitle(`You have the following codes on the server ${message.guild.name}`);
 
 		if (permanentInvites.length === 0 && temporaryInvites.length === 0) {
-			embed.setDescription(`You don't have any active invite codes. ` +
-				`Please ask the moderators of the server how to create one.`);
+			embed.setDescription(
+				`You don't have any active invite codes. ` +
+					`Please ask the moderators of the server how to create one.`
+			);
 		} else {
 			if (recommendedCode) {
 				embed.addField(`Recommended invite code`, `https://discord.gg/${recommendedCode.code}`);
@@ -61,11 +83,13 @@ export default class extends Command<Client> {
 		}
 		if (permanentInvites.length > 0) {
 			embed.addBlankField();
-			embed.addField('Permanent', 'These invites don\'t expire.');
+			embed.addField('Permanent', `These invites don't expire.`);
 			permanentInvites.forEach(i => {
 				embed.addField(
 					`${i.code} (${i.maxAge > 0 ? 'Temporary' : 'Permanent'})`,
-					`**Uses**: ${i.uses}\n**Max Age**:${i.maxAge}\n**Max Uses**: ${i.maxUses}\n**Channel**: <#${i.channelId}>\n`,
+					`**Uses**: ${i.uses}\n**Max Age**:${i.maxAge}\n**Max Uses**: ${
+						i.maxUses
+					}\n**Channel**: <#${i.channelId}>\n`,
 					true
 				);
 			});
@@ -76,16 +100,18 @@ export default class extends Command<Client> {
 			temporaryInvites.forEach(i => {
 				embed.addField(
 					`${i.code} (${i.maxAge > 0 ? 'Temporary' : 'Permanent'})`,
-					`**Uses**: ${i.uses}\n**Max Age**:${moment.duration(i.maxAge).humanize()}\n**Max Uses**: ${i.maxUses}\n` +
-					`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(i.createdAt).add(i.maxAge, 's').fromNow()}`,
+					`**Uses**: ${i.uses}\n**Max Age**:${moment
+						.duration(i.maxAge)
+						.humanize()}\n**Max Uses**: ${i.maxUses}\n` +
+						`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(i.createdAt)
+							.add(i.maxAge, 's')
+							.fromNow()}`,
 					true
 				);
 			});
 		}
 
-		createEmbed(message.client, embed);
-
-		message.author.send({ embed });
+		sendEmbed(message.author, embed);
 		message.reply('I sent you a DM with all your invite codes.');
 	}
 }

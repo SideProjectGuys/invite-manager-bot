@@ -1,7 +1,7 @@
 import { RichEmbed, TextChannel } from 'discord.js';
 import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
 
-import { CommandGroup, createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -9,8 +9,7 @@ const { using } = CommandDecorators;
 const config = require('../../config.json');
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -34,16 +33,21 @@ export default class extends Command<Client> {
 			// tslint:disable-next-line
 			let channel = <TextChannel>message.client.channels.get(config.feedbackChannel);
 
-			const embedFeedback = new RichEmbed();
-			embedFeedback.setAuthor(`${message.author.username}#${message.author.discriminator}`, message.author.avatarURL);
+			const embedFeedback = createEmbed(this.client);
+			embedFeedback.setAuthor(
+				`${message.author.username}#${message.author.discriminator}`,
+				message.author.avatarURL
+			);
 			embedFeedback.addField('Guild', `${message.guild.id} - ${message.guild.name}`);
 			embedFeedback.addField('Message', `${feedback}`);
 			embedFeedback.addField('User ID', message.author.id);
-			createEmbed(message.client, embedFeedback);
+
 			channel.send({ embed: embedFeedback }).then(() => {
-				const embed = new RichEmbed();
-				embed.setDescription(`Thank you for your feedback! ` +
-					`If you need personal assistance please join our support discord server.`);
+				const embed = createEmbed(this.client);
+				embed.setDescription(
+					`Thank you for your feedback! ` +
+						`If you need personal assistance please join our support discord server.`
+				);
 
 				let linksArray = [];
 				if (config.botSupport) {
@@ -61,8 +65,7 @@ export default class extends Command<Client> {
 
 				embed.addField(`Links`, linksArray.join(` | `));
 
-				createEmbed(message.client, embed);
-				message.channel.send({ embed });
+				sendEmbed(message.channel, embed, message.author);
 			});
 		}
 	}

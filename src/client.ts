@@ -4,11 +4,19 @@ import * as path from 'path';
 import { Client, Guild, GuildSettings, GuildStorage, ListenerUtil } from 'yamdbf';
 import { commandUsage } from 'yamdbf-command-usage';
 
-import { customInvites, inviteCodes, joins, members, sequelize, settings, SettingsKey } from './sequelize';
+import {
+	customInvites,
+	inviteCodes,
+	joins,
+	members,
+	sequelize,
+	settings,
+	SettingsKey
+} from './sequelize';
 import { BooleanResolver } from './utils/BooleanResolver';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
-import { createEmbed, getInviteCounts, promoteIfQualified } from './utils/util';
+import { createEmbed, getInviteCounts, promoteIfQualified, sendEmbed } from './utils/util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -28,7 +36,17 @@ export class IMClient extends Client {
 				owner: config.owners,
 				pause: true,
 				ratelimit: '2/5s',
-				disableBase: ['setlang', 'setprefix', 'blacklist', 'eval', 'eval:ts', 'limit', 'reload', 'ping', 'help'],
+				disableBase: [
+					'setlang',
+					'setprefix',
+					'blacklist',
+					'eval',
+					'eval:ts',
+					'limit',
+					'reload',
+					'ping',
+					'help'
+				],
 				plugins: [commandUsage(config.commandLogChannel)],
 				unknownCommandError: false
 			},
@@ -61,12 +79,16 @@ export class IMClient extends Client {
 
 	@on('guildCreate')
 	private async _onGuildCreate(guild: Guild): Promise<void> {
-		this.messageQueue.addMessage(`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`);
+		this.messageQueue.addMessage(
+			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
+		);
 	}
 
 	@on('guildDelete')
 	private async _onGuildDelete(guild: Guild): Promise<void> {
-		this.messageQueue.addMessage(`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`);
+		this.messageQueue.addMessage(
+			`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`
+		);
 	}
 
 	@on('message')
@@ -95,20 +117,18 @@ export class IMClient extends Client {
 					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?ref=initial-dm \n\n` +
 					`If you need help, you can either write me here (try "help") or join our discord support server: ` +
 					`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
-				const embed = new RichEmbed();
+				const embed = createEmbed(this);
 				embed.setDescription(initialMessage);
-				createEmbed(message.client, embed);
-				user.send({ embed });
+				sendEmbed(user, embed);
 			}
 
 			if (dmChannel) {
-				const embed = new RichEmbed();
+				const embed = createEmbed(this);
 				embed.setAuthor(`${user.username}-${user.discriminator}`, user.avatarURL);
 				embed.addField('User ID', user.id, true);
 				embed.addField('Initial message', isInitialMessage, true);
 				embed.setDescription(message.content);
-				createEmbed(message.client, embed);
-				dmChannel.send({ embed });
+				sendEmbed(dmChannel, embed);
 			}
 		}
 	}
@@ -121,7 +141,9 @@ export class IMClient extends Client {
 		}
 
 		if (!join) {
-			console.log(`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`);
+			console.log(
+				`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`
+			);
 			return;
 		}
 
@@ -131,7 +153,11 @@ export class IMClient extends Client {
 		const invites = await getInviteCounts(member.guild.id, inviterId);
 
 		if (inviter && !inviter.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(member.guild, inviter, invites.total);
+			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
+				member.guild,
+				inviter,
+				invites.total
+			);
 		}
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id).settings;
@@ -172,7 +198,9 @@ export class IMClient extends Client {
 		}
 
 		if (!join) {
-			console.log(`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`);
+			console.log(
+				`Could not find join for ${member.id} in ${member.guild.id} at ${member.joinedTimestamp}`
+			);
 			return;
 		}
 
@@ -215,7 +243,12 @@ export class IMClient extends Client {
 		leaveChannel.send(msg);
 	}
 
-	private async findJoin(memberId: string, guildId: string, createdAt: number, timeOut: number): Promise<any> {
+	private async findJoin(
+		memberId: string,
+		guildId: string,
+		createdAt: number,
+		timeOut: number
+	): Promise<any> {
 		return new Promise((resolve, reject) => {
 			const func = async () => {
 				resolve(
@@ -250,7 +283,9 @@ export class IMClient extends Client {
 
 	private setActivity() {
 		let user: any = this.user;
-		user.setPresence({ game: { name: `invitemanager.co - ${this.guilds.size} servers!`, type: 0 } });
+		user.setPresence({
+			game: { name: `invitemanager.co - ${this.guilds.size} servers!`, type: 0 }
+		});
 	}
 
 	@on('reconnecting')
@@ -287,7 +322,9 @@ export class IMClient extends Client {
 	private async _onGuildUnavailable(guild: Guild) {
 		console.log('DISCORD GUILD_UNAVAILABLE:', guild.id);
 		try {
-			this.messageQueue.addMessage(`EVENT(guildUnavailable):${guild.id} ${guild.name} ${guild.memberCount}`);
+			this.messageQueue.addMessage(
+				`EVENT(guildUnavailable):${guild.id} ${guild.name} ${guild.memberCount}`
+			);
 		} catch (e) {
 			console.error('DISCORD GUILD_UNAVAILABLE:', e);
 		}

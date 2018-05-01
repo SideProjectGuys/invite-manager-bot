@@ -2,11 +2,10 @@ import { RichEmbed } from 'discord.js';
 import { Client, Command, Logger, logger, Message } from 'yamdbf';
 
 import { ranks } from '../sequelize';
-import { CommandGroup, createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -24,10 +23,10 @@ export default class extends Command<Client> {
 
 		const rs = await ranks.findAll({
 			where: {
-				guildId: message.guild.id,
+				guildId: message.guild.id
 			},
 			order: ['numInvites'],
-			raw: true,
+			raw: true
 		});
 
 		let output = '';
@@ -42,12 +41,11 @@ export default class extends Command<Client> {
 				}
 				output += `<@&${r.roleId}>: **${r.numInvites} invites**${description}\n`;
 			});
-			const embed = new RichEmbed();
+			const embed = createEmbed(this.client);
 			embed.setAuthor('Ranks');
 			embed.setDescription(output);
 
-			createEmbed(message.client, embed);
-			message.channel.send({ embed });
+			sendEmbed(message.channel, embed, message.author);
 		}
 	}
 }

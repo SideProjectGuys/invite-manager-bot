@@ -2,13 +2,12 @@ import { RichEmbed } from 'discord.js';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
 
 export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -16,7 +15,7 @@ export default class extends Command<IMClient> {
 			aliases: ['botInfo'],
 			desc: 'Show info about the bot',
 			usage: '<prefix>botInfo',
-			group: CommandGroup.Other,
+			group: CommandGroup.Other
 		});
 	}
 
@@ -25,10 +24,12 @@ export default class extends Command<IMClient> {
 
 		// TODO: This is currently multiplied by the shard count, which is ok for guilds,
 		// but inaccurate for the members count
-		const guildCount = this.client.shard && this.client.shard.count > 1 ?
-			'~' + (message.client.guilds.size * this.client.shard.count) : message.client.guilds.size;
+		const guildCount =
+			this.client.shard && this.client.shard.count > 1
+				? '~' + message.client.guilds.size * this.client.shard.count
+				: message.client.guilds.size;
 
-		const embed = new RichEmbed();
+		const embed = createEmbed(this.client);
 		embed.addField('Guilds', guildCount, true);
 		if (config.botSupport) {
 			embed.addField('Support Discord', config.botSupport);
@@ -42,8 +43,7 @@ export default class extends Command<IMClient> {
 		if (config.botPatreon) {
 			embed.addField('Patreon', config.botPatreon);
 		}
-		createEmbed(message.client, embed);
 
-		message.channel.send({ embed });
+		sendEmbed(message.channel, embed, message.author);
 	}
 }

@@ -29,7 +29,11 @@ export default class extends Command<Client> {
 	public async action(message: Message, [_page]: [number]): Promise<any> {
 		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
 
-		type ExtendedJoin = JoinAttributes & { memberName: string; totalJoins: string; inviterIds: string | null };
+		type ExtendedJoin = JoinAttributes & {
+			memberName: string;
+			totalJoins: string;
+			inviterIds: string | null;
+		};
 
 		const js: ExtendedJoin[] = (await joins.findAll({
 			attributes: [
@@ -39,7 +43,9 @@ export default class extends Command<Client> {
 				[
 					sequelize.fn(
 						'GROUP_CONCAT',
-						sequelize.literal('CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"')
+						sequelize.literal(
+							'CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"'
+						)
 					),
 					'inviterIds'
 				]
@@ -79,10 +85,15 @@ export default class extends Command<Client> {
 
 		const suspiciousJoins = js
 			.filter((j: ExtendedJoin) => parseInt(j.totalJoins, 10) > 1)
-			.sort((a: ExtendedJoin, b: ExtendedJoin) => parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10));
+			.sort(
+				(a: ExtendedJoin, b: ExtendedJoin) =>
+					parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10)
+			);
 
 		if (suspiciousJoins.length === 0) {
-			message.channel.send(`There have been no fake invites since the bot has been added to this server.`);
+			message.channel.send(
+				`There have been no fake invites since the bot has been added to this server.`
+			);
 			return;
 		}
 
@@ -92,33 +103,39 @@ export default class extends Command<Client> {
 		showPaginated(this.client, message, p, maxPage, page => {
 			let description = '';
 
-			suspiciousJoins.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((join: ExtendedJoin) => {
-				if (!join.inviterIds) {
-					return;
-				}
+			suspiciousJoins
+				.slice(page * usersPerPage, (page + 1) * usersPerPage)
+				.forEach((join: ExtendedJoin) => {
+					if (!join.inviterIds) {
+						return;
+					}
 
-				const invs: { [x: string]: number } = {};
-				join.inviterIds.split('\t').forEach((idName: string) => {
-					const name = idName.split('|', 2)[1];
-					if (invs[name]) {
-						invs[name]++;
-					} else {
-						invs[name] = 1;
+					const invs: { [x: string]: number } = {};
+					join.inviterIds.split('\t').forEach((idName: string) => {
+						const name = idName.split('|', 2)[1];
+						if (invs[name]) {
+							invs[name]++;
+						} else {
+							invs[name] = 1;
+						}
+					});
+					const invText = Object.keys(invs)
+						.map(name => {
+							const timesText = invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
+							return `**${name}**${timesText}`;
+						})
+						.join(', ');
+					let newFakeText = `**${join.memberName}** joined **${
+						join.totalJoins
+					} times**, invited by: ${invText}\n`;
+					if (description.length + newFakeText.length < 2048) {
+						description += newFakeText;
 					}
 				});
-				const invText = Object.keys(invs)
-					.map(name => {
-						const timesText = invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
-						return `**${name}**${timesText}`;
-					})
-					.join(', ');
-				let newFakeText = `**${join.memberName}** joined **${join.totalJoins} times**, invited by: ${invText}\n`;
-				if (description.length + newFakeText.length < 2048) {
-					description += newFakeText;
-				}
-			});
 
-			return new RichEmbed().setTitle('Fake invites').setDescription(description);
+			return createEmbed(this.client)
+				.setTitle('Fake invites')
+				.setDescription(description);
 		});
 	}
 }
