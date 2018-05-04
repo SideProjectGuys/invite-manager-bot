@@ -18,7 +18,7 @@ const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function(message: Message, args: string[]) {
+	return function (message: Message, args: string[]) {
 		const key = args[0];
 		if (!key) {
 			return [message, args];
@@ -48,7 +48,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			if (defaultSettings[dbKey] !== null) {
 				throw Error(
 					`The config setting **${dbKey}** can not be cleared. ` +
-						`You can use \`config ${dbKey} default\` to reset it to the default value.`
+					`You can use \`config ${dbKey} default\` to reset it to the default value.`
 				);
 			}
 			// tslint:disable-next-line:no-invalid-this
@@ -120,8 +120,8 @@ export default class extends Command<IMClient> {
 
 					embed.setDescription(
 						`This config has been changed.\n` +
-							`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
-							`Use \`${prefix}config ${key} none\` to reset it to the default.`
+						`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
+						`Use \`${prefix}config ${key} none\` to reset it to the default.`
 					);
 
 					// Log the settings change
@@ -144,11 +144,11 @@ export default class extends Command<IMClient> {
 				if (oldVal) {
 					embed.setDescription(
 						`This config is currently set.\n` +
-							`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-							`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
-							(defaultSettings[key] === null
-								? `Use \`${prefix}config ${key} none\` to clear it.`
-								: '')
+						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
+						`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
+						(defaultSettings[key] === null
+							? `Use \`${prefix}config ${key} none\` to clear it.`
+							: '')
 					);
 					embed.addField('Current Value', oldRawVal);
 				} else {
@@ -169,8 +169,8 @@ export default class extends Command<IMClient> {
 			embed.setTitle('Your config settings');
 			embed.setDescription(
 				'Below are all the config settings of your server.\n' +
-					'Use `!config <key>` to view a single setting\n' +
-					'Use `!config <key> <value>` to set the config <key> to <value>'
+				'Use `!config <key>` to view a single setting\n' +
+				'Use `!config <key> <value>` to set the config <key> to <value>'
 			);
 
 			const notSet = [];
@@ -286,6 +286,7 @@ export default class extends Command<IMClient> {
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)
 					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
+					.replace('{memberCount}', message.member.guild.memberCount.toString())
 			);
 		}
 		if (key === SettingsKey.leaveMessage && value) {
@@ -296,6 +297,7 @@ export default class extends Command<IMClient> {
 					.replace('{inviterName}', me.displayName)
 					.replace('{inviterMention}', `<@${me.id}>`)
 					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
+					.replace('{memberCount}', message.member.guild.memberCount.toString())
 			);
 		}
 	}

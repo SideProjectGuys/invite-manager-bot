@@ -185,7 +185,8 @@ export class IMClient extends Client {
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
-			.replace('{numInvites}', invites.total.toString());
+			.replace('{numInvites}', invites.total.toString())
+			.replace('{memberCount}', member.guild.memberCount.toString());
 
 		joinChannel.send(msg);
 	}
@@ -238,7 +239,8 @@ export class IMClient extends Client {
 			.replace('{memberName}', member.displayName)
 			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
-			.replace('{numInvites}', invites.total.toString());
+			.replace('{numInvites}', invites.total.toString())
+			.replace('{memberCount}', member.guild.memberCount.toString());
 
 		leaveChannel.send(msg);
 	}
