@@ -1,5 +1,13 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Client,
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
 import { settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
@@ -23,14 +31,16 @@ export default class extends Command<Client> {
 	@using(resolve('command: Command'))
 	public async action(message: Message, [command]: [Command]): Promise<any> {
 		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${message.author.username}): ${
-				message.content
-			}`
+			`${message.guild ? message.guild.name : 'DM'} (${
+				message.author.username
+			}): ${message.content}`
 		);
 
 		const embed = createEmbed(this.client);
 
-		const prefix = message.guild ? await this.client.getPrefix(message.guild) : '!';
+		const prefix = message.guild
+			? await this.client.getPrefix(message.guild)
+			: '!';
 
 		if (command) {
 			const cmd = {
@@ -44,11 +54,15 @@ export default class extends Command<Client> {
 			embed.addField('Description', cmd.desc, true);
 			embed.addField(
 				'User permissions',
-				cmd.callerPermissions.length > 0 ? cmd.callerPermissions.join(', ') : 'None'
+				cmd.callerPermissions.length > 0
+					? cmd.callerPermissions.join(', ')
+					: 'None'
 			);
 			embed.addField(
 				'Bot permissions',
-				cmd.clientPermissions.length > 0 ? cmd.clientPermissions.join(', ') : 'None'
+				cmd.clientPermissions.length > 0
+					? cmd.clientPermissions.join(', ')
+					: 'None'
 			);
 		} else {
 			let messageMember = message.member;
@@ -72,7 +86,10 @@ export default class extends Command<Client> {
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
 				.filter(c => !c.ownerOnly && !c.hidden)
-				.filter(c => !message.guild || messageMember.hasPermission(c.callerPermissions))
+				.filter(
+					c =>
+						!message.guild || messageMember.hasPermission(c.callerPermissions)
+				)
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix)
@@ -88,7 +105,10 @@ export default class extends Command<Client> {
 				let descr = '';
 				const len = cmds.reduce((acc, c) => Math.max(acc, c.usage.length), 0);
 				cmds.forEach(
-					c => (descr += `\`${c.usage}  ${' '.repeat(len - c.usage.length)}${c.desc}\`\n`)
+					c =>
+						(descr += `\`${c.usage}  ${' '.repeat(len - c.usage.length)}${
+							c.desc
+						}\`\n`)
 				);
 				embed.addField(group, descr);
 			});
@@ -111,7 +131,10 @@ export default class extends Command<Client> {
 							c.name
 						}\`  ${alertSymbol} *Missing \`${missingPermission}\` permission!*\n`;
 					});
-					embed.addField(`Unavailable commands (missing permissions)`, unavailableDescription);
+					embed.addField(
+						`Unavailable commands (missing permissions)`,
+						unavailableDescription
+					);
 				}
 			}
 		}
@@ -125,6 +148,9 @@ export default class extends Command<Client> {
 		}
 		if (config.botWebsite) {
 			linksArray.push(`[Website](${config.botWebsite})`);
+		}
+		if (config.botPatreon) {
+			linksArray.push(`[Patreon](${config.botPatreon})`);
 		}
 
 		embed.addField('Links', linksArray.join(` | `));
