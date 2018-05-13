@@ -354,9 +354,14 @@ export class IMClient extends Client {
 	}
 
 	private setActivity() {
+		const guildCount =
+			this.shard && this.shard.count > 1
+				? this.guilds.size * this.shard.count
+				: this.guilds.size;
+
 		let user: any = this.user;
 		user.setPresence({
-			game: { name: `invitemanager.co - ${this.guilds.size} servers!`, type: 0 }
+			game: { name: `invitemanager.co - ${guildCount} servers!`, type: 0 }
 		});
 	}
 
