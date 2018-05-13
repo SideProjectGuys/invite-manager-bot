@@ -20,17 +20,24 @@ export default class extends Command<IMClient> {
 	}
 
 	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		// TODO: This is currently multiplied by the shard count, which is ok for guilds,
 		// but inaccurate for the members count
 		const guildCount =
 			this.client.shard && this.client.shard.count > 1
-				? '~' + message.client.guilds.size * this.client.shard.count
+				? message.client.guilds.size * this.client.shard.count
 				: message.client.guilds.size;
 
 		const embed = createEmbed(this.client);
 		embed.addField('Guilds', guildCount, true);
+		if (this.client.shard) {
+			embed.addField('Current Shard', this.client.shard.id, true);
+			embed.addField('Total Shards', this.client.shard.count, true);
+		}
+
 		if (config.botSupport) {
 			embed.addField('Support Discord', config.botSupport);
 		}
