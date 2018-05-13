@@ -17,7 +17,9 @@ export interface MemberAttributes extends BaseAttributes {
 	id: string;
 	name: string;
 }
-export interface MemberInstance extends Sequelize.Instance<MemberAttributes>, MemberAttributes {
+export interface MemberInstance
+	extends Sequelize.Instance<MemberAttributes>,
+		MemberAttributes {
 	getInviteCodes: Sequelize.HasManyGetAssociationsMixin<InviteCodeInstance>;
 	getJoins: Sequelize.HasManyGetAssociationsMixin<JoinInstance>;
 	getLeaves: Sequelize.HasManyGetAssociationsMixin<LeaveInstance>;
@@ -30,7 +32,7 @@ export interface MemberInstance extends Sequelize.Instance<MemberAttributes>, Me
 export const members = sequelize.define<MemberInstance, MemberAttributes>(
 	'member',
 	{
-		id: { type: Sequelize.STRING, primaryKey: true },
+		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING
 	},
 	{
@@ -46,8 +48,11 @@ export interface GuildAttributes extends BaseAttributes {
 	id: string;
 	name: string;
 	icon: string;
+	memberCount: number;
 }
-export interface GuildInstance extends Sequelize.Instance<GuildAttributes>, GuildAttributes {
+export interface GuildInstance
+	extends Sequelize.Instance<GuildAttributes>,
+		GuildAttributes {
 	getRoles: Sequelize.HasManyGetAssociationsMixin<RoleInstance>;
 	getChannels: Sequelize.HasManyGetAssociationsMixin<ChannelInstance>;
 	getSettings: Sequelize.HasManyGetAssociationsMixin<SettingInstance>;
@@ -63,9 +68,10 @@ export interface GuildInstance extends Sequelize.Instance<GuildAttributes>, Guil
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
 	'guild',
 	{
-		id: { type: Sequelize.STRING, primaryKey: true },
+		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
-		icon: Sequelize.STRING
+		icon: Sequelize.STRING,
+		memberCount: Sequelize.INTEGER
 	},
 	{
 		timestamps: true,
@@ -82,7 +88,9 @@ export interface RoleAttributes extends BaseAttributes {
 	color: string;
 	guildId: string;
 }
-export interface RoleInstance extends Sequelize.Instance<RoleAttributes>, RoleAttributes {
+export interface RoleInstance
+	extends Sequelize.Instance<RoleAttributes>,
+		RoleAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getRanks: Sequelize.HasManyGetAssociationsMixin<RankInstance>;
 }
@@ -90,7 +98,7 @@ export interface RoleInstance extends Sequelize.Instance<RoleAttributes>, RoleAt
 export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	'role',
 	{
-		id: { type: Sequelize.STRING, primaryKey: true },
+		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
 		color: Sequelize.STRING({ length: 7 })
 	},
@@ -111,7 +119,9 @@ export interface ChannelAttributes extends BaseAttributes {
 	name: string;
 	guildId: string;
 }
-export interface ChannelInstance extends Sequelize.Instance<ChannelAttributes>, ChannelAttributes {
+export interface ChannelInstance
+	extends Sequelize.Instance<ChannelAttributes>,
+		ChannelAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getInviteCodes: Sequelize.HasManyGetAssociationsMixin<InviteCodeInstance>;
 }
@@ -119,7 +129,7 @@ export interface ChannelInstance extends Sequelize.Instance<ChannelAttributes>, 
 export const channels = sequelize.define<ChannelInstance, ChannelAttributes>(
 	'channel',
 	{
-		id: { type: Sequelize.STRING, primaryKey: true },
+		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING
 	},
 	{
@@ -176,7 +186,8 @@ export function getSettingsType(key: SettingsKey) {
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
 	lang: 'en_us',
-	joinMessage: '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
+	joinMessage:
+		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
 	leaveMessage: '{memberName} **left**; Invited by **{inviterName}**',
 	leaveMessageChannel: null,
@@ -192,7 +203,9 @@ export interface SettingAttributes extends BaseAttributes {
 	value: string;
 	guildId: string;
 }
-export interface SettingInstance extends Sequelize.Instance<SettingAttributes>, SettingAttributes {
+export interface SettingInstance
+	extends Sequelize.Instance<SettingAttributes>,
+		SettingAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 }
 
@@ -242,16 +255,24 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	guildId: string;
 	inviterId: string;
 }
-export interface InviteCodeInstance extends Sequelize.Instance<InviteCodeAttributes>, InviteCodeAttributes {
+export interface InviteCodeInstance
+	extends Sequelize.Instance<InviteCodeAttributes>,
+		InviteCodeAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getInviter: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getJoins: Sequelize.HasManyGetAssociationsMixin<JoinInstance>;
 }
 
-export const inviteCodes = sequelize.define<InviteCodeInstance, InviteCodeAttributes>(
+export const inviteCodes = sequelize.define<
+	InviteCodeInstance,
+	InviteCodeAttributes
+>(
 	'inviteCode',
 	{
-		code: { type: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin', primaryKey: true },
+		code: {
+			type: Sequelize.STRING(16) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+			primaryKey: true
+		},
 		reason: Sequelize.STRING,
 		maxAge: Sequelize.INTEGER,
 		maxUses: Sequelize.INTEGER,
@@ -284,7 +305,9 @@ export interface JoinAttributes extends BaseAttributes {
 	memberId: string;
 	leaveId: number;
 }
-export interface JoinInstance extends Sequelize.Instance<JoinAttributes>, JoinAttributes {
+export interface JoinInstance
+	extends Sequelize.Instance<JoinAttributes>,
+		JoinAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getExactMatch: Sequelize.BelongsToGetAssociationMixin<InviteCodeInstance>;
@@ -314,7 +337,10 @@ guilds.hasMany(joins);
 joins.belongsTo(members);
 members.hasMany(joins);
 
-joins.belongsTo(inviteCodes, { as: 'exactMatch', foreignKey: 'exactMatchCode' });
+joins.belongsTo(inviteCodes, {
+	as: 'exactMatch',
+	foreignKey: 'exactMatchCode'
+});
 inviteCodes.hasMany(joins, { foreignKey: 'exactMatchCode' });
 
 // ------------------------------------
@@ -326,7 +352,9 @@ export interface LeaveAttributes extends BaseAttributes {
 	memberId: string;
 	joinId: number;
 }
-export interface LeaveInstance extends Sequelize.Instance<LeaveAttributes>, LeaveAttributes {
+export interface LeaveInstance
+	extends Sequelize.Instance<LeaveAttributes>,
+		LeaveAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getJoin: Sequelize.BelongsToGetAssociationMixin<JoinInstance>;
@@ -368,13 +396,18 @@ export interface CustomInviteAttributes extends BaseAttributes {
 	memberId: string;
 	creatorId: string;
 }
-export interface CustomInviteInstance extends Sequelize.Instance<CustomInviteAttributes>, CustomInviteAttributes {
+export interface CustomInviteInstance
+	extends Sequelize.Instance<CustomInviteAttributes>,
+		CustomInviteAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getCreator: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 }
 
-export const customInvites = sequelize.define<CustomInviteInstance, CustomInviteAttributes>(
+export const customInvites = sequelize.define<
+	CustomInviteInstance,
+	CustomInviteAttributes
+>(
 	'customInvite',
 	{
 		amount: Sequelize.INTEGER,
@@ -406,7 +439,9 @@ export interface RankAttributes extends BaseAttributes {
 	description: string;
 	guildId: string;
 }
-export interface RankInstance extends Sequelize.Instance<RankAttributes>, RankAttributes {
+export interface RankInstance
+	extends Sequelize.Instance<RankAttributes>,
+		RankAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getRole: Sequelize.BelongsToGetAssociationMixin<RoleInstance>;
 }
@@ -439,17 +474,28 @@ roles.hasMany(ranks);
 // Presences
 // ------------------------------------
 export enum PresenceStatus {
-	on = 'on',
-	off = 'off'
+	online = 'online',
+	offline = 'offline',
+	idle = 'idle',
+	dnd = 'dnd'
+}
+
+export enum GameType {
+	playing = 0,
+	streaming = 1,
+	listening = 2
 }
 
 export interface PresenceAttributes extends BaseAttributes {
 	id: number;
 	status: PresenceStatus;
+	type: GameType;
 	guildId: string;
 	memberId: string;
 }
-export interface PresenceInstance extends Sequelize.Instance<PresenceAttributes>, PresenceAttributes {
+export interface PresenceInstance
+	extends Sequelize.Instance<PresenceAttributes>,
+		PresenceAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 }
@@ -457,7 +503,14 @@ export interface PresenceInstance extends Sequelize.Instance<PresenceAttributes>
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: Sequelize.ENUM(PresenceStatus.on, PresenceStatus.off)
+		status: Sequelize.ENUM(
+			PresenceStatus.online,
+			PresenceStatus.offline,
+			PresenceStatus.idle,
+			PresenceStatus.dnd
+		),
+		type: Sequelize.TINYINT,
+		game: Sequelize.STRING
 	},
 	{
 		timestamps: true,
@@ -470,6 +523,56 @@ guilds.hasMany(presences);
 
 presences.belongsTo(members);
 members.hasMany(presences);
+
+// ------------------------------------
+// MessageActivity
+// ------------------------------------
+
+export interface MessageActivityAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	channelId: string;
+	memberId: string;
+	amount: number | Sequelize.literal;
+	timestamp: Date | number | string | Sequelize.fn;
+}
+export interface MessageActivityInstance
+	extends Sequelize.Instance<MessageActivityAttributes>,
+		MessageActivityAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getChannel: Sequelize.BelongsToGetAssociationMixin<ChannelInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const messageActivities = sequelize.define<
+	MessageActivityInstance,
+	MessageActivityAttributes
+>(
+	'messageActivity',
+	{
+		amount: Sequelize.INTEGER,
+		timestamp: Sequelize.DATE
+	},
+	{
+		timestamps: true,
+		paranoid: true,
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'channelId', 'memberId', 'timestamp']
+			}
+		]
+	}
+);
+
+messageActivities.belongsTo(guilds);
+guilds.hasMany(messageActivities);
+
+messageActivities.belongsTo(channels);
+channels.hasMany(messageActivities);
+
+messageActivities.belongsTo(members);
+members.hasMany(messageActivities);
 
 // ------------------------------------
 // Logs
@@ -492,7 +595,9 @@ export interface LogAttributes extends BaseAttributes {
 	message: string;
 	data: any;
 }
-export interface LogInstance extends Sequelize.Instance<LogAttributes>, LogAttributes {
+export interface LogInstance
+	extends Sequelize.Instance<LogAttributes>,
+		LogAttributes {
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 }
