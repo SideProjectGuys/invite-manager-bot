@@ -2,9 +2,13 @@ import { RichEmbed } from 'discord.js';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
+import { guilds } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
+
+let cachedAt = 0;
+let numGuilds = 0;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -24,15 +28,19 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		// TODO: This is currently multiplied by the shard count, which is ok for guilds,
-		// but inaccurate for the members count
-		const guildCount =
-			this.client.shard && this.client.shard.count > 1
-				? message.client.guilds.size * this.client.shard.count
-				: message.client.guilds.size;
+		if (Date.now() - cachedAt > 1000 * 60 * 5) {
+			console.log('Fetching guild count from DB...');
+			numGuilds = await guilds.count({
+				where: {
+					deletedAt: null
+				}
+			});
+			cachedAt = Date.now();
+		}
 
 		const embed = createEmbed(this.client);
-		embed.addField('Guilds', guildCount, true);
+		embed.addField('Guilds', numGuilds, true);
+
 		if (this.client.shard) {
 			embed.addField('Current Shard', this.client.shard.id, true);
 			embed.addField('Total Shards', this.client.shard.count, true);
