@@ -1,9 +1,28 @@
 import { RichEmbed, User } from 'discord.js';
 import * as moment from 'moment';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Client,
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
-import { customInvites, inviteCodes, joins, members, sequelize } from '../sequelize';
-import { CommandGroup, createEmbed, getInviteCounts, sendEmbed } from '../utils/util';
+import {
+	customInvites,
+	inviteCodes,
+	joins,
+	members,
+	sequelize
+} from '../sequelize';
+import {
+	CommandGroup,
+	createEmbed,
+	getInviteCounts,
+	sendEmbed
+} from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -17,7 +36,8 @@ export default class extends Command<Client> {
 			aliases: ['showinfo'],
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
-			info: '`' + '@user  The user for whom you want to see additional info.' + '`',
+			info:
+				'`' + '@user  The user for whom you want to see additional info.' + '`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
@@ -28,121 +48,169 @@ export default class extends Command<Client> {
 	@using(resolve('user: User'))
 	@using(expect('user: User'))
 	public async action(message: Message, [user]: [User]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		let member = message.guild.members.get(user.id);
 
+		if (!member) {
+			message.channel.send('User is not part of your guild');
+			return;
+		}
+
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
-		if (member) {
-			const invites = await getInviteCounts(member.guild.id, member.id);
 
-			const embed = createEmbed(this.client);
-			embed.setTitle(member.user.username);
+		const invs = await inviteCodes.findAll({
+			where: {
+				guildId: member.guild.id,
+				inviterId: member.id
+			},
+			order: [['uses', 'DESC']],
+			raw: true
+		});
 
-			const joinedAgo = moment(member.joinedAt).fromNow();
-			embed.addField('Last joined', joinedAgo, true);
-			embed.addField('Invites', invites.total + ` (${invites.custom} bonus)`, true);
+		const customInvs = await customInvites.findAll({
+			where: {
+				guildId: member.guild.id,
+				memberId: member.id
+			},
+			order: [['createdAt', 'DESC']],
+			raw: true
+		});
 
-			const joinCount = Math.max(
-				await joins.count({
-					where: {
-						guildId: member.guild.id,
-						memberId: member.id
-					}
-				}),
-				1
-			);
-			embed.addField('Joined', `${joinCount} times`, true);
+		const numNormal = invs.reduce((acc, inv) => acc + inv.uses, 0);
+		const numCustom = customInvs
+			.filter(i => !i.generated)
+			.reduce((acc, inv) => acc + inv.amount, 0);
 
-			const js = await joins.findAll({
-				attributes: ['createdAt'],
-				where: {
-					guildId: message.guild.id,
-					memberId: user.id
-				},
-				order: [['createdAt', 'DESC']],
-				include: [
-					{
-						attributes: ['inviterId'],
-						model: inviteCodes,
-						as: 'exactMatch',
-						include: [
-							{
-								attributes: [],
-								model: members,
-								as: 'inviter'
-							}
-						]
-					}
-				],
-				raw: true
-			});
+		const embed = createEmbed(this.client);
+		embed.setTitle(member.user.username);
 
-			if (js.length > 0) {
-				const joinTimes: { [x: string]: { [x: string]: number } } = {};
+		const joinedAgo = moment(member.joinedAt).fromNow();
+		embed.addField('Last joined', joinedAgo, true);
+		embed.addField(
+			'Invites',
+			`${numNormal + numCustom} (${numCustom} bonus)`,
+			true
+		);
 
-				js.forEach((join: any) => {
-					const text = moment(join.createdAt).fromNow();
-					if (!joinTimes[text]) {
-						joinTimes[text] = {};
-					}
-
-					const id = join['exactMatch.inviterId'];
-					if (joinTimes[text][id]) {
-						joinTimes[text][id]++;
-					} else {
-						joinTimes[text][id] = 1;
-					}
-				});
-
-				const joinText = Object.keys(joinTimes)
-					.map(time => {
-						const joinTime = joinTimes[time];
-
-						const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
-						const totalText = total > 1 ? `**${total}** times ` : 'once ';
-
-						const invText = Object.keys(joinTime)
-							.map(id => {
-								const timesText = joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
-								return `<@${id}>${timesText}`;
-							})
-							.join(', ');
-						return `${totalText}**${time}**, invited by: ${invText}`;
-					})
-					.join('\n');
-				embed.addField('Joins', joinText);
-			} else {
-				embed.addField('Joins', 'unknown (this only works for new members)');
-			}
-
-			const customInvs = await customInvites.findAll({
+		const joinCount = Math.max(
+			await joins.count({
 				where: {
 					guildId: member.guild.id,
-					memberId: member.id,
-					generated: false
-				},
-				order: [['createdAt', 'DESC']],
-				raw: true
+					memberId: member.id
+				}
+			}),
+			1
+		);
+		embed.addField('Joined', `${joinCount} times`, true);
+
+		embed.addField('Created', moment(member.user.createdAt).fromNow());
+
+		const js = await joins.findAll({
+			attributes: ['createdAt'],
+			where: {
+				guildId: message.guild.id,
+				memberId: user.id
+			},
+			order: [['createdAt', 'DESC']],
+			include: [
+				{
+					attributes: ['inviterId'],
+					model: inviteCodes,
+					as: 'exactMatch',
+					include: [
+						{
+							attributes: [],
+							model: members,
+							as: 'inviter'
+						}
+					]
+				}
+			],
+			raw: true
+		});
+
+		if (js.length > 0) {
+			const joinTimes: { [x: string]: { [x: string]: number } } = {};
+
+			js.forEach((join: any) => {
+				const text = moment(join.createdAt).fromNow();
+				if (!joinTimes[text]) {
+					joinTimes[text] = {};
+				}
+
+				const id = join['exactMatch.inviterId'];
+				if (joinTimes[text][id]) {
+					joinTimes[text][id]++;
+				} else {
+					joinTimes[text][id] = 1;
+				}
 			});
 
-			if (customInvs.length > 0) {
-				let customInvText = '';
-				customInvs.forEach(inv => {
-					const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
-					customInvText += `**${inv.amount}** from <@${inv.creatorId}> ${moment(
-						inv.createdAt
-					).fromNow()}${reasonText}\n`;
-				});
-				embed.addField('Bonus invites', customInvText);
-			} else {
-				embed.addField('Bonus invites', 'This member has received no bonuses so far');
-			}
+			const joinText = Object.keys(joinTimes)
+				.map(time => {
+					const joinTime = joinTimes[time];
 
-			// invitedByText = 'Could not match inviter (multiple possibilities)';
+					const total = Object.keys(joinTime).reduce(
+						(acc, id) => acc + joinTime[id],
+						0
+					);
+					const totalText = total > 1 ? `**${total}** times ` : 'once ';
 
-			/*if (stillOnServerCount === 0 && trackedInviteCount === 0) {
+					const invText = Object.keys(joinTime)
+						.map(id => {
+							const timesText =
+								joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
+							return `<@${id}>${timesText}`;
+						})
+						.join(', ');
+					return `${totalText}**${time}**, invited by: ${invText}`;
+				})
+				.join('\n');
+			embed.addField('Joins', joinText);
+		} else {
+			embed.addField('Joins', 'unknown (this only works for new members)');
+		}
+
+		if (invs.length > 0) {
+			let invText = '';
+			invs.forEach(inv => {
+				const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
+				invText += `**${inv.uses}** from **${inv.code}** - created **${moment(
+					inv.createdAt
+				).fromNow()}${reasonText}**\n`;
+			});
+			embed.addField('Regular invites', invText);
+		} else {
+			embed.addField(
+				'Regular invites',
+				'This member has not invited anyone so far'
+			);
+		}
+
+		if (customInvs.length > 0) {
+			let customInvText = '';
+			customInvs.forEach(inv => {
+				const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
+				const dateText = moment(inv.createdAt).fromNow();
+				customInvText +=
+					`**${inv.amount}** from <@${inv.creatorId}> -` +
+					` **${dateText}**${reasonText}\n`;
+			});
+			embed.addField('Bonus invites', customInvText);
+		} else {
+			embed.addField(
+				'Bonus invites',
+				'This member has received no bonuses so far'
+			);
+		}
+
+		// invitedByText = 'Could not match inviter (multiple possibilities)';
+
+		/*if (stillOnServerCount === 0 && trackedInviteCount === 0) {
 				embed.addField('Invited people still on the server (since bot joined)',
 				`User did not invite any members since this bot joined.`);
 			} else {
@@ -150,9 +218,6 @@ export default class extends Command<Client> {
 				`**${stillOnServerCount}** still here out of **${trackedInviteCount}** invited members.`);
 			}*/
 
-			sendEmbed(message.channel, embed, message.author);
-		} else {
-			message.channel.send('User is not part of your guild');
-		}
+		sendEmbed(message.channel, embed, message.author);
 	}
 }
