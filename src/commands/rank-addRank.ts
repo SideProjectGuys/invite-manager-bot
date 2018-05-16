@@ -1,8 +1,15 @@
 import { Role } from 'discord.js';
-import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
 import { IMClient } from '../client';
-import { LogAction, ranks, roles } from '../sequelize';
+import { LogAction, ranks, roles, members } from '../sequelize';
 import { CommandGroup, logAction } from '../utils/util';
 
 const { resolve, expect } = Middleware;
@@ -31,8 +38,13 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('role: Role, invites: Number, ...description: String'))
 	@using(expect('role: Role, invites: Number'))
-	public async action(message: Message, [role, invites, description]: [Role, number, string]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+	public async action(
+		message: Message,
+		[role, invites, description]: [Role, number, string]
+	): Promise<any> {
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		await roles.insertOrUpdate({
 			id: role.id,
@@ -41,6 +53,17 @@ export default class extends Command<IMClient> {
 			color: role.hexColor,
 			createdAt: role.createdAt
 		});
+
+		const myRole = message.guild.me.highestRole;
+		// Check if we are higher then the role we want to assign
+		if (myRole.position < role.position) {
+			message.channel.send(
+				`The role ${role.toString()} is higher up than my role ` +
+					`(${myRole.toString()}), so I won't be able to assign it ` +
+					`to members that earn it.`
+			);
+			return;
+		}
 
 		let rank = await ranks.find({
 			where: {
@@ -81,12 +104,16 @@ export default class extends Command<IMClient> {
 		if (!isNew) {
 			message.channel.send(
 				`Rank ${role.toString()} updated: Now needs ${invites} ` +
-					`and has the following description: "${description ? description : ''}"`
+					`and has the following description: "${
+						description ? description : ''
+					}"`
 			);
 		} else {
 			message.channel.send(
 				`Added rank ${role.toString()} which needs ${invites} ` +
-					`and has the following description: "${description ? description : ''}"`
+					`and has the following description: "${
+						description ? description : ''
+					}"`
 			);
 		}
 	}
