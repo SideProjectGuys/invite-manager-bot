@@ -1,5 +1,12 @@
 import { Role, User } from 'discord.js';
-import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
 import { IMClient } from '../client';
 import { customInvites, LogAction, ranks } from '../sequelize';
@@ -43,7 +50,9 @@ export default class extends Command<IMClient> {
 		message: Message,
 		[user, amount, reason]: [User, number, string]
 	): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const member = await message.guild.fetchMember(user.id);
 		if (amount === 0) {
@@ -80,11 +89,15 @@ export default class extends Command<IMClient> {
 		});
 
 		const msg =
-			amount > 0 ? `Added **${amount}** invites for` : `Removed **${-amount}** invites from`;
+			amount > 0
+				? `Added **${amount}** invites for`
+				: `Removed **${-amount}** invites from`;
 
 		const embed = createEmbed(this.client);
-		embed.setTitle(`<@${member.id}>`);
-		embed.setDescription(msg + ` <@${member.id}>, now at: **${totalInvites}** invites`);
+		embed.setTitle(member.displayName);
+		embed.setDescription(
+			msg + ` <@${member.id}>, now at: **${totalInvites}** invites`
+		);
 
 		sendEmbed(message.channel, embed, message.author);
 	}
