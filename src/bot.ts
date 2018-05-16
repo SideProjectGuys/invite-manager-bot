@@ -11,6 +11,8 @@ if (process.argv.length < 4) {
 const shardId = parseInt(process.argv[2], 10);
 const shardCount = parseInt(process.argv[3], 10);
 
+const pkg = require('../package.json');
+
 process.on('unhandledRejection', (reason: any, p: any) => {
 	console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
@@ -18,7 +20,7 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 console.log('-------------------------------------');
 console.log(`This is shard ${shardId}/${shardCount}`);
 console.log('-------------------------------------');
-const client = new IMClient(shardId, shardCount);
+const client = new IMClient(pkg.version, shardId, shardCount);
 
 console.log('-------------------------------------');
 console.log('Syncing database...');

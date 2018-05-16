@@ -38,11 +38,14 @@ const { on, once } = ListenerUtil;
 const config = require('../config.json');
 
 export class IMClient extends Client {
+	public version: string;
 	public config: any;
+
+	public startedAt: moment.Moment;
 	public messageQueue: MessageQueue;
 	public activityInterval: NodeJS.Timer;
 
-	public constructor(shardId: number, shardCount: number) {
+	public constructor(version: string, shardId: number, shardCount: number) {
 		super(
 			{
 				provider: IMStorageProvider,
@@ -75,7 +78,9 @@ export class IMClient extends Client {
 			}
 		);
 
+		this.version = version;
 		this.config = config;
+		this.startedAt = moment();
 	}
 
 	@once('pause')

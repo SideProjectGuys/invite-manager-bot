@@ -1,8 +1,9 @@
 import { RichEmbed } from 'discord.js';
+import * as moment from 'moment';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { guilds } from '../sequelize';
+import { guilds, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
@@ -28,8 +29,9 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
+		// If cached guild count is older than 5 minutes, update it
 		if (Date.now() - cachedAt > 1000 * 60 * 5) {
-			console.log('Fetching guild count from DB...');
+			console.log('Fetching guild & member count from DB...');
 			numGuilds = await guilds.count({
 				where: {
 					deletedAt: null
@@ -39,22 +41,39 @@ export default class extends Command<IMClient> {
 		}
 
 		const embed = createEmbed(this.client);
+
+		// Version
+		embed.addField('Version', this.client.version, true);
+
+		// Uptime
+		embed.addField(
+			'Uptime',
+			moment.duration(moment().diff(this.client.startedAt)).humanize(),
+			true
+		);
+
+		// Guild count
 		embed.addField('Guilds', numGuilds, true);
 
+		// Shard info
 		if (this.client.shard) {
 			embed.addField('Current Shard', this.client.shard.id, true);
 			embed.addField('Total Shards', this.client.shard.count, true);
 		}
 
+		// Support discord
 		if (config.botSupport) {
 			embed.addField('Support Discord', config.botSupport);
 		}
+		// Add bot
 		if (config.botAdd) {
 			embed.addField('Add bot to your server', config.botAdd);
 		}
+		// Bot website
 		if (config.botWebsite) {
 			embed.addField('Bot website', config.botWebsite);
 		}
+		// Patreon
 		if (config.botPatreon) {
 			embed.addField('Patreon', config.botPatreon);
 		}
