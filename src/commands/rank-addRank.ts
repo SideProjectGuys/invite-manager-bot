@@ -58,8 +58,8 @@ export default class extends Command<IMClient> {
 		// Check if we are higher then the role we want to assign
 		if (myRole.position < role.position) {
 			message.channel.send(
-				`The role ${role.toString()} is higher up than my role ` +
-					`(${myRole.toString()}), so I won't be able to assign it ` +
+				`The role **${role.name}** is higher up than my role ` +
+					`(**${myRole.name}**), so I won't be able to assign it ` +
 					`to members that earn it.`
 			);
 			return;
@@ -103,14 +103,14 @@ export default class extends Command<IMClient> {
 
 		if (!isNew) {
 			message.channel.send(
-				`Rank ${role.toString()} updated: Now needs ${invites} ` +
+				`Rank **${role.name}** updated: Now needs ${invites} ` +
 					`and has the following description: "${
 						description ? description : ''
 					}"`
 			);
 		} else {
 			message.channel.send(
-				`Added rank ${role.toString()} which needs ${invites} ` +
+				`Added rank **${role.name}** which needs ${invites} ` +
 					`and has the following description: "${
 						description ? description : ''
 					}"`
