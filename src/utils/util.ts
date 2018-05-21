@@ -74,9 +74,7 @@ export function sendEmbed(
 		target
 			.send({ embed })
 			.then(resolve)
-			.catch(err1 => {
-				console.log(err1);
-
+			.catch(() => {
 				const content = convertEmbedToPlain(embed);
 				target
 					.send(content)
