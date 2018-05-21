@@ -17,6 +17,7 @@ import {
 
 import {
 	customInvites,
+	guilds,
 	inviteCodes,
 	joins,
 	members,
@@ -44,6 +45,9 @@ export class IMClient extends Client {
 	public startedAt: moment.Moment;
 	public messageQueue: MessageQueue;
 	public activityInterval: NodeJS.Timer;
+
+	public numGuilds: number = 0;
+	public guildsCachedAt: number = 0;
 
 	public constructor(version: string, shardId: number, shardCount: number) {
 		super(
@@ -358,15 +362,26 @@ export class IMClient extends Client {
 		});
 	}
 
-	private setActivity() {
-		const guildCount =
-			this.shard && this.shard.count > 1
-				? this.guilds.size * this.shard.count
-				: this.guilds.size;
+	public async getGuildsCount() {
+		// If cached guild count is older than 5 minutes, update it
+		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 5) {
+			console.log('Fetching guild & member count from DB...');
+			this.numGuilds = await guilds.count({
+				where: {
+					deletedAt: null
+				}
+			});
+			this.guildsCachedAt = Date.now();
+		}
+		return this.numGuilds;
+	}
+
+	private async setActivity() {
+		const numGuilds = await this.getGuildsCount();
 
 		let user: any = this.user;
 		user.setPresence({
-			game: { name: `invitemanager.co - ${guildCount} servers!`, type: 0 }
+			game: { name: `invitemanager.co - ${numGuilds} servers!`, type: 0 }
 		});
 	}
 
