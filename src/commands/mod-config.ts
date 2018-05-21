@@ -1,5 +1,19 @@
-import { Channel, Guild, GuildChannel, GuildMember, RichEmbed, User } from 'discord.js';
-import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Channel,
+	Guild,
+	GuildChannel,
+	GuildMember,
+	RichEmbed,
+	User
+} from 'discord.js';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
 import { IMClient } from '../client';
 import {
@@ -18,7 +32,7 @@ const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function (message: Message, args: string[]) {
+	return function(message: Message, args: string[]) {
 		const key = args[0];
 		if (!key) {
 			return [message, args];
@@ -41,18 +55,26 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 
 		if (value === 'default') {
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, newArgs);
+			return func('key: String, ...value?: String').call(
+				this,
+				message,
+				newArgs
+			);
 		}
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[dbKey] !== null) {
 				throw Error(
 					`The config setting **${dbKey}** can not be cleared. ` +
-					`You can use \`config ${dbKey} default\` to reset it to the default value.`
+						`You can use \`config ${dbKey} default\` to reset it to the default value.`
 				);
 			}
 			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, ...value?: String').call(this, message, newArgs);
+			return func('key: String, ...value?: String').call(
+				this,
+				message,
+				newArgs
+			);
 		}
 
 		const type = getSettingsType(dbKey);
@@ -83,8 +105,13 @@ export default class extends Command<IMClient> {
 
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
-	public async action(message: Message, [key, rawValue]: [SettingsKey, any]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+	public async action(
+		message: Message,
+		[key, rawValue]: [SettingsKey, any]
+	): Promise<any> {
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const sets = message.guild.storage.settings;
 		const prefix = await sets.get('prefix');
@@ -120,8 +147,8 @@ export default class extends Command<IMClient> {
 
 					embed.setDescription(
 						`This config has been changed.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
-						`Use \`${prefix}config ${key} none\` to reset it to the default.`
+							`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
+							`Use \`${prefix}config ${key} none\` to reset it to the default.`
 					);
 
 					// Log the settings change
@@ -144,11 +171,11 @@ export default class extends Command<IMClient> {
 				if (oldVal) {
 					embed.setDescription(
 						`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-						`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
-						(defaultSettings[key] === null
-							? `Use \`${prefix}config ${key} none\` to clear it.`
-							: '')
+							`Use \`${prefix}config ${key} <value>\` to change it.\n` +
+							`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
+							(defaultSettings[key] === null
+								? `Use \`${prefix}config ${key} none\` to clear it.`
+								: '')
 					);
 					embed.addField('Current Value', oldRawVal);
 				} else {
@@ -160,7 +187,7 @@ export default class extends Command<IMClient> {
 
 			// Do any post processing, such as example messages
 			// If we updated a config setting, then 'oldVal' is now the new value
-			this.after(message, embed, key, oldVal);
+			await this.after(message, embed, key, oldVal);
 
 			sendEmbed(message.channel, embed, message.author);
 		} else {
@@ -169,8 +196,8 @@ export default class extends Command<IMClient> {
 			embed.setTitle('Your config settings');
 			embed.setDescription(
 				'Below are all the config settings of your server.\n' +
-				'Use `!config <key>` to view a single setting\n' +
-				'Use `!config <key> <value>` to set the config <key> to <value>'
+					'Use `!config <key>` to view a single setting\n' +
+					'Use `!config <key> <value>` to set the config <key> to <value>'
 			);
 
 			const notSet = [];
@@ -178,14 +205,20 @@ export default class extends Command<IMClient> {
 			for (let i = 0; i < keys.length; i++) {
 				const val = await sets.get(keys[i]);
 				if (val) {
-					embed.addField(keys[i], this.fromDbValue(keys[i] as SettingsKey, val));
+					embed.addField(
+						keys[i],
+						this.fromDbValue(keys[i] as SettingsKey, val)
+					);
 				} else {
 					notSet.push(keys[i]);
 				}
 			}
 
 			if (notSet.length > 0) {
-				embed.addField('----- These settings are not set -----', notSet.join('\n'));
+				embed.addField(
+					'----- These settings are not set -----',
+					notSet.join('\n')
+				);
 			}
 
 			sendEmbed(message.channel, embed, message.author);
@@ -231,7 +264,11 @@ export default class extends Command<IMClient> {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(message: Message, key: SettingsKey, value: any): string | null {
+	private validate(
+		message: Message,
+		key: SettingsKey,
+		value: any
+	): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
@@ -274,31 +311,51 @@ export default class extends Command<IMClient> {
 	}
 
 	// Attach additional information for a config value, such as examples
-	private after(message: Message, embed: RichEmbed, key: SettingsKey, value: any): void {
+	private async after(
+		message: Message,
+		embed: RichEmbed,
+		key: SettingsKey,
+		value: any
+	) {
 		const me = message.member.guild.me;
 
 		if (key === SettingsKey.joinMessage && value) {
-			embed.addField(
-				'Preview',
-				value
-					.replace('{memberName}', message.member.displayName)
-					.replace('{memberMention}', `<@${message.member.id}>`)
-					.replace('{inviterName}', me.displayName)
-					.replace('{inviterMention}', `<@${me.id}>`)
-					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
-					.replace('{memberCount}', message.member.guild.memberCount.toString())
+			const prev = await this.client.fillTemplate(
+				value,
+				message.member,
+				'tEsTcOdE',
+				message.channel.id,
+				(message.channel as any).name,
+				me.id,
+				me.nickname,
+				me,
+				{
+					total: Math.round(Math.random() * 1000),
+					code: Math.round(Math.random() * 1000),
+					custom: Math.round(Math.random() * 1000),
+					auto: Math.round(Math.random() * 1000)
+				}
 			);
+			embed.addField('Preview', prev);
 		}
 		if (key === SettingsKey.leaveMessage && value) {
-			embed.addField(
-				'Preview',
-				value
-					.replace('{memberName}', message.member.displayName)
-					.replace('{inviterName}', me.displayName)
-					.replace('{inviterMention}', `<@${me.id}>`)
-					.replace('{numInvites}', (Math.random() * 1000).toFixed(0))
-					.replace('{memberCount}', message.member.guild.memberCount.toString())
+			const prev = await this.client.fillTemplate(
+				value,
+				message.member,
+				'tEsTcOdE',
+				message.channel.id,
+				(message.channel as any).name,
+				me.id,
+				me.nickname,
+				me,
+				{
+					total: Math.round(Math.random() * 1000),
+					code: Math.round(Math.random() * 1000),
+					custom: Math.round(Math.random() * 1000),
+					auto: Math.round(Math.random() * 1000)
+				}
 			);
+			embed.addField('Preview', prev);
 		}
 	}
 }
