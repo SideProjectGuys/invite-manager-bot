@@ -73,7 +73,7 @@ export default class extends Command<IMClient> {
 					textMessage +=
 						target.id === message.author.id
 							? `Congratulations, you currently have the highest rank!`
-							: `<@${target.id} currently has the highest rank!`;
+							: `<@${target.id}> currently has the highest rank!`;
 				}
 			}
 		}
