@@ -337,7 +337,7 @@ export class IMClient extends Client {
 	}
 
 	public async fillTemplate(
-		template: string,
+		template: any,
 		member: GuildMember,
 		inviteCode: string,
 		channelId: string,
@@ -346,7 +346,7 @@ export class IMClient extends Client {
 		inviterName: string,
 		inviter?: GuildMember,
 		invites?: InviteCounts
-	) {
+	): Promise<string | RichEmbed> {
 		const userSince = moment(member.user.createdAt);
 
 		const joinedAt = moment(member.joinedAt);
@@ -379,21 +379,22 @@ export class IMClient extends Client {
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{firstJoin}') > 0) {
-			firstJoin = moment(
-				(await joins.find({
-					where: {
-						guildId: member.guild.id,
-						memberId: member.id
-					},
-					order: [['createdAt', 'DESC']],
-					limit: 1
-				})).createdAt
-			);
+		if (template.indexOf('{firstJoin:') > 0) {
+			const temp = await joins.find({
+				where: {
+					guildId: member.guild.id,
+					memberId: member.id
+				},
+				order: [['createdAt', 'DESC']],
+				limit: 1
+			});
+			if (temp) {
+				firstJoin = moment(temp.createdAt);
+			}
 		}
 
 		let prevJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{previousJoin}') > 0) {
+		if (template.indexOf('{previousJoin:') > 0) {
 			const temp = await joins.find({
 				where: {
 					guildId: member.guild.id,
@@ -411,15 +412,17 @@ export class IMClient extends Client {
 		let msg = template;
 		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
 		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
+		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
 		msg = this.fillDatePlaceholder(msg, 'joinedAt', joinedAt);
-
-		return msg
+		msg = msg
 			.replace('{inviteCode}', inviteCode)
 			.replace('{memberName}', member.displayName)
 			.replace('{memberMention}', `<@${member.id}>`)
+			.replace('{memberImage}', member.user.avatarURL)
 			.replace('{numJoins}', `${numJoins}`)
 			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
+			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.code}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
@@ -427,6 +430,15 @@ export class IMClient extends Client {
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);
+
+		try {
+			msg = JSON.parse(msg);
+			msg = createEmbed(this, msg);
+		} catch (e) {
+			//
+		}
+
+		return msg;
 	}
 
 	private fillDatePlaceholder(

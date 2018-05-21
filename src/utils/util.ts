@@ -5,6 +5,7 @@ import {
 	GuildMember,
 	MessageReaction,
 	RichEmbed,
+	RichEmbedOptions,
 	TextChannel,
 	User
 } from 'discord.js';
@@ -29,9 +30,11 @@ export enum CommandGroup {
 
 export function createEmbed(
 	client: Client,
-	color: string = '#00AE86'
+	options: RichEmbedOptions = {}
 ): RichEmbed {
-	const embed = new RichEmbed();
+	const color = options.color ? options.color : '#00AE86';
+	delete options.color;
+	const embed = new RichEmbed(options);
 	embed.setColor(color);
 	if (client) {
 		embed.setFooter('InviteManager.co', client.user.avatarURL);
@@ -71,7 +74,9 @@ export function sendEmbed(
 		target
 			.send({ embed })
 			.then(resolve)
-			.catch(() => {
+			.catch(err1 => {
+				console.log(err1);
+
 				const content = convertEmbedToPlain(embed);
 				target
 					.send(content)
@@ -210,12 +215,22 @@ export async function logAction(
 	if (logChannelId) {
 		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
 		if (logChannel) {
+			const content =
+				message.content.substr(0, 1000) +
+				(message.content.length > 1000 ? '...' : '');
+
+			let json = JSON.stringify(data, null, 2);
+			if (json.length > 1000) {
+				json = json.substr(0, 1000) + '...';
+			}
+
 			const embed = createEmbed(message.client);
 			embed.setTitle('Log Action');
 			embed.addField('Action', action, true);
 			embed.addField('Cause', `<@${message.author.id}>`, true);
-			embed.addField('Command', message.content);
-			embed.addField('Data', '`' + JSON.stringify(data, null, 2) + '`');
+			embed.addField('Command', content);
+
+			embed.addField('Data', '`' + json + '`');
 			sendEmbed(logChannel, embed);
 		}
 	}

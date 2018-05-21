@@ -118,7 +118,10 @@ export default class extends Command<IMClient> {
 
 		if (key) {
 			let oldVal = await sets.get(key);
-			const oldRawVal = this.fromDbValue(key, oldVal);
+			let oldRawVal = this.fromDbValue(key, oldVal);
+			if (oldRawVal.length > 1000) {
+				oldRawVal = oldRawVal.substr(0, 1000) + '...';
+			}
 
 			const embed = createEmbed(this.client);
 			embed.setTitle(key);
@@ -131,6 +134,9 @@ export default class extends Command<IMClient> {
 				}
 
 				const value = parsedValue.value;
+				if (rawValue.length > 1000) {
+					rawValue = rawValue.substr(0, 1000) + '...';
+				}
 
 				if (value === oldVal) {
 					embed.setDescription(`This config is already set to that value`);
@@ -187,9 +193,12 @@ export default class extends Command<IMClient> {
 
 			// Do any post processing, such as example messages
 			// If we updated a config setting, then 'oldVal' is now the new value
-			await this.after(message, embed, key, oldVal);
+			const afterMsg = await this.after(message, embed, key, oldVal);
 
-			sendEmbed(message.channel, embed, message.author);
+			await sendEmbed(message.channel, embed, message.author);
+			if (afterMsg) {
+				sendEmbed(message.channel, afterMsg);
+			}
 		} else {
 			const embed = createEmbed(this.client);
 
@@ -316,7 +325,7 @@ export default class extends Command<IMClient> {
 		embed: RichEmbed,
 		key: SettingsKey,
 		value: any
-	) {
+	): Promise<RichEmbed> {
 		const me = message.member.guild.me;
 
 		if (key === SettingsKey.joinMessage && value) {
@@ -336,7 +345,13 @@ export default class extends Command<IMClient> {
 					auto: Math.round(Math.random() * 1000)
 				}
 			);
-			embed.addField('Preview', prev);
+
+			if (typeof prev === 'string') {
+				embed.addField('Preview', prev);
+			} else {
+				embed.addField('Preview', '<See next message>');
+				return prev;
+			}
 		}
 		if (key === SettingsKey.leaveMessage && value) {
 			const prev = await this.client.fillTemplate(
@@ -355,7 +370,13 @@ export default class extends Command<IMClient> {
 					auto: Math.round(Math.random() * 1000)
 				}
 			);
-			embed.addField('Preview', prev);
+
+			if (typeof prev === 'string') {
+				embed.addField('Preview', prev);
+			} else {
+				embed.addField('Preview', '<See next message>');
+				return prev;
+			}
 		}
 	}
 }
