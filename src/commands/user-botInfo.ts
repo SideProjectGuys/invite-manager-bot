@@ -8,9 +8,6 @@ import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
 
-let cachedAt = 0;
-let numGuilds = 0;
-
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
@@ -29,16 +26,8 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		// If cached guild count is older than 5 minutes, update it
-		if (Date.now() - cachedAt > 1000 * 60 * 5) {
-			console.log('Fetching guild & member count from DB...');
-			numGuilds = await guilds.count({
-				where: {
-					deletedAt: null
-				}
-			});
-			cachedAt = Date.now();
-		}
+		const numGuilds = await this.client.getGuildsCount();
+		const numMembers = await this.client.getMembersCount();
 
 		const embed = createEmbed(this.client);
 
@@ -54,6 +43,9 @@ export default class extends Command<IMClient> {
 
 		// Guild count
 		embed.addField('Guilds', numGuilds, true);
+
+		// Member count
+		embed.addField('Members', numMembers, true);
 
 		// Shard info
 		if (this.client.shard) {

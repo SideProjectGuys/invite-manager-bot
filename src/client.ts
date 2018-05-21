@@ -16,7 +16,9 @@ import {
 } from 'yamdbf';
 
 import {
+	channels,
 	customInvites,
+	guilds,
 	inviteCodes,
 	joins,
 	members,
@@ -30,6 +32,7 @@ import { IMStorageProvider } from './utils/StorageProvider';
 import {
 	createEmbed,
 	getInviteCounts,
+	InviteCounts,
 	promoteIfQualified,
 	sendEmbed
 } from './utils/util';
@@ -44,6 +47,12 @@ export class IMClient extends Client {
 	public startedAt: moment.Moment;
 	public messageQueue: MessageQueue;
 	public activityInterval: NodeJS.Timer;
+
+	public numGuilds: number = 0;
+	public guildsCachedAt: number = 0;
+
+	public numMembers: number = 0;
+	public membersCachedAt: number = 0;
 
 	public constructor(version: string, shardId: number, shardCount: number) {
 		super(
@@ -188,6 +197,10 @@ export class IMClient extends Client {
 			return;
 		}
 
+		const inviteCode = join['exactMatch.code'];
+		const channelName = join['exactMatch.channel.name'];
+		const channelId = join['exactMatch.channelId'];
+
 		const inviterId = join['exactMatch.inviterId'];
 		const inviterName = join['exactMatch.inviter.name'];
 		const inviter: GuildMember = await member.guild
@@ -232,13 +245,17 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const msg = joinMessageFormat
-			.replace('{memberName}', member.displayName)
-			.replace('{memberMention}', `<@${member.id}>`)
-			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
-			.replace('{inviterMention}', `<@${inviterId}>`)
-			.replace('{numInvites}', invites.total.toString())
-			.replace('{memberCount}', member.guild.memberCount.toString());
+		const msg = await this.fillTemplate(
+			joinMessageFormat,
+			member,
+			inviteCode,
+			channelId,
+			channelName,
+			inviterId,
+			inviterName,
+			inviter,
+			invites
+		);
 
 		joinChannel.send(msg);
 	}
@@ -269,6 +286,10 @@ export class IMClient extends Client {
 			return;
 		}
 
+		const inviteCode = join['exactMatch.code'];
+		const channelName = join['exactMatch.channel.name'];
+		const channelId = join['exactMatch.channelId'];
+
 		const inviterId = join['exactMatch.inviterId'];
 		const inviterName = join['exactMatch.inviter.name'];
 
@@ -294,8 +315,6 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const inviter = await member.guild.fetchMember(inviterId).catch(() => null);
-
 		const leaveMessageFormat = (await sets.get(
 			SettingsKey.leaveMessage
 		)) as string;
@@ -304,20 +323,140 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// This is an optimization to only fetch the number if invites if the variable is used in the message
-		let invites = { code: 0, custom: 0, auto: 0, total: 0 };
-		if (leaveMessageFormat.indexOf('{numInvites}') > 0) {
+		const msg = await this.fillTemplate(
+			leaveMessageFormat,
+			member,
+			inviteCode,
+			channelId,
+			channelName,
+			inviterId,
+			inviterName
+		);
+
+		leaveChannel.send(msg);
+	}
+
+	public async fillTemplate(
+		template: any,
+		member: GuildMember,
+		inviteCode: string,
+		channelId: string,
+		channelName: string,
+		inviterId: string,
+		inviterName: string,
+		inviter?: GuildMember,
+		invites?: InviteCounts
+	): Promise<string | RichEmbed> {
+		const userSince = moment(member.user.createdAt);
+
+		const joinedAt = moment(member.joinedAt);
+
+		if (
+			typeof inviter === 'undefined' &&
+			template.indexOf('{inviterName}') > 0
+		) {
+			inviter = await member.guild.fetchMember(inviterId).catch(() => null);
+		}
+
+		if (
+			typeof invites === 'undefined' &&
+			template.indexOf('{numInvites}') > 0
+		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
 
-		const msg = leaveMessageFormat
+		let numJoins = 0;
+		if (template.indexOf('{numJoins}') > 0) {
+			numJoins = Math.max(
+				await joins.count({
+					where: {
+						guildId: member.guild.id,
+						memberId: member.id
+					}
+				}),
+				1
+			);
+		}
+
+		let firstJoin: moment.Moment | string = 'never';
+		if (template.indexOf('{firstJoin:') > 0) {
+			const temp = await joins.find({
+				where: {
+					guildId: member.guild.id,
+					memberId: member.id
+				},
+				order: [['createdAt', 'DESC']],
+				limit: 1
+			});
+			if (temp) {
+				firstJoin = moment(temp.createdAt);
+			}
+		}
+
+		let prevJoin: moment.Moment | string = 'never';
+		if (template.indexOf('{previousJoin:') > 0) {
+			const temp = await joins.find({
+				where: {
+					guildId: member.guild.id,
+					memberId: member.id
+				},
+				order: [['createdAt', 'DESC']],
+				limit: 1,
+				offset: 1
+			});
+			if (temp) {
+				prevJoin = moment(temp.createdAt);
+			}
+		}
+
+		let msg = template;
+		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
+		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
+		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
+		msg = this.fillDatePlaceholder(msg, 'joinedAt', joinedAt);
+		msg = msg
+			.replace('{inviteCode}', inviteCode)
 			.replace('{memberName}', member.displayName)
+			.replace('{memberMention}', `<@${member.id}>`)
+			.replace('{memberImage}', member.user.avatarURL)
+			.replace('{numJoins}', `${numJoins}`)
 			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
-			.replace('{numInvites}', invites.total.toString())
-			.replace('{memberCount}', member.guild.memberCount.toString());
+			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
+			.replace('{numInvites}', `${invites.total}`)
+			.replace('{numRegularInvites}', `${invites.code}`)
+			.replace('{numBonusInvites}', `${invites.custom}`)
+			.replace('{numInvites}', `${invites.total}`)
+			.replace('{memberCount}', `${member.guild.memberCount}`)
+			.replace('{channelMention}', `<#${channelId}>`)
+			.replace('{channelName}', `${channelName}`);
 
-		leaveChannel.send(msg);
+		try {
+			msg = JSON.parse(msg);
+			msg = createEmbed(this, msg);
+		} catch (e) {
+			//
+		}
+
+		return msg;
+	}
+
+	private fillDatePlaceholder(
+		msg: string,
+		name: string,
+		value: moment.Moment | string
+	) {
+		const date = typeof value === 'string' ? value : value.calendar();
+		const duration =
+			typeof value === 'string'
+				? value
+				: moment.duration(value.diff(moment())).humanize();
+		const timeAgo = typeof value === 'string' ? value : value.fromNow();
+
+		return msg
+			.replace(`{${name}:date}`, date)
+			.replace(`{${name}:duration}`, duration)
+			.replace(`{${name}:timeAgo}`, timeAgo);
 	}
 
 	private async findJoin(
@@ -338,7 +477,7 @@ export class IMClient extends Client {
 						},
 						include: [
 							{
-								attributes: ['inviterId'],
+								attributes: ['code', 'inviterId', 'channelId'],
 								model: inviteCodes,
 								as: 'exactMatch',
 								include: [
@@ -346,6 +485,10 @@ export class IMClient extends Client {
 										attributes: ['name'],
 										model: members,
 										as: 'inviter'
+									},
+									{
+										attributes: ['name'],
+										model: channels
 									}
 								]
 							}
@@ -358,15 +501,36 @@ export class IMClient extends Client {
 		});
 	}
 
-	private setActivity() {
-		const guildCount =
-			this.shard && this.shard.count > 1
-				? this.guilds.size * this.shard.count
-				: this.guilds.size;
+	public async getMembersCount() {
+		// If cached member count is older than 5 minutes, update it
+		if (Date.now() - this.membersCachedAt > 1000 * 60 * 5) {
+			console.log('Fetching guild & member count from DB...');
+			this.numMembers = await members.count();
+			this.membersCachedAt = Date.now();
+		}
+		return this.numMembers;
+	}
+
+	public async getGuildsCount() {
+		// If cached guild count is older than 5 minutes, update it
+		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 5) {
+			console.log('Fetching guild & member count from DB...');
+			this.numGuilds = await guilds.count({
+				where: {
+					deletedAt: null
+				}
+			});
+			this.guildsCachedAt = Date.now();
+		}
+		return this.numGuilds;
+	}
+
+	private async setActivity() {
+		const numGuilds = await this.getGuildsCount();
 
 		let user: any = this.user;
 		user.setPresence({
-			game: { name: `invitemanager.co - ${guildCount} servers!`, type: 0 }
+			game: { name: `invitemanager.co - ${numGuilds} servers!`, type: 0 }
 		});
 	}
 

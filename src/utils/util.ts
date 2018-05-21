@@ -5,6 +5,7 @@ import {
 	GuildMember,
 	MessageReaction,
 	RichEmbed,
+	RichEmbedOptions,
 	TextChannel,
 	User
 } from 'discord.js';
@@ -27,8 +28,13 @@ export enum CommandGroup {
 	Other = 'Other'
 }
 
-export function createEmbed(client: Client, color: string = '#00AE86'): RichEmbed {
-	const embed = new RichEmbed();
+export function createEmbed(
+	client: Client,
+	options: RichEmbedOptions = {}
+): RichEmbed {
+	const color = options.color ? options.color : '#00AE86';
+	delete options.color;
+	const embed = new RichEmbed(options);
 	embed.setColor(color);
 	if (client) {
 		embed.setFooter('InviteManager.co', client.user.avatarURL);
@@ -41,7 +47,8 @@ export function createEmbed(client: Client, color: string = '#00AE86'): RichEmbe
 
 function convertEmbedToPlain(embed: RichEmbed) {
 	const url = embed.url ? `(${embed.url})` : '';
-	const authorUrl = embed.author && embed.author.url ? `(${embed.author.url})` : '';
+	const authorUrl =
+		embed.author && embed.author.url ? `(${embed.author.url})` : '';
 
 	return (
 		'**Embedded links are disabled for this channel.\n' +
@@ -50,7 +57,9 @@ function convertEmbedToPlain(embed: RichEmbed) {
 		(embed.title ? `**${embed.title}** ${url}\n` : '') +
 		(embed.description ? embed.description + '\n' : '') +
 		(embed.fields && embed.fields.length
-			? '\n\n' + embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') + '\n\n'
+			? '\n\n' +
+			  embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') +
+			  '\n\n'
 			: '') +
 		(embed.footer ? `_${embed.footer.text}_` : '')
 	);
@@ -65,7 +74,9 @@ export function sendEmbed(
 		target
 			.send({ embed })
 			.then(resolve)
-			.catch(() => {
+			.catch(err1 => {
+				console.log(err1);
+
 				const content = convertEmbedToPlain(embed);
 				target
 					.send(content)
@@ -91,10 +102,17 @@ export function sendEmbed(
 	});
 }
 
+export interface InviteCounts {
+	code: number;
+	custom: number;
+	auto: number;
+	total: number;
+}
+
 export async function getInviteCounts(
 	guildId: string,
 	memberId: string
-): Promise<{ code: number; custom: number; auto: number; total: number }> {
+): Promise<InviteCounts> {
 	const codePromise = inviteCodes.sum('uses', {
 		where: {
 			guildId: guildId,
@@ -128,7 +146,11 @@ export async function getInviteCounts(
 	};
 }
 
-export async function promoteIfQualified(guild: Guild, member: GuildMember, totalInvites: number) {
+export async function promoteIfQualified(
+	guild: Guild,
+	member: GuildMember,
+	totalInvites: number
+) {
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
@@ -182,17 +204,33 @@ export async function promoteIfQualified(guild: Guild, member: GuildMember, tota
 	};
 }
 
-export async function logAction(message: Message, action: LogAction, data: any) {
-	const logChannelId = (await message.guild.storage.settings.get(SettingsKey.logChannel)) as string;
+export async function logAction(
+	message: Message,
+	action: LogAction,
+	data: any
+) {
+	const logChannelId = (await message.guild.storage.settings.get(
+		SettingsKey.logChannel
+	)) as string;
 	if (logChannelId) {
 		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
 		if (logChannel) {
+			const content =
+				message.content.substr(0, 1000) +
+				(message.content.length > 1000 ? '...' : '');
+
+			let json = JSON.stringify(data, null, 2);
+			if (json.length > 1000) {
+				json = json.substr(0, 1000) + '...';
+			}
+
 			const embed = createEmbed(message.client);
 			embed.setTitle('Log Action');
 			embed.addField('Action', action, true);
 			embed.addField('Cause', `<@${message.author.id}>`, true);
-			embed.addField('Command', message.content);
-			embed.addField('Data', '`' + JSON.stringify(data, null, 2) + '`');
+			embed.addField('Command', content);
+
+			embed.addField('Data', '`' + json + '`');
 			sendEmbed(logChannel, embed);
 		}
 	}
@@ -227,7 +265,11 @@ export async function showPaginated(
 	if (prevMsg.editable && prevMsg.author.id === client.user.id) {
 		prevMsg.edit({ embed });
 	} else {
-		prevMsg = (await sendEmbed(prevMsg.channel, embed, prevMsg.author)) as Message;
+		prevMsg = (await sendEmbed(
+			prevMsg.channel,
+			embed,
+			prevMsg.author
+		)) as Message;
 	}
 
 	if (page > 0) {

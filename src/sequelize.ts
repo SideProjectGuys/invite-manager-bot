@@ -614,7 +614,7 @@ export const logs = sequelize.define<LogInstance, LogAttributes>(
 			LogAction.updateRank,
 			LogAction.restoreInvites
 		),
-		message: Sequelize.STRING,
+		message: Sequelize.TEXT,
 		data: Sequelize.JSON
 	},
 	{

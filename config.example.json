@@ -17,5 +17,6 @@
 		"username": "root",
 		"password": "",
 		"database": "im"
-	}
+	},
+	"discordBotsToken": ""
 }

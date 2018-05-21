@@ -1,5 +1,9 @@
+import * as DBL from 'dblapi.js';
+
 import { IMClient } from './client';
 import { sequelize } from './sequelize';
+
+const config = require('../config.json');
 
 // First two arguments are "node" and "<filename>"
 if (process.argv.length < 4) {
@@ -18,14 +22,17 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 });
 
 console.log('-------------------------------------');
-console.log(`This is shard ${shardId}/${shardCount}`);
-console.log('-------------------------------------');
-const client = new IMClient(pkg.version, shardId, shardCount);
-
-console.log('-------------------------------------');
 console.log('Syncing database...');
 console.log('-------------------------------------');
 sequelize.sync().then(() => {
+	console.log('-------------------------------------');
+	console.log(`This is shard ${shardId}/${shardCount}`);
+	console.log('-------------------------------------');
+	const client = new IMClient(pkg.version, shardId, shardCount);
+	if (config.discordBotsToken) {
+		const dbl = new DBL(config.discordBotsToken, client);
+	}
+
 	console.log('-------------------------------------');
 	console.log('Starting bot...');
 	console.log('-------------------------------------');
