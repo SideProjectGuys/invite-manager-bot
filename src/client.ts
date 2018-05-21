@@ -49,6 +49,9 @@ export class IMClient extends Client {
 	public numGuilds: number = 0;
 	public guildsCachedAt: number = 0;
 
+	public numMembers: number = 0;
+	public membersCachedAt: number = 0;
+
 	public constructor(version: string, shardId: number, shardCount: number) {
 		super(
 			{
@@ -360,6 +363,16 @@ export class IMClient extends Client {
 			};
 			setTimeout(func, timeOut);
 		});
+	}
+
+	public async getMembersCount() {
+		// If cached member count is older than 5 minutes, update it
+		if (Date.now() - this.membersCachedAt > 1000 * 60 * 5) {
+			console.log('Fetching guild & member count from DB...');
+			this.numMembers = await members.count();
+			this.membersCachedAt = Date.now();
+		}
+		return this.numMembers;
 	}
 
 	public async getGuildsCount() {

@@ -27,6 +27,7 @@ export default class extends Command<IMClient> {
 		);
 
 		const numGuilds = await this.client.getGuildsCount();
+		const numMembers = await this.client.getMembersCount();
 
 		const embed = createEmbed(this.client);
 
@@ -42,6 +43,9 @@ export default class extends Command<IMClient> {
 
 		// Guild count
 		embed.addField('Guilds', numGuilds, true);
+
+		// Member count
+		embed.addField('Members', numMembers, true);
 
 		// Shard info
 		if (this.client.shard) {
