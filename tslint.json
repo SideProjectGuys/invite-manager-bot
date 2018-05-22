@@ -17,7 +17,11 @@
 		"member-ordering": [
 			true,
 			{
-				"order": ["public-before-private", "static-before-instance", "variables-before-functions"]
+				"order": [
+					"public-before-private",
+					"static-before-instance",
+					"variables-before-functions"
+				]
 			}
 		],
 		"no-arg": true,
@@ -39,7 +43,13 @@
 		"no-unused-expression": true,
 		"no-unused-variable": true,
 		"no-use-before-declare": true,
-		"one-line": [true, "check-catch", "check-else", "check-open-brace", "check-whitespace"],
+		"one-line": [
+			true,
+			"check-catch",
+			"check-else",
+			"check-open-brace",
+			"check-whitespace"
+		],
 		"ordered-imports": [
 			true,
 			{
@@ -52,7 +62,12 @@
 		"switch-default": true,
 		"trailing-comma": [true],
 		"triple-equals": [true, "allow-null-check"],
-		"typedef": [true, "parameter", "property-declaration", "member-variable-declaration"],
+		"typedef": [
+			true,
+			"parameter",
+			"property-declaration",
+			"member-variable-declaration"
+		],
 		"typedef-whitespace": [
 			true,
 			{
@@ -64,7 +79,12 @@
 			}
 		],
 		"use-isnan": true,
-		"variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+		"variable-name": [
+			true,
+			"ban-keywords",
+			"check-format",
+			"allow-leading-underscore"
+		],
 		"whitespace": [
 			true,
 			"check-branch",

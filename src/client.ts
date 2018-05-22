@@ -17,6 +17,7 @@ import {
 
 import {
 	channels,
+	commandUsage,
 	customInvites,
 	guilds,
 	inviteCodes,
@@ -120,6 +121,23 @@ export class IMClient extends Client {
 		this.messageQueue.addMessage(
 			`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`
 		);
+	}
+
+	@on('command')
+	private async _onCommand(
+		name: string,
+		args: any[],
+		execTime: number,
+		message: Message
+	) {
+		await commandUsage.create({
+			id: null,
+			guildId: message.guild.id,
+			memberId: message.author.id,
+			command: name,
+			args: args.join(' '),
+			time: execTime
+		});
 	}
 
 	@on('message')
