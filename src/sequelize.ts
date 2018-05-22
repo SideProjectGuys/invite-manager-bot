@@ -296,7 +296,7 @@ export const memberSettings = sequelize.define<
 		indexes: [
 			{
 				unique: true,
-				fields: ['guildId', 'memberId']
+				fields: ['guildId', 'memberId', 'key']
 			}
 		]
 	}
@@ -649,6 +649,7 @@ export enum LogAction {
 	clearInvites = 'clearInvites',
 	restoreInvites = 'restoreInvites',
 	config = 'config',
+	memberConfig = 'memberConfig',
 	addRank = 'addRank',
 	updateRank = 'updateRank',
 	removeRank = 'removeRank'
@@ -677,6 +678,7 @@ export const logs = sequelize.define<LogInstance, LogAttributes>(
 			LogAction.addRank,
 			LogAction.clearInvites,
 			LogAction.config,
+			LogAction.memberConfig,
 			LogAction.removeRank,
 			LogAction.updateRank,
 			LogAction.restoreInvites
