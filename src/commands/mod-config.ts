@@ -32,7 +32,7 @@ const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function(message: Message, args: string[]) {
+	return function (message: Message, args: string[]) {
 		const key = args[0];
 		if (!key) {
 			return [message, args];
@@ -66,7 +66,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			if (defaultSettings[dbKey] !== null) {
 				throw Error(
 					`The config setting **${dbKey}** can not be cleared. ` +
-						`You can use \`config ${dbKey} default\` to reset it to the default value.`
+					`You can use \`config ${dbKey} default\` to reset it to the default value.`
 				);
 			}
 			return func('key: String, ...value?: String').call(
