@@ -90,7 +90,7 @@ export default class extends Command<Client> {
 
 		// Add removals for duplicate invites
 		const customInvs = js
-			.filter((j: any) => parseInt(j.numJoins, 10) > 0)
+			.filter((j: any) => parseInt(j.numJoins, 10) > 1)
 			.map((j: any) => ({
 				id: null,
 				guildId: message.guild.id,
