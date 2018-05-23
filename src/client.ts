@@ -294,7 +294,7 @@ export class IMClient extends Client {
 			});
 			// Add removals for duplicate invites
 			await customInvites.bulkCreate(
-				js.filter((j: any) => parseInt(j.numJoins, 10) > 0).map((j: any) => ({
+				js.filter((j: any) => parseInt(j.numJoins, 10) > 1).map((j: any) => ({
 					guildId: member.guild.id,
 					memberId: j['exactMatch.inviterId'],
 					amount: -parseInt(j.numJoins, 10),
