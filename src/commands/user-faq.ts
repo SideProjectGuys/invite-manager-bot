@@ -6,6 +6,8 @@ import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
+const config = require('../../config.json');
+
 interface FAQ {
 	name: string;
 	aliases: string[];
@@ -39,6 +41,10 @@ export default class extends Command<Client> {
 			faqs.forEach(faq => {
 				embed.addField(faq.question, '`!faq ' + faq.name + '`');
 			});
+			embed.addField(
+				'More',
+				'Please check out our readme for a list of all FAQs and much more!' +
+				'https://github.com/AndreasGassmann/discord-invite-manager/');
 		} else {
 			let faq = faqs.find(el => el.name === faqName || el.aliases.some(f => f === faqName));
 			if (faq) {
