@@ -194,7 +194,7 @@ export default class extends Command<Client> {
 
 		if (customInvs.length > 0) {
 			let customInvText = '';
-			customInvs.forEach(inv => {
+			customInvs.slice(0, 10).forEach(inv => {
 				const reasonText = inv.reason
 					? inv.generated
 						? ', ' + this.formatGeneratedReason(inv)
@@ -206,7 +206,13 @@ export default class extends Command<Client> {
 					`**${inv.amount}** from <@${creator}> -` +
 					` **${dateText}**${reasonText}\n`;
 			});
-			embed.addField('Bonus invites', customInvText);
+			embed.addField(
+				'Bonus invites',
+				customInvText +
+					(customInvs.length > 10
+						? `\nPlus another **${customInvs.length - 10}** more bonus invites`
+						: '')
+			);
 		} else {
 			embed.addField(
 				'Bonus invites',
