@@ -369,24 +369,21 @@ export class IMClient extends Client {
 
 		const joinedAt = moment(member.joinedAt);
 
-		if (
-			typeof inviter === 'undefined' &&
-			template.indexOf('{inviterName}') > 0
-		) {
+		if (!inviter && template.indexOf('{inviterName}') >= 0) {
 			inviter = await member.guild.fetchMember(inviterId).catch(() => null);
 		}
 
 		if (
-			typeof invites === typeof undefined &&
-			(template.indexOf('{numInvites}') > 0 ||
-				template.indexOf('{numRegularInvites}') > 0 ||
-				template.indexOf('{numBonusInvites}') > 0)
+			!invites &&
+			(template.indexOf('{numInvites}') >= 0 ||
+				template.indexOf('{numRegularInvites}') >= 0 ||
+				template.indexOf('{numBonusInvites}') >= 0)
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
 
 		let numJoins = 0;
-		if (template.indexOf('{numJoins}') > 0) {
+		if (template.indexOf('{numJoins}') >= 0) {
 			numJoins = Math.max(
 				await joins.count({
 					where: {
@@ -399,7 +396,7 @@ export class IMClient extends Client {
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{firstJoin:') > 0) {
+		if (template.indexOf('{firstJoin:') >= 0) {
 			const temp = await joins.find({
 				where: {
 					guildId: member.guild.id,
@@ -414,7 +411,7 @@ export class IMClient extends Client {
 		}
 
 		let prevJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{previousJoin:') > 0) {
+		if (template.indexOf('{previousJoin:') >= 0) {
 			const temp = await joins.find({
 				where: {
 					guildId: member.guild.id,
