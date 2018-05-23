@@ -54,8 +54,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		const newArgs = ([dbKey] as any[]).concat(args.slice(1));
 
 		if (value === 'default') {
-			// tslint:disable-next-line:no-invalid-this
 			return func('key: String, ...value?: String').call(
+				// tslint:disable-next-line:no-invalid-this
 				this,
 				message,
 				newArgs
@@ -69,8 +69,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 					`You can use \`config ${dbKey} default\` to reset it to the default value.`
 				);
 			}
-			// tslint:disable-next-line:no-invalid-this
 			return func('key: String, ...value?: String').call(
+				// tslint:disable-next-line:no-invalid-this
 				this,
 				message,
 				newArgs
@@ -113,100 +113,23 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
+		// TODO: Temporary hack because boolean resolver doesn't work
+		if (rawValue === '__true__') {
+			rawValue = true;
+		} else if (rawValue === '__false__') {
+			rawValue = false;
+		}
+
 		const sets = message.guild.storage.settings;
 		const prefix = await sets.get('prefix');
+		const embed = createEmbed(this.client);
 
-		if (key) {
-			let oldVal = await sets.get(key);
-			let oldRawVal = this.fromDbValue(key, oldVal);
-			if (oldRawVal && oldRawVal.length > 1000) {
-				oldRawVal = oldRawVal.substr(0, 1000) + '...';
-			}
-
-			const embed = createEmbed(this.client);
-			embed.setTitle(key);
-
-			if (typeof rawValue !== typeof undefined) {
-				const parsedValue = this.toDbValue(message.guild, key, rawValue);
-				if (parsedValue.error) {
-					message.channel.send(parsedValue.error);
-					return;
-				}
-
-				const value = parsedValue.value;
-				if (rawValue.length > 1000) {
-					rawValue = rawValue.substr(0, 1000) + '...';
-				}
-
-				if (value === oldVal) {
-					embed.setDescription(`This config is already set to that value`);
-					embed.addField('Current Value', rawValue);
-				} else {
-					const error = this.validate(message, key, value);
-					if (error) {
-						message.channel.send(error);
-						return;
-					}
-
-					// Set new value
-					sets.set(key, value);
-
-					embed.setDescription(
-						`This config has been changed.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
-						`Use \`${prefix}config ${key} none\` to reset it to the default.`
-					);
-
-					// Log the settings change
-					await logAction(message, LogAction.config, {
-						key,
-						oldValue: oldVal,
-						newValue: value
-					});
-
-					if (oldVal) {
-						embed.addField('Previous Value', oldRawVal);
-					}
-
-					embed.addField('New Value', value ? rawValue : 'None');
-					oldVal = value; // Update value for future use
-				}
-			} else {
-				// If we have no new value, just print the old one
-				// Check if the old one is set
-				if (oldVal) {
-					embed.setDescription(
-						`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-						`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
-						(defaultSettings[key] === null
-							? `Use \`${prefix}config ${key} none\` to clear it.`
-							: '')
-					);
-					embed.addField('Current Value', oldRawVal);
-				} else {
-					embed.setDescription(
-						`This config is currently **not** set.\nUse \`${prefix}config ${key} <value>\` to set it.`
-					);
-				}
-			}
-
-			// Do any post processing, such as example messages
-			// If we updated a config setting, then 'oldVal' is now the new value
-			const afterMsg = await this.after(message, embed, key, oldVal);
-
-			await sendEmbed(message.channel, embed, message.author);
-			if (afterMsg) {
-				sendEmbed(message.channel, afterMsg);
-			}
-		} else {
-			const embed = createEmbed(this.client);
-
+		if (!key) {
 			embed.setTitle('Your config settings');
 			embed.setDescription(
 				'Below are all the config settings of your server.\n' +
-				'Use `!config <key>` to view a single setting\n' +
-				'Use `!config <key> <value>` to set the config <key> to <value>'
+					`Use \`${prefix}config <key>\` to view a single setting\n` +
+					`Use \`${prefix}config <key> <value>\` to set the config <key> to <value>`
 			);
 
 			const notSet = [];
@@ -230,7 +153,94 @@ export default class extends Command<IMClient> {
 				);
 			}
 
-			sendEmbed(message.channel, embed, message.author);
+			await sendEmbed(message.channel, embed, message.author);
+			return;
+		}
+
+		let oldVal = await sets.get(key);
+		let oldRawVal = this.fromDbValue(key, oldVal);
+		if (oldRawVal && oldRawVal.length > 1000) {
+			oldRawVal = oldRawVal.substr(0, 1000) + '...';
+		}
+
+		embed.setTitle(key);
+
+		if (typeof rawValue === typeof undefined) {
+			// If we have no new value, just print the old one
+			// Check if the old one is set
+			if (oldVal) {
+				embed.setDescription(
+					`This config is currently set.\n` +
+						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
+						`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
+						(defaultSettings[key] === null
+							? `Use \`${prefix}config ${key} none\` to clear it.`
+							: '')
+				);
+				embed.addField('Current Value', oldRawVal);
+			} else {
+				embed.setDescription(
+					`This config is currently **not** set.\nUse \`${prefix}config ${key} <value>\` to set it.`
+				);
+			}
+			await sendEmbed(message.channel, embed, message.author);
+			return;
+		}
+
+		const parsedValue = this.toDbValue(message.guild, key, rawValue);
+		if (parsedValue.error) {
+			message.channel.send(parsedValue.error);
+			return;
+		}
+
+		const value = parsedValue.value;
+		if (rawValue.length > 1000) {
+			rawValue = rawValue.substr(0, 1000) + '...';
+		}
+
+		if (value === oldVal) {
+			embed.setDescription(`This config is already set to that value`);
+			embed.addField('Current Value', rawValue);
+			await sendEmbed(message.channel, embed, message.author);
+			return;
+		}
+
+		const error = this.validate(message, key, value);
+		if (error) {
+			message.channel.send(error);
+			return;
+		}
+
+		// Set new value
+		sets.set(key, value);
+
+		embed.setDescription(
+			`This config has been changed.\n` +
+				`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
+				`Use \`${prefix}config ${key} none\` to reset it to the default.`
+		);
+
+		// Log the settings change
+		await logAction(message, LogAction.config, {
+			key,
+			oldValue: oldVal,
+			newValue: value
+		});
+
+		if (oldVal) {
+			embed.addField('Previous Value', oldRawVal);
+		}
+
+		embed.addField('New Value', value ? rawValue : 'None');
+		oldVal = value; // Update value for future use
+
+		// Do any post processing, such as example messages
+		// If we updated a config setting, then 'oldVal' is now the new value
+		const afterMsg = await this.after(message, embed, key, oldVal);
+
+		await sendEmbed(message.channel, embed, message.author);
+		if (afterMsg) {
+			sendEmbed(message.channel, afterMsg);
 		}
 	}
 

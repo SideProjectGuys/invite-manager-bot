@@ -17,6 +17,7 @@ import {
 
 import {
 	channels,
+	commandUsage,
 	customInvites,
 	guilds,
 	inviteCodes,
@@ -120,6 +121,23 @@ export class IMClient extends Client {
 		this.messageQueue.addMessage(
 			`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`
 		);
+	}
+
+	@on('command')
+	private async _onCommand(
+		name: string,
+		args: any[],
+		execTime: number,
+		message: Message
+	) {
+		await commandUsage.create({
+			id: null,
+			guildId: message.guild.id,
+			memberId: message.author.id,
+			command: name,
+			args: args.join(' '),
+			time: execTime
+		});
 	}
 
 	@on('message')
@@ -359,8 +377,10 @@ export class IMClient extends Client {
 		}
 
 		if (
-			typeof invites === 'undefined' &&
-			template.indexOf('{numInvites}') > 0
+			typeof invites === typeof undefined &&
+			(template.indexOf('{numInvites}') > 0 ||
+				template.indexOf('{numRegularInvites}') > 0 ||
+				template.indexOf('{numBonusInvites}') > 0)
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
@@ -426,7 +446,6 @@ export class IMClient extends Client {
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.code}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
-			.replace('{numInvites}', `${invites.total}`)
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);

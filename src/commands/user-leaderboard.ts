@@ -1,7 +1,14 @@
 import { Channel, GuildMember, MessageReaction, RichEmbed } from 'discord.js';
 import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
-import { Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
 import { IMClient } from '../client';
 import {
@@ -13,7 +20,9 @@ import {
 	MemberAttributes,
 	members,
 	sequelize,
-	SettingsKey
+	SettingsKey,
+	memberSettings,
+	MemberSettingsKey
 } from '../sequelize';
 import { createEmbed, sendEmbed, showPaginated } from '../utils/util';
 
@@ -27,7 +36,13 @@ const downSymbol = '🔻';
 const neutralSymbol = '🔹';
 
 type InvCacheType = {
-	[x: string]: { name: string; total: number; bonus: number; oldTotal: number; oldBonus: number };
+	[x: string]: {
+		name: string;
+		total: number;
+		bonus: number;
+		oldTotal: number;
+		oldBonus: number;
+	};
 };
 
 // Extra attributes for the sequelize queries
@@ -79,8 +94,13 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('page: Number, channel: Channel'))
-	public async action(message: Message, [_page, channel]: [number, Channel]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+	public async action(
+		message: Message,
+		[_page, channel]: [number, Channel]
+	): Promise<any> {
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const guildId = message.guild.id;
 
@@ -152,7 +172,9 @@ export default class extends Command<IMClient> {
 		});
 
 		const oldCodeInvs = await joins.findAll({
-			attributes: [[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins']],
+			attributes: [
+				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins']
+			],
 			where: {
 				guildId,
 				createdAt: {
@@ -228,22 +250,42 @@ export default class extends Command<IMClient> {
 			}
 		});
 
+		const hidden = (await memberSettings.findAll({
+			attributes: ['memberId'],
+			where: {
+				guildId: message.guild.id,
+				key: MemberSettingsKey.hideFromLeaderboard
+			},
+			raw: true
+		})).map(i => i.memberId);
+
 		const keys = Object.keys(invs)
-			.filter(k => invs[k].total > 0)
+			.filter(k => hidden.indexOf(k) === -1 && invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
-				return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
+				return diff !== 0
+					? diff
+					: invs[a].name
+						? invs[a].name.localeCompare(invs[b].name)
+						: 0;
 			});
 
 		const oldKeys = [...keys].sort((a, b) => {
-			const diff = invs[b].total - invs[b].oldTotal - (invs[a].total - invs[a].oldTotal);
-			return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
+			const diff =
+				invs[b].total - invs[b].oldTotal - (invs[a].total - invs[a].oldTotal);
+			return diff !== 0
+				? diff
+				: invs[a].name
+					? invs[a].name.localeCompare(invs[b].name)
+					: 0;
 		});
 
 		if (keys.length === 0) {
 			const embed = createEmbed(this.client);
 			embed.setDescription('No invites!');
-			embed.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`);
+			embed.setTitle(
+				`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`
+			);
 			sendEmbed(message.channel, embed, message.author);
 			return;
 		}
@@ -283,7 +325,9 @@ export default class extends Command<IMClient> {
 				stillInServer[jal.id] = false;
 				return;
 			}
-			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
+			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(
+				moment(jal.lastJoinedAt)
+			);
 		});
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);
@@ -306,22 +350,44 @@ export default class extends Command<IMClient> {
 				lines.push(['--', '-------', '-----', '--------', '------']);
 			}
 
-			keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
-				const inv = invs[k];
-				const pos = page * usersPerPage + i + 1;
+			keys
+				.slice(page * usersPerPage, (page + 1) * usersPerPage)
+				.forEach((k, i) => {
+					const inv = invs[k];
+					const pos = page * usersPerPage + i + 1;
 
-				const prevPos = oldKeys.indexOf(k) + 1;
-				const posChange = prevPos - i - 1;
+					const prevPos = oldKeys.indexOf(k) + 1;
+					const posChange = prevPos - i - 1;
 
-				const name =
-					style === LeaderboardStyle.mentions && stillInServer[k] ? `<@${k}>` : `${inv.name}`;
-				const symbol = posChange > 0 ? upSymbol : posChange < 0 ? downSymbol : neutralSymbol;
+					const name =
+						style === LeaderboardStyle.mentions && stillInServer[k]
+							? `<@${k}>`
+							: `${inv.name}`;
+					const symbol =
+						posChange > 0
+							? upSymbol
+							: posChange < 0
+								? downSymbol
+								: neutralSymbol;
 
-				const posText = posChange > 0 ? '+' + posChange : posChange === 0 ? '--' : posChange;
-				const line = [`${pos}.`, `${symbol} (${posText})`, name, `${inv.total}`, `${inv.bonus}`];
-				lines.push(line);
-				lengths.forEach((l, pIndex) => (lengths[pIndex] = Math.max(l, line[pIndex].length)));
-			});
+					const posText =
+						posChange > 0
+							? '+' + posChange
+							: posChange === 0
+								? '--'
+								: posChange;
+					const line = [
+						`${pos}.`,
+						`${symbol} (${posText})`,
+						name,
+						`${inv.total}`,
+						`${inv.bonus}`
+					];
+					lines.push(line);
+					lengths.forEach(
+						(l, pIndex) => (lengths[pIndex] = Math.max(l, line[pIndex].length))
+					);
+				});
 
 			// Put string together
 			if (style === LeaderboardStyle.table) {
@@ -332,10 +398,13 @@ export default class extends Command<IMClient> {
 					line.forEach((part, partIndex) => {
 						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
 					});
-				} else if (style === LeaderboardStyle.normal || style === LeaderboardStyle.mentions) {
-					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${line[3]}** invites (**${
-						line[4]
-					}** bonus)`;
+				} else if (
+					style === LeaderboardStyle.normal ||
+					style === LeaderboardStyle.mentions
+				) {
+					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${
+						line[3]
+					}** invites (**${line[4]}** bonus)`;
 				}
 
 				str += '\n';
@@ -345,7 +414,9 @@ export default class extends Command<IMClient> {
 			}
 
 			return createEmbed(this.client)
-				.setTitle(`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`)
+				.setTitle(
+					`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`
+				)
 				.setDescription(str);
 		});
 	}

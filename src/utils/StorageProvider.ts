@@ -4,7 +4,8 @@ import { defaultSettings, settings, SettingsKey } from '../sequelize';
 
 const defaultSettingsStr = JSON.stringify(defaultSettings);
 
-export class IMStorageProvider extends StorageProvider implements IStorageProvider {
+export class IMStorageProvider extends StorageProvider
+	implements IStorageProvider {
 	private name: string;
 	private cache: { [guildId: string]: string };
 
@@ -100,7 +101,12 @@ export class IMStorageProvider extends StorageProvider implements IStorageProvid
 				// Filter out valid configs, and only the ones that changed
 				const sets = Object.keys(config)
 					.filter(k => k in SettingsKey && config[k] !== oldConfig[k])
-					.map((k: SettingsKey) => ({ guildId: key, key: k, value: config[k] }));
+					.map((k: SettingsKey) => ({
+						id: null,
+						guildId: key,
+						key: k,
+						value: config[k]
+					}));
 
 				settings.bulkCreate(sets, {
 					updateOnDuplicate: ['value', 'updatedAt']
