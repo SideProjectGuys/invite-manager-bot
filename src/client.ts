@@ -111,6 +111,16 @@ export class IMClient extends Client {
 
 	@on('guildCreate')
 	private async _onGuildCreate(guild: Guild): Promise<void> {
+		// Send welcome message to owner with setup instructions
+		let owner = guild.owner;
+		owner.send(
+			'Hi! Thanks for inviting me to your server `' + guild.name + '`!\n\n' +
+			'I am now tracking all invites on your server.\n\n' +
+			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+			'You can see a list of all commands using the `!help` command.\n\n' +
+			'That\'s it! Enjoy the bot and if you have any questions feel free to join our support server!\n' +
+			config.botSupport
+		);
 		this.messageQueue.addMessage(
 			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
 		);
@@ -191,29 +201,23 @@ export class IMClient extends Client {
 
 	@on('guildMemberAdd')
 	private async _onGuildMemberAdd(member: GuildMember): Promise<void> {
-		let join = await this.findJoin(
-			member.id,
-			member.guild.id,
-			member.joinedTimestamp,
-			2000
-		);
-		if (!join) {
-			join = await this.findJoin(
-				member.id,
-				member.guild.id,
-				member.joinedTimestamp,
-				5000
-			);
+		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
+
+		let js = await this.findJoins(member.guild.id, member.id, 2000);
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
+			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
-		if (!join) {
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.log(
 				`Could not find join for ${member.id} in ${member.guild.id} at ${
-					member.joinedTimestamp
+				member.joinedTimestamp
 				}`
 			);
 			return;
 		}
+
+		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
 
 		const inviteCode = join['exactMatch.code'];
 		const channelName = join['exactMatch.channel.name'];
@@ -249,7 +253,7 @@ export class IMClient extends Client {
 		if (!joinChannel) {
 			console.log(
 				`Guild ${
-					member.guild.id
+				member.guild.id
 				} has invalid join message channel ${joinChannelId}`
 			);
 			return;
@@ -258,51 +262,71 @@ export class IMClient extends Client {
 		const joinMessageFormat = (await sets.get(
 			SettingsKey.joinMessage
 		)) as string;
-		if (!joinMessageFormat) {
-			console.log(`Guild ${member.guild.id} has no join message`);
-			return;
+		if (joinMessageFormat) {
+			const msg = await this.fillTemplate(
+				joinMessageFormat,
+				member,
+				inviteCode,
+				js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
+				channelId,
+				channelName,
+				inviterId,
+				inviterName,
+				inviter,
+				invites
+			);
+
+			// Send the message now so it doesn't take too long
+			await joinChannel.send(msg);
 		}
 
-		const msg = await this.fillTemplate(
-			joinMessageFormat,
-			member,
-			inviteCode,
-			channelId,
-			channelName,
-			inviterId,
-			inviterName,
-			inviter,
-			invites
-		);
-
-		joinChannel.send(msg);
+		const autoSubtractFakes = (await sets.get(
+			SettingsKey.autoSubtractFakes
+		)) as string;
+		if (autoSubtractFakes === 'true') {
+			// Delete old duplicate removals
+			await customInvites.destroy({
+				where: {
+					guildId: member.guild.id,
+					reason: `fake:${member.id}`,
+					generated: true
+				}
+			});
+			// Add removals for duplicate invites
+			await customInvites.bulkCreate(
+				js.filter((j: any) => parseInt(j.numJoins, 10) > 0).map((j: any) => ({
+					guildId: member.guild.id,
+					memberId: j['exactMatch.inviterId'],
+					amount: -parseInt(j.numJoins, 10),
+					reason: `fake:${member.id}`,
+					generated: true
+				})),
+				{
+					updateOnDuplicate: ['amount', 'updatedAt']
+				}
+			);
+		}
 	}
 
 	@on('guildMemberRemove')
 	private async _onGuildMemberRemove(member: GuildMember): Promise<void> {
-		let join = await this.findJoin(
-			member.id,
-			member.guild.id,
-			member.joinedTimestamp,
-			2000
-		);
-		if (!join) {
-			join = await this.findJoin(
-				member.id,
-				member.guild.id,
-				member.joinedTimestamp,
-				5000
-			);
+		const ts = Math.round(member.joinedTimestamp / 1000) * 1000;
+
+		let js = await this.findJoins(member.guild.id, member.id, 2000);
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
+			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
-		if (!join) {
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.log(
 				`Could not find join for ${member.id} in ${member.guild.id} at ${
-					member.joinedTimestamp
+				member.joinedTimestamp
 				}`
 			);
 			return;
 		}
+
+		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
 
 		const inviteCode = join['exactMatch.code'];
 		const channelName = join['exactMatch.channel.name'];
@@ -327,7 +351,7 @@ export class IMClient extends Client {
 		if (!leaveChannel) {
 			console.log(
 				`Guild ${
-					member.guild.id
+				member.guild.id
 				} has invalid leave message channel ${leaveChannelId}`
 			);
 			return;
@@ -345,6 +369,7 @@ export class IMClient extends Client {
 			leaveMessageFormat,
 			member,
 			inviteCode,
+			js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
 			channelId,
 			channelName,
 			inviterId,
@@ -358,6 +383,7 @@ export class IMClient extends Client {
 		template: any,
 		member: GuildMember,
 		inviteCode: string,
+		numJoins: number,
 		channelId: string,
 		channelName: string,
 		inviterId: string,
@@ -380,19 +406,6 @@ export class IMClient extends Client {
 				template.indexOf('{numBonusInvites}') >= 0)
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
-		}
-
-		let numJoins = 0;
-		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = Math.max(
-				await joins.count({
-					where: {
-						guildId: member.guild.id,
-						memberId: member.id
-					}
-				}),
-				1
-			);
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
@@ -475,22 +488,30 @@ export class IMClient extends Client {
 			.replace(`{${name}:timeAgo}`, timeAgo);
 	}
 
-	private async findJoin(
-		memberId: string,
+	private async findJoins(
 		guildId: string,
-		createdAt: number,
+		memberId: string,
 		timeOut: number
 	): Promise<any> {
 		return new Promise((resolve, reject) => {
 			const func = async () => {
 				resolve(
-					await joins.find({
-						attributes: [],
+					await joins.findAll({
+						attributes: [
+							[
+								sequelize.fn('COUNT', sequelize.col('exactMatch.code')),
+								'numJoins'
+							],
+							[
+								sequelize.fn('MAX', sequelize.col('join.createdAt')),
+								'newestJoinAt'
+							]
+						],
 						where: {
 							memberId,
-							guildId,
-							createdAt
+							guildId
 						},
+						group: [sequelize.col('exactMatch.code')],
 						include: [
 							{
 								attributes: ['code', 'inviterId', 'channelId'],

@@ -16,6 +16,7 @@ export interface BaseAttributes {
 export interface MemberAttributes extends BaseAttributes {
 	id: string;
 	name: string;
+	discriminator: string;
 }
 export interface MemberInstance
 	extends Sequelize.Instance<MemberAttributes>,
@@ -108,6 +109,7 @@ export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
+		discriminator: Sequelize.STRING(4),
 		color: Sequelize.STRING({ length: 7 })
 	},
 	{
@@ -163,7 +165,8 @@ export enum SettingsKey {
 	modChannel = 'modChannel',
 	logChannel = 'logChannel',
 	getUpdates = 'getUpdates',
-	leaderboardStyle = 'leaderboardStyle'
+	leaderboardStyle = 'leaderboardStyle',
+	autoSubtractFakes = 'autoSubtractFakes'
 }
 
 export enum Lang {
@@ -203,7 +206,8 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	modChannel: null,
 	logChannel: null,
 	getUpdates: 'true',
-	leaderboardStyle: 'normal'
+	leaderboardStyle: 'normal',
+	autoSubtractFakes: 'true'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -231,7 +235,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.modRole,
 			SettingsKey.modChannel,
 			SettingsKey.logChannel,
-			SettingsKey.getUpdates
+			SettingsKey.getUpdates,
+			SettingsKey.autoSubtractFakes
 		),
 		value: Sequelize.TEXT
 	},

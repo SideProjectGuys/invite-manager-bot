@@ -17,11 +17,13 @@ import {
 
 import { IMClient } from '../client';
 import {
+	customInvites,
 	defaultSettings,
 	getSettingsType,
 	Lang,
 	LeaderboardStyle,
 	LogAction,
+	sequelize,
 	settings,
 	SettingsKey
 } from '../sequelize';
@@ -32,7 +34,7 @@ const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function (message: Message, args: string[]) {
+	return function(message: Message, args: string[]) {
 		const key = args[0];
 		if (!key) {
 			return [message, args];
@@ -66,7 +68,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			if (defaultSettings[dbKey] !== null) {
 				throw Error(
 					`The config setting **${dbKey}** can not be cleared. ` +
-					`You can use \`config ${dbKey} default\` to reset it to the default value.`
+						`You can use \`config ${dbKey} default\` to reset it to the default value.`
 				);
 			}
 			return func('key: String, ...value?: String').call(
@@ -236,11 +238,12 @@ export default class extends Command<IMClient> {
 
 		// Do any post processing, such as example messages
 		// If we updated a config setting, then 'oldVal' is now the new value
-		const afterMsg = await this.after(message, embed, key, oldVal);
+		const cb = await this.after(message, embed, key, oldVal);
 
 		await sendEmbed(message.channel, embed, message.author);
-		if (afterMsg) {
-			sendEmbed(message.channel, afterMsg);
+
+		if (typeof cb === typeof Function) {
+			await cb();
 		}
 	}
 
@@ -335,14 +338,18 @@ export default class extends Command<IMClient> {
 		embed: RichEmbed,
 		key: SettingsKey,
 		value: any
-	): Promise<RichEmbed> {
+	): Promise<Function> {
 		const me = message.member.guild.me;
 
-		if (key === SettingsKey.joinMessage && value) {
+		if (
+			value &&
+			(key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)
+		) {
 			const prev = await this.client.fillTemplate(
 				value,
 				message.member,
 				'tEsTcOdE',
+				Math.round(Math.random() * 1000), // num joins
 				message.channel.id,
 				(message.channel as any).name,
 				me.id,
@@ -360,32 +367,27 @@ export default class extends Command<IMClient> {
 				embed.addField('Preview', prev);
 			} else {
 				embed.addField('Preview', '<See next message>');
-				return prev;
+				return () => sendEmbed(message.channel, prev);
 			}
 		}
-		if (key === SettingsKey.leaveMessage && value) {
-			const prev = await this.client.fillTemplate(
-				value,
-				message.member,
-				'tEsTcOdE',
-				message.channel.id,
-				(message.channel as any).name,
-				me.id,
-				me.nickname,
-				me,
-				{
-					total: Math.round(Math.random() * 1000),
-					code: Math.round(Math.random() * 1000),
-					custom: Math.round(Math.random() * 1000),
-					auto: Math.round(Math.random() * 1000)
-				}
-			);
 
-			if (typeof prev === 'string') {
-				embed.addField('Preview', prev);
-			} else {
-				embed.addField('Preview', '<See next message>');
-				return prev;
+		if (key === SettingsKey.autoSubtractFakes) {
+			if (value === 'true') {
+				// Subtract fake invites from all members
+				let cmd = this.client.commands.resolve('subtract-fakes');
+				return async () => await cmd.action(message, []);
+			} else if (value === 'false') {
+				// Delete old duplicate removals
+				return async () =>
+					await customInvites.destroy({
+						where: {
+							guildId: message.guild.id,
+							reason: {
+								[sequelize.Op.like]: `fake:%`
+							},
+							generated: true
+						}
+					});
 			}
 		}
 	}

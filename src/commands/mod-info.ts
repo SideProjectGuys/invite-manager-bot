@@ -15,7 +15,8 @@ import {
 	inviteCodes,
 	joins,
 	members,
-	sequelize
+	sequelize,
+	CustomInviteInstance
 } from '../sequelize';
 import {
 	CommandGroup,
@@ -194,10 +195,15 @@ export default class extends Command<Client> {
 		if (customInvs.length > 0) {
 			let customInvText = '';
 			customInvs.forEach(inv => {
-				const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
+				const reasonText = inv.reason
+					? inv.generated
+						? ', ' + this.formatGeneratedReason(inv)
+						: `, reason: **${inv.reason}**`
+					: '';
 				const dateText = moment(inv.createdAt).fromNow();
+				const creator = inv.creatorId ? inv.creatorId : message.guild.me.id;
 				customInvText +=
-					`**${inv.amount}** from <@${inv.creatorId}> -` +
+					`**${inv.amount}** from <@${creator}> -` +
 					` **${dateText}**${reasonText}\n`;
 			});
 			embed.addField('Bonus invites', customInvText);
@@ -219,5 +225,15 @@ export default class extends Command<Client> {
 			}*/
 
 		sendEmbed(message.channel, embed, message.author);
+	}
+
+	private formatGeneratedReason(inv: CustomInviteInstance) {
+		if (inv.reason.startsWith('clear_invites')) {
+			return '!clearinvites command';
+		} else if (inv.reason.startsWith('fake:')) {
+			const splits = inv.reason.split(':');
+			return `Fake invites from <@${splits[1]}>`;
+		}
+		return '<Unknown reason>';
 	}
 }

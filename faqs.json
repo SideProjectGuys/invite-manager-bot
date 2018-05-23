@@ -1,0 +1,111 @@
+[
+	{
+		"name": "prefix",
+		"aliases": [
+			"set-prefix",
+			"setprefix"
+		],
+		"question": "How do I change the prefix of the bot?",
+		"answer": "You can do `!config prefix -` to change the prefix.\nIf you don't know your current prefix, you can do `@InviteManager prefix` to see the prefix."
+	},
+	{
+		"name": "channel",
+		"aliases": [
+			"joinMessageChannel",
+			"join-message-channel",
+			"leaveMessageChannel",
+			"leave-message-channel"
+		],
+		"question": "How do I change the prefix of the bot?",
+		"answer": "Set the channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. After doing that, new joins and leaves will be posted to that channel."
+	},
+	{
+		"name": "message",
+		"aliases": [
+			"joinMessage",
+			"join-message",
+			"leaveMessage",
+			"leave-message"
+		],
+		"question": "Can I customize join and leave messages?",
+		"answer": "Absolutely!\nYou can change the message by doing for example\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)` or \n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\nYou can find a full list of all available placeholders here: https://github.com/AndreasGassmann/discord-invite-manager/"
+	},
+	{
+		"name": "ranks",
+		"aliases": [
+			"roles"
+		],
+		"question": "What are \"Ranks\" and how can I use them?",
+		"answer": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so:\n`!add-rank @Beginner 5 (and if you want a description here)`.\nAs soon as someone has 5 invites, he will automatically be added to that role!"
+	},
+	{
+		"name": "bonus",
+		"aliases": [
+			"bonus-invites",
+			"bonusInvites"
+		],
+		"question": "What are bonus invites?",
+		"answer": "Bonus invites are invites that can be given to members by an admin. You can either increase or decrease the number of invites. You can also give a reason why you did it, like if someone was helpful or if someone broke the rules.\n`!add-invites @user 5 Was very helpful!`.\nUse negative number eg. `-5` to decrease the value of someone.\nYou can see how why someone has bonus invites by doing `!info @user`"
+	},
+	{
+		"name": "removeInvites",
+		"aliases": [
+			"remove-invites"
+		],
+		"question": "How do I remove invites of someone?",
+		"answer": "You can use the `!add-invites` command with a negative number to do that (and also add an optional reason why you did it).\n`!add-invites @user -5 Broke the rules.`"
+	},
+	{
+		"name": "restrictChannel",
+		"aliases": [
+			"restrict-channel",
+			"disable-channel",
+			"disableChannel",
+			"one-channel",
+			"oneChannel"
+		],
+		"question": "How can I disable the bot in all but one/some channels?",
+		"answer": "Take away the read message permissions in the channels where you don't want the bot to reply."
+	},
+	{
+		"name": "hideFromLeaderboard",
+		"aliases": [
+			"hide-from-leaderboard"
+		],
+		"question": "How do I hide people from leaderboard?",
+		"answer": "You can do `!memberConfig hideFromLeaderboard @user true` to hide a specific member from the leaderboard."
+	},
+	{
+		"name": "fake",
+		"aliases": [
+			"cheaters"
+		],
+		"question": "How can I see cheaters on my server?",
+		"answer": "The `!fake` command will show people who repeatedly joined your server."
+	},
+	{
+		"name": "webpanel",
+		"aliases": [
+			"webinterface",
+			"website"
+		],
+		"question": "Is there a webpanel?",
+		"answer": "Yes! It's currently in an alpha state and under heavy development. But you can access it here and give us feedback: https://panel.invitemanager.co/"
+	},
+	{
+		"name": "support",
+		"aliases": [
+			"help"
+		],
+		"question": "The bot doesn't work, how can I get help?",
+		"answer": "We can help you if you join our discord: https://discord.gg/Am6p2Hs"
+	},
+	{
+		"name": "premium",
+		"aliases": [
+			"donate"
+		],
+		"question": "How can I support development of this bot?",
+		"answer": "You can support us by telling more people about the bot, but you can also subscribe to one of our premium tier. By doing that, you get some additional features depending on your tier.\nhttps://patreon.com/invitemanager"
+	}
+]
