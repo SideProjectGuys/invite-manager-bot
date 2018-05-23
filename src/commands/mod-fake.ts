@@ -1,7 +1,22 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Client,
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
-import { inviteCodes, JoinAttributes, JoinInstance, joins, members, sequelize } from '../sequelize';
+import {
+	inviteCodes,
+	JoinAttributes,
+	JoinInstance,
+	joins,
+	members,
+	sequelize
+} from '../sequelize';
 import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -27,7 +42,9 @@ export default class extends Command<Client> {
 
 	@using(resolve('page: Number'))
 	public async action(message: Message, [_page]: [number]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		type ExtendedJoin = JoinAttributes & {
 			memberName: string;
@@ -87,7 +104,7 @@ export default class extends Command<Client> {
 			.filter((j: ExtendedJoin) => parseInt(j.totalJoins, 10) > 1)
 			.sort(
 				(a: ExtendedJoin, b: ExtendedJoin) =>
-					parseInt(a.totalJoins, 10) - parseInt(b.totalJoins, 10)
+					parseInt(b.totalJoins, 10) - parseInt(a.totalJoins, 10)
 			);
 
 		if (suspiciousJoins.length === 0) {
@@ -121,7 +138,8 @@ export default class extends Command<Client> {
 					});
 					const invText = Object.keys(invs)
 						.map(name => {
-							const timesText = invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
+							const timesText =
+								invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
 							return `**${name}**${timesText}`;
 						})
 						.join(', ');
