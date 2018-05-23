@@ -377,8 +377,10 @@ export class IMClient extends Client {
 		}
 
 		if (
-			typeof invites === 'undefined' &&
-			template.indexOf('{numInvites}') > 0
+			typeof invites === typeof undefined &&
+			(template.indexOf('{numInvites}') > 0 ||
+				template.indexOf('{numRegularInvites}') > 0 ||
+				template.indexOf('{numBonusInvites}') > 0)
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
@@ -444,7 +446,6 @@ export class IMClient extends Client {
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.code}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
-			.replace('{numInvites}', `${invites.total}`)
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);
