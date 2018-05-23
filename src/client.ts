@@ -363,7 +363,7 @@ export class IMClient extends Client {
 		inviterId: string,
 		inviterName: string,
 		inviter?: GuildMember,
-		invites?: InviteCounts
+		invites: InviteCounts = { total: 0, code: 0, custom: 0, auto: 0 }
 	): Promise<string | RichEmbed> {
 		const userSince = moment(member.user.createdAt);
 
