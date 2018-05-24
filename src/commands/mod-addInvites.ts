@@ -14,7 +14,6 @@ import {
 	CommandGroup,
 	createEmbed,
 	getInviteCounts,
-	logAction,
 	promoteIfQualified,
 	sendEmbed
 } from '../utils/util';
@@ -81,7 +80,7 @@ export default class extends Command<IMClient> {
 			generated: false
 		});
 
-		await logAction(message, LogAction.addInvites, {
+		this.client.logAction(message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
 			targetId: member.id,
 			amount,

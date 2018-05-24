@@ -1,10 +1,11 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from 'yamdbf';
 
+import { IMClient } from '../client';
 import { ranks } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
@@ -19,7 +20,9 @@ export default class extends Command<Client> {
 	}
 
 	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const rs = await ranks.findAll({
 			where: {
@@ -39,7 +42,9 @@ export default class extends Command<Client> {
 				if (r.description) {
 					description = `: ${r.description}`;
 				}
-				output += `<@&${r.roleId}>: **${r.numInvites} invites**${description}\n`;
+				output += `<@&${r.roleId}>: **${
+					r.numInvites
+				} invites**${description}\n`;
 			});
 			const embed = createEmbed(this.client);
 			embed.setAuthor('Ranks');

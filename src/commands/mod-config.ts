@@ -27,7 +27,7 @@ import {
 	settings,
 	SettingsKey
 } from '../sequelize';
-import { CommandGroup, createEmbed, logAction, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using } = CommandDecorators;
@@ -223,7 +223,7 @@ export default class extends Command<IMClient> {
 		);
 
 		// Log the settings change
-		await logAction(message, LogAction.config, {
+		this.client.logAction(message, LogAction.config, {
 			key,
 			oldValue: oldVal,
 			newValue: value

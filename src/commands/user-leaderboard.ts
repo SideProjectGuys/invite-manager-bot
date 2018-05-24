@@ -19,10 +19,10 @@ import {
 	leaves,
 	MemberAttributes,
 	members,
-	sequelize,
-	SettingsKey,
 	memberSettings,
-	MemberSettingsKey
+	MemberSettingsKey,
+	sequelize,
+	SettingsKey
 } from '../sequelize';
 import { createEmbed, sendEmbed, showPaginated } from '../utils/util';
 

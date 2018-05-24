@@ -1,7 +1,15 @@
 import { User } from 'discord.js';
 import { Op } from 'sequelize';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
+import { IMClient } from '../client';
 import {
 	CustomInviteAttributes,
 	CustomInviteInstance,
@@ -10,12 +18,12 @@ import {
 	LogAction,
 	sequelize
 } from '../sequelize';
-import { CommandGroup, logAction } from '../utils/util';
+import { CommandGroup } from '../utils/util';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
@@ -37,8 +45,13 @@ export default class extends Command<Client> {
 	}
 
 	@using(resolve('user: User, clearBonus: Boolean'))
-	public async action(message: Message, [user, clearBonus]: [User, boolean]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+	public async action(
+		message: Message,
+		[user, clearBonus]: [User, boolean]
+	): Promise<any> {
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const memberId = user ? user.id : null;
 
@@ -81,7 +94,10 @@ export default class extends Command<Client> {
 			const customInvs = await customInvites.findAll({
 				attributes: [
 					'memberId',
-					[sequelize.fn('sum', sequelize.col('customInvite.amount')), 'totalAmount']
+					[
+						sequelize.fn('sum', sequelize.col('customInvite.amount')),
+						'totalAmount'
+					]
 				],
 				where: {
 					guildId: message.guild.id,
@@ -116,7 +132,7 @@ export default class extends Command<Client> {
 
 		const createdInvs = await customInvites.bulkCreate(newInvs);
 
-		await logAction(message, LogAction.clearInvites, {
+		this.client.logAction(message, LogAction.clearInvites, {
 			customInviteIds: createdInvs.map(inv => inv.id),
 			...(memberId && { targetId: memberId })
 		});

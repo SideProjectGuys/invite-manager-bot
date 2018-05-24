@@ -1,15 +1,22 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
+import { IMClient } from '../client';
 import { inviteCodes, joins, members, sequelize } from '../sequelize';
 import { createEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+export default class extends Command<IMClient> {
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -19,13 +26,16 @@ export default class extends Command<Client> {
 			usage: '<prefix>dm',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			ownerOnly: true,
-			hidden: true,
+			hidden: true
 		});
 	}
 
 	@using(resolve('userId: string, ...msg: String'))
 	@using(expect('userId: string, ...msg: String'))
-	public async action(message: Message, [userId, msg]: [string, string]): Promise<any> {
+	public async action(
+		message: Message,
+		[userId, msg]: [string, string]
+	): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
 
 		const user = await this.client.fetchUser(userId);
@@ -39,7 +49,8 @@ export default class extends Command<Client> {
 			channel = await user.createDM();
 		}
 
-		channel.send(msg)
+		channel
+			.send(msg)
 			.then(() => {
 				message.react('👍');
 			})

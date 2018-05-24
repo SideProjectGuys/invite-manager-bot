@@ -1,10 +1,4 @@
-import {
-	DMChannel,
-	GuildMember,
-	Message,
-	RichEmbed,
-	TextChannel
-} from 'discord.js';
+import { DMChannel, GuildMember, RichEmbed, TextChannel } from 'discord.js';
 import * as moment from 'moment';
 import * as path from 'path';
 import {
@@ -12,7 +6,8 @@ import {
 	Guild,
 	GuildSettings,
 	GuildStorage,
-	ListenerUtil
+	ListenerUtil,
+	Message
 } from 'yamdbf';
 
 import {
@@ -22,12 +17,14 @@ import {
 	guilds,
 	inviteCodes,
 	joins,
+	LogAction,
 	members,
 	sequelize,
 	settings,
 	SettingsKey
 } from './sequelize';
 import { BooleanResolver } from './utils/BooleanResolver';
+import { DBQueue } from './utils/DBQueue';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
 import {
@@ -46,6 +43,7 @@ export class IMClient extends Client {
 	public config: any;
 
 	public startedAt: moment.Moment;
+	public dbQueue: DBQueue;
 	public messageQueue: MessageQueue;
 	public activityInterval: NodeJS.Timer;
 
@@ -91,17 +89,18 @@ export class IMClient extends Client {
 		this.version = version;
 		this.config = config;
 		this.startedAt = moment();
+
+		this.messageQueue = new MessageQueue(this);
+		this.dbQueue = new DBQueue(this);
 	}
 
 	@once('pause')
 	private async _onPause() {
-		// await this.setDefaultSetting('prefix', '!');
 		this.continue();
 	}
 
 	@once('clientReady')
 	private async _onClientReady(): Promise<void> {
-		this.messageQueue = new MessageQueue(this);
 		this.messageQueue.addMessage('clientReady executed');
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
@@ -120,7 +119,7 @@ export class IMClient extends Client {
 				'I am now tracking all invites on your server.\n\n' +
 				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
 				'You can see a list of all commands using the `!help` command.\n\n' +
-				"That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n" +
+				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
 				config.botSupport
 		);
 		this.messageQueue.addMessage(
@@ -142,14 +141,24 @@ export class IMClient extends Client {
 		execTime: number,
 		message: Message
 	) {
-		await commandUsage.create({
-			id: null,
-			guildId: message.guild.id,
-			memberId: message.author.id,
-			command: name,
-			args: args.join(' '),
-			time: execTime
-		});
+		// We have to add the members too, in case our DB doens't have them yet
+		this.dbQueue.addCommandUsage(
+			{
+				id: null,
+				guildId: message.guild.id,
+				memberId: message.author.id,
+				command: name,
+				args: args.join(' '),
+				time: execTime,
+				createdAt: new Date(),
+				updatedAt: new Date()
+			},
+			{
+				id: message.author.id,
+				name: message.author.username,
+				discriminator: message.author.discriminator
+			}
+		);
 	}
 
 	@on('message')
@@ -379,6 +388,47 @@ export class IMClient extends Client {
 		);
 
 		leaveChannel.send(msg);
+	}
+
+	public async logAction(message: Message, action: LogAction, data: any) {
+		const logChannelId = (await message.guild.storage.settings.get(
+			SettingsKey.logChannel
+		)) as string;
+		if (logChannelId) {
+			const logChannel = message.guild.channels.get(
+				logChannelId
+			) as TextChannel;
+			if (logChannel) {
+				const content =
+					message.content.substr(0, 1000) +
+					(message.content.length > 1000 ? '...' : '');
+
+				let json = JSON.stringify(data, null, 2);
+				if (json.length > 1000) {
+					json = json.substr(0, 1000) + '...';
+				}
+
+				const embed = createEmbed(message.client);
+				embed.setTitle('Log Action');
+				embed.addField('Action', action, true);
+				embed.addField('Cause', `<@${message.author.id}>`, true);
+				embed.addField('Command', content);
+
+				embed.addField('Data', '`' + json + '`');
+				sendEmbed(logChannel, embed);
+			}
+		}
+
+		this.dbQueue.addLogAction({
+			id: null,
+			guildId: message.guild.id,
+			memberId: message.author.id,
+			action,
+			message: message.content,
+			data,
+			createdAt: new Date(),
+			updatedAt: new Date()
+		});
 	}
 
 	public async fillTemplate(

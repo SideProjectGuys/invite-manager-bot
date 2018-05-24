@@ -1,7 +1,6 @@
 import { RichEmbed, User } from 'discord.js';
 import * as moment from 'moment';
 import {
-	Client,
 	Command,
 	CommandDecorators,
 	Logger,
@@ -10,13 +9,14 @@ import {
 	Middleware
 } from 'yamdbf';
 
+import { IMClient } from '../client';
 import {
+	CustomInviteInstance,
 	customInvites,
 	inviteCodes,
 	joins,
 	members,
-	sequelize,
-	CustomInviteInstance
+	sequelize
 } from '../sequelize';
 import {
 	CommandGroup,
@@ -28,7 +28,7 @@ import {
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {

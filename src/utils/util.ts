@@ -202,47 +202,6 @@ export async function promoteIfQualified(
 	};
 }
 
-export async function logAction(
-	message: Message,
-	action: LogAction,
-	data: any
-) {
-	const logChannelId = (await message.guild.storage.settings.get(
-		SettingsKey.logChannel
-	)) as string;
-	if (logChannelId) {
-		const logChannel = message.guild.channels.get(logChannelId) as TextChannel;
-		if (logChannel) {
-			const content =
-				message.content.substr(0, 1000) +
-				(message.content.length > 1000 ? '...' : '');
-
-			let json = JSON.stringify(data, null, 2);
-			if (json.length > 1000) {
-				json = json.substr(0, 1000) + '...';
-			}
-
-			const embed = createEmbed(message.client);
-			embed.setTitle('Log Action');
-			embed.addField('Action', action, true);
-			embed.addField('Cause', `<@${message.author.id}>`, true);
-			embed.addField('Command', content);
-
-			embed.addField('Data', '`' + json + '`');
-			sendEmbed(logChannel, embed);
-		}
-	}
-
-	return await logs.create({
-		id: null,
-		guildId: message.guild.id,
-		memberId: message.author.id,
-		action,
-		message: message.content,
-		data
-	});
-}
-
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 export async function showPaginated(

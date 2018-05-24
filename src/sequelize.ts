@@ -38,7 +38,8 @@ export const members = sequelize.define<MemberInstance, MemberAttributes>(
 	'member',
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
-		name: Sequelize.STRING
+		name: Sequelize.STRING,
+		discriminator: Sequelize.STRING
 	},
 	{
 		timestamps: true,
