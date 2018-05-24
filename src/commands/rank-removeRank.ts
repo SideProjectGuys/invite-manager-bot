@@ -1,15 +1,22 @@
 import { Role } from 'discord.js';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
+import { IMClient } from '../client';
 import { LogAction, ranks } from '../sequelize';
-import { CommandGroup, logAction } from '../utils/util';
+import { CommandGroup } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
-	@logger('Command')
-	private readonly _logger: Logger;
+export default class extends Command<IMClient> {
+	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -17,9 +24,7 @@ export default class extends Command<Client> {
 			aliases: ['removeRank'],
 			desc: 'Remove a rank',
 			usage: '<prefix>remove-rank @role',
-			info: '`' +
-				'@role  The for which you want to remove the rank.' +
-				'`',
+			info: '`' + '@role  The for which you want to remove the rank.' + '`',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Ranks,
 			guildOnly: true
@@ -29,21 +34,23 @@ export default class extends Command<Client> {
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))
 	public async action(message: Message, [role]: [Role]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const rank = await ranks.find({
 			where: {
 				guildId: role.guild.id,
-				roleId: role.id,
+				roleId: role.id
 			}
 		});
 
 		if (rank) {
 			await rank.destroy();
 
-			await logAction(message, LogAction.removeRank, {
+			this.client.logAction(message, LogAction.removeRank, {
 				rankId: rank.id,
-				roleId: role.id,
+				roleId: role.id
 			});
 
 			message.channel.send(`Rank ${role.name} removed`);

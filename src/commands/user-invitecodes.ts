@@ -1,11 +1,12 @@
 import { RichEmbed } from 'discord.js';
 import * as moment from 'moment';
-import { Client, Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from 'yamdbf';
 
+import { IMClient } from '../client';
 import { inviteCodes, members } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
@@ -32,7 +33,9 @@ export default class extends Command<Client> {
 	}
 
 	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const codes = await inviteCodes.findAll({
 			where: {
@@ -67,7 +70,9 @@ export default class extends Command<Client> {
 		);
 
 		const embed = createEmbed(this.client);
-		embed.setTitle(`You have the following codes on the server ${message.guild.name}`);
+		embed.setTitle(
+			`You have the following codes on the server ${message.guild.name}`
+		);
 
 		if (permanentInvites.length === 0 && temporaryInvites.length === 0) {
 			embed.setDescription(
@@ -76,9 +81,15 @@ export default class extends Command<Client> {
 			);
 		} else {
 			if (recommendedCode) {
-				embed.addField(`Recommended invite code`, `https://discord.gg/${recommendedCode.code}`);
+				embed.addField(
+					`Recommended invite code`,
+					`https://discord.gg/${recommendedCode.code}`
+				);
 			} else {
-				embed.addField(`Recommended invite code`, `Please create a permanent invite code.`);
+				embed.addField(
+					`Recommended invite code`,
+					`Please create a permanent invite code.`
+				);
 			}
 		}
 		if (permanentInvites.length > 0) {
@@ -103,7 +114,9 @@ export default class extends Command<Client> {
 					`**Uses**: ${i.uses}\n**Max Age**:${moment
 						.duration(i.maxAge)
 						.humanize()}\n**Max Uses**: ${i.maxUses}\n` +
-						`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(i.createdAt)
+						`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(
+							i.createdAt
+						)
 							.add(i.maxAge, 's')
 							.fromNow()}`,
 					true

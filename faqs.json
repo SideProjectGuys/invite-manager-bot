@@ -16,7 +16,7 @@
 			"leaveMessageChannel",
 			"leave-message-channel"
 		],
-		"question": "How do I change the prefix of the bot?",
+		"question": "How do I set join and leave messages?",
 		"answer": "Set the channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. After doing that, new joins and leaves will be posted to that channel."
 	},
 	{

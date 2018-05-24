@@ -9,8 +9,8 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { LogAction, ranks, roles, members } from '../sequelize';
-import { CommandGroup, logAction } from '../utils/util';
+import { LogAction, members, ranks, roles } from '../sequelize';
+import { CommandGroup } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -94,12 +94,16 @@ export default class extends Command<IMClient> {
 			isNew = true;
 		}
 
-		await logAction(message, isNew ? LogAction.addRank : LogAction.updateRank, {
-			rankId: rank.id,
-			roleId: role.id,
-			numInvites: invites,
-			description
-		});
+		this.client.logAction(
+			message,
+			isNew ? LogAction.addRank : LogAction.updateRank,
+			{
+				rankId: rank.id,
+				roleId: role.id,
+				numInvites: invites,
+				description
+			}
+		);
 
 		if (!isNew) {
 			message.channel.send(

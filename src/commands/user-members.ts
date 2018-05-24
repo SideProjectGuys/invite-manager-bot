@@ -1,9 +1,10 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from 'yamdbf';
 
+import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
@@ -18,7 +19,9 @@ export default class extends Command<Client> {
 	}
 
 	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const guild = await message.guild.fetchMembers();
 
@@ -32,12 +35,18 @@ export default class extends Command<Client> {
 
 		let botCount = guild.members.filter(m => m.user.bot).size;
 		let humanCount = guild.memberCount - botCount;
-		let offlineCount = guild.members.filter(m => m.presence.status === 'offline').size;
-		let joinedToday = guild.members.filter(m => todayTimestamp - m.joinedTimestamp < ONE_DAY).size;
-		let joinedThisWeek = guild.members.filter(m => todayTimestamp - m.joinedTimestamp < ONE_WEEK)
-			.size;
-		let joinedThisMonth = guild.members.filter(m => todayTimestamp - m.joinedTimestamp < ONE_MONTH)
-			.size;
+		let offlineCount = guild.members.filter(
+			m => m.presence.status === 'offline'
+		).size;
+		let joinedToday = guild.members.filter(
+			m => todayTimestamp - m.joinedTimestamp < ONE_DAY
+		).size;
+		let joinedThisWeek = guild.members.filter(
+			m => todayTimestamp - m.joinedTimestamp < ONE_WEEK
+		).size;
+		let joinedThisMonth = guild.members.filter(
+			m => todayTimestamp - m.joinedTimestamp < ONE_MONTH
+		).size;
 
 		const embed = createEmbed(this.client);
 		embed.addField('Members', guild.memberCount, true);

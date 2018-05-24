@@ -1,6 +1,14 @@
 import { RichEmbed } from 'discord.js';
-import { Client, Command, CommandDecorators, Logger, logger, Message, Middleware } from 'yamdbf';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message,
+	Middleware
+} from 'yamdbf';
 
+import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
@@ -15,7 +23,7 @@ interface FAQ {
 	answer: string;
 }
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
@@ -31,7 +39,9 @@ export default class extends Command<Client> {
 
 	@using(resolve('faqName: String'))
 	public async action(message: Message, [faqName]: [string]): Promise<any> {
-		this._logger.log(`${message.guild.name} (${message.author.username}): ${message.content}`);
+		this._logger.log(
+			`${message.guild.name} (${message.author.username}): ${message.content}`
+		);
 
 		const faqs: FAQ[] = require('../../faqs.json');
 
@@ -44,9 +54,12 @@ export default class extends Command<Client> {
 			embed.addField(
 				'More',
 				'Please check out our readme for a list of all FAQs and much more!' +
-				'https://github.com/AndreasGassmann/discord-invite-manager/');
+					'https://github.com/AndreasGassmann/discord-invite-manager/'
+			);
 		} else {
-			let faq = faqs.find(el => el.name === faqName || el.aliases.some(f => f === faqName));
+			let faq = faqs.find(
+				el => el.name === faqName || el.aliases.some(f => f === faqName)
+			);
 			if (faq) {
 				embed.setTitle(faq.question);
 				embed.setDescription(faq.answer);

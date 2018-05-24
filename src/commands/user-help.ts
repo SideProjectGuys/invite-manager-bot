@@ -1,6 +1,5 @@
 import { RichEmbed } from 'discord.js';
 import {
-	Client,
 	Command,
 	CommandDecorators,
 	Logger,
@@ -9,6 +8,7 @@ import {
 	Middleware
 } from 'yamdbf';
 
+import { IMClient } from '../client';
 import { settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
@@ -17,7 +17,7 @@ const { using } = CommandDecorators;
 
 const config = require('../../config.json');
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
 
 	public constructor() {
