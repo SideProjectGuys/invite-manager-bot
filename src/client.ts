@@ -114,12 +114,14 @@ export class IMClient extends Client {
 		// Send welcome message to owner with setup instructions
 		let owner = guild.owner;
 		owner.send(
-			'Hi! Thanks for inviting me to your server `' + guild.name + '`!\n\n' +
-			'I am now tracking all invites on your server.\n\n' +
-			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-			'You can see a list of all commands using the `!help` command.\n\n' +
-			'That\'s it! Enjoy the bot and if you have any questions feel free to join our support server!\n' +
-			config.botSupport
+			'Hi! Thanks for inviting me to your server `' +
+				guild.name +
+				'`!\n\n' +
+				'I am now tracking all invites on your server.\n\n' +
+				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+				'You can see a list of all commands using the `!help` command.\n\n' +
+				"That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n" +
+				config.botSupport
 		);
 		this.messageQueue.addMessage(
 			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
@@ -211,7 +213,7 @@ export class IMClient extends Client {
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.log(
 				`Could not find join for ${member.id} in ${member.guild.id} at ${
-				member.joinedTimestamp
+					member.joinedTimestamp
 				}`
 			);
 			return;
@@ -253,7 +255,7 @@ export class IMClient extends Client {
 		if (!joinChannel) {
 			console.log(
 				`Guild ${
-				member.guild.id
+					member.guild.id
 				} has invalid join message channel ${joinChannelId}`
 			);
 			return;
@@ -320,7 +322,7 @@ export class IMClient extends Client {
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.log(
 				`Could not find join for ${member.id} in ${member.guild.id} at ${
-				member.joinedTimestamp
+					member.joinedTimestamp
 				}`
 			);
 			return;
@@ -351,7 +353,7 @@ export class IMClient extends Client {
 		if (!leaveChannel) {
 			console.log(
 				`Guild ${
-				member.guild.id
+					member.guild.id
 				} has invalid leave message channel ${leaveChannelId}`
 			);
 			return;
@@ -399,8 +401,10 @@ export class IMClient extends Client {
 			inviter = await member.guild.fetchMember(inviterId).catch(() => null);
 		}
 
+		// invites.total is only zero when we use the predefined value
+		// that means if it's zero we have to fetch the invites
 		if (
-			!invites &&
+			invites.total === 0 &&
 			(template.indexOf('{numInvites}') >= 0 ||
 				template.indexOf('{numRegularInvites}') >= 0 ||
 				template.indexOf('{numBonusInvites}') >= 0)
