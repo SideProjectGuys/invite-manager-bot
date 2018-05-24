@@ -6,7 +6,7 @@
 			"setprefix"
 		],
 		"question": "How do I change the prefix of the bot?",
-		"answer": "You can do `!config prefix -` to change the prefix.\nIf you don't know your current prefix, you can do `@InviteManager prefix` to see the prefix."
+		"answer": "You can do `!config prefix -` to change the prefix.\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
 	},
 	{
 		"name": "channel",
@@ -98,7 +98,7 @@
 			"help"
 		],
 		"question": "The bot doesn't work, how can I get help?",
-		"answer": "We can help you if you join our discord: https://discord.gg/Am6p2Hs"
+		"answer": "We can help you if you join our discord: https://discord.gg/x3NGUSX"
 	},
 	{
 		"name": "premium",
@@ -106,6 +106,6 @@
 			"donate"
 		],
 		"question": "How can I support development of this bot?",
-		"answer": "You can support us by telling more people about the bot, but you can also subscribe to one of our premium tier. By doing that, you get some additional features depending on your tier.\nhttps://patreon.com/invitemanager"
+		"answer": "You can support us by telling more people about the bot or subscribe to one of our premium tiers. By doing that, you get some additional features depending on your tier.\nhttps://patreon.com/invitemanager"
 	}
 ]
