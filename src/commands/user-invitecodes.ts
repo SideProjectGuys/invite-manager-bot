@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { inviteCodes, members } from '../sequelize';
+import { InviteCodeAttributes, inviteCodes, members } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 export default class extends Command<IMClient> {
@@ -37,7 +37,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const codes = await inviteCodes.findAll({
+		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
 			where: {
 				guildId: message.guild.id
 			},
@@ -54,6 +54,30 @@ export default class extends Command<IMClient> {
 			],
 			raw: true
 		});
+
+		const activeCodes = (await message.guild.fetchInvites())
+			.filter(code => code.inviter && code.inviter.id === message.author.id)
+			.map(code => code);
+
+		const newCodes: InviteCodeAttributes[] = activeCodes
+			.filter(code => !codes.find(c => c.code === code.code))
+			.map(code => ({
+				code: code.code,
+				channelId: code.channel ? code.channel.id : null,
+				maxAge: code.maxAge,
+				maxUses: code.maxUses,
+				uses: code.uses,
+				temporary: code.temporary,
+				guildId: code.guild.id,
+				inviterId: code.inviter ? code.inviter.id : null
+			}));
+
+		// Insert any new codes that haven't been used yet
+		if (newCodes.length > 0) {
+			await inviteCodes.bulkCreate(newCodes);
+		}
+
+		codes = codes.concat(newCodes);
 
 		const validCodes = codes.filter(
 			c =>
@@ -97,10 +121,11 @@ export default class extends Command<IMClient> {
 			embed.addField('Permanent', `These invites don't expire.`);
 			permanentInvites.forEach(i => {
 				embed.addField(
-					`${i.code} (${i.maxAge > 0 ? 'Temporary' : 'Permanent'})`,
-					`**Uses**: ${i.uses}\n**Max Age**:${i.maxAge}\n**Max Uses**: ${
-						i.maxUses
-					}\n**Channel**: <#${i.channelId}>\n`,
+					`${i.code}`,
+					`**Uses**: ${i.uses}\n` +
+						`**Max Age**:${i.maxAge}\n` +
+						`**Max Uses**: ${i.maxUses}\n` +
+						`**Channel**: <#${i.channelId}>\n`,
 					true
 				);
 			});
@@ -109,16 +134,17 @@ export default class extends Command<IMClient> {
 			embed.addBlankField();
 			embed.addField('Temporary', 'These invites expire after a certain time.');
 			temporaryInvites.forEach(i => {
+				const maxAge = moment.duration(i.maxAge, 's').humanize();
+				const expires = moment(i.createdAt)
+					.add(i.maxAge, 's')
+					.fromNow();
 				embed.addField(
-					`${i.code} (${i.maxAge > 0 ? 'Temporary' : 'Permanent'})`,
-					`**Uses**: ${i.uses}\n**Max Age**:${moment
-						.duration(i.maxAge)
-						.humanize()}\n**Max Uses**: ${i.maxUses}\n` +
-						`**Channel**: <#${i.channelId}>\n**Expires in**: ${moment(
-							i.createdAt
-						)
-							.add(i.maxAge, 's')
-							.fromNow()}`,
+					`${i.code}`,
+					`**Uses**: ${i.uses}\n` +
+						`**Max Age**: ${maxAge}\n` +
+						`**Max Uses**: ${i.maxUses}\n` +
+						`**Channel**: <#${i.channelId}>\n` +
+						`**Expires**: ${expires}`,
 					true
 				);
 			});
