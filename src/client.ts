@@ -419,7 +419,7 @@ export class IMClient extends Client {
 					guildId: member.guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'DESC']],
+				order: [['createdAt', 'ASC']],
 				limit: 1
 			});
 			if (temp) {
@@ -434,7 +434,7 @@ export class IMClient extends Client {
 					guildId: member.guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'DESC']],
+				order: [['createdAt', 'ASC']],
 				limit: 1,
 				offset: 1
 			});
