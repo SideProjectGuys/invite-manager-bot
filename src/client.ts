@@ -244,6 +244,7 @@ export class IMClient extends Client {
 
 		const inviterId = join['exactMatch.inviterId'];
 		const inviterName = join['exactMatch.inviter.name'];
+		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
 		const inviter: GuildMember = await member.guild
 			.fetchMember(inviterId)
 			.catch(() => undefined);
@@ -290,6 +291,7 @@ export class IMClient extends Client {
 				channelName,
 				inviterId,
 				inviterName,
+				inviterDiscriminator,
 				inviter,
 				invites
 			);
@@ -355,6 +357,7 @@ export class IMClient extends Client {
 
 		const inviterId = join['exactMatch.inviterId'];
 		const inviterName = join['exactMatch.inviter.name'];
+		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
 
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
 			.settings;
@@ -393,7 +396,8 @@ export class IMClient extends Client {
 			channelId,
 			channelName,
 			inviterId,
-			inviterName
+			inviterName,
+			inviterDiscriminator
 		);
 
 		leaveChannel.send(msg);
@@ -449,6 +453,7 @@ export class IMClient extends Client {
 		channelName: string,
 		inviterId: string,
 		inviterName: string,
+		inviterDiscriminator: string,
 		inviter?: GuildMember,
 		invites: InviteCounts = { total: 0, code: 0, custom: 0, auto: 0 }
 	): Promise<string | RichEmbed> {
@@ -507,6 +512,12 @@ export class IMClient extends Client {
 			}
 		}
 
+		const memberFullName =
+			member.user.username + '#' + member.user.discriminator;
+		const inviterFullName = inviter
+			? inviter.user.username + '#' + inviter.user.discriminator
+			: inviterName + '#' + inviterDiscriminator;
+
 		let msg = template;
 		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
 		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
@@ -515,10 +526,12 @@ export class IMClient extends Client {
 		msg = msg
 			.replace('{inviteCode}', inviteCode)
 			.replace('{memberName}', member.displayName)
+			.replace('{memberFullName}', memberFullName)
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{memberImage}', member.user.avatarURL)
 			.replace('{numJoins}', `${numJoins}`)
 			.replace('{inviterName}', inviterName)
+			.replace('{inviterFullName}', inviterFullName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
 			.replace('{numInvites}', `${invites.total}`)
@@ -587,7 +600,7 @@ export class IMClient extends Client {
 								as: 'exactMatch',
 								include: [
 									{
-										attributes: ['name'],
+										attributes: ['name', 'discriminator'],
 										model: members,
 										as: 'inviter'
 									},
