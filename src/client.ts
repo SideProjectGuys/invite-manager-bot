@@ -141,6 +141,11 @@ export class IMClient extends Client {
 		execTime: number,
 		message: Message
 	) {
+		// Ignore messages that are not in guild chat
+		if (!message.guild) {
+			return;
+		}
+
 		// We have to add the members too, in case our DB doens't have them yet
 		this.dbQueue.addCommandUsage(
 			{
