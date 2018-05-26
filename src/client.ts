@@ -120,7 +120,7 @@ export class IMClient extends Client {
 				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
 				'You can see a list of all commands using the `!help` command.\n\n' +
 				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-				config.botSupport
+				'https://discord.gg/2eTnsVM'
 		);
 		this.messageQueue.addMessage(
 			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
@@ -141,6 +141,11 @@ export class IMClient extends Client {
 		execTime: number,
 		message: Message
 	) {
+		// Ignore messages that are not in guild chat
+		if (!message.guild) {
+			return;
+		}
+
 		// We have to add the members too, in case our DB doens't have them yet
 		this.dbQueue.addCommandUsage(
 			{
@@ -220,10 +225,13 @@ export class IMClient extends Client {
 		}
 
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			console.log(
-				`Could not find join for ${member.id} in ${member.guild.id} at ${
-					member.joinedTimestamp
-				}`
+			console.error(
+				`Could not find join for ${member.id} in ` +
+					`${member.guild.id} at ${member.joinedTimestamp}`
+			);
+			console.error(
+				`DB joins for ${member.id} in ${member.guild.id} are: ` +
+					JSON.stringify(js)
 			);
 			return;
 		}
@@ -238,7 +246,7 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 		const inviter: GuildMember = await member.guild
 			.fetchMember(inviterId)
-			.catch(() => null);
+			.catch(() => undefined);
 		const invites = await getInviteCounts(member.guild.id, inviterId);
 
 		if (inviter && !inviter.user.bot) {
@@ -262,10 +270,9 @@ export class IMClient extends Client {
 
 		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
 		if (!joinChannel) {
-			console.log(
-				`Guild ${
-					member.guild.id
-				} has invalid join message channel ${joinChannelId}`
+			console.error(
+				`Guild ${member.guild.id} has invalid ` +
+					`join message channel ${joinChannelId}`
 			);
 			return;
 		}
@@ -321,7 +328,7 @@ export class IMClient extends Client {
 
 	@on('guildMemberRemove')
 	private async _onGuildMemberRemove(member: GuildMember): Promise<void> {
-		const ts = Math.round(member.joinedTimestamp / 1000) * 1000;
+		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
 
 		let js = await this.findJoins(member.guild.id, member.id, 2000);
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
@@ -329,10 +336,13 @@ export class IMClient extends Client {
 		}
 
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			console.log(
-				`Could not find join for ${member.id} in ${member.guild.id} at ${
-					member.joinedTimestamp
-				}`
+			console.error(
+				`Could not find join for ${member.id} in ` +
+					`${member.guild.id} at ${member.joinedTimestamp}`
+			);
+			console.error(
+				`DB joins for ${member.id} in ${member.guild.id} are: ` +
+					JSON.stringify(js)
 			);
 			return;
 		}
@@ -360,10 +370,9 @@ export class IMClient extends Client {
 			leaveChannelId
 		) as TextChannel;
 		if (!leaveChannel) {
-			console.log(
-				`Guild ${
-					member.guild.id
-				} has invalid leave message channel ${leaveChannelId}`
+			console.error(
+				`Guild ${member.guild.id} has invalid leave ` +
+					`message channel ${leaveChannelId}`
 			);
 			return;
 		}
@@ -448,8 +457,13 @@ export class IMClient extends Client {
 		const joinedAt = moment(member.joinedAt);
 
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
-			inviter = await member.guild.fetchMember(inviterId).catch(() => null);
+			inviter = await member.guild
+				.fetchMember(inviterId)
+				.catch(() => undefined);
 		}
+		// Override the inviter name with the display name, if the member is still here
+		inviterName =
+			inviter && inviter.displayName ? inviter.displayName : inviterName;
 
 		// invites.total is only zero when we use the predefined value
 		// that means if it's zero we have to fetch the invites
@@ -504,7 +518,7 @@ export class IMClient extends Client {
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{memberImage}', member.user.avatarURL)
 			.replace('{numJoins}', `${numJoins}`)
-			.replace('{inviterName}', inviter ? inviter.displayName : inviterName)
+			.replace('{inviterName}', inviterName)
 			.replace('{inviterMention}', `<@${inviterId}>`)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
 			.replace('{numInvites}', `${invites.total}`)
