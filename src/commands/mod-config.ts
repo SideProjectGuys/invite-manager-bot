@@ -354,6 +354,7 @@ export default class extends Command<IMClient> {
 				(message.channel as any).name,
 				me.id,
 				me.nickname,
+				me.user.discriminator,
 				me,
 				{
 					total: Math.round(Math.random() * 1000),
