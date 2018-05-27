@@ -14,6 +14,7 @@ import {
 	channels,
 	commandUsage,
 	customInvites,
+	CustomInvitesGeneratedReason,
 	guilds,
 	inviteCodes,
 	joins,
@@ -455,7 +456,15 @@ export class IMClient extends Client {
 		inviterName: string,
 		inviterDiscriminator: string,
 		inviter?: GuildMember,
-		invites: InviteCounts = { total: 0, code: 0, custom: 0, auto: 0 }
+		invites: InviteCounts = {
+			total: 0,
+			regular: 0,
+			custom: 0,
+			generated: {
+				[CustomInvitesGeneratedReason.clear_invites]: 0,
+				[CustomInvitesGeneratedReason.fake]: 0
+			}
+		}
 	): Promise<string | RichEmbed> {
 		const userSince = moment(member.user.createdAt);
 
@@ -470,13 +479,11 @@ export class IMClient extends Client {
 		inviterName =
 			inviter && inviter.displayName ? inviter.displayName : inviterName;
 
-		// invites.total is only zero when we use the predefined value
-		// that means if it's zero we have to fetch the invites
+		// Total invites is only zero if it's set by default value
 		if (
-			invites.total === 0 &&
-			(template.indexOf('{numInvites}') >= 0 ||
-				template.indexOf('{numRegularInvites}') >= 0 ||
-				template.indexOf('{numBonusInvites}') >= 0)
+			(invites.total === 0 && template.indexOf('{numInvites}') >= 0) ||
+			template.indexOf('{numRegularInvites}') >= 0 ||
+			template.indexOf('{numBonusInvites}') >= 0
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
@@ -535,8 +542,9 @@ export class IMClient extends Client {
 			.replace('{inviterMention}', `<@${inviterId}>`)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
 			.replace('{numInvites}', `${invites.total}`)
-			.replace('{numRegularInvites}', `${invites.code}`)
+			.replace('{numRegularInvites}', `${invites.regular}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
+			.replace('{numFakeInvites}', `${invites.generated.fake}`)
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);

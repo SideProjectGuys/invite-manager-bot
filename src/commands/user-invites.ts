@@ -9,7 +9,11 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, ranks } from '../sequelize';
+import {
+	customInvites,
+	CustomInvitesGeneratedReason,
+	ranks
+} from '../sequelize';
 import {
 	CommandGroup,
 	createEmbed,
@@ -49,9 +53,10 @@ export default class extends Command<IMClient> {
 
 		let subject =
 			target.id === message.author.id ? 'You have' : `<@${target.id}> has`;
-		let textMessage = `${subject} **${invites.total}** invites! (**${
-			invites.custom
-		}** bonus)\n`;
+		let textMessage =
+			`${subject} **${invites.total}** invites! ` +
+			`(**${invites.regular}** regular, **${invites.custom}** bonus, ` +
+			`**${invites.generated.fake}** fake)\n`;
 
 		if (!message.author.bot) {
 			let targetMember = await message.guild.fetchMember(target.id);

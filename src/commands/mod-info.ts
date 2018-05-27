@@ -13,6 +13,7 @@ import { IMClient } from '../client';
 import {
 	CustomInviteInstance,
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
 	members,
@@ -81,10 +82,21 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const numNormal = invs.reduce((acc, inv) => acc + inv.uses, 0);
 		const numCustom = customInvs
-			.filter(i => !i.generated)
+			.filter(i => i.generatedReason === null)
 			.reduce((acc, inv) => acc + inv.amount, 0);
+		const numClear = customInvs
+			.filter(
+				i => i.generatedReason === CustomInvitesGeneratedReason.clear_invites
+			)
+			.reduce((acc, inv) => acc + inv.amount, 0);
+		const numFake = customInvs
+			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.fake)
+			.reduce((acc, inv) => acc + inv.amount, 0);
+
+		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0) + numClear;
+
+		const numTotal = numRegular + numCustom + numFake;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
@@ -93,7 +105,8 @@ export default class extends Command<IMClient> {
 		embed.addField('Last joined', joinedAgo, true);
 		embed.addField(
 			'Invites',
-			`${numNormal + numCustom} (${numCustom} bonus)`,
+			`**${numTotal}** (**${numRegular}** regular, ` +
+				`**${numCustom}** bonus, **${numFake}** fake)`,
 			true
 		);
 
@@ -108,7 +121,7 @@ export default class extends Command<IMClient> {
 		);
 		embed.addField('Joined', `${joinCount} times`, true);
 
-		embed.addField('Created', moment(member.user.createdAt).fromNow());
+		embed.addField('Created', moment(member.user.createdAt).fromNow(), true);
 
 		const js = await joins.findAll({
 			attributes: ['createdAt'],
@@ -196,9 +209,9 @@ export default class extends Command<IMClient> {
 			let customInvText = '';
 			customInvs.slice(0, 10).forEach(inv => {
 				const reasonText = inv.reason
-					? inv.generated
-						? ', ' + this.formatGeneratedReason(inv)
-						: `, reason: **${inv.reason}**`
+					? inv.generatedReason === null
+						? `, reason: **${inv.reason}**`
+						: ', ' + this.formatGeneratedReason(inv)
 					: '';
 				const dateText = moment(inv.createdAt).fromNow();
 				const creator = inv.creatorId ? inv.creatorId : message.guild.me.id;
@@ -234,11 +247,10 @@ export default class extends Command<IMClient> {
 	}
 
 	private formatGeneratedReason(inv: CustomInviteInstance) {
-		if (inv.reason.startsWith('clear_invites')) {
+		if (inv.generatedReason === CustomInvitesGeneratedReason.clear_invites) {
 			return '!clearinvites command';
-		} else if (inv.reason.startsWith('fake:')) {
-			const splits = inv.reason.split(':');
-			return `Fake invites from <@${splits[1]}>`;
+		} else if (inv.generatedReason === CustomInvitesGeneratedReason.fake) {
+			return `Fake invites from <@${inv.reason}>`;
 		}
 		return '<Unknown reason>';
 	}

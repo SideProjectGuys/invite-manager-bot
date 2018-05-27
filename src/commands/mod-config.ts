@@ -18,6 +18,7 @@ import {
 import { IMClient } from '../client';
 import {
 	customInvites,
+	CustomInvitesGeneratedReason,
 	defaultSettings,
 	getSettingsType,
 	Lang,
@@ -358,9 +359,14 @@ export default class extends Command<IMClient> {
 				me,
 				{
 					total: Math.round(Math.random() * 1000),
-					code: Math.round(Math.random() * 1000),
+					regular: Math.round(Math.random() * 1000),
 					custom: Math.round(Math.random() * 1000),
-					auto: Math.round(Math.random() * 1000)
+					generated: {
+						[CustomInvitesGeneratedReason.clear_invites]: 0,
+						[CustomInvitesGeneratedReason.fake]: Math.round(
+							Math.random() * 1000
+						)
+					}
 				}
 			);
 
@@ -384,7 +390,7 @@ export default class extends Command<IMClient> {
 						where: {
 							guildId: message.guild.id,
 							reason: {
-								[sequelize.Op.like]: `fake:%`
+								[sequelize.Op.like]: CustomInvitesGeneratedReason.fake + ':'
 							},
 							generated: true
 						}

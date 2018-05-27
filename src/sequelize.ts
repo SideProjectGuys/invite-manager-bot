@@ -461,11 +461,15 @@ joins.hasOne(leaves);
 // ------------------------------------
 // Custom Invites
 // ------------------------------------
+export enum CustomInvitesGeneratedReason {
+	clear_invites = 'clear_invites',
+	fake = 'fake'
+}
 export interface CustomInviteAttributes extends BaseAttributes {
 	id: number;
 	amount: number;
 	reason: string;
-	generated: boolean;
+	generatedReason: CustomInvitesGeneratedReason;
 	guildId: string;
 	memberId: string;
 	creatorId: string;
@@ -486,7 +490,10 @@ export const customInvites = sequelize.define<
 	{
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
-		generated: Sequelize.BOOLEAN
+		generatedReason: Sequelize.ENUM(
+			CustomInvitesGeneratedReason.clear_invites,
+			CustomInvitesGeneratedReason.fake
+		)
 	},
 	{
 		timestamps: true,

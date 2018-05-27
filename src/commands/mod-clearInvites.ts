@@ -14,6 +14,7 @@ import {
 	CustomInviteAttributes,
 	CustomInviteInstance,
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	LogAction,
 	sequelize
@@ -60,7 +61,7 @@ export default class extends Command<IMClient> {
 			where: {
 				guildId: message.guild.id,
 				generated: true,
-				reason: 'clear_invites',
+				reason: CustomInvitesGeneratedReason.clear_invites,
 				...(memberId && { memberId })
 			}
 		});
@@ -102,7 +103,7 @@ export default class extends Command<IMClient> {
 				where: {
 					guildId: message.guild.id,
 					...(memberId && { memberId }),
-					generated: false
+					generatedReason: null
 				},
 				group: 'customInvite.memberId',
 				raw: true
@@ -121,12 +122,12 @@ export default class extends Command<IMClient> {
 		Object.keys(uses).forEach(memId => {
 			newInvs.push({
 				id: null,
-				memberId: memId,
-				amount: -uses[memId],
-				reason: 'clear_invites',
-				generated: true,
 				guildId: message.guild.id,
-				creatorId: null
+				memberId: memId,
+				creatorId: null,
+				amount: -uses[memId],
+				reason: null,
+				generatedReason: CustomInvitesGeneratedReason.clear_invites
 			});
 		});
 

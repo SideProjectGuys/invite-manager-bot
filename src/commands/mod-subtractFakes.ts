@@ -11,6 +11,7 @@ import {
 import { IMClient } from '../client';
 import {
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinAttributes,
 	JoinInstance,
@@ -82,7 +83,7 @@ export default class extends Command<IMClient> {
 			where: {
 				guildId: message.guild.id,
 				reason: {
-					[sequelize.Op.like]: `fake:%`
+					[sequelize.Op.like]: CustomInvitesGeneratedReason.fake + ':'
 				},
 				generated: true
 			}
@@ -97,8 +98,8 @@ export default class extends Command<IMClient> {
 				memberId: j['exactMatch.inviterId'],
 				creatorId: null,
 				amount: -parseInt(j.numJoins, 10),
-				reason: `fake:${j.memberId}`,
-				generated: true
+				reason: j.memberId,
+				generatedReason: CustomInvitesGeneratedReason.fake
 			}));
 		await customInvites.bulkCreate(customInvs, {
 			updateOnDuplicate: ['amount', 'updatedAt']

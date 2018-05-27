@@ -13,11 +13,13 @@ import { Guild, Message } from 'yamdbf';
 
 import {
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	LogAction,
 	logs,
 	RankInstance,
 	ranks,
+	sequelize,
 	SettingsKey
 } from '../sequelize';
 
@@ -101,9 +103,9 @@ export function sendEmbed(
 }
 
 export interface InviteCounts {
-	code: number;
+	regular: number;
 	custom: number;
-	auto: number;
+	generated: { [x in CustomInvitesGeneratedReason]: number };
 	total: number;
 }
 
@@ -111,36 +113,50 @@ export async function getInviteCounts(
 	guildId: string,
 	memberId: string
 ): Promise<InviteCounts> {
-	const codePromise = inviteCodes.sum('uses', {
+	const regularPromise = inviteCodes.sum('uses', {
 		where: {
 			guildId: guildId,
 			inviterId: memberId
 		}
 	});
-	const customPromise = customInvites.sum('amount', {
+	const customPromise = customInvites.findAll({
+		attributes: [
+			'generatedReason',
+			[sequelize.fn('SUM', sequelize.col('amount')), 'total']
+		],
 		where: {
 			guildId: guildId,
-			memberId: memberId,
-			generated: false
-		}
+			memberId: memberId
+		},
+		group: ['generatedReason'],
+		raw: true
 	});
-	const autoPromise = customInvites.sum('amount', {
-		where: {
-			guildId: guildId,
-			memberId: memberId,
-			generated: true
+	const values = await Promise.all([regularPromise, customPromise]);
+
+	const regular = values[0] || 0;
+
+	const customUser = values[1].find(ci => ci.generatedReason === null) as any;
+	const custom = customUser ? parseInt(customUser.total, 10) : 0;
+
+	const generated: { [x in CustomInvitesGeneratedReason]: number } = {
+		[CustomInvitesGeneratedReason.clear_invites]: 0,
+		[CustomInvitesGeneratedReason.fake]: 0
+	};
+
+	values[1].forEach((ci: any) => {
+		if (ci.generatedReason === null) {
+			return;
 		}
+		const reason = ci.generatedReason as CustomInvitesGeneratedReason;
+		const amount = parseInt(ci.total, 10);
+		generated[reason] = amount;
 	});
-	const values = await Promise.all([codePromise, customPromise, autoPromise]);
-	const code = values[0] || 0;
-	const custom = values[1] || 0;
-	const auto = values[2] || 0;
 
 	return {
-		code,
+		regular: regular + generated[CustomInvitesGeneratedReason.clear_invites],
 		custom,
-		auto,
-		total: code + custom + auto
+		generated,
+		total: regular + custom + generated[CustomInvitesGeneratedReason.fake]
 	};
 }
 
