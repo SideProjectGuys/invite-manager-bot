@@ -287,7 +287,7 @@ export class IMClient extends Client {
 				js.filter((j: any) => parseInt(j.numJoins, 10) > 1).map((j: any) => ({
 					guildId: member.guild.id,
 					memberId: j['exactMatch.inviterId'],
-					amount: -parseInt(j.numJoins, 10),
+					amount: -(parseInt(j.numJoins, 10) - 1),
 					reason: member.id,
 					generatedReason: CustomInvitesGeneratedReason.fake
 				})),
