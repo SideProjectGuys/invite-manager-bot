@@ -87,7 +87,7 @@ export default class extends Command<IMClient> {
 			}
 		});
 
-		// Add removals for duplicate invites
+		// Add subtracts for duplicate invites
 		const customInvs = js
 			.filter((j: any) => parseInt(j.numJoins, 10) > 1)
 			.map((j: any) => ({
@@ -95,7 +95,7 @@ export default class extends Command<IMClient> {
 				guildId: message.guild.id,
 				memberId: j['exactMatch.inviterId'],
 				creatorId: null,
-				amount: -parseInt(j.numJoins, 10),
+				amount: -(parseInt(j.numJoins, 10) - 1),
 				reason: j.memberId,
 				generatedReason: CustomInvitesGeneratedReason.fake
 			}));
