@@ -324,8 +324,8 @@ export class IMClient extends Client {
 			await customInvites.destroy({
 				where: {
 					guildId: member.guild.id,
-					reason: `fake:${member.id}`,
-					generated: true
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.fake
 				}
 			});
 			// Add removals for duplicate invites
@@ -334,8 +334,8 @@ export class IMClient extends Client {
 					guildId: member.guild.id,
 					memberId: j['exactMatch.inviterId'],
 					amount: -parseInt(j.numJoins, 10),
-					reason: `fake:${member.id}`,
-					generated: true
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.fake
 				})),
 				{
 					updateOnDuplicate: ['amount', 'updatedAt']
