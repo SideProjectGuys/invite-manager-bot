@@ -19,12 +19,7 @@ import {
 	members,
 	sequelize
 } from '../sequelize';
-import {
-	CommandGroup,
-	createEmbed,
-	getInviteCounts,
-	sendEmbed
-} from '../utils/util';
+import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;

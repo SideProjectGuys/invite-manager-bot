@@ -83,10 +83,7 @@ export default class extends Command<IMClient> {
 		await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
-				reason: {
-					[sequelize.Op.like]: CustomInvitesGeneratedReason.fake + ':'
-				},
-				generated: true
+				generatedReason: CustomInvitesGeneratedReason.fake
 			}
 		});
 
