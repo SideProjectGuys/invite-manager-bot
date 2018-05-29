@@ -224,29 +224,6 @@ export class IMClient extends Client {
 
 		console.log(member.id + ' joined ' + member.guild.id);
 
-		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
-		const joinChannelId = (await sets.get(
-			SettingsKey.joinMessageChannel
-		)) as string;
-
-		// Check if we have a channel for join messages
-		if (!joinChannelId) {
-			console.log(`Guild ${member.guild.id} has no join message channel`);
-			return;
-		}
-
-		// Check if it's a valid channel
-		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
-		if (!joinChannel) {
-			console.error(
-				`Guild ${member.guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
-			);
-			return;
-		}
-
 		// Round discord timestamp to seconds for DB comparison
 		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
 
@@ -256,20 +233,68 @@ export class IMClient extends Client {
 			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
+		// Get settings
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
+			.settings;
+		const joinChannelId = (await sets.get(
+			SettingsKey.joinMessageChannel
+		)) as string;
+
+		const joinChannel = joinChannelId
+			? (member.guild.channels.get(joinChannelId) as TextChannel)
+			: undefined;
+		// Check if it's a valid channel
+		if (joinChannelId && !joinChannel) {
+			console.error(
+				`Guild ${member.guild.id} has invalid ` +
+					`join message channel ${joinChannelId}`
+			);
+		}
+
 		// Exit if we can't find the join
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${ts} (${member.joinedAt})`
+					`${member.guild.id} at ${ts} (${member.joinedTimestamp})`
 			);
 			console.error(
 				`DB joins for ${member.id} in ${member.guild.id} are: ` +
 					JSON.stringify(js)
 			);
-			const id = member.id;
-			const msg = `<@${id}> joined the server, but I don't know who invited them.`;
-			joinChannel.send(msg);
+			if (joinChannel) {
+				const id = member.id;
+				const msg = `<@${id}> joined the server, but I don't know who invited them.`;
+				joinChannel.send(msg);
+			}
 			return;
+		}
+
+		// Auto remove fakes if enabled
+		const autoSubtractFakes = (await sets.get(
+			SettingsKey.autoSubtractFakes
+		)) as string;
+		if (autoSubtractFakes === 'true') {
+			// Delete old duplicate removals
+			await customInvites.destroy({
+				where: {
+					guildId: member.guild.id,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.fake
+				}
+			});
+			// Add removals for duplicate invites
+			customInvites.bulkCreate(
+				js.filter((j: any) => parseInt(j.numJoins, 10) > 1).map((j: any) => ({
+					guildId: member.guild.id,
+					memberId: j['exactMatch.inviterId'],
+					amount: -(parseInt(j.numJoins, 10) - 1),
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.fake
+				})),
+				{
+					updateOnDuplicate: ['amount', 'updatedAt']
+				}
+			);
 		}
 
 		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
@@ -286,6 +311,7 @@ export class IMClient extends Client {
 			.catch(() => undefined);
 		const invites = await getInviteCounts(member.guild.id, inviterId);
 
+		// Promote the inviter if required
 		if (inviter && !inviter.user.bot) {
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
 				member.guild,
@@ -297,7 +323,7 @@ export class IMClient extends Client {
 		const joinMessageFormat = (await sets.get(
 			SettingsKey.joinMessage
 		)) as string;
-		if (joinMessageFormat) {
+		if (joinChannel && joinMessageFormat) {
 			const msg = await this.fillTemplate(
 				joinMessageFormat,
 				member,
@@ -315,33 +341,6 @@ export class IMClient extends Client {
 			// Send the message now so it doesn't take too long
 			joinChannel.send(msg);
 		}
-
-		const autoSubtractFakes = (await sets.get(
-			SettingsKey.autoSubtractFakes
-		)) as string;
-		if (autoSubtractFakes === 'true') {
-			// Delete old duplicate removals
-			await customInvites.destroy({
-				where: {
-					guildId: member.guild.id,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.fake
-				}
-			});
-			// Add removals for duplicate invites
-			await customInvites.bulkCreate(
-				js.filter((j: any) => parseInt(j.numJoins, 10) > 1).map((j: any) => ({
-					guildId: member.guild.id,
-					memberId: j['exactMatch.inviterId'],
-					amount: -parseInt(j.numJoins, 10),
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.fake
-				})),
-				{
-					updateOnDuplicate: ['amount', 'updatedAt']
-				}
-			);
-		}
 	}
 
 	@on('guildMemberRemove')
@@ -351,6 +350,15 @@ export class IMClient extends Client {
 		}
 
 		console.log(member.id + ' left ' + member.guild.id);
+
+		// Save discord timestamp for DB comparison
+		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
+
+		// Find the corresponding join
+		let js = await this.findJoins(member.guild.id, member.id, 2000);
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
+			js = await this.findJoins(member.guild.id, member.id, 5000);
+		}
 
 		// Get settings
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
@@ -377,20 +385,11 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Save discord timestamp for DB comparison
-		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
-
-		// Find the corresponding join
-		let js = await this.findJoins(member.guild.id, member.id, 2000);
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			js = await this.findJoins(member.guild.id, member.id, 5000);
-		}
-
 		// Exit if we can't find the join
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${ts} (${member.joinedAt})`
+					`${member.guild.id} at ${ts} (${member.joinedTimestamp})`
 			);
 			console.error(
 				`DB joins for ${member.id} in ${member.guild.id} are: ` +
