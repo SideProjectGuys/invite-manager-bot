@@ -89,9 +89,11 @@ export default class extends Command<IMClient> {
 			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.fake)
 			.reduce((acc, inv) => acc + inv.amount, 0);
 
-		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0) + numClear;
+		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0);
+		const numRegularClear = Math.max(-numRegular, numClear);
+		const numCustomClear = numClear - numRegularClear;
 
-		const numTotal = numRegular + numCustom + numFake;
+		const numTotal = numRegular + numCustom + numClear + numFake;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
@@ -100,8 +102,8 @@ export default class extends Command<IMClient> {
 		embed.addField('Last joined', joinedAgo, true);
 		embed.addField(
 			'Invites',
-			`**${numTotal}** (**${numRegular}** regular, ` +
-				`**${numCustom}** bonus, **${numFake}** fake)`,
+			`**${numTotal}** (**${numRegular + numRegularClear}** regular, ` +
+				`**${numCustom + numCustomClear}** bonus, **${numFake}** fake)`,
 			true
 		);
 
@@ -209,11 +211,12 @@ export default class extends Command<IMClient> {
 		if (customInvs.length > 0) {
 			let customInvText = '';
 			customInvs.slice(0, 10).forEach(inv => {
-				const reasonText = inv.reason
-					? inv.generatedReason === null
+				const reasonText = inv.generatedReason
+					? ', ' + this.formatGeneratedReason(inv)
+					: inv.reason
 						? `, reason: **${inv.reason}**`
-						: ', ' + this.formatGeneratedReason(inv)
-					: '';
+						: '';
+
 				const dateText = moment(inv.createdAt).fromNow();
 				const creator = inv.creatorId ? inv.creatorId : message.guild.me.id;
 				customInvText +=
@@ -290,7 +293,7 @@ export default class extends Command<IMClient> {
 
 	private formatGeneratedReason(inv: CustomInviteInstance) {
 		if (inv.generatedReason === CustomInvitesGeneratedReason.clear_invites) {
-			return '!clearinvites command';
+			return '!clear-invites command';
 		} else if (inv.generatedReason === CustomInvitesGeneratedReason.fake) {
 			return `Fake invites from <@${inv.reason}>`;
 		}
