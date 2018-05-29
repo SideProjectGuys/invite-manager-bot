@@ -35,6 +35,7 @@ export default class extends Command<IMClient> {
 			aliases: ['subtractfakes', 'subfakes', 'sf'],
 			desc: 'Remove fake invites from all users',
 			usage: '<prefix>subtract-fakes',
+			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
 			guildOnly: true
