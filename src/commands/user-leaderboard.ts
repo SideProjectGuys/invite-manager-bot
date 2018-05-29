@@ -53,7 +53,7 @@ const attrs: FindOptionsAttributesArray = [
 			'sum',
 			sequelize.fn(
 				'if',
-				sequelize.col('customInvite.generated'),
+				sequelize.literal('customInvite.generatedReason IS NULL'),
 				0,
 				sequelize.col('customInvite.amount')
 			)
@@ -65,7 +65,7 @@ const attrs: FindOptionsAttributesArray = [
 			'sum',
 			sequelize.fn(
 				'if',
-				sequelize.col('customInvite.generated'),
+				sequelize.literal('customInvite.generatedReason IS NULL'),
 				sequelize.col('customInvite.amount'),
 				0
 			)
