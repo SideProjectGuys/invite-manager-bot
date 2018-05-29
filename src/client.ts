@@ -218,22 +218,57 @@ export class IMClient extends Client {
 
 	@on('guildMemberAdd')
 	private async _onGuildMemberAdd(member: GuildMember): Promise<void> {
+		if (member.user.bot) {
+			return;
+		}
+
+		console.log(member.id + ' joined ' + member.guild.id);
+
+		// Get settings
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
+			.settings;
+		const joinChannelId = (await sets.get(
+			SettingsKey.joinMessageChannel
+		)) as string;
+
+		// Check if we have a channel for join messages
+		if (!joinChannelId) {
+			console.log(`Guild ${member.guild.id} has no join message channel`);
+			return;
+		}
+
+		// Check if it's a valid channel
+		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
+		if (!joinChannel) {
+			console.error(
+				`Guild ${member.guild.id} has invalid ` +
+					`join message channel ${joinChannelId}`
+			);
+			return;
+		}
+
+		// Round discord timestamp to seconds for DB comparison
 		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
 
+		// Find join in DB according to our timestamp
 		let js = await this.findJoins(member.guild.id, member.id, 2000);
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
+		// Exit if we can't find the join
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${member.joinedTimestamp}`
+					`${member.guild.id} at ${ts} (${member.joinedAt})`
 			);
 			console.error(
 				`DB joins for ${member.id} in ${member.guild.id} are: ` +
 					JSON.stringify(js)
 			);
+			const id = member.id;
+			const msg = `<@${id}> joined the server, but I don't know who invited them.`;
+			joinChannel.send(msg);
 			return;
 		}
 
@@ -259,26 +294,6 @@ export class IMClient extends Client {
 			);
 		}
 
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
-		const joinChannelId = (await sets.get(
-			SettingsKey.joinMessageChannel
-		)) as string;
-
-		if (!joinChannelId) {
-			console.log(`Guild ${member.guild.id} has no join message channel`);
-			return;
-		}
-
-		const joinChannel = member.guild.channels.get(joinChannelId) as TextChannel;
-		if (!joinChannel) {
-			console.error(
-				`Guild ${member.guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
-			);
-			return;
-		}
-
 		const joinMessageFormat = (await sets.get(
 			SettingsKey.joinMessage
 		)) as string;
@@ -298,7 +313,7 @@ export class IMClient extends Client {
 			);
 
 			// Send the message now so it doesn't take too long
-			await joinChannel.send(msg);
+			joinChannel.send(msg);
 		}
 
 		const autoSubtractFakes = (await sets.get(
@@ -331,22 +346,59 @@ export class IMClient extends Client {
 
 	@on('guildMemberRemove')
 	private async _onGuildMemberRemove(member: GuildMember): Promise<void> {
+		if (member.user.bot) {
+			return;
+		}
+
+		console.log(member.id + ' left ' + member.guild.id);
+
+		// Get settings
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
+			.settings;
+		const leaveChannelId = (await sets.get(
+			SettingsKey.leaveMessageChannel
+		)) as string;
+
+		// Check for leave channel
+		if (!leaveChannelId) {
+			console.log(`Guild ${member.guild.id} has no leave message channel`);
+			return;
+		}
+
+		// Check if leave channel is valid
+		const leaveChannel = member.guild.channels.get(
+			leaveChannelId
+		) as TextChannel;
+		if (!leaveChannel) {
+			console.error(
+				`Guild ${member.guild.id} has invalid leave ` +
+					`message channel ${leaveChannelId}`
+			);
+			return;
+		}
+
+		// Save discord timestamp for DB comparison
 		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
 
+		// Find the corresponding join
 		let js = await this.findJoins(member.guild.id, member.id, 2000);
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
+		// Exit if we can't find the join
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${member.joinedTimestamp}`
+					`${member.guild.id} at ${ts} (${member.joinedAt})`
 			);
 			console.error(
 				`DB joins for ${member.id} in ${member.guild.id} are: ` +
 					JSON.stringify(js)
 			);
+			const tag = member.user.username + '#' + member.user.discriminator;
+			const msg = `${tag} left the server, but I don't know who invited them.`;
+			leaveChannel.send(msg);
 			return;
 		}
 
@@ -360,48 +412,24 @@ export class IMClient extends Client {
 		const inviterName = join['exactMatch.inviter.name'];
 		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
 
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
-		const leaveChannelId = (await sets.get(
-			SettingsKey.leaveMessageChannel
-		)) as string;
-
-		if (!leaveChannelId) {
-			console.log(`Guild ${member.guild.id} has no leave message channel`);
-			return;
-		}
-		const leaveChannel = member.guild.channels.get(
-			leaveChannelId
-		) as TextChannel;
-		if (!leaveChannel) {
-			console.error(
-				`Guild ${member.guild.id} has invalid leave ` +
-					`message channel ${leaveChannelId}`
-			);
-			return;
-		}
-
 		const leaveMessageFormat = (await sets.get(
 			SettingsKey.leaveMessage
 		)) as string;
-		if (!leaveMessageFormat) {
-			console.log(`Guild ${member.guild.id} has no leave message`);
-			return;
+		if (leaveMessageFormat) {
+			const msg = await this.fillTemplate(
+				leaveMessageFormat,
+				member,
+				inviteCode,
+				js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
+				channelId,
+				channelName,
+				inviterId,
+				inviterName,
+				inviterDiscriminator
+			);
+
+			leaveChannel.send(msg);
 		}
-
-		const msg = await this.fillTemplate(
-			leaveMessageFormat,
-			member,
-			inviteCode,
-			js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
-			channelId,
-			channelName,
-			inviterId,
-			inviterName,
-			inviterDiscriminator
-		);
-
-		leaveChannel.send(msg);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
