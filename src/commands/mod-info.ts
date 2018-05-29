@@ -248,7 +248,7 @@ export default class extends Command<IMClient> {
 				guildId: message.guild.id
 			},
 			group: [sequelize.col('memberId')],
-			order: [sequelize.literal('MAX(join.createdAt)')],
+			order: [sequelize.literal('MAX(join.createdAt) DESC')],
 			include: [
 				{
 					attributes: [],
@@ -289,8 +289,6 @@ export default class extends Command<IMClient> {
 				'This member has not invited anyone else so far'
 			);
 		}
-
-		console.log(js2);
 
 		sendEmbed(message.channel, embed, message.author);
 	}
