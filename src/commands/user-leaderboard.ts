@@ -54,8 +54,8 @@ const attrs: FindOptionsAttributesArray = [
 			sequelize.fn(
 				'if',
 				sequelize.literal('customInvite.generatedReason IS NULL'),
-				0,
-				sequelize.col('customInvite.amount')
+				sequelize.col('customInvite.amount'),
+				0
 			)
 		),
 		'totalBonus'
@@ -66,8 +66,8 @@ const attrs: FindOptionsAttributesArray = [
 			sequelize.fn(
 				'if',
 				sequelize.literal('customInvite.generatedReason IS NULL'),
-				sequelize.col('customInvite.amount'),
-				0
+				0,
+				sequelize.col('customInvite.amount')
 			)
 		),
 		'totalAuto'
