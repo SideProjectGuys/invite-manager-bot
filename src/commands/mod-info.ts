@@ -13,6 +13,7 @@ import { IMClient } from '../client';
 import {
 	CustomInviteInstance,
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
 	members,
@@ -81,10 +82,21 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const numNormal = invs.reduce((acc, inv) => acc + inv.uses, 0);
 		const numCustom = customInvs
-			.filter(i => !i.generated)
+			.filter(i => i.generatedReason === null)
 			.reduce((acc, inv) => acc + inv.amount, 0);
+		const numClear = customInvs
+			.filter(
+				i => i.generatedReason === CustomInvitesGeneratedReason.clear_invites
+			)
+			.reduce((acc, inv) => acc + inv.amount, 0);
+		const numFake = customInvs
+			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.fake)
+			.reduce((acc, inv) => acc + inv.amount, 0);
+
+		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0) + numClear;
+
+		const numTotal = numRegular + numCustom + numFake;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
@@ -93,7 +105,8 @@ export default class extends Command<IMClient> {
 		embed.addField('Last joined', joinedAgo, true);
 		embed.addField(
 			'Invites',
-			`${numNormal + numCustom} (${numCustom} bonus)`,
+			`**${numTotal}** (**${numRegular}** regular, ` +
+				`**${numCustom}** bonus, **${numFake}** fake)`,
 			true
 		);
 
@@ -108,7 +121,7 @@ export default class extends Command<IMClient> {
 		);
 		embed.addField('Joined', `${joinCount} times`, true);
 
-		embed.addField('Created', moment(member.user.createdAt).fromNow());
+		embed.addField('Created', moment(member.user.createdAt).fromNow(), true);
 
 		const js = await joins.findAll({
 			attributes: ['createdAt'],
@@ -151,27 +164,33 @@ export default class extends Command<IMClient> {
 				}
 			});
 
-			const joinText = Object.keys(joinTimes)
-				.map(time => {
-					const joinTime = joinTimes[time];
+			let joinText = '';
+			const joinTimesKeys = Object.keys(joinTimes);
+			joinTimesKeys.slice(0, 10).forEach(time => {
+				const joinTime = joinTimes[time];
 
-					const total = Object.keys(joinTime).reduce(
-						(acc, id) => acc + joinTime[id],
-						0
-					);
-					const totalText = total > 1 ? `**${total}** times ` : 'once ';
+				const total = Object.keys(joinTime).reduce(
+					(acc, id) => acc + joinTime[id],
+					0
+				);
+				const totalText = total > 1 ? `**${total}** times ` : 'once ';
 
-					const invText = Object.keys(joinTime)
-						.map(id => {
-							const timesText =
-								joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
-							return `<@${id}>${timesText}`;
-						})
-						.join(', ');
-					return `${totalText}**${time}**, invited by: ${invText}`;
-				})
-				.join('\n');
-			embed.addField('Joins', joinText);
+				const invText = Object.keys(joinTime)
+					.map(id => {
+						const timesText =
+							joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
+						return `<@${id}>${timesText}`;
+					})
+					.join(', ');
+				joinText += `${totalText}**${time}**, invited by: ${invText}\n`;
+			});
+			embed.addField(
+				'Joins',
+				joinText +
+					(joinTimesKeys.length > 10
+						? `\nPlus another **${joinTimesKeys.length - 10}** more joins`
+						: '')
+			);
 		} else {
 			embed.addField('Joins', 'unknown (this only works for new members)');
 		}
@@ -196,9 +215,9 @@ export default class extends Command<IMClient> {
 			let customInvText = '';
 			customInvs.slice(0, 10).forEach(inv => {
 				const reasonText = inv.reason
-					? inv.generated
-						? ', ' + this.formatGeneratedReason(inv)
-						: `, reason: **${inv.reason}**`
+					? inv.generatedReason === null
+						? `, reason: **${inv.reason}**`
+						: ', ' + this.formatGeneratedReason(inv)
 					: '';
 				const dateText = moment(inv.createdAt).fromNow();
 				const creator = inv.creatorId ? inv.creatorId : message.guild.me.id;
@@ -220,25 +239,67 @@ export default class extends Command<IMClient> {
 			);
 		}
 
-		// invitedByText = 'Could not match inviter (multiple possibilities)';
+		const js2 = await joins.findAll({
+			attributes: [
+				'memberId',
+				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
+			],
+			where: {
+				guildId: message.guild.id
+			},
+			group: [sequelize.col('memberId')],
+			order: [sequelize.literal('MAX(join.createdAt)')],
+			include: [
+				{
+					attributes: [],
+					model: inviteCodes,
+					as: 'exactMatch',
+					where: {
+						inviterId: member.id
+					},
+					include: [
+						{
+							attributes: [],
+							model: members,
+							as: 'inviter'
+						}
+					]
+				}
+			],
+			raw: true
+		});
 
-		/*if (stillOnServerCount === 0 && trackedInviteCount === 0) {
-				embed.addField('Invited people still on the server (since bot joined)',
-				`User did not invite any members since this bot joined.`);
-			} else {
-				embed.addField('Invited people still on the server (since bot joined)',
-				`**${stillOnServerCount}** still here out of **${trackedInviteCount}** invited members.`);
-			}*/
+		if (js2.length > 0) {
+			let inviteText = '';
+			js2.slice(0, 10).forEach((join: any) => {
+				const time = moment(join.createdAt).fromNow();
+				inviteText += `<@${join.memberId}> - ${time}\n`;
+			});
+
+			embed.addField(
+				'Invited members',
+				inviteText +
+					(js2.length > 10
+						? `\nPlus another **${js2.length - 10}** more members`
+						: '')
+			);
+		} else {
+			embed.addField(
+				'Invited members',
+				'This member has not invited anyone else so far'
+			);
+		}
+
+		console.log(js2);
 
 		sendEmbed(message.channel, embed, message.author);
 	}
 
 	private formatGeneratedReason(inv: CustomInviteInstance) {
-		if (inv.reason.startsWith('clear_invites')) {
+		if (inv.generatedReason === CustomInvitesGeneratedReason.clear_invites) {
 			return '!clearinvites command';
-		} else if (inv.reason.startsWith('fake:')) {
-			const splits = inv.reason.split(':');
-			return `Fake invites from <@${splits[1]}>`;
+		} else if (inv.generatedReason === CustomInvitesGeneratedReason.fake) {
+			return `Fake invites from <@${inv.reason}>`;
 		}
 		return '<Unknown reason>';
 	}

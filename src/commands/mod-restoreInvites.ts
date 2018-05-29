@@ -9,7 +9,11 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, LogAction } from '../sequelize';
+import {
+	customInvites,
+	CustomInvitesGeneratedReason,
+	LogAction
+} from '../sequelize';
 import { CommandGroup } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -43,7 +47,7 @@ export default class extends Command<IMClient> {
 			where: {
 				guildId: message.guild.id,
 				generated: true,
-				reason: 'clear_invites',
+				reason: CustomInvitesGeneratedReason.clear_invites,
 				...(memberId && { memberId })
 			}
 		});

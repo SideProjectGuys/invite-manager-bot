@@ -77,7 +77,7 @@ export default class extends Command<IMClient> {
 			creatorId: message.author.id,
 			amount,
 			reason,
-			generated: false
+			generatedReason: null
 		});
 
 		this.client.logAction(message, LogAction.addInvites, {
