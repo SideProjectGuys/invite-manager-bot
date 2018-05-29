@@ -224,13 +224,6 @@ export class IMClient extends Client {
 
 		console.log(member.id + ' joined ' + member.guild.id);
 
-		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
-		const joinChannelId = (await sets.get(
-			SettingsKey.joinMessageChannel
-		)) as string;
-
 		// Round discord timestamp to seconds for DB comparison
 		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
 
@@ -239,6 +232,13 @@ export class IMClient extends Client {
 		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
 			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
+
+		// Get settings
+		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
+			.settings;
+		const joinChannelId = (await sets.get(
+			SettingsKey.joinMessageChannel
+		)) as string;
 
 		const joinChannel = joinChannelId
 			? (member.guild.channels.get(joinChannelId) as TextChannel)
@@ -351,6 +351,15 @@ export class IMClient extends Client {
 
 		console.log(member.id + ' left ' + member.guild.id);
 
+		// Save discord timestamp for DB comparison
+		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
+
+		// Find the corresponding join
+		let js = await this.findJoins(member.guild.id, member.id, 2000);
+		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
+			js = await this.findJoins(member.guild.id, member.id, 5000);
+		}
+
 		// Get settings
 		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
 			.settings;
@@ -374,15 +383,6 @@ export class IMClient extends Client {
 					`message channel ${leaveChannelId}`
 			);
 			return;
-		}
-
-		// Save discord timestamp for DB comparison
-		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
-
-		// Find the corresponding join
-		let js = await this.findJoins(member.guild.id, member.id, 2000);
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			js = await this.findJoins(member.guild.id, member.id, 5000);
 		}
 
 		// Exit if we can't find the join
