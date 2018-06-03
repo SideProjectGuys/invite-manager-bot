@@ -460,16 +460,23 @@ export class IMClient extends Client {
 			}
 		}
 
-		this.dbQueue.addLogAction({
-			id: null,
-			guildId: message.guild.id,
-			memberId: message.author.id,
-			action,
-			message: message.content,
-			data,
-			createdAt: new Date(),
-			updatedAt: new Date()
-		});
+		this.dbQueue.addLogAction(
+			{
+				id: null,
+				guildId: message.guild.id,
+				memberId: message.author.id,
+				action,
+				message: message.content,
+				data,
+				createdAt: new Date(),
+				updatedAt: new Date()
+			},
+			{
+				id: message.author.id,
+				discriminator: message.author.discriminator,
+				name: message.author.username
+			}
+		);
 	}
 
 	public async fillTemplate(

@@ -24,7 +24,8 @@ export class DBQueue {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	public addLogAction(action: LogAttributes) {
+	public addLogAction(action: LogAttributes, member: MemberAttributes) {
+		this.members.push(member);
 		this.logActions.push(action);
 	}
 
@@ -43,13 +44,13 @@ export class DBQueue {
 
 		const time = console.time('syncDB');
 
-		await logs.bulkCreate(this.logActions);
-		this.logActions = [];
-
 		await members.bulkCreate(this.members, {
 			updateOnDuplicate: ['name', 'discriminator']
 		});
 		this.members = [];
+
+		await logs.bulkCreate(this.logActions);
+		this.logActions = [];
 
 		await commandUsage.bulkCreate(this.cmdUsages);
 		this.cmdUsages = [];
