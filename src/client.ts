@@ -443,11 +443,17 @@ export class IMClient extends Client {
 			SettingsKey.leaveMessage
 		)) as string;
 		if (leaveChannel && leaveMessageFormat) {
+			const numJoins = await joins.count({
+				where: {
+					guildId: member.guild.id,
+					memberId: member.id
+				}
+			});
 			const msg = await this.fillTemplate(
 				leaveMessageFormat,
 				member,
 				inviteCode,
-				0, // TODO: This needs to be implemented?
+				numJoins,
 				channelId,
 				channelName,
 				inviterId,
