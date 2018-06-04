@@ -300,6 +300,8 @@ export default class extends Command<IMClient> {
 			return '!clear-invites command';
 		} else if (inv.generatedReason === CustomInvitesGeneratedReason.fake) {
 			return `Fake invites from <@${inv.reason}>`;
+		} else if (inv.generatedReason === CustomInvitesGeneratedReason.leave) {
+			return `Leave of <@${inv.reason}>`;
 		}
 		return '<Unknown reason>';
 	}

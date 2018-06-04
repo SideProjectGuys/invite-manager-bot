@@ -1,4 +1,9 @@
-import { Channel, GuildMember, MessageReaction, RichEmbed } from 'discord.js';
+import {
+	GuildChannel,
+	GuildMember,
+	MessageReaction,
+	RichEmbed
+} from 'discord.js';
 import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 import {
@@ -13,6 +18,7 @@ import {
 import { IMClient } from '../client';
 import {
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
 	LeaderboardStyle,
@@ -26,10 +32,11 @@ import {
 } from '../sequelize';
 import { createEmbed, sendEmbed, showPaginated } from '../utils/util';
 
+const chrono = require('chrono-node');
+
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
-const timeDiff = 24 * 60 * 60 * 1000; // 1 day
 const usersPerPage = 10;
 const upSymbol = '🔺';
 const downSymbol = '🔻';
@@ -39,9 +46,15 @@ type InvCacheType = {
 	[x: string]: {
 		name: string;
 		total: number;
-		bonus: number;
+		regular: number;
+		custom: number;
+		fake: number;
+		leaves: number;
 		oldTotal: number;
-		oldBonus: number;
+		oldRegular: number;
+		oldCustom: number;
+		oldFake: number;
+		oldLeaves: number;
 	};
 };
 
@@ -58,19 +71,55 @@ const attrs: FindOptionsAttributesArray = [
 				0
 			)
 		),
-		'totalBonus'
+		'totalCustom'
 	],
 	[
 		sequelize.fn(
 			'sum',
 			sequelize.fn(
 				'if',
-				sequelize.literal('customInvite.generatedReason IS NULL'),
-				0,
-				sequelize.col('customInvite.amount')
+				sequelize.literal(
+					`customInvite.generatedReason = '${
+						CustomInvitesGeneratedReason.clear_invites
+					}'`
+				),
+				sequelize.col('customInvite.amount'),
+				0
 			)
 		),
-		'totalAuto'
+		'totalClear'
+	],
+	[
+		sequelize.fn(
+			'sum',
+			sequelize.fn(
+				'if',
+				sequelize.literal(
+					`customInvite.generatedReason = '${
+						CustomInvitesGeneratedReason.fake
+					}'`
+				),
+				sequelize.col('customInvite.amount'),
+				0
+			)
+		),
+		'totalFake'
+	],
+	[
+		sequelize.fn(
+			'sum',
+			sequelize.fn(
+				'if',
+				sequelize.literal(
+					`customInvite.generatedReason = '${
+						CustomInvitesGeneratedReason.leave
+					}'`
+				),
+				sequelize.col('customInvite.amount'),
+				0
+			)
+		),
+		'totalLeaves'
 	]
 ];
 
@@ -82,47 +131,72 @@ export default class extends Command<IMClient> {
 			name: 'leaderboard',
 			aliases: ['top'],
 			desc: 'Show members with most invites.',
-			usage: '<prefix>leaderboard (page) (#channel)',
+			usage: '<prefix>leaderboard (page) (date)',
 			info:
 				'`' +
 				'page      Which page of the leaderboard to get.\n' +
-				'#channel  Will count only invites for this channel.' +
+				'date      The date (& time) for which the leaderboard is shown\n' +
 				'`',
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});
 	}
 
-	@using(resolve('page: Number, channel: Channel'))
+	@using(resolve('page: Number, ...date?: String'))
 	public async action(
 		message: Message,
-		[_page, channel]: [number, Channel]
+		[_page, _date]: [number, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const guildId = message.guild.id;
-
-		const where: { guildId: string; channelId?: string } = {
-			guildId
-		};
-		if (channel) {
-			where.channelId = channel.id;
+		let from = moment();
+		let to = moment().subtract(1, 'day');
+		if (_date) {
+			const res = chrono.parse(_date);
+			if (!res[0]) {
+				message.channel.send('Invalid date: ' + _date);
+				return;
+			}
+			if (res[0].start) {
+				from = moment(res[0].start.date());
+				to = from.clone().subtract(1, 'day');
+			}
+			if (res[0].end) {
+				to = moment.min(moment(), moment(res[0].end.date()));
+			} else if (!from.isSame(moment(), 'day')) {
+				to = moment();
+			}
+			const min = moment.min(from, to);
+			from = moment.max(from, to);
+			to = min;
 		}
+
+		const guildId = message.guild.id;
 
 		const codeInvs = await inviteCodes.findAll({
 			attributes: [
 				'inviterId',
-				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
+				[
+					sequelize.literal(
+						'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
+							`exactMatchCode = code AND deletedAt IS NULL AND ` +
+							`createdAt >= '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+					),
+					'totalJoins'
+				]
 			],
-			where,
+			where: {
+				guildId
+			},
 			group: 'inviteCode.inviterId',
 			include: [
 				{
 					attributes: ['name'],
 					model: members,
-					as: 'inviter'
+					as: 'inviter',
+					required: true
 				}
 			],
 			raw: true
@@ -130,7 +204,10 @@ export default class extends Command<IMClient> {
 		const customInvs = await customInvites.findAll({
 			attributes: attrs,
 			where: {
-				guildId
+				guildId,
+				createdAt: {
+					[Op.lte]: from
+				}
 			},
 			group: 'customInvite.memberId',
 			include: [
@@ -147,65 +224,79 @@ export default class extends Command<IMClient> {
 			const id = inv.inviterId;
 			invs[id] = {
 				name: inv['inviter.name'],
-				total: parseInt(inv.totalUses, 10),
-				bonus: 0,
+				total: parseInt(inv.totalJoins, 10),
+				regular: parseInt(inv.totalJoins, 10),
+				custom: 0,
+				fake: 0,
+				leaves: 0,
 				oldTotal: 0,
-				oldBonus: 0
+				oldRegular: 0,
+				oldCustom: 0,
+				oldFake: 0,
+				oldLeaves: 0
 			};
 		});
 		customInvs.forEach((inv: any) => {
 			const id = inv.memberId;
-			const bonus = parseInt(inv.totalBonus, 10);
-			const auto = parseInt(inv.totalAuto, 10);
+			const custom = parseInt(inv.totalCustom, 10);
+			const clear = parseInt(inv.totalClear, 10);
+			const fake = parseInt(inv.totalFake, 10);
+			const lvs = parseInt(inv.totalLeaves, 10);
 			if (invs[id]) {
-				invs[id].total += bonus + auto;
-				invs[id].bonus = bonus;
+				invs[id].total += custom + clear + fake + lvs;
+				invs[id].regular += clear;
+				invs[id].custom = custom;
+				invs[id].fake = fake;
+				invs[id].leaves = lvs;
 			} else {
 				invs[id] = {
 					name: inv['member.name'],
-					total: bonus + auto,
-					bonus: bonus,
+					total: custom + clear + fake + lvs,
+					regular: 0,
+					custom: custom,
+					fake: fake,
+					leaves: lvs,
 					oldTotal: 0,
-					oldBonus: 0
+					oldRegular: 0,
+					oldCustom: 0,
+					oldFake: 0,
+					oldLeaves: 0
 				};
 			}
 		});
 
-		const oldCodeInvs = await joins.findAll({
+		const oldCodeInvs = await inviteCodes.findAll({
 			attributes: [
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins']
+				'inviterId',
+				[
+					sequelize.literal(
+						'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
+							`exactMatchCode = code AND deletedAt IS NULL AND ` +
+							`createdAt >= '${to.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+					),
+					'totalJoins'
+				]
 			],
 			where: {
-				guildId,
-				createdAt: {
-					[Op.gt]: new Date(new Date().getTime() - timeDiff)
-				}
+				guildId
 			},
-			group: ['exactMatch.inviterId'],
+			group: 'inviteCode.inviterId',
 			include: [
 				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					include: [
-						{
-							attributes: ['name'],
-							model: members,
-							as: 'inviter',
-							required: true
-						}
-					],
+					attributes: ['name'],
+					model: members,
+					as: 'inviter',
 					required: true
 				}
 			],
 			raw: true
 		});
-		const oldBonusInvs = await customInvites.findAll({
+		const oldCustomInvs = await customInvites.findAll({
 			attributes: attrs,
 			where: {
 				guildId,
 				createdAt: {
-					[Op.gt]: new Date(new Date().getTime() - timeDiff)
+					[Op.lte]: to
 				}
 			},
 			group: ['memberId'],
@@ -219,33 +310,51 @@ export default class extends Command<IMClient> {
 		});
 
 		oldCodeInvs.forEach((inv: any) => {
-			const id = inv['exactMatch.inviterId'];
+			const id = inv.inviterId;
 			if (invs[id]) {
 				invs[id].oldTotal = parseInt(inv.totalJoins, 10);
+				invs[id].oldRegular = parseInt(inv.totalJoins, 10);
 			} else {
 				invs[id] = {
-					name: inv['exactMatch.inviter.name'],
+					name: inv['inviter.name'],
 					total: 0,
-					bonus: 0,
+					regular: 0,
+					custom: 0,
+					fake: 0,
+					leaves: 0,
 					oldTotal: parseInt(inv.totalJoins, 10),
-					oldBonus: 0
+					oldRegular: parseInt(inv.totalJoins, 10),
+					oldCustom: 0,
+					oldFake: 0,
+					oldLeaves: 0
 				};
 			}
 		});
-		oldBonusInvs.forEach((inv: any) => {
+		oldCustomInvs.forEach((inv: any) => {
 			const id = inv.memberId;
-			const bonus = parseInt(inv.totalBonus, 10);
-			const auto = parseInt(inv.totalAuto, 10);
+			const custom = parseInt(inv.totalCustom, 10);
+			const clear = parseInt(inv.totalClear, 10);
+			const fake = parseInt(inv.totalFake, 10);
+			const lvs = parseInt(inv.totalLeaves, 10);
 			if (invs[id]) {
-				invs[id].oldTotal += bonus + auto;
-				invs[id].oldBonus = bonus;
+				invs[id].oldTotal += custom + clear + fake;
+				invs[id].oldRegular += clear;
+				invs[id].oldCustom = custom;
+				invs[id].oldFake = fake;
+				invs[id].oldLeaves = lvs;
 			} else {
 				invs[id] = {
 					name: inv['member.name'],
 					total: 0,
-					bonus: 0,
-					oldTotal: bonus + auto,
-					oldBonus: bonus
+					regular: 0,
+					custom: 0,
+					fake: 0,
+					leaves: 0,
+					oldTotal: custom + clear + fake,
+					oldRegular: 0,
+					oldCustom: custom,
+					oldFake: fake,
+					oldLeaves: lvs
 				};
 			}
 		});
@@ -254,7 +363,8 @@ export default class extends Command<IMClient> {
 			attributes: ['memberId'],
 			where: {
 				guildId: message.guild.id,
-				key: MemberSettingsKey.hideFromLeaderboard
+				key: MemberSettingsKey.hideFromLeaderboard,
+				value: 'true'
 			},
 			raw: true
 		})).map(i => i.memberId);
@@ -271,8 +381,7 @@ export default class extends Command<IMClient> {
 			});
 
 		const oldKeys = [...keys].sort((a, b) => {
-			const diff =
-				invs[b].total - invs[b].oldTotal - (invs[a].total - invs[a].oldTotal);
+			const diff = invs[b].oldTotal - invs[a].oldTotal;
 			return diff !== 0
 				? diff
 				: invs[a].name
@@ -283,9 +392,7 @@ export default class extends Command<IMClient> {
 		if (keys.length === 0) {
 			const embed = createEmbed(this.client);
 			embed.setDescription('No invites!');
-			embed.setTitle(
-				`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`
-			);
+			embed.setTitle(`Leaderboard`);
 			sendEmbed(message.channel, embed, message.author);
 			return;
 		}
@@ -339,15 +446,17 @@ export default class extends Command<IMClient> {
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {
-			let str = '(changes compared to 1 day ago)\n\n';
+			let str =
+				from.format('YYYY/MM/DD - HH:mm:ss - z') +
+				`\n(changes compared to ${to.format('YYYY/MM/DD - HH:mm:ss - z')})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
-			const lengths: number[] = [2, 7, 5, 8, 6];
+			let lengths: number[] = [1, 6, 4, 1, 1, 1, 1];
 
 			if (style === LeaderboardStyle.table) {
-				lines.push(['#', 'Change', 'Name', 'Invites', 'Bonus']);
-				lines.push(['--', '-------', '-----', '--------', '------']);
+				lines.push(['#', 'Change', 'Name', 'T', 'R', 'B', 'F', 'L']);
+				lines.push(lines[0].map(h => '-'.repeat(h.length)));
 			}
 
 			keys
@@ -376,22 +485,28 @@ export default class extends Command<IMClient> {
 							: posChange === 0
 								? '--'
 								: posChange;
+
 					const line = [
 						`${pos}.`,
 						`${symbol} (${posText})`,
 						name,
 						`${inv.total}`,
-						`${inv.bonus}`
+						`${inv.regular}`,
+						`${inv.custom}`,
+						`${inv.fake}`,
+						`${inv.leaves}`
 					];
+
 					lines.push(line);
 					lengths.forEach(
-						(l, pIndex) => (lengths[pIndex] = Math.max(l, line[pIndex].length))
+						(l, pIndex) =>
+							(lengths[pIndex] = Math.max(l, Array.from(line[pIndex]).length))
 					);
 				});
 
 			// Put string together
 			if (style === LeaderboardStyle.table) {
-				str += '`';
+				str += '```';
 			}
 			lines.forEach(line => {
 				if (style === LeaderboardStyle.table) {
@@ -402,21 +517,27 @@ export default class extends Command<IMClient> {
 					style === LeaderboardStyle.normal ||
 					style === LeaderboardStyle.mentions
 				) {
-					str += `**${line[0]}** ${line[1]} **${line[2]}** - **${
-						line[3]
-					}** invites (**${line[4]}** bonus)`;
+					str +=
+						`**${line[0]}** ${line[1]} **${line[2]}** - ` +
+						`**${line[3]}** invites (**${line[4]}** regular, ` +
+						`**${line[5]}** bonus, **${line[6]}** fake, ` +
+						`**${line[7]}** leaves)`;
 				}
 
 				str += '\n';
 			});
 			if (style === LeaderboardStyle.table) {
-				str += '--`';
+				str +=
+					'```\n' +
+					'`T` = Total\n' +
+					'`R` = Regular\n' +
+					'`B` = Bonus\n' +
+					'`F` = Fake\n' +
+					'`L` = Leaves';
 			}
 
 			return createEmbed(this.client)
-				.setTitle(
-					`Leaderboard ${channel ? 'for channel <#' + channel.id + '>' : ''}`
-				)
+				.setTitle(`Leaderboard`)
 				.setDescription(str);
 		});
 	}
