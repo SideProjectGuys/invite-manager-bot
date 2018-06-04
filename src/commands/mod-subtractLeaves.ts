@@ -2,6 +2,7 @@ import { RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
+	GuildSettings,
 	Logger,
 	logger,
 	Message,
@@ -16,8 +17,10 @@ import {
 	JoinAttributes,
 	JoinInstance,
 	joins,
+	leaves,
 	members,
-	sequelize
+	sequelize,
+	SettingsKey
 } from '../sequelize';
 import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
 
@@ -31,10 +34,10 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'subtract-fakes',
-			aliases: ['subtractfakes', 'subfakes', 'sf'],
-			desc: 'Remove fake invites from all users',
-			usage: '<prefix>subtract-fakes',
+			name: 'subtract-leaves',
+			aliases: ['subtractleaves', 'subleaves', 'sl'],
+			desc: 'Remove leaves from all users',
+			usage: '<prefix>subtract-leaves',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
@@ -47,29 +50,46 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const js = await joins.findAll({
+		const ls = await leaves.findAll({
 			attributes: [
 				'memberId',
-				[sequelize.fn('COUNT', sequelize.col('exactMatch.code')), 'numJoins'],
-				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'newestJoinAt']
+				[
+					sequelize.fn(
+						'TIMESTAMPDIFF',
+						sequelize.literal('SECOND'),
+						sequelize.fn('MAX', sequelize.col('join.createdAt')),
+						sequelize.fn('MAX', sequelize.col('leave.createdAt'))
+					),
+					'timeDiff'
+				]
 			],
 			where: {
 				guildId: message.guild.id
 			},
-			group: [sequelize.col('join.memberId'), sequelize.col('exactMatch.code')],
+			group: [
+				sequelize.col('leave.memberId'),
+				sequelize.col('join->exactMatch.code')
+			],
 			include: [
 				{
-					attributes: ['code', 'inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true
+					attributes: [],
+					model: joins,
+					required: true,
+					include: [
+						{
+							attributes: ['code', 'inviterId'],
+							model: inviteCodes,
+							as: 'exactMatch',
+							required: true
+						}
+					]
 				}
 			],
 			raw: true
 		});
 
-		if (js.length === 0) {
-			await message.channel.send(`There have been no invites so far!`);
+		if (ls.length === 0) {
+			await message.channel.send(`There have been no leaves so far!`);
 			return;
 		}
 
@@ -77,27 +97,30 @@ export default class extends Command<IMClient> {
 		await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
-				generatedReason: CustomInvitesGeneratedReason.fake
+				generatedReason: CustomInvitesGeneratedReason.leave
 			}
 		});
 
-		// Add subtracts for duplicate invites
-		const customInvs = js
-			.filter((j: any) => parseInt(j.numJoins, 10) > 1)
-			.map((j: any) => ({
+		const threshold = await message.guild.storage.settings.get(
+			SettingsKey.autoSubtractLeaveThreshold
+		);
+
+		// Add subtracts for leaves
+		const customInvs = ls
+			.filter((l: any) => parseInt(l.timeDiff, 10) < threshold)
+			.map((l: any) => ({
 				id: null,
 				guildId: message.guild.id,
-				memberId: j['exactMatch.inviterId'],
+				memberId: l['join.exactMatch.inviterId'],
 				creatorId: null,
-				amount: -(parseInt(j.numJoins, 10) - 1),
-				reason: j.memberId,
-				generatedReason: CustomInvitesGeneratedReason.fake
+				amount: -1,
+				reason: l.memberId,
+				generatedReason: CustomInvitesGeneratedReason.leave
 			}));
 		await customInvites.bulkCreate(customInvs, {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		await message.channel.send(`Removed ${total} fake invites!`);
+		await message.channel.send(`Removed ${customInvs.length} leaves!`);
 	}
 }

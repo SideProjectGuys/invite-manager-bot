@@ -56,7 +56,8 @@ export default class extends Command<IMClient> {
 		let textMessage =
 			`${subject} **${invites.total}** invites! ` +
 			`(**${invites.regular}** regular, **${invites.custom}** bonus, ` +
-			`**${invites.generated.fake}** fake)\n`;
+			`**${invites.generated.fake}** fake, ` +
+			`**${invites.generated.leave}** leaves)\n`;
 
 		if (!message.author.bot) {
 			let targetMember = await message.guild.fetchMember(target.id);

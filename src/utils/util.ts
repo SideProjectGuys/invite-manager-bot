@@ -140,7 +140,8 @@ export async function getInviteCounts(
 
 	const generated: { [x in CustomInvitesGeneratedReason]: number } = {
 		[CustomInvitesGeneratedReason.clear_invites]: 0,
-		[CustomInvitesGeneratedReason.fake]: 0
+		[CustomInvitesGeneratedReason.fake]: 0,
+		[CustomInvitesGeneratedReason.leave]: 0
 	};
 
 	values[1].forEach((ci: any) => {
@@ -155,13 +156,16 @@ export async function getInviteCounts(
 	const clear = generated[CustomInvitesGeneratedReason.clear_invites];
 	const regClear = Math.max(-regular, clear);
 	const customClear = clear - regClear;
-	console.log(clear, regClear, customClear);
 	return {
 		regular: regular + regClear,
 		custom: custom + customClear,
 		generated,
 		total:
-			regular + custom + clear + generated[CustomInvitesGeneratedReason.fake]
+			regular +
+			custom +
+			clear +
+			generated[CustomInvitesGeneratedReason.fake] +
+			generated[CustomInvitesGeneratedReason.leave]
 	};
 }
 

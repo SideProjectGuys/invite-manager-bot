@@ -18,6 +18,7 @@ import {
 	guilds,
 	inviteCodes,
 	joins,
+	leaves,
 	LogAction,
 	members,
 	sequelize,
@@ -297,6 +298,19 @@ export class IMClient extends Client {
 			);
 		}
 
+		// Auto remove leaves if enabled
+		const autoSubtractLeaves = await sets.get(SettingsKey.autoSubtractLeaves);
+		if (autoSubtractLeaves === 'true') {
+			// Delete removals for this member because the member rejoined
+			await customInvites.destroy({
+				where: {
+					guildId: member.guild.id,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				}
+			});
+		}
+
 		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
 
 		const inviteCode = join['exactMatch.code'];
@@ -351,13 +365,10 @@ export class IMClient extends Client {
 
 		console.log(member.id + ' left ' + member.guild.id);
 
-		// Save discord timestamp for DB comparison
-		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
-
 		// Find the corresponding join
-		let js = await this.findJoins(member.guild.id, member.id, 2000);
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			js = await this.findJoins(member.guild.id, member.id, 5000);
+		let lv = await this.findLeave(member.guild.id, member.id, 2000);
+		if (!lv) {
+			lv = await this.findLeave(member.guild.id, member.id, 5000);
 		}
 
 		// Get settings
@@ -367,59 +378,76 @@ export class IMClient extends Client {
 			SettingsKey.leaveMessageChannel
 		)) as string;
 
-		// Check for leave channel
-		if (!leaveChannelId) {
-			console.log(`Guild ${member.guild.id} has no leave message channel`);
-			return;
-		}
-
 		// Check if leave channel is valid
-		const leaveChannel = member.guild.channels.get(
-			leaveChannelId
-		) as TextChannel;
-		if (!leaveChannel) {
+		const leaveChannel = leaveChannelId
+			? (member.guild.channels.get(leaveChannelId) as TextChannel)
+			: undefined;
+		if (leaveChannelId && !leaveChannel) {
 			console.error(
 				`Guild ${member.guild.id} has invalid leave ` +
 					`message channel ${leaveChannelId}`
 			);
+		}
+
+		// Exit if we can't find the leave
+		if (!lv) {
+			console.error(
+				`Could not find leave for ${member.id} in ` +
+					`${member.guild.id} at ~${moment.utc().unix()}`
+			);
+			if (leaveChannel) {
+				const tag = member.user.username + '#' + member.user.discriminator;
+				const msg = `${tag} left the server, but I don't know who invited them.`;
+				leaveChannel.send(msg);
+			}
 			return;
 		}
 
-		// Exit if we can't find the join
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			console.error(
-				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${ts} (${member.joinedTimestamp})`
-			);
-			console.error(
-				`DB joins for ${member.id} in ${member.guild.id} are: ` +
-					JSON.stringify(js)
-			);
-			const tag = member.user.username + '#' + member.user.discriminator;
-			const msg = `${tag} left the server, but I don't know who invited them.`;
-			leaveChannel.send(msg);
-			return;
+		// Auto remove leaves if enabled
+		const autoSubtractLeaves = await sets.get(SettingsKey.autoSubtractLeaves);
+		if (autoSubtractLeaves === 'true') {
+			// Delete any old entries for the leaving of this member
+			await customInvites.destroy({
+				where: {
+					guildId: member.guild.id,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				}
+			});
+
+			const threshold = await sets.get(SettingsKey.autoSubtractLeaveThreshold);
+			const timeDiff = parseInt(lv.timeDiff, 10);
+			if (timeDiff < threshold) {
+				// Add removals for leaves
+				customInvites.create({
+					id: null,
+					creatorId: null,
+					guildId: member.guild.id,
+					memberId: lv['join.exactMatch.inviterId'],
+					amount: -1,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				});
+			}
 		}
 
-		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
+		const inviteCode = lv['join.exactMatch.code'];
+		const channelName = lv['join.exactMatch.channel.name'];
+		const channelId = lv['join.exactMatch.channelId'];
 
-		const inviteCode = join['exactMatch.code'];
-		const channelName = join['exactMatch.channel.name'];
-		const channelId = join['exactMatch.channelId'];
-
-		const inviterId = join['exactMatch.inviterId'];
-		const inviterName = join['exactMatch.inviter.name'];
-		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
+		const inviterId = lv['join.exactMatch.inviterId'];
+		const inviterName = lv['join.exactMatch.inviter.name'];
+		const inviterDiscriminator = lv['join.exactMatch.inviter.discriminator'];
 
 		const leaveMessageFormat = (await sets.get(
 			SettingsKey.leaveMessage
 		)) as string;
-		if (leaveMessageFormat) {
+		if (leaveChannel && leaveMessageFormat) {
 			const msg = await this.fillTemplate(
 				leaveMessageFormat,
 				member,
 				inviteCode,
-				js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
+				0, // TODO: This needs to be implemented?
 				channelId,
 				channelName,
 				inviterId,
@@ -496,7 +524,8 @@ export class IMClient extends Client {
 			custom: 0,
 			generated: {
 				[CustomInvitesGeneratedReason.clear_invites]: 0,
-				[CustomInvitesGeneratedReason.fake]: 0
+				[CustomInvitesGeneratedReason.fake]: 0,
+				[CustomInvitesGeneratedReason.leave]: 0
 			}
 		}
 	): Promise<string | RichEmbed> {
@@ -517,7 +546,9 @@ export class IMClient extends Client {
 		if (
 			(invites.total === 0 && template.indexOf('{numInvites}') >= 0) ||
 			template.indexOf('{numRegularInvites}') >= 0 ||
-			template.indexOf('{numBonusInvites}') >= 0
+			template.indexOf('{numBonusInvites}') >= 0 ||
+			template.indexOf('{numFakeInvites}') >= 0 ||
+			template.indexOf('{numLeaveInvites}') >= 0
 		) {
 			invites = await getInviteCounts(member.guild.id, inviterId);
 		}
@@ -579,6 +610,7 @@ export class IMClient extends Client {
 			.replace('{numRegularInvites}', `${invites.regular}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
 			.replace('{numFakeInvites}', `${invites.generated.fake}`)
+			.replace('{numLeaveInvites}', `${invites.generated.leave}`)
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);
@@ -640,15 +672,79 @@ export class IMClient extends Client {
 								attributes: ['code', 'inviterId', 'channelId'],
 								model: inviteCodes,
 								as: 'exactMatch',
+								required: true,
 								include: [
 									{
 										attributes: ['name', 'discriminator'],
 										model: members,
-										as: 'inviter'
+										as: 'inviter',
+										required: true
 									},
 									{
 										attributes: ['name'],
 										model: channels
+									}
+								]
+							}
+						],
+						raw: true
+					})
+				);
+			};
+			setTimeout(func, timeOut);
+		});
+	}
+
+	private async findLeave(
+		guildId: string,
+		memberId: string,
+		timeOut: number
+	): Promise<any> {
+		return new Promise((resolve, reject) => {
+			const func = async () => {
+				resolve(
+					await leaves.find({
+						attributes: [
+							[
+								sequelize.fn(
+									'TIMESTAMPDIFF',
+									sequelize.literal('SECOND'),
+									sequelize.col('join.createdAt'),
+									sequelize.col('leave.createdAt')
+								),
+								'timeDiff'
+							]
+						],
+						where: {
+							memberId,
+							guildId,
+							createdAt: {
+								[sequelize.Op.gte]: moment.utc().subtract(2 * timeOut, 'ms')
+							}
+						},
+						include: [
+							{
+								attributes: ['createdAt'],
+								model: joins,
+								required: true,
+								include: [
+									{
+										attributes: ['code', 'inviterId', 'channelId'],
+										model: inviteCodes,
+										as: 'exactMatch',
+										required: true,
+										include: [
+											{
+												attributes: ['name', 'discriminator'],
+												model: members,
+												as: 'inviter',
+												required: true
+											},
+											{
+												attributes: ['name'],
+												model: channels
+											}
+										]
 									}
 								]
 							}

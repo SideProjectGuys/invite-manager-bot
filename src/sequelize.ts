@@ -1,3 +1,4 @@
+import { Channel } from 'discord.js';
 import * as Sequelize from 'sequelize';
 
 const config = require('../config.json');
@@ -167,7 +168,9 @@ export enum SettingsKey {
 	logChannel = 'logChannel',
 	getUpdates = 'getUpdates',
 	leaderboardStyle = 'leaderboardStyle',
-	autoSubtractFakes = 'autoSubtractFakes'
+	autoSubtractFakes = 'autoSubtractFakes',
+	autoSubtractLeaves = 'autoSubtractLeaves',
+	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold'
 }
 
 export enum Lang {
@@ -189,10 +192,58 @@ export function getSettingsType(key: SettingsKey) {
 	) {
 		return 'Channel';
 	}
-	if (key === SettingsKey.getUpdates) {
+	if (
+		key === SettingsKey.getUpdates ||
+		key === SettingsKey.autoSubtractFakes ||
+		key === SettingsKey.autoSubtractLeaves
+	) {
 		return 'Boolean';
 	}
+	if (key === SettingsKey.autoSubtractLeaveThreshold) {
+		return 'Number';
+	}
 	return 'String';
+}
+
+export function fromDbSettingsValue(
+	key: SettingsKey,
+	value: string
+): string | number | boolean {
+	if (value === undefined || value === null) {
+		return value;
+	}
+
+	const type = getSettingsType(key);
+	if (type === 'Channel') {
+		return `<#${value}>`;
+	} else if (type === 'Boolean') {
+		return !!value;
+	} else if (type === 'Number') {
+		return parseInt(value, 10);
+	}
+
+	return value;
+}
+
+export function toDbSettingsValue(
+	key: SettingsKey,
+	value: any
+): { value?: string | number | boolean; error?: string } {
+	if (value === 'default') {
+		return { value: defaultSettings[key] };
+	}
+	if (value === 'none' || value === 'empty' || value === 'null') {
+		return { value: null };
+	}
+
+	const type = getSettingsType(key);
+	if (type === 'Channel') {
+		return { value: (value as Channel).id };
+	} else if (type === 'Boolean') {
+		return { value: value ? 'true' : 'false' };
+	}
+
+	return { value };
 }
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
@@ -208,7 +259,9 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	logChannel: null,
 	getUpdates: 'true',
 	leaderboardStyle: 'normal',
-	autoSubtractFakes: 'true'
+	autoSubtractFakes: 'true',
+	autoSubtractLeaves: 'true',
+	autoSubtractLeaveThreshold: '600' // seconds
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -463,7 +516,8 @@ joins.hasOne(leaves);
 // ------------------------------------
 export enum CustomInvitesGeneratedReason {
 	clear_invites = 'clear_invites',
-	fake = 'fake'
+	fake = 'fake',
+	leave = 'leave'
 }
 export interface CustomInviteAttributes extends BaseAttributes {
 	id: number;
@@ -492,7 +546,8 @@ export const customInvites = sequelize.define<
 		reason: Sequelize.STRING,
 		generatedReason: Sequelize.ENUM(
 			CustomInvitesGeneratedReason.clear_invites,
-			CustomInvitesGeneratedReason.fake
+			CustomInvitesGeneratedReason.fake,
+			CustomInvitesGeneratedReason.leave
 		)
 	},
 	{

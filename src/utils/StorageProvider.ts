@@ -77,9 +77,7 @@ export class IMStorageProvider extends StorageProvider
 			});
 
 			const obj: { [k in SettingsKey]: string } = { ...defaultSettings };
-			sets.forEach(set => {
-				obj[set.key] = set.value;
-			});
+			sets.forEach(set => (obj[set.key] = set.value));
 
 			const str = JSON.stringify(obj);
 			this.cache[key] = str;
