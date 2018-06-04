@@ -88,12 +88,15 @@ export default class extends Command<IMClient> {
 		const numFake = customInvs
 			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.fake)
 			.reduce((acc, inv) => acc + inv.amount, 0);
+		const numLeaves = customInvs
+			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.leave)
+			.reduce((acc, inv) => acc + inv.amount, 0);
 
 		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0);
 		const numRegularClear = Math.max(-numRegular, numClear);
 		const numCustomClear = numClear - numRegularClear;
 
-		const numTotal = numRegular + numCustom + numClear + numFake;
+		const numTotal = numRegular + numCustom + numClear + numFake + numLeaves;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
@@ -103,7 +106,8 @@ export default class extends Command<IMClient> {
 		embed.addField(
 			'Invites',
 			`**${numTotal}** (**${numRegular + numRegularClear}** regular, ` +
-				`**${numCustom + numCustomClear}** bonus, **${numFake}** fake)`,
+				`**${numCustom + numCustomClear}** bonus, **${numFake}** fake, ` +
+				`**${numLeaves}** leaves)`,
 			true
 		);
 

@@ -20,13 +20,15 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	defaultSettings,
+	fromDbSettingsValue,
 	getSettingsType,
 	Lang,
 	LeaderboardStyle,
 	LogAction,
 	sequelize,
 	settings,
-	SettingsKey
+	SettingsKey,
+	toDbSettingsValue
 } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
@@ -142,7 +144,7 @@ export default class extends Command<IMClient> {
 				if (val) {
 					embed.addField(
 						keys[i],
-						this.fromDbValue(keys[i] as SettingsKey, val)
+						fromDbSettingsValue(keys[i] as SettingsKey, val)
 					);
 				} else {
 					notSet.push(keys[i]);
@@ -161,8 +163,8 @@ export default class extends Command<IMClient> {
 		}
 
 		let oldVal = await sets.get(key);
-		let oldRawVal = this.fromDbValue(key, oldVal);
-		if (oldRawVal && oldRawVal.length > 1000) {
+		let oldRawVal = fromDbSettingsValue(key, oldVal);
+		if (typeof oldRawVal === 'string' && oldRawVal.length > 1000) {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
 		}
 
@@ -190,7 +192,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const parsedValue = this.toDbValue(message.guild, key, rawValue);
+		const parsedValue = toDbSettingsValue(key, rawValue);
 		if (parsedValue.error) {
 			message.channel.send(parsedValue.error);
 			return;
@@ -246,44 +248,6 @@ export default class extends Command<IMClient> {
 		if (typeof cb === typeof Function) {
 			await cb();
 		}
-	}
-
-	// Convert a raw value into something we can save in the database
-	private toDbValue(
-		guild: Guild,
-		key: SettingsKey,
-		value: any
-	): { value?: string; error?: string } {
-		if (value === 'default') {
-			return { value: defaultSettings[key] };
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return { value: null };
-		}
-
-		const type = getSettingsType(key);
-		if (type === 'Channel') {
-			return { value: (value as Channel).id };
-		}
-		if (type === 'Boolean') {
-			return { value: value ? 'true' : 'false' };
-		}
-
-		return { value };
-	}
-
-	// Convert a DB value into a human readable value
-	private fromDbValue(key: SettingsKey, value: string): string {
-		if (value === undefined || value === null) {
-			return value;
-		}
-
-		const type = getSettingsType(key);
-		if (type === 'Channel') {
-			return `<#${value}>`;
-		}
-
-		return value;
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
@@ -365,6 +329,9 @@ export default class extends Command<IMClient> {
 						[CustomInvitesGeneratedReason.clear_invites]: 0,
 						[CustomInvitesGeneratedReason.fake]: Math.round(
 							Math.random() * 1000
+						),
+						[CustomInvitesGeneratedReason.leave]: Math.round(
+							Math.random() * 1000
 						)
 					}
 				}
@@ -393,6 +360,29 @@ export default class extends Command<IMClient> {
 						}
 					});
 			}
+		}
+
+		if (key === SettingsKey.autoSubtractLeaves) {
+			if (value === 'true') {
+				// Subtract leaves from all members
+				let cmd = this.client.commands.resolve('subtract-leaves');
+				return async () => await cmd.action(message, []);
+			} else if (value === 'false') {
+				// Delete old leave removals
+				return async () =>
+					await customInvites.destroy({
+						where: {
+							guildId: message.guild.id,
+							generatedReason: CustomInvitesGeneratedReason.leave
+						}
+					});
+			}
+		}
+
+		if (key === SettingsKey.autoSubtractLeaveThreshold) {
+			// Subtract leaves from all members to recompute threshold time
+			let cmd = this.client.commands.resolve('subtract-leaves');
+			return async () => await cmd.action(message, []);
 		}
 	}
 }
