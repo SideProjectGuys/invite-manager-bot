@@ -133,10 +133,10 @@ export default class extends Command<IMClient> {
 			desc: 'Show members with most invites.',
 			usage: '<prefix>leaderboard (page) (date)',
 			info:
-				'`' +
-				'page      Which page of the leaderboard to get.\n' +
-				'date      The date (& time) for which the leaderboard is shown\n' +
-				'`',
+				'`page`:\n' +
+				'Which page of the leaderboard to get.\n\n' +
+				'`date`:\n' +
+				'The date (& time) for which the leaderboard is shown\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
 			guildOnly: true
 		});

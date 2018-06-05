@@ -25,11 +25,12 @@ export default class extends Command<IMClient> {
 			desc: 'Add a new rank',
 			usage: '<prefix>add-rank @role invites (info)',
 			info:
-				'`' +
-				'@role    The role which the user will receive when reaching this rank\n' +
-				'invites  The amount of invites needed to reach the rank\n' +
-				'info     A decription that users will see so they know more about this rank' +
-				'`',
+				'`@role`:\n' +
+				'The role which the user will receive when reaching this rank\n\n' +
+				'`invites`:\n' +
+				'The amount of invites needed to reach the rank\n\n' +
+				'`info`:\n' +
+				'A decription that users will see so they know more about this rank\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Ranks,
 			guildOnly: true

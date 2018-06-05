@@ -31,12 +31,13 @@ export default class extends Command<IMClient> {
 			desc: 'Adds/Removes invites to/from a member',
 			usage: '<prefix>add-invites @user amount (reason)',
 			info:
-				'`' +
-				'@user    The user that will receive/lose the bonus invites\n' +
-				'amount   The amount of invites the user will get/lose.\n' +
-				'           Use a negative (-) number to remove invites.\n' +
-				'reason   The reason why the user is receiving/losing the invites.' +
-				'`',
+				'`@user`:\n' +
+				'The user that will receive/lose the bonus invites\n\n' +
+				'`amount`:\n' +
+				'The amount of invites the user will get/lose. ' +
+				'Use a negative (-) number to remove invites.\n\n' +
+				'`reason`:\n' +
+				'The reason for adding/removing the invites.\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true

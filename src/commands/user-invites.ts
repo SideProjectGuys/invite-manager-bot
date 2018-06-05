@@ -34,7 +34,7 @@ export default class extends Command<IMClient> {
 			aliases: ['invite', 'rank'],
 			desc: 'Show personal invites',
 			usage: '<prefix>invites (@user)',
-			info: '`' + '@user  The user for whom you want to show invites.' + '`',
+			info: '`@user`:\n' + 'The user for whom you want to show invites.\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true

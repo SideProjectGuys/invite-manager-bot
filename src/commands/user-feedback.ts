@@ -25,6 +25,9 @@ export default class extends Command<IMClient> {
 			aliases: ['suggestion', 'suggestions'],
 			desc: 'Give feedback about the bot to the developers',
 			usage: '<prefix>feedback <message>',
+			info:
+				'`message`:\n' +
+				'The message you would like to submit as feedback.\n\n',
 			group: CommandGroup.Other,
 			guildOnly: true
 		});
@@ -41,8 +44,8 @@ export default class extends Command<IMClient> {
 
 		if (config.feedbackChannel) {
 			// tslint:disable-next-line
-			let channel = <TextChannel>message.client.channels.get(
-				config.feedbackChannel
+			let channel = <TextChannel>(
+				message.client.channels.get(config.feedbackChannel)
 			);
 
 			const embedFeedback = createEmbed(this.client);

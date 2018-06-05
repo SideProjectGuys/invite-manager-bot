@@ -108,11 +108,13 @@ export default class extends Command<IMClient> {
 			desc: 'Show and change the config of members of the server',
 			usage: '<prefix>memconf @user (key) (value)',
 			info:
-				'`' +
-				'@user  The member that the setting is changed for.' +
-				'key    The config setting which you want to show/change.' +
-				'value  The new value of the setting.' +
-				'`',
+				'`@user`:\n' +
+				'The member that the setting is changed for.\n\n' +
+				'`key`:\n' +
+				'The config setting which you want to show/change.\n\n' +
+				'`value`:\n' +
+				'The new value of the setting.\n\n' +
+				'Use without args to show all set configs and keys.\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Admin,
 			guildOnly: true

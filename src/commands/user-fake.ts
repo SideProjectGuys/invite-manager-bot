@@ -33,7 +33,7 @@ export default class extends Command<IMClient> {
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
 			desc: 'Help find users trying to cheat.',
 			usage: '<prefix>fake (page)',
-			info: '`' + 'page  Which page of the fake list to get.\n' + '`',
+			info: '`page`:\n' + 'Which page of the fake list to get.\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
 			guildOnly: true

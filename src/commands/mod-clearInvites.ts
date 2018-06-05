@@ -34,10 +34,10 @@ export default class extends Command<IMClient> {
 			desc: 'Clear invites of the server/a user',
 			usage: '<prefix>clear-invites (clearBonus) (@user)',
 			info:
-				'`' +
-				`clearBonus  Pass 'true' if you want to remove bonus invites, otherwise 'false'.\n` +
-				'@user       The user to clear all invites from\n' +
-				'`',
+				'`clearBonus`:\n' +
+				'Pass `true` if you want to remove bonus invites, otherwise `false` (default).\n\n' +
+				'`@user`:\n' +
+				'The user to clear all invites from. If omitted clears all users.\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,

@@ -48,21 +48,28 @@ export default class extends Command<IMClient> {
 				usage: command.usage.replace('<prefix>', prefix)
 			};
 
-			embed.addField('Command', cmd.name);
-			embed.addField('Usage', cmd.usage + '\n\n' + cmd.info);
-			embed.addField('Alises', cmd.aliases.join(', '), true);
+			embed.addField('Command', cmd.name, true);
 			embed.addField('Description', cmd.desc, true);
 			embed.addField(
-				'User permissions',
-				cmd.callerPermissions.length > 0
-					? cmd.callerPermissions.join(', ')
-					: 'None'
+				'Usage',
+				'`' + cmd.usage + '`' + (cmd.info ? '\n\n' + cmd.info : '')
 			);
+			if (cmd.aliases.length > 0) {
+				embed.addField('Aliases', cmd.aliases.join(', '), true);
+			}
 			embed.addField(
 				'Bot permissions',
 				cmd.clientPermissions.length > 0
 					? cmd.clientPermissions.join(', ')
-					: 'None'
+					: 'None',
+				true
+			);
+			embed.addField(
+				'User permissions',
+				cmd.callerPermissions.length > 0
+					? cmd.callerPermissions.join(', ')
+					: 'None',
+				true
 			);
 		} else {
 			let messageMember = message.member;
@@ -104,12 +111,14 @@ export default class extends Command<IMClient> {
 
 				let descr = '';
 				const len = cmds.reduce((acc, c) => Math.max(acc, c.usage.length), 0);
+				descr += cmds.map(c => '`' + c.name + '`').join(', ');
+				/*cmds.forEach(c => embed.addField(c.name, c.desc));
 				cmds.forEach(
 					c =>
 						(descr += `\`${c.usage}  ${' '.repeat(len - c.usage.length)}${
 							c.desc
 						}\`\n`)
-				);
+				);*/
 				embed.addField(group, descr);
 			});
 

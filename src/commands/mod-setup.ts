@@ -14,7 +14,8 @@ export default class extends Command<IMClient> {
 			name: 'setup',
 			aliases: ['guide', 'diagnose', 'diag', 'test', 'testBot', 'test-bot'],
 			desc:
-				'Help with setting up the bot and checking for problems (e.g. missing permissions)',
+				'Help with setting up the bot and ' +
+				'checking for problems (e.g. missing permissions)',
 			usage: '<prefix>setup',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Admin,
