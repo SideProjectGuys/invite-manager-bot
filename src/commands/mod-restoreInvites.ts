@@ -49,7 +49,12 @@ export default class extends Command<IMClient> {
 		const num = await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
-				generatedReason: CustomInvitesGeneratedReason.clear_invites,
+				generatedReason: [
+					CustomInvitesGeneratedReason.clear_regular,
+					CustomInvitesGeneratedReason.clear_custom,
+					CustomInvitesGeneratedReason.clear_fake,
+					CustomInvitesGeneratedReason.clear_leave
+				],
 				...(memberId && { memberId })
 			}
 		});
