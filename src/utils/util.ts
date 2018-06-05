@@ -154,18 +154,17 @@ export async function getInviteCounts(
 	});
 
 	const clear = generated[CustomInvitesGeneratedReason.clear_invites];
-	const regClear = Math.max(-regular, clear);
+	const reg =
+		regular +
+		generated[CustomInvitesGeneratedReason.fake] +
+		generated[CustomInvitesGeneratedReason.leave];
+	const regClear = Math.max(-reg, clear);
 	const customClear = clear - regClear;
 	return {
 		regular: regular + regClear,
 		custom: custom + customClear,
 		generated,
-		total:
-			regular +
-			custom +
-			clear +
-			generated[CustomInvitesGeneratedReason.fake] +
-			generated[CustomInvitesGeneratedReason.leave]
+		total: reg + custom + clear
 	};
 }
 
