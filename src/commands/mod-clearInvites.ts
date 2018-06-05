@@ -60,7 +60,12 @@ export default class extends Command<IMClient> {
 		await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
-				generatedReason: CustomInvitesGeneratedReason.clear_invites,
+				generatedReason: [
+					CustomInvitesGeneratedReason.clear_regular,
+					CustomInvitesGeneratedReason.clear_custom,
+					CustomInvitesGeneratedReason.clear_fake,
+					CustomInvitesGeneratedReason.clear_leave
+				],
 				...(memberId && { memberId })
 			}
 		});
@@ -96,45 +101,97 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const uses: { [x: string]: number } = {};
+		const regular: { [x: string]: number } = {};
+		const fake: { [x: string]: number } = {};
+		const leave: { [x: string]: number } = {};
+		const custom: { [x: string]: number } = {};
+
 		invs.forEach((inv: any) => {
-			if (!uses[inv.inviterId]) {
-				uses[inv.inviterId] = 0;
+			if (!regular[inv.inviterId]) {
+				regular[inv.inviterId] = 0;
 			}
-			uses[inv.inviterId] += parseInt(inv.totalUses, 10);
+			regular[inv.inviterId] += parseInt(inv.totalUses, 10);
 		});
 		customInvs
-			.filter(inv => inv.generatedReason !== null)
+			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.fake)
 			.forEach((inv: any) => {
-				if (!uses[inv.memberId]) {
-					uses[inv.memberId] = 0;
+				if (!fake[inv.memberId]) {
+					fake[inv.memberId] = 0;
 				}
-				uses[inv.memberId] += parseInt(inv.totalAmount, 10);
+				fake[inv.memberId] += parseInt(inv.totalAmount, 10);
+			});
+		customInvs
+			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.leave)
+			.forEach((inv: any) => {
+				if (!leave[inv.memberId]) {
+					leave[inv.memberId] = 0;
+				}
+				leave[inv.memberId] += parseInt(inv.totalAmount, 10);
 			});
 
-		if (clearBonus === '__true__') {
-			customInvs
-				.filter(inv => inv.generatedReason === null)
-				.forEach((inv: any) => {
-					if (!uses[inv.memberId]) {
-						uses[inv.memberId] = 0;
-					}
-					uses[inv.memberId] += parseInt(inv.totalAmount, 10);
-				});
-		}
-
+		const cleared: { [x: string]: boolean } = {};
 		const newInvs: CustomInviteAttributes[] = [];
-		Object.keys(uses).forEach(memId => {
+		Object.keys(regular).forEach(memId => {
 			newInvs.push({
 				id: null,
 				guildId: message.guild.id,
 				memberId: memId,
 				creatorId: null,
-				amount: -uses[memId],
+				amount: -regular[memId],
 				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_invites
+				generatedReason: CustomInvitesGeneratedReason.clear_regular
 			});
+			cleared[memId] = true;
 		});
+		Object.keys(fake).forEach(memId => {
+			newInvs.push({
+				id: null,
+				guildId: message.guild.id,
+				memberId: memId,
+				creatorId: null,
+				amount: -fake[memId],
+				reason: null,
+				generatedReason: CustomInvitesGeneratedReason.clear_fake
+			});
+			cleared[memId] = true;
+		});
+		Object.keys(leave).forEach(memId => {
+			newInvs.push({
+				id: null,
+				guildId: message.guild.id,
+				memberId: memId,
+				creatorId: null,
+				amount: -leave[memId],
+				reason: null,
+				generatedReason: CustomInvitesGeneratedReason.clear_leave
+			});
+			cleared[memId] = true;
+		});
+
+		if (clearBonus === '__true__') {
+			// Process any custom invites
+			customInvs
+				.filter(inv => inv.generatedReason === null)
+				.forEach((inv: any) => {
+					if (!custom[inv.memberId]) {
+						custom[inv.memberId] = 0;
+					}
+					custom[inv.memberId] += parseInt(inv.totalAmount, 10);
+				});
+
+			Object.keys(custom).forEach(memId => {
+				newInvs.push({
+					id: null,
+					guildId: message.guild.id,
+					memberId: memId,
+					creatorId: null,
+					amount: -custom[memId],
+					reason: null,
+					generatedReason: CustomInvitesGeneratedReason.clear_custom
+				});
+				cleared[memId] = true;
+			});
+		}
 
 		const createdInvs = await customInvites.bulkCreate(newInvs);
 
@@ -143,6 +200,8 @@ export default class extends Command<IMClient> {
 			...(memberId && { targetId: memberId })
 		});
 
-		message.channel.send(`Cleared invites for ${createdInvs.length} users!`);
+		message.channel.send(
+			`Cleared invites for ${Object.keys(cleared).length} users!`
+		);
 	}
 }

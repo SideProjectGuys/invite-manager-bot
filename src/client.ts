@@ -528,11 +528,8 @@ export class IMClient extends Client {
 			total: 0,
 			regular: 0,
 			custom: 0,
-			generated: {
-				[CustomInvitesGeneratedReason.clear_invites]: 0,
-				[CustomInvitesGeneratedReason.fake]: 0,
-				[CustomInvitesGeneratedReason.leave]: 0
-			}
+			fake: 0,
+			leave: 0
 		}
 	): Promise<string | RichEmbed> {
 		const userSince = moment(member.user.createdAt);
@@ -615,8 +612,8 @@ export class IMClient extends Client {
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.regular}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
-			.replace('{numFakeInvites}', `${invites.generated.fake}`)
-			.replace('{numLeaveInvites}', `${invites.generated.leave}`)
+			.replace('{numFakeInvites}', `${invites.fake}`)
+			.replace('{numLeaveInvites}', `${invites.leave}`)
 			.replace('{memberCount}', `${member.guild.memberCount}`)
 			.replace('{channelMention}', `<#${channelId}>`)
 			.replace('{channelName}', `${channelName}`);

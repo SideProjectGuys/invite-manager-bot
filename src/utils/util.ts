@@ -105,7 +105,8 @@ export function sendEmbed(
 export interface InviteCounts {
 	regular: number;
 	custom: number;
-	generated: { [x in CustomInvitesGeneratedReason]: number };
+	fake: number;
+	leave: number;
 	total: number;
 }
 
@@ -133,13 +134,16 @@ export async function getInviteCounts(
 	});
 	const values = await Promise.all([regularPromise, customPromise]);
 
-	const regular = values[0] || 0;
+	const reg = values[0] || 0;
 
 	const customUser = values[1].find(ci => ci.generatedReason === null) as any;
-	const custom = customUser ? parseInt(customUser.total, 10) : 0;
+	const ctm = customUser ? parseInt(customUser.total, 10) : 0;
 
 	const generated: { [x in CustomInvitesGeneratedReason]: number } = {
-		[CustomInvitesGeneratedReason.clear_invites]: 0,
+		[CustomInvitesGeneratedReason.clear_regular]: 0,
+		[CustomInvitesGeneratedReason.clear_custom]: 0,
+		[CustomInvitesGeneratedReason.clear_fake]: 0,
+		[CustomInvitesGeneratedReason.clear_leave]: 0,
 		[CustomInvitesGeneratedReason.fake]: 0,
 		[CustomInvitesGeneratedReason.leave]: 0
 	};
@@ -153,18 +157,21 @@ export async function getInviteCounts(
 		generated[reason] = amount;
 	});
 
-	const clear = generated[CustomInvitesGeneratedReason.clear_invites];
-	const reg =
-		regular +
+	const regular = reg + generated[CustomInvitesGeneratedReason.clear_regular];
+	const custom = ctm + generated[CustomInvitesGeneratedReason.clear_custom];
+	const fake =
 		generated[CustomInvitesGeneratedReason.fake] +
-		generated[CustomInvitesGeneratedReason.leave];
-	const regClear = Math.max(-reg, clear);
-	const customClear = clear - regClear;
+		generated[CustomInvitesGeneratedReason.clear_fake];
+	const leave =
+		generated[CustomInvitesGeneratedReason.leave] +
+		generated[CustomInvitesGeneratedReason.clear_leave];
+
 	return {
-		regular: regular + regClear,
-		custom: custom + customClear,
-		generated,
-		total: reg + custom + clear
+		regular,
+		custom,
+		fake,
+		leave,
+		total: regular + custom + fake + leave
 	};
 }
 

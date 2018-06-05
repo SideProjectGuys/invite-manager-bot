@@ -66,7 +66,22 @@ const attrs: FindOptionsAttributesArray = [
 			'sum',
 			sequelize.fn(
 				'if',
-				sequelize.literal('customInvite.generatedReason IS NULL'),
+				sequelize.literal(`customInvite.generatedReason = 'clear_regular'`),
+				sequelize.col('customInvite.amount'),
+				0
+			)
+		),
+		'totalClearRegular'
+	],
+	[
+		sequelize.fn(
+			'sum',
+			sequelize.fn(
+				'if',
+				sequelize.literal(
+					`(customInvite.generatedReason IS NULL OR ` +
+						`customInvite.generatedReason = 'clear_custom')`
+				),
 				sequelize.col('customInvite.amount'),
 				0
 			)
@@ -79,25 +94,8 @@ const attrs: FindOptionsAttributesArray = [
 			sequelize.fn(
 				'if',
 				sequelize.literal(
-					`customInvite.generatedReason = '${
-						CustomInvitesGeneratedReason.clear_invites
-					}'`
-				),
-				sequelize.col('customInvite.amount'),
-				0
-			)
-		),
-		'totalClear'
-	],
-	[
-		sequelize.fn(
-			'sum',
-			sequelize.fn(
-				'if',
-				sequelize.literal(
-					`customInvite.generatedReason = '${
-						CustomInvitesGeneratedReason.fake
-					}'`
+					`(customInvite.generatedReason = 'fake' OR ` +
+						`customInvite.generatedReason = 'clear_fake')`
 				),
 				sequelize.col('customInvite.amount'),
 				0
@@ -111,9 +109,8 @@ const attrs: FindOptionsAttributesArray = [
 			sequelize.fn(
 				'if',
 				sequelize.literal(
-					`customInvite.generatedReason = '${
-						CustomInvitesGeneratedReason.leave
-					}'`
+					`(customInvite.generatedReason = 'leave' OR ` +
+						`customInvite.generatedReason = 'clear_leave')`
 				),
 				sequelize.col('customInvite.amount'),
 				0
@@ -238,21 +235,21 @@ export default class extends Command<IMClient> {
 		});
 		customInvs.forEach((inv: any) => {
 			const id = inv.memberId;
+			const clearReg = parseInt(inv.totalClearRegular, 10);
 			const custom = parseInt(inv.totalCustom, 10);
-			const clear = parseInt(inv.totalClear, 10);
 			const fake = parseInt(inv.totalFake, 10);
 			const lvs = parseInt(inv.totalLeaves, 10);
 			if (invs[id]) {
-				invs[id].total += custom + clear + fake + lvs;
-				invs[id].regular += clear;
+				invs[id].total += custom + clearReg + fake + lvs;
+				invs[id].regular += clearReg;
 				invs[id].custom = custom;
 				invs[id].fake = fake;
 				invs[id].leaves = lvs;
 			} else {
 				invs[id] = {
 					name: inv['member.name'],
-					total: custom + clear + fake + lvs,
-					regular: 0,
+					total: custom + clearReg + fake + lvs,
+					regular: clearReg,
 					custom: custom,
 					fake: fake,
 					leaves: lvs,
@@ -332,13 +329,13 @@ export default class extends Command<IMClient> {
 		});
 		oldCustomInvs.forEach((inv: any) => {
 			const id = inv.memberId;
+			const clearReg = parseInt(inv.totalClearRegular, 10);
 			const custom = parseInt(inv.totalCustom, 10);
-			const clear = parseInt(inv.totalClear, 10);
 			const fake = parseInt(inv.totalFake, 10);
 			const lvs = parseInt(inv.totalLeaves, 10);
 			if (invs[id]) {
-				invs[id].oldTotal += custom + clear + fake;
-				invs[id].oldRegular += clear;
+				invs[id].oldTotal += custom + clearReg + fake + lvs;
+				invs[id].oldRegular += clearReg;
 				invs[id].oldCustom = custom;
 				invs[id].oldFake = fake;
 				invs[id].oldLeaves = lvs;
@@ -350,8 +347,8 @@ export default class extends Command<IMClient> {
 					custom: 0,
 					fake: 0,
 					leaves: 0,
-					oldTotal: custom + clear + fake,
-					oldRegular: 0,
+					oldTotal: custom + clearReg + fake + lvs,
+					oldRegular: clearReg,
 					oldCustom: custom,
 					oldFake: fake,
 					oldLeaves: lvs
