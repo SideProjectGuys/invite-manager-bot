@@ -32,12 +32,12 @@ export default class extends Command<IMClient> {
 			name: 'clear-invites',
 			aliases: ['clearInvites'],
 			desc: 'Clear invites of the server/a user',
-			usage: '<prefix>clear-invites (@user) (clearBonus)',
+			usage: '<prefix>clear-invites (clearBonus) (@user)',
 			info:
-				'`' +
-				'@user  The user to clear all invites from\n' +
-				`clearBonus  Pass 'true' if you want to also remove bonus invites\n` +
-				'`',
+				'`clearBonus`:\n' +
+				'Pass `true` if you want to remove bonus invites, otherwise `false` (default).\n\n' +
+				'`@user`:\n' +
+				'The user to clear all invites from. If omitted clears all users.\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
@@ -45,18 +45,18 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@using(resolve('user: User, clearBonus: Boolean'))
+	@using(resolve('clearBonus: Boolean, user: User'))
 	public async action(
 		message: Message,
-		[user, clearBonus]: [User, boolean]
+		[clearBonus, user]: [boolean, User]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const memberId = user ? user.id : null;
+		const memberId = user ? user.id : undefined;
 
-		// First clear any previous clear_invites customInvites we might have
+		// First clear any previous clearinvites we might have
 		await customInvites.destroy({
 			where: {
 				guildId: message.guild.id,
@@ -68,7 +68,7 @@ export default class extends Command<IMClient> {
 		const invs = await inviteCodes.findAll({
 			attributes: [
 				'inviterId',
-				[sequelize.fn('sum', sequelize.col('inviteCode.uses')), 'totalUses']
+				[sequelize.fn('SUM', sequelize.col('inviteCode.uses')), 'totalUses']
 			],
 			where: {
 				guildId: message.guild.id,
@@ -81,40 +81,47 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
+		// Get all custom generated invites (all clear_invites were removed before)
+		const customInvs = await customInvites.findAll({
+			attributes: [
+				'memberId',
+				'generatedReason',
+				[sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
+			],
+			where: {
+				guildId: message.guild.id,
+				...(memberId && { memberId })
+			},
+			group: ['memberId', 'generatedReason'],
+			raw: true
+		});
+
 		const uses: { [x: string]: number } = {};
 		invs.forEach((inv: any) => {
 			if (!uses[inv.inviterId]) {
 				uses[inv.inviterId] = 0;
 			}
-			const totalUses = parseInt(inv.totalUses, 10);
-			uses[inv.inviterId] += totalUses;
+			uses[inv.inviterId] += parseInt(inv.totalUses, 10);
 		});
-
-		if (clearBonus) {
-			const customInvs = await customInvites.findAll({
-				attributes: [
-					'memberId',
-					[
-						sequelize.fn('sum', sequelize.col('customInvite.amount')),
-						'totalAmount'
-					]
-				],
-				where: {
-					guildId: message.guild.id,
-					...(memberId && { memberId }),
-					generatedReason: null
-				},
-				group: 'customInvite.memberId',
-				raw: true
-			});
-
-			customInvs.forEach((inv: any) => {
+		customInvs
+			.filter(inv => inv.generatedReason !== null)
+			.forEach((inv: any) => {
 				if (!uses[inv.memberId]) {
 					uses[inv.memberId] = 0;
 				}
-				const totalAmount = parseInt(inv.totalAmount, 10);
-				uses[inv.memberId] += totalAmount;
+				uses[inv.memberId] += parseInt(inv.totalAmount, 10);
 			});
+
+		console.log(clearBonus);
+		if (clearBonus) {
+			customInvs
+				.filter(inv => inv.generatedReason === null)
+				.forEach((inv: any) => {
+					if (!uses[inv.memberId]) {
+						uses[inv.memberId] = 0;
+					}
+					uses[inv.memberId] += parseInt(inv.totalAmount, 10);
+				});
 		}
 
 		const newInvs: CustomInviteAttributes[] = [];

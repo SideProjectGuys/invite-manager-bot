@@ -98,10 +98,11 @@ export default class extends Command<IMClient> {
 			desc: 'Show and change the config of the server',
 			usage: '<prefix>config (key) (value)',
 			info:
-				'`' +
-				'key    The config setting which you want to show/change.' +
-				'value  The new value of the setting.' +
-				'`',
+				'`key`:\n' +
+				'The config setting which you want to show/change.\n\n' +
+				'`value`:\n' +
+				'The new value of the setting.\n\n' +
+				'Use without args to show the current settings and all keys.\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Admin,
 			guildOnly: true

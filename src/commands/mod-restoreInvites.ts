@@ -28,7 +28,10 @@ export default class extends Command<IMClient> {
 			aliases: ['restoreInvites', 'unclear-invites', 'unclearInvites'],
 			desc: 'Restore all previously cleared invites',
 			usage: '<prefix>restore-invites (@user)',
-			info: '`' + '@user  The user to restore all invites to\n' + '`',
+			info:
+				'`@user`:\n' +
+				'The user to restore all invites to. ' +
+				'If omitted restores invites for all users.\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true

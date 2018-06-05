@@ -34,7 +34,7 @@ export default class extends Command<IMClient> {
 			desc: 'Show info about a specific member',
 			usage: '<prefix>info @user',
 			info:
-				'`' + '@user  The user for whom you want to see additional info.' + '`',
+				'`@user`:\n' + 'The user for whom you want to see additional info.\n\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Admin,
