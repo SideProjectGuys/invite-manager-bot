@@ -64,6 +64,8 @@ export default class extends Command<IMClient> {
 			num
 		});
 
-		message.channel.send(`Restored invites for ${num} users.`);
+		message.channel.send(
+			'Restored invites' + (user ? ` for <@${user.id}>` : '')
+		);
 	}
 }
