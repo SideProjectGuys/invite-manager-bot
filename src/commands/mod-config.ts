@@ -326,15 +326,8 @@ export default class extends Command<IMClient> {
 					total: Math.round(Math.random() * 1000),
 					regular: Math.round(Math.random() * 1000),
 					custom: Math.round(Math.random() * 1000),
-					generated: {
-						[CustomInvitesGeneratedReason.clear_invites]: 0,
-						[CustomInvitesGeneratedReason.fake]: Math.round(
-							Math.random() * 1000
-						),
-						[CustomInvitesGeneratedReason.leave]: Math.round(
-							Math.random() * 1000
-						)
-					}
+					fake: Math.round(Math.random() * 1000),
+					leave: Math.round(Math.random() * 1000)
 				}
 			);
 

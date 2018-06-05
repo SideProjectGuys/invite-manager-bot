@@ -77,26 +77,35 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const numCustom = customInvs
-			.filter(i => i.generatedReason === null)
-			.reduce((acc, inv) => acc + inv.amount, 0);
-		const numClear = customInvs
-			.filter(
-				i => i.generatedReason === CustomInvitesGeneratedReason.clear_invites
-			)
-			.reduce((acc, inv) => acc + inv.amount, 0);
-		const numFake = customInvs
-			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.fake)
-			.reduce((acc, inv) => acc + inv.amount, 0);
-		const numLeaves = customInvs
-			.filter(i => i.generatedReason === CustomInvitesGeneratedReason.leave)
-			.reduce((acc, inv) => acc + inv.amount, 0);
+		let regular = invs.reduce((acc, inv) => acc + inv.uses, 0);
+		let custom = 0;
+		let fake = 0;
+		let leave = 0;
 
-		const numRegular = invs.reduce((acc, inv) => acc + inv.uses, 0);
-		const numRegularClear = Math.max(-numRegular, numClear);
-		const numCustomClear = numClear - numRegularClear;
+		customInvs.forEach(inv => {
+			switch (inv.generatedReason) {
+				case CustomInvitesGeneratedReason.clear_regular:
+					regular += inv.amount;
+					break;
 
-		const numTotal = numRegular + numCustom + numClear + numFake + numLeaves;
+				case CustomInvitesGeneratedReason.fake:
+				case CustomInvitesGeneratedReason.clear_fake:
+					fake += inv.amount;
+					break;
+
+				case CustomInvitesGeneratedReason.leave:
+				case CustomInvitesGeneratedReason.clear_leave:
+					leave += inv.amount;
+					break;
+
+				// 'clear_custom' and 'null' case:
+				default:
+					custom += inv.amount;
+					break;
+			}
+		});
+
+		const numTotal = regular + custom + fake + leave;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
@@ -105,9 +114,8 @@ export default class extends Command<IMClient> {
 		embed.addField('Last joined', joinedAgo, true);
 		embed.addField(
 			'Invites',
-			`**${numTotal}** (**${numRegular + numRegularClear}** regular, ` +
-				`**${numCustom + numCustomClear}** bonus, **${numFake}** fake, ` +
-				`**${numLeaves}** leaves)`,
+			`**${numTotal}** (**${regular}** regular, ` +
+				`**${custom}** bonus, **${fake}** fake, **${leave}** leaves)`,
 			true
 		);
 
@@ -296,13 +304,27 @@ export default class extends Command<IMClient> {
 	}
 
 	private formatGeneratedReason(inv: CustomInviteInstance) {
-		if (inv.generatedReason === CustomInvitesGeneratedReason.clear_invites) {
-			return '!clear-invites command';
-		} else if (inv.generatedReason === CustomInvitesGeneratedReason.fake) {
-			return `Fake invites from <@${inv.reason}>`;
-		} else if (inv.generatedReason === CustomInvitesGeneratedReason.leave) {
-			return `Leave of <@${inv.reason}>`;
+		switch (inv.generatedReason) {
+			case CustomInvitesGeneratedReason.clear_regular:
+				return '!clear-invites command (regular)';
+
+			case CustomInvitesGeneratedReason.clear_custom:
+				return '!clear-invites command (custom)';
+
+			case CustomInvitesGeneratedReason.clear_fake:
+				return '!clear-invites command (fake)';
+
+			case CustomInvitesGeneratedReason.clear_leave:
+				return '!clear-invites command (leaves)';
+
+			case CustomInvitesGeneratedReason.fake:
+				return `Fake invites from <@${inv.reason}>`;
+
+			case CustomInvitesGeneratedReason.leave:
+				return `Leave of <@${inv.reason}>`;
+
+			default:
+				return '<Unknown reason>';
 		}
-		return '<Unknown reason>';
 	}
 }

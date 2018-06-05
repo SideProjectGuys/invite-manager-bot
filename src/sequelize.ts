@@ -515,7 +515,10 @@ joins.hasOne(leaves);
 // Custom Invites
 // ------------------------------------
 export enum CustomInvitesGeneratedReason {
-	clear_invites = 'clear_invites',
+	clear_regular = 'clear_regular',
+	clear_custom = 'clear_custom',
+	clear_fake = 'clear_fake',
+	clear_leave = 'clear_leave',
 	fake = 'fake',
 	leave = 'leave'
 }
@@ -545,7 +548,10 @@ export const customInvites = sequelize.define<
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
 		generatedReason: Sequelize.ENUM(
-			CustomInvitesGeneratedReason.clear_invites,
+			CustomInvitesGeneratedReason.clear_regular,
+			CustomInvitesGeneratedReason.clear_custom,
+			CustomInvitesGeneratedReason.clear_fake,
+			CustomInvitesGeneratedReason.clear_leave,
 			CustomInvitesGeneratedReason.fake,
 			CustomInvitesGeneratedReason.leave
 		)
