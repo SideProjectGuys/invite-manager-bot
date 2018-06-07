@@ -1,28 +1,21 @@
+import * as amqplib from 'amqplib';
 import { DMChannel, GuildMember, RichEmbed, TextChannel } from 'discord.js';
 import * as moment from 'moment';
 import * as path from 'path';
-import {
-	Client,
-	Guild,
-	GuildSettings,
-	GuildStorage,
-	ListenerUtil,
-	Message
-} from 'yamdbf';
+import { Client, Guild, GuildSettings, ListenerUtil, Message } from 'yamdbf';
 
 import {
 	channels,
-	commandUsage,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	guilds,
 	inviteCodes,
+	JoinAttributes,
 	joins,
-	leaves,
+	LeaveAttributes,
 	LogAction,
 	members,
 	sequelize,
-	settings,
 	SettingsKey
 } from './sequelize';
 import { BooleanResolver } from './utils/BooleanResolver';
@@ -37,12 +30,33 @@ import {
 	sendEmbed
 } from './utils/util';
 
+const baseCdn = 'https://cdn.discordapp.com/';
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
+
+interface RabbitMqMember {
+	id: string;
+	joinedAt: number;
+	nick: string;
+	user: {
+		id: string;
+		avatarUrl: string | null;
+		createdAt: number;
+		bot: boolean;
+		discriminator: string;
+		username: string;
+	};
+}
 
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+
+	public conn: amqplib.Connection;
+	public channelJoins: amqplib.Channel;
+	public channelLeaves: amqplib.Channel;
+	public qJoinsName: string;
+	public qLeavesName: string;
 
 	public startedAt: moment.Moment;
 	public dbQueue: DBQueue;
@@ -55,7 +69,12 @@ export class IMClient extends Client {
 	public numMembers: number = 0;
 	public membersCachedAt: number = 0;
 
-	public constructor(version: string, shardId: number, shardCount: number) {
+	public constructor(
+		version: string,
+		conn: amqplib.Connection,
+		shardId: number,
+		shardCount: number
+	) {
 		super(
 			{
 				provider: IMStorageProvider,
@@ -89,11 +108,31 @@ export class IMClient extends Client {
 		);
 
 		this.version = version;
+		this.conn = conn;
 		this.config = config;
 		this.startedAt = moment();
 
 		this.messageQueue = new MessageQueue(this);
 		this.dbQueue = new DBQueue(this);
+
+		// Setup RabbitMQ channels
+		this.qJoinsName = 'joins-' + shardId + '-' + shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelJoins = channel;
+
+			await channel.assertQueue(this.qJoinsName, {
+				durable: true
+			});
+		});
+
+		this.qLeavesName = 'leaves-' + shardId + '-' + shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelLeaves = channel;
+
+			await channel.assertQueue(this.qLeavesName, {
+				durable: true
+			});
+		});
 	}
 
 	@once('pause')
@@ -105,6 +144,21 @@ export class IMClient extends Client {
 	private async _onClientReady(): Promise<void> {
 		this.messageQueue.addMessage('clientReady executed');
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
+
+		this.channelJoins.consume(
+			this.qJoinsName,
+			msg => this._onGuildMemberAdd(msg),
+			{
+				noAck: false
+			}
+		);
+		this.channelLeaves.consume(
+			this.qLeavesName,
+			msg => this._onGuildMemberRemove(msg),
+			{
+				noAck: false
+			}
+		);
 
 		this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
@@ -200,7 +254,7 @@ export class IMClient extends Client {
 					`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
 				const embed = createEmbed(this);
 				embed.setDescription(initialMessage);
-				sendEmbed(user, embed);
+				await sendEmbed(user, embed);
 			}
 
 			if (dmChannel) {
@@ -212,62 +266,42 @@ export class IMClient extends Client {
 				embed.addField('User ID', user.id, true);
 				embed.addField('Initial message', isInitialMessage, true);
 				embed.setDescription(message.content);
-				sendEmbed(dmChannel, embed);
+				await sendEmbed(dmChannel, embed);
 			}
 		}
 	}
 
-	@on('guildMemberAdd')
-	private async _onGuildMemberAdd(member: GuildMember): Promise<void> {
+	private async _onGuildMemberAdd(_msg: amqplib.Message): Promise<void> {
+		const content = JSON.parse(_msg.content.toString());
+		const guildId: string = content.guildId;
+		const guild = this.guilds.get(guildId);
+		const member: RabbitMqMember = content.member;
+		const join: JoinAttributes = content.join;
+
 		if (member.user.bot) {
+			this.channelJoins.ack(_msg, false);
 			return;
 		}
 
-		console.log(member.id + ' joined ' + member.guild.id);
+		console.log(member.id + ' joined ' + guild.id);
 
-		// Round discord timestamp to seconds for DB comparison
-		const ts = Math.floor(member.joinedTimestamp / 1000) * 1000;
-
-		// Find join in DB according to our timestamp
-		let js = await this.findJoins(member.guild.id, member.id, 2000);
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			js = await this.findJoins(member.guild.id, member.id, 5000);
-		}
+		const js = await this.findJoins(guild.id, member.id);
 
 		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
+		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
 		const joinChannelId = (await sets.get(
 			SettingsKey.joinMessageChannel
 		)) as string;
 
 		const joinChannel = joinChannelId
-			? (member.guild.channels.get(joinChannelId) as TextChannel)
+			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
 		// Check if it's a valid channel
 		if (joinChannelId && !joinChannel) {
 			console.error(
-				`Guild ${member.guild.id} has invalid ` +
+				`Guild ${guild.id} has invalid ` +
 					`join message channel ${joinChannelId}`
 			);
-		}
-
-		// Exit if we can't find the join
-		if (!js || !js.find((j: any) => j.newestJoinAt.getTime() === ts)) {
-			console.error(
-				`Could not find join for ${member.id} in ` +
-					`${member.guild.id} at ${ts} (${member.joinedTimestamp})`
-			);
-			console.error(
-				`DB joins for ${member.id} in ${member.guild.id} are: ` +
-					JSON.stringify(js)
-			);
-			if (joinChannel) {
-				const id = member.id;
-				const msg = `<@${id}> joined the server, but I don't know who invited them.`;
-				joinChannel.send(msg);
-			}
-			return;
 		}
 
 		// Auto remove fakes if enabled
@@ -278,15 +312,17 @@ export class IMClient extends Client {
 			// Delete old duplicate removals
 			await customInvites.destroy({
 				where: {
-					guildId: member.guild.id,
+					guildId: guild.id,
 					reason: member.id,
 					generatedReason: CustomInvitesGeneratedReason.fake
 				}
 			});
 			// Add removals for duplicate invites
-			customInvites.bulkCreate(
+			await customInvites.bulkCreate(
 				js.filter((j: any) => parseInt(j.numJoins, 10) > 1).map((j: any) => ({
-					guildId: member.guild.id,
+					id: null,
+					creatorId: null,
+					guildId: guild.id,
 					memberId: j['exactMatch.inviterId'],
 					amount: -(parseInt(j.numJoins, 10) - 1),
 					reason: member.id,
@@ -304,34 +340,51 @@ export class IMClient extends Client {
 			// Delete removals for this member because the member rejoined
 			await customInvites.destroy({
 				where: {
-					guildId: member.guild.id,
+					guildId: guild.id,
 					reason: member.id,
 					generatedReason: CustomInvitesGeneratedReason.leave
 				}
 			});
 		}
 
-		const join = js.find((j: any) => j.newestJoinAt.getTime() === ts);
+		const jn = js.find(j => j.newestId === join.id);
 
-		const inviteCode = join['exactMatch.code'];
-		const channelName = join['exactMatch.channel.name'];
-		const channelId = join['exactMatch.channelId'];
+		// Exit if we can't find the join
+		if (!jn) {
+			console.error(
+				`Could not find join for ${member.id} in ` +
+					`${guild.id} joinId ${join.id}`
+			);
+			console.error(
+				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
+					JSON.stringify(content)
+			);
+			if (joinChannel) {
+				const id = member.id;
+				const msg =
+					`<@${id}> joined the server using a temporary invite, ` +
+					`so I can't figure out who invited them.`;
+				joinChannel.send(msg);
+			}
+			this.channelJoins.ack(_msg, false);
+			return;
+		}
 
-		const inviterId = join['exactMatch.inviterId'];
-		const inviterName = join['exactMatch.inviter.name'];
-		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
-		const inviter: GuildMember = await member.guild
+		const inviteCode = jn['exactMatch.code'];
+		const channelName = jn['exactMatch.channel.name'];
+		const channelId = jn['exactMatch.channelId'];
+
+		const inviterId = jn['exactMatch.inviterId'];
+		const inviterName = jn['exactMatch.inviter.name'];
+		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
+		const inviter: GuildMember = await guild
 			.fetchMember(inviterId)
 			.catch(() => undefined);
-		const invites = await getInviteCounts(member.guild.id, inviterId);
+		const invites = await getInviteCounts(guild.id, inviterId);
 
 		// Promote the inviter if required
 		if (inviter && !inviter.user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
-				member.guild,
-				inviter,
-				invites.total
-			);
+			await promoteIfQualified(guild, inviter, invites.total);
 		}
 
 		const joinMessageFormat = (await sets.get(
@@ -340,9 +393,9 @@ export class IMClient extends Client {
 		if (joinChannel && joinMessageFormat) {
 			const msg = await this.fillTemplate(
 				joinMessageFormat,
+				guild,
 				member,
 				inviteCode,
-				js.reduce((acc: number, j: any) => acc + parseInt(j.numJoins, 10), 0),
 				channelId,
 				channelName,
 				inviterId,
@@ -353,77 +406,94 @@ export class IMClient extends Client {
 			);
 
 			// Send the message now so it doesn't take too long
-			joinChannel.send(msg);
+			await joinChannel.send(msg);
 		}
+
+		this.channelJoins.ack(_msg, false);
 	}
 
-	@on('guildMemberRemove')
-	private async _onGuildMemberRemove(member: GuildMember): Promise<void> {
+	private async _onGuildMemberRemove(_msg: amqplib.Message) {
+		const content = JSON.parse(_msg.content.toString());
+		const guildId: string = content.guildId;
+		const guild = this.guilds.get(guildId);
+		const member: RabbitMqMember = content.member;
+		const join: any = content.join;
+		const leave: LeaveAttributes = content.leave;
+
 		if (member.user.bot) {
+			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
-		console.log(member.id + ' left ' + member.guild.id);
-
-		// Find the corresponding join
-		let lv = await this.findLeave(member.guild.id, member.id, 2000);
-		if (!lv) {
-			lv = await this.findLeave(member.guild.id, member.id, 5000);
-		}
+		console.log(member.id + ' left ' + guild.id);
 
 		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(member.guild.id)
-			.settings;
+		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
 		const leaveChannelId = (await sets.get(
 			SettingsKey.leaveMessageChannel
 		)) as string;
 
 		// Check if leave channel is valid
 		const leaveChannel = leaveChannelId
-			? (member.guild.channels.get(leaveChannelId) as TextChannel)
+			? (guild.channels.get(leaveChannelId) as TextChannel)
 			: undefined;
 		if (leaveChannelId && !leaveChannel) {
 			console.error(
-				`Guild ${member.guild.id} has invalid leave ` +
+				`Guild ${guild.id} has invalid leave ` +
 					`message channel ${leaveChannelId}`
 			);
 		}
 
-		// Exit if we can't find the leave
-		if (!lv) {
+		// Exit if we can't find the join
+		if (!join) {
 			console.error(
-				`Could not find leave for ${member.id} in ` +
-					`${member.guild.id} at ~${moment.utc().unix()}`
+				`Could not find join for ${member.id} in ` +
+					`${guild.id} leaveId: ${leave.id}`
+			);
+			console.error(
+				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
+					JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				const tag = member.user.username + '#' + member.user.discriminator;
-				const msg = `${tag} left the server, but I don't know who invited them.`;
+				const msg = `${tag} left the server, but I couldn't figure out who invited them`;
 				leaveChannel.send(msg);
 			}
+			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
-		// Auto remove leaves if enabled
+		const inviteCode = join['exactMatch.code'];
+		const channelName = join['exactMatch.channel.name'];
+		const channelId = join['exactMatch.channelId'];
+
+		const inviterId = join['exactMatch.inviterId'];
+		const inviterName = join['exactMatch.inviter.name'];
+		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
+
+		// Auto remove leaves if enabled (and if we know the inviter)
 		const autoSubtractLeaves = await sets.get(SettingsKey.autoSubtractLeaves);
-		if (autoSubtractLeaves === 'true') {
+		if (inviterId && autoSubtractLeaves === 'true') {
 			// Delete any old entries for the leaving of this member
 			await customInvites.destroy({
 				where: {
-					guildId: member.guild.id,
+					guildId: guild.id,
 					reason: member.id,
 					generatedReason: CustomInvitesGeneratedReason.leave
 				}
 			});
 
 			const threshold = await sets.get(SettingsKey.autoSubtractLeaveThreshold);
-			const timeDiff = parseInt(lv.timeDiff, 10);
+			const timeDiff = moment
+				.utc(join.createdAt)
+				.diff(moment.utc(leave.createdAt), 's');
 			if (timeDiff < threshold) {
 				// Add removals for leaves
-				customInvites.create({
+				await customInvites.create({
 					id: null,
 					creatorId: null,
-					guildId: member.guild.id,
-					memberId: lv['join.exactMatch.inviterId'],
+					guildId: guild.id,
+					memberId: inviterId,
 					amount: -1,
 					reason: member.id,
 					generatedReason: CustomInvitesGeneratedReason.leave
@@ -431,29 +501,15 @@ export class IMClient extends Client {
 			}
 		}
 
-		const inviteCode = lv['join.exactMatch.code'];
-		const channelName = lv['join.exactMatch.channel.name'];
-		const channelId = lv['join.exactMatch.channelId'];
-
-		const inviterId = lv['join.exactMatch.inviterId'];
-		const inviterName = lv['join.exactMatch.inviter.name'];
-		const inviterDiscriminator = lv['join.exactMatch.inviter.discriminator'];
-
 		const leaveMessageFormat = (await sets.get(
 			SettingsKey.leaveMessage
 		)) as string;
 		if (leaveChannel && leaveMessageFormat) {
-			const numJoins = await joins.count({
-				where: {
-					guildId: member.guild.id,
-					memberId: member.id
-				}
-			});
 			const msg = await this.fillTemplate(
 				leaveMessageFormat,
+				guild,
 				member,
 				inviteCode,
-				numJoins,
 				channelId,
 				channelName,
 				inviterId,
@@ -463,6 +519,8 @@ export class IMClient extends Client {
 
 			leaveChannel.send(msg);
 		}
+
+		this.channelLeaves.ack(_msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
@@ -515,9 +573,9 @@ export class IMClient extends Client {
 
 	public async fillTemplate(
 		template: any,
-		member: GuildMember,
+		guild: Guild,
+		member: RabbitMqMember,
 		inviteCode: string,
-		numJoins: number,
 		channelId: string,
 		channelName: string,
 		inviterId: string,
@@ -537,9 +595,7 @@ export class IMClient extends Client {
 		const joinedAt = moment(member.joinedAt);
 
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
-			inviter = await member.guild
-				.fetchMember(inviterId)
-				.catch(() => undefined);
+			inviter = await guild.fetchMember(inviterId).catch(() => undefined);
 		}
 		// Override the inviter name with the display name, if the member is still here
 		inviterName =
@@ -553,14 +609,24 @@ export class IMClient extends Client {
 			template.indexOf('{numFakeInvites}') >= 0 ||
 			template.indexOf('{numLeaveInvites}') >= 0
 		) {
-			invites = await getInviteCounts(member.guild.id, inviterId);
+			invites = await getInviteCounts(guild.id, inviterId);
+		}
+
+		let numJoins = 0;
+		if (template.indexOf('{numJoins}') >= 0) {
+			numJoins = await joins.count({
+				where: {
+					guildId: guild.id,
+					memberId: member.id
+				}
+			});
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
 			const temp = await joins.find({
 				where: {
-					guildId: member.guild.id,
+					guildId: guild.id,
 					memberId: member.id
 				},
 				order: [['createdAt', 'ASC']],
@@ -575,7 +641,7 @@ export class IMClient extends Client {
 		if (template.indexOf('{previousJoin:') >= 0) {
 			const temp = await joins.find({
 				where: {
-					guildId: member.guild.id,
+					guildId: guild.id,
 					memberId: member.id
 				},
 				order: [['createdAt', 'ASC']],
@@ -591,7 +657,9 @@ export class IMClient extends Client {
 			member.user.username + '#' + member.user.discriminator;
 		const inviterFullName = inviter
 			? inviter.user.username + '#' + inviter.user.discriminator
-			: inviterName + '#' + inviterDiscriminator;
+			: inviterName
+				? inviterName + '#' + inviterDiscriminator
+				: 'Unknown';
 
 		let msg = template;
 		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
@@ -599,24 +667,24 @@ export class IMClient extends Client {
 		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
 		msg = this.fillDatePlaceholder(msg, 'joinedAt', joinedAt);
 		msg = msg
-			.replace('{inviteCode}', inviteCode)
-			.replace('{memberName}', member.displayName)
+			.replace('{inviteCode}', inviteCode ? inviteCode : 'Unknown')
+			.replace('{memberName}', member.nick ? member.nick : member.user.username)
 			.replace('{memberFullName}', memberFullName)
 			.replace('{memberMention}', `<@${member.id}>`)
-			.replace('{memberImage}', member.user.avatarURL)
+			.replace('{memberImage}', member.user.avatarUrl)
 			.replace('{numJoins}', `${numJoins}`)
-			.replace('{inviterName}', inviterName)
+			.replace('{inviterName}', inviterName ? inviterName : 'Unknown')
 			.replace('{inviterFullName}', inviterFullName)
-			.replace('{inviterMention}', `<@${inviterId}>`)
-			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : '')
+			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : 'Unknown')
+			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : undefined)
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.regular}`)
 			.replace('{numBonusInvites}', `${invites.custom}`)
 			.replace('{numFakeInvites}', `${invites.fake}`)
 			.replace('{numLeaveInvites}', `${invites.leave}`)
-			.replace('{memberCount}', `${member.guild.memberCount}`)
-			.replace('{channelMention}', `<#${channelId}>`)
-			.replace('{channelName}', `${channelName}`);
+			.replace('{memberCount}', `${guild.memberCount}`)
+			.replace('{channelMention}', channelId ? `<#${channelId}>` : 'Unknown')
+			.replace('{channelName}', channelName ? channelName : 'Unknown');
 
 		try {
 			msg = JSON.parse(msg);
@@ -646,117 +714,39 @@ export class IMClient extends Client {
 			.replace(`{${name}:timeAgo}`, timeAgo);
 	}
 
-	private async findJoins(
-		guildId: string,
-		memberId: string,
-		timeOut: number
-	): Promise<any> {
-		return new Promise((resolve, reject) => {
-			const func = async () => {
-				resolve(
-					await joins.findAll({
-						attributes: [
-							[
-								sequelize.fn('COUNT', sequelize.col('exactMatch.code')),
-								'numJoins'
-							],
-							[
-								sequelize.fn('MAX', sequelize.col('join.createdAt')),
-								'newestJoinAt'
-							]
-						],
-						where: {
-							memberId,
-							guildId
+	private async findJoins(guildId: string, memberId: string): Promise<any[]> {
+		return await joins.findAll({
+			attributes: [
+				[sequelize.fn('MAX', sequelize.col('join.id')), 'newestId'],
+				[sequelize.fn('COUNT', sequelize.col('exactMatch.code')), 'numJoins'],
+				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'newestJoinAt']
+			],
+			where: {
+				memberId,
+				guildId
+			},
+			group: [sequelize.col('exactMatch.code')],
+			include: [
+				{
+					attributes: ['code', 'inviterId', 'channelId'],
+					model: inviteCodes,
+					as: 'exactMatch',
+					required: true,
+					include: [
+						{
+							attributes: ['name', 'discriminator'],
+							model: members,
+							as: 'inviter',
+							required: true
 						},
-						group: [sequelize.col('exactMatch.code')],
-						include: [
-							{
-								attributes: ['code', 'inviterId', 'channelId'],
-								model: inviteCodes,
-								as: 'exactMatch',
-								required: true,
-								include: [
-									{
-										attributes: ['name', 'discriminator'],
-										model: members,
-										as: 'inviter',
-										required: true
-									},
-									{
-										attributes: ['name'],
-										model: channels
-									}
-								]
-							}
-						],
-						raw: true
-					})
-				);
-			};
-			setTimeout(func, timeOut);
-		});
-	}
-
-	private async findLeave(
-		guildId: string,
-		memberId: string,
-		timeOut: number
-	): Promise<any> {
-		return new Promise((resolve, reject) => {
-			const func = async () => {
-				resolve(
-					await leaves.find({
-						attributes: [
-							[
-								sequelize.fn(
-									'TIMESTAMPDIFF',
-									sequelize.literal('SECOND'),
-									sequelize.col('join.createdAt'),
-									sequelize.col('leave.createdAt')
-								),
-								'timeDiff'
-							]
-						],
-						where: {
-							memberId,
-							guildId,
-							createdAt: {
-								[sequelize.Op.gte]: moment.utc().subtract(2 * timeOut, 'ms')
-							}
-						},
-						include: [
-							{
-								attributes: ['createdAt'],
-								model: joins,
-								required: true,
-								include: [
-									{
-										attributes: ['code', 'inviterId', 'channelId'],
-										model: inviteCodes,
-										as: 'exactMatch',
-										required: true,
-										include: [
-											{
-												attributes: ['name', 'discriminator'],
-												model: members,
-												as: 'inviter',
-												required: true
-											},
-											{
-												attributes: ['name'],
-												model: channels
-											}
-										]
-									}
-								]
-							}
-						],
-						raw: true
-					})
-				);
-			};
-			setTimeout(func, timeOut);
+						{
+							attributes: ['name'],
+							model: channels
+						}
+					]
+				}
+			],
+			raw: true
 		});
 	}
 

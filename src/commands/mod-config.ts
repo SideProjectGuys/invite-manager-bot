@@ -306,6 +306,8 @@ export default class extends Command<IMClient> {
 		value: any
 	): Promise<Function> {
 		const me = message.member.guild.me;
+		const member = message.member;
+		const user = member.user;
 
 		if (
 			value &&
@@ -313,9 +315,21 @@ export default class extends Command<IMClient> {
 		) {
 			const prev = await this.client.fillTemplate(
 				value,
-				message.member,
+				message.guild,
+				{
+					id: member.id,
+					joinedAt: member.joinedTimestamp,
+					nick: member.nickname,
+					user: {
+						id: user.id,
+						avatarUrl: user.avatarURL,
+						createdAt: user.createdTimestamp,
+						bot: user.bot,
+						discriminator: user.discriminator,
+						username: user.username
+					}
+				},
 				'tEsTcOdE',
-				Math.round(Math.random() * 1000), // num joins
 				message.channel.id,
 				(message.channel as any).name,
 				me.id,

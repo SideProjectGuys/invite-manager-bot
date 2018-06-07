@@ -11,6 +11,9 @@
 	"logChannel": "",
 	"dmChannel": "",
 	"dmGuild": "",
+	"rabbitmq": {
+		"url": ""
+	},
 	"sequelize": {
 		"dialect": "mysql",
 		"server": "localhost",
