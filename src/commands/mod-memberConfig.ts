@@ -1,11 +1,4 @@
-import {
-	Channel,
-	Guild,
-	GuildChannel,
-	GuildMember,
-	RichEmbed,
-	User
-} from 'discord.js';
+import { Guild, User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -18,17 +11,12 @@ import {
 import { IMClient } from '../client';
 import {
 	defaultMemberSettings,
-	defaultSettings,
 	getMemberSettingsType,
-	getSettingsType,
-	Lang,
-	LeaderboardStyle,
 	LogAction,
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize,
-	settings
+	sequelize
 } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 

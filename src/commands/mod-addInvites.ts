@@ -1,4 +1,4 @@
-import { Role, User } from 'discord.js';
+import { User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -9,7 +9,7 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, LogAction, ranks, members } from '../sequelize';
+import { customInvites, LogAction, members } from '../sequelize';
 import {
 	CommandGroup,
 	createEmbed,

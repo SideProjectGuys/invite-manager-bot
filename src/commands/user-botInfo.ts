@@ -1,9 +1,7 @@
-import { RichEmbed } from 'discord.js';
 import * as moment from 'moment';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { guilds, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');

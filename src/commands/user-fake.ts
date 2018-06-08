@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -12,7 +11,6 @@ import { IMClient } from '../client';
 import {
 	inviteCodes,
 	JoinAttributes,
-	JoinInstance,
 	joins,
 	members,
 	sequelize

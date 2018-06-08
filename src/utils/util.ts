@@ -15,12 +15,9 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
-	LogAction,
-	logs,
 	RankInstance,
 	ranks,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
 
 export enum CommandGroup {

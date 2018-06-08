@@ -1,4 +1,4 @@
-import { Role, User } from 'discord.js';
+import { User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -9,14 +9,7 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { customInvites, LogAction, ranks } from '../sequelize';
-import {
-	CommandGroup,
-	createEmbed,
-	getInviteCounts,
-	promoteIfQualified,
-	sendEmbed
-} from '../utils/util';
+import { CommandGroup } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;

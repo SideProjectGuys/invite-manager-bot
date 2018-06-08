@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -9,7 +8,6 @@ import {
 } from 'yamdbf';
 
 import { IMClient } from '../client';
-import { settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { resolve } = Middleware;

@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import * as moment from 'moment';
 import { Command, Logger, logger, Message } from 'yamdbf';
 

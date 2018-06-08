@@ -1,9 +1,3 @@
-import {
-	GuildChannel,
-	GuildMember,
-	MessageReaction,
-	RichEmbed
-} from 'discord.js';
 import * as moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 import {
@@ -18,12 +12,10 @@ import {
 import { IMClient } from '../client';
 import {
 	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
 	LeaderboardStyle,
 	leaves,
-	MemberAttributes,
 	members,
 	memberSettings,
 	MemberSettingsKey,

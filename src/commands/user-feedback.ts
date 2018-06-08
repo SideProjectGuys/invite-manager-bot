@@ -1,4 +1,4 @@
-import { RichEmbed, TextChannel } from 'discord.js';
+import { TextChannel } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,

@@ -12,7 +12,6 @@ import {
 import { IMClient } from '../client';
 import {
 	CustomInviteAttributes,
-	CustomInviteInstance,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,

@@ -1,11 +1,4 @@
-import {
-	Channel,
-	Guild,
-	GuildChannel,
-	GuildMember,
-	RichEmbed,
-	User
-} from 'discord.js';
+import { Channel, RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -25,8 +18,6 @@ import {
 	Lang,
 	LeaderboardStyle,
 	LogAction,
-	sequelize,
-	settings,
 	SettingsKey,
 	toDbSettingsValue
 } from '../sequelize';

@@ -1,4 +1,3 @@
-import { Collection, User } from 'discord.js';
 import {
 	Client,
 	Command,

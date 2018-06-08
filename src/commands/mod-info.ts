@@ -1,4 +1,4 @@
-import { RichEmbed, User } from 'discord.js';
+import { User } from 'discord.js';
 import * as moment from 'moment';
 import {
 	Command,

@@ -1,4 +1,4 @@
-import { RichEmbed, User } from 'discord.js';
+import { User } from 'discord.js';
 import {
 	Client,
 	Command,
@@ -8,9 +8,6 @@ import {
 	Message,
 	Middleware
 } from 'yamdbf';
-
-import { inviteCodes, joins, members, sequelize } from '../sequelize';
-import { createEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;

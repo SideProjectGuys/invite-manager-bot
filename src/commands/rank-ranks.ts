@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import { Command, Logger, logger, Message } from 'yamdbf';
 
 import { IMClient } from '../client';

@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -11,7 +10,7 @@ import {
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
-const { resolve, expect } = Middleware;
+const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
 const config = require('../../config.json');
