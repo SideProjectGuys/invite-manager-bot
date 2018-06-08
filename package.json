@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
-		"start": "npm run build && node --inspect ./bin/bot.js 0 0",
+		"start": "npm run build && node --inspect ./bin/bot.js 1 1",
 		"build": "gulp",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
