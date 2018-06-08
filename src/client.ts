@@ -106,7 +106,11 @@ export class IMClient extends Client {
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
-				messageSweepInterval: 30
+				messageSweepInterval: 30,
+				restWsBridgeTimeout: 20000,
+				ws: {
+					compress: true
+				}
 			}
 		);
 
@@ -148,6 +152,7 @@ export class IMClient extends Client {
 		this.messageQueue.addMessage('clientReady executed');
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
+		await this.channelJoins.prefetch(5);
 		this.channelJoins.consume(
 			this.qJoinsName,
 			msg => this._onGuildMemberAdd(msg),
@@ -155,6 +160,8 @@ export class IMClient extends Client {
 				noAck: false
 			}
 		);
+
+		await this.channelLeaves.prefetch(5);
 		this.channelLeaves.consume(
 			this.qLeavesName,
 			msg => this._onGuildMemberRemove(msg),
