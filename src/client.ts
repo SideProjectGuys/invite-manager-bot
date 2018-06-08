@@ -101,7 +101,7 @@ export class IMClient extends Client {
 				unknownCommandError: false
 			},
 			{
-				shardId,
+				shardId: shardId - 1,
 				shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
