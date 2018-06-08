@@ -1,4 +1,3 @@
-import { RichEmbed } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,10 +5,9 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
-import { settings, SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -79,7 +77,7 @@ export default class extends Command<IMClient> {
 						message.content
 					} HAS NO MEMBER`
 				);
-				messageMember = await message.guild.fetchMember(message.author.id);
+				messageMember = await message.guild.members.fetch(message.author.id);
 			}
 
 			embed.setDescription(

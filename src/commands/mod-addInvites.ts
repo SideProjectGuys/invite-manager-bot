@@ -1,4 +1,3 @@
-import { Role, User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,10 +5,11 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
 
 import { IMClient } from '../client';
-import { customInvites, LogAction, ranks } from '../sequelize';
+import { customInvites, LogAction, members } from '../sequelize';
 import {
 	CommandGroup,
 	createEmbed,
@@ -54,9 +54,11 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const member = await message.guild.fetchMember(user.id);
+		const member = await message.guild.members.fetch(user.id);
 		if (amount === 0) {
-			message.channel.send(`Adding zero invites doesn't really make sense...`);
+			await message.channel.send(
+				`Adding zero invites doesn't really make sense...`
+			);
 			return;
 		}
 
@@ -64,12 +66,14 @@ export default class extends Command<IMClient> {
 		const totalInvites = invites.total + amount;
 
 		if (!user.bot) {
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
-				message.guild,
-				member,
-				totalInvites
-			);
+			await promoteIfQualified(message.guild, member, totalInvites);
 		}
+
+		await members.insertOrUpdate({
+			id: member.id,
+			name: member.user.username,
+			discriminator: member.user.discriminator
+		});
 
 		const createdInv = await customInvites.create({
 			id: null,
@@ -81,7 +85,7 @@ export default class extends Command<IMClient> {
 			generatedReason: null
 		});
 
-		this.client.logAction(message, LogAction.addInvites, {
+		await this.client.logAction(message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
 			targetId: member.id,
 			amount,
@@ -99,6 +103,6 @@ export default class extends Command<IMClient> {
 			msg + ` <@${member.id}>, now at: **${totalInvites}** invites`
 		);
 
-		sendEmbed(message.channel, embed, message.author);
+		await sendEmbed(message.channel, embed, message.author);
 	}
 }

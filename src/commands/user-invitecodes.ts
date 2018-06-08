@@ -1,6 +1,5 @@
-import { RichEmbed } from 'discord.js';
-import * as moment from 'moment';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../client';
 import { InviteCodeAttributes, inviteCodes, members } from '../sequelize';

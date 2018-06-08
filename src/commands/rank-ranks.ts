@@ -1,5 +1,4 @@
-import { RichEmbed } from 'discord.js';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import { ranks } from '../sequelize';

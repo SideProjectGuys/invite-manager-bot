@@ -1,5 +1,3 @@
-import { User } from 'discord.js';
-import { Op } from 'sequelize';
 import {
 	Command,
 	CommandDecorators,
@@ -7,12 +5,13 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {
 	CustomInviteAttributes,
-	CustomInviteInstance,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,

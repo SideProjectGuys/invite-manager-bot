@@ -1,9 +1,7 @@
-import { RichEmbed } from 'discord.js';
-import * as moment from 'moment';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../client';
-import { guilds, members, sequelize } from '../sequelize';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
@@ -49,7 +47,7 @@ export default class extends Command<IMClient> {
 
 		// Shard info
 		if (this.client.shard) {
-			embed.addField('Current Shard', this.client.shard.id, true);
+			embed.addField('Current Shard', this.client.shard.id + 1, true);
 			embed.addField('Total Shards', this.client.shard.count, true);
 		}
 

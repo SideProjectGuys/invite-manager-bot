@@ -1,4 +1,3 @@
-import { RichEmbed, User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,14 +5,10 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
 
 import { IMClient } from '../client';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	ranks
-} from '../sequelize';
 import {
 	CommandGroup,
 	createEmbed,
@@ -60,8 +55,8 @@ export default class extends Command<IMClient> {
 			`**${invites.fake}** fake, ` +
 			`**${invites.leave}** leaves)\n`;
 
-		if (!message.author.bot) {
-			let targetMember = await message.guild.fetchMember(target.id);
+		if (!target.bot) {
+			let targetMember = await message.guild.members.fetch(target.id);
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
 				message.guild,
 				targetMember,
@@ -89,6 +84,6 @@ export default class extends Command<IMClient> {
 		embed.setTitle(target.username);
 		embed.setDescription(textMessage);
 
-		sendEmbed(message.channel, embed, message.author);
+		await sendEmbed(message.channel, embed, message.author);
 	}
 }

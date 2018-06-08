@@ -1,19 +1,12 @@
 import {
-	Channel,
-	Guild,
-	GuildChannel,
-	GuildMember,
-	RichEmbed,
-	User
-} from 'discord.js';
-import {
 	Command,
 	CommandDecorators,
 	Logger,
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { Channel, MessageEmbed } from 'discord.js';
 
 import { IMClient } from '../client';
 import {
@@ -25,8 +18,6 @@ import {
 	Lang,
 	LeaderboardStyle,
 	LogAction,
-	sequelize,
-	settings,
 	SettingsKey,
 	toDbSettingsValue
 } from '../sequelize';
@@ -51,7 +42,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		}
 
 		const value = args[1];
-		if (!value) {
+		if (value === undefined) {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String').call(this, message, [dbKey]);
 		}
@@ -119,12 +110,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		// TODO: Temporary hack because boolean resolver doesn't work
-		if (rawValue === '__true__') {
-			rawValue = true;
-		} else if (rawValue === '__false__') {
-			rawValue = false;
-		}
+		console.log(rawValue);
 
 		const sets = message.guild.storage.settings;
 		const prefix = await sets.get('prefix');
@@ -268,9 +254,9 @@ export default class extends Command<IMClient> {
 			if (!message.guild.me.permissionsIn(channel).has('VIEW_CHANNEL')) {
 				return `I don't have permission to **view** that channel`;
 			}
-			if (!message.guild.me.permissionsIn(channel).has('READ_MESSAGES')) {
+			/*if (!message.guild.me.permissionsIn(channel).has('READ_MESSAGES')) {
 				return `I don't have permission to **read messages** in that channel`;
-			}
+			}*/
 			if (!message.guild.me.permissionsIn(channel).has('SEND_MESSAGES')) {
 				return `I don't have permission to **send messages** in that channel`;
 			}
@@ -301,11 +287,13 @@ export default class extends Command<IMClient> {
 	// Attach additional information for a config value, such as examples
 	private async after(
 		message: Message,
-		embed: RichEmbed,
+		embed: MessageEmbed,
 		key: SettingsKey,
 		value: any
 	): Promise<Function> {
 		const me = message.member.guild.me;
+		const member = message.member;
+		const user = member.user;
 
 		if (
 			value &&
@@ -313,9 +301,21 @@ export default class extends Command<IMClient> {
 		) {
 			const prev = await this.client.fillTemplate(
 				value,
-				message.member,
+				message.guild,
+				{
+					id: member.id,
+					joinedAt: member.joinedTimestamp,
+					nick: member.nickname,
+					user: {
+						id: user.id,
+						avatarUrl: user.avatarURL(),
+						createdAt: user.createdTimestamp,
+						bot: user.bot,
+						discriminator: user.discriminator,
+						username: user.username
+					}
+				},
 				'tEsTcOdE',
-				Math.round(Math.random() * 1000), // num joins
 				message.channel.id,
 				(message.channel as any).name,
 				me.id,

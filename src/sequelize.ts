@@ -1,5 +1,4 @@
-import { Channel } from 'discord.js';
-import * as Sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 
 const config = require('../config.json');
 
@@ -238,7 +237,7 @@ export function toDbSettingsValue(
 
 	const type = getSettingsType(key);
 	if (type === 'Channel') {
-		return { value: (value as Channel).id };
+		return { value: (value as any).id };
 	} else if (type === 'Boolean') {
 		return { value: value ? 'true' : 'false' };
 	}

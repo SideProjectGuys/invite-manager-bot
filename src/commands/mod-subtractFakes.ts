@@ -1,30 +1,14 @@
-import { RichEmbed } from 'discord.js';
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
-	JoinAttributes,
-	JoinInstance,
 	joins,
-	members,
 	sequelize
 } from '../sequelize';
-import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
-
-const { resolve } = Middleware;
-const { using } = CommandDecorators;
-
-const usersPerPage = 20;
+import { CommandGroup } from '../utils/util';
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;

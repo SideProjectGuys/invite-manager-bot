@@ -1,4 +1,3 @@
-import { Role } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { Role } from 'discord.js';
 
 import { IMClient } from '../client';
 import { LogAction, ranks } from '../sequelize';

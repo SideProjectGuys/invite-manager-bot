@@ -1,5 +1,4 @@
-import { RichEmbed } from 'discord.js';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
@@ -23,7 +22,8 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const guild = await message.guild.fetchMembers();
+		const guild = message.guild;
+		await guild.members.fetch();
 
 		const ONE_SECOND = 1000;
 		const ONE_MINUTE = 60 * ONE_SECOND;

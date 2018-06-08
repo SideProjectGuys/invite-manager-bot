@@ -1,5 +1,5 @@
-import { RichEmbed, User } from 'discord.js';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
+import { User } from 'discord.js';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';

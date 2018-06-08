@@ -1,5 +1,3 @@
-import { TextChannel } from 'discord.js';
-
 import { IMClient } from '../client';
 import {
 	commandUsage,
@@ -9,8 +7,6 @@ import {
 	MemberAttributes,
 	members
 } from '../sequelize';
-
-const config = require('../../config.json');
 
 export class DBQueue {
 	private client: IMClient = null;

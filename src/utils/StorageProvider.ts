@@ -1,4 +1,4 @@
-import { IStorageProvider, StorageProvider } from 'yamdbf';
+import { IStorageProvider, StorageProvider } from '@yamdbf/core';
 
 import { defaultSettings, settings, SettingsKey } from '../sequelize';
 

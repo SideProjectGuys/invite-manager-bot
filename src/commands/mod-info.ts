@@ -1,5 +1,3 @@
-import { RichEmbed, User } from 'discord.js';
-import * as moment from 'moment';
 import {
 	Command,
 	CommandDecorators,
@@ -7,7 +5,9 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
+import moment from 'moment';
 
 import { IMClient } from '../client';
 import {
