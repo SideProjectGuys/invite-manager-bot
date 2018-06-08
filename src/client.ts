@@ -281,8 +281,9 @@ export class IMClient extends Client {
 		const member: RabbitMqMember = content.member;
 		const join: JoinAttributes = content.join;
 
+		this.channelJoins.ack(_msg, false);
+
 		if (member.user.bot) {
-			this.channelJoins.ack(_msg, false);
 			return;
 		}
 
@@ -369,7 +370,6 @@ export class IMClient extends Client {
 					`so I can't figure out who invited them.`;
 				joinChannel.send(msg);
 			}
-			this.channelJoins.ack(_msg, false);
 			return;
 		}
 
@@ -411,8 +411,6 @@ export class IMClient extends Client {
 			// Send the message now so it doesn't take too long
 			await joinChannel.send(msg);
 		}
-
-		this.channelJoins.ack(_msg, false);
 	}
 
 	private async _onGuildMemberRemove(_msg: amqplib.Message) {
@@ -423,8 +421,9 @@ export class IMClient extends Client {
 		const join: any = content.join;
 		const leave: LeaveAttributes = content.leave;
 
+		this.channelLeaves.ack(_msg, false);
+
 		if (member.user.bot) {
-			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
@@ -462,7 +461,6 @@ export class IMClient extends Client {
 				const msg = `${tag} left the server, but I couldn't figure out who invited them`;
 				leaveChannel.send(msg);
 			}
-			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
@@ -522,8 +520,6 @@ export class IMClient extends Client {
 
 			leaveChannel.send(msg);
 		}
-
-		this.channelLeaves.ack(_msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
