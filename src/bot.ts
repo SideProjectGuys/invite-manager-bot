@@ -28,7 +28,7 @@ sequelize.sync().then(() => {
 	console.log('-------------------------------------');
 	console.log('Connecting to RabbitMQ...');
 	console.log('-------------------------------------');
-	amqplib.connect(config.rabbitmq.url).then(async conn => {
+	amqplib.connect(config.rabbitmq).then(async conn => {
 		console.log('-------------------------------------');
 		console.log(`This is shard ${shardId}/${shardCount}`);
 		console.log('-------------------------------------');
