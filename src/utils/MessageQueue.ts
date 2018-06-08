@@ -1,5 +1,5 @@
+import { Client } from '@yamdbf/core';
 import { TextChannel } from 'discord.js';
-import { Client } from 'yamdbf';
 
 const config = require('../../config.json');
 
@@ -10,10 +10,7 @@ export class MessageQueue {
 	public constructor(client: Client) {
 		this.client = client;
 
-		setInterval(
-			() => this.sendMessages(),
-			2000
-		);
+		setInterval(() => this.sendMessages(), 2000);
 	}
 
 	public addMessage(message: string) {

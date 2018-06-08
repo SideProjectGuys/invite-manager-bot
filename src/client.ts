@@ -1,8 +1,14 @@
+import {
+	Client,
+	Guild,
+	GuildSettings,
+	ListenerUtil,
+	Message
+} from '@yamdbf/core';
 import * as amqplib from 'amqplib';
-import { DMChannel, GuildMember, RichEmbed, TextChannel } from 'discord.js';
-import * as moment from 'moment';
+import { DMChannel, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
+import moment from 'moment';
 import * as path from 'path';
-import { Client, Guild, GuildSettings, ListenerUtil, Message } from 'yamdbf';
 
 import {
 	channels,
@@ -18,7 +24,6 @@ import {
 	sequelize,
 	SettingsKey
 } from './sequelize';
-import { BooleanResolver } from './utils/BooleanResolver';
 import { DBQueue } from './utils/DBQueue';
 import { MessageQueue } from './utils/MessageQueue';
 import { IMStorageProvider } from './utils/StorageProvider';
@@ -30,7 +35,6 @@ import {
 	sendEmbed
 } from './utils/util';
 
-const baseCdn = 'https://cdn.discordapp.com/';
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
 
@@ -78,7 +82,6 @@ export class IMClient extends Client {
 		super(
 			{
 				provider: IMStorageProvider,
-				customResolvers: [BooleanResolver],
 				commandsDir: path.join(__dirname, 'commands'),
 				token: config.discordToken,
 				owner: config.owners,
@@ -244,7 +247,7 @@ export class IMClient extends Client {
 			const user = message.author;
 			const dmChannel = this.channels.get(config.dmChannel) as TextChannel;
 
-			let oldMessages = await message.channel.fetchMessages({ limit: 2 });
+			let oldMessages = await message.channel.messages.fetch({ limit: 2 });
 			const isInitialMessage = oldMessages.size <= 1;
 			if (isInitialMessage) {
 				const initialMessage =
@@ -261,7 +264,7 @@ export class IMClient extends Client {
 				const embed = createEmbed(this);
 				embed.setAuthor(
 					`${user.username}-${user.discriminator}`,
-					user.avatarURL
+					user.avatarURL()
 				);
 				embed.addField('User ID', user.id, true);
 				embed.addField('Initial message', isInitialMessage, true);
@@ -377,8 +380,8 @@ export class IMClient extends Client {
 		const inviterId = jn['exactMatch.inviterId'];
 		const inviterName = jn['exactMatch.inviter.name'];
 		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
-		const inviter: GuildMember = await guild
-			.fetchMember(inviterId)
+		const inviter: GuildMember = await guild.members
+			.fetch(inviterId)
 			.catch(() => undefined);
 		const invites = await getInviteCounts(guild.id, inviterId);
 
@@ -589,13 +592,13 @@ export class IMClient extends Client {
 			fake: 0,
 			leave: 0
 		}
-	): Promise<string | RichEmbed> {
+	): Promise<string | MessageEmbed> {
 		const userSince = moment(member.user.createdAt);
 
 		const joinedAt = moment(member.joinedAt);
 
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
-			inviter = await guild.fetchMember(inviterId).catch(() => undefined);
+			inviter = await guild.members.fetch(inviterId).catch(() => undefined);
 		}
 		// Override the inviter name with the display name, if the member is still here
 		inviterName =

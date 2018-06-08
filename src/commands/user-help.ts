@@ -5,7 +5,7 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
@@ -77,7 +77,7 @@ export default class extends Command<IMClient> {
 						message.content
 					} HAS NO MEMBER`
 				);
-				messageMember = await message.guild.fetchMember(message.author.id);
+				messageMember = await message.guild.members.fetch(message.author.id);
 			}
 
 			embed.setDescription(

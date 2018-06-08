@@ -5,7 +5,7 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 
@@ -35,7 +35,7 @@ export default class extends Command<IMClient> {
 	): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
 
-		const user = await this.client.fetchUser(userId);
+		const user = await this.client.users.fetch(userId);
 		if (!user) {
 			message.reply(`Could not find user with id ${userId}`);
 			return;

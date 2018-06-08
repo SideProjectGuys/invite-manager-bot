@@ -1,4 +1,3 @@
-import { User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
 
 import { IMClient } from '../client';
 import {
@@ -56,7 +56,7 @@ export default class extends Command<IMClient> {
 			`**${invites.leave}** leaves)\n`;
 
 		if (!target.bot) {
-			let targetMember = await message.guild.fetchMember(target.id);
+			let targetMember = await message.guild.members.fetch(target.id);
 			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
 				message.guild,
 				targetMember,

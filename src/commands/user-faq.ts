@@ -5,7 +5,7 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';

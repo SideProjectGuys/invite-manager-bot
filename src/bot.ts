@@ -1,5 +1,5 @@
 import * as amqplib from 'amqplib';
-import * as DBL from 'dblapi.js';
+import DBL from 'dblapi.js';
 
 import { IMClient } from './client';
 import { sequelize } from './sequelize';

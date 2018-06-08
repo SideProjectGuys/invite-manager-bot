@@ -1,5 +1,5 @@
-import * as moment from 'moment';
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';

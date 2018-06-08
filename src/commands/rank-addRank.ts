@@ -1,4 +1,3 @@
-import { Role } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { Role } from 'discord.js';
 
 import { IMClient } from '../client';
 import { LogAction, members, ranks, roles } from '../sequelize';
@@ -55,7 +55,7 @@ export default class extends Command<IMClient> {
 			createdAt: role.createdAt
 		});
 
-		const myRole = message.guild.me.highestRole;
+		const myRole = message.guild.me.roles.highest;
 		// Check if we are higher then the role we want to assign
 		if (myRole.position < role.position) {
 			message.channel.send(

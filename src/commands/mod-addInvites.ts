@@ -1,4 +1,3 @@
-import { User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
 
 import { IMClient } from '../client';
 import { customInvites, LogAction, members } from '../sequelize';
@@ -54,7 +54,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const member = await message.guild.fetchMember(user.id);
+		const member = await message.guild.members.fetch(user.id);
 		if (amount === 0) {
 			await message.channel.send(
 				`Adding zero invites doesn't really make sense...`

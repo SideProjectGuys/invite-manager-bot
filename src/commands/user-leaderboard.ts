@@ -1,5 +1,3 @@
-import * as moment from 'moment';
-import { FindOptionsAttributesArray, Op } from 'sequelize';
 import {
 	Command,
 	CommandDecorators,
@@ -7,7 +5,9 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import moment from 'moment';
+import { FindOptionsAttributesArray, Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {

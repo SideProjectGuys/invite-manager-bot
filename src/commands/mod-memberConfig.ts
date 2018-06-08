@@ -1,4 +1,3 @@
-import { Guild, User } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { Guild, User } from 'discord.js';
 
 import { IMClient } from '../client';
 import {

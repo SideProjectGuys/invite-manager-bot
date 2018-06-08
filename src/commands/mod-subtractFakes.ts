@@ -1,4 +1,4 @@
-import { Command, Logger, logger, Message } from 'yamdbf';
+import { Command, Logger, logger, Message } from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import {

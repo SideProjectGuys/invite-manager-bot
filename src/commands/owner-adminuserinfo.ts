@@ -1,4 +1,3 @@
-import { User } from 'discord.js';
 import {
 	Client,
 	Command,
@@ -7,7 +6,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { User } from 'discord.js';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;

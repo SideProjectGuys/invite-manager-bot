@@ -1,4 +1,3 @@
-import { TextChannel } from 'discord.js';
 import {
 	Command,
 	CommandDecorators,
@@ -6,7 +5,8 @@ import {
 	logger,
 	Message,
 	Middleware
-} from 'yamdbf';
+} from '@yamdbf/core';
+import { TextChannel } from 'discord.js';
 
 import { IMClient } from '../client';
 import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
@@ -51,7 +51,7 @@ export default class extends Command<IMClient> {
 			const embedFeedback = createEmbed(this.client);
 			embedFeedback.setAuthor(
 				`${message.author.username}#${message.author.discriminator}`,
-				message.author.avatarURL
+				message.author.avatarURL()
 			);
 			embedFeedback.addField(
 				'Guild',

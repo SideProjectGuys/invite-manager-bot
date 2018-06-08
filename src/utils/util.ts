@@ -1,15 +1,15 @@
+import { Guild, Message } from '@yamdbf/core';
 import {
 	Client,
 	DMChannel,
 	GroupDMChannel,
 	GuildMember,
+	MessageEmbed,
+	MessageEmbedOptions,
 	MessageReaction,
-	RichEmbed,
-	RichEmbedOptions,
 	TextChannel,
 	User
 } from 'discord.js';
-import { Guild, Message } from 'yamdbf';
 
 import {
 	customInvites,
@@ -29,14 +29,14 @@ export enum CommandGroup {
 
 export function createEmbed(
 	client: Client,
-	options: RichEmbedOptions = {}
-): RichEmbed {
+	options: MessageEmbedOptions = {}
+): MessageEmbed {
 	const color = options.color ? options.color : '#00AE86';
 	delete options.color;
-	const embed = new RichEmbed(options);
+	const embed = new MessageEmbed(options);
 	embed.setColor(color);
 	if (client) {
-		embed.setFooter('InviteManager.co', client.user.avatarURL);
+		embed.setFooter('InviteManager.co', client.user.avatarURL());
 	} else {
 		embed.setFooter('InviteManager.co');
 	}
@@ -44,10 +44,18 @@ export function createEmbed(
 	return embed;
 }
 
-function convertEmbedToPlain(embed: RichEmbed) {
+function convertEmbedToPlain(embed: MessageEmbed) {
 	const url = embed.url ? `(${embed.url})` : '';
 	const authorUrl =
 		embed.author && embed.author.url ? `(${embed.author.url})` : '';
+
+	let fields = '';
+	if (embed.fields && embed.fields.length) {
+		fields =
+			'\n\n' +
+			embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') +
+			'\n\n';
+	}
 
 	return (
 		'**Embedded links are disabled for this channel.\n' +
@@ -55,18 +63,14 @@ function convertEmbedToPlain(embed: RichEmbed) {
 		(embed.author ? `_${embed.author.name}_ ${authorUrl}\n` : '') +
 		(embed.title ? `**${embed.title}** ${url}\n` : '') +
 		(embed.description ? embed.description + '\n' : '') +
-		(embed.fields && embed.fields.length
-			? '\n\n' +
-			  embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') +
-			  '\n\n'
-			: '') +
+		fields +
 		(embed.footer ? `_${embed.footer.text}_` : '')
 	);
 }
 
 export function sendEmbed(
 	target: User | TextChannel | DMChannel | GroupDMChannel,
-	embed: RichEmbed,
+	embed: MessageEmbed,
 	fallbackUser?: User
 ) {
 	return new Promise<Message | Message[]>((resolve, reject) => {
@@ -216,7 +220,7 @@ export async function promoteIfQualified(
 
 	if (rolesToAdd.length > 0) {
 		if (guild.me.hasPermission('MANAGE_ROLES')) {
-			member.addRoles(rolesToAdd);
+			member.roles.add(rolesToAdd);
 		} else {
 			// TODO: Notify user about the fact that he deserves a promotion, but it
 			// cannot be given to him because of missing permissions
@@ -237,7 +241,7 @@ export async function showPaginated(
 	prevMsg: Message,
 	page: number,
 	maxPage: number,
-	render: (page: number, maxPage: number) => RichEmbed
+	render: (page: number, maxPage: number) => MessageEmbed
 ) {
 	// Create embed for this page
 	const embed = render(page, maxPage);
@@ -262,7 +266,7 @@ export async function showPaginated(
 	} else {
 		const react = prevMsg.reactions.get(upSymbol);
 		if (react) {
-			react.remove(client.user);
+			react.users.remove(client.user);
 		}
 	}
 
@@ -270,8 +274,9 @@ export async function showPaginated(
 		await prevMsg.react(downSymbol);
 	} else {
 		const react = prevMsg.reactions.get(downSymbol);
+		prevMsg.reactions.remove(react.emoji.id);
 		if (react) {
-			react.remove(client.user);
+			react.users.remove(client.user);
 		}
 	}
 
@@ -292,11 +297,11 @@ export async function showPaginated(
 			} else {
 				const reactUp = prevMsg.reactions.get(upSymbol);
 				if (reactUp) {
-					reactUp.remove(client.user);
+					reactUp.users.remove(client.user);
 				}
 				const reactDown = prevMsg.reactions.get(downSymbol);
 				if (reactDown) {
-					reactDown.remove(client.user);
+					reactDown.users.remove(client.user);
 				}
 			}
 		});
