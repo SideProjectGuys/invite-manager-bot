@@ -1,5 +1,4 @@
 import * as amqplib from 'amqplib';
-import DBL from 'dblapi.js';
 
 import { IMClient } from './client';
 import { sequelize } from './sequelize';
@@ -28,14 +27,11 @@ sequelize.sync().then(() => {
 	console.log('-------------------------------------');
 	console.log('Connecting to RabbitMQ...');
 	console.log('-------------------------------------');
-	amqplib.connect(config.rabbitmq.url).then(async conn => {
+	amqplib.connect(config.rabbitmq).then(async conn => {
 		console.log('-------------------------------------');
 		console.log(`This is shard ${shardId}/${shardCount}`);
 		console.log('-------------------------------------');
 		const client = new IMClient(pkg.version, conn, shardId, shardCount);
-		if (config.discordBotsToken) {
-			const dbl = new DBL(config.discordBotsToken, client);
-		}
 
 		console.log('-------------------------------------');
 		console.log('Starting bot...');

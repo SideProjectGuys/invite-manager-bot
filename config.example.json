@@ -12,7 +12,9 @@
 	"dmChannel": "",
 	"dmGuild": "",
 	"rabbitmq": {
-		"url": ""
+		"hostname": "localhost",
+		"username": "guest",
+		"password": "guest"
 	},
 	"sequelize": {
 		"dialect": "mysql",

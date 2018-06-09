@@ -6,6 +6,7 @@ import {
 	Message
 } from '@yamdbf/core';
 import * as amqplib from 'amqplib';
+import DBL from 'dblapi.js';
 import { DMChannel, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
 import moment from 'moment';
 import * as path from 'path';
@@ -73,6 +74,8 @@ export class IMClient extends Client {
 	public numMembers: number = 0;
 	public membersCachedAt: number = 0;
 
+	private dbl: DBL;
+
 	public constructor(
 		version: string,
 		conn: amqplib.Connection,
@@ -101,12 +104,17 @@ export class IMClient extends Client {
 				unknownCommandError: false
 			},
 			{
+				apiRequestMethod: 'burst',
 				shardId: shardId - 1,
 				shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
-				messageSweepInterval: 30
+				messageSweepInterval: 30,
+				restWsBridgeTimeout: 20000,
+				ws: {
+					compress: true
+				}
 			}
 		);
 
@@ -148,6 +156,7 @@ export class IMClient extends Client {
 		this.messageQueue.addMessage('clientReady executed');
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
+		await this.channelJoins.prefetch(5);
 		this.channelJoins.consume(
 			this.qJoinsName,
 			msg => this._onGuildMemberAdd(msg),
@@ -155,6 +164,8 @@ export class IMClient extends Client {
 				noAck: false
 			}
 		);
+
+		await this.channelLeaves.prefetch(5);
 		this.channelLeaves.consume(
 			this.qLeavesName,
 			msg => this._onGuildMemberRemove(msg),
@@ -162,6 +173,11 @@ export class IMClient extends Client {
 				noAck: false
 			}
 		);
+
+		// Setup discord bots api
+		if (config.discordBotsToken) {
+			this.dbl = new DBL(config.discordBotsToken, this);
+		}
 
 		this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
@@ -281,8 +297,9 @@ export class IMClient extends Client {
 		const member: RabbitMqMember = content.member;
 		const join: JoinAttributes = content.join;
 
+		this.channelJoins.ack(_msg, false);
+
 		if (member.user.bot) {
-			this.channelJoins.ack(_msg, false);
 			return;
 		}
 
@@ -369,7 +386,6 @@ export class IMClient extends Client {
 					`so I can't figure out who invited them.`;
 				joinChannel.send(msg);
 			}
-			this.channelJoins.ack(_msg, false);
 			return;
 		}
 
@@ -411,8 +427,6 @@ export class IMClient extends Client {
 			// Send the message now so it doesn't take too long
 			await joinChannel.send(msg);
 		}
-
-		this.channelJoins.ack(_msg, false);
 	}
 
 	private async _onGuildMemberRemove(_msg: amqplib.Message) {
@@ -423,8 +437,9 @@ export class IMClient extends Client {
 		const join: any = content.join;
 		const leave: LeaveAttributes = content.leave;
 
+		this.channelLeaves.ack(_msg, false);
+
 		if (member.user.bot) {
-			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
@@ -462,7 +477,6 @@ export class IMClient extends Client {
 				const msg = `${tag} left the server, but I couldn't figure out who invited them`;
 				leaveChannel.send(msg);
 			}
-			this.channelLeaves.ack(_msg, false);
 			return;
 		}
 
@@ -522,8 +536,6 @@ export class IMClient extends Client {
 
 			leaveChannel.send(msg);
 		}
-
-		this.channelLeaves.ack(_msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
@@ -780,9 +792,11 @@ export class IMClient extends Client {
 	private async setActivity() {
 		const numGuilds = await this.getGuildsCount();
 
-		let user: any = this.user;
-		user.setPresence({
-			game: { name: `invitemanager.co - ${numGuilds} servers!`, type: 0 }
+		if (this.dbl) {
+			this.dbl.postStats(numGuilds, this.shard.id, this.shard.count);
+		}
+		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
+			type: 'PLAYING'
 		});
 	}
 
