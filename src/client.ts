@@ -784,9 +784,8 @@ export class IMClient extends Client {
 	private async setActivity() {
 		const numGuilds = await this.getGuildsCount();
 
-		let user: any = this.user;
-		user.setPresence({
-			game: { name: `invitemanager.co - ${numGuilds} servers!`, type: 0 }
+		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
+			type: 'PLAYING'
 		});
 	}
 
