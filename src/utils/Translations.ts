@@ -13,6 +13,8 @@ export interface TranslationKeys {
 	CUSTOM_INVITES_REASON_LEAVE: any;
 	CUSTOM_INVITES_REASON_UNKNOWN: any;
 
+	TEMPLATE_UNKNOWN: any;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: any;
 	CMD_ADDINVITES_AMOUNT_POS: any;

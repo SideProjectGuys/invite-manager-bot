@@ -30,3 +30,6 @@ Leave of <@{{ reason }}>
 
 [CUSTOM_INVITES_REASON_UNKNOWN]
 <Unknown reason>
+
+[TEMPLATE_UNKNOWN]
+Unknown

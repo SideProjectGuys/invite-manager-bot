@@ -2,6 +2,7 @@ import {
 	Client,
 	Guild,
 	GuildSettings,
+	Lang,
 	ListenerUtil,
 	Message
 } from '@yamdbf/core';
@@ -188,6 +189,8 @@ export class IMClient extends Client {
 	private async _onGuildCreate(guild: Guild): Promise<void> {
 		// Send welcome message to owner with setup instructions
 		let owner = guild.owner;
+		// TODO: I don't think we have to translate this, right?
+		// The default lang is en_us, so at this point it will always be that
 		owner.send(
 			'Hi! Thanks for inviting me to your server `' +
 				guild.name +
@@ -677,21 +680,28 @@ export class IMClient extends Client {
 				? inviterName + '#' + inviterDiscriminator
 				: 'Unknown';
 
+		const unknown = Lang.res(
+			await guild.storage.settings.get('lang'),
+			'TEMPLATE_UNKNOWN'
+		);
+
 		let msg = template;
 		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
 		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
 		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
 		msg = this.fillDatePlaceholder(msg, 'joinedAt', joinedAt);
 		msg = msg
-			.replace('{inviteCode}', inviteCode ? inviteCode : 'Unknown')
+			.replace('{inviteCode}', inviteCode ? inviteCode : unknown)
+			.replace('{memberId}', member.id)
 			.replace('{memberName}', member.nick ? member.nick : member.user.username)
 			.replace('{memberFullName}', memberFullName)
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{memberImage}', member.user.avatarUrl)
 			.replace('{numJoins}', `${numJoins}`)
-			.replace('{inviterName}', inviterName ? inviterName : 'Unknown')
+			.replace('{inviterId}', inviterId ? inviterId : unknown)
+			.replace('{inviterName}', inviterName ? inviterName : unknown)
 			.replace('{inviterFullName}', inviterFullName)
-			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : 'Unknown')
+			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : unknown)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : undefined)
 			.replace('{numInvites}', `${invites.total}`)
 			.replace('{numRegularInvites}', `${invites.regular}`)
@@ -699,8 +709,8 @@ export class IMClient extends Client {
 			.replace('{numFakeInvites}', `${invites.fake}`)
 			.replace('{numLeaveInvites}', `${invites.leave}`)
 			.replace('{memberCount}', `${guild.memberCount}`)
-			.replace('{channelMention}', channelId ? `<#${channelId}>` : 'Unknown')
-			.replace('{channelName}', channelName ? channelName : 'Unknown');
+			.replace('{channelMention}', channelId ? `<#${channelId}>` : unknown)
+			.replace('{channelName}', channelName ? channelName : unknown);
 
 		try {
 			msg = JSON.parse(msg);
