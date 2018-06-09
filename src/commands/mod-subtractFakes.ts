@@ -1,4 +1,10 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import {
@@ -8,7 +14,9 @@ import {
 	joins,
 	sequelize
 } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { CommandGroup, RP } from '../utils/util';
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -26,7 +34,11 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, [_page]: [number]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, _page]: [RP, number]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -53,7 +65,7 @@ export default class extends Command<IMClient> {
 		});
 
 		if (js.length === 0) {
-			await message.channel.send(`There have been no invites so far!`);
+			await message.channel.send(rp.CMD_SUBTRACTFAKES_NO_INVITES());
 			return;
 		}
 
@@ -82,6 +94,8 @@ export default class extends Command<IMClient> {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		await message.channel.send(`Removed ${total} fake invites!`);
+		await message.channel.send(
+			rp.CMD_SUBTRACTFAKES_DONE({ total: total.toString() })
+		);
 	}
 }

@@ -10,10 +10,10 @@ import { Role } from 'discord.js';
 
 import { IMClient } from '../client';
 import { LogAction, ranks } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { CommandGroup, RP } from '../utils/util';
 
 const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -33,7 +33,8 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))
-	public async action(message: Message, [role]: [Role]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp, role]: [RP, Role]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -53,9 +54,11 @@ export default class extends Command<IMClient> {
 				roleId: role.id
 			});
 
-			message.channel.send(`Rank ${role.name} removed`);
+			message.channel.send(rp.CMD_REMOVERANK_DONE({ role: role.name }));
 		} else {
-			message.channel.send(`Rank ${role.name} does not exist!`);
+			message.channel.send(
+				rp.CMD_REMOVERANK_RANK_NOT_FOUND({ role: role.name })
+			);
 		}
 	}
 }

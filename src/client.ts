@@ -86,6 +86,7 @@ export class IMClient extends Client {
 			{
 				provider: IMStorageProvider,
 				commandsDir: path.join(__dirname, 'commands'),
+				localeDir: path.join(__dirname, 'locale'),
 				token: config.discordToken,
 				owner: config.owners,
 				pause: true,

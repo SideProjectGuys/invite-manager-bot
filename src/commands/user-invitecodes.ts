@@ -1,9 +1,17 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 import moment from 'moment';
 
 import { IMClient } from '../client';
 import { InviteCodeAttributes, inviteCodes, members } from '../sequelize';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -31,7 +39,8 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, args: string[]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -93,45 +102,48 @@ export default class extends Command<IMClient> {
 		);
 
 		const embed = createEmbed(this.client);
-		embed.setTitle(
-			`You have the following codes on the server ${message.guild.name}`
-		);
+		embed.setTitle(rp.CMD_INVITECODES_TITLE({ guild: message.guild.name }));
 
 		if (permanentInvites.length === 0 && temporaryInvites.length === 0) {
-			embed.setDescription(
-				`You don't have any active invite codes. ` +
-					`Please ask the moderators of the server how to create one.`
-			);
+			embed.setDescription(rp.CMD_INVITECODES_NO_CODES());
 		} else {
 			if (recommendedCode) {
 				embed.addField(
-					`Recommended invite code`,
+					rp.CMD_INVITECODES_RECOMMENDED_CODE_TITLE(),
 					`https://discord.gg/${recommendedCode.code}`
 				);
 			} else {
 				embed.addField(
-					`Recommended invite code`,
-					`Please create a permanent invite code.`
+					rp.CMD_INVITECODES_RECOMMENDED_CODE_TITLE(),
+					rp.CMD_INVITECODES_RECOMMENDED_CODE_NONE()
 				);
 			}
 		}
 		if (permanentInvites.length > 0) {
 			embed.addBlankField();
-			embed.addField('Permanent', `These invites don't expire.`);
+			embed.addField(
+				rp.CMD_INVITECODES_PERMANENT_TITLE(),
+				rp.CMD_INVITECODES_PERMANENT_TEXT()
+			);
 			permanentInvites.forEach(i => {
 				embed.addField(
 					`${i.code}`,
-					`**Uses**: ${i.uses}\n` +
-						`**Max Age**:${i.maxAge}\n` +
-						`**Max Uses**: ${i.maxUses}\n` +
-						`**Channel**: <#${i.channelId}>\n`,
+					rp.CMD_INVITECODES_PERMANENT_ENTRY({
+						uses: i.uses.toString(),
+						maxAge: i.maxAge.toString(),
+						maxUses: i.maxUses.toString(),
+						channelId: i.channelId.toString()
+					}),
 					true
 				);
 			});
 		}
 		if (temporaryInvites.length > 0) {
 			embed.addBlankField();
-			embed.addField('Temporary', 'These invites expire after a certain time.');
+			embed.addField(
+				rp.CMD_INVITECODES_TEMPORARY_TITLE(),
+				rp.CMD_INVITECODES_TEMPORARY_TEXT()
+			);
 			temporaryInvites.forEach(i => {
 				const maxAge = moment.duration(i.maxAge, 's').humanize();
 				const expires = moment(i.createdAt)
@@ -139,17 +151,19 @@ export default class extends Command<IMClient> {
 					.fromNow();
 				embed.addField(
 					`${i.code}`,
-					`**Uses**: ${i.uses}\n` +
-						`**Max Age**: ${maxAge}\n` +
-						`**Max Uses**: ${i.maxUses}\n` +
-						`**Channel**: <#${i.channelId}>\n` +
-						`**Expires**: ${expires}`,
+					rp.CMD_INVITECODES_PERMANENT_ENTRY({
+						uses: i.uses.toString(),
+						maxAge: i.maxAge.toString(),
+						maxUses: i.maxUses.toString(),
+						channelId: i.channelId.toString(),
+						expires
+					}),
 					true
 				);
 			});
 		}
 
 		sendEmbed(message.author, embed);
-		message.reply('I sent you a DM with all your invite codes.');
+		message.reply(rp.CMD_INVITECODES_DM_SENT());
 	}
 }

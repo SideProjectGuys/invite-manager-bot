@@ -10,10 +10,10 @@ import { Role } from 'discord.js';
 
 import { IMClient } from '../client';
 import { LogAction, members, ranks, roles } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { CommandGroup, RP } from '../utils/util';
 
 const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -39,9 +39,10 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('role: Role, invites: Number, ...description: String'))
 	@using(expect('role: Role, invites: Number'))
+	@localizable
 	public async action(
 		message: Message,
-		[role, invites, description]: [Role, number, string]
+		[rp, role, invites, description]: [RP, Role, number, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -59,9 +60,7 @@ export default class extends Command<IMClient> {
 		// Check if we are higher then the role we want to assign
 		if (myRole.position < role.position) {
 			message.channel.send(
-				`The role **${role.name}** is higher up than my role ` +
-					`(**${myRole.name}**), so I won't be able to assign it ` +
-					`to members that earn it.`
+				rp.CMD_ADDRANK_ROLE_TOO_HIGH({ role: role.name, myRole: myRole.name })
 			);
 			return;
 		}
@@ -108,17 +107,19 @@ export default class extends Command<IMClient> {
 
 		if (!isNew) {
 			message.channel.send(
-				`Rank **${role.name}** updated: Now needs ${invites} ` +
-					`and has the following description: "${
-						description ? description : ''
-					}"`
+				rp.CMD_ADDRANK_UPDATED({
+					role: role.name,
+					invites: invites.toString(),
+					description
+				})
 			);
 		} else {
 			message.channel.send(
-				`Added rank **${role.name}** which needs ${invites} ` +
-					`and has the following description: "${
-						description ? description : ''
-					}"`
+				rp.CMD_ADDRANK_CREATED({
+					role: role.name,
+					invites: invites.toString(),
+					description
+				})
 			);
 		}
 	}

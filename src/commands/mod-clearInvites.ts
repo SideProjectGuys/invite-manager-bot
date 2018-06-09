@@ -18,10 +18,10 @@ import {
 	LogAction,
 	sequelize
 } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { CommandGroup, RP } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -45,9 +45,10 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('clearBonus: Boolean, user: User'))
+	@localizable
 	public async action(
 		message: Message,
-		[clearBonus, user]: [string, User]
+		[rp, clearBonus, user]: [RP, boolean, User]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -200,7 +201,9 @@ export default class extends Command<IMClient> {
 		});
 
 		message.channel.send(
-			`Cleared invites for ${Object.keys(cleared).length} users!`
+			rp.CMD_CLEARINVITES_DONE({
+				amount: Object.keys(cleared).length.toString()
+			})
 		);
 	}
 }

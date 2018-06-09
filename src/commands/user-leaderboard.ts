@@ -22,12 +22,12 @@ import {
 	sequelize,
 	SettingsKey
 } from '../sequelize';
-import { createEmbed, sendEmbed, showPaginated } from '../utils/util';
+import { createEmbed, RP, sendEmbed, showPaginated } from '../utils/util';
 
 const chrono = require('chrono-node');
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
@@ -132,9 +132,10 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('page: Number, ...date?: String'))
+	@localizable
 	public async action(
 		message: Message,
-		[_page, _date]: [number, string]
+		[rp, _page, _date]: [RP, number, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -145,7 +146,9 @@ export default class extends Command<IMClient> {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				message.channel.send('Invalid date: ' + _date);
+				await message.channel.send(
+					rp.CMD_LEADERBOARD_INVALID_DATE({ date: _date })
+				);
 				return;
 			}
 			if (res[0].start) {
@@ -380,8 +383,8 @@ export default class extends Command<IMClient> {
 
 		if (keys.length === 0) {
 			const embed = createEmbed(this.client);
-			embed.setDescription('No invites!');
-			embed.setTitle(`Leaderboard`);
+			embed.setDescription(rp.CMD_LEADERBOARD_NO_INVITES());
+			embed.setTitle(rp.CMD_LEADERBOARD_TITLE());
 			sendEmbed(message.channel, embed, message.author);
 			return;
 		}
@@ -435,16 +438,27 @@ export default class extends Command<IMClient> {
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {
+			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
+			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
+
 			let str =
-				from.format('YYYY/MM/DD - HH:mm:ss - z') +
-				`\n(changes compared to ${to.format('YYYY/MM/DD - HH:mm:ss - z')})\n\n`;
+				fromText + `\n(${rp.CMD_LEADERBOARD_COMPARED_TO({ to: toText })})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
 			let lengths: number[] = [1, 6, 4, 1, 1, 1, 1];
 
 			if (style === LeaderboardStyle.table) {
-				lines.push(['#', 'Change', 'Name', 'T', 'R', 'B', 'F', 'L']);
+				lines.push([
+					'#',
+					rp.CMD_LEADERBOARD_COL_CHANGE(),
+					rp.CMD_LEADERBOARD_COL_NAME(),
+					rp.CMD_LEADERBOARD_COL_TOTAL(),
+					rp.CMD_LEADERBOARD_COL_REGULAR(),
+					rp.CMD_LEADERBOARD_COL_CUSTOM(),
+					rp.CMD_LEADERBOARD_COL_FAKE(),
+					rp.CMD_LEADERBOARD_COL_LEAVE()
+				]);
 				lines.push(lines[0].map(h => '-'.repeat(h.length)));
 			}
 
@@ -506,27 +520,26 @@ export default class extends Command<IMClient> {
 					style === LeaderboardStyle.normal ||
 					style === LeaderboardStyle.mentions
 				) {
-					str +=
-						`**${line[0]}** ${line[1]} **${line[2]}** - ` +
-						`**${line[3]}** invites (**${line[4]}** regular, ` +
-						`**${line[5]}** bonus, **${line[6]}** fake, ` +
-						`**${line[7]}** leaves)`;
+					str += rp.CMD_LEADERBOARD_ROW_ENTRY({
+						pos: line[0],
+						change: line[1],
+						name: line[2],
+						total: line[3],
+						regular: line[4],
+						bonus: line[5],
+						fake: line[6],
+						leave: line[7]
+					});
 				}
 
 				str += '\n';
 			});
 			if (style === LeaderboardStyle.table) {
-				str +=
-					'```\n' +
-					'`T` = Total\n' +
-					'`R` = Regular\n' +
-					'`B` = Bonus\n' +
-					'`F` = Fake\n' +
-					'`L` = Leaves';
+				str += '```\n' + rp.CMD_LEADERBOARD_TABLE_LEGEND();
 			}
 
 			return createEmbed(this.client)
-				.setTitle(`Leaderboard`)
+				.setTitle(rp.CMD_LEADERBOARD_TITLE())
 				.setDescription(str);
 		});
 	}

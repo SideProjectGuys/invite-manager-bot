@@ -1,10 +1,18 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 import { User } from 'discord.js';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const config = require('../../config.json');
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -23,7 +31,8 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, [user]: [User]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -31,64 +40,44 @@ export default class extends Command<IMClient> {
 
 		const embed = createEmbed(this.client);
 
-		embed.setTitle('Setting up InviteManager');
+		embed.setTitle(rp.CMD_SETUP_TITLE());
 
-		embed.setDescription(
-			'After inviting the bot, all invites will be tracked automatically.'
-		);
+		embed.setDescription(rp.CMD_SETUP_TEXT());
 
 		// TODO: Adapt to what the server already has set
 
 		embed.addField(
-			'Setting join and leave message channel',
-			'If you want to display join and or leave messages in one of your channels, ' +
-				'you have to configure that channel by doing `!config joinMessageChannel #channel`' +
-				'or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!\n\n'
+			rp.CMD_SETUP_JOINLEAVE_TITLE(),
+			rp.CMD_SETUP_JOINLEAVE_TEXT()
+		);
+
+		embed.addField(rp.CMD_SETUP_PREFIX_TITLE(), rp.CMD_SETUP_PREFIX_TEXT());
+
+		embed.addField(rp.CMD_SETUP_FAQ_TITLE(), rp.CMD_SETUP_FAQ_TEXT());
+
+		embed.addField(
+			rp.CMD_SETUP_HELP_TITLE(),
+			rp.CMD_SETUP_HELP_TEXT({ link: config.botSupport })
 		);
 
 		embed.addField(
-			'Changing the prefix',
-			'You can change the prefix by doing `!config prefix !`.\n\n' +
-				"If you don't know the bots prefix, you can find it using `@InviteManager config prefix`."
-		);
-
-		embed.addField(
-			'FAQs and more',
-			'Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\n' +
-				'A complete guide on setting up the bot can be found here: ' +
-				'https://github.com/AndreasGassmann/discord-invite-manager/'
-		);
-
-		embed.addField(
-			'Help',
-			'If you need help or have feedback, you can either use the `!feedback` command' +
-				' or join our discord support server: ' +
-				config.botSupport
-		);
-
-		embed.addField(
-			'Premium',
-			'If you would like to support the development of this bot, you can do so by supporting us on Patreon: ' +
-				config.botPatreon +
-				'\n\n' +
-				'Depending on the tier, you will get some additional features.'
+			rp.CMD_SETUP_PREMIUM_TITLE(),
+			rp.CMD_SETUP_PREMIUM_TEXT({ link: config.botPatreon })
 		);
 
 		embed.addBlankField();
 
 		if (!botMember.hasPermission('MANAGE_GUILD')) {
 			embed.addField(
-				'Missing permission: Manage Server',
-				'The bot does not have the "Manage Server" permissions. ' +
-					'This permission is required to read the invites of the user. Without this permission the join messages.'
+				rp.CMD_SETUP_MANAGE_GUILD_TITLE(),
+				rp.CMD_SETUP_MANAGE_GUILD_TEXT()
 			);
 		}
 
 		if (!botMember.hasPermission('MANAGE_ROLES')) {
 			embed.addField(
-				'Missing permission: Manage Roles',
-				'The bot does not have the "Manage Roles" permissions. ' +
-					'This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted.'
+				rp.CMD_SETUP_MANAGE_ROLES_TITLE(),
+				rp.CMD_SETUP_MANAGE_ROLES_TEXT()
 			);
 		}
 

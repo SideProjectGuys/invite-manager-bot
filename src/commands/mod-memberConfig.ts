@@ -18,10 +18,10 @@ import {
 	MemberSettingsKey,
 	sequelize
 } from '../sequelize';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
@@ -111,9 +111,10 @@ export default class extends Command<IMClient> {
 
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
+	@localizable
 	public async action(
 		message: Message,
-		[key, user, rawValue]: [MemberSettingsKey, User, any]
+		[rp, key, user, rawValue]: [RP, MemberSettingsKey, User, any]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -123,17 +124,11 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle('Your config settings');
-			embed.setDescription(
-				'Below are all the available config settings.\n' +
-					`Use \`${prefix}config <key>\` to view the users which have a \`<key>\` setting\n` +
-					`Use \`${prefix}config <key> @user\` to view the setting for a single \`@user\`\n` +
-					`Use \`${prefix}config <key> @user <value>\` to set the config \`<key>\` to ` +
-					`\`<value>\` for \`@user\``
-			);
+			embed.setTitle(rp.CMD_MEMBERCONFIG_TITLE());
+			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT());
 
 			const keys = Object.keys(MemberSettingsKey);
-			embed.addField('Valid config keys', keys.join('\n'));
+			embed.addField(rp.CMD_MEMBERCONFIG_KEYS_TITLE(), keys.join('\n'));
 
 			await sendEmbed(message.channel, embed, message.author);
 			return;
@@ -164,15 +159,13 @@ export default class extends Command<IMClient> {
 					embed.addField(set.memberName, set.value)
 				);
 			} else {
-				embed.setDescription(
-					'This config settings is currently not set for any members'
-				);
+				embed.setDescription(rp.CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT());
 			}
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
-		const un = user.username;
+		const username = user.username;
 		const oldSet = await memberSettings.find({
 			where: {
 				guildId: message.guild.id,
@@ -194,20 +187,18 @@ export default class extends Command<IMClient> {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
+				const clear = defaultMemberSettings[key] === null ? 't' : undefined;
 				embed.setDescription(
-					`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} @${un} <value>\` to change it.\n` +
-						`Use \`${prefix}config ${key} @${un} default\` to reset it to the default.\n` +
-						(defaultMemberSettings[key] === null
-							? `Use \`${prefix}config ${key} @${un} none\` to clear it.`
-							: '')
+					rp.CMD_MEMBERCONFIG_CURRENT_SET_TEXT({
+						prefix,
+						key,
+						username,
+						clear
+					})
 				);
-				embed.addField('Current Value', oldRawVal);
+				embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), oldRawVal);
 			} else {
-				embed.setDescription(
-					`This config is currently **not** set.\n` +
-						`Use \`${prefix}config ${key} @${un} <value>\` to set it.`
-				);
+				embed.setDescription(rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT());
 			}
 			await sendEmbed(message.channel, embed, message.author);
 			return;
@@ -225,8 +216,8 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(`This config is already set to that value`);
-			embed.addField('Current Value', rawValue);
+			embed.setDescription(rp.CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE());
+			embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), rawValue);
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
@@ -245,11 +236,7 @@ export default class extends Command<IMClient> {
 			value
 		});
 
-		embed.setDescription(
-			`This config has been changed.\n` +
-				`Use \`${prefix}config ${key} @${un} <value>\` to change it again.\n` +
-				`Use \`${prefix}config ${key} @${un} none\` to reset it to the default.`
-		);
+		embed.setDescription(rp.CMD_MEMBERCONFIG_CHANGED_TEXT());
 
 		// Log the settings change
 		this.client.logAction(message, LogAction.memberConfig, {
@@ -260,10 +247,13 @@ export default class extends Command<IMClient> {
 		});
 
 		if (oldVal) {
-			embed.addField('Previous Value', oldRawVal);
+			embed.addField(rp.CMD_MEMBERCONFIG_PREVIOUS_TITLE(), oldRawVal);
 		}
 
-		embed.addField('New Value', value ? rawValue : 'None');
+		embed.addField(
+			rp.CMD_MEMBERCONFIG_NEW_TITLE(),
+			value ? rawValue : rp.CMD_MEMBERCONFIG_NONE()
+		);
 		oldVal = value; // Update value for future use
 
 		await sendEmbed(message.channel, embed, message.author);

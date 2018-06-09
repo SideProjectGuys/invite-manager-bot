@@ -15,11 +15,12 @@ import {
 	createEmbed,
 	getInviteCounts,
 	promoteIfQualified,
+	RP,
 	sendEmbed
 } from '../utils/util';
 
 const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -46,9 +47,10 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
+	@localizable
 	public async action(
 		message: Message,
-		[user, amount, reason]: [User, number, string]
+		[rp, user, amount, reason]: [RP, User, number, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -56,9 +58,7 @@ export default class extends Command<IMClient> {
 
 		const member = await message.guild.members.fetch(user.id);
 		if (amount === 0) {
-			await message.channel.send(
-				`Adding zero invites doesn't really make sense...`
-			);
+			await message.channel.send(rp.CMD_ADDINVITES_ZERO());
 			return;
 		}
 
@@ -92,16 +92,26 @@ export default class extends Command<IMClient> {
 			reason
 		});
 
-		const msg =
-			amount > 0
-				? `Added **${amount}** invites for`
-				: `Removed **${-amount}** invites from`;
-
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.displayName);
-		embed.setDescription(
-			msg + ` <@${member.id}>, now at: **${totalInvites}** invites`
-		);
+
+		if (amount > 0) {
+			embed.setDescription(
+				rp.CMD_ADDINVITES_AMOUNT_POS({
+					amount: amount.toString(),
+					member: member.id,
+					totalInvites: totalInvites.toString()
+				})
+			);
+		} else {
+			embed.setDescription(
+				rp.CMD_ADDINVITES_AMOUNT_NEG({
+					amount: (-amount).toString(),
+					member: member.id,
+					totalInvites: totalInvites.toString()
+				})
+			);
+		}
 
 		await sendEmbed(message.channel, embed, message.author);
 	}

@@ -9,10 +9,10 @@ import {
 import { TextChannel } from 'discord.js';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 const config = require('../../config.json');
 
@@ -35,7 +35,11 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('...feedback: String'))
 	@using(expect('...feedback: String'))
-	public async action(message: Message, feedback: [string]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, feedback]: [RP, string]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -62,26 +66,25 @@ export default class extends Command<IMClient> {
 
 			channel.send({ embed: embedFeedback }).then(() => {
 				const embed = createEmbed(this.client);
-				embed.setDescription(
-					`Thank you for your feedback! ` +
-						`If you need personal assistance please join our support discord server.`
-				);
+				embed.setDescription(rp.CMD_FEEDBACK_TEXT());
 
 				let linksArray = [];
 				if (config.botSupport) {
-					linksArray.push(`[Support Discord](${config.botSupport})`);
+					linksArray.push(
+						`[${rp.BOT_SUPPORT_DISCORD_TITLE()}](${config.botSupport})`
+					);
 				}
 				if (config.botAdd) {
-					linksArray.push(`[Invite this bot to your server](${config.botAdd})`);
+					linksArray.push(`[${rp.BOT_INVITE_TITLE()}](${config.botAdd})`);
 				}
 				if (config.botWebsite) {
-					linksArray.push(`[Website](${config.botWebsite})`);
+					linksArray.push(`[${rp.BOT_WEBSITE_TITLE()}](${config.botWebsite})`);
 				}
 				if (config.botPatreon) {
-					linksArray.push(`[Patreon](${config.botPatreon})`);
+					linksArray.push(`[${rp.BOT_PATREON_TITLE()}](${config.botPatreon})`);
 				}
 
-				embed.addField(`Links`, linksArray.join(` | `));
+				embed.addField(rp.CMD_FEEDBACK_LINKS(), linksArray.join(` | `));
 
 				sendEmbed(message.channel, embed, message.author);
 			});

@@ -1,0 +1,9 @@
+[CMD_FAQ_MORE_TITLE]
+More
+
+[CMD_FAQ_MORE_TEXT]
+Please check out our readme for a list of all FAQs and much more!
+https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_FAQ_NOT_FOUND]
+Name {{ name }} not found!

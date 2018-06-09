@@ -8,12 +8,10 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
-
-const config = require('../../config.json');
+const { using, localizable } = CommandDecorators;
 
 interface FAQ {
 	name: string;
@@ -37,7 +35,11 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('faqName: String'))
-	public async action(message: Message, [faqName]: [string]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, faqName]: [RP, string]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -50,11 +52,7 @@ export default class extends Command<IMClient> {
 			faqs.forEach(faq => {
 				embed.addField(faq.question, '`!faq ' + faq.name + '`');
 			});
-			embed.addField(
-				'More',
-				'Please check out our readme for a list of all FAQs and much more!' +
-					'https://github.com/AndreasGassmann/discord-invite-manager/'
-			);
+			embed.addField(rp.CMD_FAQ_MORE_TITLE(), rp.CMD_FAQ_MORE_TEXT());
 		} else {
 			let faq = faqs.find(
 				el => el.name === faqName || el.aliases.some(f => f === faqName)
@@ -63,7 +61,7 @@ export default class extends Command<IMClient> {
 				embed.setTitle(faq.question);
 				embed.setDescription(faq.answer);
 			} else {
-				embed.setTitle(`Name ${faqName} not found!`);
+				embed.setTitle(rp.CMD_FAQ_NOT_FOUND({ name: faqName }));
 			}
 		}
 

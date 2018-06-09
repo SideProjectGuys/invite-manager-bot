@@ -1,4 +1,4 @@
-import { Guild, Message } from '@yamdbf/core';
+import { Guild, Message, ResourceProxy } from '@yamdbf/core';
 import {
 	Client,
 	DMChannel,
@@ -20,12 +20,16 @@ import {
 	sequelize
 } from '../sequelize';
 
+import { TranslationKeys } from './Translations';
+
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
 	Admin = 'Admin',
 	Other = 'Other'
 }
+
+export type RP = ResourceProxy<TranslationKeys>;
 
 export function createEmbed(
 	client: Client,

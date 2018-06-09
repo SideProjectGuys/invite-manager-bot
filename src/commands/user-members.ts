@@ -1,7 +1,15 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -17,7 +25,8 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, args: string[]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -49,13 +58,17 @@ export default class extends Command<IMClient> {
 		).size;
 
 		const embed = createEmbed(this.client);
-		embed.addField('Members', guild.memberCount, true);
-		embed.addField('Online', guild.memberCount - offlineCount, true);
-		embed.addField('Humans', humanCount, true);
-		embed.addField('Bots', botCount, true);
-		embed.addField('Joined last 24h', joinedToday, true);
-		embed.addField('Joined this week', joinedThisWeek, true);
-		embed.addField('Joined this month', joinedThisMonth, true);
+		embed.addField(rp.CMD_MEMBERS_MEMBERS(), guild.memberCount, true);
+		embed.addField(
+			rp.CMD_MEMBERS_ONLINE(),
+			guild.memberCount - offlineCount,
+			true
+		);
+		embed.addField(rp.CMD_MEMBERS_HUMANS(), humanCount, true);
+		embed.addField(rp.CMD_MEMBERS_BOTS(), botCount, true);
+		embed.addField(rp.CMD_MEMBERS_JOINED_DAY(), joinedToday, true);
+		embed.addField(rp.CMD_MEMBERS_JOINED_WEEK(), joinedThisWeek, true);
+		embed.addField(rp.CMD_MEMBERS_JOINED_MONTH(), joinedThisMonth, true);
 		embed.addBlankField(true);
 
 		sendEmbed(message.channel, embed, message.author);

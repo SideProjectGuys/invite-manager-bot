@@ -173,7 +173,12 @@ export enum SettingsKey {
 }
 
 export enum Lang {
-	en_us = 'en_us'
+	en_us = 'en_us',
+	de_de = 'de_de',
+	fr_fr = 'fr_fr',
+	it_it = 'it_it',
+	es_es = 'es_es',
+	pt_pt = 'pt_pt'
 }
 
 export enum LeaderboardStyle {

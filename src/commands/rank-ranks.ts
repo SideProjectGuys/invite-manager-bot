@@ -1,8 +1,16 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import { ranks } from '../sequelize';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -18,7 +26,8 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, args: string[]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -34,19 +43,17 @@ export default class extends Command<IMClient> {
 		let output = '';
 
 		if (rs.length === 0) {
-			message.channel.send(`No ranks have been created yet.`);
+			message.channel.send(rp.CMD_RANKS_NONE());
 		} else {
 			rs.forEach(r => {
-				let description = '';
-				if (r.description) {
-					description = `: ${r.description}`;
-				}
-				output += `<@&${r.roleId}>: **${
-					r.numInvites
-				} invites**${description}\n`;
+				output += rp.CMD_RANKS_ENTRY({
+					role: r.roleId,
+					numInvites: r.numInvites.toString(),
+					description: r.description ? ': ' + r.description : undefined
+				});
 			});
 			const embed = createEmbed(this.client);
-			embed.setAuthor('Ranks');
+			embed.setTitle(rp.CMD_RANKS_TITLE());
 			embed.setDescription(output);
 
 			sendEmbed(message.channel, embed, message.author);

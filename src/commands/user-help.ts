@@ -8,10 +8,10 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 const config = require('../../config.json');
 
@@ -27,7 +27,11 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('command: Command'))
-	public async action(message: Message, [command]: [Command]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, command]: [RP, Command]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild ? message.guild.name : 'DM'} (${
 				message.author.username
@@ -46,27 +50,31 @@ export default class extends Command<IMClient> {
 				usage: command.usage.replace('<prefix>', prefix)
 			};
 
-			embed.addField('Command', cmd.name, true);
-			embed.addField('Description', cmd.desc, true);
+			embed.addField(rp.CMD_HELP_COMMAND_TITLE(), cmd.name, true);
+			embed.addField(rp.CMD_HELP_DESCRIPTION_TITLE(), cmd.desc, true);
 			embed.addField(
-				'Usage',
+				rp.CMD_HELP_USAGE_TITLE(),
 				'`' + cmd.usage + '`' + (cmd.info ? '\n\n' + cmd.info : '')
 			);
 			if (cmd.aliases.length > 0) {
-				embed.addField('Aliases', cmd.aliases.join(', '), true);
+				embed.addField(
+					rp.CMD_HELP_ALIASES_TITLE(),
+					cmd.aliases.join(', '),
+					true
+				);
 			}
 			embed.addField(
-				'Bot permissions',
+				rp.CMD_HELP_BOT_PERMISSIONS_TITLE(),
 				cmd.clientPermissions.length > 0
 					? cmd.clientPermissions.join(', ')
-					: 'None',
+					: rp.CMD_HELP_COMMAND_NONE(),
 				true
 			);
 			embed.addField(
-				'User permissions',
+				rp.CMD_HELP_USER_PERMISSIONS_TITLE(),
 				cmd.callerPermissions.length > 0
 					? cmd.callerPermissions.join(', ')
-					: 'None',
+					: rp.CMD_HELP_COMMAND_NONE(),
 				true
 			);
 		} else {
@@ -80,12 +88,7 @@ export default class extends Command<IMClient> {
 				messageMember = await message.guild.members.fetch(message.author.id);
 			}
 
-			embed.setDescription(
-				'This is a list of commands you can use. You can get more info about a specific ' +
-					`command by using \`${prefix}help <command>\` (e.g. \`${prefix}help add-ranks\`)\n\n` +
-					`Arguments are listed after the command. Parentheses \`()\` indicate an **optional** argument. ` +
-					`(e.g. \`(reason)\` means the \`reason\` is optional)\n\n`
-			);
+			embed.setDescription(rp.CMD_HELP_TEXT({ prefix }) + '\n\n');
 
 			const commands = this.client.commands
 				.filter(c => c.name !== 'groups')
@@ -110,13 +113,6 @@ export default class extends Command<IMClient> {
 				let descr = '';
 				const len = cmds.reduce((acc, c) => Math.max(acc, c.usage.length), 0);
 				descr += cmds.map(c => '`' + c.name + '`').join(', ');
-				/*cmds.forEach(c => embed.addField(c.name, c.desc));
-				cmds.forEach(
-					c =>
-						(descr += `\`${c.usage}  ${' '.repeat(len - c.usage.length)}${
-							c.desc
-						}\`\n`)
-				);*/
 				embed.addField(group, descr);
 			});
 
@@ -127,19 +123,20 @@ export default class extends Command<IMClient> {
 				);
 
 				if (unavailableCommands.length > 0) {
-					const alertSymbol = '⚠️';
-
 					let unavailableDescription = '';
 					unavailableCommands.forEach(c => {
-						let missingPermission = c.clientPermissions.find(cp => {
+						const missingPermission = c.clientPermissions.find(cp => {
 							return !botMember.hasPermission(cp);
 						});
-						unavailableDescription += `\`${prefix}${
-							c.name
-						}\`  ${alertSymbol} *Missing \`${missingPermission}\` permission!*\n`;
+						unavailableDescription +=
+							rp.CMD_HELP_UNAVAILABLE_COMMAND({
+								prefix,
+								name: c.name,
+								missingPermission: missingPermission.toString()
+							}) + '\n';
 					});
 					embed.addField(
-						`Unavailable commands (missing permissions)`,
+						rp.CMD_HELP_UNAVAILABLE_COMMAND_TITLE(),
 						unavailableDescription
 					);
 				}
@@ -148,19 +145,21 @@ export default class extends Command<IMClient> {
 
 		let linksArray = [];
 		if (config.botSupport) {
-			linksArray.push(`[Support Discord](${config.botSupport})`);
+			linksArray.push(
+				`[${rp.BOT_SUPPORT_DISCORD_TITLE()}](${config.botSupport})`
+			);
 		}
 		if (config.botAdd) {
-			linksArray.push(`[Invite this bot to your server](${config.botAdd})`);
+			linksArray.push(`[${rp.BOT_INVITE_TITLE()}](${config.botAdd})`);
 		}
 		if (config.botWebsite) {
-			linksArray.push(`[Website](${config.botWebsite})`);
+			linksArray.push(`[${rp.BOT_WEBSITE_TITLE()}](${config.botWebsite})`);
 		}
 		if (config.botPatreon) {
-			linksArray.push(`[Patreon](${config.botPatreon})`);
+			linksArray.push(`[${rp.BOT_PATREON_TITLE()}](${config.botPatreon})`);
 		}
 
-		embed.addField('Links', linksArray.join(` | `));
+		embed.addField(rp.CMD_HELP_LINKS(), linksArray.join(` | `));
 
 		sendEmbed(message.channel, embed, message.author);
 	}
