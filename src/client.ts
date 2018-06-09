@@ -6,6 +6,7 @@ import {
 	Message
 } from '@yamdbf/core';
 import * as amqplib from 'amqplib';
+import DBL from 'dblapi.js';
 import { DMChannel, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
 import moment from 'moment';
 import * as path from 'path';
@@ -72,6 +73,8 @@ export class IMClient extends Client {
 
 	public numMembers: number = 0;
 	public membersCachedAt: number = 0;
+
+	private dbl: DBL;
 
 	public constructor(
 		version: string,
@@ -170,6 +173,11 @@ export class IMClient extends Client {
 				noAck: false
 			}
 		);
+
+		// Setup discord bots api
+		if (config.discordBotsToken) {
+			this.dbl = new DBL(config.discordBotsToken, this);
+		}
 
 		this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
@@ -784,6 +792,9 @@ export class IMClient extends Client {
 	private async setActivity() {
 		const numGuilds = await this.getGuildsCount();
 
+		if (this.dbl) {
+			this.dbl.postStats(numGuilds, this.shard.id, this.shard.count);
+		}
 		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
 			type: 'PLAYING'
 		});
