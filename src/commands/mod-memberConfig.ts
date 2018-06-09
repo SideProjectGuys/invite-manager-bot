@@ -45,7 +45,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		}
 
 		const value = args[2];
-		if (!value) {
+		if (typeof value === 'undefined') {
 			// tslint:disable-next-line:no-invalid-this
 			return func('key: String, user: User').call(this, message, [dbKey, user]);
 		}
@@ -118,13 +118,6 @@ export default class extends Command<IMClient> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
-
-		// TODO: Temporary hack because boolean resolver doesn't work
-		if (rawValue === '__true__') {
-			rawValue = true;
-		} else if (rawValue === '__false__') {
-			rawValue = false;
-		}
 
 		const prefix = await message.guild.storage.settings.get('prefix');
 		const embed = createEmbed(this.client);

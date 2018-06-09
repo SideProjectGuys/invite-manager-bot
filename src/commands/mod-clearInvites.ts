@@ -167,7 +167,7 @@ export default class extends Command<IMClient> {
 			cleared[memId] = true;
 		});
 
-		if (clearBonus === '__true__') {
+		if (clearBonus) {
 			// Process any custom invites
 			customInvs
 				.filter(inv => inv.generatedReason === null)
