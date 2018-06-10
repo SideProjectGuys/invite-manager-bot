@@ -19,9 +19,9 @@ import {
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { createEmbed, RP, sendEmbed, showPaginated } from '../utils/util';
 
 const chrono = require('chrono-node');
@@ -432,9 +432,8 @@ export default class extends Command<IMClient> {
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		const style: LeaderboardStyle = await message.guild.storage.settings.get(
-			SettingsKey.leaderboardStyle
-		);
+		const style: LeaderboardStyle = (await SettingsCache.get(message.guild.id))
+			.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {

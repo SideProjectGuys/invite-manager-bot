@@ -17,9 +17,9 @@ import {
 	inviteCodes,
 	joins,
 	members,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
@@ -58,7 +58,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const lang = await message.guild.storage.settings.get(SettingsKey.lang);
+		const lang = (await SettingsCache.get(message.guild.id)).lang;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');

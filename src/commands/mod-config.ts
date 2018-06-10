@@ -1,7 +1,6 @@
 import {
 	Command,
 	CommandDecorators,
-	Lang as YLang,
 	Logger,
 	logger,
 	Message,
@@ -22,6 +21,7 @@ import {
 	SettingsKey,
 	toDbSettingsValue
 } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -146,10 +146,8 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		console.log(rawValue);
-
-		const sets = message.guild.storage.settings;
-		const prefix = await sets.get(SettingsKey.prefix);
+		const settings = await SettingsCache.get(message.guild.id);
+		const prefix = settings.prefix;
 		const embed = createEmbed(this.client);
 
 		if (!key) {
@@ -159,7 +157,7 @@ export default class extends Command<IMClient> {
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
 			for (let i = 0; i < keys.length; i++) {
-				const val = await sets.get(keys[i]);
+				const val = settings.prefix[keys[i]];
 				if (val) {
 					embed.addField(
 						keys[i],
@@ -181,7 +179,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		let oldVal = await sets.get(key);
+		let oldVal = settings[key];
 		let oldRawVal = fromDbSettingsValue(key, oldVal);
 		if (typeof oldRawVal === 'string' && oldRawVal.length > 1000) {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
@@ -232,7 +230,7 @@ export default class extends Command<IMClient> {
 		}
 
 		// Set new value
-		sets.set(key, value);
+		SettingsCache.set(message.guild.id, key, value);
 
 		embed.setDescription(rp.CMD_CONFIG_CHANGED_TEXT({ prefix, key }));
 

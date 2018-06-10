@@ -8,7 +8,7 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../client';
-import { SettingsKey } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { localizable } = CommandDecorators;
@@ -34,7 +34,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const lang = await message.guild.storage.settings.get(SettingsKey.lang);
+		const lang = (await SettingsCache.get(message.guild.id)).lang;
 
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();

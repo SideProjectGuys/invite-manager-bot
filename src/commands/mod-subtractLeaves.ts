@@ -13,9 +13,9 @@ import {
 	inviteCodes,
 	joins,
 	leaves,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, RP } from '../utils/util';
 
 const { localizable } = CommandDecorators;
@@ -96,9 +96,8 @@ export default class extends Command<IMClient> {
 			}
 		});
 
-		const threshold = await message.guild.storage.settings.get(
-			SettingsKey.autoSubtractLeaveThreshold
-		);
+		const threshold = (await SettingsCache.get(message.guild.id))
+			.autoSubtractLeaveThreshold;
 
 		// Add subtracts for leaves
 		const customInvs = ls

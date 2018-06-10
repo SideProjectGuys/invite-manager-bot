@@ -1,11 +1,4 @@
-import {
-	Client,
-	Guild,
-	GuildSettings,
-	Lang,
-	ListenerUtil,
-	Message
-} from '@yamdbf/core';
+import { Client, Guild, Lang, ListenerUtil, Message } from '@yamdbf/core';
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
 import { DMChannel, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
@@ -23,11 +16,12 @@ import {
 	LeaveAttributes,
 	LogAction,
 	members,
-	sequelize,
-	SettingsKey
+	sequelize
 } from './sequelize';
+import { ShardCommand } from './types';
 import { DBQueue } from './utils/DBQueue';
 import { MessageQueue } from './utils/MessageQueue';
+import { SettingsCache } from './utils/SettingsCache';
 import { IMStorageProvider } from './utils/StorageProvider';
 import {
 	createEmbed,
@@ -59,10 +53,12 @@ export class IMClient extends Client {
 	public config: any;
 
 	public conn: amqplib.Connection;
-	public channelJoins: amqplib.Channel;
-	public channelLeaves: amqplib.Channel;
 	public qJoinsName: string;
+	public channelJoins: amqplib.Channel;
 	public qLeavesName: string;
+	public channelLeaves: amqplib.Channel;
+	public qCmdsName: string;
+	public channelCmds: amqplib.Channel;
 
 	public startedAt: moment.Moment;
 	public dbQueue: DBQueue;
@@ -146,6 +142,17 @@ export class IMClient extends Client {
 				durable: true
 			});
 		});
+
+		this.qCmdsName = 'cmds-' + shardId + '-' + shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelCmds = channel;
+
+			await channel.assertQueue(this.qCmdsName, {
+				durable: true
+			});
+		});
+
+		SettingsCache.init();
 	}
 
 	@once('pause')
@@ -175,6 +182,11 @@ export class IMClient extends Client {
 				noAck: false
 			}
 		);
+
+		await this.channelCmds.prefetch(5);
+		this.channelCmds.consume(this.qCmdsName, msg => this._onShardCommand(msg), {
+			noAck: false
+		});
 
 		// Setup discord bots api
 		if (config.discordBotsToken) {
@@ -312,11 +324,9 @@ export class IMClient extends Client {
 		const js = await this.findJoins(guild.id, member.id);
 
 		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
-		const lang = await sets.get(SettingsKey.lang);
-		const joinChannelId = (await sets.get(
-			SettingsKey.joinMessageChannel
-		)) as string;
+		const settings = await SettingsCache.get(guild.id);
+		const lang = settings.lang;
+		const joinChannelId = settings.joinMessageChannel;
 
 		const joinChannel = joinChannelId
 			? (guild.channels.get(joinChannelId) as TextChannel)
@@ -330,10 +340,7 @@ export class IMClient extends Client {
 		}
 
 		// Auto remove fakes if enabled
-		const autoSubtractFakes = (await sets.get(
-			SettingsKey.autoSubtractFakes
-		)) as string;
-		if (autoSubtractFakes === 'true') {
+		if (settings.autoSubtractFakes === 'true') {
 			// Delete old duplicate removals
 			await customInvites.destroy({
 				where: {
@@ -360,8 +367,7 @@ export class IMClient extends Client {
 		}
 
 		// Auto remove leaves if enabled
-		const autoSubtractLeaves = await sets.get(SettingsKey.autoSubtractLeaves);
-		if (autoSubtractLeaves === 'true') {
+		if (settings.autoSubtractLeaves === 'true') {
 			// Delete removals for this member because the member rejoined
 			await customInvites.destroy({
 				where: {
@@ -409,9 +415,7 @@ export class IMClient extends Client {
 			await promoteIfQualified(guild, inviter, invites.total);
 		}
 
-		const joinMessageFormat = (await sets.get(
-			SettingsKey.joinMessage
-		)) as string;
+		const joinMessageFormat = settings.joinMessage;
 		if (joinChannel && joinMessageFormat) {
 			const msg = await this.fillTemplate(
 				joinMessageFormat,
@@ -449,11 +453,9 @@ export class IMClient extends Client {
 		console.log(member.id + ' left ' + guild.id);
 
 		// Get settings
-		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
-		const lang = await sets.get(SettingsKey.lang);
-		const leaveChannelId = (await sets.get(
-			SettingsKey.leaveMessageChannel
-		)) as string;
+		const settings = await SettingsCache.get(guild.id);
+		const lang = settings.lang;
+		const leaveChannelId = settings.leaveMessageChannel;
 
 		// Check if leave channel is valid
 		const leaveChannel = leaveChannelId
@@ -495,8 +497,7 @@ export class IMClient extends Client {
 		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
 
 		// Auto remove leaves if enabled (and if we know the inviter)
-		const autoSubtractLeaves = await sets.get(SettingsKey.autoSubtractLeaves);
-		if (inviterId && autoSubtractLeaves === 'true') {
+		if (inviterId && settings.autoSubtractLeaves === 'true') {
 			// Delete any old entries for the leaving of this member
 			await customInvites.destroy({
 				where: {
@@ -506,7 +507,7 @@ export class IMClient extends Client {
 				}
 			});
 
-			const threshold = await sets.get(SettingsKey.autoSubtractLeaveThreshold);
+			const threshold = settings.autoSubtractLeaveThreshold;
 			const timeDiff = moment
 				.utc(join.createdAt)
 				.diff(moment.utc(leave.createdAt), 's');
@@ -524,9 +525,7 @@ export class IMClient extends Client {
 			}
 		}
 
-		const leaveMessageFormat = (await sets.get(
-			SettingsKey.leaveMessage
-		)) as string;
+		const leaveMessageFormat = settings.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
 			const msg = await this.fillTemplate(
 				leaveMessageFormat,
@@ -544,10 +543,32 @@ export class IMClient extends Client {
 		}
 	}
 
+	private async _onShardCommand(msg: amqplib.Message) {
+		const content = JSON.parse(msg.content.toString());
+		const cmd: ShardCommand = content.cmd;
+		const args = content.args;
+
+		console.log(`RECEIVED SHARD COMMAND: ${content}`);
+
+		switch (cmd) {
+			case ShardCommand.FLUSH_PREMIUM_CACHE:
+				console.log(`FLUSHING PREMIUM FOR ${args[0]}`);
+				SettingsCache.flushPremium(args[0]);
+				break;
+
+			case ShardCommand.FLUSH_SETTINGS_CACHE:
+				console.log(`FLUSHING SETTINGS FOR ${args[0]}`);
+				SettingsCache.flush(args[0]);
+				break;
+
+			default:
+				console.log(`UNKNOWN COMMAND: ${cmd}`);
+		}
+	}
+
 	public async logAction(message: Message, action: LogAction, data: any) {
-		const logChannelId = (await message.guild.storage.settings.get(
-			SettingsKey.logChannel
-		)) as string;
+		const logChannelId = (await SettingsCache.get(message.guild.id)).logChannel;
+
 		if (logChannelId) {
 			const logChannel = message.guild.channels.get(
 				logChannelId
@@ -674,10 +695,8 @@ export class IMClient extends Client {
 			}
 		}
 
-		const unknown = Lang.res(
-			await guild.storage.settings.get(SettingsKey.lang),
-			'TEMPLATE_UNKNOWN'
-		);
+		const lang = (await SettingsCache.get(guild.id)).lang;
+		const unknown = Lang.res(lang, 'TEMPLATE_UNKNOWN');
 
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;
@@ -715,8 +734,12 @@ export class IMClient extends Client {
 			.replace('{channelName}', channelName ? channelName : unknown);
 
 		try {
-			msg = JSON.parse(msg);
-			msg = createEmbed(this, msg);
+			const temp = JSON.parse(msg);
+			if (await SettingsCache.isPremium(guild.id)) {
+				msg = createEmbed(this, temp);
+			} else {
+				msg += '\n\n' + Lang.res(lang, 'JOIN_LEAVE_EMBEDS_IS_PREMIUM');
+			}
 		} catch (e) {
 			//
 		}

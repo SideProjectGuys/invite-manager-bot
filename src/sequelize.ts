@@ -32,6 +32,9 @@ export interface MemberInstance
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
+	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
+		PremiumSubscriptionInstance
+	>;
 }
 
 export const members = sequelize.define<MemberInstance, MemberAttributes>(
@@ -73,6 +76,9 @@ export interface GuildInstance
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
+	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
+		PremiumSubscriptionInstance
+	>;
 }
 
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
@@ -232,7 +238,7 @@ export function fromDbSettingsValue(
 export function toDbSettingsValue(
 	key: SettingsKey,
 	value: any
-): { value?: string | number | boolean; error?: string } {
+): { value?: string; error?: string } {
 	if (value === 'default') {
 		return { value: defaultSettings[key] };
 	}
@@ -815,3 +821,41 @@ guilds.hasMany(commandUsage);
 
 commandUsage.belongsTo(members);
 members.hasMany(commandUsage);
+
+// ------------------------------------
+// PremiumSubscriptions
+// ------------------------------------
+export interface PremiumSubscriptionAttributes extends BaseAttributes {
+	id: number;
+	amount: number;
+	validUntil: Date | number | string;
+	guildId: string;
+	memberId: string;
+}
+export interface PremiumSubscriptionInstance
+	extends Sequelize.Instance<PremiumSubscriptionAttributes>,
+		PremiumSubscriptionAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const premiumSubscriptions = sequelize.define<
+	PremiumSubscriptionInstance,
+	PremiumSubscriptionAttributes
+>(
+	'premiumSubscriptions',
+	{
+		amount: Sequelize.DECIMAL(10, 2),
+		validUntil: Sequelize.DATE
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
+
+premiumSubscriptions.belongsTo(guilds);
+guilds.hasMany(premiumSubscriptions);
+
+premiumSubscriptions.belongsTo(members);
+members.hasMany(premiumSubscriptions);

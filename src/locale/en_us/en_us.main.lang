@@ -39,3 +39,6 @@ Unknown
 
 [LEAVE_INVITED_BY_UNKNOWN]
 {{ tag }} left the server, but I couldn't figure out who invited them.
+
+[JOIN_LEAVE_EMBEDS_IS_PREMIUM]
+Using embeds as join and leave messages is a premium feature.

@@ -16,9 +16,9 @@ import {
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
@@ -156,7 +156,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const prefix = await message.guild.storage.settings.get(SettingsKey.prefix);
+		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
 		const embed = createEmbed(this.client);
 
 		if (!key) {
