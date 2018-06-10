@@ -15,6 +15,9 @@ export interface TranslationKeys {
 
 	TEMPLATE_UNKNOWN: any;
 
+	JOIN_INVITED_BY_UNKNOWN: any;
+	LEAVE_INVITED_BY_UNKNOWN: any;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: any;
 	CMD_ADDINVITES_AMOUNT_POS: any;

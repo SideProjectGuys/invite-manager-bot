@@ -8,7 +8,12 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../client';
-import { InviteCodeAttributes, inviteCodes, members } from '../sequelize';
+import {
+	InviteCodeAttributes,
+	inviteCodes,
+	members,
+	SettingsKey
+} from '../sequelize';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { localizable } = CommandDecorators;
@@ -44,6 +49,8 @@ export default class extends Command<IMClient> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
+
+		const lang = await message.guild.storage.settings.get(SettingsKey.lang);
 
 		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
 			where: {
@@ -145,15 +152,19 @@ export default class extends Command<IMClient> {
 				rp.CMD_INVITECODES_TEMPORARY_TEXT()
 			);
 			temporaryInvites.forEach(i => {
-				const maxAge = moment.duration(i.maxAge, 's').humanize();
+				const maxAge = moment
+					.duration(i.maxAge, 's')
+					.locale(lang)
+					.humanize();
 				const expires = moment(i.createdAt)
 					.add(i.maxAge, 's')
+					.locale(lang)
 					.fromNow();
 				embed.addField(
 					`${i.code}`,
 					rp.CMD_INVITECODES_PERMANENT_ENTRY({
 						uses: i.uses.toString(),
-						maxAge: i.maxAge.toString(),
+						maxAge,
 						maxUses: i.maxUses.toString(),
 						channelId: i.channelId.toString(),
 						expires

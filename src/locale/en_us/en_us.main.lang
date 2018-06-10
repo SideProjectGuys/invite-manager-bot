@@ -33,3 +33,9 @@ Leave of <@{{ reason }}>
 
 [TEMPLATE_UNKNOWN]
 Unknown
+
+[JOIN_INVITED_BY_UNKNOWN]
+<@{{ id }}> joined the server using a temporary invite, so I can't figure out who invited them.
+
+[LEAVE_INVITED_BY_UNKNOWN]
+{{ tag }} left the server, but I couldn't figure out who invited them.

@@ -2,7 +2,7 @@
 No ranks have been created yet.
 
 [CMD_RANKS_ENTRY]
-<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}\n
+<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}
 
 [CMD_RANKS_TITLE]
 Ranks

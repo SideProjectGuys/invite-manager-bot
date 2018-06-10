@@ -17,7 +17,8 @@ import {
 	inviteCodes,
 	joins,
 	members,
-	sequelize
+	sequelize,
+	SettingsKey
 } from '../sequelize';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
@@ -56,6 +57,8 @@ export default class extends Command<IMClient> {
 			message.channel.send(rp.CMD_INFO_NOT_IN_GUILD());
 			return;
 		}
+
+		const lang = await message.guild.storage.settings.get(SettingsKey.lang);
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
@@ -111,7 +114,9 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
 
-		const joinedAgo = moment(member.joinedAt).fromNow();
+		const joinedAgo = moment(member.joinedAt)
+			.locale(lang)
+			.fromNow();
 		embed.addField(rp.CMD_INFO_LASTJOINED_TITLE(), joinedAgo, true);
 		embed.addField(
 			rp.CMD_INFO_INVITES_TITLE(),
@@ -144,7 +149,9 @@ export default class extends Command<IMClient> {
 
 		embed.addField(
 			rp.CMD_INFO_CREATED_TITLE(),
-			moment(member.user.createdAt).fromNow(),
+			moment(member.user.createdAt)
+				.locale(lang)
+				.fromNow(),
 			true
 		);
 
@@ -176,7 +183,9 @@ export default class extends Command<IMClient> {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
 			js.forEach((join: any) => {
-				const text = moment(join.createdAt).fromNow();
+				const text = moment(join.createdAt)
+					.locale(lang)
+					.fromNow();
 				if (!joinTimes[text]) {
 					joinTimes[text] = {};
 				}
@@ -233,12 +242,15 @@ export default class extends Command<IMClient> {
 		if (invs.length > 0) {
 			let invText = '';
 			invs.forEach(inv => {
-				invText += rp.CMD_INFO_REGULARINVITES_ENTRY({
-					uses: inv.uses.toString(),
-					code: inv.code,
-					createdAt: moment(inv.createdAt).fromNow(),
-					reason: inv.reason
-				});
+				invText +=
+					rp.CMD_INFO_REGULARINVITES_ENTRY({
+						uses: inv.uses.toString(),
+						code: inv.code,
+						createdAt: moment(inv.createdAt)
+							.locale(lang)
+							.fromNow(),
+						reason: inv.reason
+					}) + '\n';
 			});
 			embed.addField(rp.CMD_INFO_REGULARINVITES_TITLE(), invText);
 		} else {
@@ -255,12 +267,15 @@ export default class extends Command<IMClient> {
 					? ', ' + this.formatGeneratedReason(rp, inv)
 					: inv.reason;
 
-				customInvText += rp.CMD_INFO_BONUSINVITES_ENTRY({
-					amount: inv.amount.toString(),
-					creator: inv.creatorId ? inv.creatorId : message.guild.me.id,
-					date: moment(inv.createdAt).fromNow(),
-					reason: reasonText
-				});
+				customInvText +=
+					rp.CMD_INFO_BONUSINVITES_ENTRY({
+						amount: inv.amount.toString(),
+						creator: inv.creatorId ? inv.creatorId : message.guild.me.id,
+						date: moment(inv.createdAt)
+							.locale(lang)
+							.fromNow(),
+						reason: reasonText
+					}) + '\n';
 			});
 
 			let more = '';
@@ -313,7 +328,9 @@ export default class extends Command<IMClient> {
 		if (js2.length > 0) {
 			let inviteText = '';
 			js2.slice(0, 10).forEach((join: any) => {
-				const time = moment(join.createdAt).fromNow();
+				const time = moment(join.createdAt)
+					.locale(lang)
+					.fromNow();
 				inviteText += `<@${join.memberId}> - ${time}\n`;
 			});
 

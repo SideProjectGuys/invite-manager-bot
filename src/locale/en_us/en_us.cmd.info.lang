@@ -38,7 +38,7 @@ unknown (this only works for new members)
 Regular invites
 
 [CMD_INFO_REGULARINVITES_ENTRY]
-**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**\n
+**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**
 
 [CMD_INFO_REGULARINVITES_NONE]
 This member has not invited anyone so far
@@ -47,7 +47,7 @@ This member has not invited anyone so far
 Bonus invites
 
 [CMD_INFO_BONUSINVITES_ENTRY]
-**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}\n
+**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}
 
 [CMD_INFO_BONUSINVITES_MORE]
 Plus another **{{ amount }}** more bonus invites

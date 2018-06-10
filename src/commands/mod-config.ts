@@ -149,7 +149,7 @@ export default class extends Command<IMClient> {
 		console.log(rawValue);
 
 		const sets = message.guild.storage.settings;
-		const prefix = await sets.get('prefix');
+		const prefix = await sets.get(SettingsKey.prefix);
 		const embed = createEmbed(this.client);
 
 		if (!key) {

@@ -8,6 +8,7 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../client';
+import { SettingsKey } from '../sequelize';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { localizable } = CommandDecorators;
@@ -33,7 +34,7 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		moment.locale(await message.guild.storage.settings.get('lang'));
+		const lang = await message.guild.storage.settings.get(SettingsKey.lang);
 
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();
@@ -46,7 +47,10 @@ export default class extends Command<IMClient> {
 		// Uptime
 		embed.addField(
 			rp.CMD_BOTINFO_UPTIME(),
-			moment.duration(moment().diff(this.client.startedAt)).humanize(),
+			moment
+				.duration(moment().diff(this.client.startedAt))
+				.locale(lang)
+				.humanize(),
 			true
 		);
 

@@ -46,11 +46,12 @@ export default class extends Command<IMClient> {
 			message.channel.send(rp.CMD_RANKS_NONE());
 		} else {
 			rs.forEach(r => {
-				output += rp.CMD_RANKS_ENTRY({
-					role: r.roleId,
-					numInvites: r.numInvites.toString(),
-					description: r.description ? ': ' + r.description : undefined
-				});
+				output +=
+					rp.CMD_RANKS_ENTRY({
+						role: r.roleId,
+						numInvites: r.numInvites.toString(),
+						description: r.description ? ': ' + r.description : undefined
+					}) + '\n';
 			});
 			const embed = createEmbed(this.client);
 			embed.setTitle(rp.CMD_RANKS_TITLE());

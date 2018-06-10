@@ -47,15 +47,16 @@ export default class extends Command<IMClient> {
 		let target = user ? user : message.author;
 		const invites = await getInviteCounts(message.guild.id, target.id);
 
-		let textMessage = rp.CMD_INVITES_AMOUNT({
-			self: message.author.id,
-			target: target.id,
-			total: invites.total.toString(),
-			regular: invites.regular.toString(),
-			custom: invites.custom.toString(),
-			fake: invites.fake.toString(),
-			leave: invites.leave.toString()
-		});
+		let textMessage =
+			rp.CMD_INVITES_AMOUNT({
+				self: message.author.id,
+				target: target.id,
+				total: invites.total.toString(),
+				regular: invites.regular.toString(),
+				custom: invites.custom.toString(),
+				fake: invites.fake.toString(),
+				leave: invites.leave.toString()
+			}) + '\n';
 
 		if (!target.bot) {
 			let targetMember = await message.guild.members.fetch(target.id);

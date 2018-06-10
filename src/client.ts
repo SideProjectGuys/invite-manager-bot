@@ -313,6 +313,7 @@ export class IMClient extends Client {
 
 		// Get settings
 		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
+		const lang = await sets.get(SettingsKey.lang);
 		const joinChannelId = (await sets.get(
 			SettingsKey.joinMessageChannel
 		)) as string;
@@ -384,11 +385,9 @@ export class IMClient extends Client {
 					JSON.stringify(content)
 			);
 			if (joinChannel) {
-				const id = member.id;
-				const msg =
-					`<@${id}> joined the server using a temporary invite, ` +
-					`so I can't figure out who invited them.`;
-				joinChannel.send(msg);
+				joinChannel.send(
+					Lang.res(lang, 'JOIN_INVITED_BY_UNKNOWN', { id: member.id })
+				);
 			}
 			return;
 		}
@@ -451,6 +450,7 @@ export class IMClient extends Client {
 
 		// Get settings
 		const sets: GuildSettings = this.storage.guilds.get(guild.id).settings;
+		const lang = await sets.get(SettingsKey.lang);
 		const leaveChannelId = (await sets.get(
 			SettingsKey.leaveMessageChannel
 		)) as string;
@@ -477,9 +477,11 @@ export class IMClient extends Client {
 					JSON.stringify(content)
 			);
 			if (leaveChannel) {
-				const tag = member.user.username + '#' + member.user.discriminator;
-				const msg = `${tag} left the server, but I couldn't figure out who invited them`;
-				leaveChannel.send(msg);
+				leaveChannel.send(
+					Lang.res(lang, 'LEAVE_INVITED_BY_UNKNOWN', {
+						tag: member.user.username + '#' + member.user.discriminator
+					})
+				);
 			}
 			return;
 		}
@@ -672,18 +674,18 @@ export class IMClient extends Client {
 			}
 		}
 
+		const unknown = Lang.res(
+			await guild.storage.settings.get(SettingsKey.lang),
+			'TEMPLATE_UNKNOWN'
+		);
+
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;
 		const inviterFullName = inviter
 			? inviter.user.username + '#' + inviter.user.discriminator
 			: inviterName
 				? inviterName + '#' + inviterDiscriminator
-				: 'Unknown';
-
-		const unknown = Lang.res(
-			await guild.storage.settings.get('lang'),
-			'TEMPLATE_UNKNOWN'
-		);
+				: unknown;
 
 		let msg = template;
 		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);

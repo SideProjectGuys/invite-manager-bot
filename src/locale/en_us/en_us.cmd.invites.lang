@@ -1,5 +1,5 @@
 [CMD_INVITES_AMOUNT]
-{{! args.self === args.target ? 'You have' : `<@${args.target}> has` !}} **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)\n
+{{! args.self === args.target ? 'You have' : `<@${args.target}> has` !}} **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
 
 [CMD_INVITES_NEXT_RANK]
 {{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!
