@@ -121,11 +121,11 @@ export default class extends Command<IMClient> {
 		embed.addField(
 			rp.CMD_INFO_INVITES_TITLE(),
 			rp.CMD_INFO_INVITES_TEXT({
-				total: numTotal.toString(),
-				regular: regular.toString(),
-				custom: custom.toString(),
-				fake: fake.toString(),
-				leave: leave.toString()
+				total: numTotal,
+				regular,
+				custom,
+				fake,
+				leave
 			}),
 			true
 		);
@@ -142,7 +142,7 @@ export default class extends Command<IMClient> {
 		embed.addField(
 			rp.CMD_INFO_JOINED_TITLE(),
 			rp.CMD_INFO_JOINED_TEXT({
-				amount: joinCount.toString()
+				amount: joinCount
 			}),
 			true
 		);
@@ -209,7 +209,7 @@ export default class extends Command<IMClient> {
 				);
 
 				const mainText = rp.CMD_INFO_JOINS_ENTRY({
-					total: total > 1 ? total.toString() : undefined,
+					total: total > 1 ? total : undefined,
 					time
 				});
 
@@ -217,7 +217,7 @@ export default class extends Command<IMClient> {
 					.map(id =>
 						rp.CMD_INFO_JOINS_ENTRY_INV({
 							id,
-							times: joinTime[id] > 1 ? joinTime[id].toString() : undefined
+							times: joinTime[id] > 1 ? joinTime[id] : undefined
 						})
 					)
 					.join(', ');
@@ -230,7 +230,7 @@ export default class extends Command<IMClient> {
 				more =
 					'\n' +
 					rp.CMD_INFO_JOINS_MORE({
-						amount: (joinTimesKeys.length - 10).toString()
+						amount: joinTimesKeys.length - 10
 					});
 			}
 
@@ -244,7 +244,7 @@ export default class extends Command<IMClient> {
 			invs.forEach(inv => {
 				invText +=
 					rp.CMD_INFO_REGULARINVITES_ENTRY({
-						uses: inv.uses.toString(),
+						uses: inv.uses,
 						code: inv.code,
 						createdAt: moment(inv.createdAt)
 							.locale(lang)
@@ -269,7 +269,7 @@ export default class extends Command<IMClient> {
 
 				customInvText +=
 					rp.CMD_INFO_BONUSINVITES_ENTRY({
-						amount: inv.amount.toString(),
+						amount: inv.amount,
 						creator: inv.creatorId ? inv.creatorId : message.guild.me.id,
 						date: moment(inv.createdAt)
 							.locale(lang)
@@ -283,7 +283,7 @@ export default class extends Command<IMClient> {
 				more =
 					'\n' +
 					rp.CMD_INFO_BONUSINVITES_MORE({
-						amount: (customInvs.length - 10).toString()
+						amount: customInvs.length - 10
 					});
 			}
 
@@ -339,7 +339,7 @@ export default class extends Command<IMClient> {
 				more =
 					'\n' +
 					rp.CMD_INFO_INVITEDMEMBERS_MORE({
-						amount: (js2.length - 10).toString()
+						amount: js2.length - 10
 					});
 			}
 

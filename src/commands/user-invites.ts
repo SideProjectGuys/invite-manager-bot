@@ -51,11 +51,11 @@ export default class extends Command<IMClient> {
 			rp.CMD_INVITES_AMOUNT({
 				self: message.author.id,
 				target: target.id,
-				total: invites.total.toString(),
-				regular: invites.regular.toString(),
-				custom: invites.custom.toString(),
-				fake: invites.fake.toString(),
-				leave: invites.leave.toString()
+				total: invites.total,
+				regular: invites.regular,
+				custom: invites.custom,
+				fake: invites.fake,
+				leave: invites.leave
 			}) + '\n';
 
 		if (!target.bot) {
@@ -71,7 +71,7 @@ export default class extends Command<IMClient> {
 				textMessage += rp.CMD_INVITES_NEXT_RANK({
 					self: message.author.id,
 					target: target.id,
-					nextRankPointsDiff: nextRankPointsDiff.toString(),
+					nextRankPointsDiff,
 					nextRankName
 				});
 			} else {

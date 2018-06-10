@@ -132,7 +132,7 @@ export default class extends Command<IMClient> {
 							rp.CMD_HELP_UNAVAILABLE_COMMAND({
 								prefix,
 								name: c.name,
-								missingPermission: missingPermission.toString()
+								missingPermission
 							}) + '\n';
 					});
 					embed.addField(

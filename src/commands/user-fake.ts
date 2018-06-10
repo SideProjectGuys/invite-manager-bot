@@ -146,7 +146,7 @@ export default class extends Command<IMClient> {
 						.map(name => {
 							return rp.CMD_FAKE_JOIN_ENTRY_INV({
 								name,
-								times: invs[name] > 1 ? invs[name].toString() : undefined
+								times: invs[name] > 1 ? invs[name] : undefined
 							});
 						})
 						.join(', ');

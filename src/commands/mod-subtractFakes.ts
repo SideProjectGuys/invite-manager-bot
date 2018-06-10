@@ -94,8 +94,6 @@ export default class extends Command<IMClient> {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		await message.channel.send(
-			rp.CMD_SUBTRACTFAKES_DONE({ total: total.toString() })
-		);
+		await message.channel.send(rp.CMD_SUBTRACTFAKES_DONE({ total }));
 	}
 }

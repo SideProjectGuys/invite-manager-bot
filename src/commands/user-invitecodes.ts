@@ -136,10 +136,10 @@ export default class extends Command<IMClient> {
 				embed.addField(
 					`${i.code}`,
 					rp.CMD_INVITECODES_PERMANENT_ENTRY({
-						uses: i.uses.toString(),
-						maxAge: i.maxAge.toString(),
-						maxUses: i.maxUses.toString(),
-						channelId: i.channelId.toString()
+						uses: i.uses,
+						maxAge: i.maxAge,
+						maxUses: i.maxUses,
+						channelId: i.channelId
 					}),
 					true
 				);
@@ -163,10 +163,10 @@ export default class extends Command<IMClient> {
 				embed.addField(
 					`${i.code}`,
 					rp.CMD_INVITECODES_PERMANENT_ENTRY({
-						uses: i.uses.toString(),
+						uses: i.uses,
 						maxAge,
-						maxUses: i.maxUses.toString(),
-						channelId: i.channelId.toString(),
+						maxUses: i.maxUses,
+						channelId: i.channelId,
 						expires
 					}),
 					true

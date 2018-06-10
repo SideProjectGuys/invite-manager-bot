@@ -49,7 +49,7 @@ export default class extends Command<IMClient> {
 				output +=
 					rp.CMD_RANKS_ENTRY({
 						role: r.roleId,
-						numInvites: r.numInvites.toString(),
+						numInvites: r.numInvites,
 						description: r.description ? ': ' + r.description : undefined
 					}) + '\n';
 			});

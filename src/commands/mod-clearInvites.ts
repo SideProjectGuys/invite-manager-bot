@@ -202,7 +202,7 @@ export default class extends Command<IMClient> {
 
 		message.channel.send(
 			rp.CMD_CLEARINVITES_DONE({
-				amount: Object.keys(cleared).length.toString()
+				amount: Object.keys(cleared).length
 			})
 		);
 	}

@@ -109,7 +109,7 @@ export default class extends Command<IMClient> {
 			message.channel.send(
 				rp.CMD_ADDRANK_UPDATED({
 					role: role.name,
-					invites: invites.toString(),
+					invites,
 					description
 				})
 			);
@@ -117,7 +117,7 @@ export default class extends Command<IMClient> {
 			message.channel.send(
 				rp.CMD_ADDRANK_CREATED({
 					role: role.name,
-					invites: invites.toString(),
+					invites,
 					description
 				})
 			);

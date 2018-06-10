@@ -98,17 +98,17 @@ export default class extends Command<IMClient> {
 		if (amount > 0) {
 			embed.setDescription(
 				rp.CMD_ADDINVITES_AMOUNT_POS({
-					amount: amount.toString(),
+					amount,
 					member: member.id,
-					totalInvites: totalInvites.toString()
+					totalInvites
 				})
 			);
 		} else {
 			embed.setDescription(
 				rp.CMD_ADDINVITES_AMOUNT_NEG({
-					amount: (-amount).toString(),
+					amount: -amount,
 					member: member.id,
-					totalInvites: totalInvites.toString()
+					totalInvites
 				})
 			);
 		}

@@ -117,7 +117,7 @@ export default class extends Command<IMClient> {
 		});
 
 		await message.channel.send(
-			rp.CMD_SUBTRACTLEAVES_DONE({ amount: customInvs.length.toString() })
+			rp.CMD_SUBTRACTLEAVES_DONE({ amount: customInvs.length })
 		);
 	}
 }
