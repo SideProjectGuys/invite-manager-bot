@@ -107,8 +107,8 @@ export class IMClient extends Client {
 			},
 			{
 				apiRequestMethod: 'burst',
-				shardId: 0,
-				shardCount: 2,
+				shardId: shardId - 1,
+				shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
