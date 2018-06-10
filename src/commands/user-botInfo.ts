@@ -57,18 +57,16 @@ export default class extends Command<IMClient> {
 		embed.addField(rp.CMD_BOTINFO_MEMBERS(), numMembers, true);
 
 		// Shard info
-		if (this.client.shard) {
-			embed.addField(
-				rp.CMD_BOTINFO_SHARD_CURRENT(),
-				this.client.shard.id + 1,
-				true
-			);
-			embed.addField(
-				rp.CMD_BOTINFO_SHARD_TOTAL(),
-				this.client.shard.count,
-				true
-			);
-		}
+		embed.addField(
+			rp.CMD_BOTINFO_SHARD_CURRENT(),
+			this.client.options.shardId + 1,
+			true
+		);
+		embed.addField(
+			rp.CMD_BOTINFO_SHARD_TOTAL(),
+			this.client.options.shardCount,
+			true
+		);
 
 		// Support discord
 		if (config.botSupport) {

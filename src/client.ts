@@ -107,8 +107,8 @@ export class IMClient extends Client {
 			},
 			{
 				apiRequestMethod: 'burst',
-				shardId: shardId - 1,
-				shardCount,
+				shardId: 0,
+				shardCount: 2,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
@@ -804,7 +804,11 @@ export class IMClient extends Client {
 		const numGuilds = await this.getGuildsCount();
 
 		if (this.dbl) {
-			this.dbl.postStats(numGuilds, this.shard.id, this.shard.count);
+			this.dbl.postStats(
+				numGuilds,
+				this.options.shardId,
+				this.options.shardCount
+			);
 		}
 		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
 			type: 'PLAYING'
