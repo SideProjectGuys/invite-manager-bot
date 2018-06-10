@@ -278,7 +278,6 @@ export async function showPaginated(
 		await prevMsg.react(downSymbol);
 	} else {
 		const react = prevMsg.reactions.get(downSymbol);
-		prevMsg.reactions.remove(react.emoji.id);
 		if (react) {
 			react.users.remove(client.user);
 		}
