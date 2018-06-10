@@ -25,64 +25,99 @@ const { using, localizable } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function(message: Message, args: string[]) {
+	return async function(
+		message: Message,
+		[rp, ..._args]: [RP, string]
+	): Promise<[Message, any[]]> {
+		const args = _args as string[];
+
 		const key = args[0];
 		if (!key) {
-			return [message, args];
+			return [message, [rp]];
 		}
 
 		let dbKey: MemberSettingsKey = Object.keys(MemberSettingsKey).find(
 			(k: any) => MemberSettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as MemberSettingsKey;
 		if (!dbKey) {
-			throw Error(`No config setting called **${key}** found.`);
+			throw Error(rp.CMD_MEMBERCONFIG_KEY_NOT_FOUND({ key }));
 		}
 
 		const user = args[1];
 		if (!user) {
-			// tslint:disable-next-line:no-invalid-this
-			return func('key: String').call(this, message, [dbKey]);
+			// We call func (resolve or expect) with the string keys, await
+			// the response (which is '[message, args[]]') and unwrap the args
+			// after the resource proxy
+			return [
+				message,
+				// tslint:disable-next-line:no-invalid-this
+				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
+			];
 		}
 
 		const value = args[2];
 		if (typeof value === 'undefined') {
-			// tslint:disable-next-line:no-invalid-this
-			return func('key: String, user: User').call(this, message, [dbKey, user]);
+			return [
+				message,
+				[
+					rp,
+					// tslint:disable-next-line:no-invalid-this
+					...(await func('key: String, user: User').call(this, message, [
+						dbKey,
+						user
+					]))[1]
+				]
+			];
 		}
 
 		const newArgs = ([dbKey, user] as any[]).concat(args.slice(2));
 
 		if (value === 'default') {
-			return func('key: String, user: User, ...value?: String').call(
-				// tslint:disable-next-line:no-invalid-this
-				this,
+			return [
 				message,
-				newArgs
-			);
+				[
+					rp,
+					...(await func('key: String, user: User, ...value?: String').call(
+						// tslint:disable-next-line:no-invalid-this
+						this,
+						message,
+						newArgs
+					))[1]
+				]
+			];
 		}
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultMemberSettings[dbKey] !== null) {
-				throw Error(
-					`The config setting **${dbKey}** can not be cleared. ` +
-						`You can use \`config ${dbKey} default\` to reset it to the default value.`
-				);
+				throw Error(rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ key: dbKey }));
 			}
-			return func('key: String, user: User, ...value?: String').call(
-				// tslint:disable-next-line:no-invalid-this
-				this,
+			return [
 				message,
-				newArgs
-			);
+				[
+					rp,
+					...(await func('key: String, user: User, ...value?: String').call(
+						// tslint:disable-next-line:no-invalid-this
+						this,
+						message,
+						newArgs
+					))[1]
+				]
+			];
 		}
 
 		const type = getMemberSettingsType(dbKey);
-		return func(`key: String, user: User, ...value?: ${type}`).call(
-			// tslint:disable-next-line:no-invalid-this
-			this,
+		return [
 			message,
-			newArgs
-		);
+			[
+				rp,
+				...(await func(`key: String, user: User, ...value?: ${type}`).call(
+					// tslint:disable-next-line:no-invalid-this
+					this,
+					message,
+					newArgs
+				))[1]
+			]
+		];
 	};
 };
 
@@ -109,9 +144,9 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@localizable
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
-	@localizable
 	public async action(
 		message: Message,
 		[rp, key, user, rawValue]: [RP, MemberSettingsKey, User, any]

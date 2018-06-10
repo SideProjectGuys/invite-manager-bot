@@ -6,6 +6,12 @@ Below are all the config settings of your server.
 Use `{{ prefix }}config <key>` to view a single setting
 Use `{{ prefix }}config <key> <value>` to set the config <key> to <value>
 
+[CMD_CONFIG_KEY_NOT_FOUND]
+No config setting called **{{ key }}** found.
+
+[CMD_CONFIG_KEY_CANT_CLEAR]
+The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.
+
 [CMD_CONFIG_NOT_SET]
 These settings are not set
 
