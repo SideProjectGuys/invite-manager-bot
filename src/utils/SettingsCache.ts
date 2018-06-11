@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+import { IMClient } from '../client';
 import {
 	defaultSettings,
 	premiumSubscriptions,
@@ -11,6 +12,7 @@ import {
 const maxCacheDuration = moment.duration(4, 'h');
 
 export class SettingsCache {
+	private static client: IMClient;
 	private static cache: {
 		[guildId: string]: { [key in SettingsKey]: any };
 	} = {};
@@ -19,7 +21,9 @@ export class SettingsCache {
 	private static premium: { [guildId: string]: boolean } = {};
 	private static premiumFetch: { [guildId: string]: moment.Moment } = {};
 
-	public static async init() {
+	public static async init(client: IMClient) {
+		this.client = client;
+
 		// Load all settings into initial cache
 		const sets = await settings.findAll({
 			order: ['guildId', 'key'],
@@ -137,6 +141,9 @@ export class SettingsCache {
 		// Check if the value changed
 		if (oldConfig[key] !== value) {
 			this.cache[guildId][key] = value;
+
+			// Update the storage provider, so our bot works correctly
+			await this.client.storage.guilds.get(guildId).settings.set(key, value);
 
 			await settings.bulkCreate(
 				[
