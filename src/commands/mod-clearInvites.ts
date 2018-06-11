@@ -47,7 +47,7 @@ export default class extends Command<IMClient> {
 	@using(resolve('clearBonus: Boolean, user: User'))
 	public async action(
 		message: Message,
-		[clearBonus, user]: [string, User]
+		[clearBonus, user]: [boolean, User]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -167,7 +167,7 @@ export default class extends Command<IMClient> {
 			cleared[memId] = true;
 		});
 
-		if (clearBonus === '__true__') {
+		if (clearBonus) {
 			// Process any custom invites
 			customInvs
 				.filter(inv => inv.generatedReason === null)

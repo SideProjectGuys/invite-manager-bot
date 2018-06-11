@@ -46,10 +46,8 @@ export default class extends Command<IMClient> {
 		embed.addField('Members', numMembers, true);
 
 		// Shard info
-		if (this.client.shard) {
-			embed.addField('Current Shard', this.client.shard.id + 1, true);
-			embed.addField('Total Shards', this.client.shard.count, true);
-		}
+		embed.addField('Current Shard', this.client.options.shardId + 1, true);
+		embed.addField('Total Shards', this.client.options.shardCount, true);
 
 		// Support discord
 		if (config.botSupport) {

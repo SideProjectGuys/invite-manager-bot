@@ -793,7 +793,11 @@ export class IMClient extends Client {
 		const numGuilds = await this.getGuildsCount();
 
 		if (this.dbl) {
-			this.dbl.postStats(numGuilds, this.shard.id, this.shard.count);
+			this.dbl.postStats(
+				numGuilds,
+				this.options.shardId,
+				this.options.shardCount
+			);
 		}
 		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
 			type: 'PLAYING'
