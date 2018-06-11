@@ -68,3 +68,6 @@ Invalid language **{{ value }}**. The following languages are supported: {{ lang
 
 [CMD_CONFIG_INVALID_LEADERBOARD_STYLE]
 Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}
+
+[CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE]
+Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}

@@ -175,7 +175,8 @@ export enum SettingsKey {
 	leaderboardStyle = 'leaderboardStyle',
 	autoSubtractFakes = 'autoSubtractFakes',
 	autoSubtractLeaves = 'autoSubtractLeaves',
-	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold'
+	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
+	rankAssignmentStyle = 'rankAssignmentStyle'
 }
 
 export enum Lang {
@@ -191,6 +192,11 @@ export enum LeaderboardStyle {
 	normal = 'normal',
 	table = 'table',
 	mentions = 'mentions'
+}
+
+export enum RankAssignmentStyle {
+	all = 'all',
+	highest = 'highest'
 }
 
 export function getSettingsType(key: SettingsKey) {
@@ -258,7 +264,7 @@ export function toDbSettingsValue(
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
-	lang: 'en_us',
+	lang: Lang.en_us,
 	joinMessage:
 		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
@@ -268,10 +274,11 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	modChannel: null,
 	logChannel: null,
 	getUpdates: 'true',
-	leaderboardStyle: 'normal',
+	leaderboardStyle: LeaderboardStyle.normal,
 	autoSubtractFakes: 'true',
 	autoSubtractLeaves: 'true',
-	autoSubtractLeaveThreshold: '600' // seconds
+	autoSubtractLeaveThreshold: '600' /* seconds */,
+	rankAssignmentStyle: RankAssignmentStyle.all
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -300,7 +307,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.modChannel,
 			SettingsKey.logChannel,
 			SettingsKey.getUpdates,
-			SettingsKey.autoSubtractFakes
+			SettingsKey.autoSubtractFakes,
+			SettingsKey.rankAssignmentStyle
 		),
 		value: Sequelize.TEXT
 	},

@@ -18,6 +18,7 @@ import {
 	Lang,
 	LeaderboardStyle,
 	LogAction,
+	RankAssignmentStyle,
 	SettingsKey,
 	toDbSettingsValue
 } from '../sequelize';
@@ -304,6 +305,14 @@ export default class extends Command<IMClient> {
 					.map(k => `**${k}**`)
 					.join(', ');
 				return rp.CMD_CONFIG_INVALID_LEADERBOARD_STYLE({ value, styles });
+			}
+		}
+		if (key === SettingsKey.rankAssignmentStyle) {
+			if (!RankAssignmentStyle[value]) {
+				const styles = Object.keys(RankAssignmentStyle)
+					.map(k => `**${k}**`)
+					.join(', ');
+				return rp.CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE({ value, styles });
 			}
 		}
 

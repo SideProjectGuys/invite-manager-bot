@@ -152,7 +152,7 @@ export class IMClient extends Client {
 			});
 		});
 
-		SettingsCache.init();
+		SettingsCache.init(this);
 	}
 
 	@once('pause')
