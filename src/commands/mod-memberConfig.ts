@@ -119,13 +119,6 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		// TODO: Temporary hack because boolean resolver doesn't work
-		if (rawValue === '__true__') {
-			rawValue = true;
-		} else if (rawValue === '__false__') {
-			rawValue = false;
-		}
-
 		const prefix = await message.guild.storage.settings.get('prefix');
 		const embed = createEmbed(this.client);
 
