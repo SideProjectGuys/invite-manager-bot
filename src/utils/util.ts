@@ -7,23 +7,23 @@ import {
 	MessageEmbed,
 	MessageEmbedOptions,
 	MessageReaction,
+	Role,
 	TextChannel,
-	User,
-	Role
+	User
 } from 'discord.js';
 
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	RankAssignmentStyle,
 	RankInstance,
 	ranks,
-	sequelize,
-	RankAssignmentStyle
+	sequelize
 } from '../sequelize';
 
-import { TranslationKeys } from './Translations';
 import { SettingsCache } from './SettingsCache';
+import { TranslationKeys } from './Translations';
 
 export enum CommandGroup {
 	Invites = 'Invites',

@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../client';
+import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve } = Middleware;
@@ -16,12 +17,13 @@ const { using, localizable } = CommandDecorators;
 interface FAQ {
 	name: string;
 	aliases: string[];
-	question: string;
-	answer: string;
+	key: string;
 }
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
+
+	private faqs: FAQ[] = [];
 
 	public constructor() {
 		super({
@@ -32,6 +34,8 @@ export default class extends Command<IMClient> {
 			group: CommandGroup.Other,
 			guildOnly: true
 		});
+
+		this.faqs = require('../../faqs.json');
 	}
 
 	@using(resolve('faqName: String'))
@@ -44,22 +48,29 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const faqs: FAQ[] = require('../../faqs.json');
+		const showAll = faqName === 'all';
+		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+		const bot = '@' + message.guild.me.displayName;
 
 		const embed = createEmbed(this.client);
 
-		if (!faqName) {
-			faqs.forEach(faq => {
-				embed.addField(faq.question, '`!faq ' + faq.name + '`');
+		if (!faqName || showAll) {
+			this.faqs.forEach(faq => {
+				embed.addField(
+					rp[faq.key + '_Q']({ prefix, bot }),
+					showAll
+						? rp[faq.key + '_A']({ prefix, bot })
+						: '`' + prefix + 'faq ' + faq.name + '`'
+				);
 			});
 			embed.addField(rp.CMD_FAQ_MORE_TITLE(), rp.CMD_FAQ_MORE_TEXT());
 		} else {
-			let faq = faqs.find(
+			let faq = this.faqs.find(
 				el => el.name === faqName || el.aliases.some(f => f === faqName)
 			);
 			if (faq) {
-				embed.setTitle(faq.question);
-				embed.setDescription(faq.answer);
+				embed.setTitle(rp[faq.key + '_Q']({ prefix, bot }));
+				embed.setDescription(rp[faq.key + '_A']({ prefix, bot }));
 			} else {
 				embed.setTitle(rp.CMD_FAQ_NOT_FOUND({ name: faqName }));
 			}

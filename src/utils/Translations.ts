@@ -1,3 +1,5 @@
+import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
+
 export interface TranslationKeys {
 	// Main
 	BOT_SUPPORT_DISCORD_TITLE: any;
@@ -193,4 +195,6 @@ export interface TranslationKeys {
 
 	CMD_SUBTRACTLEAVES_NO_LEAVES: any;
 	CMD_SUBTRACTLEAVES_DONE: any;
+
+	[x: string]: (data: TemplateData) => string;
 }
