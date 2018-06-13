@@ -40,6 +40,9 @@ Regular invites
 [CMD_INFO_REGULARINVITES_ENTRY]
 **{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**
 
+[CMD_INFO_REGULARINVITES_MORE]
+Plus another **{{ amount }}** more invite codes
+
 [CMD_INFO_REGULARINVITES_NONE]
 This member has not invited anyone so far
 

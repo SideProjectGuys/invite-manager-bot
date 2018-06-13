@@ -241,7 +241,7 @@ export default class extends Command<IMClient> {
 
 		if (invs.length > 0) {
 			let invText = '';
-			invs.forEach(inv => {
+			invs.slice(0, 10).forEach(inv => {
 				invText +=
 					rp.CMD_INFO_REGULARINVITES_ENTRY({
 						uses: inv.uses,
@@ -252,7 +252,17 @@ export default class extends Command<IMClient> {
 						reason: inv.reason
 					}) + '\n';
 			});
-			embed.addField(rp.CMD_INFO_REGULARINVITES_TITLE(), invText);
+
+			let more = '';
+			if (invs.length > 10) {
+				more =
+					'\n' +
+					rp.CMD_INFO_REGULARINVITES_MORE({
+						amount: invs.length - 10
+					});
+			}
+
+			embed.addField(rp.CMD_INFO_REGULARINVITES_TITLE(), invText + more);
 		} else {
 			embed.addField(
 				rp.CMD_INFO_REGULARINVITES_TITLE(),
