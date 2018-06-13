@@ -525,7 +525,7 @@ export default class extends Command<IMClient> {
 						name: line[2],
 						total: line[3],
 						regular: line[4],
-						bonus: line[5],
+						custom: line[5],
 						fake: line[6],
 						leave: line[7]
 					});
