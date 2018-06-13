@@ -11,4 +11,4 @@ There have been no fake invites since the bot has been added to this server.
 **{{ name }}** joined **{{ times }} times**, invited by:
 
 [CMD_FAKE_JOIN_ENTRY_INV]
-**{{ name }}**{{! times ? ` (**{{ times }}** times)` : '' !}}
+**{{ name }}**{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}
