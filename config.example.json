@@ -14,7 +14,8 @@
 	"rabbitmq": {
 		"hostname": "localhost",
 		"username": "guest",
-		"password": "guest"
+		"password": "guest",
+		"prefix": ""
 	},
 	"sequelize": {
 		"dialect": "mysql",
