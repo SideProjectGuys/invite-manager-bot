@@ -26,7 +26,7 @@ Joins
 {{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:
 
 [CMD_INFO_JOINS_ENTRY_INV]
-<@{{ id }}>{{! times ? ` (**{{ times }}** times)` : '' !}}
+<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}
 
 [CMD_INFO_JOINS_MORE]
 Plus another **{{ amount }}** more joins

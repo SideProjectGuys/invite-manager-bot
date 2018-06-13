@@ -125,7 +125,9 @@ export class IMClient extends Client {
 		this.dbQueue = new DBQueue(this);
 
 		// Setup RabbitMQ channels
-		this.qJoinsName = 'joins-' + shardId + '-' + shardCount;
+		const prefix = config.rabbitmq.prefix ? config.rabbitmq.prefix + '-' : '';
+
+		this.qJoinsName = prefix + 'joins-' + shardId + '-' + shardCount;
 		conn.createChannel().then(async channel => {
 			this.channelJoins = channel;
 
@@ -134,7 +136,7 @@ export class IMClient extends Client {
 			});
 		});
 
-		this.qLeavesName = 'leaves-' + shardId + '-' + shardCount;
+		this.qLeavesName = prefix + 'leaves-' + shardId + '-' + shardCount;
 		conn.createChannel().then(async channel => {
 			this.channelLeaves = channel;
 
@@ -143,7 +145,7 @@ export class IMClient extends Client {
 			});
 		});
 
-		this.qCmdsName = 'cmds-' + shardId + '-' + shardCount;
+		this.qCmdsName = prefix + 'cmds-' + shardId + '-' + shardCount;
 		conn.createChannel().then(async channel => {
 			this.channelCmds = channel;
 

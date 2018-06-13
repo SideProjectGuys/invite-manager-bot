@@ -1,2 +1,2 @@
 [CMD_RESTOREINVITES_DONE]
-Restored invites{{! user ? ` for <@${user}>` : '' !}}
+Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}
