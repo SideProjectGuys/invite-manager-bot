@@ -14,11 +14,12 @@ import {
 	createEmbed,
 	getInviteCounts,
 	promoteIfQualified,
+	RP,
 	sendEmbed
 } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -37,23 +38,25 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('user: User'))
-	public async action(message: Message, [user]: [User]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
 		let target = user ? user : message.author;
-
 		const invites = await getInviteCounts(message.guild.id, target.id);
 
-		let subject =
-			target.id === message.author.id ? 'You have' : `<@${target.id}> has`;
 		let textMessage =
-			`${subject} **${invites.total}** invites! ` +
-			`(**${invites.regular}** regular, ` +
-			`**${invites.custom}** bonus, ` +
-			`**${invites.fake}** fake, ` +
-			`**${invites.leave}** leaves)\n`;
+			rp.CMD_INVITES_AMOUNT({
+				self: message.author.id,
+				target: target.id,
+				total: invites.total,
+				regular: invites.regular,
+				custom: invites.custom,
+				fake: invites.fake,
+				leave: invites.leave
+			}) + '\n';
 
 		if (!target.bot) {
 			let targetMember = await message.guild.members.fetch(target.id);
@@ -65,17 +68,15 @@ export default class extends Command<IMClient> {
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
-				subject =
-					target.id === message.author.id
-						? 'You need'
-						: `<@${target.id}> needs`;
-				textMessage += `${subject} **${nextRankPointsDiff}** more invites to reach **${nextRankName}** rank!`;
+				textMessage += rp.CMD_INVITES_NEXT_RANK({
+					self: message.author.id,
+					target: target.id,
+					nextRankPointsDiff,
+					nextRankName
+				});
 			} else {
 				if (numRanks > 0) {
-					textMessage +=
-						target.id === message.author.id
-							? `Congratulations, you currently have the highest rank!`
-							: `<@${target.id}> currently has the highest rank!`;
+					textMessage += rp.CMD_INVITES_HIGHEST_RANK();
 				}
 			}
 		}

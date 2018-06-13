@@ -1,63 +1,31 @@
 import { IStorageProvider, StorageProvider } from '@yamdbf/core';
 
-import { defaultSettings, settings, SettingsKey } from '../sequelize';
+import { defaultSettings } from '../sequelize';
+
+import { SettingsCache } from './SettingsCache';
 
 const defaultSettingsStr = JSON.stringify(defaultSettings);
 
 export class IMStorageProvider extends StorageProvider
 	implements IStorageProvider {
 	private name: string;
-	private cache: { [guildId: string]: string };
 
 	public constructor(name: string) {
 		super();
 		this.name = name;
-		this.cache = {};
 	}
 
 	public async init() {
-		console.log(`${this.name} init`);
-
-		if (this.name === 'guild_settings') {
-			// Load all settings into initial cache
-			const sets = await settings.findAll({
-				order: ['guildId', 'key'],
-				raw: true
-			});
-
-			const cache: { [x: string]: { [key in SettingsKey]: string } } = {};
-			sets.forEach(set => {
-				if (!cache[set.guildId]) {
-					cache[set.guildId] = { ...defaultSettings };
-				}
-				// Skip any empty values that aren't allowed to be empty.
-				// This is a backward fix to insert any missing non-empty settings for guilds that don't have them yet.
-				if (set.value === null && defaultSettings[set.key] !== null) {
-					return;
-				}
-				cache[set.guildId][set.key] = set.value;
-			});
-
-			Object.keys(cache).forEach(guildId => {
-				const obj = cache[guildId];
-				if (!obj[SettingsKey.prefix]) {
-					obj[SettingsKey.prefix] = '!';
-				}
-				const str = JSON.stringify(obj);
-				this.cache[guildId] = str;
-			});
-			return;
-		}
+		console.log(`INIT ${this.name}`);
 	}
 
 	public async clear() {
-		if (this.name === 'guild_settings') {
-			this.cache = {};
-			return;
-		}
+		//
 	}
 
 	public async get(key: string) {
+		console.log('GET: ' + key);
+
 		if (this.name === 'client_storage') {
 			if (key === 'defaultGuildSettings') {
 				return defaultSettingsStr;
@@ -66,57 +34,19 @@ export class IMStorageProvider extends StorageProvider
 		}
 
 		if (this.name === 'guild_settings') {
-			if (this.cache[key]) {
-				return this.cache[key];
-			}
-
-			const sets = await settings.findAll({
-				where: {
-					guildId: key
-				}
-			});
-
-			const obj: { [k in SettingsKey]: string } = { ...defaultSettings };
-			sets.forEach(set => (obj[set.key] = set.value));
-
-			const str = JSON.stringify(obj);
-			this.cache[key] = str;
-			return str;
+			return JSON.stringify(await SettingsCache.get(key));
 		}
 
 		return '{}';
 	}
 
 	public async set(key: string, value: string) {
-		if (this.name === 'guild_settings') {
-			// Check if the value changed
-			if (value !== this.cache[key]) {
-				const oldConfig = JSON.parse(this.cache[key]);
-				const config = { ...defaultSettings, ...JSON.parse(value) };
-
-				this.cache[key] = JSON.stringify(config);
-
-				// Filter out valid configs, and only the ones that changed
-				const sets = Object.keys(config)
-					.filter(k => k in SettingsKey && config[k] !== oldConfig[k])
-					.map((k: SettingsKey) => ({
-						id: null,
-						guildId: key,
-						key: k,
-						value: config[k]
-					}));
-
-				settings.bulkCreate(sets, {
-					updateOnDuplicate: ['value', 'updatedAt']
-				});
-			}
-			return;
-		}
+		console.log('SET: ' + key + ' ' + value);
 	}
 
 	public async keys() {
 		if (this.name === 'guild_settings') {
-			return Object.keys(this.cache);
+			return await SettingsCache.keys();
 		}
 
 		return [];
@@ -124,7 +54,7 @@ export class IMStorageProvider extends StorageProvider
 
 	public async remove(key: string) {
 		if (this.name !== 'guild_settings') {
-			delete this.cache[key];
+			await SettingsCache.remove(key);
 			return;
 		}
 	}

@@ -19,10 +19,11 @@ import {
 	members,
 	sequelize
 } from '../sequelize';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { SettingsCache } from '../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -44,7 +45,8 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('user: User'))
 	@using(expect('user: User'))
-	public async action(message: Message, [user]: [User]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -52,9 +54,11 @@ export default class extends Command<IMClient> {
 		let member = message.guild.members.get(user.id);
 
 		if (!member) {
-			message.channel.send('User is not part of your guild');
+			message.channel.send(rp.CMD_INFO_NOT_IN_GUILD());
 			return;
 		}
+
+		const lang = (await SettingsCache.get(message.guild.id)).lang;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
@@ -110,12 +114,19 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.user.username);
 
-		const joinedAgo = moment(member.joinedAt).fromNow();
-		embed.addField('Last joined', joinedAgo, true);
+		const joinedAgo = moment(member.joinedAt)
+			.locale(lang)
+			.fromNow();
+		embed.addField(rp.CMD_INFO_LASTJOINED_TITLE(), joinedAgo, true);
 		embed.addField(
-			'Invites',
-			`**${numTotal}** (**${regular}** regular, ` +
-				`**${custom}** bonus, **${fake}** fake, **${leave}** leaves)`,
+			rp.CMD_INFO_INVITES_TITLE(),
+			rp.CMD_INFO_INVITES_TEXT({
+				total: numTotal,
+				regular,
+				custom,
+				fake,
+				leave
+			}),
 			true
 		);
 
@@ -128,9 +139,21 @@ export default class extends Command<IMClient> {
 			}),
 			1
 		);
-		embed.addField('Joined', `${joinCount} times`, true);
+		embed.addField(
+			rp.CMD_INFO_JOINED_TITLE(),
+			rp.CMD_INFO_JOINED_TEXT({
+				amount: joinCount
+			}),
+			true
+		);
 
-		embed.addField('Created', moment(member.user.createdAt).fromNow(), true);
+		embed.addField(
+			rp.CMD_INFO_CREATED_TITLE(),
+			moment(member.user.createdAt)
+				.locale(lang)
+				.fromNow(),
+			true
+		);
 
 		const js = await joins.findAll({
 			attributes: ['createdAt'],
@@ -160,7 +183,9 @@ export default class extends Command<IMClient> {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
 			js.forEach((join: any) => {
-				const text = moment(join.createdAt).fromNow();
+				const text = moment(join.createdAt)
+					.locale(lang)
+					.fromNow();
 				if (!joinTimes[text]) {
 					joinTimes[text] = {};
 				}
@@ -182,41 +207,66 @@ export default class extends Command<IMClient> {
 					(acc, id) => acc + joinTime[id],
 					0
 				);
-				const totalText = total > 1 ? `**${total}** times ` : 'once ';
+
+				const mainText = rp.CMD_INFO_JOINS_ENTRY({
+					total: total > 1 ? total : undefined,
+					time
+				});
 
 				const invText = Object.keys(joinTime)
-					.map(id => {
-						const timesText =
-							joinTime[id] > 1 ? ` (**${joinTime[id]}** times)` : '';
-						return `<@${id}>${timesText}`;
-					})
+					.map(id =>
+						rp.CMD_INFO_JOINS_ENTRY_INV({
+							id,
+							times: joinTime[id] > 1 ? joinTime[id] : undefined
+						})
+					)
 					.join(', ');
-				joinText += `${totalText}**${time}**, invited by: ${invText}\n`;
+
+				joinText += mainText + ' ' + invText;
 			});
-			embed.addField(
-				'Joins',
-				joinText +
-					(joinTimesKeys.length > 10
-						? `\nPlus another **${joinTimesKeys.length - 10}** more joins`
-						: '')
-			);
+
+			let more = '';
+			if (joinTimesKeys.length > 10) {
+				more =
+					'\n' +
+					rp.CMD_INFO_JOINS_MORE({
+						amount: joinTimesKeys.length - 10
+					});
+			}
+
+			embed.addField(rp.CMD_INFO_JOINS_TITLE(), joinText + more);
 		} else {
-			embed.addField('Joins', 'unknown (this only works for new members)');
+			embed.addField(rp.CMD_INFO_JOINS_TITLE(), rp.CMD_INFO_JOINS_UNKNOWN());
 		}
 
 		if (invs.length > 0) {
 			let invText = '';
-			invs.forEach(inv => {
-				const reasonText = inv.reason ? `, reason: **${inv.reason}**` : '';
-				invText += `**${inv.uses}** from **${inv.code}** - created **${moment(
-					inv.createdAt
-				).fromNow()}${reasonText}**\n`;
+			invs.slice(0, 10).forEach(inv => {
+				invText +=
+					rp.CMD_INFO_REGULARINVITES_ENTRY({
+						uses: inv.uses,
+						code: inv.code,
+						createdAt: moment(inv.createdAt)
+							.locale(lang)
+							.fromNow(),
+						reason: inv.reason
+					}) + '\n';
 			});
-			embed.addField('Regular invites', invText);
+
+			let more = '';
+			if (invs.length > 10) {
+				more =
+					'\n' +
+					rp.CMD_INFO_REGULARINVITES_MORE({
+						amount: invs.length - 10
+					});
+			}
+
+			embed.addField(rp.CMD_INFO_REGULARINVITES_TITLE(), invText + more);
 		} else {
 			embed.addField(
-				'Regular invites',
-				'This member has not invited anyone so far'
+				rp.CMD_INFO_REGULARINVITES_TITLE(),
+				rp.CMD_INFO_REGULARINVITES_NONE()
 			);
 		}
 
@@ -224,28 +274,34 @@ export default class extends Command<IMClient> {
 			let customInvText = '';
 			customInvs.slice(0, 10).forEach(inv => {
 				const reasonText = inv.generatedReason
-					? ', ' + this.formatGeneratedReason(inv)
-					: inv.reason
-						? `, reason: **${inv.reason}**`
-						: '';
+					? ', ' + this.formatGeneratedReason(rp, inv)
+					: inv.reason;
 
-				const dateText = moment(inv.createdAt).fromNow();
-				const creator = inv.creatorId ? inv.creatorId : message.guild.me.id;
 				customInvText +=
-					`**${inv.amount}** from <@${creator}> -` +
-					` **${dateText}**${reasonText}\n`;
+					rp.CMD_INFO_BONUSINVITES_ENTRY({
+						amount: inv.amount,
+						creator: inv.creatorId ? inv.creatorId : message.guild.me.id,
+						date: moment(inv.createdAt)
+							.locale(lang)
+							.fromNow(),
+						reason: reasonText
+					}) + '\n';
 			});
-			embed.addField(
-				'Bonus invites',
-				customInvText +
-					(customInvs.length > 10
-						? `\nPlus another **${customInvs.length - 10}** more bonus invites`
-						: '')
-			);
+
+			let more = '';
+			if (customInvs.length > 10) {
+				more =
+					'\n' +
+					rp.CMD_INFO_BONUSINVITES_MORE({
+						amount: customInvs.length - 10
+					});
+			}
+
+			embed.addField(rp.CMD_INFO_BONUSINVITES_TITLE(), customInvText + more);
 		} else {
 			embed.addField(
-				'Bonus invites',
-				'This member has received no bonuses so far'
+				rp.CMD_INFO_BONUSINVITES_TITLE(),
+				rp.CMD_INFO_BONUSINVITES_NONE()
 			);
 		}
 
@@ -282,49 +338,54 @@ export default class extends Command<IMClient> {
 		if (js2.length > 0) {
 			let inviteText = '';
 			js2.slice(0, 10).forEach((join: any) => {
-				const time = moment(join.createdAt).fromNow();
+				const time = moment(join.createdAt)
+					.locale(lang)
+					.fromNow();
 				inviteText += `<@${join.memberId}> - ${time}\n`;
 			});
 
-			embed.addField(
-				'Invited members',
-				inviteText +
-					(js2.length > 10
-						? `\nPlus another **${js2.length - 10}** more members`
-						: '')
-			);
+			let more = '';
+			if (js2.length > 10) {
+				more =
+					'\n' +
+					rp.CMD_INFO_INVITEDMEMBERS_MORE({
+						amount: js2.length - 10
+					});
+			}
+
+			embed.addField(rp.CMD_INFO_INVITEDMEMBERS_TITLE(), inviteText + more);
 		} else {
 			embed.addField(
-				'Invited members',
-				'This member has not invited anyone else so far'
+				rp.CMD_INFO_INVITEDMEMBERS_TITLE(),
+				rp.CMD_INFO_INVITEDMEMBERS_NONE()
 			);
 		}
 
 		sendEmbed(message.channel, embed, message.author);
 	}
 
-	private formatGeneratedReason(inv: CustomInviteInstance) {
+	private formatGeneratedReason(rp: RP, inv: CustomInviteInstance) {
 		switch (inv.generatedReason) {
 			case CustomInvitesGeneratedReason.clear_regular:
-				return '!clear-invites command (regular)';
+				return rp.CUSTOM_INVITES_REASON_CLEAR_REGULAR();
 
 			case CustomInvitesGeneratedReason.clear_custom:
-				return '!clear-invites command (custom)';
+				return rp.CUSTOM_INVITES_REASON_CLEAR_CUSTOM();
 
 			case CustomInvitesGeneratedReason.clear_fake:
-				return '!clear-invites command (fake)';
+				return rp.CUSTOM_INVITES_REASON_CLEAR_FAKE();
 
 			case CustomInvitesGeneratedReason.clear_leave:
-				return '!clear-invites command (leaves)';
+				return rp.CUSTOM_INVITES_REASON_CLEAR_LEAVE();
 
 			case CustomInvitesGeneratedReason.fake:
-				return `Fake invites from <@${inv.reason}>`;
+				return rp.CUSTOM_INVITES_REASON_FAKE({ reason: inv.reason });
 
 			case CustomInvitesGeneratedReason.leave:
-				return `Leave of <@${inv.reason}>`;
+				return rp.CUSTOM_INVITES_REASON_LEAVE({ reason: inv.reason });
 
 			default:
-				return '<Unknown reason>';
+				return rp.CUSTOM_INVITES_REASON_UNKNOWN();
 		}
 	}
 }

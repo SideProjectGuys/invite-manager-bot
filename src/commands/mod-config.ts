@@ -18,64 +18,100 @@ import {
 	Lang,
 	LeaderboardStyle,
 	LogAction,
+	RankAssignmentStyle,
 	SettingsKey,
 	toDbSettingsValue
 } from '../sequelize';
-import { CommandGroup, createEmbed, sendEmbed } from '../utils/util';
+import { SettingsCache } from '../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
 const { expect, resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return function(message: Message, args: string[]) {
+	return async function(
+		message: Message,
+		[rp, ..._args]: [RP, string]
+	): Promise<[Message, any[]]> {
+		const args = _args as string[];
+
 		const key = args[0];
 		if (!key) {
-			return [message, args];
+			return [message, [rp]];
 		}
 
 		const dbKey = Object.keys(SettingsKey).find(
 			(k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as SettingsKey;
 		if (!dbKey) {
-			throw Error(`No config setting called **${key}** found.`);
+			throw Error(rp.CMD_CONFIG_KEY_NOT_FOUND({ key }));
 		}
 
 		const value = args[1];
 		if (value === undefined) {
-			// tslint:disable-next-line:no-invalid-this
-			return func('key: String').call(this, message, [dbKey]);
+			// We call func (resolve or expect) with the string keys, await
+			// the response (which is '[message, args[]]') and unwrap the args
+			// after the resource proxy
+			return [
+				message,
+				[
+					rp,
+					...(await func('key: String')
+						// tslint:disable-next-line:no-invalid-this
+						.call(this, message, [dbKey]))[1]
+				]
+			];
 		}
 
 		const newArgs = ([dbKey] as any[]).concat(args.slice(1));
 
 		if (value === 'default') {
-			return func('key: String, ...value?: String').call(
-				// tslint:disable-next-line:no-invalid-this
-				this,
+			return [
 				message,
-				newArgs
-			);
+				[
+					rp,
+					...(await func('key: String, ...value?: String').call(
+						// tslint:disable-next-line:no-invalid-this
+						this,
+						message,
+						newArgs
+					))[1]
+				]
+			];
 		}
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[dbKey] !== null) {
-				throw Error(
-					`The config setting **${dbKey}** can not be cleared. ` +
-						`You can use \`config ${dbKey} default\` to reset it to the default value.`
-				);
+				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ key: dbKey }));
 			}
-			return func('key: String, ...value?: String').call(
-				// tslint:disable-next-line:no-invalid-this
-				this,
+			return [
 				message,
-				newArgs
-			);
+				[
+					rp,
+					...(await func('key: String, ...value?: String').call(
+						// tslint:disable-next-line:no-invalid-this
+						this,
+						message,
+						newArgs
+					))[1]
+				]
+			];
 		}
 
 		const type = getSettingsType(dbKey);
-		// tslint:disable-next-line:no-invalid-this
-		return func(`key: String, ...value?: ${type}`).call(this, message, newArgs);
+		return [
+			message,
+			[
+				rp,
+				...(await func(`key: String, ...value?: ${type}`).call(
+					// tslint:disable-next-line:no-invalid-this
+					this,
+					message,
+					newArgs
+				))[1]
+			]
+		];
 	};
 };
 
@@ -100,34 +136,29 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@localizable
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
 	public async action(
 		message: Message,
-		[key, rawValue]: [SettingsKey, any]
+		[rp, key, rawValue]: [RP, SettingsKey, any]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		console.log(rawValue);
-
-		const sets = message.guild.storage.settings;
-		const prefix = await sets.get('prefix');
+		const settings = await SettingsCache.get(message.guild.id);
+		const prefix = settings.prefix;
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle('Your config settings');
-			embed.setDescription(
-				'Below are all the config settings of your server.\n' +
-					`Use \`${prefix}config <key>\` to view a single setting\n` +
-					`Use \`${prefix}config <key> <value>\` to set the config <key> to <value>`
-			);
+			embed.setTitle(rp.CMD_CONFIG_TITLE());
+			embed.setDescription(rp.CMD_CONFIG_TEXT({ prefix }));
 
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
 			for (let i = 0; i < keys.length; i++) {
-				const val = await sets.get(keys[i]);
+				const val = settings.prefix[keys[i]];
 				if (val) {
 					embed.addField(
 						keys[i],
@@ -140,7 +171,7 @@ export default class extends Command<IMClient> {
 
 			if (notSet.length > 0) {
 				embed.addField(
-					'----- These settings are not set -----',
+					`----- ${rp.CMD_CONFIG_NOT_SET()} -----`,
 					notSet.join('\n')
 				);
 			}
@@ -149,7 +180,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		let oldVal = await sets.get(key);
+		let oldVal = settings[key];
 		let oldRawVal = fromDbSettingsValue(key, oldVal);
 		if (typeof oldRawVal === 'string' && oldRawVal.length > 1000) {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
@@ -161,18 +192,14 @@ export default class extends Command<IMClient> {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
+				const clear = defaultSettings[key] === null ? 't' : undefined;
 				embed.setDescription(
-					`This config is currently set.\n` +
-						`Use \`${prefix}config ${key} <value>\` to change it.\n` +
-						`Use \`${prefix}config ${key} default\` to reset it to the default.\n` +
-						(defaultSettings[key] === null
-							? `Use \`${prefix}config ${key} none\` to clear it.`
-							: '')
+					rp.CMD_CONFIG_CURRENT_SET_TEXT({ prefix, key, clear })
 				);
-				embed.addField('Current Value', oldRawVal);
+				embed.addField(rp.CMD_CONFIG_CURRENT_TITLE(), oldRawVal);
 			} else {
 				embed.setDescription(
-					`This config is currently **not** set.\nUse \`${prefix}config ${key} <value>\` to set it.`
+					rp.CMD_CONFIG_CURRENT_NOT_SET_TEXT({ prefix, key })
 				);
 			}
 			await sendEmbed(message.channel, embed, message.author);
@@ -191,26 +218,22 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(`This config is already set to that value`);
-			embed.addField('Current Value', rawValue);
+			embed.setDescription(rp.CMD_CONFIG_ALREADY_SET_SAME_VALUE());
+			embed.addField(rp.CMD_CONFIG_CURRENT_TITLE(), rawValue);
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
-		const error = this.validate(message, key, value);
+		const error = this.validate(rp, message, key, value);
 		if (error) {
 			message.channel.send(error);
 			return;
 		}
 
 		// Set new value
-		sets.set(key, value);
+		SettingsCache.set(message.guild.id, key, value);
 
-		embed.setDescription(
-			`This config has been changed.\n` +
-				`Use \`${prefix}config ${key} <value>\` to change it again.\n` +
-				`Use \`${prefix}config ${key} none\` to reset it to the default.`
-		);
+		embed.setDescription(rp.CMD_CONFIG_CHANGED_TEXT({ prefix, key }));
 
 		// Log the settings change
 		this.client.logAction(message, LogAction.config, {
@@ -220,15 +243,18 @@ export default class extends Command<IMClient> {
 		});
 
 		if (oldVal) {
-			embed.addField('Previous Value', oldRawVal);
+			embed.addField(rp.CMD_CONFIG_PREVIOUS_TITLE(), oldRawVal);
 		}
 
-		embed.addField('New Value', value ? rawValue : 'None');
+		embed.addField(
+			rp.CMD_CONFIG_NEW_TITLE(),
+			value ? rawValue : rp.CMD_CONFIG_NONE()
+		);
 		oldVal = value; // Update value for future use
 
 		// Do any post processing, such as example messages
 		// If we updated a config setting, then 'oldVal' is now the new value
-		const cb = await this.after(message, embed, key, oldVal);
+		const cb = await this.after(rp, message, embed, key, oldVal);
 
 		await sendEmbed(message.channel, embed, message.author);
 
@@ -239,6 +265,7 @@ export default class extends Command<IMClient> {
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
 	private validate(
+		rp: RP,
 		message: Message,
 		key: SettingsKey,
 		value: any
@@ -252,16 +279,16 @@ export default class extends Command<IMClient> {
 		if (type === 'Channel') {
 			const channel = value as Channel;
 			if (!message.guild.me.permissionsIn(channel).has('VIEW_CHANNEL')) {
-				return `I don't have permission to **view** that channel`;
+				return rp.CMD_CONFIG_CHANNEL_CANT_VIEW();
 			}
 			/*if (!message.guild.me.permissionsIn(channel).has('READ_MESSAGES')) {
-				return `I don't have permission to **read messages** in that channel`;
+				return rp.CMD_CONFIG_CHANNEL_CANT_READ();
 			}*/
 			if (!message.guild.me.permissionsIn(channel).has('SEND_MESSAGES')) {
-				return `I don't have permission to **send messages** in that channel`;
+				return rp.CMD_CONFIG_CHANNEL_CANT_SEND();
 			}
 			if (!message.guild.me.permissionsIn(channel).has('EMBED_LINKS')) {
-				return `I don't have permission to **embed links** in that channel`;
+				return rp.CMD_CONFIG_CHANNEL_CANT_EMBED();
 			}
 		}
 		if (key === SettingsKey.lang) {
@@ -269,7 +296,7 @@ export default class extends Command<IMClient> {
 				const langs = Object.keys(Lang)
 					.map(k => `**${k}**`)
 					.join(', ');
-				return `Invalid language **${value}**. The following languages are supported: ${langs}`;
+				return rp.CMD_CONFIG_INVALID_LANG({ value, langs });
 			}
 		}
 		if (key === SettingsKey.leaderboardStyle) {
@@ -277,7 +304,15 @@ export default class extends Command<IMClient> {
 				const styles = Object.keys(LeaderboardStyle)
 					.map(k => `**${k}**`)
 					.join(', ');
-				return `Invalid leaderboard style **${value}**. The following styles are supported: ${styles}`;
+				return rp.CMD_CONFIG_INVALID_LEADERBOARD_STYLE({ value, styles });
+			}
+		}
+		if (key === SettingsKey.rankAssignmentStyle) {
+			if (!RankAssignmentStyle[value]) {
+				const styles = Object.keys(RankAssignmentStyle)
+					.map(k => `**${k}**`)
+					.join(', ');
+				return rp.CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE({ value, styles });
 			}
 		}
 
@@ -286,6 +321,7 @@ export default class extends Command<IMClient> {
 
 	// Attach additional information for a config value, such as examples
 	private async after(
+		rp: RP,
 		message: Message,
 		embed: MessageEmbed,
 		key: SettingsKey,
@@ -332,9 +368,12 @@ export default class extends Command<IMClient> {
 			);
 
 			if (typeof prev === 'string') {
-				embed.addField('Preview', prev);
+				embed.addField(rp.CMD_CONFIG_PREVIEW_TITLE(), prev);
 			} else {
-				embed.addField('Preview', '<See next message>');
+				embed.addField(
+					rp.CMD_CONFIG_PREVIEW_TITLE(),
+					rp.CMD_CONFIG_PREVIEW_NEXT_MESSAGE()
+				);
 				return () => sendEmbed(message.channel, prev);
 			}
 		}

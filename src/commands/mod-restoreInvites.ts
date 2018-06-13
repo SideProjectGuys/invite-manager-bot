@@ -14,10 +14,10 @@ import {
 	CustomInvitesGeneratedReason,
 	LogAction
 } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { CommandGroup, RP } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -39,7 +39,8 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('user: User'))
-	public async action(message: Message, [user]: [User]): Promise<any> {
+	@localizable
+	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -65,7 +66,7 @@ export default class extends Command<IMClient> {
 		});
 
 		message.channel.send(
-			'Restored invites' + (user ? ` for <@${user.id}>` : '')
+			rp.CMD_RESTOREINVITES_DONE({ user: user ? user.id : undefined })
 		);
 	}
 }

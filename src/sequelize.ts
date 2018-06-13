@@ -32,6 +32,9 @@ export interface MemberInstance
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
+	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
+		PremiumSubscriptionInstance
+	>;
 }
 
 export const members = sequelize.define<MemberInstance, MemberAttributes>(
@@ -73,6 +76,9 @@ export interface GuildInstance
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
 	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
+	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
+		PremiumSubscriptionInstance
+	>;
 }
 
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
@@ -169,17 +175,28 @@ export enum SettingsKey {
 	leaderboardStyle = 'leaderboardStyle',
 	autoSubtractFakes = 'autoSubtractFakes',
 	autoSubtractLeaves = 'autoSubtractLeaves',
-	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold'
+	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
+	rankAssignmentStyle = 'rankAssignmentStyle'
 }
 
 export enum Lang {
-	en_us = 'en_us'
+	en_us = 'en_us',
+	de_de = 'de_de',
+	fr_fr = 'fr_fr',
+	it_it = 'it_it',
+	es_es = 'es_es',
+	pt_pt = 'pt_pt'
 }
 
 export enum LeaderboardStyle {
 	normal = 'normal',
 	table = 'table',
 	mentions = 'mentions'
+}
+
+export enum RankAssignmentStyle {
+	all = 'all',
+	highest = 'highest'
 }
 
 export function getSettingsType(key: SettingsKey) {
@@ -227,7 +244,7 @@ export function fromDbSettingsValue(
 export function toDbSettingsValue(
 	key: SettingsKey,
 	value: any
-): { value?: string | number | boolean; error?: string } {
+): { value?: string; error?: string } {
 	if (value === 'default') {
 		return { value: defaultSettings[key] };
 	}
@@ -247,7 +264,7 @@ export function toDbSettingsValue(
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
-	lang: 'en_us',
+	lang: Lang.en_us,
 	joinMessage:
 		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
@@ -257,10 +274,11 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	modChannel: null,
 	logChannel: null,
 	getUpdates: 'true',
-	leaderboardStyle: 'normal',
+	leaderboardStyle: LeaderboardStyle.normal,
 	autoSubtractFakes: 'true',
 	autoSubtractLeaves: 'true',
-	autoSubtractLeaveThreshold: '600' // seconds
+	autoSubtractLeaveThreshold: '600' /* seconds */,
+	rankAssignmentStyle: RankAssignmentStyle.all
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -289,7 +307,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.modChannel,
 			SettingsKey.logChannel,
 			SettingsKey.getUpdates,
-			SettingsKey.autoSubtractFakes
+			SettingsKey.autoSubtractFakes,
+			SettingsKey.rankAssignmentStyle
 		),
 		value: Sequelize.TEXT
 	},
@@ -810,3 +829,41 @@ guilds.hasMany(commandUsage);
 
 commandUsage.belongsTo(members);
 members.hasMany(commandUsage);
+
+// ------------------------------------
+// PremiumSubscriptions
+// ------------------------------------
+export interface PremiumSubscriptionAttributes extends BaseAttributes {
+	id: number;
+	amount: number;
+	validUntil: Date | number | string;
+	guildId: string;
+	memberId: string;
+}
+export interface PremiumSubscriptionInstance
+	extends Sequelize.Instance<PremiumSubscriptionAttributes>,
+		PremiumSubscriptionAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const premiumSubscriptions = sequelize.define<
+	PremiumSubscriptionInstance,
+	PremiumSubscriptionAttributes
+>(
+	'premiumSubscriptions',
+	{
+		amount: Sequelize.DECIMAL(10, 2),
+		validUntil: Sequelize.DATE
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
+
+premiumSubscriptions.belongsTo(guilds);
+guilds.hasMany(premiumSubscriptions);
+
+premiumSubscriptions.belongsTo(members);
+members.hasMany(premiumSubscriptions);

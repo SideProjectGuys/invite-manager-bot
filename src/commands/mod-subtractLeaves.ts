@@ -1,4 +1,10 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 
 import { IMClient } from '../client';
 import {
@@ -7,10 +13,12 @@ import {
 	inviteCodes,
 	joins,
 	leaves,
-	sequelize,
-	SettingsKey
+	sequelize
 } from '../sequelize';
-import { CommandGroup } from '../utils/util';
+import { SettingsCache } from '../utils/SettingsCache';
+import { CommandGroup, RP } from '../utils/util';
+
+const { localizable } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -28,7 +36,11 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	public async action(message: Message, [_page]: [number]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, _page]: [RP, number]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -72,7 +84,7 @@ export default class extends Command<IMClient> {
 		});
 
 		if (ls.length === 0) {
-			await message.channel.send(`There have been no leaves so far!`);
+			await message.channel.send(rp.CMD_SUBTRACTLEAVES_NO_LEAVES());
 			return;
 		}
 
@@ -84,9 +96,8 @@ export default class extends Command<IMClient> {
 			}
 		});
 
-		const threshold = await message.guild.storage.settings.get(
-			SettingsKey.autoSubtractLeaveThreshold
-		);
+		const threshold = (await SettingsCache.get(message.guild.id))
+			.autoSubtractLeaveThreshold;
 
 		// Add subtracts for leaves
 		const customInvs = ls
@@ -104,6 +115,8 @@ export default class extends Command<IMClient> {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		await message.channel.send(`Removed ${customInvs.length} leaves!`);
+		await message.channel.send(
+			rp.CMD_SUBTRACTLEAVES_DONE({ amount: customInvs.length })
+		);
 	}
 }

@@ -1,4 +1,4 @@
-import { Guild, Message } from '@yamdbf/core';
+import { Guild, Message, ResourceProxy } from '@yamdbf/core';
 import {
 	Client,
 	DMChannel,
@@ -7,6 +7,7 @@ import {
 	MessageEmbed,
 	MessageEmbedOptions,
 	MessageReaction,
+	Role,
 	TextChannel,
 	User
 } from 'discord.js';
@@ -15,10 +16,14 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	RankAssignmentStyle,
 	RankInstance,
 	ranks,
 	sequelize
 } from '../sequelize';
+
+import { SettingsCache } from './SettingsCache';
+import { TranslationKeys } from './Translations';
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -26,6 +31,8 @@ export enum CommandGroup {
 	Admin = 'Admin',
 	Other = 'Other'
 }
+
+export type RP = ResourceProxy<TranslationKeys>;
 
 export function createEmbed(
 	client: Client,
@@ -184,7 +191,9 @@ export async function promoteIfQualified(
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	let rolesToAdd: string[] = [];
+	const style: RankAssignmentStyle = (await SettingsCache.get(guild.id))
+		.rankAssignmentStyle;
+
 	const allRanks = await ranks.findAll({
 		where: {
 			guildId: guild.id
@@ -192,23 +201,23 @@ export async function promoteIfQualified(
 		raw: true
 	});
 
+	let highest: Role = null;
+	const reached: Role[] = [];
+	const notReached: Role[] = [];
+
 	allRanks.forEach(r => {
 		let role = guild.roles.get(r.roleId);
 		if (role) {
 			if (r.numInvites <= totalInvites) {
-				// Rank needs less/equal invites, so we add add role
-				if (!member.roles.has(role.id)) {
-					rolesToAdd.push(role.id);
+				reached.push(role);
+				if (!highest || highest.comparePositionTo(role) < 0) {
+					highest = role;
 				}
 			} else {
+				notReached.push(role);
 				// Rank requires more invites
-				if (nextRank) {
-					if (r.numInvites < nextRank.numInvites) {
-						// Next rank is the one with lowest invites needed
-						nextRank = r;
-						nextRankName = role.name;
-					}
-				} else {
+				if (!nextRank || r.numInvites < nextRank.numInvites) {
+					// Next rank is the one with lowest invites needed
 					nextRank = r;
 					nextRankName = role.name;
 				}
@@ -218,9 +227,26 @@ export async function promoteIfQualified(
 		}
 	});
 
-	if (rolesToAdd.length > 0) {
+	if (reached.length > 0) {
+		// No matter what the rank assignment style is
+		// we always want to remove any roles that we don't have
+		await member.roles.remove(notReached.filter(r => member.roles.has(r.id)));
+
 		if (guild.me.hasPermission('MANAGE_ROLES')) {
-			member.roles.add(rolesToAdd);
+			if (style === RankAssignmentStyle.all) {
+				// Add all roles that we've reached to the member
+				const newRoles = reached.filter(r => !member.roles.has(r.id));
+				await member.roles.add(newRoles);
+			} else if (style === RankAssignmentStyle.highest) {
+				// Only add the highest role we've reached to the member
+				const oldRoles = reached.filter(
+					r => r !== highest && member.roles.has(r.id)
+				);
+				member.roles.remove(oldRoles);
+				if (!member.roles.has(highest.id)) {
+					member.roles.add(highest);
+				}
+			}
 		} else {
 			// TODO: Notify user about the fact that he deserves a promotion, but it
 			// cannot be given to him because of missing permissions
@@ -274,7 +300,6 @@ export async function showPaginated(
 		await prevMsg.react(downSymbol);
 	} else {
 		const react = prevMsg.reactions.get(downSymbol);
-		prevMsg.reactions.remove(react.emoji.id);
 		if (react) {
 			react.users.remove(client.user);
 		}

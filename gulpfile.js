@@ -35,6 +35,9 @@ gulp.task('build', () => {
 	gulp.src('./src/**/*.json')
 		.pipe(gulp.dest('bin/'));
 
+	gulp.src('./src/**/*.lang')
+		.pipe(gulp.dest('bin/'));
+
 	return tsCompile.js
 		.pipe(gulp_sourcemaps.write({
 			sourceRoot: file => path.relative(path.join(file.cwd, file.path), file.base)

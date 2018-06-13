@@ -18,7 +18,7 @@
 	},
 	"sequelize": {
 		"dialect": "mysql",
-		"server": "localhost",
+		"host": "localhost",
 		"username": "root",
 		"password": "",
 		"database": "im"

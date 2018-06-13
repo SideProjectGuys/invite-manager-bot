@@ -15,10 +15,10 @@ import {
 	members,
 	sequelize
 } from '../sequelize';
-import { CommandGroup, createEmbed, showPaginated } from '../utils/util';
+import { CommandGroup, createEmbed, RP, showPaginated } from '../utils/util';
 
 const { resolve } = Middleware;
-const { using } = CommandDecorators;
+const { using, localizable } = CommandDecorators;
 
 const usersPerPage = 20;
 
@@ -39,7 +39,11 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('page: Number'))
-	public async action(message: Message, [_page]: [number]): Promise<any> {
+	@localizable
+	public async action(
+		message: Message,
+		[rp, _page]: [RP, number]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
@@ -94,7 +98,7 @@ export default class extends Command<IMClient> {
 		})) as any;
 
 		if (js.length <= 0) {
-			message.channel.send(`No fake invites detected so far.`);
+			message.channel.send(rp.CMD_FAKE_NONE());
 			return;
 		}
 
@@ -106,9 +110,7 @@ export default class extends Command<IMClient> {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			message.channel.send(
-				`There have been no fake invites since the bot has been added to this server.`
-			);
+			message.channel.send(rp.CMD_FAKE_NONE_SINCE_JOIN());
 			return;
 		}
 
@@ -134,23 +136,29 @@ export default class extends Command<IMClient> {
 							invs[name] = 1;
 						}
 					});
+
+					const mainText = rp.CMD_FAKE_JOIN_ENTRY({
+						name: join.memberName,
+						times: join.totalJoins
+					});
+
 					const invText = Object.keys(invs)
 						.map(name => {
-							const timesText =
-								invs[name] > 1 ? ` (**${invs[name]}** times)` : '';
-							return `**${name}**${timesText}`;
+							return rp.CMD_FAKE_JOIN_ENTRY_INV({
+								name,
+								times: invs[name] > 1 ? invs[name] : undefined
+							});
 						})
 						.join(', ');
-					let newFakeText = `**${join.memberName}** joined **${
-						join.totalJoins
-					} times**, invited by: ${invText}\n`;
+
+					const newFakeText = mainText + ' ' + invText;
 					if (description.length + newFakeText.length < 2048) {
 						description += newFakeText;
 					}
 				});
 
 			return createEmbed(this.client)
-				.setTitle('Fake invites')
+				.setTitle(rp.CMD_FAKE_TITLE())
 				.setDescription(description);
 		});
 	}
