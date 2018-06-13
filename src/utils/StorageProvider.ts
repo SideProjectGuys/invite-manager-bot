@@ -24,7 +24,7 @@ export class IMStorageProvider extends StorageProvider
 	}
 
 	public async get(key: string) {
-		console.log('GET: ' + key);
+		// console.log('GET: ' + key);
 
 		if (this.name === 'client_storage') {
 			if (key === 'defaultGuildSettings') {
@@ -41,7 +41,7 @@ export class IMStorageProvider extends StorageProvider
 	}
 
 	public async set(key: string, value: string) {
-		console.log('SET: ' + key + ' ' + value);
+		// console.log('SET: ' + key + ' ' + value);
 	}
 
 	public async keys() {
