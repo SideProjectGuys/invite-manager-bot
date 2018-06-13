@@ -158,7 +158,7 @@ export default class extends Command<IMClient> {
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
 			for (let i = 0; i < keys.length; i++) {
-				const val = settings.prefix[keys[i]];
+				const val = settings[keys[i] as SettingsKey];
 				if (val) {
 					embed.addField(
 						keys[i],
