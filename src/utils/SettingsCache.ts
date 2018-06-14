@@ -98,8 +98,10 @@ export class SettingsCache {
 		if (sub) {
 			this.premium[guildId] = true;
 			this.premiumFetch[guildId] = moment();
+			return true;
 		} else {
 			delete this.premium[guildId];
+			return false;
 		}
 	}
 
