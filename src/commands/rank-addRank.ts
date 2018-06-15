@@ -58,7 +58,7 @@ export default class extends Command<IMClient> {
 
 		const myRole = message.guild.me.roles.highest;
 		// Check if we are higher then the role we want to assign
-		if (myRole.position < role.position) {
+		if (myRole.comparePositionTo(role) < 0) {
 			message.channel.send(
 				rp.CMD_ADDRANK_ROLE_TOO_HIGH({ role: role.name, myRole: myRole.name })
 			);

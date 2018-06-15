@@ -227,36 +227,60 @@ export async function promoteIfQualified(
 		}
 	});
 
-	if (reached.length > 0) {
-		// No matter what the rank assignment style is
-		// we always want to remove any roles that we don't have
-		await member.roles.remove(notReached.filter(r => member.roles.has(r.id)));
+	const myRole = guild.me.roles.highest;
+	const tooHighRoles = guild.roles.filter(r => r.comparePositionTo(myRole) > 0);
 
-		if (guild.me.hasPermission('MANAGE_ROLES')) {
-			if (style === RankAssignmentStyle.all) {
-				// Add all roles that we've reached to the member
-				const newRoles = reached.filter(r => !member.roles.has(r.id));
-				await member.roles.add(newRoles);
-			} else if (style === RankAssignmentStyle.highest) {
-				// Only add the highest role we've reached to the member
-				const oldRoles = reached.filter(
-					r => r !== highest && member.roles.has(r.id)
-				);
-				member.roles.remove(oldRoles);
-				if (!member.roles.has(highest.id)) {
+	let shouldHave: Role[] = [];
+	let shouldNotHave = notReached.filter(
+		r => tooHighRoles.has(r.id) && member.roles.has(r.id)
+	);
+
+	// No matter what the rank assignment style is
+	// we always want to remove any roles that we don't have
+	await member.roles.remove(
+		notReached.filter(r => !tooHighRoles.has(r.id) && member.roles.has(r.id))
+	);
+
+	if (guild.me.hasPermission('MANAGE_ROLES')) {
+		if (style === RankAssignmentStyle.all) {
+			// Add all roles that we've reached to the member
+			const newRoles = reached.filter(r => !member.roles.has(r.id));
+			// Roles that the member should have but we can't assign
+			shouldHave = newRoles.filter(r => tooHighRoles.has(r.id));
+			// Assign only the roles that we can assign
+			await member.roles.add(newRoles.filter(r => !tooHighRoles.has(r.id)));
+		} else if (style === RankAssignmentStyle.highest) {
+			// Only add the highest role we've reached to the member
+			// Remove roles that we've reached but aren't the highest
+			const oldRoles = reached.filter(
+				r => r !== highest && member.roles.has(r.id)
+			);
+			// Add more roles that we shouldn't have
+			shouldNotHave = shouldNotHave.concat(
+				oldRoles.filter(r => tooHighRoles.has(r.id))
+			);
+			// Remove the old ones from the member
+			member.roles.remove(oldRoles.filter(r => !tooHighRoles.has(r.id)));
+			// Add the highest one if we don't have it yet
+			if (!member.roles.has(highest.id)) {
+				if (!tooHighRoles.has(highest.id)) {
 					member.roles.add(highest);
+				} else {
+					shouldHave = [highest];
 				}
 			}
-		} else {
-			// TODO: Notify user about the fact that he deserves a promotion, but it
-			// cannot be given to him because of missing permissions
 		}
+	} else {
+		// TODO: Notify user about the fact that he deserves a promotion, but it
+		// cannot be given to him because of missing permissions
 	}
 
 	return {
 		numRanks: allRanks.length,
 		nextRank,
-		nextRankName
+		nextRankName,
+		shouldHave,
+		shouldNotHave
 	};
 }
 

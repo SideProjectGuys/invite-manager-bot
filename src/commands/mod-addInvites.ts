@@ -65,10 +65,6 @@ export default class extends Command<IMClient> {
 		const invites = await getInviteCounts(message.guild.id, member.id);
 		const totalInvites = invites.total + amount;
 
-		if (!user.bot) {
-			await promoteIfQualified(message.guild, member, totalInvites);
-		}
-
 		await members.insertOrUpdate({
 			id: member.id,
 			name: member.user.username,
@@ -95,23 +91,46 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 		embed.setTitle(member.displayName);
 
+		let descr = '';
 		if (amount > 0) {
-			embed.setDescription(
-				rp.CMD_ADDINVITES_AMOUNT_POS({
-					amount,
-					member: member.id,
-					totalInvites
-				})
-			);
+			descr += rp.CMD_ADDINVITES_AMOUNT_POS({
+				amount,
+				member: member.id,
+				totalInvites
+			});
 		} else {
-			embed.setDescription(
-				rp.CMD_ADDINVITES_AMOUNT_NEG({
-					amount: -amount,
-					member: member.id,
-					totalInvites
-				})
-			);
+			descr += rp.CMD_ADDINVITES_AMOUNT_NEG({
+				amount: -amount,
+				member: member.id,
+				totalInvites
+			});
 		}
+
+		// Promote the member if it's not a bot
+		if (!user.bot) {
+			const { shouldHave, shouldNotHave } = await promoteIfQualified(
+				message.guild,
+				member,
+				totalInvites
+			);
+
+			if (shouldHave.length > 0) {
+				descr +=
+					'\n\n' +
+					rp.ROLES_SHOULD_HAVE({
+						shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+					});
+			}
+			if (shouldNotHave.length > 0) {
+				descr +=
+					'\n\n' +
+					rp.ROLES_SHOULD_NOT_HAVE({
+						shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+					});
+			}
+		}
+
+		embed.setDescription(descr);
 
 		await sendEmbed(message.channel, embed, message.author);
 	}
