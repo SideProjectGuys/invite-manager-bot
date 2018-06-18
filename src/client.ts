@@ -36,8 +36,7 @@ const config = require('../config.json');
 
 interface RabbitMqMember {
 	id: string;
-	joinedAt: number;
-	nick: string;
+	nick?: string;
 	user: {
 		id: string;
 		avatarUrl: string | null;
@@ -423,6 +422,7 @@ export class IMClient extends Client {
 				joinMessageFormat,
 				guild,
 				member,
+				jn.createdAt,
 				inviteCode,
 				channelId,
 				channelName,
@@ -533,6 +533,7 @@ export class IMClient extends Client {
 				leaveMessageFormat,
 				guild,
 				member,
+				join.createdAt,
 				inviteCode,
 				channelId,
 				channelName,
@@ -619,6 +620,7 @@ export class IMClient extends Client {
 		template: any,
 		guild: Guild,
 		member: RabbitMqMember,
+		joinedAt: number,
 		inviteCode: string,
 		channelId: string,
 		channelName: string,
@@ -634,10 +636,6 @@ export class IMClient extends Client {
 			leave: 0
 		}
 	): Promise<string | MessageEmbed> {
-		const userSince = moment(member.user.createdAt);
-
-		const joinedAt = moment(member.joinedAt);
-
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
 			inviter = await guild.members.fetch(inviterId).catch(() => undefined);
 		}
@@ -673,8 +671,7 @@ export class IMClient extends Client {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'ASC']],
-				limit: 1
+				order: [['createdAt', 'ASC']]
 			});
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
@@ -688,8 +685,7 @@ export class IMClient extends Client {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'ASC']],
-				limit: 1,
+				order: [['createdAt', 'DESC']],
 				offset: 1
 			});
 			if (temp) {
@@ -708,21 +704,27 @@ export class IMClient extends Client {
 				? inviterName + '#' + inviterDiscriminator
 				: unknown;
 
+		const memberName = member.nick ? member.nick : member.user.username;
+		const invName = inviterName ? inviterName : unknown;
+
+		const _joinedAt = moment(joinedAt);
+		const createdAt = moment(member.user.createdAt);
+
 		let msg = template;
-		msg = this.fillDatePlaceholder(msg, 'memberCreated', userSince);
+		msg = this.fillDatePlaceholder(msg, 'memberCreated', createdAt);
 		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
 		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
-		msg = this.fillDatePlaceholder(msg, 'joinedAt', joinedAt);
+		msg = this.fillDatePlaceholder(msg, 'joinedAt', _joinedAt);
 		msg = msg
 			.replace('{inviteCode}', inviteCode ? inviteCode : unknown)
 			.replace('{memberId}', member.id)
-			.replace('{memberName}', member.nick ? member.nick : member.user.username)
+			.replace('{memberName}', JSON.stringify(memberName))
 			.replace('{memberFullName}', memberFullName)
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{memberImage}', member.user.avatarUrl)
 			.replace('{numJoins}', `${numJoins}`)
 			.replace('{inviterId}', inviterId ? inviterId : unknown)
-			.replace('{inviterName}', inviterName ? inviterName : unknown)
+			.replace('{inviterName}', JSON.stringify(invName))
 			.replace('{inviterFullName}', inviterFullName)
 			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : unknown)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : undefined)
