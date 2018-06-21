@@ -1,0 +1,40 @@
+[CMD_INVITECODES_TITLE]
+Você tem os seguintes códigos no servidor {{ guild }}
+
+[CMD_INVITECODES_NO_CODES]
+Você não tem nenhum codigo de convite ativo. Por favor, pergunte a um moderador do servidor como criar um.
+
+[CMD_INVITECODES_RECOMMENDED_CODE_TITLE]
+Codigo de convite recomendado
+
+[CMD_INVITECODES_RECOMMENDED_CODE_NONE]
+Por favor, crie um codigo de convite permamente
+
+[CMD_INVITECODES_PERMANENT_TITLE]
+Permanente
+
+[CMD_INVITECODES_PERMANENT_TEXT]
+Estes convites não expiram.
+
+[CMD_INVITECODES_PERMANENT_ENTRY]
+"**Usos**: {{ uses }}
+**Expira após**: {{ maxAge }}
+**Maximo de usos**: {{ maxUses }}
+**Canal**: <#{{ channel }}>"
+
+[CMD_INVITECODES_TEMPORARY_TITLE]
+Temporario
+
+[CMD_INVITECODES_TEMPORARY_TEXT]
+Estes convites expiram após um certo tempo
+
+[CMD_INVITECODES_TEMPORARY_ENTRY]
+"**Usos**: {{ uses }}
+**Expira após**: {{ maxAge }}
+**Maximo de usos**: {{ maxUses }}
+**Canal**: <#{{ channel }}>
+**Expirados**: {{ expires }}"
+
+[CMD_INVITECODES_DM_SENT]
+Enviei-lhe uma DM com todos os códigos de seu convites.
+

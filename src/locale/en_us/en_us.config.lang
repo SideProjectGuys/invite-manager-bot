@@ -1,0 +1,74 @@
+[CMD_CONFIG_TITLE]
+Your config settings
+
+[CMD_CONFIG_TEXT]
+Below are all the config settings of your server.
+Use `{{ prefix }}config <key>` to view a single setting
+Use `{{ prefix }}config <key> <value>` to set the config <key> to <value>
+
+[CMD_CONFIG_KEY_NOT_FOUND]
+No config setting called **{{ key }}** found.
+
+[CMD_CONFIG_KEY_CANT_CLEAR]
+The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.
+
+[CMD_CONFIG_NOT_SET]
+These settings are not set
+
+[CMD_CONFIG_CURRENT_TITLE]
+Current Value
+
+[CMD_CONFIG_PREVIOUS_TITLE]
+Previous Value
+
+[CMD_CONFIG_NEW_TITLE]
+New Value
+
+[CMD_CONFIG_CURRENT_SET_TEXT]
+This config is currently set.
+Use `{{ prefix }}config {{ key }} <value>` to change it.
+Use `{{ prefix }}config {{ key }} default` to reset it to the default.
+{{! args.clear ? `Use \`${args.prefix}config ${args.key} none\` to clear it.` : '' !}}
+
+[CMD_CONFIG_CURRENT_NOT_SET_TEXT]
+This config is currently **not** set.
+Use `{{ prefix }}config {{ key }} <value>` to set it.
+
+[CMD_CONFIG_ALREADY_SET_SAME_VALUE]
+This config is already set to that value.
+
+[CMD_CONFIG_CHANGED_TEXT]
+This config has been changed.
+Use `{{ prefix }}config {{ key }} <value>` to change it again.
+Use `{{ prefix }}config {{ key }} none` to reset it to the default.
+
+[CMD_CONFIG_PREVIEW_TITLE]
+Preview
+
+[CMD_CONFIG_PREVIEW_NEXT_MESSAGE]
+<See next message>
+
+[CMD_CONFIG_NONE]
+None
+
+[CMD_CONFIG_CHANNEL_CANT_VIEW]
+I don't have permission to **view** that channel.
+
+[CMD_CONFIG_CHANNEL_CANT_READ]
+I don't have permission to **read messages** in that channel.
+
+[CMD_CONFIG_CHANNEL_CANT_SEND]
+I don't have permission to **send messages** in that channel.
+
+[CMD_CONFIG_CHANNEL_CANT_EMBED]
+I don't have permission to **embed links** in that channel.
+
+[CMD_CONFIG_INVALID_LANG]
+Invalid language **{{ value }}**. The following languages are supported: {{ langs }}
+
+[CMD_CONFIG_INVALID_LEADERBOARD_STYLE]
+Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}
+
+[CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE]
+Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}
+

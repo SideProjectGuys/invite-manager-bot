@@ -1,0 +1,30 @@
+[BOT_SUPPORT_DISCORD_TITLE]
+Support Discord
+
+[BOT_INVITE_TITLE]
+Inviter le bot sur votre serveur
+
+[BOT_WEBSITE_TITLE]
+Site Internet du bot
+
+[BOT_PATREON_TITLE]
+Patreon
+
+[CUSTOM_INVITES_REASON_LEAVE]
+{user} a quitté
+
+[CUSTOM_INVITES_REASON_UNKNOWN]
+Raison Inconnue
+
+[TEMPLATE_UNKNOWN]
+Inconnu(e)
+
+[JOIN_INVITED_BY_UNKNOWN]
+{user} a rejoint depuis une invitation temporaire. Je n'ai donc pas pu identifier l'inviteur.
+
+[LEAVE_INVITED_BY_UNKNOWN]
+{user} a quitté le serveur mais je ne sais pas qui l'avait invité.
+
+[JOIN_LEAVE_EMBEDS_IS_PREMIUM]
+Utiliser des embeds pour les messages de bienvenue est un avantage Premium.
+

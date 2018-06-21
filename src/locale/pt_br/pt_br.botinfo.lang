@@ -1,0 +1,18 @@
+[CMD_BOTINFO_VERSION]
+Versão
+
+[CMD_BOTINFO_UPTIME]
+Tempo de Atividade
+
+[CMD_BOTINFO_GUILDS]
+Guilda
+
+[CMD_BOTINFO_MEMBERS]
+Membros
+
+[CMD_BOTINFO_SHARD_CURRENT]
+Shard Atual
+
+[CMD_BOTINFO_SHARD_TOTAL]
+Shard Total
+

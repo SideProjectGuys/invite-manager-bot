@@ -1,0 +1,97 @@
+[CMD_FAQ_MORE_TITLE]
+More
+
+[CMD_FAQ_MORE_TEXT]
+Please check out our readme for a list of all FAQs and much more!
+https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_FAQ_NOT_FOUND]
+Name {{ name }} not found!
+
+[CMD_FAQ_PREFIX_Q]
+How do I change the prefix of the bot?
+
+[CMD_FAQ_PREFIX_A]
+You can do `{{ prefix }}config prefix -` to change the prefix.
+If you don't know your current prefix, you can do `{{ bot }} config prefix` to see the prefix.
+
+[CMD_FAQ_JOINLEAVECHANNEL_Q]
+How do I set where join and leave messages go?
+
+[CMD_FAQ_JOINLEAVECHANNEL_A]
+Set the channel by doing `{{ prefix }}config joinMessageChannel #channel` or 
+`{{ prefix }}config leaveMessageChannel #channel`.
+After doing that, new joins and leaves will be posted to that channel.
+
+[CMD_FAQ_JOINLEAVEMESSAGE_Q]
+Can I customize join and leave messages?
+
+[CMD_FAQ_JOINLEAVEMESSAGE_A]
+Absolutely!
+You can change the message by doing for example
+`{{ prefix }}config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)` or 
+`{{ prefix }}config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
+You can find a full list of all available placeholders here: https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_FAQ_RANKS_Q]
+What are \"Ranks\" and how can I use them?
+
+[CMD_FAQ_RANKS_A]
+Ranks are used to assign roles to people when they reach a certain amount of invites.
+For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so:
+`{{ prefix }}add-rank @Beginner 5 (and if you want a description here)`.
+As soon as someone has 5 invites, he will automatically be added to that role!
+
+[CMD_FAQ_BONUS_Q]
+What are bonus invites?
+
+[CMD_FAQ_BONUS_A]
+Bonus invites are invites that can be given to members by an admin. You can either increase or decrease the number of invites. You can also give a reason why you did it, like if someone was helpful or if someone broke the rules.
+`{{ prefix }}add-invites @user 5 Was very helpful!`.
+Use negative number eg. `-5` to decrease the value of someone.
+You can see how why someone has bonus invites by doing `{{ prefix }}info @user`
+
+[CMD_FAQ_REMOVEINVITES_Q]
+How do I remove invites of someone?
+
+[CMD_FAQ_REMOVEINVITES_A]
+You can use the `{{ prefix }}add-invites` command with a negative number to do that (and also add an optional reason why you did it).
+`{{ prefix }}add-invites @user -5 Broke the rules.`
+
+[CMD_FAQ_RESTRICTCHANNEL_Q]
+How can I disable the bot in all but one/some channels?
+
+[CMD_FAQ_RESTRICTCHANNEL_A]
+Take away the read message permissions in the channels where you don't want the bot to reply.
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_Q]
+How do I hide people from leaderboard?
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_A]
+You can do `{{ prefix }}memberConfig hideFromLeaderboard @user true` to hide a specific member from the leaderboard.
+
+[CMD_FAQ_FAKE_Q]
+How can I see cheaters on my server?
+
+[CMD_FAQ_FAKE_A]
+The `{{ prefix }}fake` command will show people who repeatedly joined your server.
+
+[CMD_FAQ_WEBPANEL_Q]
+Is there a webpanel?
+
+[CMD_FAQ_WEBPANEL_A]
+Yes! It's currently in an alpha state and under heavy development. But you can access it here and give us feedback: https://panel.invitemanager.co/
+
+[CMD_FAQ_SUPPORT_Q]
+The bot doesn't work, how can I get help?
+
+[CMD_FAQ_SUPPORT_A]
+We can help you if you join our discord: https://discord.gg/x3NGUSX
+
+[CMD_FAQ_PREMIUM_Q]
+How can I support development of this bot?
+
+[CMD_FAQ_PREMIUM_A]
+You can support us by telling more people about the bot or subscribe to one of our premium tiers. By doing that, you get some additional features depending on your tier.
+https://patreon.com/invitemanager
+

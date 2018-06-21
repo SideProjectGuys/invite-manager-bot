@@ -1,0 +1,9 @@
+[CMD_ADDINVITES_ZERO]
+Adding zero invites doesn't really make sense...
+
+[CMD_ADDINVITES_AMOUNT_POS]
+Added **{{ amount }}** invites for <@{{ member }}>, now at: **{{ totalInvites }}** invites.
+
+[CMD_ADDINVITES_AMOUNT_NEG]
+Removed **{{ amount }}** invites from <@{{ member }}>, now at: **{{ totalInvites }}** invites.
+
