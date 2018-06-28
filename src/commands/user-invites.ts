@@ -60,11 +60,13 @@ export default class extends Command<IMClient> {
 
 		if (!target.bot) {
 			let targetMember = await message.guild.members.fetch(target.id);
-			const { nextRank, nextRankName, numRanks } = await promoteIfQualified(
-				message.guild,
-				targetMember,
-				invites.total
-			);
+			const {
+				nextRank,
+				nextRankName,
+				numRanks,
+				shouldHave,
+				shouldNotHave
+			} = await promoteIfQualified(message.guild, targetMember, invites.total);
 
 			if (nextRank) {
 				let nextRankPointsDiff = nextRank.numInvites - invites.total;
@@ -78,6 +80,21 @@ export default class extends Command<IMClient> {
 				if (numRanks > 0) {
 					textMessage += rp.CMD_INVITES_HIGHEST_RANK();
 				}
+			}
+
+			if (shouldHave.length > 0) {
+				textMessage +=
+					'\n\n' +
+					rp.ROLES_SHOULD_HAVE({
+						shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+					});
+			}
+			if (shouldNotHave.length > 0) {
+				textMessage +=
+					'\n\n' +
+					rp.ROLES_SHOULD_NOT_HAVE({
+						shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+					});
 			}
 		}
 

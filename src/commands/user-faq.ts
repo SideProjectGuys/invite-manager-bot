@@ -6,6 +6,7 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
+import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
 import { IMClient } from '../client';
 import { SettingsCache } from '../utils/SettingsCache';
@@ -18,6 +19,13 @@ interface FAQ {
 	name: string;
 	aliases: string[];
 	key: string;
+}
+
+// Add an index signature to the RP interface because we access
+// the correct FAQ by string index. Don't add this to the original
+// because we lose some type safety if all string indexes are valid
+interface AnyRP extends RP {
+	[x: string]: (data: TemplateData) => string;
 }
 
 export default class extends Command<IMClient> {
@@ -42,7 +50,7 @@ export default class extends Command<IMClient> {
 	@localizable
 	public async action(
 		message: Message,
-		[rp, faqName]: [RP, string]
+		[rp, faqName]: [AnyRP, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

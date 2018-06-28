@@ -1,0 +1,69 @@
+[CMD_INFO_NOT_IN_GUILD]
+User is not part of your guild
+
+[CMD_INFO_LASTJOINED_TITLE]
+Last joined
+
+[CMD_INFO_INVITES_TITLE]
+Invites
+
+[CMD_INFO_INVITES_TEXT]
+**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
+
+[CMD_INFO_JOINED_TITLE]
+Joined
+
+[CMD_INFO_JOINED_TEXT]
+{{ amount }} times
+
+[CMD_INFO_CREATED_TITLE]
+Created
+
+[CMD_INFO_JOINS_TITLE]
+Joins
+
+[CMD_INFO_JOINS_ENTRY]
+{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:
+
+[CMD_INFO_JOINS_ENTRY_INV]
+<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}
+
+[CMD_INFO_JOINS_MORE]
+Plus another **{{ amount }}** more joins
+
+[CMD_INFO_JOINS_UNKNOWN]
+unknown (this only works for new members)
+
+[CMD_INFO_REGULARINVITES_TITLE]
+Regular invites
+
+[CMD_INFO_REGULARINVITES_ENTRY]
+**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**
+
+[CMD_INFO_REGULARINVITES_MORE]
+Plus another **{{ amount }}** more invite codes
+
+[CMD_INFO_REGULARINVITES_NONE]
+This member has not invited anyone so far
+
+[CMD_INFO_BONUSINVITES_TITLE]
+Bonus invites
+
+[CMD_INFO_BONUSINVITES_ENTRY]
+**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}
+
+[CMD_INFO_BONUSINVITES_MORE]
+Plus another **{{ amount }}** more bonus invites
+
+[CMD_INFO_BONUSINVITES_NONE]
+This member has received no bonuses so far
+
+[CMD_INFO_INVITEDMEMBERS_TITLE]
+Invited members
+
+[CMD_INFO_INVITEDMEMBERS_MORE]
+Plus another **{{ amount }}** more bonus invites
+
+[CMD_INFO_INVITEDMEMBERS_NONE]
+This member has not invited anyone else so far
+

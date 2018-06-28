@@ -1,0 +1,15 @@
+[CMD_FAKE_TITLE]
+Fake invites
+
+[CMD_FAKE_NONE]
+No fake invites detected so far.
+
+[CMD_FAKE_NONE_SINCE_JOIN]
+There have been no fake invites since the bot has been added to this server.
+
+[CMD_FAKE_JOIN_ENTRY]
+**{{ name }}** joined **{{ times }} times**, invited by:
+
+[CMD_FAKE_JOIN_ENTRY_INV]
+**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}
+

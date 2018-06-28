@@ -1,0 +1,6 @@
+[CMD_REMOVERANK_RANK_NOT_FOUND]
+Cargo {{ role }} não existe.
+
+[CMD_REMOVERANK_DONE]
+Cargo {{ role }} removido.
+

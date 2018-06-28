@@ -340,7 +340,6 @@ export default class extends Command<IMClient> {
 				message.guild,
 				{
 					id: member.id,
-					joinedAt: member.joinedTimestamp,
 					nick: member.nickname,
 					user: {
 						id: user.id,
@@ -351,6 +350,7 @@ export default class extends Command<IMClient> {
 						username: user.username
 					}
 				},
+				member.joinedTimestamp,
 				'tEsTcOdE',
 				message.channel.id,
 				(message.channel as any).name,
