@@ -185,7 +185,7 @@ export enum Lang {
 	fr_fr = 'fr_fr',
 	it_it = 'it_it',
 	es_es = 'es_es',
-	pt_pt = 'pt_pt'
+	pt_br = 'pt_br'
 }
 
 export enum LeaderboardStyle {
