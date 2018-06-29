@@ -704,8 +704,10 @@ export class IMClient extends Client {
 				? inviterName + '#' + inviterDiscriminator
 				: unknown;
 
-		const memberName = member.nick ? member.nick : member.user.username;
-		const invName = inviterName ? inviterName : unknown;
+		let memberName = member.nick ? member.nick : member.user.username;
+		memberName = JSON.stringify(memberName).substring(1, memberName.length - 1);
+		let invName = inviterName ? inviterName : unknown;
+		invName = JSON.stringify(invName).substring(1, invName.length - 1);
 
 		const _joinedAt = moment(joinedAt);
 		const createdAt = moment(member.user.createdAt);
@@ -718,13 +720,13 @@ export class IMClient extends Client {
 		msg = msg
 			.replace('{inviteCode}', inviteCode ? inviteCode : unknown)
 			.replace('{memberId}', member.id)
-			.replace('{memberName}', JSON.stringify(memberName))
+			.replace('{memberName}', memberName)
 			.replace('{memberFullName}', memberFullName)
 			.replace('{memberMention}', `<@${member.id}>`)
 			.replace('{memberImage}', member.user.avatarUrl)
 			.replace('{numJoins}', `${numJoins}`)
 			.replace('{inviterId}', inviterId ? inviterId : unknown)
-			.replace('{inviterName}', JSON.stringify(invName))
+			.replace('{inviterName}', invName)
 			.replace('{inviterFullName}', inviterFullName)
 			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : unknown)
 			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : undefined)
