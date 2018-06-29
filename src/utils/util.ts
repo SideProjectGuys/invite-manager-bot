@@ -262,7 +262,7 @@ export async function promoteIfQualified(
 			// Remove the old ones from the member
 			member.roles.remove(oldRoles.filter(r => !tooHighRoles.has(r.id)));
 			// Add the highest one if we don't have it yet
-			if (!member.roles.has(highest.id)) {
+			if (highest && !member.roles.has(highest.id)) {
 				if (!tooHighRoles.has(highest.id)) {
 					member.roles.add(highest);
 				} else {
