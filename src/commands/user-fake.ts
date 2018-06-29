@@ -151,7 +151,7 @@ export default class extends Command<IMClient> {
 						})
 						.join(', ');
 
-					const newFakeText = mainText + ' ' + invText;
+					const newFakeText = mainText + ' ' + invText + '\n';
 					if (description.length + newFakeText.length < 2048) {
 						description += newFakeText;
 					}
