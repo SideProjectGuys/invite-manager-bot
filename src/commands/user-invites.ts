@@ -59,42 +59,52 @@ export default class extends Command<IMClient> {
 			}) + '\n';
 
 		if (!target.bot) {
-			let targetMember = await message.guild.members.fetch(target.id);
-			const {
-				nextRank,
-				nextRankName,
-				numRanks,
-				shouldHave,
-				shouldNotHave
-			} = await promoteIfQualified(message.guild, targetMember, invites.total);
+			let targetMember = await message.guild.members
+				.fetch(target.id)
+				.catch(() => undefined);
 
-			if (nextRank) {
-				let nextRankPointsDiff = nextRank.numInvites - invites.total;
-				textMessage += rp.CMD_INVITES_NEXT_RANK({
-					self: message.author.id,
-					target: target.id,
-					nextRankPointsDiff,
-					nextRankName
-				});
-			} else {
-				if (numRanks > 0) {
-					textMessage += rp.CMD_INVITES_HIGHEST_RANK();
+			// Only process if the user is still in the guild
+			if (targetMember) {
+				const {
+					nextRank,
+					nextRankName,
+					numRanks,
+					shouldHave,
+					shouldNotHave
+				} = await promoteIfQualified(
+					message.guild,
+					targetMember,
+					invites.total
+				);
+
+				if (nextRank) {
+					let nextRankPointsDiff = nextRank.numInvites - invites.total;
+					textMessage += rp.CMD_INVITES_NEXT_RANK({
+						self: message.author.id,
+						target: target.id,
+						nextRankPointsDiff,
+						nextRankName
+					});
+				} else {
+					if (numRanks > 0) {
+						textMessage += rp.CMD_INVITES_HIGHEST_RANK();
+					}
 				}
-			}
 
-			if (shouldHave.length > 0) {
-				textMessage +=
-					'\n\n' +
-					rp.ROLES_SHOULD_HAVE({
-						shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
-					});
-			}
-			if (shouldNotHave.length > 0) {
-				textMessage +=
-					'\n\n' +
-					rp.ROLES_SHOULD_NOT_HAVE({
-						shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-					});
+				if (shouldHave.length > 0) {
+					textMessage +=
+						'\n\n' +
+						rp.ROLES_SHOULD_HAVE({
+							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
+				if (shouldNotHave.length > 0) {
+					textMessage +=
+						'\n\n' +
+						rp.ROLES_SHOULD_NOT_HAVE({
+							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
 			}
 		}
 

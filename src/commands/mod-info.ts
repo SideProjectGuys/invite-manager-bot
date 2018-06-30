@@ -6,7 +6,7 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
-import { User } from 'discord.js';
+import { GuildMember, User } from 'discord.js';
 import moment from 'moment';
 
 import { IMClient } from '../client';
@@ -51,13 +51,6 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		let member = message.guild.members.get(user.id);
-
-		if (!member) {
-			message.channel.send(rp.CMD_INFO_NOT_IN_GUILD());
-			return;
-		}
-
 		const lang = (await SettingsCache.get(message.guild.id)).lang;
 
 		// TODO: Show current rank
@@ -65,8 +58,8 @@ export default class extends Command<IMClient> {
 
 		const invs = await inviteCodes.findAll({
 			where: {
-				guildId: member.guild.id,
-				inviterId: member.id
+				guildId: message.guild.id,
+				inviterId: user.id
 			},
 			order: [['uses', 'DESC']],
 			raw: true
@@ -74,8 +67,8 @@ export default class extends Command<IMClient> {
 
 		const customInvs = await customInvites.findAll({
 			where: {
-				guildId: member.guild.id,
-				memberId: member.id
+				guildId: message.guild.id,
+				memberId: user.id
 			},
 			order: [['createdAt', 'DESC']],
 			raw: true
@@ -112,33 +105,37 @@ export default class extends Command<IMClient> {
 		const numTotal = regular + custom + fake + leave;
 
 		const embed = createEmbed(this.client);
-		embed.setTitle(member.user.username);
+		embed.setTitle(user.username);
 
-		const joinedAgo = moment(member.joinedAt)
-			.locale(lang)
-			.fromNow();
-		embed.addField(rp.CMD_INFO_LASTJOINED_TITLE(), joinedAgo, true);
-		embed.addField(
-			rp.CMD_INFO_INVITES_TITLE(),
-			rp.CMD_INFO_INVITES_TEXT({
-				total: numTotal,
-				regular,
-				custom,
-				fake,
-				leave
-			}),
-			true
-		);
+		// Try and get the member if they are still in the guild
+		const member: GuildMember = await message.guild.members
+			.fetch(user.id)
+			.catch(() => undefined);
+
+		if (member) {
+			const joinedAgo = moment(member.joinedAt)
+				.locale(lang)
+				.fromNow();
+
+			embed.addField(rp.CMD_INFO_LASTJOINED_TITLE(), joinedAgo, true);
+		} else {
+			embed.addField(
+				rp.CMD_INFO_LASTJOINED_TITLE(),
+				rp.CMD_INFO_LASTJOINED_NOT_IN_GUILD(),
+				true
+			);
+		}
 
 		const joinCount = Math.max(
 			await joins.count({
 				where: {
-					guildId: member.guild.id,
-					memberId: member.id
+					guildId: message.guild.id,
+					memberId: user.id
 				}
 			}),
-			1
+			0
 		);
+
 		embed.addField(
 			rp.CMD_INFO_JOINED_TITLE(),
 			rp.CMD_INFO_JOINED_TEXT({
@@ -149,9 +146,21 @@ export default class extends Command<IMClient> {
 
 		embed.addField(
 			rp.CMD_INFO_CREATED_TITLE(),
-			moment(member.user.createdAt)
+			moment(user.createdAt)
 				.locale(lang)
 				.fromNow(),
+			true
+		);
+
+		embed.addField(
+			rp.CMD_INFO_INVITES_TITLE(),
+			rp.CMD_INFO_INVITES_TEXT({
+				total: numTotal,
+				regular,
+				custom,
+				fake,
+				leave
+			}),
 			true
 		);
 
@@ -321,7 +330,7 @@ export default class extends Command<IMClient> {
 					model: inviteCodes,
 					as: 'exactMatch',
 					where: {
-						inviterId: member.id
+						inviterId: user.id
 					},
 					include: [
 						{

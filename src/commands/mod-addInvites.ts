@@ -6,7 +6,7 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
-import { User } from 'discord.js';
+import { GuildMember, User } from 'discord.js';
 
 import { IMClient } from '../client';
 import { customInvites, LogAction, members } from '../sequelize';
@@ -56,25 +56,24 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const member = await message.guild.members.fetch(user.id);
 		if (amount === 0) {
 			await message.channel.send(rp.CMD_ADDINVITES_ZERO());
 			return;
 		}
 
-		const invites = await getInviteCounts(message.guild.id, member.id);
+		const invites = await getInviteCounts(message.guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
 		await members.insertOrUpdate({
-			id: member.id,
-			name: member.user.username,
-			discriminator: member.user.discriminator
+			id: user.id,
+			name: user.username,
+			discriminator: user.discriminator
 		});
 
 		const createdInv = await customInvites.create({
 			id: null,
 			guildId: message.guild.id,
-			memberId: member.id,
+			memberId: user.id,
 			creatorId: message.author.id,
 			amount,
 			reason,
@@ -83,50 +82,56 @@ export default class extends Command<IMClient> {
 
 		await this.client.logAction(message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
-			targetId: member.id,
+			targetId: user.id,
 			amount,
 			reason
 		});
 
 		const embed = createEmbed(this.client);
-		embed.setTitle(member.displayName);
+		embed.setTitle(user.username);
 
 		let descr = '';
 		if (amount > 0) {
 			descr += rp.CMD_ADDINVITES_AMOUNT_POS({
 				amount,
-				member: member.id,
+				member: user.id,
 				totalInvites
 			});
 		} else {
 			descr += rp.CMD_ADDINVITES_AMOUNT_NEG({
 				amount: -amount,
-				member: member.id,
+				member: user.id,
 				totalInvites
 			});
 		}
 
 		// Promote the member if it's not a bot
 		if (!user.bot) {
-			const { shouldHave, shouldNotHave } = await promoteIfQualified(
-				message.guild,
-				member,
-				totalInvites
-			);
+			const member: GuildMember = await message.guild.members
+				.fetch(user.id)
+				.catch(() => undefined);
+			// Only if the member is still in the guild try and promote them
+			if (member) {
+				const { shouldHave, shouldNotHave } = await promoteIfQualified(
+					message.guild,
+					member,
+					totalInvites
+				);
 
-			if (shouldHave.length > 0) {
-				descr +=
-					'\n\n' +
-					rp.ROLES_SHOULD_HAVE({
-						shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
-					});
-			}
-			if (shouldNotHave.length > 0) {
-				descr +=
-					'\n\n' +
-					rp.ROLES_SHOULD_NOT_HAVE({
-						shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-					});
+				if (shouldHave.length > 0) {
+					descr +=
+						'\n\n' +
+						rp.ROLES_SHOULD_HAVE({
+							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
+				if (shouldNotHave.length > 0) {
+					descr +=
+						'\n\n' +
+						rp.ROLES_SHOULD_NOT_HAVE({
+							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
 			}
 		}
 
