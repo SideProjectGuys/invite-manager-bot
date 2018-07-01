@@ -705,9 +705,9 @@ export class IMClient extends Client {
 				: unknown;
 
 		let memberName = member.nick ? member.nick : member.user.username;
-		memberName = JSON.stringify(memberName).substring(1, memberName.length - 1);
+		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
 		let invName = inviterName ? inviterName : unknown;
-		invName = JSON.stringify(invName).substring(1, invName.length - 1);
+		invName = JSON.stringify(invName).substring(1, invName.length + 1);
 
 		const _joinedAt = moment(joinedAt);
 		const createdAt = moment(member.user.createdAt);
