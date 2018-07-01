@@ -93,6 +93,7 @@ export interface TranslationKeys {
 
 	CMD_INFO_NOT_IN_GUILD: (data: TemplateData) => string;
 	CMD_INFO_LASTJOINED_TITLE: (data: TemplateData) => string;
+	CMD_INFO_LASTJOINED_NOT_IN_GUILD: (data: TemplateData) => string;
 	CMD_INFO_INVITES_TITLE: (data: TemplateData) => string;
 	CMD_INFO_INVITES_TEXT: (data: TemplateData) => string;
 	CMD_INFO_JOINED_TITLE: (data: TemplateData) => string;

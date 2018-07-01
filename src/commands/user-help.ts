@@ -78,15 +78,9 @@ export default class extends Command<IMClient> {
 				true
 			);
 		} else {
-			let messageMember = message.member;
-			if (message.guild && !messageMember) {
-				this._logger.log(
-					`INFO: ${message.guild.name} (${message.author.username}): ${
-						message.content
-					} HAS NO MEMBER`
-				);
-				messageMember = await message.guild.members.fetch(message.author.id);
-			}
+			const messageMember = await message.guild.members
+				.fetch(message.author.id)
+				.catch(() => undefined);
 
 			embed.setDescription(rp.CMD_HELP_TEXT({ prefix }) + '\n\n');
 
@@ -96,7 +90,9 @@ export default class extends Command<IMClient> {
 				.filter(c => !c.ownerOnly && !c.hidden)
 				.filter(
 					c =>
-						!message.guild || messageMember.hasPermission(c.callerPermissions)
+						!message.guild ||
+						!messageMember ||
+						messageMember.hasPermission(c.callerPermissions)
 				)
 				.map(c => ({
 					...c,
@@ -116,7 +112,11 @@ export default class extends Command<IMClient> {
 				embed.addField(group, descr);
 			});
 
-			if (message.guild && messageMember.hasPermission('ADMINISTRATOR')) {
+			if (
+				message.guild &&
+				messageMember &&
+				messageMember.hasPermission('ADMINISTRATOR')
+			) {
 				const botMember = message.guild.me;
 				const unavailableCommands = commands.filter(
 					c => !botMember.hasPermission(c.clientPermissions)
