@@ -83,7 +83,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[dbKey] !== null) {
-				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ key: dbKey }));
+				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
 			}
 			return [
 				message,

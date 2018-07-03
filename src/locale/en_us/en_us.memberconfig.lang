@@ -12,7 +12,8 @@ Use `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<valu
 No config setting called **{{ key }}** found.
 
 [CMD_MEMBERCONFIG_KEY_CANT_CLEAR]
-The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.
+The config setting **{{ key }}** can not be cleared. 
+You can use `{{ prefix }}config {{ key }} default` to reset it to the default value.
 
 [CMD_MEMBERCONFIG_KEYS_TITLE]
 Valid config keys
