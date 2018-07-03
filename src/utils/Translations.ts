@@ -25,6 +25,8 @@ export interface TranslationKeys {
 	ROLES_SHOULD_HAVE: (data: TemplateData) => string;
 	ROLES_SHOULD_NOT_HAVE: (data: TemplateData) => string;
 
+	RANK_REACHED: (data: TemplateData) => string;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: (data: TemplateData) => string;
 	CMD_ADDINVITES_AMOUNT_POS: (data: TemplateData) => string;

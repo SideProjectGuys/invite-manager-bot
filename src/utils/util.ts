@@ -1,4 +1,4 @@
-import { Guild, Message, ResourceProxy } from '@yamdbf/core';
+import { Guild, Message, ResourceProxy, Lang } from '@yamdbf/core';
 import {
 	Client,
 	DMChannel,
@@ -183,6 +183,7 @@ export async function getInviteCounts(
 	};
 }
 
+const tadaSymbol = '🎉';
 export async function promoteIfQualified(
 	guild: Guild,
 	member: GuildMember,
@@ -191,8 +192,8 @@ export async function promoteIfQualified(
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	const style: RankAssignmentStyle = (await SettingsCache.get(guild.id))
-		.rankAssignmentStyle;
+	const settings = await SettingsCache.get(guild.id);
+	const style: RankAssignmentStyle = settings.rankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
 		where: {
@@ -240,6 +241,33 @@ export async function promoteIfQualified(
 	await member.roles.remove(
 		notReached.filter(r => !tooHighRoles.has(r.id) && member.roles.has(r.id))
 	);
+
+	if (highest && !member.roles.has(highest.id)) {
+		const rankChannelId = settings.rankAnnouncementChannel;
+		if (rankChannelId) {
+			const rankChannel = rankChannelId
+				? (guild.channels.get(rankChannelId) as TextChannel)
+				: undefined;
+
+			const lang = settings.lang;
+			// Check if it's a valid channel
+			if (rankChannel) {
+				rankChannel
+					.send(
+						Lang.res(lang, 'RANK_REACHED', {
+							member,
+							rank: highest.name
+						})
+					)
+					.then((msg: Message) => msg.react(tadaSymbol));
+			} else {
+				console.error(
+					`Guild ${guild.id} has invalid ` +
+						`rank announcement channel ${rankChannelId}`
+				);
+			}
+		}
+	}
 
 	if (guild.me.hasPermission('MANAGE_ROLES')) {
 		if (style === RankAssignmentStyle.all) {

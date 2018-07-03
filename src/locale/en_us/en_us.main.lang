@@ -49,3 +49,5 @@ You have earned the roles {{ shouldHave }} but I can't assign them to you becaus
 [ROLES_SHOULD_NOT_HAVE]
 You don't need the roles {{ shouldNotHave }} but I can't remove them because my role isn't high enough.
 
+[RANK_REACHED]
+Congratulations, **{{ member }}** has reached the {{ rank }} rank!

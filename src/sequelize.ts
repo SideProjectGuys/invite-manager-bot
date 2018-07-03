@@ -176,7 +176,8 @@ export enum SettingsKey {
 	autoSubtractFakes = 'autoSubtractFakes',
 	autoSubtractLeaves = 'autoSubtractLeaves',
 	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
-	rankAssignmentStyle = 'rankAssignmentStyle'
+	rankAssignmentStyle = 'rankAssignmentStyle',
+	rankAnnouncementChannel = 'rankAnnouncementChannel'
 }
 
 export enum Lang {
@@ -204,7 +205,8 @@ export function getSettingsType(key: SettingsKey) {
 		key === SettingsKey.joinMessageChannel ||
 		key === SettingsKey.leaveMessageChannel ||
 		key === SettingsKey.modChannel ||
-		key === SettingsKey.logChannel
+		key === SettingsKey.logChannel ||
+		key === SettingsKey.rankAnnouncementChannel
 	) {
 		return 'Channel';
 	}
@@ -278,7 +280,8 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	autoSubtractFakes: 'true',
 	autoSubtractLeaves: 'true',
 	autoSubtractLeaveThreshold: '600' /* seconds */,
-	rankAssignmentStyle: RankAssignmentStyle.all
+	rankAssignmentStyle: RankAssignmentStyle.all,
+	rankAnnouncementChannel: null
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -308,7 +311,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.logChannel,
 			SettingsKey.getUpdates,
 			SettingsKey.autoSubtractFakes,
-			SettingsKey.rankAssignmentStyle
+			SettingsKey.rankAssignmentStyle,
+			SettingsKey.rankAnnouncementChannel
 		),
 		value: Sequelize.TEXT
 	},
