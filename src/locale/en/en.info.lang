@@ -1,8 +1,8 @@
-[CMD_INFO_NOT_IN_GUILD]
-User is not part of your guild
-
 [CMD_INFO_LASTJOINED_TITLE]
 Last joined
+
+[CMD_INFO_LASTJOINED_NOT_IN_GUILD]
+<Not in guild>
 
 [CMD_INFO_INVITES_TITLE]
 Invites
