@@ -1,0 +1,56 @@
+[CMD_SETUP_TITLE]
+Configurando InviteManager
+
+[CMD_SETUP_TEXT]
+Luego de invitar al bot, todas las invitaciones seran rastreadas automaticamente.
+
+[CMD_SETUP_JOINLEAVE_TITLE]
+Ajusta el canal de mensajes de entrada y salida
+
+[CMD_SETUP_JOINLEAVE_TEXT]
+Si quieres mostrar mensajes de entrada o salida en un canal, tienes que configurar el canal haciendo `!config joinMessageChannel #canal` o `!config leaveMessageChannel #canal`, asegurate de que el bot tenga permisos para escribir!
+
+[CMD_SETUP_PREFIX_TITLE]
+Cambiando prefijo
+
+[CMD_SETUP_PREFIX_TEXT]
+Puedes cambiar el prefijo haciendo `!config prefix !`
+
+Si no conoces el prefijo del bot, puedes encontrarlo usando `@InviteManager config prefix`.
+
+
+[CMD_SETUP_FAQ_TITLE]
+Preguntas y Respuestas y más
+
+[CMD_SETUP_FAQ_TEXT]
+Usa el comando `!faq` para más informacion, ej: como cambiar el prefijo del bot o personalizar los menajes de entrada y salida.
+
+Una guia completa de como configurar el bot puede ser encontrada aquí: https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_SETUP_HELP_TITLE]
+Ayuda
+
+[CMD_SETUP_HELP_TEXT]
+Si necesitas ayuda o sugerencias, puedes usar el comando `!feedback` o entrar a nuestro discord de soporte: {{ link }}
+
+[CMD_SETUP_PREMIUM_TITLE]
+Premium
+
+[CMD_SETUP_PREMIUM_TEXT]
+Si quieres apoyar el desarrollo del bot, puedes hacerlo a traves de nuestro patreon: {{ link }}
+
+Dependiendo del nivel, conseguiras caracteristicas adicionales.
+
+
+[CMD_SETUP_MANAGE_GUILD_TITLE]
+Permiso faltante: Administrar el Servidor
+
+[CMD_SETUP_MANAGE_GUILD_TEXT]
+El bot no tiene el permiso "Administrar el Servidor". El permiso es necesario para leer las invitaciones de los usuarios, sin el, los mensajes de entrada no funcionaran.
+
+[CMD_SETUP_MANAGE_ROLES_TITLE]
+Permiso faltante: Administrar Roles
+
+[CMD_SETUP_MANAGE_ROLES_TEXT]
+El bot no tiene el permiso "Administrar Roles". El permiso es necesario para asignar roles a los usuarios, sin el, no se otorgara automaticamente el rol a los usuarios.
+

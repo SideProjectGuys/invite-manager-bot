@@ -1,0 +1,11 @@
+[CMD_INVITES_AMOUNT]
+{{! args.self === args.target ? 'Tu tienes' : `<@${args.target}> tiene` !}} **{{ total }}** invitaciones! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)
+
+[CMD_INVITES_NEXT_RANK]
+{{! args.self === args.self ? 'Tu necesitas' : `<@${args.target}> necesita` !}} **{{ nextRankPointsDiff }}** más invitaciones para alcanzar el rango **{{ nextRankName }}**!
+
+[CMD_INVITES_HIGHEST_RANK]
+{{! args.target === args.self ? 'Felicitaciones, actualmente tienes el rango más alto!'
+: `<@${args.target}> actualmente tiene el rango más alto!` !}}
+
+

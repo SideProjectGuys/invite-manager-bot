@@ -1,0 +1,27 @@
+[CMD_HELP_COMMAND_TITLE]
+Commando
+
+[CMD_HELP_DESCRIPTION_TITLE]
+Beschrijving
+
+[CMD_HELP_USAGE_TITLE]
+Gebruik
+
+[CMD_HELP_BOT_PERMISSIONS_TITLE]
+Bot permissies
+
+[CMD_HELP_USER_PERMISSIONS_TITLE]
+Gebruiker permissies
+
+[CMD_HELP_COMMAND_NONE]
+Geen
+
+[CMD_HELP_UNAVAILABLE_COMMAND_TITLE]
+Niet beschikbare commando's (ontbrekende permissies)
+
+[CMD_HELP_UNAVAILABLE_COMMAND]
+`{{ prefix }}{{ name }}` ⚠️ *Ik mis de  `{{ missingPermission }}` permissie!*
+
+[CMD_HELP_LINKS]
+Links
+

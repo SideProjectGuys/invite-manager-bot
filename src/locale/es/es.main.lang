@@ -1,0 +1,51 @@
+[BOT_SUPPORT_DISCORD_TITLE]
+Discord de soporte
+
+[BOT_INVITE_TITLE]
+Agrega el bot a tu servidor
+
+[BOT_WEBSITE_TITLE]
+Página del bot
+
+[BOT_PATREON_TITLE]
+Patreon
+
+[CUSTOM_INVITES_REASON_CLEAR_REGULAR]
+Comando !clear-invites (regular)
+
+[CUSTOM_INVITES_REASON_CLEAR_CUSTOM]
+Comando !clear-invites (bonus)
+
+[CUSTOM_INVITES_REASON_CLEAR_FAKE]
+Comando !clear-invites (falso)
+
+[CUSTOM_INVITES_REASON_CLEAR_LEAVE]
+Comando !clear-invites (salidas)
+
+[CUSTOM_INVITES_REASON_FAKE]
+Invitaciones falsas de <@{{ reason }}>
+
+[CUSTOM_INVITES_REASON_LEAVE]
+Salida de <@{{ reason }}>
+
+[CUSTOM_INVITES_REASON_UNKNOWN]
+<razón desconocida>
+
+[TEMPLATE_UNKNOWN]
+desconocido
+
+[JOIN_INVITED_BY_UNKNOWN]
+<@{{ id }}> se unió al servidor usando una invitación temporal, así que no puedo averiguar quién lo/a ha invitado
+
+[LEAVE_INVITED_BY_UNKNOWN]
+{{ tag }} salió del servidor, pero no pude averiguar quién lo/a invitó.
+
+[JOIN_LEAVE_EMBEDS_IS_PREMIUM]
+Usar embeds como mensaje de entrada o salida es una característica premium.
+
+[ROLES_SHOULD_HAVE]
+Has adquirido los roles {{ shouldNotHave }} pero no te lo puedo dar porque mi propio rol no es lo suficientemente alto.
+
+[ROLES_SHOULD_NOT_HAVE]
+No necesitas los roles {{ shouldNotHave }} pero no los puedo quitar porque mi propio rol no es suficientemente alto.
+

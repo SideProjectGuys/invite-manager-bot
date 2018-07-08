@@ -1,0 +1,15 @@
+[CMD_FAKE_TITLE]
+Invitaciones falsas
+
+[CMD_FAKE_NONE]
+No hay invitaciones falsas detectadas hasta el momento.
+
+[CMD_FAKE_NONE_SINCE_JOIN]
+No han habído invitaciones falsas desde que el bot ha sido añadido a este servidor.
+
+[CMD_FAKE_JOIN_ENTRY]
+**{{ name }}** a entrado **{{ times }} veces**, invitado por:
+
+[CMD_FAKE_JOIN_ENTRY_INV]
+**{{ name }}**{{! args.times ? ` (**$(args.times)** times)` : '' !}}
+

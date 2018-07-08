@@ -1,0 +1,36 @@
+[BOT_SUPPORT_DISCORD_TITLE]
+Supporto Discord
+
+[BOT_INVITE_TITLE]
+Aggiungi il bot al tuo server
+
+[BOT_WEBSITE_TITLE]
+Sito del bot
+
+[BOT_PATREON_TITLE]
+Patreon
+
+[CUSTOM_INVITES_REASON_CLEAR_REGULAR]
+Comando !clear-invites (regular)
+
+[CUSTOM_INVITES_REASON_CLEAR_CUSTOM]
+Comando !clear-invites (bonus)
+
+[CUSTOM_INVITES_REASON_CLEAR_FAKE]
+Comando !clear-invites (fake)
+
+[CUSTOM_INVITES_REASON_CLEAR_LEAVE]
+Comando !clear invites (leaves)
+
+[CUSTOM_INVITES_REASON_FAKE]
+Inviti falsi da <@{{ reason }}>
+
+[CUSTOM_INVITES_REASON_LEAVE]
+Uscita di >@{{ reason }}>
+
+[CUSTOM_INVITES_REASON_UNKNOWN]
+<Motivo sconosciuto>
+
+[TEMPLATE_UNKNOWN]
+Sconosciuto
+

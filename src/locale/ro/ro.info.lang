@@ -1,0 +1,6 @@
+[CMD_INFO_BONUSINVITES_TITLE]
+Invitatii Bonus
+
+[CMD_INFO_BONUSINVITES_ENTRY]
+**{{ amount }}** de la <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, motiv **${args.reason}**` : '' !}}
+

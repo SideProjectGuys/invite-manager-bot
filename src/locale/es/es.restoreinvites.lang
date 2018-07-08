@@ -1,0 +1,3 @@
+[CMD_RESTOREINVITES_DONE]
+Invitaciones reestablecidas{{! args.user ? ` para <@${args.user}>` :''!}}
+

@@ -1,0 +1,55 @@
+[CMD_MEMBERCONFIG_TITLE]
+Sua configurações setadas
+
+[CMD_MEMBERCONFIG_TEXT]
+Abaixo estão todas as definições de configuração disponíveis.
+
+Use `{{ prefix }}config <key>` Para visualizar os usuários que têm uma `<key>` definida
+Use `{{ prefix }}config <key> @user` para ver a configuração de um unico `@user`
+Use `{{ prefix }}config <key> @user <value>` para definir a configuração `<key>` em `<value>` para `@user`
+
+[CMD_MEMBERCONFIG_KEY_NOT_FOUND]
+Nenhuma configuração definida, chamada **{{ key }}** encontrada.
+
+[CMD_MEMBERCONFIG_KEY_CANT_CLEAR]
+A configuração  **{{ key }}** não pode ser apagada. Você pode usar `config {{ key }} default` para resetar ela para o valor padrão.
+
+[CMD_MEMBERCONFIG_KEYS_TITLE]
+chaves de configuração validas.
+
+[CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT]
+Está configuração não esta setada para estes membros
+
+[CMD_MEMBERCONFIG_CURRENT_TITLE]
+Valor atual
+
+[CMD_MEMBERCONFIG_PREVIOUS_TITLE]
+Antigo valor
+
+[CMD_MEMBERCONFIG_NEW_TITLE]
+Novo valor
+
+[CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
+Esta configuração está atualmente  definida.
+
+Use `{{ prefix }}config ${ key } @{{ username }} <value>` para alterar ela
+Use `{{ prefix }}config ${ key } @{{ username }} default` para resetar ela para o padrão
+{{! args.clear ? `User \`$(args.prefix}config ${args.key} @${args.username} none\`to clear it.` : '' !}}
+
+[CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
+Esta configuração está atualmente **não** definida.
+
+Use `{{ prefix }}config {{ key }} @{{ username }} <value> ` para setar ele.
+
+[CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE]
+Esta configuração já está definida para esse valor
+
+[CMD_MEMBERCONFIG_CHANGED_TEXT]
+Esta configuração foi alterada.
+
+Use `{{ Prefix }}config ${key} @{{ username }} <value>` para mudar ele de novo.
+Use `{{ Prefix }}config ${key} @{{ username }} none` para resetar para ele para o modelo padrão.
+
+[CMD_MEMBERCONFIG_NONE]
+Nenhum
+

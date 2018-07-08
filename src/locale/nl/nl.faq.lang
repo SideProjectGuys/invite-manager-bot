@@ -1,0 +1,51 @@
+[CMD_FAQ_MORE_TITLE]
+Meer
+
+[CMD_FAQ_NOT_FOUND]
+Naam {{ name }} niet gevonden!
+
+[CMD_FAQ_PREFIX_Q]
+Hoe kan ik de prefix veranderen van de bot?
+
+[CMD_FAQ_JOINLEAVECHANNEL_Q]
+Hoe kan ik zetten waar de join en leave berichten komen?
+
+[CMD_FAQ_JOINLEAVEMESSAGE_Q]
+Kan ik de join en leave berichten aanpassen?
+
+[CMD_FAQ_RANKS_Q]
+Wat zijn \"Ranks\" en hoe kan ik ze gebruiken?
+
+[CMD_FAQ_BONUS_Q]
+Wat zijn bonus invites?
+
+[CMD_FAQ_REMOVEINVITES_Q]
+Hoe kan ik invites van iemand verwijderen?
+
+[CMD_FAQ_RESTRICTCHANNEL_Q]
+Hoe doe de bot uit zetten in één/meerdere kanalen?
+
+[CMD_FAQ_RESTRICTCHANNEL_A]
+Verwijder de berichten lezen permissie in de kanalen waar je niet wilt dat de bot reageert.
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_Q]
+Hoe kan ik mensen verbergen van de leaderboard?
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_A]
+Je kan `{{ prefix }}memberConfig hideFromLeaderboard @user true` doen om iemand de verbergen.
+
+[CMD_FAQ_FAKE_Q]
+Hoe kan ik valsspelers zien op mijn server?
+
+[CMD_FAQ_FAKE_A]
+De `{{ prefix}}fake` commando laat je zien wie herhalend jouw server heeft gejoint.
+
+[CMD_FAQ_WEBPANEL_Q]
+Is er een web paneel?
+
+[CMD_FAQ_SUPPORT_Q]
+De bot werkt niet. Hoe kan ik hulp krijgen?
+
+[CMD_FAQ_PREMIUM_Q]
+Hoe kan ik de ontwikkeling ondersteunen van deze bot?
+

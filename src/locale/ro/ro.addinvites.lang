@@ -1,0 +1,9 @@
+[CMD_ADDINVITES_ZERO]
+Ai adaugat ”0” invitatii,nu poti adauga zero invitatii...
+
+[CMD_ADDINVITES_AMOUNT_POS]
+Ai adaugat **{{ amount }}** invitatii pentru <@{{ member }}>, acum are **{{ totalInvites }}**
+
+[CMD_ADDINVITES_AMOUNT_NEG]
+Ai sters **{{ amount }}** invitatii lui <@{{ member }}>, acum are doar **{{ totalInvites }}**
+

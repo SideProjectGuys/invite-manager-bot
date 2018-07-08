@@ -1,0 +1,6 @@
+[CMD_FAKE_JOIN_ENTRY]
+**{{ name}}** is gejoint **{{ times }} keren**, geinvite door:
+
+[CMD_FAKE_JOIN_ENTRY_INV]
+**{{ name }}**{{! args.times ? ` (**${args.times}** keren` :''!}}
+

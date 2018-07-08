@@ -1,0 +1,44 @@
+[CMD_LEADERBOARD_TITLE]
+Tabla de puntaje
+
+[CMD_LEADERBOARD_INVALID_DATE]
+Fecha invalida: {{ date }}
+
+[CMD_LEADERBOARD_NO_INVITES]
+¡No invitaciones!
+
+[CMD_LEADERBOARD_COMPARED_TO]
+cambios comparado con {{ to }}
+
+[CMD_LEADERBOARD_ROW_ENTRY]
+**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invitaciones (**{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)
+
+[CMD_LEADERBOARD_COL_CHANGE]
+Cambio
+
+[CMD_LEADERBOARD_COL_NAME]
+Nombre
+
+[CMD_LEADERBOARD_COL_TOTAL]
+T
+
+[CMD_LEADERBOARD_COL_REGULAR]
+R
+
+[CMD_LEADERBOARD_COL_CUSTOM]
+B
+
+[CMD_LEADERBOARD_COL_FAKE]
+F
+
+[CMD_LEADERBOARD_COL_LEAVE]
+S
+
+[CMD_LEADERBOARD_TABLE_LEGEND]
+`T` = Total
+`R` = Regular
+`B` = Bonus
+`F` = Falsas
+`S` = Salidas
+
+

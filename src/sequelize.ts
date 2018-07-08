@@ -181,12 +181,15 @@ export enum SettingsKey {
 }
 
 export enum Lang {
-	en_us = 'en_us',
-	de_de = 'de_de',
-	fr_fr = 'fr_fr',
-	it_it = 'it_it',
-	es_es = 'es_es',
-	pt_br = 'pt_br'
+	de = 'de',
+	en = 'en',
+	es = 'es',
+	fr = 'fr',
+	it = 'it',
+	nl = 'nl',
+	pt = 'pt',
+	ro = 'ro',
+	sv = 'sv'
 }
 
 export enum LeaderboardStyle {
@@ -266,7 +269,7 @@ export function toDbSettingsValue(
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
-	lang: Lang.en_us,
+	lang: Lang.en,
 	joinMessage:
 		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,

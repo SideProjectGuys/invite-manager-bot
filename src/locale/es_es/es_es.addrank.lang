@@ -1,9 +1,0 @@
-[CMD_ADDRANK_ROLE_TOO_HIGH]
-El papel **{{ role }}** es más alto que mi propio papel (**{{ myRole }}**), así que no podré ponérselo a miembros que lo pueden conseguir
-
-[CMD_ADDRANK_UPDATED]
-Rango **{{ role }}** fue actualizado: Ahora necesita {{ invites }} y tiene la siguiente descripción: "{{ description ?}}"
-
-[CMD_ADDRANK_CREATED]
-Se agrego el rango **{{ role }}** que necesita {{ invites }} y tiene la siguiente descripción: "{{ description ?}}"
-
