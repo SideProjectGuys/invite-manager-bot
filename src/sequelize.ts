@@ -177,7 +177,8 @@ export enum SettingsKey {
 	autoSubtractLeaves = 'autoSubtractLeaves',
 	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
 	rankAssignmentStyle = 'rankAssignmentStyle',
-	rankAnnouncementChannel = 'rankAnnouncementChannel'
+	rankAnnouncementChannel = 'rankAnnouncementChannel',
+	rankAnnouncementMessage = 'rankAnnouncementMessage'
 }
 
 export enum Lang {
@@ -284,7 +285,9 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	autoSubtractLeaves: 'true',
 	autoSubtractLeaveThreshold: '600' /* seconds */,
 	rankAssignmentStyle: RankAssignmentStyle.all,
-	rankAnnouncementChannel: null
+	rankAnnouncementChannel: null,
+	rankAnnouncementMessage:
+		'Congratulations, **{{ member }}** has reached the {{ rank }} rank!'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -315,7 +318,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.getUpdates,
 			SettingsKey.autoSubtractFakes,
 			SettingsKey.rankAssignmentStyle,
-			SettingsKey.rankAnnouncementChannel
+			SettingsKey.rankAnnouncementChannel,
+			SettingsKey.rankAnnouncementMessage
 		),
 		value: Sequelize.TEXT
 	},

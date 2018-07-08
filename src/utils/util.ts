@@ -1,4 +1,4 @@
-import { Guild, Message, ResourceProxy, Lang } from '@yamdbf/core';
+import { Guild, Message, ResourceProxy } from '@yamdbf/core';
 import {
 	Client,
 	DMChannel,
@@ -12,6 +12,7 @@ import {
 	User
 } from 'discord.js';
 
+import { IMClient } from '../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -249,17 +250,26 @@ export async function promoteIfQualified(
 				? (guild.channels.get(rankChannelId) as TextChannel)
 				: undefined;
 
-			const lang = settings.lang;
 			// Check if it's a valid channel
 			if (rankChannel) {
-				rankChannel
-					.send(
-						Lang.res(lang, 'RANK_REACHED', {
-							member,
-							rank: highest.name
-						})
-					)
-					.then((msg: Message) => msg.react(tadaSymbol));
+				const rankMessageFormat = settings.rankAnnouncementMessage;
+				if (rankMessageFormat) {
+					const msg = await (guild.client as IMClient).fillTemplate(
+						guild,
+						rankMessageFormat,
+						{
+							memberId: member.id,
+							memberName: member.user.username,
+							memberFullName:
+								member.user.username + '#' + member.user.discriminator,
+							memberMention: `<@${member.id}>`,
+							memberImage: member.user.avatarURL(),
+							rankMention: `<@&${highest.id}>`,
+							rankName: highest.name
+						}
+					);
+					rankChannel.send(msg).then((m: Message) => m.react('tada'));
+				}
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
