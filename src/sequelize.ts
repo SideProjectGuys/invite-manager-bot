@@ -176,16 +176,21 @@ export enum SettingsKey {
 	autoSubtractFakes = 'autoSubtractFakes',
 	autoSubtractLeaves = 'autoSubtractLeaves',
 	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
-	rankAssignmentStyle = 'rankAssignmentStyle'
+	rankAssignmentStyle = 'rankAssignmentStyle',
+	rankAnnouncementChannel = 'rankAnnouncementChannel',
+	rankAnnouncementMessage = 'rankAnnouncementMessage'
 }
 
 export enum Lang {
-	en_us = 'en_us',
-	de_de = 'de_de',
-	fr_fr = 'fr_fr',
-	it_it = 'it_it',
-	es_es = 'es_es',
-	pt_br = 'pt_br'
+	de = 'de',
+	en = 'en',
+	es = 'es',
+	fr = 'fr',
+	it = 'it',
+	nl = 'nl',
+	pt = 'pt',
+	ro = 'ro',
+	sv = 'sv'
 }
 
 export enum LeaderboardStyle {
@@ -204,7 +209,8 @@ export function getSettingsType(key: SettingsKey) {
 		key === SettingsKey.joinMessageChannel ||
 		key === SettingsKey.leaveMessageChannel ||
 		key === SettingsKey.modChannel ||
-		key === SettingsKey.logChannel
+		key === SettingsKey.logChannel ||
+		key === SettingsKey.rankAnnouncementChannel
 	) {
 		return 'Channel';
 	}
@@ -264,7 +270,7 @@ export function toDbSettingsValue(
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
-	lang: Lang.en_us,
+	lang: Lang.en,
 	joinMessage:
 		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
@@ -278,7 +284,10 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	autoSubtractFakes: 'true',
 	autoSubtractLeaves: 'true',
 	autoSubtractLeaveThreshold: '600' /* seconds */,
-	rankAssignmentStyle: RankAssignmentStyle.all
+	rankAssignmentStyle: RankAssignmentStyle.all,
+	rankAnnouncementChannel: null,
+	rankAnnouncementMessage:
+		'Congratulations, **{{ member }}** has reached the {{ rank }} rank!'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -308,7 +317,9 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.logChannel,
 			SettingsKey.getUpdates,
 			SettingsKey.autoSubtractFakes,
-			SettingsKey.rankAssignmentStyle
+			SettingsKey.rankAssignmentStyle,
+			SettingsKey.rankAnnouncementChannel,
+			SettingsKey.rankAnnouncementMessage
 		),
 		value: Sequelize.TEXT
 	},

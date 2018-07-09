@@ -418,7 +418,7 @@ export class IMClient extends Client {
 
 		const joinMessageFormat = settings.joinMessage;
 		if (joinChannel && joinMessageFormat) {
-			const msg = await this.fillTemplate(
+			const msg = await this.fillJoinLeaveTemplate(
 				joinMessageFormat,
 				guild,
 				member,
@@ -529,7 +529,7 @@ export class IMClient extends Client {
 
 		const leaveMessageFormat = settings.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
-			const msg = await this.fillTemplate(
+			const msg = await this.fillJoinLeaveTemplate(
 				leaveMessageFormat,
 				guild,
 				member,
@@ -616,7 +616,7 @@ export class IMClient extends Client {
 		);
 	}
 
-	public async fillTemplate(
+	public async fillJoinLeaveTemplate(
 		template: any,
 		guild: Guild,
 		member: RabbitMqMember,
@@ -712,38 +712,66 @@ export class IMClient extends Client {
 		const _joinedAt = moment(joinedAt);
 		const createdAt = moment(member.user.createdAt);
 
-		let msg = template;
-		msg = this.fillDatePlaceholder(msg, 'memberCreated', createdAt);
-		msg = this.fillDatePlaceholder(msg, 'firstJoin', firstJoin);
-		msg = this.fillDatePlaceholder(msg, 'previousJoin', prevJoin);
-		msg = this.fillDatePlaceholder(msg, 'joinedAt', _joinedAt);
-		msg = msg
-			.replace('{inviteCode}', inviteCode ? inviteCode : unknown)
-			.replace('{memberId}', member.id)
-			.replace('{memberName}', memberName)
-			.replace('{memberFullName}', memberFullName)
-			.replace('{memberMention}', `<@${member.id}>`)
-			.replace('{memberImage}', member.user.avatarUrl)
-			.replace('{numJoins}', `${numJoins}`)
-			.replace('{inviterId}', inviterId ? inviterId : unknown)
-			.replace('{inviterName}', invName)
-			.replace('{inviterFullName}', inviterFullName)
-			.replace('{inviterMention}', inviterId ? `<@${inviterId}>` : unknown)
-			.replace('{inviterImage}', inviter ? inviter.user.avatarURL : undefined)
-			.replace('{numInvites}', `${invites.total}`)
-			.replace('{numRegularInvites}', `${invites.regular}`)
-			.replace('{numBonusInvites}', `${invites.custom}`)
-			.replace('{numFakeInvites}', `${invites.fake}`)
-			.replace('{numLeaveInvites}', `${invites.leave}`)
-			.replace('{memberCount}', `${guild.memberCount}`)
-			.replace('{channelMention}', channelId ? `<#${channelId}>` : unknown)
-			.replace('{channelName}', channelName ? channelName : unknown);
+		return this.fillTemplate(
+			guild,
+			template,
+			{
+				inviteCode: inviteCode ? inviteCode : unknown,
+				memberId: member.id,
+				memberName: memberName,
+				memberFullName: memberFullName,
+				memberMention: `<@${member.id}>`,
+				memberImage: member.user.avatarUrl,
+				numJoins: `${numJoins}`,
+				inviterId: inviterId ? inviterId : unknown,
+				inviterName: invName,
+				inviterFullName: inviterFullName,
+				inviterMention: inviterId ? `<@${inviterId}>` : unknown,
+				inviterImage: inviter ? inviter.user.avatarURL() : undefined,
+				numInvites: `${invites.total}`,
+				numRegularInvites: `${invites.regular}`,
+				numBonusInvites: `${invites.custom}`,
+				numFakeInvites: `${invites.fake}`,
+				numLeaveInvites: `${invites.leave}`,
+				memberCount: `${guild.memberCount}`,
+				channelMention: channelId ? `<#${channelId}>` : unknown,
+				channelName: channelName ? channelName : unknown
+			},
+			{
+				memberCreated: createdAt,
+				firstJoin: firstJoin,
+				previousJoin: prevJoin,
+				joinedAt: _joinedAt
+			}
+		);
+	}
+
+	public async fillTemplate(
+		guild: Guild,
+		template: string,
+		strings?: { [x: string]: string },
+		dates?: { [x: string]: moment.Moment | string }
+	) {
+		let msg: any = template;
+
+		if (strings) {
+			Object.keys(strings).forEach(
+				k => (msg = msg.replace(`{${k}}`, strings[k]))
+			);
+		}
+
+		if (dates) {
+			Object.keys(dates).forEach(
+				k => (msg = this.fillDatePlaceholder(msg, k, dates[k]))
+			);
+		}
 
 		try {
 			const temp = JSON.parse(msg);
 			if (await SettingsCache.isPremium(guild.id)) {
 				msg = createEmbed(this, temp);
 			} else {
+				const lang = (await SettingsCache.get(guild.id)).lang;
 				msg += '\n\n' + Lang.res(lang, 'JOIN_LEAVE_EMBEDS_IS_PREMIUM');
 			}
 		} catch (e) {

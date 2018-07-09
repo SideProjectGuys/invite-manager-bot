@@ -12,6 +12,7 @@ import {
 	User
 } from 'discord.js';
 
+import { IMClient } from '../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -183,6 +184,7 @@ export async function getInviteCounts(
 	};
 }
 
+const tadaSymbol = '🎉';
 export async function promoteIfQualified(
 	guild: Guild,
 	member: GuildMember,
@@ -191,8 +193,8 @@ export async function promoteIfQualified(
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	const style: RankAssignmentStyle = (await SettingsCache.get(guild.id))
-		.rankAssignmentStyle;
+	const settings = await SettingsCache.get(guild.id);
+	const style: RankAssignmentStyle = settings.rankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
 		where: {
@@ -240,6 +242,42 @@ export async function promoteIfQualified(
 	await member.roles.remove(
 		notReached.filter(r => !tooHighRoles.has(r.id) && member.roles.has(r.id))
 	);
+
+	if (highest && !member.roles.has(highest.id)) {
+		const rankChannelId = settings.rankAnnouncementChannel;
+		if (rankChannelId) {
+			const rankChannel = rankChannelId
+				? (guild.channels.get(rankChannelId) as TextChannel)
+				: undefined;
+
+			// Check if it's a valid channel
+			if (rankChannel) {
+				const rankMessageFormat = settings.rankAnnouncementMessage;
+				if (rankMessageFormat) {
+					const msg = await (guild.client as IMClient).fillTemplate(
+						guild,
+						rankMessageFormat,
+						{
+							memberId: member.id,
+							memberName: member.user.username,
+							memberFullName:
+								member.user.username + '#' + member.user.discriminator,
+							memberMention: `<@${member.id}>`,
+							memberImage: member.user.avatarURL(),
+							rankMention: `<@&${highest.id}>`,
+							rankName: highest.name
+						}
+					);
+					rankChannel.send(msg).then((m: Message) => m.react('tada'));
+				}
+			} else {
+				console.error(
+					`Guild ${guild.id} has invalid ` +
+						`rank announcement channel ${rankChannelId}`
+				);
+			}
+		}
+	}
 
 	if (guild.me.hasPermission('MANAGE_ROLES')) {
 		if (style === RankAssignmentStyle.all) {

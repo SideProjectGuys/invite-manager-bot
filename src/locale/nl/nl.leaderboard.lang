@@ -1,0 +1,6 @@
+[CMD_LEADERBOARD_TITLE]
+Leaderboard
+
+[CMD_LEADERBOARD_INVALID_DATE]
+Ongeldige datum: {{ date }}
+

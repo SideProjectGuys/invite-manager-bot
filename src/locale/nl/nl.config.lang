@@ -1,0 +1,51 @@
+[CMD_CONFIG_TITLE]
+Jouw configuratie instellingen
+
+[CMD_CONFIG_TEXT]
+                                                                    
+
+[CMD_CONFIG_KEY_NOT_FOUND]
+Geen configuratie key genaamt **{{ key }}** gevonden.
+
+[CMD_CONFIG_NOT_SET]
+Deze instellingen zijn niet gezet.
+
+[CMD_CONFIG_CURRENT_TITLE]
+Huidige Waarde
+
+[CMD_CONFIG_PREVIOUS_TITLE]
+Vorige Waarde
+
+[CMD_CONFIG_NEW_TITLE]
+Nieuwe Waarde
+
+[CMD_CONFIG_ALREADY_SET_SAME_VALUE]
+De configuratie is al gezet naar die waarde.
+
+[CMD_CONFIG_PREVIEW_NEXT_MESSAGE]
+<Zie volgende bericht>
+
+[CMD_CONFIG_NONE]
+Geen
+
+[CMD_CONFIG_CHANNEL_CANT_VIEW]
+Ik heb geen permissies om dat kanaal te **bekijken**.
+
+[CMD_CONFIG_CHANNEL_CANT_READ]
+Ik heb geen permissies om **berichten te lezen** in dat kanaal.
+
+[CMD_CONFIG_CHANNEL_CANT_SEND]
+Ik heb geen permissies om **berichten te versturen** in dat kanaal.
+
+[CMD_CONFIG_CHANNEL_CANT_EMBED]
+Ik heb geen permissies om **embed links** te versturen in dat kanaal.
+
+[CMD_CONFIG_INVALID_LANG]
+Ongeldige taal **{{ value }}**. De volgende talen worden ondersteunt: {{ langs }}
+
+[CMD_CONFIG_INVALID_LEADERBOARD_STYLE]
+Ongeldige leaderboard stijl **{{ value }}**. De volgende stijlen worden ondersteunt: {{ styles }}
+
+[CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE]
+Ongeldige rank toewijzing stijl **{{ value }}**. De volgende stijlen zijn ondersteunt: {{ styles }}
+

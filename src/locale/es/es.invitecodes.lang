@@ -1,0 +1,47 @@
+[CMD_INVITECODES_TITLE]
+Tu tienes los siguientes codigos en el servidor {{ guild }}
+
+[CMD_INVITECODES_NO_CODES]
+No tienes ningun codigo de invitacion activo. Por favor pregunta a los moderadores del servidor como crear uno.
+
+[CMD_INVITECODES_RECOMMENDED_CODE_TITLE]
+Codigo de invitacion recomendado
+
+[CMD_INVITECODES_RECOMMENDED_CODE_NONE]
+Por favor crea un codigo de invitacion permanente.
+
+[CMD_INVITECODES_PERMANENT_TITLE]
+Permanente
+
+[CMD_INVITECODES_PERMANENT_TEXT]
+Estas invitaciones no caducan.
+
+[CMD_INVITECODES_PERMANENT_ENTRY]
+
+
+
+**Usos**: {{ uses }}
+**Edad maxima**: {{ maxAge }}
+**Usos maximos**: {{ maxUses }}
+**Canal**: <#{{ channel }} >
+
+
+[CMD_INVITECODES_TEMPORARY_TITLE]
+Temporal
+
+[CMD_INVITECODES_TEMPORARY_TEXT]
+Estas invitaciones caducan luego de cierto tiempo.
+
+[CMD_INVITECODES_TEMPORARY_ENTRY]
+
+
+
+**Usos**: {{ uses }}
+**Edad maxima**: {{ maxAge }}
+**Usos maximos**: {{ maxUses }}
+**Canal**: <#{{ channel }} >
+**Caduca**: {{ expires }}
+
+[CMD_INVITECODES_DM_SENT]
+Te he enviado un mensaje privado con todos tus codigos de invitacion.
+

@@ -90,7 +90,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultMemberSettings[dbKey] !== null) {
-				throw Error(rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ key: dbKey }));
+				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+				throw Error(rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
 			}
 			return [
 				message,
@@ -161,7 +162,7 @@ export default class extends Command<IMClient> {
 
 		if (!key) {
 			embed.setTitle(rp.CMD_MEMBERCONFIG_TITLE());
-			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT());
+			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT({ prefix }));
 
 			const keys = Object.keys(MemberSettingsKey);
 			embed.addField(rp.CMD_MEMBERCONFIG_KEYS_TITLE(), keys.join('\n'));
@@ -234,7 +235,9 @@ export default class extends Command<IMClient> {
 				);
 				embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), oldRawVal);
 			} else {
-				embed.setDescription(rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT());
+				embed.setDescription(
+					rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT({ prefix })
+				);
 			}
 			await sendEmbed(message.channel, embed, message.author);
 			return;
@@ -272,7 +275,7 @@ export default class extends Command<IMClient> {
 			value
 		});
 
-		embed.setDescription(rp.CMD_MEMBERCONFIG_CHANGED_TEXT());
+		embed.setDescription(rp.CMD_MEMBERCONFIG_CHANGED_TEXT({ prefix }));
 
 		// Log the settings change
 		this.client.logAction(message, LogAction.memberConfig, {

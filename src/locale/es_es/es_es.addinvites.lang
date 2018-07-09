@@ -1,9 +1,0 @@
-[CMD_ADDINVITES_ZERO]
-Agregando cero invitaciones no hace mucho sentido...
-
-[CMD_ADDINVITES_AMOUNT_POS]
-Se agrego **{{ amount }}** invitaciones a <@{{ member }}>, en este momento tiene: **{{ totalInvites }}** invitaciones
-
-[CMD_ADDINVITES_AMOUNT_NEG]
-Se quitaron **{{ amount }}** invitaciones de <@{{ member }}>, ahorra tienen: **{{ totalInvites }}** invitaciones
-

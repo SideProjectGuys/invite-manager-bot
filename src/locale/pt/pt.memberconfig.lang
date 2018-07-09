@@ -34,7 +34,7 @@ Esta configuração está atualmente  definida.
 
 Use `{{ prefix }}config ${ key } @{{ username }} <value>` para alterar ela
 Use `{{ prefix }}config ${ key } @{{ username }} default` para resetar ela para o padrão
-{{! args.clear ? `User \`$(args.prefix}config ${args.key} @${args.username} none\`to clear it.` : "" !}}
+{{! args.clear ? `User \`$(args.prefix}config ${args.key} @${args.username} none\`to clear it.` : '' !}}
 
 [CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
 Esta configuração está atualmente **não** definida.

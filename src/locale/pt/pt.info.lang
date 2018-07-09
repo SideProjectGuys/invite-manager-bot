@@ -1,4 +1,4 @@
-[CMD_INFO_NOT_IN_GUILD]
+[CMD_INFO_LASTJOINED_NOT_IN_GUILD]
 Usuario não faz parte de sua guild
 
 [CMD_INFO_LASTJOINED_TITLE]
@@ -50,7 +50,7 @@ Este membro não convidou ninguém até agora.
 Convites bônus
 
 [CMD_INFO_BONUSINVITES_ENTRY]
-**{{ amount }}** para <@{{ creator }}> - **{{ date }}**{{! args.reason ?`, reason: **${args.reason}**` : "" !}}
+**{{ amount }}** para <@{{ creator }}> - **{{ date }}**{{! args.reason ?`, reason: **${args.reason}**` :''!}}
 
 [CMD_INFO_BONUSINVITES_MORE]
 Mais outro **{{ amount }}** mais bonus convites

@@ -83,7 +83,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[dbKey] !== null) {
-				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ key: dbKey }));
+				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
 			}
 			return [
 				message,
@@ -335,7 +336,7 @@ export default class extends Command<IMClient> {
 			value &&
 			(key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)
 		) {
-			const prev = await this.client.fillTemplate(
+			const preview = await this.client.fillJoinLeaveTemplate(
 				value,
 				message.guild,
 				{
@@ -367,14 +368,36 @@ export default class extends Command<IMClient> {
 				}
 			);
 
-			if (typeof prev === 'string') {
-				embed.addField(rp.CMD_CONFIG_PREVIEW_TITLE(), prev);
+			if (typeof preview === 'string') {
+				embed.addField(rp.CMD_CONFIG_PREVIEW_TITLE(), preview);
 			} else {
 				embed.addField(
 					rp.CMD_CONFIG_PREVIEW_TITLE(),
 					rp.CMD_CONFIG_PREVIEW_NEXT_MESSAGE()
 				);
-				return () => sendEmbed(message.channel, prev);
+				return () => sendEmbed(message.channel, preview);
+			}
+		}
+
+		if (value && key === SettingsKey.rankAnnouncementMessage) {
+			const preview = await this.client.fillTemplate(message.guild, value, {
+				memberId: member.id,
+				memberName: member.user.username,
+				memberFullName: member.user.username + '#' + member.user.discriminator,
+				memberMention: `<@${member.id}>`,
+				memberImage: member.user.avatarURL(),
+				rankMention: `<@&${message.guild.me.roles.highest.id}>`,
+				rankName: message.guild.me.roles.highest.name
+			});
+
+			if (typeof preview === 'string') {
+				embed.addField(rp.CMD_CONFIG_PREVIEW_TITLE(), preview);
+			} else {
+				embed.addField(
+					rp.CMD_CONFIG_PREVIEW_TITLE(),
+					rp.CMD_CONFIG_PREVIEW_NEXT_MESSAGE()
+				);
+				return () => sendEmbed(message.channel, preview);
 			}
 		}
 
