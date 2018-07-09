@@ -1,0 +1,20 @@
+[EXPECT_ERR_MISSING_VALUE]
+Missing or null value for arg: `{{ name }}`{{!
+	args.type.split(', ').length > 1
+		? `\nExpected one of: ${args.type}`
+		: `, expected ${args.type}`
+!}}
+Usage: `{{ usage }}`
+
+[EXPECT_ERR_INVALID_OPTION]
+## Using the `CLEAN_ARG` template script from from
+## the `resolve` middleware string definitions
+in arg `{{ name }}`: `{{! res.CLEAN_ARG() !}}` is not a valid option
+Usage: `{{ usage }}`
+Valid options for arg `{{ name }}`: {{ type }}
+
+[EXPECT_ERR_EXPECTED_TYPE]
+## This is a developer error message and does
+## not need to be translated. I have only extracted
+## this string for ease of re-use as it is used a lot
+in arg `{{ name }}`: `{{ expected }}` expected, got `{{ type }}`
