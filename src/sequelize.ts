@@ -178,7 +178,8 @@ export enum SettingsKey {
 	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
 	rankAssignmentStyle = 'rankAssignmentStyle',
 	rankAnnouncementChannel = 'rankAnnouncementChannel',
-	rankAnnouncementMessage = 'rankAnnouncementMessage'
+	rankAnnouncementMessage = 'rankAnnouncementMessage',
+	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard'
 }
 
 export enum Lang {
@@ -217,7 +218,8 @@ export function getSettingsType(key: SettingsKey) {
 	if (
 		key === SettingsKey.getUpdates ||
 		key === SettingsKey.autoSubtractFakes ||
-		key === SettingsKey.autoSubtractLeaves
+		key === SettingsKey.autoSubtractLeaves ||
+		key === SettingsKey.hideLeftMembersFromLeaderboard
 	) {
 		return 'Boolean';
 	}
@@ -287,7 +289,8 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	rankAssignmentStyle: RankAssignmentStyle.all,
 	rankAnnouncementChannel: null,
 	rankAnnouncementMessage:
-		'Congratulations, **{{ member }}** has reached the {{ rank }} rank!'
+		'Congratulations, **{{ member }}** has reached the {{ rank }} rank!',
+	hideLeftMembersFromLeaderboard: 'false'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -319,7 +322,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.autoSubtractFakes,
 			SettingsKey.rankAssignmentStyle,
 			SettingsKey.rankAnnouncementChannel,
-			SettingsKey.rankAnnouncementMessage
+			SettingsKey.rankAnnouncementMessage,
+			SettingsKey.hideLeftMembersFromLeaderboard
 		),
 		value: Sequelize.TEXT
 	},
