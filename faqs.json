@@ -94,5 +94,12 @@
 			"donate"
 		],
 		"key": "CMD_FAQ_PREMIUM"
-	}
+	},
+        {
+                "key": "botdown",
+                "aliases": [
+                        "down"
+                ],
+                "key": "CMD_FAQ_BOTDOWN"
+        }
 ]
