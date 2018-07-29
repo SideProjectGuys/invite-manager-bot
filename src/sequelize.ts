@@ -116,7 +116,6 @@ export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
-		discriminator: Sequelize.STRING(4),
 		color: Sequelize.STRING({ length: 7 })
 	},
 	{
