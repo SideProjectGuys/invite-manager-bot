@@ -18,14 +18,20 @@ export class SettingsCache {
 	} = {};
 	private static cacheFetch: { [guildId: string]: moment.Moment } = {};
 
+	private static _init: boolean = false;
 	private static premium: { [guildId: string]: boolean } = {};
 	private static premiumFetch: { [guildId: string]: moment.Moment } = {};
 
 	public static async init(client: IMClient) {
 		this.client = client;
+	}
 
+	private static async doInit() {
 		// Load all settings into initial cache
 		const sets = await settings.findAll({
+			where: {
+				guildId: this.client.guilds.keyArray()
+			},
 			order: ['guildId', 'key'],
 			raw: true
 		});
@@ -67,6 +73,9 @@ export class SettingsCache {
 			this.premium[sub.guildId] = true;
 			this.premiumFetch[sub.guildId] = moment();
 		});
+
+		this.cache = cache;
+		this._init = true;
 	}
 
 	public static async clear() {
@@ -74,6 +83,10 @@ export class SettingsCache {
 	}
 
 	public static async isPremium(guildId: string) {
+		if (!this._init) {
+			await this.doInit();
+		}
+
 		if (this.premium[guildId]) {
 			if (
 				this.premiumFetch[guildId] &&
@@ -111,6 +124,10 @@ export class SettingsCache {
 	}
 
 	public static async get(guildId: string) {
+		if (!this._init) {
+			await this.doInit();
+		}
+
 		if (this.cache[guildId]) {
 			if (
 				this.cacheFetch[guildId] &&
@@ -134,6 +151,10 @@ export class SettingsCache {
 	}
 
 	public static async set(guildId: string, key: SettingsKey, value: string) {
+		if (!this._init) {
+			await this.doInit();
+		}
+
 		let oldConfig = this.cache[guildId];
 		// Get these settings if we don't have them yet
 		if (!oldConfig) {
