@@ -13,6 +13,7 @@ import {
 	inviteCodes,
 	JoinAttributes,
 	joins,
+	Lang as SettingsLang,
 	LeaveAttributes,
 	LogAction,
 	members,
@@ -122,6 +123,9 @@ export class IMClient extends Client {
 
 		this.messageQueue = new MessageQueue(this);
 		this.dbQueue = new DBQueue(this);
+
+		// Set fallback language to english
+		Lang.setFallbackLang(SettingsLang.en);
 
 		// Setup RabbitMQ channels
 		const prefix = config.rabbitmq.prefix ? config.rabbitmq.prefix + '-' : '';
