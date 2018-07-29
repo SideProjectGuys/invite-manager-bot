@@ -19,7 +19,8 @@ import {
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize
+	sequelize,
+	settings
 } from '../sequelize';
 import { SettingsCache } from '../utils/SettingsCache';
 import { createEmbed, RP, sendEmbed, showPaginated } from '../utils/util';
@@ -166,6 +167,7 @@ export default class extends Command<IMClient> {
 		}
 
 		const guildId = message.guild.id;
+		const guildSettings = await SettingsCache.get(message.guild.id);
 
 		const codeInvs = await inviteCodes.findAll({
 			attributes: [
@@ -361,8 +363,8 @@ export default class extends Command<IMClient> {
 			raw: true
 		})).map(i => i.memberId);
 
-		const keys = Object.keys(invs)
-			.filter(k => hidden.indexOf(k) === -1 && invs[k].total > 0)
+		const rawKeys = Object.keys(invs)
+			.filter(async k => hidden.indexOf(k) === -1 && invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
 				return diff !== 0
@@ -372,23 +374,6 @@ export default class extends Command<IMClient> {
 						: 0;
 			});
 
-		const oldKeys = [...keys].sort((a, b) => {
-			const diff = invs[b].oldTotal - invs[a].oldTotal;
-			return diff !== 0
-				? diff
-				: invs[a].name
-					? invs[a].name.localeCompare(invs[b].name)
-					: 0;
-		});
-
-		if (keys.length === 0) {
-			const embed = createEmbed(this.client);
-			embed.setDescription(rp.CMD_LEADERBOARD_NO_INVITES());
-			embed.setTitle(rp.CMD_LEADERBOARD_TITLE());
-			sendEmbed(message.channel, embed, message.author);
-			return;
-		}
-
 		const lastJoinAndLeave = await members.findAll({
 			attributes: [
 				'id',
@@ -396,7 +381,7 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
 				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt']
 			],
-			where: { id: keys },
+			where: { id: rawKeys },
 			group: ['member.id'],
 			include: [
 				{
@@ -429,11 +414,32 @@ export default class extends Command<IMClient> {
 			);
 		});
 
+		const hideLeft = guildSettings.hideLeftMembersFromLeaderboard === 'true';
+		const keys = rawKeys.filter(
+			k => !hideLeft || (message.guild.members.has(k) && stillInServer[k])
+		);
+
+		const oldKeys = [...keys].sort((a, b) => {
+			const diff = invs[b].oldTotal - invs[a].oldTotal;
+			return diff !== 0
+				? diff
+				: invs[a].name
+					? invs[a].name.localeCompare(invs[b].name)
+					: 0;
+		});
+
+		if (keys.length === 0) {
+			const embed = createEmbed(this.client);
+			embed.setDescription(rp.CMD_LEADERBOARD_NO_INVITES());
+			embed.setTitle(rp.CMD_LEADERBOARD_TITLE());
+			sendEmbed(message.channel, embed, message.author);
+			return;
+		}
+
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		const style: LeaderboardStyle = (await SettingsCache.get(message.guild.id))
-			.leaderboardStyle;
+		const style: LeaderboardStyle = guildSettings.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {

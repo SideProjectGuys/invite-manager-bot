@@ -184,7 +184,6 @@ export async function getInviteCounts(
 	};
 }
 
-const tadaSymbol = '🎉';
 export async function promoteIfQualified(
 	guild: Guild,
 	member: GuildMember,
