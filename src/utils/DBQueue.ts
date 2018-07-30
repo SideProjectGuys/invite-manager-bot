@@ -51,7 +51,9 @@ export class DBQueue {
 
 		console.time('syncDB');
 
-		await guilds.bulkCreate(this.guilds);
+		await guilds.bulkCreate(this.guilds, {
+			updateOnDuplicate: ['name', 'icon', 'memberCount']
+		});
 
 		await members.bulkCreate(this.members, {
 			updateOnDuplicate: ['name', 'discriminator']
