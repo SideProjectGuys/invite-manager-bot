@@ -242,7 +242,7 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// We have to add the members too, in case our DB doens't have them yet
+		// We have to add the guild and members too, in case our DB does not have them yet
 		this.dbQueue.addCommandUsage(
 			{
 				id: null,
@@ -253,6 +253,12 @@ export class IMClient extends Client {
 				time: execTime,
 				createdAt: new Date(),
 				updatedAt: new Date()
+			},
+			{
+				id: message.guild.id,
+				name: message.guild.name,
+				icon: message.guild.iconURL(),
+				memberCount: message.guild.memberCount
 			},
 			{
 				id: message.author.id,
@@ -611,6 +617,12 @@ export class IMClient extends Client {
 				data,
 				createdAt: new Date(),
 				updatedAt: new Date()
+			},
+			{
+				id: message.guild.id,
+				name: message.guild.name,
+				icon: message.guild.iconURL(),
+				memberCount: message.guild.memberCount
 			},
 			{
 				id: message.author.id,

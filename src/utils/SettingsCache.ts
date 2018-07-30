@@ -27,22 +27,26 @@ export class SettingsCache {
 	}
 
 	private static async doInit() {
+		const guildIds = this.client.guilds.keyArray();
+
 		// Load all settings into initial cache
 		const sets = await settings.findAll({
 			where: {
-				guildId: this.client.guilds.keyArray()
+				guildId: guildIds
 			},
 			order: ['guildId', 'key'],
 			raw: true
 		});
 
 		const cache: { [x: string]: { [key in SettingsKey]: string } } = {};
+		// First insert base data for all guilds
+		guildIds.forEach(id => (cache[id] = { ...defaultSettings }));
+
+		// Then insert the settings we got from the DB
 		sets.forEach(set => {
-			if (!cache[set.guildId]) {
-				cache[set.guildId] = { ...defaultSettings };
-			}
 			// Skip any empty values that aren't allowed to be empty.
-			// This is a backward fix to insert any missing non-empty settings for guilds that don't have them yet.
+			// This is a backward fix to insert any missing non-empty settings
+			// for guilds that don't have them yet.
 			if (set.value === null && defaultSettings[set.key] !== null) {
 				return;
 			}

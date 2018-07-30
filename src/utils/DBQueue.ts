@@ -2,6 +2,8 @@ import { IMClient } from '../client';
 import {
 	commandUsage,
 	CommandUsageAttributes,
+	GuildAttributes,
+	guilds,
 	LogAttributes,
 	logs,
 	MemberAttributes,
@@ -10,7 +12,9 @@ import {
 
 export class DBQueue {
 	private client: IMClient = null;
+
 	private logActions: LogAttributes[] = [];
+	private guilds: GuildAttributes[] = [];
 	private members: MemberAttributes[] = [];
 	private cmdUsages: CommandUsageAttributes[] = [];
 
@@ -20,15 +24,22 @@ export class DBQueue {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	public addLogAction(action: LogAttributes, member: MemberAttributes) {
+	public addLogAction(
+		action: LogAttributes,
+		guild: GuildAttributes,
+		member: MemberAttributes
+	) {
+		this.guilds.push(guild);
 		this.members.push(member);
 		this.logActions.push(action);
 	}
 
 	public addCommandUsage(
 		cmdUsage: CommandUsageAttributes,
+		guild: GuildAttributes,
 		member: MemberAttributes
 	) {
+		this.guilds.push(guild);
 		this.members.push(member);
 		this.cmdUsages.push(cmdUsage);
 	}
@@ -38,7 +49,11 @@ export class DBQueue {
 			return;
 		}
 
-		const time = console.time('syncDB');
+		console.time('syncDB');
+
+		await guilds.bulkCreate(this.guilds, {
+			updateOnDuplicate: ['name', 'icon', 'memberCount']
+		});
 
 		await members.bulkCreate(this.members, {
 			updateOnDuplicate: ['name', 'discriminator']
