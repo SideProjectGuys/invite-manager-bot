@@ -193,6 +193,7 @@ export default class extends Command<IMClient> {
 					required: true
 				}
 			],
+			limit: 100,
 			raw: true
 		});
 		const customInvs = await customInvites.findAll({
@@ -210,6 +211,7 @@ export default class extends Command<IMClient> {
 					model: members
 				}
 			],
+			limit: 100,
 			raw: true
 		});
 
@@ -283,6 +285,7 @@ export default class extends Command<IMClient> {
 					required: true
 				}
 			],
+			limit: 100,
 			raw: true
 		});
 		const oldCustomInvs = await customInvites.findAll({
@@ -300,6 +303,7 @@ export default class extends Command<IMClient> {
 					model: members
 				}
 			],
+			limit: 100,
 			raw: true
 		});
 
@@ -364,7 +368,7 @@ export default class extends Command<IMClient> {
 		})).map(i => i.memberId);
 
 		const rawKeys = Object.keys(invs)
-			.filter(async k => hidden.indexOf(k) === -1 && invs[k].total > 0)
+			.filter(k => hidden.indexOf(k) === -1 && invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
 				return diff !== 0

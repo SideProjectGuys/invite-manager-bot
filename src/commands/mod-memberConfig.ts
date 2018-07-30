@@ -129,7 +129,7 @@ export default class extends Command<IMClient> {
 	public constructor() {
 		super({
 			name: 'memberconfig',
-			aliases: ['memconfig', 'memconf'],
+			aliases: ['memberconf', 'memconfig', 'memconf'],
 			desc: 'Show and change the config of members of the server',
 			usage: '<prefix>memconf @user (key) (value)',
 			info:
