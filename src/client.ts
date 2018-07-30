@@ -772,7 +772,7 @@ export class IMClient extends Client {
 
 		if (strings) {
 			Object.keys(strings).forEach(
-				k => (msg = msg.replace(`{${k}}`, strings[k]))
+				k => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k]))
 			);
 		}
 
@@ -810,9 +810,9 @@ export class IMClient extends Client {
 		const timeAgo = typeof value === 'string' ? value : value.fromNow();
 
 		return msg
-			.replace(`{${name}:date}`, date)
-			.replace(`{${name}:duration}`, duration)
-			.replace(`{${name}:timeAgo}`, timeAgo);
+			.replace(new RegExp(`{${name}:date}`, 'g'), date)
+			.replace(new RegExp(`{${name}:duration}`, 'g'), duration)
+			.replace(new RegExp(`{${name}:timeAgo}`, 'g'), timeAgo);
 	}
 
 	private async findJoins(guildId: string, memberId: string): Promise<any[]> {
