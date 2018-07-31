@@ -51,66 +51,34 @@ type InvCacheType = {
 	};
 };
 
-// Extra attributes for the sequelize queries
+// Extra query stuff we need in multiple places
+const sumClearRegular =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'clear_regular',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalCustom =
+	`SUM(` +
+	`IF(customInvite.generatedReason IS NULL OR customInvite.generatedReason = 'clear_custom',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalFake =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'fake' OR customInvite.generatedReason = 'clear_fake',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalLeaves =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'leave' OR customInvite.generatedReason = 'clear_leave',` +
+	`customInvite.amount,` +
+	`0))`;
+
 const attrs: FindOptionsAttributesArray = [
 	'memberId',
-	[
-		sequelize.fn(
-			'sum',
-			sequelize.fn(
-				'if',
-				sequelize.literal(`customInvite.generatedReason = 'clear_regular'`),
-				sequelize.col('customInvite.amount'),
-				0
-			)
-		),
-		'totalClearRegular'
-	],
-	[
-		sequelize.fn(
-			'sum',
-			sequelize.fn(
-				'if',
-				sequelize.literal(
-					`(customInvite.generatedReason IS NULL OR ` +
-						`customInvite.generatedReason = 'clear_custom')`
-				),
-				sequelize.col('customInvite.amount'),
-				0
-			)
-		),
-		'totalCustom'
-	],
-	[
-		sequelize.fn(
-			'sum',
-			sequelize.fn(
-				'if',
-				sequelize.literal(
-					`(customInvite.generatedReason = 'fake' OR ` +
-						`customInvite.generatedReason = 'clear_fake')`
-				),
-				sequelize.col('customInvite.amount'),
-				0
-			)
-		),
-		'totalFake'
-	],
-	[
-		sequelize.fn(
-			'sum',
-			sequelize.fn(
-				'if',
-				sequelize.literal(
-					`(customInvite.generatedReason = 'leave' OR ` +
-						`customInvite.generatedReason = 'clear_leave')`
-				),
-				sequelize.col('customInvite.amount'),
-				0
-			)
-		),
-		'totalLeaves'
-	]
+	[sumClearRegular, 'totalClearRegular'],
+	[sumTotalCustom, 'totalCustom'],
+	[sumTotalFake, 'totalFake'],
+	[sumTotalLeaves, 'totalLeaves']
 ];
 
 export default class extends Command<IMClient> {
@@ -193,6 +161,7 @@ export default class extends Command<IMClient> {
 					required: true
 				}
 			],
+			order: [sequelize.literal('totalJoins'), 'inviterId'],
 			limit: 100,
 			raw: true
 		});
@@ -210,6 +179,12 @@ export default class extends Command<IMClient> {
 					attributes: ['name'],
 					model: members
 				}
+			],
+			order: [
+				sequelize.literal(
+					`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}`
+				),
+				'memberId'
 			],
 			limit: 100,
 			raw: true
@@ -285,6 +260,7 @@ export default class extends Command<IMClient> {
 					required: true
 				}
 			],
+			order: [sequelize.literal('totalJoins'), 'inviterId'],
 			limit: 100,
 			raw: true
 		});
@@ -302,6 +278,12 @@ export default class extends Command<IMClient> {
 					attributes: ['name'],
 					model: members
 				}
+			],
+			order: [
+				sequelize.literal(
+					`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}`
+				),
+				'memberId'
 			],
 			limit: 100,
 			raw: true
