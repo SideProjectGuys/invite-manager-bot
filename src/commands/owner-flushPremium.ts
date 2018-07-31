@@ -29,21 +29,35 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('guild: String'))
 	@using(expect('guild: String'))
-	public async action(message: Message, [guildID]: [string]): Promise<any> {
+	public async action(message: Message, [_guildId]: [string]): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
 
-		// tslint:disable-next-line
-		let targetShardId = (parseInt(guildID, 10) >>> 22) % this.client.options.shardCount;
+		const guildId = parseInt(_guildId, 10);
+		if (isNaN(guildId)) {
+			message.reply('Invalid guild id ' + _guildId);
+			return;
+		}
 
-		const rabbitMqPrefix = this.client.config.rabbitmq.prefix ? `${this.client.config.rabbitmq.prefix}-` : '';
-		const queueName = `${rabbitMqPrefix}cmds-${targetShardId}-${this.client.options.shardCount}`;
+		// tslint:disable-next-line
+		const shardId = ((guildId >>> 22) % this.client.options.shardCount) + 1;
+		const shardCount = this.client.options.shardCount;
+
+		const rabbitMqPrefix = this.client.config.rabbitmq.prefix
+			? `${this.client.config.rabbitmq.prefix}-`
+			: '';
+		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
 		const payload = {
 			cmd: 'FLUSH_PREMIUM_CACHE',
-			args: [guildID]
+			args: [guildId]
 		};
-		const success = this.client.channelCmds.sendToQueue(queueName, Buffer.from(JSON.stringify(payload)));
+		const success = this.client.channelCmds.sendToQueue(
+			queueName,
+			Buffer.from(JSON.stringify(payload))
+		);
 		if (success) {
-			message.reply(`Sent command to flush premium settings for guild ${guildID} to shard ${targetShardId}`);
+			message.reply(
+				`Sent command to flush premium settings for guild ${guildId} to shard ${shardId}`
+			);
 		} else {
 			message.reply(`RabbitMQ returned false`);
 		}
