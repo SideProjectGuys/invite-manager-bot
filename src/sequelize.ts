@@ -228,47 +228,6 @@ export function getSettingsType(key: SettingsKey) {
 	return 'String';
 }
 
-export function fromDbSettingsValue(
-	key: SettingsKey,
-	value: string
-): string | number | boolean {
-	if (value === undefined || value === null) {
-		return value;
-	}
-
-	const type = getSettingsType(key);
-	if (type === 'Channel') {
-		return `<#${value}>`;
-	} else if (type === 'Boolean') {
-		return !!value;
-	} else if (type === 'Number') {
-		return parseInt(value, 10);
-	}
-
-	return value;
-}
-
-export function toDbSettingsValue(
-	key: SettingsKey,
-	value: any
-): { value?: string; error?: string } {
-	if (value === 'default') {
-		return { value: defaultSettings[key] };
-	}
-	if (value === 'none' || value === 'empty' || value === 'null') {
-		return { value: null };
-	}
-
-	const type = getSettingsType(key);
-	if (type === 'Channel') {
-		return { value: (value as any).id };
-	} else if (type === 'Boolean') {
-		return { value: value ? 'true' : 'false' };
-	}
-
-	return { value };
-}
-
 export const defaultSettings: { [k in SettingsKey]: string } = {
 	prefix: '!',
 	lang: Lang.en,

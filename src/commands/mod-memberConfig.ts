@@ -131,12 +131,12 @@ export default class extends Command<IMClient> {
 			name: 'memberconfig',
 			aliases: ['memberconf', 'memconfig', 'memconf'],
 			desc: 'Show and change the config of members of the server',
-			usage: '<prefix>memconf @user (key) (value)',
+			usage: '<prefix>memconf key (@user) (value)',
 			info:
-				'`@user`:\n' +
-				'The member that the setting is changed for.\n\n' +
 				'`key`:\n' +
 				'The config setting which you want to show/change.\n\n' +
+				'`@user`:\n' +
+				'The member that the setting is changed for.\n\n' +
 				'`value`:\n' +
 				'The new value of the setting.\n\n' +
 				'Use without args to show all set configs and keys.\n',
@@ -193,7 +193,7 @@ export default class extends Command<IMClient> {
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.addField(set.memberName, set.value)
+					embed.addField(set.memberName, this.fromDbValue(set.key, set.value))
 				);
 			} else {
 				embed.setDescription(rp.CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT());

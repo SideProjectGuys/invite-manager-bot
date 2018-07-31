@@ -224,7 +224,7 @@ export async function promoteIfQualified(
 				}
 			}
 		} else {
-			console.log('ROLE DOESNT EXIST');
+			console.log('ROLE DOES NOT EXIST');
 		}
 	});
 
