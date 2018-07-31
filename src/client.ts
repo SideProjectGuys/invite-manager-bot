@@ -11,6 +11,8 @@ import {
 	CustomInvitesGeneratedReason,
 	guilds,
 	inviteCodes,
+	inviteCodeSettings,
+	InviteCodeSettingsKey,
 	JoinAttributes,
 	joins,
 	Lang as SettingsLang,
@@ -420,6 +422,24 @@ export class IMClient extends Client {
 			.fetch(inviterId)
 			.catch(() => undefined);
 		const invites = await getInviteCounts(guild.id, inviterId);
+
+		// Add any roles for this invite code
+		const mem: GuildMember = await guild.members
+			.fetch(member.id)
+			.catch(() => undefined);
+		if (mem) {
+			const roleSet = await inviteCodeSettings.find({
+				where: {
+					guildId: guild.id,
+					key: InviteCodeSettingsKey.roles
+				},
+				raw: true
+			});
+			if (roleSet && roleSet.value) {
+				const roles = roleSet.value.split(',');
+				mem.roles.add(roles);
+			}
+		}
 
 		// Promote the inviter if required
 		if (inviter && !inviter.user.bot) {

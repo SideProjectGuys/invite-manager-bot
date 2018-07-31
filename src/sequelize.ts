@@ -454,6 +454,72 @@ inviteCodes.belongsTo(members, { as: 'inviter', foreignKey: 'inviterId' });
 members.hasMany(inviteCodes, { foreignKey: 'inviterId' });
 
 // ------------------------------------
+// Invite Code Settings
+// ------------------------------------
+export enum InviteCodeSettingsKey {
+	name = 'name',
+	roles = 'roles'
+}
+
+export function getInviteCodeSettingsType(key: InviteCodeSettingsKey) {
+	return 'String';
+}
+
+export const defaultInviteCodeSettings: {
+	[k in InviteCodeSettingsKey]: string
+} = {
+	name: null,
+	roles: null
+};
+
+export interface InviteCodeSettingsAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	inviteCode: string;
+	key: InviteCodeSettingsKey;
+	value: string;
+}
+export interface InviteCodeSettingsInstance
+	extends Sequelize.Instance<InviteCodeSettingsAttributes>,
+		InviteCodeSettingsAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getInviteCode: Sequelize.BelongsToGetAssociationMixin<InviteCodeInstance>;
+}
+
+export const inviteCodeSettings = sequelize.define<
+	InviteCodeSettingsInstance,
+	InviteCodeSettingsAttributes
+>(
+	'inviteCodeSettings',
+	{
+		key: Sequelize.ENUM(
+			InviteCodeSettingsKey.name,
+			InviteCodeSettingsKey.roles
+		),
+		value: Sequelize.TEXT
+	},
+	{
+		timestamps: true,
+		paranoid: true,
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'inviteCode']
+			}
+		]
+	}
+);
+
+inviteCodeSettings.belongsTo(guilds);
+guilds.hasMany(inviteCodeSettings);
+
+inviteCodeSettings.belongsTo(inviteCodes, {
+	as: 'invite',
+	foreignKey: 'inviteCode'
+});
+inviteCodes.hasOne(inviteCodeSettings, { foreignKey: 'inviteCode' });
+
+// ------------------------------------
 // Joins
 // ------------------------------------
 export interface JoinAttributes extends BaseAttributes {
