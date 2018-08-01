@@ -547,6 +547,12 @@ export async function promoteIfQualified(
 		raw: true
 	});
 
+	// Return early if we don't have any ranks so we do not
+	// get any permission issues for MANAGE_ROLES
+	if (allRanks.length === 0) {
+		return;
+	}
+
 	let highest: Role = null;
 	const reached: Role[] = [];
 	const notReached: Role[] = [];
