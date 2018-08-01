@@ -130,6 +130,21 @@ export interface TranslationKeys {
 	CMD_INVITECODES_TEMPORARY_ENTRY: (data: TemplateData) => string;
 	CMD_INVITECODES_DM_SENT: (data: TemplateData) => string;
 
+	CMD_INVITECODECONFIG_TITLE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_TEXT: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_KEY_NOT_FOUND: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_KEY_CANT_CLEAR: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_KEYS_TITLE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_CURRENT_TITLE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_PREVIOUS_TITLE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_NEW_TITLE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_CURRENT_SET_TEXT: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_CHANGED_TEXT: (data: TemplateData) => string;
+	CMD_INVITECODECONFIG_NONE: (data: TemplateData) => string;
+
 	CMD_INVITES_AMOUNT: (data: TemplateData) => string;
 	CMD_INVITES_NEXT_RANK: (data: TemplateData) => string;
 	CMD_INVITES_HIGHEST_RANK: (data: TemplateData) => string;

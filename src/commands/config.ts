@@ -13,20 +13,18 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	defaultSettings,
-	fromDbSettingsValue,
 	getSettingsType,
 	Lang,
 	LeaderboardStyle,
 	LogAction,
 	RankAssignmentStyle,
-	SettingsKey,
-	toDbSettingsValue
+	SettingsKey
 } from '../sequelize';
 import { SettingsCache } from '../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
-const { expect, resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { expect, resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
@@ -137,7 +135,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
 	public async action(
@@ -163,7 +161,7 @@ export default class extends Command<IMClient> {
 				if (val) {
 					embed.addField(
 						keys[i],
-						fromDbSettingsValue(keys[i] as SettingsKey, val)
+						this.fromDbValue(keys[i] as SettingsKey, val)
 					);
 				} else {
 					notSet.push(keys[i]);
@@ -182,7 +180,7 @@ export default class extends Command<IMClient> {
 		}
 
 		let oldVal = settings[key];
-		let oldRawVal = fromDbSettingsValue(key, oldVal);
+		let oldRawVal = this.fromDbValue(key, oldVal);
 		if (typeof oldRawVal === 'string' && oldRawVal.length > 1000) {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
 		}
@@ -207,7 +205,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const parsedValue = toDbSettingsValue(key, rawValue);
+		const parsedValue = this.toDbValue(key, rawValue);
 		if (parsedValue.error) {
 			message.channel.send(parsedValue.error);
 			return;
@@ -440,5 +438,46 @@ export default class extends Command<IMClient> {
 			let cmd = this.client.commands.resolve('subtract-leaves');
 			return async () => await cmd.action(message, []);
 		}
+	}
+
+	private fromDbValue(
+		key: SettingsKey,
+		value: string
+	): string | number | boolean {
+		if (value === undefined || value === null) {
+			return value;
+		}
+
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
+			return `<#${value}>`;
+		} else if (type === 'Boolean') {
+			return !!value;
+		} else if (type === 'Number') {
+			return parseInt(value, 10);
+		}
+
+		return value;
+	}
+
+	private toDbValue(
+		key: SettingsKey,
+		value: any
+	): { value?: string; error?: string } {
+		if (value === 'default') {
+			return { value: defaultSettings[key] };
+		}
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			return { value: null };
+		}
+
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
+			return { value: (value as any).id };
+		} else if (type === 'Boolean') {
+			return { value: value ? 'true' : 'false' };
+		}
+
+		return { value };
 	}
 }

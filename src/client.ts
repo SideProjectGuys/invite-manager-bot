@@ -11,6 +11,8 @@ import {
 	CustomInvitesGeneratedReason,
 	guilds,
 	inviteCodes,
+	inviteCodeSettings,
+	InviteCodeSettingsKey,
 	JoinAttributes,
 	joins,
 	Lang as SettingsLang,
@@ -210,13 +212,13 @@ export class IMClient extends Client {
 		// The default lang is en_us, so at this point it will always be that
 		owner.send(
 			'Hi! Thanks for inviting me to your server `' +
-				guild.name +
-				'`!\n\n' +
-				'I am now tracking all invites on your server.\n\n' +
-				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-				'You can see a list of all commands using the `!help` command.\n\n' +
-				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-				'https://discord.gg/2eTnsVM'
+			guild.name +
+			'`!\n\n' +
+			'I am now tracking all invites on your server.\n\n' +
+			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+			'You can see a list of all commands using the `!help` command.\n\n' +
+			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+			'https://discord.gg/2eTnsVM'
 		);
 		this.messageQueue.addMessage(
 			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
@@ -295,7 +297,7 @@ export class IMClient extends Client {
 			if (isInitialMessage) {
 				const initialMessage =
 					`Hi there, thanks for writing me!\n\n` +
-					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?ref=initial-dm \n\n` +
+					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?origin=initial-dm \n\n` +
 					`If you need help, you can either write me here (try "help") or join our discord support server: ` +
 					`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
 				const embed = createEmbed(this);
@@ -346,7 +348,7 @@ export class IMClient extends Client {
 		if (joinChannelId && !joinChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
+				`join message channel ${joinChannelId}`
 			);
 		}
 
@@ -395,11 +397,11 @@ export class IMClient extends Client {
 		if (!jn) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${guild.id} joinId ${join.id}`
+				`${guild.id} joinId ${join.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (joinChannel) {
 				joinChannel.send(
@@ -420,6 +422,24 @@ export class IMClient extends Client {
 			.fetch(inviterId)
 			.catch(() => undefined);
 		const invites = await getInviteCounts(guild.id, inviterId);
+
+		// Add any roles for this invite code
+		const mem: GuildMember = await guild.members
+			.fetch(member.id)
+			.catch(() => undefined);
+		if (mem) {
+			const roleSet = await inviteCodeSettings.find({
+				where: {
+					guildId: guild.id,
+					key: InviteCodeSettingsKey.roles
+				},
+				raw: true
+			});
+			if (roleSet && roleSet.value) {
+				const roles = roleSet.value.split(',');
+				mem.roles.add(roles);
+			}
+		}
 
 		// Promote the inviter if required
 		if (inviter && !inviter.user.bot) {
@@ -476,7 +496,7 @@ export class IMClient extends Client {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid leave ` +
-					`message channel ${leaveChannelId}`
+				`message channel ${leaveChannelId}`
 			);
 		}
 
@@ -484,11 +504,11 @@ export class IMClient extends Client {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${guild.id} leaveId: ${leave.id}`
+				`${guild.id} leaveId: ${leave.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				leaveChannel.send(
@@ -561,7 +581,7 @@ export class IMClient extends Client {
 		const cmd: ShardCommand = content.cmd;
 		const args = content.args;
 
-		console.log(`RECEIVED SHARD COMMAND: ${content}`);
+		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
 		switch (cmd) {
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
@@ -577,6 +597,8 @@ export class IMClient extends Client {
 			default:
 				console.log(`UNKNOWN COMMAND: ${cmd}`);
 		}
+
+		this.channelCmds.ack(msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
@@ -772,7 +794,7 @@ export class IMClient extends Client {
 
 		if (strings) {
 			Object.keys(strings).forEach(
-				k => (msg = msg.replace(`{${k}}`, strings[k]))
+				k => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k]))
 			);
 		}
 
@@ -810,9 +832,9 @@ export class IMClient extends Client {
 		const timeAgo = typeof value === 'string' ? value : value.fromNow();
 
 		return msg
-			.replace(`{${name}:date}`, date)
-			.replace(`{${name}:duration}`, duration)
-			.replace(`{${name}:timeAgo}`, timeAgo);
+			.replace(new RegExp(`{${name}:date}`, 'g'), date)
+			.replace(new RegExp(`{${name}:duration}`, 'g'), duration)
+			.replace(new RegExp(`{${name}:timeAgo}`, 'g'), timeAgo);
 	}
 
 	private async findJoins(guildId: string, memberId: string): Promise<any[]> {

@@ -3,14 +3,16 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
-import { ranks } from '../sequelize';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { ranks } from '../../sequelize';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { localizable } = CommandDecorators;
+const { localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -26,7 +28,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
