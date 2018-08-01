@@ -1,19 +1,24 @@
 const chartjsPluginDatalabels = require('chartjs-plugin-datalabels');
 const chartjsNode = require('chartjs-node');
 
-import chartJs from 'chart.js';
+const chartJs = require('chart.js');
 
 chartJs.plugins.register({
-	beforeDraw: function (chartInstance: any) {
+	beforeDraw: function(chartInstance: any) {
 		var localCtx = chartInstance.chart.ctx;
 		localCtx.fillStyle = 'white';
-		localCtx.fillRect(0, 0, chartInstance.chart.width, chartInstance.chart.height);
+		localCtx.fillRect(
+			0,
+			0,
+			chartInstance.chart.width,
+			chartInstance.chart.height
+		);
 	}
 });
 
 var chartNode = new chartjsNode(1000, 400);
 
-chartNode.on('beforeDraw', function (chartjs: any) {
+chartNode.on('beforeDraw', function(chartjs: any) {
 	chartjs.pluginService.register(chartjsPluginDatalabels);
 });
 
@@ -41,46 +46,51 @@ export class Chart {
 			display: false
 		},
 		scales: {
-			yAxes: [{
-				ticks: {
-					display: true,
-					fontColor: 'black',
-					fontStyle: 'bold',
-					beginAtZero: true,
-					maxTicksLimit: 5,
-					padding: 20
-				},
-				gridLines: {
-					drawTicks: true,
-					display: true
+			yAxes: [
+				{
+					ticks: {
+						display: true,
+						fontColor: 'black',
+						fontStyle: 'bold',
+						beginAtZero: true,
+						maxTicksLimit: 5,
+						padding: 20
+					},
+					gridLines: {
+						drawTicks: true,
+						display: true
+					}
 				}
-
-			}],
-			xAxes: [{
-				gridLines: {
-					drawTicks: true,
-					display: true
-				},
-				ticks: {
-					display: true,
-					padding: 20,
-					fontColor: 'black',
-					fontStyle: 'bold'
+			],
+			xAxes: [
+				{
+					gridLines: {
+						drawTicks: true,
+						display: true
+					},
+					ticks: {
+						display: true,
+						padding: 20,
+						fontColor: 'black',
+						fontStyle: 'bold'
+					}
 				}
-			}]
+			]
 		}
 	};
 
 	public getChart(type: string, data: any) {
-		return chartNode.drawChart({
-			type: type,
-			data: data,
-			options: this.options
-		}).then(() => {
-			// Chart is created
-			// Get image as png buffer
-			return chartNode.getImageBuffer('image/png');
-		});
+		return chartNode
+			.drawChart({
+				type: type,
+				data: data,
+				options: this.options
+			})
+			.then(() => {
+				// Chart is created
+				// Get image as png buffer
+				return chartNode.getImageBuffer('image/png');
+			});
 	}
 
 	public destroy() {
