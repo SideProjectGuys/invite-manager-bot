@@ -13,26 +13,26 @@ import {
 	User
 } from 'discord.js';
 import moment from 'moment';
+import { FindOptionsAttributesArray, Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
-	RankAssignmentStyle,
-	RankInstance,
-	ranks,
-	sequelize,
+	joins,
+	leaves,
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	joins,
-	leaves
+	RankAssignmentStyle,
+	RankInstance,
+	ranks,
+	sequelize
 } from '../sequelize';
 
 import { SettingsCache } from './SettingsCache';
 import { TranslationKeys } from './Translations';
-import { FindOptionsAttributesArray, Op } from 'sequelize';
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -297,7 +297,6 @@ export async function generateLeaderboard(
 			),
 			'memberId'
 		],
-		limit,
 		raw: true
 	});
 
@@ -397,7 +396,6 @@ export async function generateLeaderboard(
 				),
 				'memberId'
 			],
-			limit,
 			raw: true
 		});
 
@@ -546,6 +544,12 @@ export async function promoteIfQualified(
 		},
 		raw: true
 	});
+
+	// Return early if we don't have any ranks so we do not
+	// get any permission issues for MANAGE_ROLES
+	if (allRanks.length === 0) {
+		return;
+	}
 
 	let highest: Role = null;
 	const reached: Role[] = [];
