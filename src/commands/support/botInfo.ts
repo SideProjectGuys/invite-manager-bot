@@ -3,17 +3,19 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 import moment from 'moment';
 
-import { IMClient } from '../client';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { localizable } = CommandDecorators;
+const { localize } = Middleware;
+const { using } = CommandDecorators;
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -28,7 +30,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

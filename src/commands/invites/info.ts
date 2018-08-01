@@ -9,7 +9,7 @@ import {
 import { GuildMember, User } from 'discord.js';
 import moment from 'moment';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	CustomInviteInstance,
 	customInvites,
@@ -18,12 +18,12 @@ import {
 	joins,
 	members,
 	sequelize
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { resolve, expect } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, expect, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -45,7 +45,7 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('user: User'))
 	@using(expect('user: User'))
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

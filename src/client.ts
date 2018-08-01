@@ -581,7 +581,7 @@ export class IMClient extends Client {
 		const cmd: ShardCommand = content.cmd;
 		const args = content.args;
 
-		console.log(`RECEIVED SHARD COMMAND: ${content}`);
+		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
 		switch (cmd) {
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
@@ -597,6 +597,8 @@ export class IMClient extends Client {
 			default:
 				console.log(`UNKNOWN COMMAND: ${cmd}`);
 		}
+
+		this.channelCmds.ack(msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {

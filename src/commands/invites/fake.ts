@@ -7,18 +7,18 @@ import {
 	Middleware
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	inviteCodes,
 	JoinAttributes,
 	joins,
 	members,
 	sequelize
-} from '../sequelize';
-import { CommandGroup, createEmbed, RP, showPaginated } from '../utils/util';
+} from '../../sequelize';
+import { CommandGroup, createEmbed, RP, showPaginated } from '../../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 const usersPerPage = 20;
 
@@ -39,7 +39,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('page: Number'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, _page]: [RP, number]

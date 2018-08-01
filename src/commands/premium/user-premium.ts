@@ -1,4 +1,5 @@
 import { Command, Logger, logger, Message } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
@@ -34,15 +35,16 @@ export default class extends Command<IMClient> {
 			embed.setTitle('You currently do not have a premium subscription');
 
 			let description = '';
-			description += 'By subscribing to a premium tier you help the development of the bot';
+			description +=
+				'By subscribing to a premium tier you help the development of the bot';
 			description += ' and also get some additional features.';
 
 			embed.setDescription(description);
 
 			embed.addField(
 				'Premium Feature: Embeds in join messages',
-				'You can use an embed in your join and leave messages which look a lot better. '
-				+ '[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
+				'You can use an embed in your join and leave messages which look a lot better. ' +
+					'[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
 			);
 
 			embed.addField(
@@ -50,7 +52,6 @@ export default class extends Command<IMClient> {
 				'You can export all the joins and leaves that happened on your server since you invited our bot.'
 			);
 		} else {
-
 			const sub = await premiumSubscriptions.findOne({
 				where: {
 					guildId: message.guild.id,
@@ -65,7 +66,8 @@ export default class extends Command<IMClient> {
 
 			let description = '';
 			if (sub) {
-				description += `Your subscription is valid until ${sub.validUntil}`;
+				const date = moment(sub.validUntil).fromNow(true);
+				description += `Your subscription is valid for another ${date}`;
 				description += `\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)`;
 			} else {
 				description += `Could not find subscription info.`;

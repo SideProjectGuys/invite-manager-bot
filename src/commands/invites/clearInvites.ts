@@ -9,7 +9,7 @@ import {
 import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -17,11 +17,11 @@ import {
 	inviteCodes,
 	LogAction,
 	sequelize
-} from '../sequelize';
-import { CommandGroup, RP } from '../utils/util';
+} from '../../sequelize';
+import { CommandGroup, RP } from '../../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -45,7 +45,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('clearBonus: Boolean, user: User'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, clearBonus, user]: [RP, boolean, User]

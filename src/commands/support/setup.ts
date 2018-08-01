@@ -3,16 +3,18 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 import { User } from 'discord.js';
 
-import { IMClient } from '../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
-const { localizable } = CommandDecorators;
+const { localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -31,7 +33,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

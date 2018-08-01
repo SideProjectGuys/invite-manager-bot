@@ -8,12 +8,12 @@ import {
 } from '@yamdbf/core';
 import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
-import { IMClient } from '../client';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 interface FAQ {
 	name: string;
@@ -43,11 +43,11 @@ export default class extends Command<IMClient> {
 			guildOnly: true
 		});
 
-		this.faqs = require('../../faqs.json');
+		this.faqs = require('../../../faqs.json');
 	}
 
 	@using(resolve('faqName: String'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, faqName]: [AnyRP, string]
