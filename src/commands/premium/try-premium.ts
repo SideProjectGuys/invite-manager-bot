@@ -73,13 +73,14 @@ export default class extends Command<IMClient> {
 				return message.channel.send('Okay, aborting.');
 			}
 
-			premiumSubscriptions.create({
+			await premiumSubscriptions.create({
 				id: null,
 				amount: 0.0,
 				validUntil: validUntil.toDate(),
 				guildId: message.guild.id,
 				memberId: message.author.id
 			});
+			SettingsCache.flushPremium(message.guild.id);
 
 			embed.setDescription(
 				'You successfully started your trial! Use `!premium` to check how much time you have left'
