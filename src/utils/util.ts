@@ -6,6 +6,7 @@ import {
 	GuildMember,
 	MessageEmbed,
 	MessageEmbedOptions,
+	MessageOptions,
 	MessageReaction,
 	Role,
 	TextChannel,
@@ -30,7 +31,8 @@ export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
 	Admin = 'Admin',
-	Other = 'Other'
+	Other = 'Other',
+	Premium = 'Premium'
 }
 
 export type RP = ResourceProxy<TranslationKeys>;
@@ -392,4 +394,33 @@ export async function showPaginated(
 			}
 		});
 	}
+}
+
+/**
+ * Represents possible results of Util#prompt
+ */
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
+
+export async function prompt(
+	message: Message,
+	promptStr: string,
+	options?: MessageOptions
+): Promise<[PromptResult, Message]> {
+	await message.channel.send(promptStr, options);
+	const confirmation: Message = (await message.channel.awaitMessages(
+		a => a.author.id === message.author.id,
+		{ max: 1, time: 60000 }
+	)).first();
+
+	if (!confirmation) {
+		return [PromptResult.TIMEOUT, confirmation];
+	}
+	if (confirmation.content !== 'yes') {
+		return [PromptResult.FAILURE, confirmation];
+	}
+	return [PromptResult.SUCCESS, confirmation];
 }
