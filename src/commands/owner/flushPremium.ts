@@ -7,7 +7,7 @@ import {
 	Middleware
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
