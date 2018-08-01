@@ -19,7 +19,9 @@ export default class extends Command<IMClient> {
 
 	public async action(message: Message, args: string[]): Promise<any> {
 		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${message.author.username}): ${message.content}`
+			`${message.guild ? message.guild.name : 'DM'} (${
+				message.author.username
+			}): ${message.content}`
 		);
 
 		const embed = createEmbed(this.client);
@@ -27,11 +29,13 @@ export default class extends Command<IMClient> {
 		let params = [];
 		params.push(`origin=getbot`);
 		params.push(`user=${message.author.id}`);
-		if (message.guild) { params.push(`guild=${message.guild.id}`); }
+		if (message.guild) {
+			params.push(`guild=${message.guild.id}`);
+		}
 
 		embed.setDescription(
 			`[Add InviteManager to your server]` +
-			`(https://invitemanager.co/add-bot?${params.join('&')})`
+				`(https://invitemanager.co/add-bot?${params.join('&')})`
 		);
 
 		sendEmbed(message.channel, embed, message.author);
