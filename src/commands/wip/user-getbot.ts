@@ -25,11 +25,10 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		let params = [];
-		if (message.guild) {
-			params.push(`origin=getbot`);
-			if (message.guild) { params.push(`guild=${message.guild.id}`); }
-			params.push(`user=${message.author.id}`);
-		}
+		params.push(`origin=getbot`);
+		params.push(`user=${message.author.id}`);
+		if (message.guild) { params.push(`guild=${message.guild.id}`); }
+
 		embed.setDescription(
 			`[Add InviteManager to your server]` +
 			`(https://invitemanager.co/add-bot?${params.join('&')})`

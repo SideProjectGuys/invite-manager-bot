@@ -24,14 +24,6 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const ONE_SECOND = 1000;
-		const ONE_MINUTE = 60 * ONE_SECOND;
-		const ONE_HOUR = 60 * ONE_MINUTE;
-		const ONE_DAY = 24 * ONE_HOUR;
-		const ONE_WEEK = 7 * ONE_DAY;
-		const ONE_MONTH = 4 * ONE_WEEK;
-		const todayTimestamp = new Date().getTime();
-
 		// TODO: Create list of premium features (also useful for FAQ)
 
 		const embed = createEmbed(this.client);
@@ -49,7 +41,8 @@ export default class extends Command<IMClient> {
 
 			embed.addField(
 				'Premium Feature: Embeds in join messages',
-				'You can use an embed in your join and leave messages which look a lot better.'
+				'You can use an embed in your join and leave messages which look a lot better. '
+				+ '[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
 			);
 
 			embed.addField(
@@ -73,6 +66,7 @@ export default class extends Command<IMClient> {
 			let description = '';
 			if (sub) {
 				description += `Your subscription is valid until ${sub.validUntil}`;
+				description += `\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)`;
 			} else {
 				description += `Could not find subscription info.`;
 			}

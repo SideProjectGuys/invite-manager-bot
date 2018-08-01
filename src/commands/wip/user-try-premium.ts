@@ -1,4 +1,5 @@
 import { Command, Logger, logger, Message } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
@@ -25,16 +26,12 @@ export default class extends Command<IMClient> {
 			`${message.guild ? message.guild.name : 'DM'} (${message.author.username}): ${message.content}`
 		);
 
-		const trialPeriod = '1 week';
 		const embed = createEmbed(this.client);
 
 		const isPremium = await SettingsCache.isPremium(message.guild.id);
 
-		const ONE_SECOND = 1000;
-		const ONE_MINUTE = 60 * ONE_SECOND;
-		const ONE_HOUR = 60 * ONE_MINUTE;
-		const ONE_DAY = 24 * ONE_HOUR;
-		const ONE_WEEK = 7 * ONE_DAY;
+		let validUntil = moment().add(1, 'week');
+		let trialDuration = moment.duration(validUntil.diff(moment()));
 
 		embed.setTitle('InviteManager Premium');
 		if (isPremium) {
@@ -46,7 +43,7 @@ export default class extends Command<IMClient> {
 
 			const promptEmbed = createEmbed(this.client);
 
-			promptEmbed.setDescription('You can try out our premium features for ' + trialPeriod
+			promptEmbed.setDescription('You can try out our premium features for ' + trialDuration.humanize()
 				+ '. You can only do this once. Would you like to test it now?');
 
 			await sendEmbed(message.channel, promptEmbed, message.author);
@@ -59,9 +56,9 @@ export default class extends Command<IMClient> {
 			if (keyResult === PromptResult.FAILURE) { return message.channel.send('Okay, aborting.'); }
 
 			premiumSubscriptions.create({
-				id: 1,
+				id: null,
 				amount: 0.00,
-				validUntil: new Date(new Date().getTime() + ONE_WEEK),
+				validUntil: validUntil.toDate(),
 				guildId: message.guild.id,
 				memberId: message.author.id
 			});
