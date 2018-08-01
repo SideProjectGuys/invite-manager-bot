@@ -64,9 +64,16 @@ export class Chart {
 			],
 			xAxes: [
 				{
+					type: 'time',
 					gridLines: {
 						drawTicks: true,
 						display: true
+					},
+					time: {
+						unit: 'day',
+						displayFormats: {
+							day: 'D MMM'
+						}
 					},
 					ticks: {
 						display: true,
