@@ -6,6 +6,7 @@ import {
 	GuildMember,
 	MessageEmbed,
 	MessageEmbedOptions,
+	MessageOptions,
 	MessageReaction,
 	Role,
 	TextChannel,
@@ -30,7 +31,8 @@ export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
 	Admin = 'Admin',
-	Other = 'Other'
+	Other = 'Other',
+	Premium = 'Premium',
 }
 
 export type RP = ResourceProxy<TranslationKeys>;
@@ -98,7 +100,7 @@ export function sendEmbed(
 						fallbackUser
 							.send(
 								'**I do not have permissions to post to that channel.\n' +
-									`Please tell an admin to allow me to send messages in the channel.**\n\n`,
+								`Please tell an admin to allow me to send messages in the channel.**\n\n`,
 								{ embed }
 							)
 							.then(resolve)
@@ -272,7 +274,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-						`rank announcement channel ${rankChannelId}`
+					`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -392,4 +394,28 @@ export async function showPaginated(
 			}
 		});
 	}
+}
+
+/**
+ * Represents possible results of Util#prompt
+ */
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
+
+export async function prompt(
+	message: Message,
+	promptStr: string,
+	options?: MessageOptions): Promise<[PromptResult, Message]> {
+	const ask: Message = <Message> await message.channel.send(promptStr, options);
+	const confirmation: Message = (
+		await message.channel.awaitMessages(a => a.author.id === message.author.id, { max: 1, time: 60000 })
+	).first();
+
+	if (!confirmation) { return [PromptResult.TIMEOUT, confirmation]; }
+	if (confirmation.content !== 'yes') { return [PromptResult.FAILURE, confirmation]; }
+	return [PromptResult.SUCCESS, confirmation];
+
 }
