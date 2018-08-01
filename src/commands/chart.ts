@@ -69,7 +69,7 @@ export default class extends Command<IMClient> {
 			data.push({
 				x: moment(`${j.year}-${month}-${day}`).toDate(),
 				y: j.total,
-				r: j.total + ' join' + (j.total > 1 ? 's' : '')
+				r: j.total
 			});
 		});
 
