@@ -272,7 +272,7 @@ export async function generateLeaderboard(
 				required: true
 			}
 		],
-		order: [sequelize.literal('totalJoins'), 'inviterId'],
+		order: [sequelize.literal('totalJoins DESC'), 'inviterId'],
 		limit,
 		raw: true
 	});
@@ -293,7 +293,7 @@ export async function generateLeaderboard(
 		],
 		order: [
 			sequelize.literal(
-				`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}`
+				`(${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}) DESC`
 			),
 			'memberId'
 		],
@@ -372,7 +372,7 @@ export async function generateLeaderboard(
 					required: true
 				}
 			],
-			order: [sequelize.literal('totalJoins'), 'inviterId'],
+			order: [sequelize.literal('totalJoins DESC'), 'inviterId'],
 			limit,
 			raw: true
 		});
@@ -393,7 +393,7 @@ export async function generateLeaderboard(
 			],
 			order: [
 				sequelize.literal(
-					`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}`
+					`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves} DESC`
 				),
 				'memberId'
 			],

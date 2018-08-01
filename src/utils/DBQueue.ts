@@ -54,6 +54,7 @@ export class DBQueue {
 		await guilds.bulkCreate(this.guilds, {
 			updateOnDuplicate: ['name', 'icon', 'memberCount']
 		});
+		this.guilds = [];
 
 		await members.bulkCreate(this.members, {
 			updateOnDuplicate: ['name', 'discriminator']
