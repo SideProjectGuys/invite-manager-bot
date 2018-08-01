@@ -16,8 +16,8 @@ import {
 } from '../../sequelize';
 import { CommandGroup, RP } from '../../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -39,7 +39,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('user: User'))
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

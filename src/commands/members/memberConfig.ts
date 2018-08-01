@@ -21,8 +21,8 @@ import {
 import { SettingsCache } from '../../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { expect, resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { expect, resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
@@ -146,7 +146,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
 	public async action(

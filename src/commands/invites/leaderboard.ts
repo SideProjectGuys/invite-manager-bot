@@ -19,16 +19,15 @@ import {
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize,
-	settings
+	sequelize
 } from '../../sequelize';
 import { SettingsCache } from '../../utils/SettingsCache';
 import { createEmbed, RP, sendEmbed, showPaginated } from '../../utils/util';
 
 const chrono = require('chrono-node');
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
@@ -101,7 +100,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('page: Number, ...date?: String'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, _page, _date]: [RP, number, string]

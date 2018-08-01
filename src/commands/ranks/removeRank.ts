@@ -12,8 +12,8 @@ import { IMClient } from '../../client';
 import { LogAction, ranks } from '../../sequelize';
 import { CommandGroup, RP } from '../../utils/util';
 
-const { resolve, expect } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, expect, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -33,7 +33,7 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))
-	@localizable
+	@using(localize)
 	public async action(message: Message, [rp, role]: [RP, Role]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

@@ -10,8 +10,8 @@ import {
 import { IMClient } from '../../client';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 const config = require('../../../config.json');
 
@@ -27,7 +27,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('command: Command'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, command]: [RP, Command]

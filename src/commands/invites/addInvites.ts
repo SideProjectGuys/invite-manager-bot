@@ -19,8 +19,8 @@ import {
 	sendEmbed
 } from '../../utils/util';
 
-const { resolve, expect } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, expect, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -47,7 +47,7 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, user, amount, reason]: [RP, User, number, string]

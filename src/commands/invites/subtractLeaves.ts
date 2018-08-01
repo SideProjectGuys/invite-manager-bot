@@ -3,7 +3,8 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
@@ -18,7 +19,8 @@ import {
 import { SettingsCache } from '../../utils/SettingsCache';
 import { CommandGroup, RP } from '../../utils/util';
 
-const { localizable } = CommandDecorators;
+const { localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -36,7 +38,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, _page]: [RP, number]
