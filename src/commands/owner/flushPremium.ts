@@ -29,12 +29,11 @@ export default class extends Command<IMClient> {
 
 	@using(resolve('guild: String'))
 	@using(expect('guild: String'))
-	public async action(message: Message, [_guildId]: [string]): Promise<any> {
+	public async action(message: Message, [guildId]: [any]): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
 
-		const guildId = parseInt(_guildId, 10);
-		if (isNaN(guildId)) {
-			message.reply('Invalid guild id ' + _guildId);
+		if (isNaN(parseInt(guildId, 10))) {
+			message.reply('Invalid guild id ' + guildId);
 			return;
 		}
 
