@@ -6,7 +6,6 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
-import moment from 'moment';
 
 import { IMClient } from '../client';
 import { joins, sequelize } from '../sequelize';
@@ -24,9 +23,10 @@ export default class extends Command<IMClient> {
 			name: 'graph',
 			aliases: ['g', 'chart'],
 			desc: 'Display graph',
-			usage: '<prefix>graph <graph> <type>',
+			usage: '<prefix>graph <type>',
 			group: CommandGroup.Other,
-			guildOnly: true
+			guildOnly: true,
+			hidden: true
 		});
 	}
 
@@ -75,11 +75,7 @@ export default class extends Command<IMClient> {
 					borderColor: 'black',
 					pointBorderColor: 'black',
 					pointBackgroundColor: 'black',
-					pointHoverBackgroundColor: 'black',
-					pointHoverBorderColor: 'black',
 					pointBorderWidth: 0,
-					pointHoverRadius: 0,
-					pointHoverBorderWidth: 0,
 					pointRadius: 1,
 					fill: true,
 					borderWidth: 2,
@@ -92,12 +88,17 @@ export default class extends Command<IMClient> {
 			]
 		};
 
+		if (type !== 'joins') {
+			message.channel.send('Invalid export type. Use one of: `joins`');
+			return;
+		}
+
 		let chart = new Chart();
-		chart.getChart(type, config).then((buffer: Buffer) => {
+		chart.getChart('line', config).then((buffer: Buffer) => {
 			const embed = createEmbed(this.client);
 			embed.setTitle('User Growth');
 			embed.setDescription(
-				'This is the main body of text, it can hold 2048 characters.'
+				'This chart shows the growth of your server.'
 			);
 			embed.setImage('attachment://chart.png');
 			embed.attachFiles([
@@ -108,7 +109,7 @@ export default class extends Command<IMClient> {
 			]);
 
 			message.channel.send({ embed }).then(() => {
-				// chartNode.destroy();
+				chart.destroy();
 			});
 		});
 	}

@@ -82,4 +82,8 @@ export class Chart {
 			return chartNode.getImageBuffer('image/png');
 		});
 	}
+
+	public destroy() {
+		chartNode.destroy();
+	}
 }
