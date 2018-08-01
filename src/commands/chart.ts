@@ -6,14 +6,15 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
+import moment from 'moment';
 
 import { IMClient } from '../client';
 import { joins, sequelize } from '../sequelize';
 import { Chart } from '../utils/Chart';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
-const { resolve } = Middleware;
-const { using, localizable } = CommandDecorators;
+const { resolve, localize } = Middleware;
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -31,7 +32,7 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('type: string'))
-	@localizable
+	@using(localize)
 	public async action(
 		message: Message,
 		[rp, type]: [RP, string]
@@ -60,15 +61,19 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const labels: string[] = [];
-		const data: number[] = [];
+		const data: { x: Date; y: number; r: string }[] = [];
 		js.forEach((j: any) => {
-			labels.push(`${j.day}.${j.month}.${j.year}`);
-			data.push(Number(j.total));
+			const day = j.day > 10 ? j.day : '0' + j.day;
+			const month = j.month > 10 ? j.month : '0' + j.month;
+
+			data.push({
+				x: moment(`${j.year}-${month}-${day}`).toDate(),
+				y: j.total,
+				r: j.total + ' join' + (j.total > 1 ? 's' : '')
+			});
 		});
 
 		let config = {
-			labels,
 			datasets: [
 				{
 					label: 'Data',
@@ -97,9 +102,7 @@ export default class extends Command<IMClient> {
 		chart.getChart('line', config).then((buffer: Buffer) => {
 			const embed = createEmbed(this.client);
 			embed.setTitle('User Growth');
-			embed.setDescription(
-				'This chart shows the growth of your server.'
-			);
+			embed.setDescription('This chart shows the growth of your server.');
 			embed.setImage('attachment://chart.png');
 			embed.attachFiles([
 				{
