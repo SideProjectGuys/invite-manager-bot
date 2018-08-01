@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 import { User } from 'discord.js';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	CommandGroup,
 	createEmbed,
@@ -16,7 +16,7 @@ import {
 	promoteIfQualified,
 	RP,
 	sendEmbed
-} from '../utils/util';
+} from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;

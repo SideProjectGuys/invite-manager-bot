@@ -8,9 +8,9 @@ import {
 } from '@yamdbf/core';
 import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
-import { IMClient } from '../client';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;
@@ -43,7 +43,7 @@ export default class extends Command<IMClient> {
 			guildOnly: true
 		});
 
-		this.faqs = require('../../faqs.json');
+		this.faqs = require('../../../faqs.json');
 	}
 
 	@using(resolve('faqName: String'))

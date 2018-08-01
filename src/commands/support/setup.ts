@@ -7,10 +7,10 @@ import {
 } from '@yamdbf/core';
 import { User } from 'discord.js';
 
-import { IMClient } from '../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 const { localizable } = CommandDecorators;
 

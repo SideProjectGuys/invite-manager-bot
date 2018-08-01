@@ -6,7 +6,7 @@ import {
 	Message
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -14,9 +14,9 @@ import {
 	joins,
 	leaves,
 	sequelize
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, RP } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, RP } from '../../utils/util';
 
 const { localizable } = CommandDecorators;
 

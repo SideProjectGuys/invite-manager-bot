@@ -6,8 +6,8 @@ import {
 	Message
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { localizable } = CommandDecorators;
 

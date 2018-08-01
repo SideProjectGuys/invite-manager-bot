@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	customInvites,
 	inviteCodes,
@@ -21,9 +21,9 @@ import {
 	MemberSettingsKey,
 	sequelize,
 	settings
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { createEmbed, RP, sendEmbed, showPaginated } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { createEmbed, RP, sendEmbed, showPaginated } from '../../utils/util';
 
 const chrono = require('chrono-node');
 

@@ -8,13 +8,13 @@ import {
 } from '@yamdbf/core';
 import { TextChannel } from 'discord.js';
 
-import { IMClient } from '../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using, localizable } = CommandDecorators;
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;

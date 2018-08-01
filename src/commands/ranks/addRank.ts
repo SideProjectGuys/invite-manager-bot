@@ -8,9 +8,9 @@ import {
 } from '@yamdbf/core';
 import { Role } from 'discord.js';
 
-import { IMClient } from '../client';
-import { LogAction, members, ranks, roles } from '../sequelize';
-import { CommandGroup, RP } from '../utils/util';
+import { IMClient } from '../../client';
+import { LogAction, members, ranks, roles } from '../../sequelize';
+import { CommandGroup, RP } from '../../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using, localizable } = CommandDecorators;

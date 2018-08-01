@@ -9,7 +9,7 @@ import {
 import { GuildMember, User } from 'discord.js';
 import moment from 'moment';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	CustomInviteInstance,
 	customInvites,
@@ -18,9 +18,9 @@ import {
 	joins,
 	members,
 	sequelize
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using, localizable } = CommandDecorators;

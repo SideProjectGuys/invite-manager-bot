@@ -7,13 +7,13 @@ import {
 	Middleware
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;

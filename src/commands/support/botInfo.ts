@@ -7,13 +7,13 @@ import {
 } from '@yamdbf/core';
 import moment from 'moment';
 
-import { IMClient } from '../client';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { localizable } = CommandDecorators;
 
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;

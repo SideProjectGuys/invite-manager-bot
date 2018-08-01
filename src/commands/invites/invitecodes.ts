@@ -7,10 +7,10 @@ import {
 } from '@yamdbf/core';
 import moment from 'moment';
 
-import { IMClient } from '../client';
-import { InviteCodeAttributes, inviteCodes, members } from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { IMClient } from '../../client';
+import { InviteCodeAttributes, inviteCodes, members } from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { localizable } = CommandDecorators;
 

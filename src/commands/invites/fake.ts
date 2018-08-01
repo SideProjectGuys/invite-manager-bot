@@ -7,15 +7,15 @@ import {
 	Middleware
 } from '@yamdbf/core';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	inviteCodes,
 	JoinAttributes,
 	joins,
 	members,
 	sequelize
-} from '../sequelize';
-import { CommandGroup, createEmbed, RP, showPaginated } from '../utils/util';
+} from '../../sequelize';
+import { CommandGroup, createEmbed, RP, showPaginated } from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;

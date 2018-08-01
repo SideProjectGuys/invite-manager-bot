@@ -8,13 +8,13 @@ import {
 } from '@yamdbf/core';
 import { User } from 'discord.js';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	LogAction
-} from '../sequelize';
-import { CommandGroup, RP } from '../utils/util';
+} from '../../sequelize';
+import { CommandGroup, RP } from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;

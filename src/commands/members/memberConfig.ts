@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 import { Guild, User } from 'discord.js';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	defaultMemberSettings,
 	getMemberSettingsType,
@@ -17,9 +17,9 @@ import {
 	memberSettings,
 	MemberSettingsKey,
 	sequelize
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../utils/SettingsCache';
+import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
 const { expect, resolve } = Middleware;
 const { using, localizable } = CommandDecorators;

@@ -9,7 +9,7 @@ import {
 import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -17,8 +17,8 @@ import {
 	inviteCodes,
 	LogAction,
 	sequelize
-} from '../sequelize';
-import { CommandGroup, RP } from '../utils/util';
+} from '../../sequelize';
+import { CommandGroup, RP } from '../../utils/util';
 
 const { resolve } = Middleware;
 const { using, localizable } = CommandDecorators;

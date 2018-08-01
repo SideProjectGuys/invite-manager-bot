@@ -8,8 +8,8 @@ import {
 } from '@yamdbf/core';
 import { GuildMember, User } from 'discord.js';
 
-import { IMClient } from '../client';
-import { customInvites, LogAction, members } from '../sequelize';
+import { IMClient } from '../../client';
+import { customInvites, LogAction, members } from '../../sequelize';
 import {
 	CommandGroup,
 	createEmbed,
@@ -17,7 +17,7 @@ import {
 	promoteIfQualified,
 	RP,
 	sendEmbed
-} from '../utils/util';
+} from '../../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using, localizable } = CommandDecorators;

@@ -8,8 +8,8 @@ import {
 } from '@yamdbf/core';
 import { User } from 'discord.js';
 
-import { IMClient } from '../client';
-import { CommandGroup } from '../utils/util';
+import { IMClient } from '../../client';
+import { CommandGroup } from '../../utils/util';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
