@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
+import { ChartType } from '../types';
 import { Chart } from '../utils/Chart';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
 
@@ -32,19 +33,36 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(resolve('type: string, duration: string'))
-	@using(expect('type: string'))
 	@using(localize)
 	public async action(
 		message: Message,
-		[rp, type, duration]: [RP, string, string]
+		[rp, _type, duration]: [RP, string, string]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		if (type !== 'joins' && type !== 'leaves' && type !== 'cmd') {
+		if (!_type) {
 			message.channel.send(
-				'Invalid graph type. Use one of: `joins`, `leaves`, `cmd`'
+				'You need to specify the type of chart, use one of: ' +
+					Object.keys(ChartType)
+						.map(k => '`' + k + '`')
+						.join(', ')
+			);
+			return;
+		}
+
+		const type = Object.keys(ChartType).find(
+			(k: any) => ChartType[k].toLowerCase() === _type.toLowerCase()
+		) as ChartType;
+		if (!type) {
+			message.channel.send(
+				'Invalid chart type `' +
+					_type +
+					'`, use one of: ' +
+					Object.keys(ChartType)
+						.map(k => '`' + k + '`')
+						.join(', ')
 			);
 			return;
 		}
@@ -71,7 +89,7 @@ export default class extends Command<IMClient> {
 		let description = '';
 		const vs: { [x: string]: number } = {};
 
-		if (type === 'joins') {
+		if (type === ChartType.joins) {
 			title = 'User Growth';
 			description = 'This chart shows the growth of your server.';
 
@@ -96,7 +114,7 @@ export default class extends Command<IMClient> {
 			});
 
 			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
-		} else if (type === 'leaves') {
+		} else if (type === ChartType.leaves) {
 			title = 'Users leaving';
 			description = 'This chart shows the number of users leaving your server.';
 
@@ -121,7 +139,7 @@ export default class extends Command<IMClient> {
 			});
 
 			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
-		} else if (type === 'cmd') {
+		} else if (type === ChartType.usage) {
 			title = 'Command usage';
 			description =
 				'This chart shows the usage of InviteManager commands on this server.';
