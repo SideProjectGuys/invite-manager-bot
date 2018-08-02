@@ -64,16 +64,9 @@ export class Chart {
 			],
 			xAxes: [
 				{
-					type: 'time',
 					gridLines: {
 						drawTicks: true,
 						display: true
-					},
-					time: {
-						unit: 'day',
-						displayFormats: {
-							day: 'D MMM'
-						}
 					},
 					ticks: {
 						display: true,
@@ -83,6 +76,28 @@ export class Chart {
 					}
 				}
 			]
+		},
+		plugins: {
+			datalabels: {
+				display: function(context: any) {
+					// Always show first and last value
+					if (
+						context.dataIndex === 0 ||
+						context.dataIndex === context.dataset.data.length - 1
+					) {
+						return true;
+					}
+					// Show value if either previous or next value is
+					// different and if the value is not zero
+					return (
+						context.dataset.data[context.dataIndex] !== 0 &&
+						(context.dataset.data[context.dataIndex] !==
+							context.dataset.data[context.dataIndex - 1] ||
+							context.dataset.data[context.dataIndex] !==
+								context.dataset.data[context.dataIndex + 1])
+					);
+				}
+			}
 		}
 	};
 
