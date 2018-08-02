@@ -65,45 +65,51 @@ export default class extends Command<IMClient> {
 
 			// Only process if the user is still in the guild
 			if (targetMember) {
-				const {
-					nextRank,
-					nextRankName,
-					numRanks,
-					shouldHave,
-					shouldNotHave
-				} = await promoteIfQualified(
+
+				const promoteInfo = await promoteIfQualified(
 					message.guild,
 					targetMember,
 					invites.total
 				);
 
-				if (nextRank) {
-					let nextRankPointsDiff = nextRank.numInvites - invites.total;
-					textMessage += rp.CMD_INVITES_NEXT_RANK({
-						self: message.author.id,
-						target: target.id,
-						nextRankPointsDiff,
-						nextRankName
-					});
-				} else {
-					if (numRanks > 0) {
-						textMessage += rp.CMD_INVITES_HIGHEST_RANK();
-					}
-				}
+				if (promoteInfo) {
 
-				if (shouldHave.length > 0) {
-					textMessage +=
-						'\n\n' +
-						rp.ROLES_SHOULD_HAVE({
-							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+					const {
+						nextRank,
+						nextRankName,
+						numRanks,
+						shouldHave,
+						shouldNotHave
+					} = promoteInfo;
+
+					if (nextRank) {
+						let nextRankPointsDiff = nextRank.numInvites - invites.total;
+						textMessage += rp.CMD_INVITES_NEXT_RANK({
+							self: message.author.id,
+							target: target.id,
+							nextRankPointsDiff,
+							nextRankName
 						});
-				}
-				if (shouldNotHave.length > 0) {
-					textMessage +=
-						'\n\n' +
-						rp.ROLES_SHOULD_NOT_HAVE({
-							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-						});
+					} else {
+						if (numRanks > 0) {
+							textMessage += rp.CMD_INVITES_HIGHEST_RANK();
+						}
+					}
+
+					if (shouldHave.length > 0) {
+						textMessage +=
+							'\n\n' +
+							rp.ROLES_SHOULD_HAVE({
+								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (shouldNotHave.length > 0) {
+						textMessage +=
+							'\n\n' +
+							rp.ROLES_SHOULD_NOT_HAVE({
+								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
 				}
 			}
 		}
