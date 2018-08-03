@@ -29,6 +29,7 @@ const { using } = CommandDecorators;
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 	return async function(
+		this: Command,
 		message: Message,
 		[rp, ..._args]: [RP, string]
 	): Promise<[Message, any[]]> {
@@ -53,12 +54,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			// after the resource proxy
 			return [
 				message,
-				[
-					rp,
-					...(await func('key: String')
-						// tslint:disable-next-line:no-invalid-this
-						.call(this, message, [dbKey]))[1]
-				]
+				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
 			];
 		}
 
@@ -70,7 +66,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				[
 					rp,
 					...(await func('key: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
 						this,
 						message,
 						newArgs
@@ -89,7 +84,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				[
 					rp,
 					...(await func('key: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
 						this,
 						message,
 						newArgs
@@ -104,7 +98,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			[
 				rp,
 				...(await func(`key: String, ...value?: ${type}`).call(
-					// tslint:disable-next-line:no-invalid-this
 					this,
 					message,
 					newArgs

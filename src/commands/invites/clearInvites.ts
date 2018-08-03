@@ -11,6 +11,7 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import {
+	BotCommand,
 	CustomInviteAttributes,
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,6 +19,7 @@ import {
 	LogAction,
 	sequelize
 } from '../../sequelize';
+import { checkRoles } from '../../utils/CheckRolesMiddleware';
 import { CommandGroup, RP } from '../../utils/util';
 
 const { resolve, localize } = Middleware;
@@ -44,6 +46,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.clearInvites))
 	@using(resolve('clearBonus: Boolean, user: User'))
 	@using(localize)
 	public async action(

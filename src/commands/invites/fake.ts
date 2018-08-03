@@ -9,12 +9,14 @@ import {
 
 import { IMClient } from '../../client';
 import {
+	BotCommand,
 	inviteCodes,
 	JoinAttributes,
 	joins,
 	members,
 	sequelize
 } from '../../sequelize';
+import { checkRoles } from '../../utils/CheckRolesMiddleware';
 import { CommandGroup, createEmbed, RP, showPaginated } from '../../utils/util';
 
 const { resolve, localize } = Middleware;
@@ -38,6 +40,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.fake))
 	@using(resolve('page: Number'))
 	@using(localize)
 	public async action(

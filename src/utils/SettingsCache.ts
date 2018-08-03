@@ -2,8 +2,11 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 import {
+	BotCommand,
 	defaultSettings,
 	premiumSubscriptions,
+	rolePermissions,
+	roles,
 	sequelize,
 	settings,
 	SettingsKey
@@ -12,16 +15,26 @@ import {
 const maxCacheDuration = moment.duration(4, 'h');
 
 export class SettingsCache {
+	private static _init: boolean = false;
 	private static client: IMClient;
+
+	// Settings
 	private static cache: {
 		[guildId: string]: { [key in SettingsKey]: any };
 	} = {};
 	private static cacheFetch: { [guildId: string]: moment.Moment } = {};
 
-	private static _init: boolean = false;
-	private static premium: { [guildId: string]: boolean } = {};
-	private static premiumFetch: { [guildId: string]: moment.Moment } = {};
+	// Role permissions
+	private static permsCache: {
+		[guildId: string]: { [cmd in BotCommand]: string[] };
+	} = {};
+	private static permsCacheFetch: { [guildId: string]: moment.Moment } = {};
 
+	// Premium
+	private static premiumCache: { [guildId: string]: boolean } = {};
+	private static premiumCacheFetch: { [guildId: string]: moment.Moment } = {};
+
+	// Init
 	public static async init(client: IMClient) {
 		this.client = client;
 	}
@@ -29,18 +42,30 @@ export class SettingsCache {
 	private static async doInit() {
 		const guildIds = this.client.guilds.keyArray();
 
+		// First insert base data for all guilds
+		guildIds.forEach(id => {
+			this.cache[id] = { ...defaultSettings };
+			this.cacheFetch[id] = moment();
+
+			this.permsCache[id] = {
+				addInvites: [],
+				clearInvites: [],
+				fake: [],
+				info: []
+			};
+			this.permsCacheFetch[id] = moment();
+
+			this.premiumCache[id] = false;
+			this.premiumCacheFetch[id] = moment();
+		});
+
 		// Load all settings into initial cache
 		const sets = await settings.findAll({
 			where: {
 				guildId: guildIds
 			},
-			order: ['guildId', 'key'],
 			raw: true
 		});
-
-		const cache: { [x: string]: { [key in SettingsKey]: string } } = {};
-		// First insert base data for all guilds
-		guildIds.forEach(id => (cache[id] = { ...defaultSettings }));
 
 		// Then insert the settings we got from the DB
 		sets.forEach(set => {
@@ -50,35 +75,45 @@ export class SettingsCache {
 			if (set.value === null && defaultSettings[set.key] !== null) {
 				return;
 			}
-			cache[set.guildId][set.key] = set.value;
+			this.cache[set.guildId][set.key] = set.value;
 		});
 
-		// Add the dates when the settings where cached, and the default prefix if not set
-		Object.keys(cache).forEach(guildId => {
-			const obj = cache[guildId];
-			if (!obj[SettingsKey.prefix]) {
-				obj[SettingsKey.prefix] = '!';
-			}
-			this.cache[guildId] = obj;
-			this.cacheFetch[guildId] = moment();
+		// Load all role permissions
+		const perms = await rolePermissions.findAll({
+			include: [
+				{
+					model: roles,
+					where: {
+						guildId: guildIds
+					}
+				}
+			],
+			raw: true
+		});
+
+		// Then insert the role permissions we got from the db
+		perms.forEach((p: any) => {
+			const cmd = p.command as BotCommand;
+			this.permsCache[p['role.guildId']][cmd].push(p.roleId);
 		});
 
 		// Load valid premium subs
 		const subs = await premiumSubscriptions.findAll({
 			where: {
-				guildId: Object.keys(cache),
+				guildId: guildIds,
 				validUntil: {
 					[sequelize.Op.gte]: new Date()
 				}
 			},
 			raw: true
 		});
+
+		// Save subs in cache
 		subs.forEach(sub => {
-			this.premium[sub.guildId] = true;
-			this.premiumFetch[sub.guildId] = moment();
+			this.premiumCache[sub.guildId] = true;
 		});
 
-		this.cache = cache;
+		this.cache = this.cache;
 		this._init = true;
 	}
 
@@ -91,40 +126,73 @@ export class SettingsCache {
 			await this.doInit();
 		}
 
-		if (this.premium[guildId]) {
+		// Check for undefined because our value may be saved as "false" (= no premium)
+		if (this.premiumCache[guildId] !== undefined) {
 			if (
-				this.premiumFetch[guildId] &&
-				this.premiumFetch[guildId]
+				this.premiumCacheFetch[guildId] &&
+				this.premiumCacheFetch[guildId]
 					.clone()
 					.add(maxCacheDuration)
 					.isAfter(moment())
 			) {
-				return this.premium[guildId];
+				return this.premiumCache[guildId];
 			}
 		}
 
-		const sub = await premiumSubscriptions.find({
+		const sub = await premiumSubscriptions.count({
 			where: {
 				guildId,
 				validUntil: {
 					[sequelize.Op.gte]: new Date()
 				}
-			},
-			raw: true
+			}
 		});
-		if (sub) {
-			this.premium[guildId] = true;
-			this.premiumFetch[guildId] = moment();
-			return true;
-		} else {
-			delete this.premium[guildId];
-			return false;
-		}
+
+		this.premiumCache[guildId] = sub > 0;
+		this.premiumCacheFetch[guildId] = moment();
+
+		return this.premiumCache[guildId];
 	}
 
 	public static async flushPremium(guildId: string) {
-		delete this.premium[guildId];
-		delete this.premiumFetch[guildId];
+		delete this.premiumCache[guildId];
+		delete this.premiumCacheFetch[guildId];
+	}
+
+	public static async getRoles(guildId: string, cmd: BotCommand) {
+		if (!this._init) {
+			await this.doInit();
+		}
+
+		if (this.permsCache[guildId]) {
+			if (
+				this.permsCacheFetch[guildId] &&
+				this.permsCacheFetch[guildId]
+					.clone()
+					.add(maxCacheDuration)
+					.isAfter(moment())
+			) {
+				return this.permsCache[guildId][cmd];
+			}
+		}
+
+		const perms = await rolePermissions.findAll({
+			include: [
+				{
+					model: roles,
+					where: { guildId }
+				}
+			],
+			raw: true
+		});
+
+		perms.forEach((p: any) => {
+			const c = p.command as BotCommand;
+			this.permsCache[guildId][c].push(p.roleId);
+			this.permsCacheFetch[guildId] = moment();
+		});
+
+		return this.permsCache[guildId][cmd];
 	}
 
 	public static async get(guildId: string) {

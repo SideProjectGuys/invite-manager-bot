@@ -906,3 +906,45 @@ guilds.hasMany(premiumSubscriptions);
 
 premiumSubscriptions.belongsTo(members);
 members.hasMany(premiumSubscriptions);
+
+// ------------------------------------
+// RolePermssions
+// ------------------------------------
+export enum BotCommand {
+	'addInvites' = 'addInvites',
+	'clearInvites' = 'clearInvites',
+	'fake' = 'fake',
+	'info' = 'info'
+}
+
+export interface RolePermissionsAttributes extends BaseAttributes {
+	id: number;
+	roleId: string;
+	command: string;
+}
+export interface RolePermissionsInstance
+	extends Sequelize.Instance<RolePermissionsAttributes>,
+		RolePermissionsAttributes {
+	getRole: Sequelize.BelongsToGetAssociationMixin<RoleInstance>;
+}
+
+export const rolePermissions = sequelize.define<
+	RolePermissionsInstance,
+	RolePermissionsAttributes
+>(
+	'rolePermissions',
+	{
+		command: Sequelize.ENUM(
+			BotCommand.addInvites,
+			BotCommand.clearInvites,
+			BotCommand.fake
+		)
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
+
+rolePermissions.belongsTo(roles);
+roles.hasMany(rolePermissions);

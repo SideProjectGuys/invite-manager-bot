@@ -11,6 +11,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import {
+	BotCommand,
 	CustomInviteInstance,
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -19,6 +20,7 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
+import { checkRoles } from '../../utils/CheckRolesMiddleware';
 import { SettingsCache } from '../../utils/SettingsCache';
 import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
 
@@ -43,6 +45,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.info))
 	@using(resolve('user: User'))
 	@using(expect('user: User'))
 	@using(localize)

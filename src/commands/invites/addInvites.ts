@@ -9,7 +9,8 @@ import {
 import { GuildMember, User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { customInvites, LogAction, members } from '../../sequelize';
+import { BotCommand, customInvites, LogAction, members } from '../../sequelize';
+import { checkRoles } from '../../utils/CheckRolesMiddleware';
 import {
 	CommandGroup,
 	createEmbed,
@@ -45,6 +46,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.addInvites))
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
 	@using(localize)
@@ -112,25 +114,29 @@ export default class extends Command<IMClient> {
 				.catch(() => undefined);
 			// Only if the member is still in the guild try and promote them
 			if (member) {
-				const { shouldHave, shouldNotHave } = await promoteIfQualified(
+				const promoteInfo = await promoteIfQualified(
 					message.guild,
 					member,
 					totalInvites
 				);
 
-				if (shouldHave.length > 0) {
-					descr +=
-						'\n\n' +
-						rp.ROLES_SHOULD_HAVE({
-							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
-						});
-				}
-				if (shouldNotHave.length > 0) {
-					descr +=
-						'\n\n' +
-						rp.ROLES_SHOULD_NOT_HAVE({
-							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-						});
+				if (promoteInfo) {
+					const { shouldHave, shouldNotHave } = promoteInfo;
+
+					if (shouldHave.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_SHOULD_HAVE({
+								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (shouldNotHave.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_SHOULD_NOT_HAVE({
+								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
 				}
 			}
 		}
