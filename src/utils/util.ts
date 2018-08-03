@@ -291,12 +291,6 @@ export async function generateLeaderboard(
 				model: members
 			}
 		],
-		order: [
-			sequelize.literal(
-				`(${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves}) DESC`
-			),
-			'memberId'
-		],
 		raw: true
 	});
 
@@ -389,12 +383,6 @@ export async function generateLeaderboard(
 					attributes: ['name'],
 					model: members
 				}
-			],
-			order: [
-				sequelize.literal(
-					`${sumClearRegular} + ${sumTotalCustom} + ${sumTotalFake} + ${sumTotalLeaves} DESC`
-				),
-				'memberId'
 			],
 			raw: true
 		});
