@@ -21,7 +21,6 @@ export default class extends Command<IMClient> {
 			aliases: ['senddm'],
 			desc: 'Send a DM to a user',
 			usage: '<prefix>dm',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			ownerOnly: true,
 			hidden: true
 		});

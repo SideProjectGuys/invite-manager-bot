@@ -32,7 +32,6 @@ export default class extends Command<IMClient> {
 				'The amount of invites needed to reach the rank\n\n' +
 				'`info`:\n' +
 				'A decription that users will see so they know more about this rank\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});

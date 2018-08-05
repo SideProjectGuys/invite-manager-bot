@@ -9,7 +9,12 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import {
+	createEmbed,
+	sendEmbed,
+	prompt,
+	PromptResult
+} from '../../functions/Messaging';
 import { checkRoles, isStrict } from '../../middleware/CheckRoles';
 import {
 	rolePermissions,
@@ -181,6 +186,24 @@ export default class extends Command<IMClient> {
 
 			message.channel.send(`Removed <@&${role.id}> from **${cmd}**`);
 		} else {
+			let confirm = cmd === BotCommand.config || cmd === BotCommand.permissions;
+
+			if (confirm) {
+				const [res] = await prompt(
+					message,
+					`**CAUTION** ` +
+						`You are adding the <@&${role.id}> to the **${cmd}** command.\n` +
+						`**THIS IS DANGEROUS AND SHOULD ONLY BE GIVEN TO SERVER ADMINS**\n` +
+						`Continue adding role to command (yes/no)?`
+				);
+				if (res === PromptResult.TIMEOUT) {
+					return message.channel.send('Command timed out.');
+				}
+				if (res === PromptResult.FAILURE) {
+					return message.channel.send('Okay, aborting.');
+				}
+			}
+
 			await roles.insertOrUpdate({
 				id: role.id,
 				name: role.name,

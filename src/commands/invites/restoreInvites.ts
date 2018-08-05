@@ -33,7 +33,6 @@ export default class extends Command<IMClient> {
 				'`@user`:\n' +
 				'The user to restore all invites to. ' +
 				'If omitted restores invites for all users.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});

@@ -31,7 +31,6 @@ export default class extends Command<IMClient> {
 			desc: 'Try premium version.',
 			usage: '<prefix>try-premium',
 			group: CommandGroup.Premium,
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			guildOnly: true
 		});
 	}

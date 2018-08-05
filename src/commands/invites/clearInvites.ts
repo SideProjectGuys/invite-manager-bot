@@ -38,7 +38,6 @@ export default class extends Command<IMClient> {
 				'Pass `true` if you want to remove bonus invites, otherwise `false` (default).\n\n' +
 				'`@user`:\n' +
 				'The user to clear all invites from. If omitted clears all users.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true

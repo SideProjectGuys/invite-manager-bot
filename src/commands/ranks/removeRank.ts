@@ -26,7 +26,6 @@ export default class extends Command<IMClient> {
 			desc: 'Remove a rank',
 			usage: '<prefix>remove-rank @role',
 			info: '`@role`:\n' + 'The for which you want to remove the rank.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});

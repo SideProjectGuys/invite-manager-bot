@@ -31,7 +31,6 @@ export default class extends Command<Client> {
 				'`type`:\n' +
 				'The type of export you want. One of:\n' +
 				'- leaderboard',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Premium,
 			hidden: true
 		});

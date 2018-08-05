@@ -29,7 +29,6 @@ export default class extends Command<IMClient> {
 				'Help with setting up the bot and ' +
 				'checking for problems (e.g. missing permissions)',
 			usage: '<prefix>setup',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Info,
 			guildOnly: true
 		});

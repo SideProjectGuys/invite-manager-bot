@@ -12,6 +12,8 @@ import {
 	User
 } from 'discord.js';
 
+const truthy = ['true', 'on', 'y', 'yes', 'enable'];
+
 export function createEmbed(
 	client: Client,
 	options: MessageEmbedOptions = {}
@@ -184,7 +186,7 @@ export async function prompt(
 	if (!confirmation) {
 		return [PromptResult.TIMEOUT, confirmation];
 	}
-	if (confirmation.content !== 'yes') {
+	if (truthy.indexOf(confirmation.content.toLowerCase()) === -1) {
 		return [PromptResult.FAILURE, confirmation];
 	}
 	return [PromptResult.SUCCESS, confirmation];

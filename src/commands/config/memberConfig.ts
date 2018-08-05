@@ -138,7 +138,6 @@ export default class extends Command<IMClient> {
 				'`value`:\n' +
 				'The new value of the setting.\n\n' +
 				'Use without args to show all set configs and keys.\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Config,
 			guildOnly: true
 		});

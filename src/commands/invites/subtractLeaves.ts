@@ -32,7 +32,6 @@ export default class extends Command<IMClient> {
 			aliases: ['subtractleaves', 'subleaves', 'sl'],
 			desc: 'Remove leaves from all users',
 			usage: '<prefix>subtract-leaves',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true

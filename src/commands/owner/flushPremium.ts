@@ -21,7 +21,6 @@ export default class extends Command<IMClient> {
 			aliases: ['owner-flush-premium', 'ofp'],
 			desc: 'Flush premium',
 			usage: '<prefix>ownerFlushPremium <guildID>',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			ownerOnly: true,
 			hidden: true
 		});

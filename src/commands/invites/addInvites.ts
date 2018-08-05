@@ -35,7 +35,6 @@ export default class extends Command<IMClient> {
 				'Use a negative (-) number to remove invites.\n\n' +
 				'`reason`:\n' +
 				'The reason for adding/removing the invites.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
