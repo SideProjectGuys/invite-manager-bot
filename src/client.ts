@@ -426,6 +426,7 @@ export class IMClient extends Client {
 			const roleSet = await inviteCodeSettings.find({
 				where: {
 					guildId: guild.id,
+					inviteCode,
 					key: InviteCodeSettingsKey.roles
 				},
 				raw: true
