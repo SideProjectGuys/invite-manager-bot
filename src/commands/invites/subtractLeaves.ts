@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -16,8 +17,8 @@ import {
 	leaves,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, RP } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -31,13 +32,13 @@ export default class extends Command<IMClient> {
 			aliases: ['subtractleaves', 'subleaves', 'sl'],
 			desc: 'Remove leaves from all users',
 			usage: '<prefix>subtract-leaves',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.subtractLeaves))
 	@using(localize)
 	public async action(
 		message: Message,

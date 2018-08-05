@@ -9,12 +9,13 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	LogAction
 } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -32,12 +33,12 @@ export default class extends Command<IMClient> {
 				'`@user`:\n' +
 				'The user to restore all invites to. ' +
 				'If omitted restores invites for all users.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.restoreInvites))
 	@using(resolve('user: User'))
 	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {

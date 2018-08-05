@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -15,7 +16,7 @@ import {
 	joins,
 	sequelize
 } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -29,13 +30,13 @@ export default class extends Command<IMClient> {
 			aliases: ['subtractfakes', 'subfakes', 'sf'],
 			desc: 'Remove fake invites from all users',
 			usage: '<prefix>subtract-fakes',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.subtractFakes))
 	@using(localize)
 	public async action(
 		message: Message,

@@ -10,6 +10,7 @@ import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -18,7 +19,7 @@ import {
 	LogAction,
 	sequelize
 } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -37,13 +38,13 @@ export default class extends Command<IMClient> {
 				'Pass `true` if you want to remove bonus invites, otherwise `false` (default).\n\n' +
 				'`@user`:\n' +
 				'The user to clear all invites from. If omitted clears all users.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.clearInvites))
 	@using(resolve('clearBonus: Boolean, user: User'))
 	@using(localize)
 	public async action(

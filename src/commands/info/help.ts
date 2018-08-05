@@ -8,7 +8,8 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -70,13 +71,6 @@ export default class extends Command<IMClient> {
 					: rp.CMD_HELP_COMMAND_NONE(),
 				true
 			);
-			embed.addField(
-				rp.CMD_HELP_USER_PERMISSIONS_TITLE(),
-				cmd.callerPermissions.length > 0
-					? cmd.callerPermissions.join(', ')
-					: rp.CMD_HELP_COMMAND_NONE(),
-				true
-			);
 		} else {
 			const messageMember = await message.guild.members
 				.fetch(message.author.id)
@@ -88,12 +82,7 @@ export default class extends Command<IMClient> {
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
 				.filter(c => !c.ownerOnly && !c.hidden)
-				.filter(
-					c =>
-						!message.guild ||
-						!messageMember ||
-						messageMember.hasPermission(c.callerPermissions)
-				)
+				.filter(c => !message.guild || !messageMember)
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix)

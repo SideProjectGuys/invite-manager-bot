@@ -8,8 +8,10 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import { ranks } from '../../sequelize';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -28,6 +30,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.ranks))
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(

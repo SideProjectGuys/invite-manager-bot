@@ -9,13 +9,11 @@ import {
 } from '@yamdbf/core';
 import { MessageAttachment } from 'discord.js';
 
-import { SettingsCache } from '../../utils/SettingsCache';
-import {
-	CommandGroup,
-	createEmbed,
-	generateLeaderboard,
-	sendEmbed
-} from '../../utils/util';
+import { generateLeaderboard } from '../../functions/Leaderboard';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup } from '../../types';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -33,12 +31,12 @@ export default class extends Command<Client> {
 				'`type`:\n' +
 				'The type of export you want. One of:\n' +
 				'- leaderboard',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Premium,
 			hidden: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.export))
 	@using(resolve('type: String'))
 	@using(expect('type: String'))
 	public async action(message: Message, [type]: [string]): Promise<any> {

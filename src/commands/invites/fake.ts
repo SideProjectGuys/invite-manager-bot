@@ -8,6 +8,8 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { createEmbed, showPaginated } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	inviteCodes,
 	JoinAttributes,
@@ -15,7 +17,7 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { CommandGroup, createEmbed, RP, showPaginated } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -33,11 +35,12 @@ export default class extends Command<IMClient> {
 			usage: '<prefix>fake (page)',
 			info: '`page`:\n' + 'Which page of the fake list to get.\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.fake))
 	@using(resolve('page: Number'))
 	@using(localize)
 	public async action(

@@ -9,12 +9,13 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../client';
+import { Chart } from '../functions/Chart';
+import { createEmbed } from '../functions/Messaging';
+import { checkRoles } from '../middleware/CheckRoles';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
-import { ChartType } from '../types';
-import { Chart } from '../utils/Chart';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+import { BotCommand, ChartType, CommandGroup, RP } from '../types';
 
-const { resolve, expect, localize } = Middleware;
+const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
@@ -32,6 +33,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.chart))
 	@using(resolve('type: string, duration: string'))
 	@using(localize)
 	public async action(

@@ -9,15 +9,16 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { LeaderboardStyle } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
+import { generateLeaderboard } from '../../functions/Leaderboard';
 import {
 	createEmbed,
-	generateLeaderboard,
-	RP,
 	sendEmbed,
 	showPaginated
-} from '../../utils/util';
+} from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { LeaderboardStyle } from '../../sequelize';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const chrono = require('chrono-node');
 
@@ -44,10 +45,12 @@ export default class extends Command<IMClient> {
 				'`date`:\n' +
 				'The date (& time) for which the leaderboard is shown\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.leaderboard))
 	@using(resolve('page: Number, ...date?: String'))
 	@using(localize)
 	public async action(

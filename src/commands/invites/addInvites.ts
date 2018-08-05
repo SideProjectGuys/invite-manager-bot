@@ -9,15 +9,11 @@ import {
 import { GuildMember, User } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import { customInvites, LogAction, members } from '../../sequelize';
-import {
-	CommandGroup,
-	createEmbed,
-	getInviteCounts,
-	promoteIfQualified,
-	RP,
-	sendEmbed
-} from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
+import { getInviteCounts, promoteIfQualified } from '../../util';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -39,12 +35,12 @@ export default class extends Command<IMClient> {
 				'Use a negative (-) number to remove invites.\n\n' +
 				'`reason`:\n' +
 				'The reason for adding/removing the invites.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.addInvites))
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
 	@using(localize)
@@ -112,25 +108,36 @@ export default class extends Command<IMClient> {
 				.catch(() => undefined);
 			// Only if the member is still in the guild try and promote them
 			if (member) {
-				const { shouldHave, shouldNotHave } = await promoteIfQualified(
+				const promoteInfo = await promoteIfQualified(
 					message.guild,
 					member,
 					totalInvites
 				);
 
-				if (shouldHave.length > 0) {
-					descr +=
-						'\n\n' +
-						rp.ROLES_SHOULD_HAVE({
-							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
-						});
-				}
-				if (shouldNotHave.length > 0) {
-					descr +=
-						'\n\n' +
-						rp.ROLES_SHOULD_NOT_HAVE({
-							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-						});
+				if (promoteInfo) {
+					const { shouldHave, shouldNotHave, dangerous } = promoteInfo;
+
+					if (shouldHave.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_SHOULD_HAVE({
+								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (shouldNotHave.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_SHOULD_NOT_HAVE({
+								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (dangerous.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_DANGEROUS({
+								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
 				}
 			}
 		}

@@ -9,7 +9,8 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { CommandGroup } from '../../utils/util';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { BotCommand, CommandGroup } from '../../types';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -31,12 +32,12 @@ export default class extends Command<IMClient> {
 				'Use a negative (-) number to add invites.\n\n' +
 				'`reason`:\n' +
 				'The reason for adding/removing the invites.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.addInvites))
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
 	public async action(

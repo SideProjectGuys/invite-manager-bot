@@ -9,8 +9,9 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import { LogAction, ranks } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -25,12 +26,12 @@ export default class extends Command<IMClient> {
 			desc: 'Remove a rank',
 			usage: '<prefix>remove-rank @role',
 			info: '`@role`:\n' + 'The for which you want to remove the rank.\n\n',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.removeRank))
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))
 	@using(localize)

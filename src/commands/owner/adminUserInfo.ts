@@ -21,7 +21,6 @@ export default class extends Command<Client> {
 			aliases: ['admin-user-info', 'aui'],
 			desc: 'Get info about a user and his servers',
 			usage: '<prefix>adminUserInfo @user',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			ownerOnly: true,
 			hidden: true
 		});

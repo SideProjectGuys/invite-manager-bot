@@ -9,7 +9,9 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const config = require('../../../config.json');
 
@@ -27,12 +29,12 @@ export default class extends Command<IMClient> {
 				'Help with setting up the bot and ' +
 				'checking for problems (e.g. missing permissions)',
 			usage: '<prefix>setup',
-			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Info,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.setup))
 	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
 		this._logger.log(
