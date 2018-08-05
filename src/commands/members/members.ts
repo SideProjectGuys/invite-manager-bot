@@ -22,7 +22,7 @@ export default class extends Command<IMClient> {
 			aliases: ['member', 'membersCount'],
 			desc: 'Show member count of current server.',
 			usage: '<prefix>members',
-			group: CommandGroup.Other,
+			group: CommandGroup.Members,
 			guildOnly: true
 		});
 	}

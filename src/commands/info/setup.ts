@@ -28,7 +28,7 @@ export default class extends Command<IMClient> {
 				'checking for problems (e.g. missing permissions)',
 			usage: '<prefix>setup',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Info,
 			guildOnly: true
 		});
 	}

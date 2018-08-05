@@ -37,8 +37,8 @@ import { TranslationKeys } from './Translations';
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
-	Admin = 'Admin',
-	Other = 'Other',
+	Members = 'Members',
+	Info = 'Info',
 	Premium = 'Premium'
 }
 

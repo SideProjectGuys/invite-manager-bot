@@ -12,6 +12,7 @@ import { IMClient } from '../../client';
 import { LeaderboardStyle } from '../../sequelize';
 import { SettingsCache } from '../../utils/SettingsCache';
 import {
+	CommandGroup,
 	createEmbed,
 	generateLeaderboard,
 	RP,
@@ -44,6 +45,7 @@ export default class extends Command<IMClient> {
 				'`date`:\n' +
 				'The date (& time) for which the leaderboard is shown\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

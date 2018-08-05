@@ -35,7 +35,7 @@ export default class extends Command<IMClient> {
 			usage: '<prefix>fake (page)',
 			info: '`page`:\n' + 'Which page of the fake list to get.\n\n',
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

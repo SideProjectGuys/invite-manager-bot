@@ -39,7 +39,7 @@ export default class extends Command<IMClient> {
 			aliases: ['setup'],
 			desc: 'Show frequently asked questions.',
 			usage: '<prefix>faq',
-			group: CommandGroup.Other,
+			group: CommandGroup.Info,
 			guildOnly: true
 		});
 

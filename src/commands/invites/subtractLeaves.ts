@@ -33,7 +33,7 @@ export default class extends Command<IMClient> {
 			usage: '<prefix>subtract-leaves',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}

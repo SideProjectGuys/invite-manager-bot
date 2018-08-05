@@ -21,7 +21,7 @@ export default class extends Command<IMClient> {
 			aliases: ['try', 'trypremium'],
 			desc: 'Try premium version.',
 			usage: '<prefix>try-premium',
-			group: CommandGroup.Other,
+			group: CommandGroup.Premium,
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			guildOnly: true
 		});

@@ -15,7 +15,7 @@ export default class extends Command<IMClient> {
 			aliases: ['patreon', 'donate'],
 			desc: 'Info about premium version.',
 			usage: '<prefix>premium',
-			group: CommandGroup.Other,
+			group: CommandGroup.Premium,
 			guildOnly: true
 		});
 	}

@@ -26,7 +26,7 @@ export default class extends Command<IMClient> {
 			aliases: ['botInfo'],
 			desc: 'Show info about the bot',
 			usage: '<prefix>botInfo',
-			group: CommandGroup.Other
+			group: CommandGroup.Info
 		});
 	}
 

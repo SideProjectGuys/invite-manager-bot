@@ -28,7 +28,7 @@ export default class extends Command<IMClient> {
 			info:
 				'`message`:\n' +
 				'The message you would like to submit as feedback.\n\n',
-			group: CommandGroup.Other,
+			group: CommandGroup.Info,
 			guildOnly: true
 		});
 	}

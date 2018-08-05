@@ -12,7 +12,7 @@ export default class extends Command<IMClient> {
 			aliases: ['get-bot', 'invite-bot', 'inviteBot'],
 			desc: 'Get an invite Link for the bot',
 			usage: '<prefix>getbot',
-			group: CommandGroup.Other,
+			group: CommandGroup.Info,
 			guildOnly: false
 		});
 	}
