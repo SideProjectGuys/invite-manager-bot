@@ -82,7 +82,6 @@ export default class extends Command<IMClient> {
 				.filter(c => c.name !== 'groups')
 				.filter(c => c.name !== 'shortcuts')
 				.filter(c => !c.ownerOnly && !c.hidden)
-				.filter(c => !message.guild || !messageMember)
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('<prefix>', prefix)
