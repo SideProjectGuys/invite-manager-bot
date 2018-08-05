@@ -39,7 +39,8 @@ export enum CommandGroup {
 	Ranks = 'Ranks',
 	Members = 'Members',
 	Info = 'Info',
-	Premium = 'Premium'
+	Premium = 'Premium',
+	Other = 'Other'
 }
 
 export type RP = ResourceProxy<TranslationKeys>;
