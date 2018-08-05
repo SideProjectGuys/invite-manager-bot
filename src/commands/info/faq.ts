@@ -37,7 +37,7 @@ export default class extends Command<IMClient> {
 	public constructor() {
 		super({
 			name: 'faq',
-			aliases: ['setup'],
+			aliases: [],
 			desc: 'Show frequently asked questions.',
 			usage: '<prefix>faq',
 			group: CommandGroup.Info,

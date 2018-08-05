@@ -10,9 +10,9 @@ import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { CommandGroup, RP, BotCommand } from '../../types';
-import { getInviteCounts, promoteIfQualified } from '../../util';
 import { checkRoles } from '../../middleware/CheckRoles';
+import { BotCommand, CommandGroup, RP } from '../../types';
+import { getInviteCounts, promoteIfQualified } from '../../util';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -74,7 +74,8 @@ export default class extends Command<IMClient> {
 						nextRankName,
 						numRanks,
 						shouldHave,
-						shouldNotHave
+						shouldNotHave,
+						dangerous
 					} = promoteInfo;
 
 					if (nextRank) {
@@ -103,6 +104,13 @@ export default class extends Command<IMClient> {
 							'\n\n' +
 							rp.ROLES_SHOULD_NOT_HAVE({
 								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (dangerous.length > 0) {
+						textMessage +=
+							'\n\n' +
+							rp.ROLES_DANGEROUS({
+								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 				}

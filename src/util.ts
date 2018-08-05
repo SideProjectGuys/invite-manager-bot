@@ -112,7 +112,8 @@ export async function promoteIfQualified(
 	}
 
 	let highest: Role = null;
-	const reached: Role[] = [];
+	let dangerous: Role[] = [];
+	let reached: Role[] = [];
 	const notReached: Role[] = [];
 
 	allRanks.forEach(r => {
@@ -188,9 +189,22 @@ export async function promoteIfQualified(
 	}
 
 	if (guild.me.hasPermission('MANAGE_ROLES')) {
+		// Filter dangerous roles
+		dangerous = reached.filter(
+			r =>
+				r.permissions.has('ADMINISTRATOR') ||
+				r.permissions.has('MANAGE_GUILD') ||
+				r.permissions.has('MANAGE_CHANNELS') ||
+				r.permissions.has('MANAGE_ROLES') ||
+				r.permissions.has('MANAGE_MESSAGES') ||
+				r.permissions.has('KICK_MEMBERS') ||
+				r.permissions.has('BAN_MEMBERS')
+		);
+		reached = reached.filter(r => dangerous.indexOf(r) === -1);
+
 		if (style === RankAssignmentStyle.all) {
 			// Add all roles that we've reached to the member
-			const newRoles = reached.filter(r => !member.roles.has(r.id));
+			let newRoles = reached.filter(r => !member.roles.has(r.id));
 			// Roles that the member should have but we can't assign
 			shouldHave = newRoles.filter(r => tooHighRoles.has(r.id));
 			// Assign only the roles that we can assign
@@ -226,6 +240,7 @@ export async function promoteIfQualified(
 		nextRank,
 		nextRankName,
 		shouldHave,
-		shouldNotHave
+		shouldNotHave,
+		dangerous
 	};
 }

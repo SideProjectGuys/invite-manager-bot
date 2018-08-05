@@ -9,12 +9,7 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import {
-	createEmbed,
-	sendEmbed,
-	prompt,
-	PromptResult
-} from '../../functions/Messaging';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles, isStrict } from '../../middleware/CheckRoles';
 import {
 	rolePermissions,
@@ -104,10 +99,24 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const cmd = Object.keys(BotCommand).find(
+		const cmds = [];
+		if (_cmd.toLowerCase() === 'mod') {
+			cmds.push(BotCommand.info);
+			cmds.push(BotCommand.addInvites);
+			cmds.push(BotCommand.clearInvites);
+			cmds.push(BotCommand.restoreInvites);
+			cmds.push(BotCommand.subtractFakes);
+			cmds.push(BotCommand.subtractLeaves);
+			cmds.push(BotCommand.export);
+		}
+		const cm = Object.keys(BotCommand).find(
 			(k: any) => BotCommand[k].toLowerCase() === _cmd.toLowerCase()
 		) as BotCommand;
-		if (!cmd) {
+		if (cm) {
+			cmds.push(cm);
+		}
+
+		if (!cmds.length) {
 			message.channel.send(
 				'Invalid command `' +
 					_cmd +
@@ -132,7 +141,7 @@ export default class extends Command<IMClient> {
 					]
 				],
 				where: {
-					command: cmd
+					command: cmds
 				},
 				group: ['command'],
 				include: [
@@ -154,10 +163,12 @@ export default class extends Command<IMClient> {
 			);
 
 			if (perms.length === 0) {
-				embed.addField(
-					cmd,
-					isStrict(cmd) ? '**Administrators** only' : '**Everyone**'
-				);
+				cmds.forEach(cmd => {
+					embed.addField(
+						cmd,
+						isStrict(cmd) ? '**Administrators** only' : '**Everyone**'
+					);
+				});
 			} else {
 				perms.forEach((p: RolePermissionsInstance & { roles: string }) => {
 					embed.addField(
@@ -174,36 +185,33 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const oldPerm = await rolePermissions.find({
+		if (
+			cmds.indexOf(BotCommand.config) >= 0 ||
+			cmds.indexOf(BotCommand.inviteCodeConfig) >= 0 ||
+			cmds.indexOf(BotCommand.memberConfig) >= 0 ||
+			cmds.indexOf(BotCommand.permissions) >= 0 ||
+			cmds.indexOf(BotCommand.addRank) >= 0
+		) {
+			return message.channel.send(
+				'You cannot change the permissions for this commands, ' +
+					'it is always **Administrator only**'
+			);
+		}
+
+		const oldPerms = await rolePermissions.findAll({
 			where: {
-				command: cmd,
+				command: cmds,
 				roleId: role.id
 			}
 		});
 
-		if (oldPerm) {
-			oldPerm.destroy();
+		if (oldPerms.length > 0) {
+			oldPerms.forEach(op => op.destroy());
 
-			message.channel.send(`Removed <@&${role.id}> from **${cmd}**`);
+			message.channel.send(
+				`Denied <@&${role.id}> from using **${cmds.join(', ')}**`
+			);
 		} else {
-			let confirm = cmd === BotCommand.config || cmd === BotCommand.permissions;
-
-			if (confirm) {
-				const [res] = await prompt(
-					message,
-					`**CAUTION** ` +
-						`You are adding the <@&${role.id}> to the **${cmd}** command.\n` +
-						`**THIS IS DANGEROUS AND SHOULD ONLY BE GIVEN TO SERVER ADMINS**\n` +
-						`Continue adding role to command (yes/no)?`
-				);
-				if (res === PromptResult.TIMEOUT) {
-					return message.channel.send('Command timed out.');
-				}
-				if (res === PromptResult.FAILURE) {
-					return message.channel.send('Okay, aborting.');
-				}
-			}
-
 			await roles.insertOrUpdate({
 				id: role.id,
 				name: role.name,
@@ -211,13 +219,17 @@ export default class extends Command<IMClient> {
 				guildId: role.guild.id
 			});
 
-			await rolePermissions.create({
-				id: null,
-				command: cmd,
-				roleId: role.id
-			});
+			await rolePermissions.bulkCreate(
+				cmds.map(c => ({
+					id: null,
+					command: c,
+					roleId: role.id
+				}))
+			);
 
-			message.channel.send(`Added <@&${role.id}> to **${cmd}**`);
+			message.channel.send(
+				`Allowed <@&${role.id}> to use **${cmds.join(', ')}**`
+			);
 		}
 
 		SettingsCache.flushPermissions(message.guild.id);

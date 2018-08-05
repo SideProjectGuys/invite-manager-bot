@@ -115,7 +115,7 @@ export default class extends Command<IMClient> {
 				);
 
 				if (promoteInfo) {
-					const { shouldHave, shouldNotHave } = promoteInfo;
+					const { shouldHave, shouldNotHave, dangerous } = promoteInfo;
 
 					if (shouldHave.length > 0) {
 						descr +=
@@ -129,6 +129,13 @@ export default class extends Command<IMClient> {
 							'\n\n' +
 							rp.ROLES_SHOULD_NOT_HAVE({
 								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							});
+					}
+					if (dangerous.length > 0) {
+						descr +=
+							'\n\n' +
+							rp.ROLES_DANGEROUS({
+								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 				}
