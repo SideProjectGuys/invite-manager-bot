@@ -192,13 +192,7 @@ export async function promoteIfQualified(
 		// Filter dangerous roles
 		dangerous = reached.filter(
 			r =>
-				r.permissions.has('ADMINISTRATOR') ||
-				r.permissions.has('MANAGE_GUILD') ||
-				r.permissions.has('MANAGE_CHANNELS') ||
-				r.permissions.has('MANAGE_ROLES') ||
-				r.permissions.has('MANAGE_MESSAGES') ||
-				r.permissions.has('KICK_MEMBERS') ||
-				r.permissions.has('BAN_MEMBERS')
+				r.permissions.has('ADMINISTRATOR') || r.permissions.has('MANAGE_GUILD')
 		);
 		reached = reached.filter(r => dangerous.indexOf(r) === -1);
 
