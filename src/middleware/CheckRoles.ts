@@ -40,7 +40,7 @@ export const checkRoles = (cmd: BotCommand) => {
 			return [message, args];
 		}
 
-		// Always allow guild owner
+		// Always allow admins
 		if (message.member.hasPermission('ADMINISTRATOR')) {
 			return [message, args];
 		}
@@ -52,7 +52,7 @@ export const checkRoles = (cmd: BotCommand) => {
 			if (isStrict(cmd)) {
 				throw Error(
 					'You do not have permission to use this command.\n' +
-						'Only the server owner may use this command.'
+						'Only **Administrators** may use this command.'
 				);
 			}
 			return [message, args];
