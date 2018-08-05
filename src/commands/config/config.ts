@@ -8,7 +8,9 @@ import {
 } from '@yamdbf/core';
 import { Channel, MessageEmbed } from 'discord.js';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -19,9 +21,9 @@ import {
 	LogAction,
 	RankAssignmentStyle,
 	SettingsKey
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { expect, resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -29,6 +31,7 @@ const { using } = CommandDecorators;
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 	return async function(
+		this: Command,
 		message: Message,
 		[rp, ..._args]: [RP, string]
 	): Promise<[Message, any[]]> {
@@ -53,12 +56,7 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			// after the resource proxy
 			return [
 				message,
-				[
-					rp,
-					...(await func('key: String')
-						// tslint:disable-next-line:no-invalid-this
-						.call(this, message, [dbKey]))[1]
-				]
+				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
 			];
 		}
 
@@ -70,7 +68,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				[
 					rp,
 					...(await func('key: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
 						this,
 						message,
 						newArgs
@@ -89,7 +86,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				[
 					rp,
 					...(await func('key: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
 						this,
 						message,
 						newArgs
@@ -104,7 +100,6 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			[
 				rp,
 				...(await func(`key: String, ...value?: ${type}`).call(
-					// tslint:disable-next-line:no-invalid-this
 					this,
 					message,
 					newArgs
@@ -130,11 +125,12 @@ export default class extends Command<IMClient> {
 				'The new value of the setting.\n\n' +
 				'Use without args to show the current settings and all keys.\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Config,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.config))
 	@using(localize)
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))

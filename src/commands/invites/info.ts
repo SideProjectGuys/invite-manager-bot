@@ -10,6 +10,8 @@ import { GuildMember, User } from 'discord.js';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	CustomInviteInstance,
 	customInvites,
@@ -19,8 +21,8 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -38,11 +40,12 @@ export default class extends Command<IMClient> {
 				'`@user`:\n' + 'The user for whom you want to see additional info.\n\n',
 			callerPermissions: ['MANAGE_GUILD', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
 			clientPermissions: ['MANAGE_GUILD'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.info))
 	@using(resolve('user: User'))
 	@using(expect('user: User'))
 	@using(localize)

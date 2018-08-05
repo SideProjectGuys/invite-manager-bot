@@ -6,18 +6,22 @@ import {
 	Message,
 	Middleware
 } from '@yamdbf/core';
-import { Guild } from 'discord.js';
+import { Guild, User } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
-	defaultInviteCodeSettings,
-	getInviteCodeSettingsType,
-	inviteCodeSettings,
-	InviteCodeSettingsKey,
-	LogAction
+	defaultMemberSettings,
+	getMemberSettingsType,
+	LogAction,
+	members,
+	memberSettings,
+	MemberSettingsKey,
+	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { expect, resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -25,6 +29,7 @@ const { using } = CommandDecorators;
 // Used to resolve and expect the correct arguments depending on the config key
 const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 	return async function(
+		this: Command,
 		message: Message,
 		[rp, ..._args]: [RP, string]
 	): Promise<[Message, any[]]> {
@@ -35,21 +40,20 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			return [message, [rp]];
 		}
 
-		let dbKey: InviteCodeSettingsKey = Object.keys(InviteCodeSettingsKey).find(
-			(k: any) => InviteCodeSettingsKey[k].toLowerCase() === key.toLowerCase()
-		) as InviteCodeSettingsKey;
+		let dbKey: MemberSettingsKey = Object.keys(MemberSettingsKey).find(
+			(k: any) => MemberSettingsKey[k].toLowerCase() === key.toLowerCase()
+		) as MemberSettingsKey;
 		if (!dbKey) {
-			throw Error(rp.CMD_INVITECODECONFIG_KEY_NOT_FOUND({ key }));
+			throw Error(rp.CMD_MEMBERCONFIG_KEY_NOT_FOUND({ key }));
 		}
 
-		const code = args[1];
-		if (!code) {
+		const user = args[1];
+		if (!user) {
 			// We call func (resolve or expect) with the string keys, await
 			// the response (which is '[message, args[]]') and unwrap the args
 			// after the resource proxy
 			return [
 				message,
-				// tslint:disable-next-line:no-invalid-this
 				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
 			];
 		}
@@ -60,24 +64,22 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 				message,
 				[
 					rp,
-					// tslint:disable-next-line:no-invalid-this
-					...(await func('key: String, code: String').call(this, message, [
+					...(await func('key: String, user: User').call(this, message, [
 						dbKey,
-						code
+						user
 					]))[1]
 				]
 			];
 		}
 
-		const newArgs = ([dbKey, code] as any[]).concat(args.slice(2));
+		const newArgs = ([dbKey, user] as any[]).concat(args.slice(2));
 
 		if (value === 'default') {
 			return [
 				message,
 				[
 					rp,
-					...(await func('key: String, code: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
+					...(await func('key: String, user: User, ...value?: String').call(
 						this,
 						message,
 						newArgs
@@ -87,18 +89,15 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		}
 
 		if (value === 'none' || value === 'empty' || value === 'null') {
-			if (defaultInviteCodeSettings[dbKey] !== null) {
+			if (defaultMemberSettings[dbKey] !== null) {
 				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				throw Error(
-					rp.CMD_INVITECODECONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
-				);
+				throw Error(rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
 			}
 			return [
 				message,
 				[
 					rp,
-					...(await func('key: String, code: String, ...value?: String').call(
-						// tslint:disable-next-line:no-invalid-this
+					...(await func('key: String, user: User, ...value?: String').call(
 						this,
 						message,
 						newArgs
@@ -107,13 +106,12 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			];
 		}
 
-		const type = getInviteCodeSettingsType(dbKey);
+		const type = getMemberSettingsType(dbKey);
 		return [
 			message,
 			[
 				rp,
-				...(await func(`key: String, code: String, ...value?: ${type}`).call(
-					// tslint:disable-next-line:no-invalid-this
+				...(await func(`key: String, user: User, ...value?: ${type}`).call(
 					this,
 					message,
 					newArgs
@@ -128,30 +126,31 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'invitecodeconfig',
-			aliases: ['invcodeconfig', 'invcodeconf', 'icc'],
-			desc: 'Show and change the config of invite codes of the server',
-			usage: '<prefix>icc key (code) (value)',
+			name: 'memberconfig',
+			aliases: ['memberconf', 'memconfig', 'memconf'],
+			desc: 'Show and change the config of members of the server',
+			usage: '<prefix>memconf key (@user) (value)',
 			info:
 				'`key`:\n' +
 				'The config setting which you want to show/change.\n\n' +
-				'`code`:\n' +
-				'The invite code that the setting is changed for.\n\n' +
+				'`@user`:\n' +
+				'The member that the setting is changed for.\n\n' +
 				'`value`:\n' +
 				'The new value of the setting.\n\n' +
 				'Use without args to show all set configs and keys.\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			group: CommandGroup.Admin,
+			group: CommandGroup.Config,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.memberConfig))
 	@using(localize)
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))
 	public async action(
 		message: Message,
-		[rp, key, code, rawValue]: [RP, InviteCodeSettingsKey, string, any]
+		[rp, key, user, rawValue]: [RP, MemberSettingsKey, User, any]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
@@ -161,40 +160,52 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle(rp.CMD_INVITECODECONFIG_TITLE());
-			embed.setDescription(rp.CMD_INVITECODECONFIG_TEXT({ prefix }));
+			embed.setTitle(rp.CMD_MEMBERCONFIG_TITLE());
+			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT({ prefix }));
 
-			const keys = Object.keys(InviteCodeSettingsKey);
-			embed.addField(rp.CMD_INVITECODECONFIG_KEYS_TITLE(), keys.join('\n'));
+			const keys = Object.keys(MemberSettingsKey);
+			embed.addField(rp.CMD_MEMBERCONFIG_KEYS_TITLE(), keys.join('\n'));
 
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
-		if (!code) {
-			const allSets = await inviteCodeSettings.findAll({
-				attributes: ['id', 'key', 'value', 'inviteCode'],
+		if (!user) {
+			const allSets = await memberSettings.findAll({
+				attributes: [
+					'id',
+					'key',
+					'value',
+					[sequelize.literal('`member`.`name`'), 'memberName']
+				],
 				where: {
 					guildId: message.guild.id,
 					key
 				},
+				include: [
+					{
+						attributes: [],
+						model: members
+					}
+				],
 				raw: true
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.addField(set.inviteCode, this.fromDbValue(set.key, set.value))
+					embed.addField(set.memberName, this.fromDbValue(set.key, set.value))
 				);
 			} else {
-				embed.setDescription(rp.CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT());
+				embed.setDescription(rp.CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT());
 			}
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
-		const oldSet = await inviteCodeSettings.find({
+		const username = user.username;
+		const oldSet = await memberSettings.find({
 			where: {
 				guildId: message.guild.id,
-				inviteCode: code,
+				memberId: user.id,
 				key
 			},
 			raw: true
@@ -212,19 +223,19 @@ export default class extends Command<IMClient> {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
-				const clear = defaultInviteCodeSettings[key] === null ? 't' : undefined;
+				const clear = defaultMemberSettings[key] === null ? 't' : undefined;
 				embed.setDescription(
-					rp.CMD_INVITECODECONFIG_CURRENT_SET_TEXT({
+					rp.CMD_MEMBERCONFIG_CURRENT_SET_TEXT({
 						prefix,
 						key,
-						code,
+						username,
 						clear
 					})
 				);
-				embed.addField(rp.CMD_INVITECODECONFIG_CURRENT_TITLE(), oldRawVal);
+				embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), oldRawVal);
 			} else {
 				embed.setDescription(
-					rp.CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT({ prefix })
+					rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT({ prefix })
 				);
 			}
 			await sendEmbed(message.channel, embed, message.author);
@@ -243,8 +254,8 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(rp.CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE());
-			embed.addField(rp.CMD_INVITECODECONFIG_CURRENT_TITLE(), rawValue);
+			embed.setDescription(rp.CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE());
+			embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), rawValue);
 			await sendEmbed(message.channel, embed, message.author);
 			return;
 		}
@@ -255,31 +266,31 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		await inviteCodeSettings.insertOrUpdate({
+		await memberSettings.insertOrUpdate({
 			id: null,
 			guildId: message.guild.id,
-			inviteCode: code,
+			memberId: user.id,
 			key,
 			value
 		});
 
-		embed.setDescription(rp.CMD_INVITECODECONFIG_CHANGED_TEXT({ prefix }));
+		embed.setDescription(rp.CMD_MEMBERCONFIG_CHANGED_TEXT({ prefix }));
 
 		// Log the settings change
 		this.client.logAction(message, LogAction.memberConfig, {
 			key,
-			inviteCode: code,
+			userId: user.id,
 			oldValue: oldVal,
 			newValue: value
 		});
 
 		if (oldVal) {
-			embed.addField(rp.CMD_INVITECODECONFIG_PREVIOUS_TITLE(), oldRawVal);
+			embed.addField(rp.CMD_MEMBERCONFIG_PREVIOUS_TITLE(), oldRawVal);
 		}
 
 		embed.addField(
-			rp.CMD_INVITECODECONFIG_NEW_TITLE(),
-			value ? rawValue : rp.CMD_INVITECODECONFIG_NONE()
+			rp.CMD_MEMBERCONFIG_NEW_TITLE(),
+			value ? rawValue : rp.CMD_MEMBERCONFIG_NONE()
 		);
 		oldVal = value; // Update value for future use
 
@@ -289,24 +300,17 @@ export default class extends Command<IMClient> {
 	// Convert a raw value into something we can save in the database
 	private toDbValue(
 		guild: Guild,
-		key: InviteCodeSettingsKey,
+		key: MemberSettingsKey,
 		value: any
 	): { value?: string; error?: string } {
 		if (value === 'default') {
-			return { value: defaultInviteCodeSettings[key] };
+			return { value: defaultMemberSettings[key] };
 		}
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			return { value: null };
 		}
 
-		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value
-				.split(' ')
-				.map((r: string) => r.substring(3, r.length - 1));
-			return { value: roles.join(',') };
-		}
-
-		const type = getInviteCodeSettingsType(key);
+		const type = getMemberSettingsType(key);
 		if (type === 'Boolean') {
 			return { value: value ? 'true' : 'false' };
 		}
@@ -315,16 +319,9 @@ export default class extends Command<IMClient> {
 	}
 
 	// Convert a DB value into a human readable value
-	private fromDbValue(key: InviteCodeSettingsKey, value: string): string {
+	private fromDbValue(key: MemberSettingsKey, value: string): string {
 		if (value === undefined || value === null) {
 			return value;
-		}
-
-		if (key === InviteCodeSettingsKey.roles) {
-			return value
-				.split(',')
-				.map(r => `<@&${r}>`)
-				.join(' ');
 		}
 
 		/*const type = getMemberSettingsType(key);
@@ -338,19 +335,11 @@ export default class extends Command<IMClient> {
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
 	private validate(
 		message: Message,
-		key: InviteCodeSettingsKey,
+		key: MemberSettingsKey,
 		value: any
 	): string | null {
 		if (value === null || value === undefined) {
 			return null;
-		}
-
-		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value.split(',');
-			console.log(roles);
-			if (!roles.every(r => !!message.guild.roles.get(r))) {
-				return 'Invalid role';
-			}
 		}
 
 		/*const type = getMemberSettingsType(key);*/

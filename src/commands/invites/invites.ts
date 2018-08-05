@@ -9,14 +9,10 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import {
-	CommandGroup,
-	createEmbed,
-	getInviteCounts,
-	promoteIfQualified,
-	RP,
-	sendEmbed
-} from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { CommandGroup, RP, BotCommand } from '../../types';
+import { getInviteCounts, promoteIfQualified } from '../../util';
+import { checkRoles } from '../../middleware/CheckRoles';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -37,6 +33,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.invites))
 	@using(resolve('user: User'))
 	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
@@ -65,7 +62,6 @@ export default class extends Command<IMClient> {
 
 			// Only process if the user is still in the guild
 			if (targetMember) {
-
 				const promoteInfo = await promoteIfQualified(
 					message.guild,
 					targetMember,
@@ -73,7 +69,6 @@ export default class extends Command<IMClient> {
 				);
 
 				if (promoteInfo) {
-
 					const {
 						nextRank,
 						nextRankName,

@@ -9,8 +9,9 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { LogAction, members, ranks, roles } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { LogAction, ranks, roles } from '../../sequelize';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -37,6 +38,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.addRank))
 	@using(resolve('role: Role, invites: Number, ...description: String'))
 	@using(expect('role: Role, invites: Number'))
 	@using(localize)

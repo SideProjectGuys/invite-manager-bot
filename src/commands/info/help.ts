@@ -8,7 +8,8 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
