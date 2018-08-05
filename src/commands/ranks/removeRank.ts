@@ -9,8 +9,9 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import { LogAction, ranks } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -31,6 +32,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.removeRank))
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))
 	@using(localize)

@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -15,7 +16,7 @@ import {
 	joins,
 	sequelize
 } from '../../sequelize';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -36,6 +37,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.subtractFakes))
 	@using(localize)
 	public async action(
 		message: Message,

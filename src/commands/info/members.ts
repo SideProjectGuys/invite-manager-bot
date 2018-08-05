@@ -8,7 +8,9 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -22,11 +24,12 @@ export default class extends Command<IMClient> {
 			aliases: ['member', 'membersCount'],
 			desc: 'Show member count of current server.',
 			usage: '<prefix>members',
-			group: CommandGroup.Members,
+			group: CommandGroup.Info,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.members))
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(

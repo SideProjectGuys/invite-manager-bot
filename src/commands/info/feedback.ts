@@ -9,7 +9,8 @@ import {
 import { TextChannel } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;

@@ -10,8 +10,9 @@ import { GuildMember, User } from 'discord.js';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
-	BotCommand,
 	CustomInviteInstance,
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -20,9 +21,8 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { checkRoles } from '../../utils/CheckRolesMiddleware';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;

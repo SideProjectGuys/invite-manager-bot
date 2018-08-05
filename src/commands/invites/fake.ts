@@ -8,16 +8,16 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { createEmbed, showPaginated } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
-	BotCommand,
 	inviteCodes,
 	JoinAttributes,
 	joins,
 	members,
 	sequelize
 } from '../../sequelize';
-import { checkRoles } from '../../utils/CheckRolesMiddleware';
-import { CommandGroup, createEmbed, RP, showPaginated } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;

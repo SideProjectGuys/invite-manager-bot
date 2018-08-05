@@ -9,16 +9,16 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { LeaderboardStyle } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
+import { generateLeaderboard } from '../../functions/Leaderboard';
 import {
-	CommandGroup,
 	createEmbed,
-	generateLeaderboard,
-	RP,
 	sendEmbed,
 	showPaginated
-} from '../../utils/util';
+} from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { LeaderboardStyle } from '../../sequelize';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const chrono = require('chrono-node');
 
@@ -50,6 +50,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.leaderboard))
 	@using(resolve('page: Number, ...date?: String'))
 	@using(localize)
 	public async action(

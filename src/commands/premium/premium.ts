@@ -1,10 +1,20 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, sendEmbed } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup } from '../../types';
+
+const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;
@@ -20,6 +30,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.premium))
 	public async action(message: Message, args: string[]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`

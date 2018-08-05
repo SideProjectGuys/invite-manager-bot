@@ -8,7 +8,9 @@ import {
 } from '@yamdbf/core';
 import { Channel, MessageEmbed } from 'discord.js';
 
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -19,9 +21,9 @@ import {
 	LogAction,
 	RankAssignmentStyle,
 	SettingsKey
-} from '../sequelize';
-import { SettingsCache } from '../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../utils/util';
+} from '../../sequelize';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { expect, resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -123,11 +125,12 @@ export default class extends Command<IMClient> {
 				'The new value of the setting.\n\n' +
 				'Use without args to show the current settings and all keys.\n',
 			callerPermissions: ['ADMINISTRATOR', 'MANAGE_CHANNELS', 'MANAGE_ROLES'],
-			group: CommandGroup.Other,
+			group: CommandGroup.Config,
 			guildOnly: true
 		});
 	}
 
+	@using(checkRoles(BotCommand.config))
 	@using(localize)
 	@using(checkArgsMiddleware(resolve))
 	@using(checkArgsMiddleware(expect))

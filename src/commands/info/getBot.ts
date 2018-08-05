@@ -1,7 +1,8 @@
 import { Command, Logger, logger, Message } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { CommandGroup, createEmbed, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { CommandGroup } from '../../types';
 
 export default class extends Command<IMClient> {
 	@logger('Command') private readonly _logger: Logger;

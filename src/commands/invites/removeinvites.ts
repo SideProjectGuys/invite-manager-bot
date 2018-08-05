@@ -9,7 +9,8 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { CommandGroup } from '../../utils/util';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { BotCommand, CommandGroup } from '../../types';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -37,6 +38,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.addInvites))
 	@using(resolve('user: User, amount: Number, ...reason: String'))
 	@using(expect('user: User, amount: Number'))
 	public async action(

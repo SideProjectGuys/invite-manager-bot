@@ -9,8 +9,9 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;

@@ -910,13 +910,6 @@ members.hasMany(premiumSubscriptions);
 // ------------------------------------
 // RolePermssions
 // ------------------------------------
-export enum BotCommand {
-	'addInvites' = 'addInvites',
-	'clearInvites' = 'clearInvites',
-	'fake' = 'fake',
-	'info' = 'info'
-}
-
 export interface RolePermissionsAttributes extends BaseAttributes {
 	id: number;
 	roleId: string;
@@ -934,11 +927,7 @@ export const rolePermissions = sequelize.define<
 >(
 	'rolePermissions',
 	{
-		command: Sequelize.ENUM(
-			BotCommand.addInvites,
-			BotCommand.clearInvites,
-			BotCommand.fake
-		)
+		command: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,

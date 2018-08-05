@@ -9,8 +9,9 @@ import {
 import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
 import { IMClient } from '../../client';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, createEmbed, RP, sendEmbed } from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;

@@ -10,8 +10,8 @@ import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
-	BotCommand,
 	CustomInviteAttributes,
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -19,8 +19,7 @@ import {
 	LogAction,
 	sequelize
 } from '../../sequelize';
-import { checkRoles } from '../../utils/CheckRolesMiddleware';
-import { CommandGroup, RP } from '../../utils/util';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;

@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -16,8 +17,8 @@ import {
 	leaves,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../utils/SettingsCache';
-import { CommandGroup, RP } from '../../utils/util';
+import { SettingsCache } from '../../storage/SettingsCache';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -38,6 +39,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkRoles(BotCommand.subtractLeaves))
 	@using(localize)
 	public async action(
 		message: Message,

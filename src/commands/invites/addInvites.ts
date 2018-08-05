@@ -9,16 +9,11 @@ import {
 import { GuildMember, User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { BotCommand, customInvites, LogAction, members } from '../../sequelize';
-import { checkRoles } from '../../utils/CheckRolesMiddleware';
-import {
-	CommandGroup,
-	createEmbed,
-	getInviteCounts,
-	promoteIfQualified,
-	RP,
-	sendEmbed
-} from '../../utils/util';
+import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { customInvites, LogAction, members } from '../../sequelize';
+import { BotCommand, CommandGroup, RP } from '../../types';
+import { getInviteCounts, promoteIfQualified } from '../../util';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
