@@ -108,6 +108,8 @@ export default class extends Command<IMClient> {
 			cmds.push(BotCommand.subtractFakes);
 			cmds.push(BotCommand.subtractLeaves);
 			cmds.push(BotCommand.export);
+			cmds.push(BotCommand.makeMentionable);
+			cmds.push(BotCommand.mentionRole);
 		}
 		const cm = Object.keys(BotCommand).find(
 			(k: any) => BotCommand[k].toLowerCase() === _cmd.toLowerCase()

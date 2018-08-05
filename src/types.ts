@@ -52,5 +52,8 @@ export enum BotCommand {
 	'ranks' = 'ranks',
 	'removeRank' = 'removeRank',
 
+	'makeMentionable' = 'makeMentionable',
+	'mentionRole' = 'mentionRole',
+
 	'chart' = 'chart'
 }
