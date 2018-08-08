@@ -12,6 +12,7 @@ import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import {
+	channels,
 	defaultInviteCodeSettings,
 	getInviteCodeSettingsType,
 	inviteCodeSettings,
@@ -122,7 +123,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 };
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -252,6 +254,14 @@ export default class extends Command<IMClient> {
 			message.channel.send(error);
 			return;
 		}
+
+		const inv = await this.client.fetchInvite(code);
+
+		await channels.insertOrUpdate({
+			id: inv.channel.id,
+			guildId: inv.guild.id,
+			name: inv.channel.name
+		});
 
 		await inviteCodeSettings.insertOrUpdate({
 			id: null,
