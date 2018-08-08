@@ -43,7 +43,7 @@ export default class extends Command<IMClient> {
 		const isPremium = await SettingsCache.isPremium(message.guild.id);
 
 		if (!isPremium) {
-			embed.setTitle('You currently do not have a premium subscription');
+			embed.setTitle('This server currently does not have a premium subscription');
 
 			let description = '';
 			description +=
@@ -55,7 +55,7 @@ export default class extends Command<IMClient> {
 			embed.addField(
 				'Premium Feature: Embeds in join messages',
 				'You can use an embed in your join and leave messages which look a lot better. ' +
-					'[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
+				'[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
 			);
 
 			embed.addField(
@@ -78,7 +78,7 @@ export default class extends Command<IMClient> {
 			let description = '';
 			if (sub) {
 				const date = moment(sub.validUntil).fromNow(true);
-				description += `Your subscription is valid for another ${date}`;
+				description += `This servers subscription is valid for another ${date}`;
 				description += `\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)`;
 			} else {
 				description += `Could not find subscription info.`;
