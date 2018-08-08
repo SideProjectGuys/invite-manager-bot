@@ -15,6 +15,7 @@ import {
 	channels,
 	defaultInviteCodeSettings,
 	getInviteCodeSettingsType,
+	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey,
 	LogAction
@@ -191,6 +192,15 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
+		// Check if this is actually a real invite code
+		const inv = await this.client.fetchInvite(code);
+		if (!inv) {
+			return message.channel.send('Invalid invite code');
+		}
+		if (inv.guild.id !== message.guild.id) {
+			return message.channel.send('This code is not for this guild');
+		}
+
 		const oldSet = await inviteCodeSettings.find({
 			where: {
 				guildId: message.guild.id,
@@ -255,12 +265,22 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const inv = await this.client.fetchInvite(code);
-
 		await channels.insertOrUpdate({
 			id: inv.channel.id,
 			guildId: inv.guild.id,
 			name: inv.channel.name
+		});
+
+		await inviteCodes.insertOrUpdate({
+			code: inv.code,
+			guildId: inv.guild.id,
+			inviterId: inv.inviter.id,
+			channelId: inv.channel.id,
+			uses: inv.uses,
+			maxAge: inv.maxAge,
+			maxUses: inv.maxUses,
+			temporary: inv.temporary,
+			createdAt: inv.createdTimestamp
 		});
 
 		await inviteCodeSettings.insertOrUpdate({
