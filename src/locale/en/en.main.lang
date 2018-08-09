@@ -57,3 +57,14 @@ Command timed out, aborting...
 
 [PROMPT_CANCELED]
 Okay, cancelled.
+
+[PERMISSIONS_MEMBER_ERROR]
+An error occurred when evaluating your permissions.
+
+[PERMISSIONS_ADMIN_ONLY]
+You do not have permission to use this command.
+Only **Administrators** may use this command.
+
+[PERMISSIONS_MISSING_ROLE]
+You do not have permission to use this command.
+You need one of the following roles: {{ roles }}
