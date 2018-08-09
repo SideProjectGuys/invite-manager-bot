@@ -284,13 +284,12 @@ export default class extends Command<IMClient> {
 			);
 		}
 
-		if (customInvs.length > 0) {
-			let customInvText = '';
-			customInvs.slice(0, 10).forEach(inv => {
-				const reasonText = inv.generatedReason
-					? ', ' + this.formatGeneratedReason(rp, prefix, inv)
-					: inv.reason;
+		const bonusInvs = customInvs.filter(inv => inv.generatedReason === null);
 
+		if (bonusInvs.length > 0) {
+			let customInvText = '';
+
+			bonusInvs.slice(0, 10).forEach(inv => {
 				customInvText +=
 					rp.CMD_INFO_BONUSINVITES_ENTRY({
 						amount: inv.amount,
@@ -298,7 +297,7 @@ export default class extends Command<IMClient> {
 						date: moment(inv.createdAt)
 							.locale(lang)
 							.fromNow(),
-						reason: reasonText
+						reason: inv.reason
 					}) + '\n';
 			});
 
@@ -311,7 +310,18 @@ export default class extends Command<IMClient> {
 					});
 			}
 
-			embed.addField(rp.CMD_INFO_BONUSINVITES_TITLE(), customInvText + more);
+			// Crop the text because we don't know how long the 'reasons' are that
+			// people added to custom invites, so we have to make sure the text fits.
+			let text = customInvText + more;
+			const diff = text.length - 1024;
+			if (diff > 0) {
+				text =
+					customInvText.substr(0, customInvText.length - diff - 3) +
+					'...' +
+					more;
+			}
+
+			embed.addField(rp.CMD_INFO_BONUSINVITES_TITLE(), text);
 		} else {
 			embed.addField(
 				rp.CMD_INFO_BONUSINVITES_TITLE(),
@@ -376,42 +386,5 @@ export default class extends Command<IMClient> {
 		}
 
 		sendEmbed(message.channel, embed, message.author);
-	}
-
-	private formatGeneratedReason(
-		rp: RP,
-		prefix: string,
-		inv: CustomInviteInstance
-	) {
-		switch (inv.generatedReason) {
-			case CustomInvitesGeneratedReason.clear_regular:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_REGULAR({
-					prefix
-				});
-
-			case CustomInvitesGeneratedReason.clear_custom:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_CUSTOM({
-					prefix
-				});
-
-			case CustomInvitesGeneratedReason.clear_fake:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_FAKE({
-					prefix
-				});
-
-			case CustomInvitesGeneratedReason.clear_leave:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_LEAVE({
-					prefix
-				});
-
-			case CustomInvitesGeneratedReason.fake:
-				return rp.CUSTOM_INVITES_REASON_FAKE({ reason: inv.reason });
-
-			case CustomInvitesGeneratedReason.leave:
-				return rp.CUSTOM_INVITES_REASON_LEAVE({ reason: inv.reason });
-
-			default:
-				return rp.CUSTOM_INVITES_REASON_UNKNOWN();
-		}
 	}
 }
