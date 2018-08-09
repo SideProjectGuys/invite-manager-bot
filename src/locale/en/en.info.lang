@@ -62,7 +62,7 @@ This member has received no bonuses so far
 Invited members
 
 [CMD_INFO_INVITEDMEMBERS_MORE]
-Plus another **{{ amount }}** more bonus invites
+Plus another **{{ amount }}** members
 
 [CMD_INFO_INVITEDMEMBERS_NONE]
 This member has not invited anyone else so far
