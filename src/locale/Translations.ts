@@ -30,6 +30,9 @@ export interface TranslationKeys {
 
 	RANK_REACHED: TranslateFunc;
 
+	PROMPT_TIMED_OUT: TranslateFunc;
+	PROMPT_CANCELED: TranslateFunc;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: TranslateFunc;
 	CMD_ADDINVITES_AMOUNT_POS: TranslateFunc;
@@ -79,6 +82,10 @@ export interface TranslationKeys {
 	CMD_CONFIG_INVALID_LANG: TranslateFunc;
 	CMD_CONFIG_INVALID_LEADERBOARD_STYLE: TranslateFunc;
 	CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE: TranslateFunc;
+
+	CMD_EXPORT_PREMIUM_ONLY: TranslateFunc;
+	CMD_EXPORT_PREPARING: TranslateFunc;
+	CMD_INVALID_TYPE: TranslateFunc;
 
 	CMD_FAKE_TITLE: TranslateFunc;
 	CMD_FAKE_NONE: TranslateFunc;
@@ -209,6 +216,16 @@ export interface TranslationKeys {
 	CMD_PERMISSIONS_ADDED: TranslateFunc;
 	CMD_PERMISSIONS_REMOVED: TranslateFunc;
 
+	CMD_PREMIUM_PREMIUM_TITLE: TranslateFunc;
+	CMD_PREMIUM_PREMIUM_DESCRIPTION: TranslateFunc;
+	CMD_PREMIUM_PREMIUM_NOT_FOUND: TranslateFunc;
+	CMD_PREMIUM_NO_PREMIUM_TITLE: TranslateFunc;
+	CMD_PREMIUM_NO_PREMIUM_DESCRIPTION: TranslateFunc;
+	CMD_PREMIUM_FEATURE_EMBEDS_TITLE: TranslateFunc;
+	CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION: TranslateFunc;
+	CMD_PREMIUM_FEATURE_EXPORT_TITLE: TranslateFunc;
+	CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION: TranslateFunc;
+
 	CMD_RANKS_NONE: TranslateFunc;
 	CMD_RANKS_ENTRY: TranslateFunc;
 	CMD_RANKS_TITLE: TranslateFunc;
@@ -240,4 +257,10 @@ export interface TranslationKeys {
 
 	CMD_SUBTRACTLEAVES_NO_LEAVES: TranslateFunc;
 	CMD_SUBTRACTLEAVES_DONE: TranslateFunc;
+
+	CMD_TRYPREMIUM_CURRENTLY_ACTIVE: TranslateFunc;
+	CMD_TRYPREMIUM_ALREADY_USED: TranslateFunc;
+	CMD_TRYPREMIUM_DESCRIPTION: TranslateFunc;
+	CMD_TRYPREMIUM_PROMPT: TranslateFunc;
+	CMD_TRYPREMIUM_STARTED: TranslateFunc;
 }

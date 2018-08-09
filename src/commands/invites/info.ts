@@ -28,7 +28,8 @@ const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -53,7 +54,9 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		const lang = (await SettingsCache.get(message.guild.id)).lang;
+		const sets = await SettingsCache.get(message.guild.id);
+		const lang = sets.lang;
+		const prefix = sets.prefix;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
@@ -285,7 +288,7 @@ export default class extends Command<IMClient> {
 			let customInvText = '';
 			customInvs.slice(0, 10).forEach(inv => {
 				const reasonText = inv.generatedReason
-					? ', ' + this.formatGeneratedReason(rp, inv)
+					? ', ' + this.formatGeneratedReason(rp, prefix, inv)
 					: inv.reason;
 
 				customInvText +=
@@ -375,19 +378,31 @@ export default class extends Command<IMClient> {
 		sendEmbed(message.channel, embed, message.author);
 	}
 
-	private formatGeneratedReason(rp: RP, inv: CustomInviteInstance) {
+	private formatGeneratedReason(
+		rp: RP,
+		prefix: string,
+		inv: CustomInviteInstance
+	) {
 		switch (inv.generatedReason) {
 			case CustomInvitesGeneratedReason.clear_regular:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_REGULAR();
+				return rp.CUSTOM_INVITES_REASON_CLEAR_REGULAR({
+					prefix
+				});
 
 			case CustomInvitesGeneratedReason.clear_custom:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_CUSTOM();
+				return rp.CUSTOM_INVITES_REASON_CLEAR_CUSTOM({
+					prefix
+				});
 
 			case CustomInvitesGeneratedReason.clear_fake:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_FAKE();
+				return rp.CUSTOM_INVITES_REASON_CLEAR_FAKE({
+					prefix
+				});
 
 			case CustomInvitesGeneratedReason.clear_leave:
-				return rp.CUSTOM_INVITES_REASON_CLEAR_LEAVE();
+				return rp.CUSTOM_INVITES_REASON_CLEAR_LEAVE({
+					prefix
+				});
 
 			case CustomInvitesGeneratedReason.fake:
 				return rp.CUSTOM_INVITES_REASON_FAKE({ reason: inv.reason });

@@ -11,16 +11,16 @@ Bot website
 Patreon
 
 [CUSTOM_INVITES_REASON_CLEAR_REGULAR]
-!clear-invites command (regular)
+{{ prefix }}clear-invites command (regular)
 
 [CUSTOM_INVITES_REASON_CLEAR_CUSTOM]
-!clear-invites command (bonus)
+{{ prefix }}clear-invites command (bonus)
 
 [CUSTOM_INVITES_REASON_CLEAR_FAKE]
-!clear-invites command (fake)
+{{ prefix }}clear-invites command (fake)
 
 [CUSTOM_INVITES_REASON_CLEAR_LEAVE]
-!clear-invites command (leaves)
+{{ prefix }}clear-invites command (leaves)
 
 [CUSTOM_INVITES_REASON_FAKE]
 Fake invites from <@{{ reason }}>
@@ -52,3 +52,8 @@ You don't need the roles {{ shouldNotHave }} but I can't remove them because my 
 [ROLES_DANGEROUS]
 The roles {{ dangerous }} contain dangerous permissions (e.g. *Administrator* or *Kick Members*), so I'm not going to assign them to anybody.
 
+[PROMPT_TIMED_OUT]
+Command timed out, aborting...
+
+[PROMPT_CANCELED]
+Okay, cancelled.

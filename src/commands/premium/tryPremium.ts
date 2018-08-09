@@ -3,7 +3,8 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 import moment from 'moment';
 
@@ -17,12 +18,14 @@ import {
 import { checkRoles } from '../../middleware/CheckRoles';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
+const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -36,12 +39,15 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(checkRoles(BotCommand.tryPremium))
-	public async action(message: Message, args: string[]): Promise<any> {
+	@using(localize)
+	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild ? message.guild.name : 'DM'} (${
 				message.author.username
 			}): ${message.content}`
 		);
+
+		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
 
 		const embed = createEmbed(this.client);
 
@@ -52,34 +58,33 @@ export default class extends Command<IMClient> {
 
 		embed.setTitle('InviteManager Premium');
 		if (isPremium) {
-			embed.setDescription(
-				'You currently have an active premium subscription!'
-			);
+			embed.setDescription(rp.CMD_TRYPREMIUM_CURRENTLY_ACTIVE());
 		} else if (await this.guildHadTrial(message.guild.id)) {
 			embed.setDescription(
-				'You have already tried out our premium feature. If you liked it, ' +
-					'please consider supporting us. You can find more information using the `!premium` command.'
+				rp.CMD_TRYPREMIUM_ALREADY_USED({
+					prefix
+				})
 			);
 		} else {
 			const promptEmbed = createEmbed(this.client);
 
 			promptEmbed.setDescription(
-				'You can try out our premium features for ' +
-					trialDuration.humanize() +
-					'. You can only do this once. Would you like to test it now?'
+				rp.CMD_TRYPREMIUM_DESCRIPTION({
+					duration: trialDuration.humanize()
+				})
 			);
 
 			await sendEmbed(message.channel, promptEmbed, message.author);
 
 			const [keyResult, keyValue] = await prompt(
 				message,
-				'Please reply with **yes** or **no**.'
+				rp.CMD_TRYPREMIUM_PROMPT()
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return message.channel.send('Command timed out, aborting...');
+				return message.channel.send(rp.PROMPT_TIMED_OUT());
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return message.channel.send('Okay, aborting.');
+				return message.channel.send(rp.PROMPT_CANCELED());
 			}
 
 			await premiumSubscriptions.create({
@@ -92,7 +97,9 @@ export default class extends Command<IMClient> {
 			SettingsCache.flushPremium(message.guild.id);
 
 			embed.setDescription(
-				'You successfully started your trial! Use `!premium` to check how much time you have left'
+				rp.CMD_TRYPREMIUM_STARTED({
+					prefix
+				})
 			);
 		}
 
