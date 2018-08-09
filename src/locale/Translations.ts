@@ -33,6 +33,10 @@ export interface TranslationKeys {
 	PROMPT_TIMED_OUT: TranslateFunc;
 	PROMPT_CANCELED: TranslateFunc;
 
+	PERMISSIONS_MEMBER_ERROR: TranslateFunc;
+	PERMISSIONS_ADMIN_ONLY: TranslateFunc;
+	PERMISSIONS_MISSING_ROLE: TranslateFunc;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: TranslateFunc;
 	CMD_ADDINVITES_AMOUNT_POS: TranslateFunc;
