@@ -302,11 +302,11 @@ export default class extends Command<IMClient> {
 			});
 
 			let more = '';
-			if (customInvs.length > 10) {
+			if (bonusInvs.length > 10) {
 				more =
 					'\n' +
 					rp.CMD_INFO_BONUSINVITES_MORE({
-						amount: customInvs.length - 10
+						amount: bonusInvs.length - 10
 					});
 			}
 
