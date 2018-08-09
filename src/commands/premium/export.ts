@@ -13,13 +13,14 @@ import { generateLeaderboard } from '../../functions/Leaderboard';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
-const { resolve, expect } = Middleware;
+const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<Client> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -39,7 +40,11 @@ export default class extends Command<Client> {
 	@using(checkRoles(BotCommand.export))
 	@using(resolve('type: String'))
 	@using(expect('type: String'))
-	public async action(message: Message, [type]: [string]): Promise<any> {
+	@using(localize)
+	public async action(
+		message: Message,
+		[rp, type]: [RP, string]
+	): Promise<any> {
 		this._logger.log(
 			`${message.guild ? message.guild.name : 'DM'} (${
 				message.author.username
@@ -51,18 +56,15 @@ export default class extends Command<Client> {
 
 		const isPremium = await SettingsCache.isPremium(message.guild.id);
 		if (!isPremium) {
-			embed.setDescription(
-				`This command is only available for premium subscribers!`
-			);
+			embed.setDescription(rp.CMD_EXPORT_PREMIUM_ONLY());
 			sendEmbed(message.channel, embed, message.author);
 			return;
 		}
 
-		embed.setDescription(`Please wait while we prepare the file...`);
+		embed.setDescription(rp.CMD_EXPORT_PREPARING());
 
 		if (type !== 'leaderboard') {
-			message.channel.send('Invalid export type. Use one of: `leaderboard`');
-			return;
+			return message.channel.send(rp.CMD_INVALID_TYPE());
 		}
 
 		sendEmbed(message.channel, embed, message.author).then(

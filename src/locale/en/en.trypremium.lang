@@ -1,0 +1,14 @@
+[CMD_TRYPREMIUM_CURRENTLY_ACTIVE]
+You currently have an active premium subscription!
+
+[CMD_TRYPREMIUM_ALREADY_USED]
+You have already tried out our premium feature. If you liked it, please consider supporting us. You can find more information using the `{{ prefix }}premium` command.
+
+[CMD_TRYPREMIUM_DESCRIPTION]
+You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?
+
+[CMD_TRYPREMIUM_PROMPT]
+Please reply with **yes** or **no**.
+
+[CMD_TRYPREMIUM_STARTED]
+You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.

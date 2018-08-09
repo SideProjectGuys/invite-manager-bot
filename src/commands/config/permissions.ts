@@ -24,7 +24,8 @@ const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -64,9 +65,7 @@ export default class extends Command<IMClient> {
 
 			const embed = createEmbed(this.client);
 
-			embed.setDescription(
-				'Keep in mind that **Server Administrators** can **always** use **all** commands'
-			);
+			embed.setDescription(rp.CMD_PERMISSIONS_ADMINS_ALL_COMMANDS());
 
 			const rs: { [x: string]: string[] } = {
 				Everyone: [],
@@ -120,12 +119,12 @@ export default class extends Command<IMClient> {
 
 		if (!cmds.length) {
 			message.channel.send(
-				'Invalid command `' +
-					_cmd +
-					'`, use one of: ' +
-					Object.keys(BotCommand)
+				rp.CMD_PERMISSIONS_INVALID_COMMAND({
+					cmd: _cmd,
+					cmds: Object.keys(BotCommand)
 						.map(k => '`' + k + '`')
 						.join(', ')
+				})
 			);
 			return;
 		}
@@ -160,15 +159,15 @@ export default class extends Command<IMClient> {
 
 			const embed = createEmbed(this.client);
 
-			embed.setDescription(
-				'Keep in mind that **Server Administrators** can **always** use **all** commands'
-			);
+			embed.setDescription(rp.CMD_PERMISSIONS_ADMINS_ALL_COMMANDS());
 
 			if (perms.length === 0) {
 				cmds.forEach(cmd => {
 					embed.addField(
 						cmd,
-						isStrict(cmd) ? '**Administrators** only' : '**Everyone**'
+						isStrict(cmd)
+							? rp.CMD_PERMISSIONS_ADMIN_ONLY()
+							: rp.CMD_PERMISSIONS_EVERYONE()
 					);
 				});
 			} else {
@@ -194,10 +193,7 @@ export default class extends Command<IMClient> {
 			cmds.indexOf(BotCommand.permissions) >= 0 ||
 			cmds.indexOf(BotCommand.addRank) >= 0
 		) {
-			return message.channel.send(
-				'You cannot change the permissions for this commands, ' +
-					'it is always **Administrator only**'
-			);
+			return message.channel.send(rp.CMD_PERMISSIONS_CANNOT_CHANGE());
 		}
 
 		const oldPerms = await rolePermissions.findAll({
@@ -211,7 +207,10 @@ export default class extends Command<IMClient> {
 			oldPerms.forEach(op => op.destroy());
 
 			message.channel.send(
-				`Denied <@&${role.id}> from using **${cmds.join(', ')}**`
+				rp.CMD_PERMISSIONS_REMOVED({
+					role: `<@&${role.id}>`,
+					cmds: cmds.join(', ')
+				})
 			);
 		} else {
 			await roles.insertOrUpdate({
@@ -230,7 +229,10 @@ export default class extends Command<IMClient> {
 			);
 
 			message.channel.send(
-				`Allowed <@&${role.id}> to use **${cmds.join(', ')}**`
+				rp.CMD_PERMISSIONS_ADDED({
+					role: `<@&${role.id}>`,
+					cmds: cmds.join(', ')
+				})
 			);
 		}
 

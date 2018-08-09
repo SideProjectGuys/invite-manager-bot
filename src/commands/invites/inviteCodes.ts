@@ -11,7 +11,12 @@ import moment from 'moment';
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
-import { InviteCodeAttributes, inviteCodes, members } from '../../sequelize';
+import {
+	InviteCodeAttributes,
+	inviteCodes,
+	members,
+	channels
+} from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
@@ -19,7 +24,8 @@ const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -75,25 +81,37 @@ export default class extends Command<IMClient> {
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
-		const newCodes: InviteCodeAttributes[] = activeCodes
-			.filter(code => !codes.find(c => c.code === code.code))
-			.map(code => ({
-				code: code.code,
-				channelId: code.channel ? code.channel.id : null,
-				maxAge: code.maxAge,
-				maxUses: code.maxUses,
-				uses: code.uses,
-				temporary: code.temporary,
-				guildId: code.guild.id,
-				inviterId: code.inviter ? code.inviter.id : null
-			}));
+		const newCodes = activeCodes.filter(
+			code => !codes.find(c => c.code === code.code)
+		);
+
+		const newDbCodes = newCodes.map(code => ({
+			code: code.code,
+			channelId: code.channel ? code.channel.id : null,
+			maxAge: code.maxAge,
+			maxUses: code.maxUses,
+			uses: code.uses,
+			temporary: code.temporary,
+			guildId: code.guild.id,
+			inviterId: code.inviter ? code.inviter.id : null
+		}));
 
 		// Insert any new codes that haven't been used yet
 		if (newCodes.length > 0) {
-			await inviteCodes.bulkCreate(newCodes);
+			await channels.bulkCreate(
+				newCodes.map(c => ({
+					id: c.channel.id,
+					guildId: c.guild.id,
+					name: c.channel.name
+				})),
+				{
+					updateOnDuplicate: ['name']
+				}
+			);
+			await inviteCodes.bulkCreate(newDbCodes);
 		}
 
-		codes = codes.concat(newCodes);
+		codes = codes.concat(newDbCodes);
 
 		const validCodes = codes.filter(
 			c =>

@@ -3,7 +3,8 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message
+	Message,
+	Middleware
 } from '@yamdbf/core';
 import moment from 'moment';
 
@@ -12,12 +13,14 @@ import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, RP } from '../../types';
 
+const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -31,36 +34,31 @@ export default class extends Command<IMClient> {
 	}
 
 	@using(checkRoles(BotCommand.premium))
-	public async action(message: Message, args: string[]): Promise<any> {
+	@using(localize)
+	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
 		// TODO: Create list of premium features (also useful for FAQ)
+		const lang = (await SettingsCache.get(message.guild.id)).lang;
 
 		const embed = createEmbed(this.client);
 
 		const isPremium = await SettingsCache.isPremium(message.guild.id);
 
 		if (!isPremium) {
-			embed.setTitle('You currently do not have a premium subscription');
-
-			let description = '';
-			description +=
-				'By subscribing to a premium tier you help the development of the bot';
-			description += ' and also get some additional features.';
-
-			embed.setDescription(description);
+			embed.setTitle(rp.CMD_PREMIUM_NO_PREMIUM_TITLE());
+			embed.setDescription(rp.CMD_PREMIUM_NO_PREMIUM_DESCRIPTION());
 
 			embed.addField(
-				'Premium Feature: Embeds in join messages',
-				'You can use an embed in your join and leave messages which look a lot better. ' +
-					'[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)'
+				rp.CMD_PREMIUM_FEATURE_EMBEDS_TITLE(),
+				rp.CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION()
 			);
 
 			embed.addField(
-				'Premium Feature: History export',
-				'You can export all the joins and leaves that happened on your server since you invited our bot.'
+				rp.CMD_PREMIUM_FEATURE_EXPORT_TITLE(),
+				rp.CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION()
 			);
 		} else {
 			const sub = await premiumSubscriptions.findOne({
@@ -73,15 +71,18 @@ export default class extends Command<IMClient> {
 				raw: true
 			});
 
-			embed.setTitle('InviteManager Premium');
+			embed.setTitle(rp.CMD_PREMIUM_PREMIUM_TITLE());
 
 			let description = '';
 			if (sub) {
-				const date = moment(sub.validUntil).fromNow(true);
-				description += `Your subscription is valid for another ${date}`;
-				description += `\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)`;
+				const date = moment(sub.validUntil)
+					.locale(lang)
+					.fromNow(true);
+				description = rp.CMD_PREMIUM_PREMIUM_DESCRIPTION({
+					date
+				});
 			} else {
-				description += `Could not find subscription info.`;
+				description += rp.CMD_PREMIUM_PREMIUM_NOT_FOUND();
 			}
 			embed.setDescription(description);
 		}

@@ -12,8 +12,10 @@ import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import {
+	channels,
 	defaultInviteCodeSettings,
 	getInviteCodeSettingsType,
+	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey,
 	LogAction
@@ -122,7 +124,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 };
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -189,6 +192,17 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
+		// Check if this is actually a real invite code
+		const inv = await this.client.fetchInvite(code);
+		if (!inv) {
+			return message.channel.send(rp.CMD_INVITECODECONFIG_INVALID_CODE());
+		}
+		if (inv.guild.id !== message.guild.id) {
+			return message.channel.send(
+				rp.CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD()
+			);
+		}
+
 		const oldSet = await inviteCodeSettings.find({
 			where: {
 				guildId: message.guild.id,
@@ -247,11 +261,29 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const error = this.validate(message, key, value);
+		const error = this.validate(rp, message, key, value);
 		if (error) {
 			message.channel.send(error);
 			return;
 		}
+
+		await channels.insertOrUpdate({
+			id: inv.channel.id,
+			guildId: inv.guild.id,
+			name: inv.channel.name
+		});
+
+		await inviteCodes.insertOrUpdate({
+			code: inv.code,
+			guildId: inv.guild.id,
+			inviterId: inv.inviter.id,
+			channelId: inv.channel.id,
+			uses: inv.uses,
+			maxAge: inv.maxAge,
+			maxUses: inv.maxUses,
+			temporary: inv.temporary,
+			createdAt: inv.createdTimestamp
+		});
 
 		await inviteCodeSettings.insertOrUpdate({
 			id: null,
@@ -335,6 +367,7 @@ export default class extends Command<IMClient> {
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
 	private validate(
+		rp: RP,
 		message: Message,
 		key: InviteCodeSettingsKey,
 		value: any
@@ -344,10 +377,9 @@ export default class extends Command<IMClient> {
 		}
 
 		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value.split(',');
-			console.log(roles);
+			const roles: string[] = value.split(/[ ,]/g);
 			if (!roles.every(r => !!message.guild.roles.get(r))) {
-				return 'Invalid role';
+				return rp.CMD_INVITECODECONFIG_INVALID_ROLE();
 			}
 		}
 

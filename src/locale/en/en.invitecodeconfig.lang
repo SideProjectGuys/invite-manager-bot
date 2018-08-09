@@ -17,6 +17,15 @@ The config setting **{{ key }}** can not be cleared. You can use `config {{ key 
 [CMD_INVITECODECONFIG_KEYS_TITLE]
 Valid config keys
 
+[CMD_INVITECODECONFIG_INVALID_CODE]
+Invalid invite code
+
+[CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD]
+This invite code is for another server
+
+[CMD_INVITECODECONFIG_INVALID_ROLE]
+Invalid role
+
 [CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT]
 This config settings is currently not set for any invite codes
 

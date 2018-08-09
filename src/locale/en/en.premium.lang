@@ -1,0 +1,26 @@
+[CMD_PREMIUM_PREMIUM_TITLE]
+InviteManager Premium
+
+[CMD_PREMIUM_PREMIUM_DESCRIPTION]
+This servers subscription is valid for another ${date}.\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)
+
+[CMD_PREMIUM_PREMIUM_NOT_FOUND]
+Could not find subscription info.
+
+[CMD_PREMIUM_NO_PREMIUM_TITLE]
+This server currently does not have a premium subscription
+
+[CMD_PREMIUM_NO_PREMIUM_DESCRIPTION]
+By subscribing to a premium tier you help the development of the bot and also get some additional features.
+
+[CMD_PREMIUM_FEATURE_EMBEDS_TITLE]
+Premium Feature: Embeds in join messages
+
+[CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION]
+You can use an embed in your join and leave messages which look a lot better.\n[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)
+
+[CMD_PREMIUM_FEATURE_EXPORT_TITLE]
+Premium Feature: History export
+
+[CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION]
+You can export all the joins and leaves that happened on your server since you invited our bot.

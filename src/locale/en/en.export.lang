@@ -1,0 +1,8 @@
+[CMD_EXPORT_PREMIUM_ONLY]
+This command is only available for premium subscribers!
+
+[CMD_EXPORT_PREPARING]
+Please wait while we prepare the file...
+
+[CMD_INVALID_TYPE]
+Invalid export type. Use one of: `leaderboard`
