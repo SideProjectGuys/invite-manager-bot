@@ -1,0 +1,23 @@
+[CMD_CHART_MISSING_TYPE]
+You need to specify the type of chart, use one of: {{ types }}
+
+[CMD_CHART_INVALID_TYPE]
+Invalid chart type, use one of: {{ types }}
+
+[CMD_CHART_JOINS_TITLE]
+User joining
+
+[CMD_CHART_JOINS_DESCRIPTION]
+This chart shows the number of users joining your server.
+
+[CMD_CHART_LEAVES_TITLE]
+Users leaving
+
+[CMD_CHART_LEAVES_DESCRIPTION]
+This chart shows the number of users leaving your server.
+
+[CMD_CHART_USAGE_TITLE]
+Command usage
+
+[CMD_CHART_USAGE_DESCRIPTION]
+This chart shows the usage of InviteManager commands on this server.

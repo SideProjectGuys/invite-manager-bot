@@ -19,7 +19,8 @@ const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -46,10 +47,11 @@ export default class extends Command<IMClient> {
 
 		if (!_type) {
 			message.channel.send(
-				'You need to specify the type of chart, use one of: ' +
-					Object.keys(ChartType)
+				rp.CMD_CHART_MISSING_TYPE({
+					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
+				})
 			);
 			return;
 		}
@@ -59,12 +61,11 @@ export default class extends Command<IMClient> {
 		) as ChartType;
 		if (!type) {
 			message.channel.send(
-				'Invalid chart type `' +
-					_type +
-					'`, use one of: ' +
-					Object.keys(ChartType)
+				rp.CMD_CHART_INVALID_TYPE({
+					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
+				})
 			);
 			return;
 		}
@@ -92,8 +93,8 @@ export default class extends Command<IMClient> {
 		const vs: { [x: string]: number } = {};
 
 		if (type === ChartType.joins) {
-			title = 'User Growth';
-			description = 'This chart shows the growth of your server.';
+			title = rp.CMD_CHART_JOINS_TITLE();
+			description = rp.CMD_CHART_JOINS_DESCRIPTION();
 
 			const js = await joins.findAll({
 				attributes: [
@@ -117,8 +118,8 @@ export default class extends Command<IMClient> {
 
 			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
 		} else if (type === ChartType.leaves) {
-			title = 'Users leaving';
-			description = 'This chart shows the number of users leaving your server.';
+			title = rp.CMD_CHART_LEAVES_TITLE();
+			description = rp.CMD_CHART_LEAVES_DESCRIPTION();
 
 			const lvs = await leaves.findAll({
 				attributes: [
@@ -142,9 +143,8 @@ export default class extends Command<IMClient> {
 
 			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
 		} else if (type === ChartType.usage) {
-			title = 'Command usage';
-			description =
-				'This chart shows the usage of InviteManager commands on this server.';
+			title = rp.CMD_CHART_USAGE_TITLE();
+			description = rp.CMD_CHART_USAGE_DESCRIPTION();
 
 			const us = await commandUsage.findAll({
 				attributes: [

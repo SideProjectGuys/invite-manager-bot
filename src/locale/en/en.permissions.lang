@@ -1,0 +1,20 @@
+[CMD_PERMISSIONS_ADMINS_ALL_COMMANDS]
+Keep in mind that **Server Administrators** can **always** use **all** commands
+
+[CMD_PERMISSIONS_INVALID_COMMAND]
+'Invalid command `{{ cmd }}`, use one of: {{ cmds }}
+
+[CMD_PERMISSIONS_ADMIN_ONLY]
+**Administrators** only
+
+[CMD_PERMISSIONS_EVERYONE]
+**Everyone**
+
+[CMD_PERMISSIONS_CANNOT_CHANGE]
+You cannot change the permissions for this commands, it is always **Administrator only**
+
+[CMD_PERMISSIONS_ADDED]
+Added {{role}} to **{{cmds}}**
+
+[CMD_PERMISSIONS_REMOVED]
+Removed {{role}} from **{{cmds}}**

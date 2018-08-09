@@ -195,10 +195,12 @@ export default class extends Command<IMClient> {
 		// Check if this is actually a real invite code
 		const inv = await this.client.fetchInvite(code);
 		if (!inv) {
-			return message.channel.send('Invalid invite code');
+			return message.channel.send(rp.CMD_INVITECODECONFIG_INVALID_CODE());
 		}
 		if (inv.guild.id !== message.guild.id) {
-			return message.channel.send('This code is not for this guild');
+			return message.channel.send(
+				rp.CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD()
+			);
 		}
 
 		const oldSet = await inviteCodeSettings.find({
@@ -259,7 +261,7 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		const error = this.validate(message, key, value);
+		const error = this.validate(rp, message, key, value);
 		if (error) {
 			message.channel.send(error);
 			return;
@@ -365,6 +367,7 @@ export default class extends Command<IMClient> {
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
 	private validate(
+		rp: RP,
 		message: Message,
 		key: InviteCodeSettingsKey,
 		value: any
@@ -374,10 +377,9 @@ export default class extends Command<IMClient> {
 		}
 
 		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value.split(',');
-			console.log(roles);
+			const roles: string[] = value.split(/[ ,]/g);
 			if (!roles.every(r => !!message.guild.roles.get(r))) {
-				return 'Invalid role';
+				return rp.CMD_INVITECODECONFIG_INVALID_ROLE();
 			}
 		}
 
