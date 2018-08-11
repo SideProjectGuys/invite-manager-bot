@@ -1,7 +1,7 @@
 [CMD_HELP_TEXT]
-Esta es una lista de comandos que puedes usar. Puedes obtener más información de un comando en especifico haciendo \`{{ prefix }}help <comando>\` (ej: \`{{ prefix }}help add-ranks\`)
+Esta es una lista de comandos que puedes usar. Puedes obtener más información de un comando en especifico haciendo `{{ prefix }}help <comando>` (ej: `{{ prefix }}help add-ranks`)
 
-Los argumentos se usan luego del comando. Parentesis \`()\` indican un argumento **opcional**. (ej: `\(razón)\` significa que \`razón\` es opcional)
+Los argumentos se usan luego del comando. Parentesis \`()\` indican un argumento **opcional**. (ej: `(razón)` significa que `razón` es opcional)
 
 [CMD_HELP_COMMAND_TITLE]
 Comando

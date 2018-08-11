@@ -16,11 +16,24 @@ Permanent
 [CMD_INVITECODES_PERMANENT_TEXT]
 Deze invites verlopen niet.
 
+[CMD_INVITECODES_PERMANENT_ENTRY]
+**Gebruik**: {{ uses }}
+**Max. Leeftijd**: {{ maxAge }}
+**Max Gebruik**: {{ maxUses }}
+**Kanaal**: <#{{ channel }}>
+
 [CMD_INVITECODES_TEMPORARY_TITLE]
 Tijdelijke
 
 [CMD_INVITECODES_TEMPORARY_TEXT]
 Deze invites verlopen na een bepaalde tijd.
+
+[CMD_INVITECODES_TEMPORARY_ENTRY]
+**Gebruikt**: {{ uses }}
+**Maximale tijd te gebruiken**: {{ maxAge }}
+**Maximale keren te gebruiken**: {{ maxUses }}
+**Kanaal**: <#{{ channel }}>
+**Verloopt**: {{ expires }}
 
 [CMD_INVITECODES_DM_SENT]
 Ik heb je een prive bericht gestuurt met al je invite codes.

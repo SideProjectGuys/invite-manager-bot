@@ -7,6 +7,9 @@ Laatst gejoined
 [CMD_INFO_INVITES_TITLE]
 Invites
 
+[CMD_INFO_INVITES_TEXT]
+**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
+
 [CMD_INFO_JOINED_TITLE]
 Gejoined
 
@@ -23,7 +26,7 @@ Aantal keer gejoint
 {{! args.total ? `**${args.total}** Aantal keren` : 'once' !}} **{{ time }}**, geinvite door:
 
 [CMD_INFO_JOINS_ENTRY_INV]
-<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** Aantal keren)` :''!}}
+<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** Aantal keren)` : '' !}}
 
 [CMD_INFO_JOINS_MORE]
 Plus extra **{{ amount }}** meer joins
@@ -31,8 +34,11 @@ Plus extra **{{ amount }}** meer joins
 [CMD_INFO_JOINS_UNKNOWN]
 Onbekend (Dit werkt alleen voor nieuwe leden)
 
+[CMD_INFO_REGULARINVITES_TITLE]
+Regular invites
+
 [CMD_INFO_REGULARINVITES_ENTRY]
-**{{ uses }}** uit **{{ code }}** - crated **{{ createdAt }}{! args.reason ? `, reden: **${args.reason}**` :''!}}**
+**{{ uses }}** uit **{{ code }}** - crated **{{ createdAt }}{! args.reason ? `, reden: **${args.reason}**` : '' !}}**
 
 [CMD_INFO_REGULARINVITES_MORE]
 Plus **{{ amount }}** meer andere invite codes
@@ -44,7 +50,7 @@ Deze gebruiker heeft niemand geinvite tot nu toe
 Bonus invites
 
 [CMD_INFO_BONUSINVITES_ENTRY]
-**{{ amount }}** van <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reden: **$args.reason}**` :''!}}
+**{{ amount }}** van <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reden: **$args.reason}**` : '' !}}
 
 [CMD_INFO_BONUSINVITES_MORE]
 Plus **{{ amount }}** meer andere bonus invites

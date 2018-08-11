@@ -1,0 +1,11 @@
+[CMD_ADDRANK_ROLE_TOO_HIGH]
+Diese rolle **{{ role }}** ist höher als meine Rolle (**{{ myRole }}**) deshalb kann ich diesem Mitglied diese Rolle nicht zuordnen
+
+[CMD_ADDRANK_UPDATED]
+
+
+
+[CMD_ADDRANK_CREATED]
+
+
+

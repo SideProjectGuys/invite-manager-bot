@@ -43,3 +43,6 @@ Unbekannt
 [JOIN_LEAVE_EMBEDS_IS_PREMIUM]
 Dieser Stil ist eine Premium-Funktion.
 
+[ROLES_SHOULD_HAVE]
+Du hast due Rolle bekommen {{ shuoldHave }} aber ich kann sie dir nicht zuordnen weil meine Rolle nicht genügend Rechte hat
+

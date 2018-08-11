@@ -14,10 +14,11 @@ Nombre {{ name }} no encontrado!
 ¿Como cambio el prefijo del bot?
 
 [CMD_FAQ_PREFIX_A]
-Puedes usar `{{ prefix }}config prefix -` para cambiar el prefijo.
+Puedes usar `{{ prefix }}config prefix` para cambiar el prefijo.
+Si no conoces tu prefijo actual, puedes usar `{{ bot }} config prefix` para ver el prefijo.
 
 [CMD_FAQ_JOINLEAVECHANNEL_Q]
-¿Como ajusto donde se envian los menajes de entrada y salida?
+¿Como configuro donde se envian los menajes de entrada y salida?
 
 [CMD_FAQ_JOINLEAVECHANNEL_A]
 
@@ -43,7 +44,7 @@ Puedes encontrar una lista completa de marcadores aquí: https://github.com/Andr
 
 [CMD_FAQ_RANKS_A]
 Los rangos son utilizados para asignar un rol a las personas cuando llegan a cierta cantidad de invitaciones.
-Por ejemplo, si tienes un rol llamado `@Principiante` y quieres que las personas que tengan 5 invitaciones o más sean añadidas a ese rol, tendrías que crear un rango, como así:
+Por ejemplo, si tienes un rol llamado `@Principiante` y quieres que las personas que tengan 5 invitaciones o más sean añadidas a ese rol, tendrías que crear un rango, así:
 `{{ prefix }}add-rank @Principiante 5 (y una descripción aquí si quieres)`.
 Cuando alguien tenga 5 invitaciones, ¡será automaticamente añadido a ese rol!
 
@@ -52,9 +53,9 @@ Cuando alguien tenga 5 invitaciones, ¡será automaticamente añadido a ese rol!
 ¿Que son las invitaciones bonus?
 
 [CMD_FAQ_BONUS_A]
-Las invitaciones bonus son invitaciones que pueden ser dadas a los miembros por los admins. Puedes agregar o quitar. También puedes especificar por qué lo hiciste, si alguien hizo algo bien o rompió las reglas.
+Las invitaciones bonus son invitaciones que pueden ser dadas a los miembros por los admins. Puedes agregar o quitar. También puedes especificar por qué lo hiciste, si alguien hizo algo bueno o rompió las reglas.
 `{{ prefix }}add-invites @usuario 5 ¡Fue de gran ayuda!`.
-Usa numeros negativos ejemplo: `-5` para restar del valor de alguien.
+Usa numeros negativos, ejemplo: `-5` para restar del valor de alguien.
 Puedes ver por qué alguien tiene invitaciones bonus haciendo `{{ prefix }}info @usuario`
 
 

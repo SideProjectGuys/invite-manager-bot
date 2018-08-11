@@ -2,7 +2,7 @@
 InviteManager Premium
 
 [CMD_PREMIUM_PREMIUM_DESCRIPTION]
-This servers subscription is valid for another ${date}.\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)
+This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)
 
 [CMD_PREMIUM_PREMIUM_NOT_FOUND]
 Could not find subscription info.

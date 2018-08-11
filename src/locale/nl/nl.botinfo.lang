@@ -1,6 +1,9 @@
 [CMD_BOTINFO_VERSION]
 Versie
 
+[CMD_BOTINFO_UPTIME]
+Tijd dat de bot aan staat
+
 [CMD_BOTINFO_GUILDS]
 Servers
 
