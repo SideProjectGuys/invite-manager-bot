@@ -1,0 +1,10 @@
+[CMD_INVITES_AMOUNT]
+{{! args.self === args.target ? 'Je hebt' : `<@${args.target}> has` !}} **{{ total }}** invites! (&&{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
+
+[CMD_INVITES_NEXT_RANK]
+{{! args.target === args.self ? 'Je hebt' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** meer invites nodig om de **{{ nextRankName }}** rank te behalen.
+
+[CMD_INVITES_HIGHEST_RANK]
+{{! args.target === args.self ? 'Gefeliciteerd, je hebt momenteel de hoogste rank!'
+: `<@${args.target}> heeft momenteel de hoogste rank!` !}}
+

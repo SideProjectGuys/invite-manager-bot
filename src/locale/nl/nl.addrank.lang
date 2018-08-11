@@ -1,5 +1,5 @@
 [CMD_ADDRANK_ROLE_TOO_HIGH]
-De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven.
+De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven aan mensen die het aantal invites bereiken.
 
 [CMD_ADDRANK_UPDATED]
 Role **{{ role}}** geupdate: heeft nu {{ invites }} nodig en heeft de volgende beschrijving: "{{ description ?}}"

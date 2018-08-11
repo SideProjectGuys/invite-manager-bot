@@ -1,7 +1,6 @@
 {
-	"discordToken": "",
+	"devToken": "",
 	"owners": [],
-	"botName": "InviteManager (Beta)",
 	"botAdd": "https://invitemanager.co/add-bot/",
 	"botSupport": "https://discord.gg/Am6p2Hs",
 	"botWebsite": "https://andreasgassmann.github.io/discord-invite-manager/",

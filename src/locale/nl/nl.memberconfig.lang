@@ -1,0 +1,55 @@
+[CMD_MEMBERCONFIG_TITLE]
+Jouw configuratie settings
+
+[CMD_MEMBERCONFIG_TEXT]
+Hieronder staan alle beschikbare configuratie instellingen.
+
+Gebruik `{{ prefix }}config <key>` om de gebruikers die de `<key>` instelling te zien
+Gebruik `{{ prefix }}config <key> @user` om te instelling te zien van 1 gebruiker `@user`
+Gebruik `{{ prefix }}config <key> @user <value>` om de configuratie te zetten van configuratie key `<key` naar `<value>` voor `@user`
+
+[CMD_MEMBERCONFIG_KEY_NOT_FOUND]
+Geen configuratie setting genaamt **{{ key }}** gevonden.
+
+[CMD_MEMBERCONFIG_KEY_CANT_CLEAR]
+De configuratie setting **{{ key }}** kan niet gecleared worden. Gebruik `config {{ key }} default` om dit te resetten naar de standaard waarde.
+
+[CMD_MEMBERCONFIG_KEYS_TITLE]
+Geldige configuratie keys
+
+[CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT]
+Deze configuratie setting is momenteel net gezet voor alle spelers.
+
+[CMD_MEMBERCONFIG_CURRENT_TITLE]
+Huidige Waarde
+
+[CMD_MEMBERCONFIG_PREVIOUS_TITLE]
+Vorige Waarde
+
+[CMD_MEMBERCONFIG_NEW_TITLE]
+Nieuwe Waarde
+
+[CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
+De config is momenteel gezet
+
+Gebruik `{{ prefix}}config ${key} @{{ username }} <waarde>` om te veranderen
+Gebruik `{{ prefix}}config ${key} @{{ username }} default` om het te resetten naar normaal
+{{! args.clear ? `Gebruik \`${args.prefix}config ${args.key} @${args.username} none\` om het te verwijderen`: '' !}}
+
+[CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
+Deze configuratie is momenteel **niet** gezet.
+
+Gebruik `{{ prefix }}config {{ key }} @{{ username }} <waarde>` om dit te zetten.
+
+[CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE]
+Deze configuratie was al gezet naar die waarde
+
+[CMD_MEMBERCONFIG_CHANGED_TEXT]
+Deze configuratie is succesvol gezet.
+
+Gebruik`{{ prefix }}config ${key} @{{ username }} <waarde>` om dit opnieuw te veranderen.
+Gebruik `{{ prefix }}config ${key} @{{ username}} <waarde>` om dit te resetten naar de stanaard waarde.
+
+[CMD_MEMBERCONFIG_NONE]
+Geen
+

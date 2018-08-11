@@ -51,6 +51,7 @@ Convites bonus são convites que podem ser dadas aos membros por um administrado
 Use o número negativo ex. '-5 ' para diminuir o valor de alguém.
 Você pode ver como alguém tem bonus fazendo `{{ prefix }}info @user`
 
+
 [CMD_FAQ_REMOVEINVITES_Q]
 Como faço para remover convites de alguém?
 

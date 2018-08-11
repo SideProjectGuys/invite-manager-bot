@@ -2,10 +2,15 @@
 Jouw configuratie instellingen
 
 [CMD_CONFIG_TEXT]
-                                                                    
+Hieronder staan al jouw server instellingen
+Gebruik `{{ prefix }}config <key>` om één setting te zien
+Gebruik `{{ prefix }}config <key> <waarde>` om configuratie key <key> naar <value> te zetten
 
 [CMD_CONFIG_KEY_NOT_FOUND]
 Geen configuratie key genaamt **{{ key }}** gevonden.
+
+[CMD_CONFIG_KEY_CANT_CLEAR]
+De configuratie setting **{{ key }}** can niet gecleared worden. Je kan `config {{ key }} default` gebruiken om het te resetten naar de standaard waarde.
 
 [CMD_CONFIG_NOT_SET]
 Deze instellingen zijn niet gezet.
@@ -19,8 +24,26 @@ Vorige Waarde
 [CMD_CONFIG_NEW_TITLE]
 Nieuwe Waarde
 
+[CMD_CONFIG_CURRENT_SET_TEXT]
+Deze configuratie is al ingestelt.
+Gebruik `{{ prefix }}config {{ key }} <value>` om dit te veranderen.
+Gebruik `{{ prefix }}config {{ key }} default` om dit te resetten.
+{{! args.clear ? `Gebruik \`${args.prefix}config ${args.key} none\` om dit te verwijderen.` : '' !}}
+
+[CMD_CONFIG_CURRENT_NOT_SET_TEXT]
+Deze configuratie is op dit moment nog **niet** gezet.
+Gebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen
+
 [CMD_CONFIG_ALREADY_SET_SAME_VALUE]
 De configuratie is al gezet naar die waarde.
+
+[CMD_CONFIG_CHANGED_TEXT]
+De configuratie is gezet.
+Gebruik `{{ prefix }}config {{ key }} <waarde>` om dit opnieuw te veranderen.
+Gebruik `{{ prefix }}config {{ key }} none` om dit te resetten naar de standaard waarde.
+
+[CMD_CONFIG_PREVIEW_TITLE]
+Voorbeeld
 
 [CMD_CONFIG_PREVIEW_NEXT_MESSAGE]
 <Zie volgende bericht>

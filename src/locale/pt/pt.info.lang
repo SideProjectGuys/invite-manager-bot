@@ -50,7 +50,7 @@ Este membro não convidou ninguém até agora.
 Convites bônus
 
 [CMD_INFO_BONUSINVITES_ENTRY]
-**{{ amount }}** para <@{{ creator }}> - **{{ date }}**{{! args.reason ?`, reason: **${args.reason}**` :''!}}
+**{{ amount }}** para <@{{ creator }}> - **{{ date }}**{{! args.reason ?`, reason: **${args.reason}**` : '' !}}
 
 [CMD_INFO_BONUSINVITES_MORE]
 Mais outro **{{ amount }}** mais bonus convites

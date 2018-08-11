@@ -2,7 +2,7 @@
 {{! args.self === args.target ? 'você' : `<@${args.target}> tem` !}} **{{ total }}** convites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** saidas)
 
 [CMD_INVITES_NEXT_RANK]
-{{! args.target === args.self ? 'Você precisa de' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** mais convites para receber **{{ nextRankName }}** rank!
+{{! args.target === args.self ? 'Você precisa de' : `<@${args.target}> precisa` !}} **{{ nextRankPointsDiff }}** mais convites para receber **{{ nextRankName }}** rank!
 
 [CMD_INVITES_HIGHEST_RANK]
 "{{! args.target === args.self ? 'Parabéns, no momento você tem o rank mais alto!'

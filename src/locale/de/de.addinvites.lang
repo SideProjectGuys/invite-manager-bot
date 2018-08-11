@@ -1,0 +1,6 @@
+[CMD_ADDINVITES_AMOUNT_POS]
+**{{ amount }}** Einladungen für <@{{ member }}> hinzugefügt <@{{ member }}> hat jetzt **{{totalInvites }}** Einladungen erhalten
+
+[CMD_ADDINVITES_AMOUNT_NEG]
+**{{ amount }}** Einladungen für <@{{ member }}> entfernt <@{{ member }}> hat jetzt **{{totalInvites }}** Einladungen weniger
+

@@ -73,6 +73,7 @@ export class IMClient extends Client {
 	public constructor(
 		version: string,
 		conn: amqplib.Connection,
+		token: string,
 		shardId: number,
 		shardCount: number
 	) {
@@ -81,7 +82,7 @@ export class IMClient extends Client {
 				provider: IMStorageProvider,
 				commandsDir: path.join(__dirname, 'commands'),
 				localeDir: path.join(__dirname, 'locale'),
-				token: config.discordToken,
+				token,
 				owner: config.owners,
 				pause: true,
 				ratelimit: '2/5s',

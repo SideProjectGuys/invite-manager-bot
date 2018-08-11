@@ -1,5 +1,12 @@
+[CMD_SETUP_FAQ_TITLE]
+Fragen und antworten und noch mehr
+
 [CMD_SETUP_HELP_TITLE]
 Hilfe
+
+[CMD_SETUP_HELP_TEXT]
+
+Wenn du Hilfe brauchst oder eine Bewerung an die Entwickler/Inhaber senden willst dann benutze den !feedback Befehl oder Betrete unseren discord Hilfe Server: {{ link }}
 
 [CMD_SETUP_PREMIUM_TITLE]
 Premium
