@@ -94,7 +94,6 @@ export class IMClient extends Client {
 					'eval:ts',
 					'limit',
 					'reload',
-					'ping',
 					'help'
 				],
 				unknownCommandError: false
