@@ -4,6 +4,7 @@ import { Message } from 'discord.js';
 import { BotCommand, RP } from '../types';
 
 import { SettingsCache } from '../storage/SettingsCache';
+import { createEmbed } from '../functions/Messaging';
 
 export function isStrict(cmd: BotCommand) {
 	switch (cmd) {
@@ -42,6 +43,7 @@ export const checkRoles = (cmd: BotCommand) => {
 
 		const lang = (await SettingsCache.get(message.guild.id)).lang;
 		const rp = Lang.createResourceProxy(lang) as RP;
+		const embed = createEmbed(this.client);
 
 		// Always allow admins
 		let member = message.member;
@@ -52,7 +54,9 @@ export const checkRoles = (cmd: BotCommand) => {
 			console.error(
 				`Could not get member ${message.author.id} for ${message.guild.id}`
 			);
-			throw Error(rp.PERMISSIONS_MEMBER_ERROR());
+			embed.setDescription(rp.PERMISSIONS_MEMBER_ERROR());
+			message.channel.send(embed);
+			return;
 		}
 
 		if (message.member.hasPermission('ADMINISTRATOR')) {
@@ -64,18 +68,22 @@ export const checkRoles = (cmd: BotCommand) => {
 		// Allow commands that require no roles, if strict is not true
 		if (perms.length === 0) {
 			if (isStrict(cmd)) {
-				throw Error(rp.PERMISSIONS_ADMIN_ONLY());
+				embed.setDescription(rp.PERMISSIONS_ADMIN_ONLY());
+				message.channel.send(embed);
+				return;
 			}
 			return [message, args];
 		}
 
 		// Check that we have at least one of the required roles
 		if (!perms.some(p => message.member.roles.has(p))) {
-			throw Error(
+			embed.setDescription(
 				rp.PERMISSIONS_MISSING_ROLE({
 					roles: perms.map(p => `<@&${p}>`).join(', ')
 				})
 			);
+			message.channel.send(embed);
+			return;
 		}
 
 		return [message, args];
