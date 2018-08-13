@@ -174,7 +174,8 @@ export async function promoteIfQualified(
 							memberMention: `<@${member.id}>`,
 							memberImage: member.user.avatarURL(),
 							rankMention: `<@&${highest.id}>`,
-							rankName: highest.name
+							rankName: highest.name,
+							totalInvites: totalInvites.toString()
 						}
 					);
 					rankChannel.send(msg).then((m: Message) => m.react('tada'));
@@ -182,7 +183,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-						`rank announcement channel ${rankChannelId}`
+					`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}

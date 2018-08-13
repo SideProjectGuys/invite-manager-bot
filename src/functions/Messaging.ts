@@ -22,11 +22,7 @@ export function createEmbed(
 	delete options.color;
 	const embed = new MessageEmbed(options);
 	embed.setColor(color);
-	if (client) {
-		embed.setFooter('InviteManager.co', client.user.avatarURL());
-	} else {
-		embed.setFooter('InviteManager.co');
-	}
+	embed.setFooter(client.user.username, client.user.avatarURL());
 	embed.setTimestamp();
 	return embed;
 }
@@ -77,7 +73,7 @@ export function sendEmbed(
 						fallbackUser
 							.send(
 								'**I do not have permissions to post to that channel.\n' +
-									`Please tell an admin to allow me to send messages in the channel.**\n\n`,
+								`Please tell an admin to allow me to send messages in the channel.**\n\n`,
 								{ embed }
 							)
 							.then(resolve)
