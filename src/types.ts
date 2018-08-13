@@ -59,3 +59,11 @@ export enum BotCommand {
 
 	'chart' = 'chart'
 }
+
+export enum OwnerCommand {
+	'diagnose' = 'ownerDiagnose',
+	'dm' = 'ownerDm',
+	'flushPremium' = 'ownerFlushPremium',
+	'givePremium' = 'ownerGivePremium',
+	'help' = 'ownerHelp'
+}

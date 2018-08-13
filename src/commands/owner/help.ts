@@ -3,32 +3,40 @@ import {
 	CommandDecorators,
 	Logger,
 	logger,
-	Message,
-	Middleware
+	Message
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
 import { createEmbed } from '../../functions/Messaging';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { OwnerCommand } from '../../types';
 
-const { resolve, expect } = Middleware;
+const config = require('../../../config.json');
+
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
-			name: 'adminHelp',
-			aliases: ['admin-help', 'oh'],
+			name: 'owner-help',
+			aliases: ['owner-help', 'oh'],
 			desc: 'Admin help',
-			usage: '<prefix>adminHelp',
+			usage: '<prefix>owner-help',
 			ownerOnly: true,
 			hidden: true
 		});
 	}
 
+	@using(checkRoles(OwnerCommand.help))
 	public async action(message: Message, [args]: [string]): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
+
+		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+			return;
+		}
 
 		const prefix = message.guild
 			? await this.client.getPrefix(message.guild)
@@ -41,5 +49,7 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		embed.setDescription(commands.join('\n'));
+
+		message.channel.send(embed);
 	}
 }

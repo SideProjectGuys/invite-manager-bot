@@ -10,7 +10,7 @@ import {
 	settings,
 	SettingsKey
 } from '../sequelize';
-import { BotCommand } from '../types';
+import { BotCommand, OwnerCommand } from '../types';
 
 const config = require('../../config.json');
 
@@ -28,7 +28,7 @@ export class SettingsCache {
 
 	// Role permissions
 	private static permsCache: {
-		[guildId: string]: { [cmd: string]: string[] };
+		[guildId: string]: { [cmd in BotCommand | OwnerCommand]: string[] };
 	} = {};
 	private static permsCacheFetch: { [guildId: string]: moment.Moment } = {};
 
@@ -49,12 +49,10 @@ export class SettingsCache {
 			this.cache[id] = { ...defaultSettings };
 			this.cacheFetch[id] = moment();
 
-			const obj: { [x: string]: string[] } = {} as any;
+			const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
 			Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 			if (config.ownerGuildIds.indexOf(id) !== -1) {
-				obj.diagnose = [];
-				obj.flushPremium = [];
-				obj.dm = [];
+				Object.keys(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 			}
 			this.permsCache[id] = obj;
 			this.permsCacheFetch[id] = moment();
@@ -97,7 +95,8 @@ export class SettingsCache {
 
 		// Then insert the role permissions we got from the db
 		perms.forEach((p: any) => {
-			this.permsCache[p['role.guildId']][p.command].push(p.roleId);
+			const cmd = p.command as BotCommand | OwnerCommand;
+			this.permsCache[p['role.guildId']][cmd].push(p.roleId);
 		});
 
 		// Load valid premium subs
@@ -189,12 +188,16 @@ export class SettingsCache {
 			raw: true
 		});
 
-		const obj: { [x in BotCommand]: string[] } = {} as any;
+		const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
 		Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
+			Object.keys(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
+		}
 		this.permsCache[guildId] = obj;
 
 		perms.forEach((p: any) => {
-			this.permsCache[guildId][p.command].push(p.roleId);
+			const cmd = p.command as BotCommand | OwnerCommand;
+			this.permsCache[guildId][cmd].push(p.roleId);
 			this.permsCacheFetch[guildId] = moment();
 		});
 

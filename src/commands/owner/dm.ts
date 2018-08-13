@@ -9,6 +9,7 @@ import {
 
 import { IMClient } from '../../client';
 import { checkRoles } from '../../middleware/CheckRoles';
+import { OwnerCommand } from '../../types';
 
 const config = require('../../../config.json');
 
@@ -21,15 +22,15 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'dm',
-			aliases: ['senddm'],
+			name: 'owner-dm',
+			aliases: ['odm'],
 			desc: 'Send a DM to a user',
-			usage: '<prefix>dm',
+			usage: '<prefix>owner-dm',
 			hidden: true
 		});
 	}
 
-	@using(checkRoles('dm'))
+	@using(checkRoles(OwnerCommand.dm))
 	@using(resolve('userId: string, ...msg: String'))
 	@using(expect('userId: string, ...msg: String'))
 	public async action(
