@@ -18,7 +18,7 @@ import {
 	sequelize
 } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup, OwnerCommand, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -111,15 +111,19 @@ export default class extends Command<IMClient> {
 			cmds.push(BotCommand.makeMentionable);
 			cmds.push(BotCommand.mentionRole);
 		}
-		const cm = Object.keys(BotCommand).find(
+
+		const cmBot = Object.keys(BotCommand).find(
 			(k: any) => BotCommand[k].toLowerCase() === cmd
 		) as BotCommand;
-		if (cm) {
-			cmds.push(cm);
+		if (cmBot) {
+			cmds.push(cmBot);
 		}
-		// Special handling of owner only commands
-		if (cmd === 'diagnose' || cmd === 'dm' || cmd === 'flushpremium') {
-			cmds.push(cmd);
+
+		const cmOwner = Object.keys(OwnerCommand).find(
+			(k: any) => OwnerCommand[k].toLowerCase() === cmd
+		) as OwnerCommand;
+		if (cmOwner) {
+			cmds.push(cmOwner);
 		}
 
 		if (!cmds.length) {

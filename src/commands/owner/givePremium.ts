@@ -18,28 +18,56 @@ const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
-			name: 'ownerGivePremium',
-			aliases: ['owner-give-premium', 'ogp'],
+			name: 'owner-give-premium',
+			aliases: ['ownerGivePremium', 'ogp'],
 			desc: 'Give premium',
-			usage: '<prefix>ogp <guildID>',
+			usage: '<prefix>owner-give-premium <guildID>',
 			ownerOnly: true,
 			hidden: true
 		});
 	}
 
-	@using(resolve('amount: Number, user: User, guildId: String, duration: String, reason: String'))
-	@using(expect('amount: Number, user: User, guildId: String, duration: String'))
+	@using(
+		resolve(
+			'amount: Number, user: User, guildId: String, duration: String, reason: String'
+		)
+	)
+	@using(
+		expect('amount: Number, user: User, guildId: String, duration: String')
+	)
 	public async action(
 		message: Message,
-		[amount, user, guild, duration, reason]: [number, User, Guild, string, string]
+		[amount, user, guild, duration, reason]: [
+			number,
+			User,
+			Guild,
+			string,
+			string
+		]
 	): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
 
-		const premiumDuration = moment.duration(duration);
+		let days = 1;
+		if (duration) {
+			const d = parseInt(duration, 10);
+
+			if (duration.indexOf('d') >= 0) {
+				days = d;
+			} else if (duration.indexOf('w') >= 0) {
+				days = d * 7;
+			} else if (duration.indexOf('m') >= 0) {
+				days = d * 30;
+			} else if (duration.indexOf('y') >= 0) {
+				days = d * 365;
+			}
+		}
+
+		const premiumDuration = moment.duration(days, 'day');
 		const validUntil = moment().add(premiumDuration);
 
 		await premiumSubscriptions.create({

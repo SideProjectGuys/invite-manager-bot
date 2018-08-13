@@ -1,12 +1,12 @@
 import { Command, Lang } from '@yamdbf/core';
 import { Message } from 'discord.js';
 
-import { BotCommand, RP } from '../types';
+import { BotCommand, OwnerCommand, RP } from '../types';
 
 import { createEmbed } from '../functions/Messaging';
 import { SettingsCache } from '../storage/SettingsCache';
 
-export function isStrict(cmd: BotCommand | string) {
+export function isStrict(cmd: BotCommand | OwnerCommand) {
 	switch (cmd) {
 		case BotCommand.config:
 		case BotCommand.inviteCodeConfig:
@@ -23,6 +23,12 @@ export function isStrict(cmd: BotCommand | string) {
 		case BotCommand.tryPremium:
 		case BotCommand.addRank:
 		case BotCommand.removeRank:
+
+		case OwnerCommand.diagnose:
+		case OwnerCommand.dm:
+		case OwnerCommand.flushPremium:
+		case OwnerCommand.givePremium:
+		case OwnerCommand.help:
 			return true;
 
 		default:
@@ -30,7 +36,7 @@ export function isStrict(cmd: BotCommand | string) {
 	}
 }
 
-export const checkRoles = (cmd: BotCommand | string) => {
+export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 	return async function(
 		this: Command,
 		message: Message,

@@ -9,7 +9,7 @@ import {
 
 import { IMClient } from '../../client';
 import { checkRoles } from '../../middleware/CheckRoles';
-import { ShardCommand } from '../../types';
+import { OwnerCommand, ShardCommand } from '../../types';
 
 const config = require('../../../config.json');
 
@@ -22,15 +22,15 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'ownerFlushPremium',
-			aliases: ['owner-flush-premium', 'ofp'],
+			name: 'owner-flush-premium',
+			aliases: ['ownerFlushPremium', 'ofp'],
 			desc: 'Flush premium',
-			usage: '<prefix>ownerFlushPremium <guildID>',
+			usage: '<prefix>owner-flush-premium <guildID>',
 			hidden: true
 		});
 	}
 
-	@using(checkRoles('flushPremium'))
+	@using(checkRoles(OwnerCommand.flushPremium))
 	@using(resolve('guild: String'))
 	@using(expect('guild: String'))
 	public async action(message: Message, [guildId]: [any]): Promise<any> {

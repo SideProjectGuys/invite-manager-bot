@@ -8,7 +8,6 @@ import * as path from 'path';
 import { createEmbed, sendEmbed } from './functions/Messaging';
 import {
 	channels,
-	commandUsage,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	guilds,
@@ -624,14 +623,6 @@ export class IMClient extends Client {
 				const guild = this.guilds.get(guildId);
 				const sets = await SettingsCache.get(guildId);
 				const perms = guild.me.permissions.toArray();
-				const lastCommand = await commandUsage.find({
-					where: {
-						guildId
-					},
-					order: [sequelize.literal('createdAt DESC')],
-					limit: 1,
-					raw: true
-				});
 
 				let joinChannelPerms: string[] = [];
 				if (sets.joinMessageChannel) {
@@ -664,8 +655,7 @@ export class IMClient extends Client {
 					perms,
 					joinChannelPerms,
 					leaveChannelPerms,
-					announceChannelPerms,
-					lastCmd: lastCommand ? lastCommand.createdAt : null
+					announceChannelPerms
 				});
 				break;
 
