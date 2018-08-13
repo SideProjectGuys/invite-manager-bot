@@ -12,6 +12,8 @@ import {
 } from '../sequelize';
 import { BotCommand } from '../types';
 
+const config = require('../../config.json');
+
 const maxCacheDuration = moment.duration(4, 'h');
 
 export class SettingsCache {
@@ -47,8 +49,13 @@ export class SettingsCache {
 			this.cache[id] = { ...defaultSettings };
 			this.cacheFetch[id] = moment();
 
-			const obj: { [x in BotCommand]: string[] } = {} as any;
+			const obj: { [x: string]: string[] } = {} as any;
 			Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+			if (config.ownerGuildIds.indexOf(id) !== -1) {
+				obj.diagnose = [];
+				obj.flushPremium = [];
+				obj.dm = [];
+			}
 			this.permsCache[id] = obj;
 			this.permsCacheFetch[id] = moment();
 
