@@ -96,32 +96,38 @@ export default class extends Command<IMClient> {
 
 			embed.addField(
 				'Settings',
-				'```json\n' + JSON.stringify(response.settings, null, 2) + '```'
+				'```json\n' +
+					JSON.stringify(response.settings, null, 2).substr(0, 1000) +
+					'```'
 			);
 
 			embed.addField(
 				'Bot permissions',
-				'```\n' + response.perms.join('\n') + '```'
+				'```\n' + response.perms.join('\n').substr(0, 1000) + '```'
 			);
 
 			embed.addField(
 				'Join channel permissions',
-				'```\n' + response.joinChannelPerms.join('\n') + '```'
+				'```\n' + response.joinChannelPerms.join('\n').substr(0, 1000) + '```'
 			);
 
 			embed.addField(
 				'Leave channel permissions',
-				'```\n' + response.leaveChannelPerms.join('\n') + '```'
+				'```\n' + response.leaveChannelPerms.join('\n').substr(0, 1000) + '```'
 			);
 
 			embed.addField(
 				'Rank announcement channel permissions',
-				'```\n' + response.announceChannelPerms.join('\n') + '```'
+				'```\n' +
+					response.announceChannelPerms.join('\n').substr(0, 1000) +
+					'```'
 			);
 
 			embed.addField(
 				'Premium',
-				'```json\n' + (sub ? JSON.stringify(sub, null, 2) : 'none') + '```'
+				'```json\n' +
+					(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
+					'```'
 			);
 
 			embed.addField(
