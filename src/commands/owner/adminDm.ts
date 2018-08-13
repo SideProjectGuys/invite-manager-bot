@@ -8,12 +8,16 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
+
+const config = require('../../../config.json');
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -21,11 +25,11 @@ export default class extends Command<IMClient> {
 			aliases: ['senddm'],
 			desc: 'Send a DM to a user',
 			usage: '<prefix>dm',
-			ownerOnly: true,
 			hidden: true
 		});
 	}
 
+	@using(checkRoles('dm'))
 	@using(resolve('userId: string, ...msg: String'))
 	@using(expect('userId: string, ...msg: String'))
 	public async action(
@@ -33,6 +37,10 @@ export default class extends Command<IMClient> {
 		[userId, msg]: [string, string]
 	): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
+
+		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+			return;
+		}
 
 		const user = await this.client.users.fetch(userId);
 		if (!user) {

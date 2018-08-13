@@ -8,6 +8,7 @@ import * as path from 'path';
 import { createEmbed, sendEmbed } from './functions/Messaging';
 import {
 	channels,
+	commandUsage,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	guilds,
@@ -69,6 +70,10 @@ export class IMClient extends Client {
 	public membersCachedAt: number = 0;
 
 	private dbl: DBL;
+
+	public pendingRabbitMqRequests: {
+		[x: string]: (response: any) => void;
+	} = {};
 
 	public constructor(
 		version: string,
@@ -155,6 +160,37 @@ export class IMClient extends Client {
 		});
 
 		SettingsCache.init(this);
+	}
+
+	public getShardIdForGuild(guildId: any) {
+		// tslint:disable-next-line:no-bitwise
+		return ((guildId >>> 22) % this.options.shardCount) + 1;
+	}
+
+	public sendCommandToShard(
+		shardId: number,
+		payload: { id: string; [x: string]: any }
+	) {
+		const shardCount = this.options.shardCount;
+
+		const rabbitMqPrefix = this.config.rabbitmq.prefix
+			? `${this.config.rabbitmq.prefix}-`
+			: '';
+		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
+		return {
+			shard: shardId,
+			result: this.channelCmds.sendToQueue(
+				queueName,
+				Buffer.from(JSON.stringify(payload))
+			)
+		};
+	}
+
+	public sendCommandToGuild(
+		guildId: any,
+		payload: { id: string; [x: string]: any }
+	) {
+		return this.sendCommandToShard(this.getShardIdForGuild(guildId), payload);
 	}
 
 	@once('pause')
@@ -575,23 +611,84 @@ export class IMClient extends Client {
 	private async _onShardCommand(msg: amqplib.Message) {
 		const content = JSON.parse(msg.content.toString());
 		const cmd: ShardCommand = content.cmd;
-		const args = content.args;
+		const id: string = content.id;
 
 		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
 		switch (cmd) {
+			case ShardCommand.DIAGNOSE:
+				console.log(`DIAGNOSING ${content.guildId}`);
+				const guildId = content.guildId;
+				const originGuildId = content.originGuildId;
+
+				const guild = this.guilds.get(guildId);
+				const sets = await SettingsCache.get(guildId);
+				const perms = guild.me.permissions.toArray();
+				const lastCommand = await commandUsage.find({
+					where: {
+						guildId
+					},
+					order: [sequelize.literal('createdAt DESC')],
+					limit: 1,
+					raw: true
+				});
+
+				let joinChannelPerms: string[] = [];
+				if (sets.joinMessageChannel) {
+					joinChannelPerms = guild.channels
+						.get(sets.joinMessageChannel)
+						.permissionsFor(guild.me)
+						.toArray();
+				}
+
+				let leaveChannelPerms: string[] = [];
+				if (sets.leaveMessageChannel) {
+					leaveChannelPerms = guild.channels
+						.get(sets.leaveMessageChannel)
+						.permissionsFor(guild.me)
+						.toArray();
+				}
+
+				let announceChannelPerms: string[] = [];
+				if (sets.rankAnnouncementChannel) {
+					announceChannelPerms = guild.channels
+						.get(sets.rankAnnouncementChannel)
+						.permissionsFor(guild.me)
+						.toArray();
+				}
+
+				this.sendCommandToGuild(originGuildId, {
+					cmd: ShardCommand.RESPONSE,
+					id,
+					settings: sets,
+					perms,
+					joinChannelPerms,
+					leaveChannelPerms,
+					announceChannelPerms,
+					lastCmd: lastCommand ? lastCommand.createdAt : null
+				});
+				break;
+
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
-				console.log(`FLUSHING PREMIUM FOR ${args[0]}`);
-				SettingsCache.flushPremium(args[0]);
+				console.log(`FLUSHING PREMIUM FOR ${content.guildId}`);
+				SettingsCache.flushPremium(content.guildId);
 				break;
 
 			case ShardCommand.FLUSH_SETTINGS_CACHE:
-				console.log(`FLUSHING SETTINGS FOR ${args[0]}`);
-				SettingsCache.flush(args[0]);
+				console.log(`FLUSHING SETTINGS FOR ${content.guildId}`);
+				SettingsCache.flush(content.guildId);
+				break;
+
+			case ShardCommand.RESPONSE:
+				if (this.pendingRabbitMqRequests[id]) {
+					this.pendingRabbitMqRequests[id](content);
+				} else {
+					console.error('NOT EXPECTING RESPONSE FOR ' + id);
+				}
 				break;
 
 			default:
-				console.log(`UNKNOWN COMMAND: ${cmd}`);
+				console.error(`UNKNOWN COMMAND: ${cmd}`);
 		}
 
 		this.channelCmds.ack(msg, false);

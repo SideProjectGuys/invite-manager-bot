@@ -3,10 +3,10 @@ import { Message } from 'discord.js';
 
 import { BotCommand, RP } from '../types';
 
-import { SettingsCache } from '../storage/SettingsCache';
 import { createEmbed } from '../functions/Messaging';
+import { SettingsCache } from '../storage/SettingsCache';
 
-export function isStrict(cmd: BotCommand) {
+export function isStrict(cmd: BotCommand | string) {
 	switch (cmd) {
 		case BotCommand.config:
 		case BotCommand.inviteCodeConfig:
@@ -30,7 +30,7 @@ export function isStrict(cmd: BotCommand) {
 	}
 }
 
-export const checkRoles = (cmd: BotCommand) => {
+export const checkRoles = (cmd: BotCommand | string) => {
 	return async function(
 		this: Command,
 		message: Message,
@@ -66,7 +66,7 @@ export const checkRoles = (cmd: BotCommand) => {
 		const perms = (await SettingsCache.getPermissions(message.guild.id))[cmd];
 
 		// Allow commands that require no roles, if strict is not true
-		if (perms.length === 0) {
+		if (!perms || perms.length === 0) {
 			if (isStrict(cmd)) {
 				embed.setDescription(rp.PERMISSIONS_ADMIN_ONLY());
 				message.channel.send(embed);

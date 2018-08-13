@@ -8,12 +8,17 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { checkRoles } from '../../middleware/CheckRoles';
+import { ShardCommand } from '../../types';
+
+const config = require('../../../config.json');
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -21,40 +26,34 @@ export default class extends Command<IMClient> {
 			aliases: ['owner-flush-premium', 'ofp'],
 			desc: 'Flush premium',
 			usage: '<prefix>ownerFlushPremium <guildID>',
-			ownerOnly: true,
 			hidden: true
 		});
 	}
 
+	@using(checkRoles('flushPremium'))
 	@using(resolve('guild: String'))
 	@using(expect('guild: String'))
 	public async action(message: Message, [guildId]: [any]): Promise<any> {
 		this._logger.log(`(${message.author.username}): ${message.content}`);
+
+		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+			return;
+		}
 
 		if (isNaN(parseInt(guildId, 10))) {
 			message.reply('Invalid guild id ' + guildId);
 			return;
 		}
 
-		// tslint:disable-next-line
-		const shardId = ((guildId >>> 22) % this.client.options.shardCount) + 1;
-		const shardCount = this.client.options.shardCount;
+		const { shard, result } = this.client.sendCommandToGuild(guildId, {
+			cmd: ShardCommand.FLUSH_PREMIUM_CACHE,
+			id: message.id,
+			guildId
+		});
 
-		const rabbitMqPrefix = this.client.config.rabbitmq.prefix
-			? `${this.client.config.rabbitmq.prefix}-`
-			: '';
-		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
-		const payload = {
-			cmd: 'FLUSH_PREMIUM_CACHE',
-			args: [guildId]
-		};
-		const success = this.client.channelCmds.sendToQueue(
-			queueName,
-			Buffer.from(JSON.stringify(payload))
-		);
-		if (success) {
+		if (result) {
 			message.reply(
-				`Sent command to flush premium settings for guild ${guildId} to shard ${shardId}`
+				`Sent command to flush premium settings for guild ${guildId} to shard ${shard}`
 			);
 		} else {
 			message.reply(`RabbitMQ returned false`);

@@ -12,6 +12,8 @@ import {
 } from '../sequelize';
 import { BotCommand } from '../types';
 
+const config = require('../../config.json');
+
 const maxCacheDuration = moment.duration(4, 'h');
 
 export class SettingsCache {
@@ -26,7 +28,7 @@ export class SettingsCache {
 
 	// Role permissions
 	private static permsCache: {
-		[guildId: string]: { [cmd in BotCommand]: string[] };
+		[guildId: string]: { [cmd: string]: string[] };
 	} = {};
 	private static permsCacheFetch: { [guildId: string]: moment.Moment } = {};
 
@@ -47,8 +49,13 @@ export class SettingsCache {
 			this.cache[id] = { ...defaultSettings };
 			this.cacheFetch[id] = moment();
 
-			const obj: { [x in BotCommand]: string[] } = {} as any;
+			const obj: { [x: string]: string[] } = {} as any;
 			Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+			if (config.ownerGuildIds.indexOf(id) !== -1) {
+				obj.diagnose = [];
+				obj.flushPremium = [];
+				obj.dm = [];
+			}
 			this.permsCache[id] = obj;
 			this.permsCacheFetch[id] = moment();
 
@@ -90,8 +97,7 @@ export class SettingsCache {
 
 		// Then insert the role permissions we got from the db
 		perms.forEach((p: any) => {
-			const cmd = p.command as BotCommand;
-			this.permsCache[p['role.guildId']][cmd].push(p.roleId);
+			this.permsCache[p['role.guildId']][p.command].push(p.roleId);
 		});
 
 		// Load valid premium subs
@@ -188,8 +194,7 @@ export class SettingsCache {
 		this.permsCache[guildId] = obj;
 
 		perms.forEach((p: any) => {
-			const c = p.command as BotCommand;
-			this.permsCache[guildId][c].push(p.roleId);
+			this.permsCache[guildId][p.command].push(p.roleId);
 			this.permsCacheFetch[guildId] = moment();
 		});
 
