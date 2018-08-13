@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 import moment from 'moment';
 
-import { Guild, User } from 'discord.js';
+import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
@@ -42,10 +42,10 @@ export default class extends Command<IMClient> {
 	)
 	public async action(
 		message: Message,
-		[amount, user, guild, duration, reason]: [
+		[amount, user, guildId, duration, reason]: [
 			number,
 			User,
-			Guild,
+			string,
 			string,
 			string
 		]
@@ -74,7 +74,7 @@ export default class extends Command<IMClient> {
 			id: null,
 			amount: amount,
 			validUntil: validUntil.toDate(),
-			guildId: guild.id,
+			guildId,
 			memberId: user.id
 		});
 
@@ -86,6 +86,6 @@ export default class extends Command<IMClient> {
 		await sendEmbed(message.channel, embed, message.author);
 
 		let cmd = this.client.commands.resolve('ownerFlushPremium');
-		cmd.action(message, [guild]);
+		cmd.action(message, [guildId]);
 	}
 }
