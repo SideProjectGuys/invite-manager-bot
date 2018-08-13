@@ -14,8 +14,10 @@ export enum CommandGroup {
 }
 
 export enum ShardCommand {
+	'DIAGNOSE' = 'DIAGNOSE',
 	'FLUSH_PREMIUM_CACHE' = 'FLUSH_PREMIUM_CACHE',
-	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE'
+	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE',
+	'RESPONSE' = 'RESPONSE'
 }
 
 export enum ChartType {

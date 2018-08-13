@@ -42,13 +42,13 @@ export default class extends Command<IMClient> {
 	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _cmd, role]: [RP, string, Role]
+		[rp, rawCmd, role]: [RP, string, Role]
 	): Promise<any> {
 		this._logger.log(
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		if (!_cmd) {
+		if (!rawCmd) {
 			const perms = await rolePermissions.findAll({
 				attributes: ['command'],
 				include: [
@@ -99,7 +99,8 @@ export default class extends Command<IMClient> {
 		}
 
 		const cmds = [];
-		if (_cmd.toLowerCase() === 'mod') {
+		const cmd = rawCmd.toLowerCase();
+		if (cmd === 'mod') {
 			cmds.push(BotCommand.info);
 			cmds.push(BotCommand.addInvites);
 			cmds.push(BotCommand.clearInvites);
@@ -111,16 +112,20 @@ export default class extends Command<IMClient> {
 			cmds.push(BotCommand.mentionRole);
 		}
 		const cm = Object.keys(BotCommand).find(
-			(k: any) => BotCommand[k].toLowerCase() === _cmd.toLowerCase()
+			(k: any) => BotCommand[k].toLowerCase() === cmd
 		) as BotCommand;
 		if (cm) {
 			cmds.push(cm);
+		}
+		// Special handling of owner only commands
+		if (cmd === 'diagnose' || cmd === 'dm' || cmd === 'flushpremium') {
+			cmds.push(cmd);
 		}
 
 		if (!cmds.length) {
 			message.channel.send(
 				rp.CMD_PERMISSIONS_INVALID_COMMAND({
-					cmd: _cmd,
+					cmd: rawCmd,
 					cmds: Object.keys(BotCommand)
 						.map(k => '`' + k + '`')
 						.join(', ')
@@ -162,10 +167,10 @@ export default class extends Command<IMClient> {
 			embed.setDescription(rp.CMD_PERMISSIONS_ADMINS_ALL_COMMANDS());
 
 			if (perms.length === 0) {
-				cmds.forEach(cmd => {
+				cmds.forEach(c => {
 					embed.addField(
-						cmd,
-						isStrict(cmd)
+						c,
+						isStrict(c)
 							? rp.CMD_PERMISSIONS_ADMIN_ONLY()
 							: rp.CMD_PERMISSIONS_EVERYONE()
 					);

@@ -19,12 +19,13 @@ const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
 			name: 'setup',
-			aliases: ['guide', 'diagnose', 'diag', 'test', 'testBot', 'test-bot'],
+			aliases: ['guide', 'test', 'testBot', 'test-bot'],
 			desc:
 				'Help with setting up the bot and ' +
 				'checking for problems (e.g. missing permissions)',

@@ -26,7 +26,7 @@ export class SettingsCache {
 
 	// Role permissions
 	private static permsCache: {
-		[guildId: string]: { [cmd in BotCommand]: string[] };
+		[guildId: string]: { [cmd: string]: string[] };
 	} = {};
 	private static permsCacheFetch: { [guildId: string]: moment.Moment } = {};
 
@@ -90,8 +90,7 @@ export class SettingsCache {
 
 		// Then insert the role permissions we got from the db
 		perms.forEach((p: any) => {
-			const cmd = p.command as BotCommand;
-			this.permsCache[p['role.guildId']][cmd].push(p.roleId);
+			this.permsCache[p['role.guildId']][p.command].push(p.roleId);
 		});
 
 		// Load valid premium subs
@@ -188,8 +187,7 @@ export class SettingsCache {
 		this.permsCache[guildId] = obj;
 
 		perms.forEach((p: any) => {
-			const c = p.command as BotCommand;
-			this.permsCache[guildId][c].push(p.roleId);
+			this.permsCache[guildId][p.command].push(p.roleId);
 			this.permsCacheFetch[guildId] = moment();
 		});
 
