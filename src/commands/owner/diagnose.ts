@@ -89,7 +89,9 @@ export default class extends Command<IMClient> {
 
 			embed.addField(
 				'Guild',
-				`Id: ${guildId}\n` + `Added: ${moment(guild.createdAt).fromNow()}`
+				`Id: ${guildId}\n` +
+					`Shard: ${shard}\n` +
+					`Added: ${moment(guild.createdAt).fromNow()}`
 			);
 
 			embed.addField(
@@ -134,7 +136,7 @@ export default class extends Command<IMClient> {
 			cmd: ShardCommand.DIAGNOSE,
 			id: message.id,
 			guildId,
-			originGuildId: message.guild
+			originGuildId: message.guild.id
 		});
 	}
 }
