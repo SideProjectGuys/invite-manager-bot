@@ -80,10 +80,8 @@ export default class extends Command<IMClient> {
 
 		const embed = createEmbed(this.client);
 		embed.setDescription(`Activated premium for ${premiumDuration.humanize()}`);
-		embed.setThumbnail(guild.icon);
 		embed.setAuthor(user.username, user.avatarURL());
 		embed.addField('User', user.username);
-		embed.addField('Guild', guild.name);
 
 		await sendEmbed(message.channel, embed, message.author);
 
