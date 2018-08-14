@@ -9,6 +9,7 @@ import {
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { CommandGroup, RP } from '../../types';
 
 const { resolve, localize } = Middleware;
@@ -17,7 +18,8 @@ const { using } = CommandDecorators;
 const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -27,6 +29,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(resolve('command: Command'))
 	@using(localize)
 	public async action(

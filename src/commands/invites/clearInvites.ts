@@ -10,7 +10,7 @@ import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -25,7 +25,8 @@ const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -44,6 +45,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.clearInvites))
 	@using(resolve('clearBonus: Boolean, user: User'))
 	@using(localize)

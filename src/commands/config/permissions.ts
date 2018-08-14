@@ -10,7 +10,7 @@ import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles, isStrict } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles, isStrict } from '../../middleware';
 import {
 	rolePermissions,
 	RolePermissionsInstance,
@@ -37,6 +37,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.permissions))
 	@using(resolve('cmd: string, role: Role'))
 	@using(localize)

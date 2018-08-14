@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -33,6 +33,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.premium))
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {

@@ -10,7 +10,7 @@ import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
 const config = require('../../../config.json');
@@ -35,6 +35,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.setup))
 	@using(localize)
 	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {

@@ -11,9 +11,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
-	CustomInviteInstance,
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
@@ -45,6 +44,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.info))
 	@using(resolve('user: User'))
 	@using(expect('user: User'))

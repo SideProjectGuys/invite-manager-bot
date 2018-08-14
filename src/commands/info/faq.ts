@@ -10,6 +10,7 @@ import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { CommandGroup, RP } from '../../types';
 
@@ -30,7 +31,8 @@ interface AnyRP extends RP {
 }
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	private faqs: FAQ[] = [];
 
@@ -47,6 +49,7 @@ export default class extends Command<IMClient> {
 		this.faqs = require('../../../faqs.json');
 	}
 
+	@using(checkProBot)
 	@using(resolve('faqName: String'))
 	@using(localize)
 	public async action(

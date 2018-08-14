@@ -1,11 +1,21 @@
-import { Command, Logger, logger, Message } from '@yamdbf/core';
+import {
+	Command,
+	CommandDecorators,
+	Logger,
+	logger,
+	Message
+} from '@yamdbf/core';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { CommandGroup } from '../../types';
 
+const { using } = CommandDecorators;
+
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -18,6 +28,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	public async action(message: Message, args: string[]): Promise<any> {
 		this._logger.log(
 			`${message.guild ? message.guild.name : 'DM'} (${
