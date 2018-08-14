@@ -50,9 +50,9 @@ export class SettingsCache {
 			this.cacheFetch[id] = moment();
 
 			const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
-			Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+			Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 			if (config.ownerGuildIds.indexOf(id) !== -1) {
-				Object.keys(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
+				Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 			}
 			this.permsCache[id] = obj;
 			this.permsCacheFetch[id] = moment();
@@ -189,9 +189,9 @@ export class SettingsCache {
 		});
 
 		const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
-		Object.keys(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
-			Object.keys(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
+			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 		}
 		this.permsCache[guildId] = obj;
 
