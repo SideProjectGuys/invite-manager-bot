@@ -51,7 +51,9 @@ export default class extends Command<IMClient> {
 		}
 
 		if (guildId.length < 8 || guildId.indexOf('http') === 0) {
-			const inv = await this.client.fetchInvite(guildId);
+			const inv = await this.client.fetchInvite(
+				guildId.replace('https://', '').replace('http://', '')
+			);
 			guildId = inv.guild.id;
 		}
 
@@ -94,11 +96,13 @@ export default class extends Command<IMClient> {
 					`Added: ${moment(guild.createdAt).fromNow()}`
 			);
 
+			const sets: { [x: string]: string } = {};
+			Object.keys(response.settings).forEach(key => {
+				sets[key] = response.settings[key].substr(0, 200);
+			});
 			embed.addField(
 				'Settings',
-				'```json\n' +
-					JSON.stringify(response.settings, null, 2).substr(0, 1000) +
-					'```'
+				'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
 			);
 
 			embed.addField(

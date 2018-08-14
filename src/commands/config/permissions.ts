@@ -72,7 +72,7 @@ export default class extends Command<IMClient> {
 				Administrators: []
 			};
 
-			Object.keys(BotCommand).forEach(command => {
+			Object.values(BotCommand).forEach(command => {
 				const ps = perms.filter(p => p.command === command);
 				if (!ps.length) {
 					if (isStrict(command as BotCommand)) {
@@ -112,15 +112,13 @@ export default class extends Command<IMClient> {
 			cmds.push(BotCommand.mentionRole);
 		}
 
-		const cmBot = Object.keys(BotCommand).find(
-			(k: any) => BotCommand[k].toLowerCase() === cmd
-		) as BotCommand;
+		const cmBot = Object.values(BotCommand).find(v => v.toLowerCase() === cmd);
 		if (cmBot) {
 			cmds.push(cmBot);
 		}
 
-		const cmOwner = Object.keys(OwnerCommand).find(
-			(k: any) => OwnerCommand[k].toLowerCase() === cmd
+		const cmOwner = Object.values(OwnerCommand).find(
+			v => v.toLowerCase() === cmd
 		) as OwnerCommand;
 		if (cmOwner) {
 			cmds.push(cmOwner);

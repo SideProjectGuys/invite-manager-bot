@@ -25,7 +25,6 @@ export default class extends Command<IMClient> {
 			aliases: ['owner-help', 'oh'],
 			desc: 'Admin help',
 			usage: '<prefix>owner-help',
-			ownerOnly: true,
 			hidden: true
 		});
 	}
