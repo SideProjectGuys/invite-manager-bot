@@ -213,12 +213,14 @@ export default class extends Command<IMClient> {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			message.channel.send(
+			const embed = createEmbed(this.client);
+			embed.setDescription(
 				rp.CMD_PERMISSIONS_REMOVED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
+			message.channel.send(embed);
 		} else {
 			await roles.insertOrUpdate({
 				id: role.id,
@@ -235,12 +237,14 @@ export default class extends Command<IMClient> {
 				}))
 			);
 
-			message.channel.send(
+			const embed = createEmbed(this.client);
+			embed.setDescription(
 				rp.CMD_PERMISSIONS_ADDED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
+			message.channel.send(embed);
 		}
 
 		SettingsCache.flushPermissions(message.guild.id);
