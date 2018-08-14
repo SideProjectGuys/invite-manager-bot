@@ -98,7 +98,11 @@ export default class extends Command<IMClient> {
 
 			const sets: { [x: string]: string } = {};
 			Object.keys(response.settings).forEach(key => {
-				sets[key] = response.settings[key].substr(0, 200);
+				if (typeof response.settings[key] === 'string') {
+					sets[key] = response.settings[key].substr(0, 200);
+				} else {
+					sets[key] = response.settings[key];
+				}
 			});
 			embed.addField(
 				'Settings',
