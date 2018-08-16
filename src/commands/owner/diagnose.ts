@@ -88,6 +88,7 @@ export default class extends Command<IMClient> {
 
 		this.client.pendingRabbitMqRequests[message.id] = response => {
 			const embed = createEmbed(this.client);
+			embed.setDescription('');
 
 			embed.addField(
 				'Guild',
@@ -110,28 +111,6 @@ export default class extends Command<IMClient> {
 			);
 
 			embed.addField(
-				'Bot permissions',
-				'```\n' + response.perms.join('\n').substr(0, 1000) + '```'
-			);
-
-			embed.addField(
-				'Join channel permissions',
-				'```\n' + response.joinChannelPerms.join('\n').substr(0, 1000) + '```'
-			);
-
-			embed.addField(
-				'Leave channel permissions',
-				'```\n' + response.leaveChannelPerms.join('\n').substr(0, 1000) + '```'
-			);
-
-			embed.addField(
-				'Rank announcement channel permissions',
-				'```\n' +
-					response.announceChannelPerms.join('\n').substr(0, 1000) +
-					'```'
-			);
-
-			embed.addField(
 				'Premium',
 				'```json\n' +
 					(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
@@ -143,7 +122,34 @@ export default class extends Command<IMClient> {
 				lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
 			);
 
-			msg.edit(embed);
+			msg.edit(embed).catch(e => msg.edit(e));
+
+			// Send second message with permissions info
+			let permsEmbed = createEmbed(this.client);
+
+			permsEmbed.addField(
+				'Bot permissions',
+				'```\n' + response.perms.join('\n').substr(0, 1000) + '```'
+			);
+
+			permsEmbed.addField(
+				'Join channel permissions',
+				'```\n' + response.joinChannelPerms.join('\n').substr(0, 1000) + '```'
+			);
+
+			permsEmbed.addField(
+				'Leave channel permissions',
+				'```\n' + response.leaveChannelPerms.join('\n').substr(0, 1000) + '```'
+			);
+
+			permsEmbed.addField(
+				'Rank announcement channel permissions',
+				'```\n' +
+					response.announceChannelPerms.join('\n').substr(0, 1000) +
+					'```'
+			);
+
+			message.channel.send(permsEmbed).catch(e => message.channel.send(e));
 		};
 
 		const { shard } = this.client.sendCommandToGuild(guildId, {
