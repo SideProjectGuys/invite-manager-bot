@@ -15,7 +15,7 @@ import {
 	sendEmbed,
 	showPaginated
 } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { LeaderboardStyle } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -31,7 +31,8 @@ const downSymbol = '🔻';
 const neutralSymbol = '🔹';
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -50,6 +51,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.leaderboard))
 	@using(resolve('page: Number, ...date?: String'))
 	@using(localize)

@@ -9,6 +9,7 @@ import {
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { checkRoles } from '../../middleware/CheckRoles';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
@@ -16,7 +17,8 @@ const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -29,6 +31,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.members))
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {

@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -24,7 +24,8 @@ const { localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -38,6 +39,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.subtractLeaves))
 	@using(localize)
 	public async action(

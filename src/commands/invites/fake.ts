@@ -9,7 +9,7 @@ import {
 
 import { IMClient } from '../../client';
 import { createEmbed, showPaginated } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
 	inviteCodes,
 	JoinAttributes,
@@ -25,7 +25,8 @@ const { using } = CommandDecorators;
 const usersPerPage = 20;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -40,6 +41,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.fake))
 	@using(resolve('page: Number'))
 	@using(localize)

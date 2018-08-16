@@ -10,7 +10,7 @@ import { Channel, MessageEmbed } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -110,7 +110,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 };
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -129,6 +130,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.config))
 	@using(localize)
 	@using(checkArgsMiddleware(resolve))

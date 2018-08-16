@@ -10,7 +10,7 @@ import { Guild } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import {
 	channels,
 	defaultInviteCodeSettings,
@@ -146,6 +146,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.inviteCodeConfig))
 	@using(localize)
 	@using(checkArgsMiddleware(resolve))

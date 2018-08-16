@@ -11,7 +11,7 @@ import moment from 'moment';
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
 import { createEmbed } from '../functions/Messaging';
-import { checkRoles } from '../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../middleware';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
 import { BotCommand, ChartType, CommandGroup, RP } from '../types';
 
@@ -34,6 +34,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.chart))
 	@using(resolve('type: string, duration: string'))
 	@using(localize)

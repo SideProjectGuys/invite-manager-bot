@@ -1,5 +1,4 @@
 import {
-	Client,
 	Command,
 	CommandDecorators,
 	Logger,
@@ -9,15 +8,17 @@ import {
 } from '@yamdbf/core';
 import { Role } from 'discord.js';
 
+import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { BotCommand } from '../../types';
 
 const { resolve } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
-	@logger('Command') private readonly _logger: Logger;
+export default class extends Command<IMClient> {
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -31,6 +32,7 @@ export default class extends Command<Client> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.makeMentionable))
 	@using(resolve('role: Role'))
 	public async action(message: Message, [role]: [Role]): Promise<any> {

@@ -10,6 +10,7 @@ import { TextChannel } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
@@ -18,7 +19,8 @@ const { using } = CommandDecorators;
 const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -34,6 +36,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(resolve('...feedback: String'))
 	@using(expect('...feedback: String'))
 	@using(localize)

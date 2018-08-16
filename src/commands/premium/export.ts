@@ -1,5 +1,4 @@
 import {
-	Client,
 	Command,
 	CommandDecorators,
 	Logger,
@@ -9,16 +8,17 @@ import {
 } from '@yamdbf/core';
 import { MessageAttachment } from 'discord.js';
 
+import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
 
-export default class extends Command<Client> {
+export default class extends Command<IMClient> {
 	@logger('Command')
 	private readonly _logger: Logger;
 
@@ -37,6 +37,7 @@ export default class extends Command<Client> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.export))
 	@using(resolve('type: String'))
 	@using(expect('type: String'))

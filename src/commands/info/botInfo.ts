@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { checkProBot } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { CommandGroup, RP } from '../../types';
 
@@ -19,7 +20,8 @@ const { using } = CommandDecorators;
 const config = require('../../../config.json');
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -31,6 +33,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {
 		this._logger.log(

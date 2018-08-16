@@ -9,7 +9,7 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles } from '../../middleware';
 import { LogAction, ranks } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
@@ -17,7 +17,8 @@ const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
 
 export default class extends Command<IMClient> {
-	@logger('Command') private readonly _logger: Logger;
+	@logger('Command')
+	private readonly _logger: Logger;
 
 	public constructor() {
 		super({
@@ -31,6 +32,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.removeRank))
 	@using(resolve('role: Role'))
 	@using(expect('role: Role'))

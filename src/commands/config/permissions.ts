@@ -10,7 +10,7 @@ import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkRoles, isStrict } from '../../middleware/CheckRoles';
+import { checkProBot, checkRoles, isStrict } from '../../middleware';
 import {
 	rolePermissions,
 	RolePermissionsInstance,
@@ -37,6 +37,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.permissions))
 	@using(resolve('cmd: string, role: Role'))
 	@using(localize)
@@ -213,12 +214,14 @@ export default class extends Command<IMClient> {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			message.channel.send(
+			const embed = createEmbed(this.client);
+			embed.setDescription(
 				rp.CMD_PERMISSIONS_REMOVED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
+			message.channel.send(embed);
 		} else {
 			await roles.insertOrUpdate({
 				id: role.id,
@@ -235,12 +238,14 @@ export default class extends Command<IMClient> {
 				}))
 			);
 
-			message.channel.send(
+			const embed = createEmbed(this.client);
+			embed.setDescription(
 				rp.CMD_PERMISSIONS_ADDED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
+			message.channel.send(embed);
 		}
 
 		SettingsCache.flushPermissions(message.guild.id);

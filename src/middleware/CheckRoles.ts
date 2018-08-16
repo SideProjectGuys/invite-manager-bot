@@ -3,6 +3,7 @@ import { Message } from 'discord.js';
 
 import { BotCommand, OwnerCommand, RP } from '../types';
 
+import { IMClient } from '../client';
 import { createEmbed } from '../functions/Messaging';
 import { SettingsCache } from '../storage/SettingsCache';
 
@@ -38,7 +39,7 @@ export function isStrict(cmd: BotCommand | OwnerCommand) {
 
 export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 	return async function(
-		this: Command,
+		this: Command<IMClient>,
 		message: Message,
 		args: any[]
 	): Promise<[Message, any[]]> {

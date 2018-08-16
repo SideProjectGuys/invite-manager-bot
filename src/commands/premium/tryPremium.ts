@@ -15,8 +15,8 @@ import {
 	PromptResult,
 	sendEmbed
 } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
-import { premiumSubscriptions, sequelize } from '../../sequelize';
+import { checkProBot, checkRoles } from '../../middleware';
+import { premiumSubscriptions } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
@@ -38,6 +38,7 @@ export default class extends Command<IMClient> {
 		});
 	}
 
+	@using(checkProBot)
 	@using(checkRoles(BotCommand.tryPremium))
 	@using(localize)
 	public async action(message: Message, [rp]: [RP]): Promise<any> {

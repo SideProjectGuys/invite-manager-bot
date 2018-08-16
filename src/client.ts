@@ -23,7 +23,6 @@ import {
 	sequelize
 } from './sequelize';
 import { DBQueue } from './storage/DBQueue';
-import { MessageQueue } from './storage/MessageQueue';
 import { SettingsCache } from './storage/SettingsCache';
 import { IMStorageProvider } from './storage/StorageProvider';
 import { ShardCommand } from './types';
@@ -59,7 +58,6 @@ export class IMClient extends Client {
 
 	public startedAt: moment.Moment;
 	public dbQueue: DBQueue;
-	public messageQueue: MessageQueue;
 	public activityInterval: NodeJS.Timer;
 
 	public numGuilds: number = 0;
@@ -70,6 +68,7 @@ export class IMClient extends Client {
 
 	private dbl: DBL;
 
+	public disabledGuilds: Set<string> = new Set();
 	public pendingRabbitMqRequests: {
 		[x: string]: (response: any) => void;
 	} = {};
@@ -122,7 +121,6 @@ export class IMClient extends Client {
 		this.config = config;
 		this.startedAt = moment();
 
-		this.messageQueue = new MessageQueue(this);
 		this.dbQueue = new DBQueue(this);
 
 		// Set fallback language to english
@@ -199,7 +197,6 @@ export class IMClient extends Client {
 
 	@once('clientReady')
 	private async _onClientReady(): Promise<void> {
-		this.messageQueue.addMessage('clientReady executed');
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
 		await this.channelJoins.prefetch(5);
@@ -230,6 +227,13 @@ export class IMClient extends Client {
 			this.dbl = new DBL(config.discordBotsToken, this);
 		}
 
+		// Disable guilds of pro bot
+		this.guilds.forEach(g => {
+			if (g.members.has(config.proBotId)) {
+				this.disabledGuilds.add(g.id);
+			}
+		});
+
 		this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
 	}
@@ -250,16 +254,6 @@ export class IMClient extends Client {
 				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
 				'https://discord.gg/2eTnsVM'
 		);
-		this.messageQueue.addMessage(
-			`EVENT(guildCreate): ${guild.id} ${guild.name} ${guild.memberCount}`
-		);
-	}
-
-	@on('guildDelete')
-	private async _onGuildDelete(guild: Guild): Promise<void> {
-		this.messageQueue.addMessage(
-			`EVENT(guildDelete): ${guild.id} ${guild.name} ${guild.memberCount}`
-		);
 	}
 
 	@on('command')
@@ -269,8 +263,8 @@ export class IMClient extends Client {
 		execTime: number,
 		message: Message
 	) {
-		// Ignore messages that are not in guild chat
-		if (!message.guild) {
+		// Ignore messages that are not in guild chat or from disabled guilds
+		if (!message.guild || this.disabledGuilds.has(message.guild.id)) {
 			return;
 		}
 
@@ -1001,65 +995,65 @@ export class IMClient extends Client {
 		});
 	}
 
+	@on('guildMemberAdd')
+	private async _onGuildMemberAddOrig(member: GuildMember) {
+		const guildId = member.guild.id;
+
+		// Ignore disabled guilds
+		if (this.disabledGuilds.has(guildId)) {
+			return;
+		}
+
+		if (member.user.bot) {
+			// Check if it's our premium bot
+			if (member.user.id === config.proBotId) {
+				console.log(
+					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
+				);
+				this.disabledGuilds.add(guildId);
+			}
+			return;
+		}
+	}
+
+	@on('guildMemberRemove')
+	private async _onGuildMemberRemoveOrig(member: GuildMember) {
+		const guildId = member.guild.id;
+
+		// If the pro version of our bot left, re-enable this version
+		if (member.user.bot && member.user.id === config.proBotId) {
+			this.disabledGuilds.delete(guildId);
+			console.log(`ENABLING BOT IN ${guildId} BECAUSE PRO VERSION LEFT`);
+		}
+	}
+
 	@on('reconnecting')
 	private async _onReconnecting() {
 		console.log('DISCORD RECONNECTING:');
-		try {
-			this.messageQueue.addMessage(`EVENT(reconnecting)`);
-		} catch (e) {
-			console.error('DISCORD RECONNECTING:', e);
-		}
 	}
 
 	@on('disconnect')
 	private async _onDisconnect() {
 		console.log('DISCORD DISCONNECT:');
-		try {
-			this.messageQueue.addMessage(`EVENT(disconnect)`);
-		} catch (e) {
-			console.error('DISCORD DISCONNECT:', e);
-		}
 	}
 
 	@on('resume')
 	private async _onResume(replayed: number) {
 		console.log('DISCORD RESUME:', replayed);
-		try {
-			this.messageQueue.addMessage(`EVENT(resume):${replayed}`);
-		} catch (e) {
-			console.error('DISCORD RESUME:', e);
-		}
 	}
 
 	@on('guildUnavailable')
 	private async _onGuildUnavailable(guild: Guild) {
 		console.log('DISCORD GUILD_UNAVAILABLE:', guild.id);
-		try {
-			this.messageQueue.addMessage(
-				`EVENT(guildUnavailable):${guild.id} ${guild.name} ${guild.memberCount}`
-			);
-		} catch (e) {
-			console.error('DISCORD GUILD_UNAVAILABLE:', e);
-		}
 	}
 
 	@on('warn')
 	private async _onWarn(info: string) {
 		console.log('DISCORD WARNING:', info);
-		try {
-			this.messageQueue.addMessage(`EVENT(warn):${JSON.stringify(info)}`);
-		} catch (e) {
-			console.error('DISCORD WARNING:', e);
-		}
 	}
 
 	@on('error')
 	private async _onError(error: Error) {
 		console.log('DISCORD ERROR:', error);
-		try {
-			this.messageQueue.addMessage(`EVENT(error):${JSON.stringify(error)}`);
-		} catch (e) {
-			console.error('DISCORD ERROR:', e);
-		}
 	}
 }
