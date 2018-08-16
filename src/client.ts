@@ -620,26 +620,32 @@ export class IMClient extends Client {
 
 				let joinChannelPerms: string[] = [];
 				if (sets.joinMessageChannel) {
-					joinChannelPerms = guild.channels
-						.get(sets.joinMessageChannel)
-						.permissionsFor(guild.me)
-						.toArray();
+					const joinChannel = guild.channels.get(sets.joinMessageChannel);
+					if (joinChannel) {
+						joinChannelPerms = joinChannel.permissionsFor(guild.me).toArray();
+					} else {
+						joinChannelPerms = ['Invalid channel'];
+					}
 				}
 
 				let leaveChannelPerms: string[] = [];
 				if (sets.leaveMessageChannel) {
-					leaveChannelPerms = guild.channels
-						.get(sets.leaveMessageChannel)
-						.permissionsFor(guild.me)
-						.toArray();
+					const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
+					if (leaveChannel) {
+						leaveChannelPerms = leaveChannel.permissionsFor(guild.me).toArray();
+					} else {
+						leaveChannelPerms = ['Invalid channel'];
+					}
 				}
 
-				let announceChannelPerms: string[] = [];
+				let annChannelPerms: string[] = [];
 				if (sets.rankAnnouncementChannel) {
-					announceChannelPerms = guild.channels
-						.get(sets.rankAnnouncementChannel)
-						.permissionsFor(guild.me)
-						.toArray();
+					const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
+					if (annChannel) {
+						annChannelPerms = annChannel.permissionsFor(guild.me).toArray();
+					} else {
+						annChannelPerms = ['Invalid channel'];
+					}
 				}
 
 				this.sendCommandToGuild(originGuildId, {
@@ -649,7 +655,7 @@ export class IMClient extends Client {
 					perms,
 					joinChannelPerms,
 					leaveChannelPerms,
-					announceChannelPerms
+					announceChannelPerms: annChannelPerms
 				});
 				break;
 
