@@ -32,7 +32,7 @@ export default class extends Command<IMClient> {
 			name: 'permissions',
 			aliases: ['perms', 'p'],
 			desc: 'Configure permissions to use commands',
-			usage: '<prefix>permissions',
+			usage: '<prefix>permissions cmd (@role)',
 			group: CommandGroup.Config
 		});
 	}
