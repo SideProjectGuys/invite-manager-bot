@@ -27,6 +27,13 @@ export default class extends Command<IMClient> {
 	@logger('Command')
 	private readonly _logger: Logger;
 
+	private readonly allowedCommands: string[] = [
+		'leaderboard',
+		'invites',
+		'bot-info',
+		'prefix'
+	];
+
 	public constructor() {
 		super({
 			name: 'owner-sudo',
@@ -64,12 +71,14 @@ export default class extends Command<IMClient> {
 		const sudoCmd = this.client.commands.resolve(cmdName);
 		if (!sudoCmd) {
 			return message.channel.send(
-				'Use one of the following commands: `leaderboard`, `invites`'
+				'Use one of the following commands: ' +
+					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
-		if (sudoCmd.name !== 'leaderboard' && sudoCmd.name !== 'invites') {
+		if (this.allowedCommands.indexOf(sudoCmd.name.toLowerCase()) === -1) {
 			return message.channel.send(
-				'Use one of the following commands: `leaderboard`, `invites`'
+				'Use one of the following commands: ' +
+					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 
