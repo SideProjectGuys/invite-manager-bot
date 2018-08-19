@@ -15,6 +15,7 @@ export async function checkProBot(
 
 	if (
 		this.client.disabledGuilds.has(message.guild.id) &&
+		!message.content.startsWith(`<@${this.client.user.id}>`) &&
 		!message.content.startsWith(`<@!${this.client.user.id}>`)
 	) {
 		return;

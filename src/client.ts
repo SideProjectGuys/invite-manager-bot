@@ -618,6 +618,8 @@ export class IMClient extends Client {
 
 		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
+		this.channelCmds.ack(msg, false);
+
 		switch (cmd) {
 			case ShardCommand.DIAGNOSE:
 				console.log(`DIAGNOSING ${guildId}`);
@@ -736,8 +738,6 @@ export class IMClient extends Client {
 			default:
 				console.error(`UNKNOWN COMMAND: ${cmd}`);
 		}
-
-		this.channelCmds.ack(msg, false);
 	}
 
 	public async logAction(message: Message, action: LogAction, data: any) {
