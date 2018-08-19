@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	commandUsage,
@@ -15,7 +16,7 @@ import {
 	premiumSubscriptions,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, OwnerCommand } from '../../types';
+import { OwnerCommand, ShardCommand } from '../../types';
 
 const config = require('../../../config.json');
 
@@ -28,10 +29,10 @@ export default class extends Command<IMClient> {
 
 	public constructor() {
 		super({
-			name: 'sudo',
-			aliases: ['su'],
+			name: 'owner-sudo',
+			aliases: ['osu'],
 			desc: 'Run commands for another guild',
-			usage: '<prefix>sudo command',
+			usage: '<prefix>owner-sudo command',
 			hidden: true
 		});
 	}
@@ -58,23 +59,36 @@ export default class extends Command<IMClient> {
 			guildId = inv.guild.id;
 		}
 
-		const g = this.client.guilds.get(guildId);
-		if (!g) {
-			return message.channel.send('Invalid guild');
-		}
-
-		(message as any).__guild = g;
-
 		const args = command.split(' ');
 		const cmdName = args[0].toLowerCase();
-
-		if (cmdName !== BotCommand.leaderboard && cmdName !== BotCommand.invites) {
+		const sudoCmd = this.client.commands.resolve(cmdName);
+		if (!sudoCmd) {
+			return message.channel.send(
+				'Use one of the following commands: `leaderboard`, `invites`'
+			);
+		}
+		if (sudoCmd.name !== 'leaderboard' && sudoCmd.name !== 'invites') {
 			return message.channel.send(
 				'Use one of the following commands: `leaderboard`, `invites`'
 			);
 		}
 
-		let cmd = this.client.commands.resolve(cmdName);
-		cmd.action(message, args.slice(1));
+		this.client.pendingRabbitMqRequests[message.id] = response => {
+			if (response.error) {
+				sendReply(message, response.error);
+			} else {
+				message.channel.send(response.data);
+			}
+		};
+
+		this.client.sendCommandToGuild(guildId, {
+			id: message.id,
+			cmd: ShardCommand.SUDO,
+			originGuildId: message.guild.id,
+			guildId,
+			sudoCmd: sudoCmd.name,
+			args: args.slice(1),
+			authorId: message.author.id
+		});
 	}
 }

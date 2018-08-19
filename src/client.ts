@@ -26,7 +26,12 @@ import { DBQueue } from './storage/DBQueue';
 import { SettingsCache } from './storage/SettingsCache';
 import { IMStorageProvider } from './storage/StorageProvider';
 import { ShardCommand } from './types';
-import { getInviteCounts, InviteCounts, promoteIfQualified } from './util';
+import {
+	FakeChannel,
+	getInviteCounts,
+	InviteCounts,
+	promoteIfQualified
+} from './util';
 
 const { on, once } = ListenerUtil;
 const config = require('../config.json');
@@ -607,15 +612,24 @@ export class IMClient extends Client {
 		const cmd: ShardCommand = content.cmd;
 		const id: string = content.id;
 
+		const guildId = content.guildId;
+		const guild = this.guilds.get(guildId);
+		const originGuildId = content.originGuildId;
+
 		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
 		switch (cmd) {
 			case ShardCommand.DIAGNOSE:
-				console.log(`DIAGNOSING ${content.guildId}`);
-				const guildId = content.guildId;
-				const originGuildId = content.originGuildId;
+				console.log(`DIAGNOSING ${guildId}`);
 
-				const guild = this.guilds.get(guildId);
+				if (!guild) {
+					return this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						error: 'Guild not found'
+					});
+				}
+
 				const sets = await SettingsCache.get(guildId);
 				const perms = guild.me.permissions.toArray();
 
@@ -661,13 +675,54 @@ export class IMClient extends Client {
 				break;
 
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
-				console.log(`FLUSHING PREMIUM FOR ${content.guildId}`);
-				SettingsCache.flushPremium(content.guildId);
+				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
+				SettingsCache.flushPremium(guildId);
 				break;
 
 			case ShardCommand.FLUSH_SETTINGS_CACHE:
-				console.log(`FLUSHING SETTINGS FOR ${content.guildId}`);
-				SettingsCache.flush(content.guildId);
+				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
+				SettingsCache.flush(guildId);
+				break;
+
+			case ShardCommand.SUDO:
+				if (!guild) {
+					return this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						error: 'Guild not found'
+					});
+				}
+
+				const cmdName = content.sudoCmd;
+				const sudoCmd = this.commands.resolve(cmdName);
+				const channel = new FakeChannel(guild, {});
+
+				channel.listener = data => {
+					this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						data
+					});
+				};
+
+				sudoCmd.action(
+					new Message(
+						this,
+						{
+							id,
+							content:
+								`<@!${this.user.id}>` +
+								content.sudoCmd +
+								' ' +
+								content.args.join(' '),
+							author: await this.users.fetch(content.authorId),
+							embeds: [],
+							attachments: []
+						},
+						channel
+					),
+					content.args
+				);
 				break;
 
 			case ShardCommand.RESPONSE:
