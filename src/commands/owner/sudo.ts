@@ -47,8 +47,6 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		console.log(command);
-
 		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
 			return;
 		}
