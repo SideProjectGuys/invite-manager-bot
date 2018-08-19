@@ -1,7 +1,13 @@
 import { Client, Guild, Lang, ListenerUtil, Message } from '@yamdbf/core';
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
-import { DMChannel, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
+import {
+	DMChannel,
+	GuildMember,
+	MessageEmbed,
+	TextChannel,
+	Util
+} from 'discord.js';
 import moment from 'moment';
 import * as path from 'path';
 
@@ -166,8 +172,9 @@ export class IMClient extends Client {
 	}
 
 	public getShardIdForGuild(guildId: any) {
-		// tslint:disable-next-line:no-bitwise
-		return ((guildId >>> 22) % this.options.shardCount) + 1;
+		const bin = Util.idToBinary(guildId);
+		const num = parseInt(bin.substring(0, bin.length - 22), 2);
+		return (num % this.options.shardCount) + 1;
 	}
 
 	public sendCommandToShard(
@@ -179,6 +186,11 @@ export class IMClient extends Client {
 		const rabbitMqPrefix = this.config.rabbitmq.prefix
 			? `${this.config.rabbitmq.prefix}-`
 			: '';
+
+		console.log(
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${payload}`
+		);
+
 		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
 		return {
 			shard: shardId,

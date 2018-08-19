@@ -58,7 +58,7 @@ export default class extends Command<IMClient> {
 		}
 
 		const msg = (await message.channel.send(
-			'Requesting diagnose info from shard...'
+			'Requesting diagnose info...'
 		)) as Message;
 
 		const lastCmd = await commandUsage.find({
