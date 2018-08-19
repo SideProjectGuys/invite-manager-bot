@@ -13,7 +13,7 @@ import {
 	createEmbed,
 	prompt,
 	PromptResult,
-	sendEmbed
+	sendReply
 } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions } from '../../sequelize';
@@ -75,17 +75,17 @@ export default class extends Command<IMClient> {
 				})
 			);
 
-			await sendEmbed(message.channel, promptEmbed, message.author);
+			await sendReply(message, promptEmbed);
 
 			const [keyResult, keyValue] = await prompt(
 				message,
 				rp.CMD_TRYPREMIUM_PROMPT()
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return message.channel.send(rp.PROMPT_TIMED_OUT());
+				return sendReply(message, rp.PROMPT_TIMED_OUT());
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return message.channel.send(rp.PROMPT_CANCELED());
+				return sendReply(message, rp.PROMPT_CANCELED());
 			}
 
 			await premiumSubscriptions.create({
@@ -104,7 +104,7 @@ export default class extends Command<IMClient> {
 			);
 		}
 
-		sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {

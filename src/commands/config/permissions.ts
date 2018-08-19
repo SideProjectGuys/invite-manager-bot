@@ -9,7 +9,7 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles, isStrict } from '../../middleware';
 import {
 	rolePermissions,
@@ -95,8 +95,7 @@ export default class extends Command<IMClient> {
 				embed.addField(r, rs[r].map(c => `\`${c}\``).join(', '));
 			});
 
-			sendEmbed(message.channel, embed);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const cmds = [];
@@ -126,7 +125,8 @@ export default class extends Command<IMClient> {
 		}
 
 		if (!cmds.length) {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_PERMISSIONS_INVALID_COMMAND({
 					cmd: rawCmd,
 					cmds: Object.keys(BotCommand)
@@ -134,7 +134,6 @@ export default class extends Command<IMClient> {
 						.join(', ')
 				})
 			);
-			return;
 		}
 
 		if (!role) {
@@ -190,8 +189,7 @@ export default class extends Command<IMClient> {
 				});
 			}
 
-			sendEmbed(message.channel, embed);
-			return;
+			return sendReply(message, embed);
 		}
 
 		if (
@@ -201,7 +199,7 @@ export default class extends Command<IMClient> {
 			cmds.indexOf(BotCommand.permissions) >= 0 ||
 			cmds.indexOf(BotCommand.addRank) >= 0
 		) {
-			return message.channel.send(rp.CMD_PERMISSIONS_CANNOT_CHANGE());
+			return sendReply(message, rp.CMD_PERMISSIONS_CANNOT_CHANGE());
 		}
 
 		const oldPerms = await rolePermissions.findAll({
@@ -214,14 +212,13 @@ export default class extends Command<IMClient> {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			const embed = createEmbed(this.client);
-			embed.setDescription(
+			sendReply(
+				message,
 				rp.CMD_PERMISSIONS_REMOVED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
-			message.channel.send(embed);
 		} else {
 			await roles.insertOrUpdate({
 				id: role.id,
@@ -238,14 +235,13 @@ export default class extends Command<IMClient> {
 				}))
 			);
 
-			const embed = createEmbed(this.client);
-			embed.setDescription(
+			sendReply(
+				message,
 				rp.CMD_PERMISSIONS_ADDED({
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
 			);
-			message.channel.send(embed);
 		}
 
 		SettingsCache.flushPermissions(message.guild.id);

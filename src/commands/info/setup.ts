@@ -9,7 +9,7 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
@@ -87,6 +87,6 @@ export default class extends Command<IMClient> {
 			);
 		}
 
-		sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 }

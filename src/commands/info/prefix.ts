@@ -7,6 +7,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { CommandGroup } from '../../types';
@@ -37,7 +38,8 @@ export default class extends Command<IMClient> {
 
 		const sets = await SettingsCache.get(message.guild.id);
 
-		message.channel.send(
+		sendReply(
+			message,
 			`The current prefix is ${sets.prefix}\n` +
 				`Change it using \`${sets.prefix}config prefix +\``
 		);

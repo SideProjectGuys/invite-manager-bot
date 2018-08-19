@@ -10,7 +10,7 @@ import { MessageAttachment } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -58,42 +58,39 @@ export default class extends Command<IMClient> {
 		const isPremium = await SettingsCache.isPremium(message.guild.id);
 		if (!isPremium) {
 			embed.setDescription(rp.CMD_EXPORT_PREMIUM_ONLY());
-			sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		embed.setDescription(rp.CMD_EXPORT_PREPARING());
 
 		if (type !== 'leaderboard') {
-			return message.channel.send(rp.CMD_INVALID_TYPE());
+			return sendReply(message, rp.CMD_INVALID_TYPE());
 		}
 
-		sendEmbed(message.channel, embed, message.author).then(
-			async (msg: Message) => {
-				if (type === 'leaderboard') {
-					let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
+		sendReply(message, embed).then(async (msg: Message) => {
+			if (type === 'leaderboard') {
+				let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-					const { keys, invs } = await generateLeaderboard(message.guild);
-					keys.forEach(id => {
-						const i = invs[id];
-						csv +=
-							`"${i.name.replace(/"/g, '\\"')}",` +
-							`${i.total},` +
-							`${i.regular},` +
-							`${i.custom},` +
-							`${i.fake},` +
-							`${i.leaves},` +
-							`\n`;
-					});
+				const { keys, invs } = await generateLeaderboard(message.guild);
+				keys.forEach(id => {
+					const i = invs[id];
+					csv +=
+						`"${i.name.replace(/"/g, '\\"')}",` +
+						`${i.total},` +
+						`${i.regular},` +
+						`${i.custom},` +
+						`${i.fake},` +
+						`${i.leaves},` +
+						`\n`;
+				});
 
-					const attachment = new MessageAttachment(
-						Buffer.from(csv),
-						'InviteManagerExport.csv'
-					);
+				const attachment = new MessageAttachment(
+					Buffer.from(csv),
+					'InviteManagerExport.csv'
+				);
 
-					message.channel.send(attachment).then(() => msg.delete());
-				}
+				return message.channel.send(attachment).then(() => msg.delete());
 			}
-		);
+		});
 	}
 }

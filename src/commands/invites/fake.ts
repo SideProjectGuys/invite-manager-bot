@@ -8,7 +8,11 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { createEmbed, showPaginated } from '../../functions/Messaging';
+import {
+	createEmbed,
+	sendReply,
+	showPaginated
+} from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	inviteCodes,
@@ -103,8 +107,7 @@ export default class extends Command<IMClient> {
 		})) as any;
 
 		if (js.length <= 0) {
-			message.channel.send(rp.CMD_FAKE_NONE());
-			return;
+			return sendReply(message, rp.CMD_FAKE_NONE());
 		}
 
 		const suspiciousJoins = js
@@ -115,8 +118,7 @@ export default class extends Command<IMClient> {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			message.channel.send(rp.CMD_FAKE_NONE_SINCE_JOIN());
-			return;
+			return sendReply(message, rp.CMD_FAKE_NONE_SINCE_JOIN());
 		}
 
 		const maxPage = Math.ceil(suspiciousJoins.length / usersPerPage);

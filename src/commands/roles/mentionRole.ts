@@ -9,7 +9,7 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { BotCommand } from '../../types';
 
@@ -44,16 +44,13 @@ export default class extends Command<IMClient> {
 
 		await message.delete();
 
-		const embed = createEmbed(this.client);
-
 		if (!role.editable) {
-			embed.setDescription(
+			return sendReply(
+				message,
 				`Cannot edit ${role}. Make sure the role is lower than the bots role.`
 			);
-			sendEmbed(message.channel, embed, message.author);
 		} else if (role.mentionable) {
-			embed.setDescription(`${role} is already mentionable.`);
-			sendEmbed(message.channel, embed, message.author);
+			return sendReply(message, `${role} is already mentionable.`);
 		} else {
 			await role.setMentionable(true, 'Pinging role');
 			await message.channel.send(`${role}`);

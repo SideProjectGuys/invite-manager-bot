@@ -12,6 +12,7 @@ import { IMClient } from '../../client';
 import { checkProBot, checkRoles } from '../../middleware';
 import { LogAction, ranks } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
+import { sendReply } from '../../functions/Messaging';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -57,9 +58,10 @@ export default class extends Command<IMClient> {
 				roleId: role.id
 			});
 
-			message.channel.send(rp.CMD_REMOVERANK_DONE({ role: role.name }));
+			return sendReply(message, rp.CMD_REMOVERANK_DONE({ role: role.name }));
 		} else {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_REMOVERANK_RANK_NOT_FOUND({ role: role.name })
 			);
 		}

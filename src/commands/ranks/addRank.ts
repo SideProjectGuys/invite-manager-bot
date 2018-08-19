@@ -12,6 +12,7 @@ import { IMClient } from '../../client';
 import { checkProBot, checkRoles } from '../../middleware';
 import { LogAction, ranks, roles } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
+import { sendReply } from '../../functions/Messaging';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -62,7 +63,8 @@ export default class extends Command<IMClient> {
 		const myRole = message.guild.me.roles.highest;
 		// Check if we are higher then the role we want to assign
 		if (myRole.comparePositionTo(role) < 0) {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_ADDRANK_ROLE_TOO_HIGH({ role: role.name, myRole: myRole.name })
 			);
 			return;
@@ -109,7 +111,8 @@ export default class extends Command<IMClient> {
 		);
 
 		if (!isNew) {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_ADDRANK_UPDATED({
 					role: role.name,
 					invites,
@@ -117,7 +120,8 @@ export default class extends Command<IMClient> {
 				})
 			);
 		} else {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_ADDRANK_CREATED({
 					role: role.name,
 					invites,

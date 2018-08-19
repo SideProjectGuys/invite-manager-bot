@@ -10,6 +10,7 @@ import { User } from 'discord.js';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	CustomInviteAttributes,
@@ -203,7 +204,8 @@ export default class extends Command<IMClient> {
 			...(memberId && { targetId: memberId })
 		});
 
-		message.channel.send(
+		return sendReply(
+			message,
 			rp.CMD_CLEARINVITES_DONE({
 				amount: Object.keys(cleared).length
 			})

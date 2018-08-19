@@ -9,7 +9,7 @@ import {
 import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot } from '../../middleware';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { CommandGroup, RP } from '../../types';
@@ -88,6 +88,6 @@ export default class extends Command<IMClient> {
 			}
 		}
 
-		sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 }

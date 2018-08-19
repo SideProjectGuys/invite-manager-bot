@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot } from '../../middleware';
 import { checkRoles } from '../../middleware/CheckRoles';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -79,6 +79,6 @@ export default class extends Command<IMClient> {
 		embed.addField(rp.CMD_MEMBERS_JOINED_MONTH(), joinedThisMonth, true);
 		embed.addBlankField(true);
 
-		sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 }

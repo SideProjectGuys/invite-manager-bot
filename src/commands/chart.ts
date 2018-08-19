@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
-import { createEmbed } from '../functions/Messaging';
+import { createEmbed, sendReply } from '../functions/Messaging';
 import { checkProBot, checkRoles } from '../middleware';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
 import { BotCommand, ChartType, CommandGroup, RP } from '../types';
@@ -47,28 +47,28 @@ export default class extends Command<IMClient> {
 		);
 
 		if (!_type) {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_CHART_MISSING_TYPE({
 					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
 				})
 			);
-			return;
 		}
 
 		const type = Object.keys(ChartType).find(
 			(k: any) => ChartType[k].toLowerCase() === _type.toLowerCase()
 		) as ChartType;
 		if (!type) {
-			message.channel.send(
+			return sendReply(
+				message,
 				rp.CMD_CHART_INVALID_TYPE({
 					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
 				})
 			);
-			return;
 		}
 
 		let days = 60;

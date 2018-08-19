@@ -16,6 +16,7 @@ import {
 	LogAction
 } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
+import { sendReply } from '../../functions/Messaging';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -68,7 +69,8 @@ export default class extends Command<IMClient> {
 			num
 		});
 
-		message.channel.send(
+		return sendReply(
+			message,
 			rp.CMD_RESTOREINVITES_DONE({ user: user ? user.id : undefined })
 		);
 	}

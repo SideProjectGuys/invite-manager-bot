@@ -9,7 +9,7 @@ import {
 import { TextChannel } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot } from '../../middleware';
 import { CommandGroup, RP } from '../../types';
 
@@ -68,7 +68,7 @@ export default class extends Command<IMClient> {
 			embedFeedback.addField('Message', `${feedback}`);
 			embedFeedback.addField('User ID', message.author.id);
 
-			channel.send({ embed: embedFeedback }).then(() => {
+			return channel.send({ embed: embedFeedback }).then(() => {
 				const embed = createEmbed(this.client);
 				embed.setDescription(rp.CMD_FEEDBACK_TEXT());
 
@@ -90,7 +90,7 @@ export default class extends Command<IMClient> {
 
 				embed.addField(rp.CMD_FEEDBACK_LINKS(), linksArray.join(` | `));
 
-				sendEmbed(message.channel, embed, message.author);
+				return sendReply(message, embed);
 			});
 		}
 	}

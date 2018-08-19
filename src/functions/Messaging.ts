@@ -51,34 +51,44 @@ function convertEmbedToPlain(embed: MessageEmbed) {
 	);
 }
 
+export function sendReply(message: Message, reply: MessageEmbed | string) {
+	return sendEmbed(message.channel, reply, message.author);
+}
+
 export function sendEmbed(
 	target: User | TextChannel | DMChannel | GroupDMChannel,
-	embed: MessageEmbed,
+	embed: MessageEmbed | string,
 	fallbackUser?: User
 ) {
+	const e =
+		typeof embed === 'string'
+			? createEmbed(target.client).setDescription(embed)
+			: embed;
+
 	return new Promise<Message | Message[]>((resolve, reject) => {
 		target
-			.send({ embed })
+			.send({ embed: e })
 			.then(resolve)
 			.catch(() => {
-				const content = convertEmbedToPlain(embed);
+				const content = convertEmbedToPlain(e);
 				target
 					.send(content)
 					.then(resolve)
 					.catch(err => {
 						if (!fallbackUser) {
+							console.error(err);
 							return reject(err);
 						}
 
 						fallbackUser
 							.send(
 								'**I do not have permissions to post to that channel.\n' +
-								`Please tell an admin to allow me to send messages in the channel.**\n\n`,
-								{ embed }
+									`Please tell an admin to allow me to send messages in the channel.**\n\n`,
+								{ embed: e }
 							)
 							.then(resolve)
 							.catch(err2 => {
-								console.log(err2);
+								console.error(err2);
 								reject(err2);
 							});
 					});

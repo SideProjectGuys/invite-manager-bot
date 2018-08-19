@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
@@ -88,6 +88,6 @@ export default class extends Command<IMClient> {
 			embed.setDescription(description);
 		}
 
-		sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 }

@@ -9,7 +9,7 @@ import {
 import { Guild } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	channels,
@@ -44,7 +44,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			(k: any) => InviteCodeSettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as InviteCodeSettingsKey;
 		if (!dbKey) {
-			throw Error(rp.CMD_INVITECODECONFIG_KEY_NOT_FOUND({ key }));
+			sendReply(message, rp.CMD_INVITECODECONFIG_KEY_NOT_FOUND({ key }));
+			return; // We have to return undefined because this is a middleware
 		}
 
 		const code = args[1];
@@ -91,9 +92,11 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultInviteCodeSettings[dbKey] !== null) {
 				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				throw Error(
+				sendReply(
+					message,
 					rp.CMD_INVITECODECONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
 				);
+				return; // We have to return undefined because this is a middleware
 			}
 			return [
 				message,
@@ -169,8 +172,7 @@ export default class extends Command<IMClient> {
 			const keys = Object.keys(InviteCodeSettingsKey);
 			embed.addField(rp.CMD_INVITECODECONFIG_KEYS_TITLE(), keys.join('\n'));
 
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		if (!code) {
@@ -189,19 +191,16 @@ export default class extends Command<IMClient> {
 			} else {
 				embed.setDescription(rp.CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT());
 			}
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		// Check if this is actually a real invite code
 		const inv = await this.client.fetchInvite(code);
 		if (!inv) {
-			return message.channel.send(rp.CMD_INVITECODECONFIG_INVALID_CODE());
+			return sendReply(message, rp.CMD_INVITECODECONFIG_INVALID_CODE());
 		}
 		if (inv.guild.id !== message.guild.id) {
-			return message.channel.send(
-				rp.CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD()
-			);
+			return sendReply(message, rp.CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD());
 		}
 
 		const oldSet = await inviteCodeSettings.find({
@@ -240,14 +239,12 @@ export default class extends Command<IMClient> {
 					rp.CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT({ prefix })
 				);
 			}
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const parsedValue = this.toDbValue(message.guild, key, rawValue);
 		if (parsedValue.error) {
-			message.channel.send(parsedValue.error);
-			return;
+			return sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -258,14 +255,12 @@ export default class extends Command<IMClient> {
 		if (value === oldVal) {
 			embed.setDescription(rp.CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE());
 			embed.addField(rp.CMD_INVITECODECONFIG_CURRENT_TITLE(), rawValue);
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const error = this.validate(rp, message, key, value);
 		if (error) {
-			message.channel.send(error);
-			return;
+			return sendReply(message, error);
 		}
 
 		await channels.insertOrUpdate({
@@ -314,7 +309,7 @@ export default class extends Command<IMClient> {
 		);
 		oldVal = value; // Update value for future use
 
-		await sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database
