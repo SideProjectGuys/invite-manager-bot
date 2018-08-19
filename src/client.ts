@@ -719,24 +719,23 @@ export class IMClient extends Client {
 					});
 				};
 
-				sudoCmd.action(
-					new Message(
-						this,
-						{
-							id,
-							content:
-								`<@!${this.user.id}>` +
-								content.sudoCmd +
-								' ' +
-								content.args.join(' '),
-							author: await this.users.fetch(content.authorId),
-							embeds: [],
-							attachments: []
-						},
-						channel
-					),
-					content.args
+				const fakeMsg = new Message(
+					this,
+					{
+						id,
+						content:
+							`<@!${this.user.id}>` +
+							content.sudoCmd +
+							' ' +
+							content.args.join(' '),
+						author: await this.users.fetch(content.authorId),
+						embeds: [],
+						attachments: []
+					},
+					channel
 				);
+				(fakeMsg as any).__sudo = true;
+				sudoCmd.action(fakeMsg, content.args);
 				break;
 
 			case ShardCommand.RESPONSE:

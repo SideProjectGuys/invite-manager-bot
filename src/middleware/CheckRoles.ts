@@ -43,8 +43,8 @@ export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 		message: Message,
 		args: any[]
 	): Promise<[Message, any[]]> {
-		// Ignore PMs
-		if (!message.guild) {
+		// Ignore PMs and sudo commands
+		if (!message.guild || (message as any).__sudo) {
 			return [message, args];
 		}
 
