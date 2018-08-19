@@ -2,7 +2,7 @@
 Tabla de puntaje
 
 [CMD_LEADERBOARD_INVALID_DATE]
-Fecha invalida: {{ date }}
+Fecha invalida
 
 [CMD_LEADERBOARD_NO_INVITES]
 ¡No invitaciones!

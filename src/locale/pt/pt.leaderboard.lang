@@ -2,7 +2,7 @@
 Leaderboard
 
 [CMD_LEADERBOARD_INVALID_DATE]
-Data invalida: {{ date }}
+Data invalida
 
 [CMD_LEADERBOARD_NO_INVITES]
 Sem Convites!

@@ -69,10 +69,7 @@ export default class extends Command<IMClient> {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				return sendReply(
-					message,
-					rp.CMD_LEADERBOARD_INVALID_DATE({ date: _date })
-				);
+				return sendReply(message, rp.CMD_LEADERBOARD_INVALID_DATE());
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
