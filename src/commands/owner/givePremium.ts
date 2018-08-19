@@ -11,7 +11,7 @@ import moment from 'moment';
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { premiumSubscriptions } from '../../sequelize';
 
 const { resolve, expect } = Middleware;
@@ -83,7 +83,7 @@ export default class extends Command<IMClient> {
 		embed.setAuthor(user.username, user.avatarURL());
 		embed.addField('User', user.username);
 
-		await sendEmbed(message.channel, embed, message.author);
+		await sendReply(message, embed);
 
 		let cmd = this.client.commands.resolve('ownerFlushPremium');
 		cmd.action(message, [guildId]);

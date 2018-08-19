@@ -4,7 +4,7 @@ import { Message } from 'discord.js';
 import { BotCommand, OwnerCommand, RP } from '../types';
 
 import { IMClient } from '../client';
-import { createEmbed } from '../functions/Messaging';
+import { sendReply } from '../functions/Messaging';
 import { SettingsCache } from '../storage/SettingsCache';
 
 export function isStrict(cmd: BotCommand | OwnerCommand) {
@@ -50,7 +50,6 @@ export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 
 		const lang = (await SettingsCache.get(message.guild.id)).lang;
 		const rp = Lang.createResourceProxy(lang) as RP;
-		const embed = createEmbed(this.client);
 
 		// Always allow admins
 		let member = message.member;
@@ -61,9 +60,8 @@ export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 			console.error(
 				`Could not get member ${message.author.id} for ${message.guild.id}`
 			);
-			embed.setDescription(rp.PERMISSIONS_MEMBER_ERROR());
-			message.channel.send(embed);
-			return;
+			sendReply(message, rp.PERMISSIONS_MEMBER_ERROR());
+			return; // We have to return undefined because this is a middleware
 		}
 
 		if (message.member.hasPermission('ADMINISTRATOR')) {
@@ -75,22 +73,21 @@ export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
 		// Allow commands that require no roles, if strict is not true
 		if (!perms || perms.length === 0) {
 			if (isStrict(cmd)) {
-				embed.setDescription(rp.PERMISSIONS_ADMIN_ONLY());
-				message.channel.send(embed);
-				return;
+				sendReply(message, rp.PERMISSIONS_ADMIN_ONLY());
+				return; // We have to return undefined because this is a middleware
 			}
 			return [message, args];
 		}
 
 		// Check that we have at least one of the required roles
 		if (!perms.some(p => message.member.roles.has(p))) {
-			embed.setDescription(
+			sendReply(
+				message,
 				rp.PERMISSIONS_MISSING_ROLE({
 					roles: perms.map(p => `<@&${p}>`).join(', ')
 				})
 			);
-			message.channel.send(embed);
-			return;
+			return; // We have to return undefined because this is a middleware
 		}
 
 		return [message, args];

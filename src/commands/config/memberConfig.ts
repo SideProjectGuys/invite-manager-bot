@@ -9,7 +9,7 @@ import {
 import { Guild, User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	defaultMemberSettings,
@@ -44,7 +44,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			(k: any) => MemberSettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as MemberSettingsKey;
 		if (!dbKey) {
-			throw Error(rp.CMD_MEMBERCONFIG_KEY_NOT_FOUND({ key }));
+			sendReply(message, rp.CMD_MEMBERCONFIG_KEY_NOT_FOUND({ key }));
+			return; // We have to return undefined because this is a middleware
 		}
 
 		const user = args[1];
@@ -91,7 +92,11 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultMemberSettings[dbKey] !== null) {
 				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				throw Error(rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
+				sendReply(
+					message,
+					rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
+				);
+				return; // We have to return undefined because this is a middleware
 			}
 			return [
 				message,
@@ -167,8 +172,7 @@ export default class extends Command<IMClient> {
 			const keys = Object.keys(MemberSettingsKey);
 			embed.addField(rp.CMD_MEMBERCONFIG_KEYS_TITLE(), keys.join('\n'));
 
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		if (!user) {
@@ -198,8 +202,7 @@ export default class extends Command<IMClient> {
 			} else {
 				embed.setDescription(rp.CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT());
 			}
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const username = user.username;
@@ -239,14 +242,12 @@ export default class extends Command<IMClient> {
 					rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT({ prefix })
 				);
 			}
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const parsedValue = this.toDbValue(message.guild, key, rawValue);
 		if (parsedValue.error) {
-			message.channel.send(parsedValue.error);
-			return;
+			return sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -257,14 +258,12 @@ export default class extends Command<IMClient> {
 		if (value === oldVal) {
 			embed.setDescription(rp.CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE());
 			embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), rawValue);
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const error = this.validate(message, key, value);
 		if (error) {
-			message.channel.send(error);
-			return;
+			return sendReply(message, error);
 		}
 
 		await memberSettings.insertOrUpdate({
@@ -295,7 +294,7 @@ export default class extends Command<IMClient> {
 		);
 		oldVal = value; // Update value for future use
 
-		await sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database

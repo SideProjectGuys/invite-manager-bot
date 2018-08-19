@@ -8,7 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { ranks } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -50,7 +50,7 @@ export default class extends Command<IMClient> {
 		let output = '';
 
 		if (rs.length === 0) {
-			message.channel.send(rp.CMD_RANKS_NONE());
+			return sendReply(message, rp.CMD_RANKS_NONE());
 		} else {
 			rs.forEach(r => {
 				output +=
@@ -64,7 +64,7 @@ export default class extends Command<IMClient> {
 			embed.setTitle(rp.CMD_RANKS_TITLE());
 			embed.setDescription(output);
 
-			sendEmbed(message.channel, embed, message.author);
+			return sendReply(message, embed);
 		}
 	}
 }

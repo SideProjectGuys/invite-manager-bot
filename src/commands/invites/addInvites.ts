@@ -9,7 +9,7 @@ import {
 import { GuildMember, User } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
@@ -55,8 +55,7 @@ export default class extends Command<IMClient> {
 		);
 
 		if (amount === 0) {
-			await message.channel.send(rp.CMD_ADDINVITES_ZERO());
-			return;
+			return sendReply(message, rp.CMD_ADDINVITES_ZERO());
 		}
 
 		const invites = await getInviteCounts(message.guild.id, user.id);
@@ -146,6 +145,6 @@ export default class extends Command<IMClient> {
 
 		embed.setDescription(descr);
 
-		await sendEmbed(message.channel, embed, message.author);
+		return sendReply(message, embed);
 	}
 }

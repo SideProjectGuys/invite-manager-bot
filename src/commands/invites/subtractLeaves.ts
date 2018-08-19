@@ -19,6 +19,7 @@ import {
 } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
+import { sendReply } from '../../functions/Messaging';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;
@@ -89,8 +90,7 @@ export default class extends Command<IMClient> {
 		});
 
 		if (ls.length === 0) {
-			await message.channel.send(rp.CMD_SUBTRACTLEAVES_NO_LEAVES());
-			return;
+			return sendReply(message, rp.CMD_SUBTRACTLEAVES_NO_LEAVES());
 		}
 
 		// Delete old duplicate removals
@@ -120,7 +120,8 @@ export default class extends Command<IMClient> {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		await message.channel.send(
+		return sendReply(
+			message,
 			rp.CMD_SUBTRACTLEAVES_DONE({ total: customInvs.length })
 		);
 	}

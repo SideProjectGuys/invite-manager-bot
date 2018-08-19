@@ -1,6 +1,7 @@
 import {
 	Command,
 	CommandDecorators,
+	Guild,
 	Logger,
 	logger,
 	Message,
@@ -12,7 +13,7 @@ import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
 import {
 	createEmbed,
-	sendEmbed,
+	sendReply,
 	showPaginated
 } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
@@ -68,10 +69,10 @@ export default class extends Command<IMClient> {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				await message.channel.send(
+				return sendReply(
+					message,
 					rp.CMD_LEADERBOARD_INVALID_DATE({ date: _date })
 				);
-				return;
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
@@ -87,11 +88,16 @@ export default class extends Command<IMClient> {
 			to = min;
 		}
 
-		const guildSettings = await SettingsCache.get(message.guild.id);
+		// Support sudo
+		let guild: Guild = (message as any).__guild
+			? (message as any).__guild
+			: message.guild;
+
+		const guildSettings = await SettingsCache.get(guild.id);
 		const hideLeft = guildSettings.hideLeftMembersFromLeaderboard === 'true';
 
 		const { keys, oldKeys, invs, stillInServer } = await generateLeaderboard(
-			message.guild,
+			guild,
 			hideLeft,
 			from,
 			to,
@@ -102,8 +108,7 @@ export default class extends Command<IMClient> {
 			const embed = createEmbed(this.client);
 			embed.setDescription(rp.CMD_LEADERBOARD_NO_INVITES());
 			embed.setTitle(rp.CMD_LEADERBOARD_TITLE());
-			sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);

@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
@@ -70,8 +71,7 @@ export default class extends Command<IMClient> {
 		});
 
 		if (js.length === 0) {
-			await message.channel.send(rp.CMD_SUBTRACTFAKES_NO_INVITES());
-			return;
+			return sendReply(message, rp.CMD_SUBTRACTFAKES_NO_INVITES());
 		}
 
 		// Delete old duplicate removals
@@ -99,6 +99,6 @@ export default class extends Command<IMClient> {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		await message.channel.send(rp.CMD_SUBTRACTFAKES_DONE({ total }));
+		return sendReply(message, rp.CMD_SUBTRACTFAKES_DONE({ total }));
 	}
 }

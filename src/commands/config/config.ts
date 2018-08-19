@@ -9,7 +9,7 @@ import {
 import { Channel, MessageEmbed } from 'discord.js';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
@@ -46,7 +46,8 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 			(k: any) => SettingsKey[k].toLowerCase() === key.toLowerCase()
 		) as SettingsKey;
 		if (!dbKey) {
-			throw Error(rp.CMD_CONFIG_KEY_NOT_FOUND({ key }));
+			sendReply(message, rp.CMD_CONFIG_KEY_NOT_FOUND({ key }));
+			return; // We have to return undefined because this is a middleware
 		}
 
 		const value = args[1];
@@ -79,7 +80,11 @@ const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[dbKey] !== null) {
 				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				throw Error(rp.CMD_CONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey }));
+				sendReply(
+					message,
+					rp.CMD_CONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
+				);
+				return; // We have to return undefined because this is a middleware
 			}
 			return [
 				message,
@@ -172,8 +177,7 @@ export default class extends Command<IMClient> {
 				);
 			}
 
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		let oldVal = settings[key];
@@ -198,14 +202,12 @@ export default class extends Command<IMClient> {
 					rp.CMD_CONFIG_CURRENT_NOT_SET_TEXT({ prefix, key })
 				);
 			}
-			await sendEmbed(message.channel, embed, message.author);
-			return;
+			return sendReply(message, embed);
 		}
 
 		const parsedValue = this.toDbValue(key, rawValue);
 		if (parsedValue.error) {
-			message.channel.send(parsedValue.error);
-			return;
+			return sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -216,14 +218,13 @@ export default class extends Command<IMClient> {
 		if (value === oldVal) {
 			embed.setDescription(rp.CMD_CONFIG_ALREADY_SET_SAME_VALUE());
 			embed.addField(rp.CMD_CONFIG_CURRENT_TITLE(), rawValue);
-			await sendEmbed(message.channel, embed, message.author);
+			await sendReply(message, embed);
 			return;
 		}
 
 		const error = this.validate(rp, message, key, value);
 		if (error) {
-			message.channel.send(error);
-			return;
+			return sendReply(message, error);
 		}
 
 		// Set new value
@@ -252,7 +253,7 @@ export default class extends Command<IMClient> {
 		// If we updated a config setting, then 'oldVal' is now the new value
 		const cb = await this.after(rp, message, embed, key, oldVal);
 
-		await sendEmbed(message.channel, embed, message.author);
+		await sendReply(message, embed);
 
 		if (typeof cb === typeof Function) {
 			await cb();
@@ -370,7 +371,7 @@ export default class extends Command<IMClient> {
 					rp.CMD_CONFIG_PREVIEW_TITLE(),
 					rp.CMD_CONFIG_PREVIEW_NEXT_MESSAGE()
 				);
-				return () => sendEmbed(message.channel, preview);
+				return () => sendReply(message, preview);
 			}
 		}
 
@@ -392,7 +393,7 @@ export default class extends Command<IMClient> {
 					rp.CMD_CONFIG_PREVIEW_TITLE(),
 					rp.CMD_CONFIG_PREVIEW_NEXT_MESSAGE()
 				);
-				return () => sendEmbed(message.channel, preview);
+				return () => sendReply(message, preview);
 			}
 		}
 
