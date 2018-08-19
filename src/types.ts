@@ -65,5 +65,6 @@ export enum OwnerCommand {
 	'dm' = 'ownerDm',
 	'flushPremium' = 'ownerFlushPremium',
 	'givePremium' = 'ownerGivePremium',
-	'help' = 'ownerHelp'
+	'help' = 'ownerHelp',
+	'sudo' = 'sudo'
 }

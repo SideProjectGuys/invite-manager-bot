@@ -261,7 +261,7 @@ export async function generateLeaderboard(
 	const hidden = (await memberSettings.findAll({
 		attributes: ['memberId'],
 		where: {
-			guildId: guildId,
+			guildId,
 			key: MemberSettingsKey.hideFromLeaderboard,
 			value: 'true'
 		},
