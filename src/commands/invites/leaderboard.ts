@@ -1,7 +1,6 @@
 import {
 	Command,
 	CommandDecorators,
-	Guild,
 	Logger,
 	logger,
 	Message,
@@ -69,10 +68,7 @@ export default class extends Command<IMClient> {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				return sendReply(
-					message,
-					rp.CMD_LEADERBOARD_INVALID_DATE({ date: _date })
-				);
+				return sendReply(message, rp.CMD_LEADERBOARD_INVALID_DATE());
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
@@ -88,16 +84,11 @@ export default class extends Command<IMClient> {
 			to = min;
 		}
 
-		// Support sudo
-		let guild: Guild = (message as any).__guild
-			? (message as any).__guild
-			: message.guild;
-
-		const guildSettings = await SettingsCache.get(guild.id);
+		const guildSettings = await SettingsCache.get(message.guild.id);
 		const hideLeft = guildSettings.hideLeftMembersFromLeaderboard === 'true';
 
 		const { keys, oldKeys, invs, stillInServer } = await generateLeaderboard(
-			guild,
+			message.guild,
 			hideLeft,
 			from,
 			to,

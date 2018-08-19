@@ -13,7 +13,10 @@ export async function checkProBot(
 		return [message, args];
 	}
 
-	if (this.client.disabledGuilds.has(message.guild.id)) {
+	if (
+		this.client.disabledGuilds.has(message.guild.id) &&
+		!message.content.startsWith(`<@!${this.client.user.id}>`)
+	) {
 		return;
 	}
 

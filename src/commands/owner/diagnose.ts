@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed } from '../../functions/Messaging';
+import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
 import {
 	commandUsage,
@@ -57,12 +57,6 @@ export default class extends Command<IMClient> {
 			guildId = inv.guild.id;
 		}
 
-		const guild = await guilds.find({
-			where: {
-				id: guildId
-			}
-		});
-
 		const msg = (await message.channel.send(
 			'Requesting diagnose info from shard...'
 		)) as Message;
@@ -87,15 +81,15 @@ export default class extends Command<IMClient> {
 		});
 
 		this.client.pendingRabbitMqRequests[message.id] = response => {
+			if (response.error) {
+				sendReply(message, response.error);
+				return;
+			}
+
 			const embed = createEmbed(this.client);
 			embed.setDescription('');
 
-			embed.addField(
-				'Guild',
-				`Id: ${guildId}\n` +
-					`Shard: ${shard}\n` +
-					`Added: ${moment(guild.createdAt).fromNow()}`
-			);
+			embed.addField('Guild', `Id: ${guildId}\n` + `Shard: ${shard}\n`);
 
 			const sets: { [x: string]: string } = {};
 			Object.keys(response.settings).forEach(key => {

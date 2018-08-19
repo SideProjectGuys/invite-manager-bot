@@ -1,5 +1,12 @@
 import { Guild, Message } from '@yamdbf/core';
-import { GuildMember, Role, TextChannel } from 'discord.js';
+import {
+	GuildMember,
+	MessageAttachment,
+	MessageEmbed,
+	MessageOptions,
+	Role,
+	TextChannel
+} from 'discord.js';
 
 import { IMClient } from './client';
 import {
@@ -183,7 +190,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-					`rank announcement channel ${rankChannelId}`
+						`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -238,4 +245,17 @@ export async function promoteIfQualified(
 		shouldNotHave,
 		dangerous
 	};
+}
+
+export class FakeChannel extends TextChannel {
+	public listener: (data: any) => void;
+
+	public send(
+		options?: MessageOptions | MessageEmbed | MessageAttachment
+	): Promise<Message | Message[]> {
+		if (this.listener) {
+			this.listener(options);
+		}
+		return new Promise(resolve => resolve());
+	}
 }

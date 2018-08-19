@@ -1,7 +1,6 @@
 import {
 	Command,
 	CommandDecorators,
-	Guild,
 	Logger,
 	logger,
 	Message,
@@ -44,13 +43,8 @@ export default class extends Command<IMClient> {
 			`${message.guild.name} (${message.author.username}): ${message.content}`
 		);
 
-		// Support sudo
-		let guild: Guild = (message as any).__guild
-			? (message as any).__guild
-			: message.guild;
-
 		let target = user ? user : message.author;
-		const invites = await getInviteCounts(guild.id, target.id);
+		const invites = await getInviteCounts(message.guild.id, target.id);
 
 		let textMessage =
 			rp.CMD_INVITES_AMOUNT({
@@ -63,15 +57,15 @@ export default class extends Command<IMClient> {
 				leave: invites.leave
 			}) + '\n';
 
-		if (!target.bot && !(message as any).__guild) {
-			let targetMember = await guild.members
+		if (!target.bot) {
+			let targetMember = await message.guild.members
 				.fetch(target.id)
 				.catch(() => undefined);
 
 			// Only process if the user is still in the guild
 			if (targetMember) {
 				const promoteInfo = await promoteIfQualified(
-					guild,
+					message.guild,
 					targetMember,
 					invites.total
 				);
