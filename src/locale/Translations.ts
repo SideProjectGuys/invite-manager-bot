@@ -121,6 +121,8 @@ export interface TranslationKeys {
 	CMD_INFO_LASTJOINED_NOT_IN_GUILD: TranslateFunc;
 	CMD_INFO_INVITES_TITLE: TranslateFunc;
 	CMD_INFO_INVITES_TEXT: TranslateFunc;
+	CMD_INFO_INVITES_CLEARS_TITLE: TranslateFunc;
+	CMD_INFO_INVITES_CLEARS_TEXT: TranslateFunc;
 	CMD_INFO_JOINED_TITLE: TranslateFunc;
 	CMD_INFO_JOINED_TEXT: TranslateFunc;
 	CMD_INFO_CREATED_TITLE: TranslateFunc;

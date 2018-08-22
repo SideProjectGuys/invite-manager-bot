@@ -10,6 +10,12 @@ Invites
 [CMD_INFO_INVITES_TEXT]
 **{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
 
+[CMD_INFO_INVITES_CLEARS_TITLE]
+Cleared invites
+
+[CMD_INFO_INVITES_CLEARS_TEXT]
+**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
+
 [CMD_INFO_JOINED_TITLE]
 Joined
 
