@@ -1,15 +1,7 @@
-import { Client, Guild, Lang, ListenerUtil, Message } from '@yamdbf/core';
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
-import {
-	DMChannel,
-	GuildMember,
-	MessageEmbed,
-	TextChannel,
-	Util
-} from 'discord.js';
+import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import moment from 'moment';
-import * as path from 'path';
 
 import { createEmbed, sendEmbed } from './functions/Messaging';
 import {
@@ -22,7 +14,6 @@ import {
 	InviteCodeSettingsKey,
 	JoinAttributes,
 	joins,
-	Lang as SettingsLang,
 	LeaveAttributes,
 	LogAction,
 	members,
@@ -35,11 +26,11 @@ import { ShardCommand } from './types';
 import {
 	FakeChannel,
 	getInviteCounts,
+	idToBinary,
 	InviteCounts,
 	promoteIfQualified
 } from './util';
 
-const { on, once } = ListenerUtil;
 const config = require('../config.json');
 
 interface RabbitMqMember {
@@ -67,6 +58,8 @@ export class IMClient extends Client {
 	public qCmdsName: string;
 	public channelCmds: amqplib.Channel;
 
+	public shardId: number;
+	public numShards: number;
 	public startedAt: moment.Moment;
 	public dbQueue: DBQueue;
 	public activityInterval: NodeJS.Timer;
@@ -91,52 +84,28 @@ export class IMClient extends Client {
 		shardId: number,
 		shardCount: number
 	) {
-		super(
-			{
-				provider: IMStorageProvider,
-				commandsDir: path.join(__dirname, 'commands'),
-				localeDir: path.join(__dirname, 'locale'),
-				token,
-				owner: config.owners,
-				pause: true,
-				ratelimit: '2/5s',
-				disableBase: [
-					'setlang',
-					'setprefix',
-					'blacklist',
-					'eval',
-					'eval:ts',
-					'limit',
-					'reload',
-					'help'
-				],
-				unknownCommandError: false
+		super(token, {
+			disableEveryone: true,
+			firstShardID: shardId - 1,
+			lastShardID: shardId - 1,
+			maxShards: shardCount,
+			disableEvents: {
+				TYPING_START: true,
+				USER_UPDATE: true,
+				PRESENCE_UPDATE: true
 			},
-			{
-				apiRequestMethod: 'burst',
-				disableEveryone: true,
-				shardId: shardId - 1,
-				shardCount,
-				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
-				messageCacheMaxSize: 2,
-				messageCacheLifetime: 10,
-				messageSweepInterval: 30,
-				restWsBridgeTimeout: 20000,
-				ws: {
-					compress: true
-				}
-			}
-		);
+			restMode: true,
+			messageLimit: 2
+		});
 
 		this.version = version;
 		this.conn = conn;
 		this.config = config;
+		this.shardId = shardId;
+		this.numShards = shardCount;
 		this.startedAt = moment();
 
 		this.dbQueue = new DBQueue(this);
-
-		// Set fallback language to english
-		Lang.setFallbackLang(SettingsLang.en);
 
 		// Setup RabbitMQ channels
 		const prefix = config.rabbitmq.prefix ? config.rabbitmq.prefix + '-' : '';
@@ -169,19 +138,30 @@ export class IMClient extends Client {
 		});
 
 		SettingsCache.init(this);
+
+		this.on('ready', this._onClientReady);
+		this.on('guildCreate', this._onGuildCreate);
+		// this.on('messageCreate', this._onMessage);
+		this.on('guildMemberAdd', this._onGuildMemberAddOrig);
+		this.on('guildMemberRemove', this._onGuildMemberRemoveOrig);
+		this.on('guildUnavailable', this._onGuildUnavailable);
+		this.on('disconnect', this._onDisconnect);
+		this.on('connect', this._onConnect);
+		this.on('warn', this._onWarn);
+		this.on('error', this._onError);
 	}
 
 	public getShardIdForGuild(guildId: any) {
-		const bin = Util.idToBinary(guildId);
+		const bin = idToBinary(guildId);
 		const num = parseInt(bin.substring(0, bin.length - 22), 2);
-		return (num % this.options.shardCount) + 1;
+		return (num % this.numShards) + 1;
 	}
 
 	public sendCommandToShard(
 		shardId: number,
 		payload: { id: string; [x: string]: any }
 	) {
-		const shardCount = this.options.shardCount;
+		const shardCount = this.numShards;
 
 		const rabbitMqPrefix = this.config.rabbitmq.prefix
 			? `${this.config.rabbitmq.prefix}-`
@@ -208,12 +188,6 @@ export class IMClient extends Client {
 		return this.sendCommandToShard(this.getShardIdForGuild(guildId), payload);
 	}
 
-	@once('pause')
-	private async _onPause() {
-		this.continue();
-	}
-
-	@once('clientReady')
 	private async _onClientReady(): Promise<void> {
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
@@ -256,13 +230,13 @@ export class IMClient extends Client {
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
 	}
 
-	@on('guildCreate')
 	private async _onGuildCreate(guild: Guild): Promise<void> {
 		// Send welcome message to owner with setup instructions
-		let owner = guild.owner;
+		const owner = await guild.getRESTMember(guild.ownerID);
 		// TODO: I don't think we have to translate this, right?
 		// The default lang is en_us, so at this point it will always be that
-		owner.send(
+		const channel = await owner.user.getDMChannel();
+		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
 				guild.name +
 				'`!\n\n' +
@@ -274,8 +248,7 @@ export class IMClient extends Client {
 		);
 	}
 
-	@on('command')
-	private async _onCommand(
+	/*private async _onCommand(
 		name: string,
 		args: any[],
 		execTime: number,
@@ -310,10 +283,9 @@ export class IMClient extends Client {
 				discriminator: message.author.discriminator
 			}
 		);
-	}
+	}*/
 
-	@on('message')
-	private async _onMessage(message: Message) {
+	/*private async _onMessage(message: Message) {
 		// Skip if this is our own message, bot message or empty messages
 		if (
 			message.author.id === this.user.id ||
@@ -359,7 +331,7 @@ export class IMClient extends Client {
 				await sendEmbed(dmChannel, embed);
 			}
 		}
-	}
+	}*/
 
 	private async _onGuildMemberAdd(_msg: amqplib.Message): Promise<void> {
 		const content = JSON.parse(_msg.content.toString());
@@ -446,7 +418,7 @@ export class IMClient extends Client {
 					JSON.stringify(content)
 			);
 			if (joinChannel) {
-				joinChannel.send(
+				joinChannel.createMessage(
 					Lang.res(lang, 'JOIN_INVITED_BY_UNKNOWN', { id: member.id })
 				);
 			}
@@ -460,15 +432,17 @@ export class IMClient extends Client {
 		const inviterId = jn['exactMatch.inviterId'];
 		const inviterName = jn['exactMatch.inviter.name'];
 		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
-		const inviter: GuildMember = await guild.members
-			.fetch(inviterId)
-			.catch(() => undefined);
+		let inviter = guild.members.get(inviterId);
+		if (!inviter) {
+			inviter = await guild.getRESTMember(inviterId);
+		}
 		const invites = await getInviteCounts(guild.id, inviterId);
 
 		// Add any roles for this invite code
-		const mem: GuildMember = await guild.members
-			.fetch(member.id)
-			.catch(() => undefined);
+		let mem = guild.members.get(member.id);
+		if (!mem) {
+			mem = await guild.getRESTMember(member.id);
+		}
 		if (mem) {
 			const roleSet = await inviteCodeSettings.find({
 				where: {
@@ -480,7 +454,7 @@ export class IMClient extends Client {
 			});
 			if (roleSet && roleSet.value) {
 				const roles = roleSet.value.split(',');
-				mem.roles.add(roles);
+				roles.forEach(r => mem.addRole(r));
 			}
 		}
 
@@ -507,7 +481,7 @@ export class IMClient extends Client {
 			);
 
 			// Send the message now so it doesn't take too long
-			await joinChannel.send(msg);
+			await joinChannel.createMessage(msg);
 		}
 	}
 
@@ -554,7 +528,7 @@ export class IMClient extends Client {
 					JSON.stringify(content)
 			);
 			if (leaveChannel) {
-				leaveChannel.send(
+				leaveChannel.createMessage(
 					Lang.res(lang, 'LEAVE_INVITED_BY_UNKNOWN', {
 						tag: member.user.username + '#' + member.user.discriminator
 					})
@@ -615,7 +589,7 @@ export class IMClient extends Client {
 				inviterDiscriminator
 			);
 
-			leaveChannel.send(msg);
+			leaveChannel.createMessage(msg);
 		}
 	}
 
@@ -645,35 +619,35 @@ export class IMClient extends Client {
 				}
 
 				const sets = await SettingsCache.get(guildId);
-				const perms = guild.me.permissions.toArray();
+				const perms = guild.members.get(this.user.id).permission.json;
 
-				let joinChannelPerms: string[] = [];
+				let joinChannelPerms: { [key: string]: boolean } = {};
 				if (sets.joinMessageChannel) {
 					const joinChannel = guild.channels.get(sets.joinMessageChannel);
 					if (joinChannel) {
-						joinChannelPerms = joinChannel.permissionsFor(guild.me).toArray();
+						joinChannelPerms = joinChannel.permissionsOf(this.user.id).json;
 					} else {
-						joinChannelPerms = ['Invalid channel'];
+						joinChannelPerms = { 'Invalid channel': true };
 					}
 				}
 
-				let leaveChannelPerms: string[] = [];
+				let leaveChannelPerms: { [key: string]: boolean } = {};
 				if (sets.leaveMessageChannel) {
 					const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
 					if (leaveChannel) {
-						leaveChannelPerms = leaveChannel.permissionsFor(guild.me).toArray();
+						leaveChannelPerms = leaveChannel.permissionsOf(this.user.id).json;
 					} else {
-						leaveChannelPerms = ['Invalid channel'];
+						leaveChannelPerms = { 'Invalid channel': true };
 					}
 				}
 
-				let annChannelPerms: string[] = [];
+				let annChannelPerms: { [key: string]: boolean } = {};
 				if (sets.rankAnnouncementChannel) {
 					const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
 					if (annChannel) {
-						annChannelPerms = annChannel.permissionsFor(guild.me).toArray();
+						annChannelPerms = annChannel.permissionsOf(this.user.id).json;
 					} else {
-						annChannelPerms = ['Invalid channel'];
+						annChannelPerms = { 'Invalid channel': true };
 					}
 				}
 
@@ -698,7 +672,7 @@ export class IMClient extends Client {
 				SettingsCache.flush(guildId);
 				break;
 
-			case ShardCommand.SUDO:
+			/*case ShardCommand.SUDO:
 				if (!guild) {
 					return this.sendCommandToGuild(originGuildId, {
 						cmd: ShardCommand.RESPONSE,
@@ -736,7 +710,7 @@ export class IMClient extends Client {
 				);
 				(fakeMsg as any).__sudo = true;
 				sudoCmd.action(fakeMsg, content.args);
-				break;
+				break;*/
 
 			case ShardCommand.RESPONSE:
 				if (this.pendingRabbitMqRequests[id]) {
@@ -751,13 +725,16 @@ export class IMClient extends Client {
 		}
 	}
 
-	public async logAction(message: Message, action: LogAction, data: any) {
-		const logChannelId = (await SettingsCache.get(message.guild.id)).logChannel;
+	public async logAction(
+		guild: Guild,
+		message: Message,
+		action: LogAction,
+		data: any
+	) {
+		const logChannelId = (await SettingsCache.get(guild.id)).logChannel;
 
 		if (logChannelId) {
-			const logChannel = message.guild.channels.get(
-				logChannelId
-			) as TextChannel;
+			const logChannel = guild.channels.get(logChannelId) as TextChannel;
 			if (logChannel) {
 				const content =
 					message.content.substr(0, 1000) +
@@ -768,21 +745,37 @@ export class IMClient extends Client {
 					json = json.substr(0, 1000) + '...';
 				}
 
-				const embed = createEmbed(message.client);
-				embed.setTitle('Log Action');
-				embed.addField('Action', action, true);
-				embed.addField('Cause', `<@${message.author.id}>`, true);
-				embed.addField('Command', content);
-
-				embed.addField('Data', '`' + json + '`');
-				sendEmbed(logChannel, embed);
+				const embed = createEmbed(this, {
+					title: 'Log Action',
+					fields: [
+						{
+							name: 'Action',
+							value: action,
+							inline: true
+						},
+						{
+							name: 'Cause',
+							value: `<@${message.author.id}>`,
+							inline: true
+						},
+						{
+							name: 'Command',
+							value: content
+						},
+						{
+							name: 'Data',
+							value: '`' + json + '`'
+						}
+					]
+				});
+				sendEmbed(this, logChannel, embed);
 			}
 		}
 
 		this.dbQueue.addLogAction(
 			{
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: message.author.id,
 				action,
 				message: message.content,
@@ -791,10 +784,10 @@ export class IMClient extends Client {
 				updatedAt: new Date()
 			},
 			{
-				id: message.guild.id,
-				name: message.guild.name,
-				icon: message.guild.iconURL(),
-				memberCount: message.guild.memberCount
+				id: guild.id,
+				name: guild.name,
+				icon: guild.iconURL,
+				memberCount: guild.memberCount
 			},
 			{
 				id: message.author.id,
@@ -815,7 +808,7 @@ export class IMClient extends Client {
 		inviterId: string,
 		inviterName: string,
 		inviterDiscriminator: string,
-		inviter?: GuildMember,
+		inviter?: Member,
 		invites: InviteCounts = {
 			total: 0,
 			regular: 0,
@@ -823,13 +816,12 @@ export class IMClient extends Client {
 			fake: 0,
 			leave: 0
 		}
-	): Promise<string | MessageEmbed> {
+	): Promise<string | Embed> {
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
-			inviter = await guild.members.fetch(inviterId).catch(() => undefined);
+			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
 		// Override the inviter name with the display name, if the member is still here
-		inviterName =
-			inviter && inviter.displayName ? inviter.displayName : inviterName;
+		inviterName = inviter && inviter.nick ? inviter.nick : inviterName;
 
 		// Total invites is only zero if it's set by default value
 		if (
@@ -915,7 +907,7 @@ export class IMClient extends Client {
 				inviterName: invName,
 				inviterFullName: inviterFullName,
 				inviterMention: inviterId ? `<@${inviterId}>` : unknown,
-				inviterImage: inviter ? inviter.user.avatarURL() : undefined,
+				inviterImage: inviter ? inviter.user.avatarURL : undefined,
 				numInvites: `${invites.total}`,
 				numRegularInvites: `${invites.regular}`,
 				numBonusInvites: `${invites.custom}`,
@@ -1049,21 +1041,17 @@ export class IMClient extends Client {
 
 	private async setActivity() {
 		if (this.dbl) {
-			this.dbl.postStats(
-				this.guilds.size,
-				this.options.shardId,
-				this.options.shardCount
-			);
+			this.dbl.postStats(this.guilds.size, this.shardId, this.numShards);
 		}
 
 		const numGuilds = await this.getGuildsCount();
-		this.user.setActivity(`invitemanager.co - ${numGuilds} servers!`, {
-			type: 'PLAYING'
+		this.editStatus('online', {
+			name: `invitemanager.co - ${numGuilds} servers!`,
+			type: 2
 		});
 	}
 
-	@on('guildMemberAdd')
-	private async _onGuildMemberAddOrig(member: GuildMember) {
+	private async _onGuildMemberAddOrig(member: Member) {
 		const guildId = member.guild.id;
 
 		// Ignore disabled guilds
@@ -1083,8 +1071,7 @@ export class IMClient extends Client {
 		}
 	}
 
-	@on('guildMemberRemove')
-	private async _onGuildMemberRemoveOrig(member: GuildMember) {
+	private async _onGuildMemberRemoveOrig(member: Member) {
 		const guildId = member.guild.id;
 
 		// If the pro version of our bot left, re-enable this version
@@ -1094,32 +1081,22 @@ export class IMClient extends Client {
 		}
 	}
 
-	@on('reconnecting')
-	private async _onReconnecting() {
-		console.log('DISCORD RECONNECTING:');
+	private async _onConnect() {
+		console.log('DISCORD CONNECT');
 	}
 
-	@on('disconnect')
 	private async _onDisconnect() {
-		console.log('DISCORD DISCONNECT:');
+		console.log('DISCORD DISCONNECT');
 	}
 
-	@on('resume')
-	private async _onResume(replayed: number) {
-		console.log('DISCORD RESUME:', replayed);
-	}
-
-	@on('guildUnavailable')
 	private async _onGuildUnavailable(guild: Guild) {
 		console.log('DISCORD GUILD_UNAVAILABLE:', guild.id);
 	}
 
-	@on('warn')
 	private async _onWarn(info: string) {
 		console.log('DISCORD WARNING:', info);
 	}
 
-	@on('error')
 	private async _onError(error: Error) {
 		console.log('DISCORD ERROR:', error);
 	}

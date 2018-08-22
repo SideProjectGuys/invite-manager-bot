@@ -5,7 +5,7 @@ import {
 	logger,
 	Message,
 	Middleware
-} from '@yamdbf/core';
+} from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../client';

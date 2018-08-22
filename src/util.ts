@@ -1,12 +1,12 @@
-import { Guild, Message } from '@yamdbf/core';
 import {
-	GuildMember,
-	MessageAttachment,
-	MessageEmbed,
-	MessageOptions,
+	Guild,
+	Member,
+	Message,
+	MessageContent,
+	MessageFile,
 	Role,
 	TextChannel
-} from 'discord.js';
+} from 'eris';
 
 import { IMClient } from './client';
 import {
@@ -96,7 +96,7 @@ export async function getInviteCounts(
 
 export async function promoteIfQualified(
 	guild: Guild,
-	member: GuildMember,
+	member: Member,
 	totalInvites: number
 ) {
 	let nextRankName = '';
@@ -250,12 +250,29 @@ export async function promoteIfQualified(
 export class FakeChannel extends TextChannel {
 	public listener: (data: any) => void;
 
-	public send(
-		options?: MessageOptions | MessageEmbed | MessageAttachment
-	): Promise<Message | Message[]> {
+	public createMessage(
+		content: MessageContent,
+		file?: MessageFile
+	): Promise<Message> {
 		if (this.listener) {
-			this.listener(options);
+			this.listener(content);
 		}
 		return new Promise(resolve => resolve());
 	}
+}
+
+export function idToBinary(num: string) {
+	let bin = '';
+	let high = parseInt(num.slice(0, -10), 10) || 0;
+	let low = parseInt(num.slice(-10), 10);
+	while (low > 0 || high > 0) {
+		// tslint:disable-next-line:no-bitwise
+		bin = String(low & 1) + bin;
+		low = Math.floor(low / 2);
+		if (high > 0) {
+			low += 5000000000 * (high % 2);
+			high = Math.floor(high / 2);
+		}
+	}
+	return bin;
 }

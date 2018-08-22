@@ -42,10 +42,15 @@ export class SettingsCache {
 	}
 
 	private static async doInit() {
-		const guildIds = this.client.guilds.keyArray();
+		const it = this.client.guilds.keys();
 
-		// First insert base data for all guilds
-		guildIds.forEach(id => {
+		const guildIds: string[] = [];
+		let result = it.next();
+
+		while (!result.done) {
+			const id = result.value as string;
+			guildIds.push(id);
+
 			this.cache[id] = { ...defaultSettings };
 			this.cacheFetch[id] = moment();
 
@@ -59,7 +64,7 @@ export class SettingsCache {
 
 			this.premiumCache[id] = false;
 			this.premiumCacheFetch[id] = moment();
-		});
+		}
 
 		// Load all settings into initial cache
 		const sets = await settings.findAll({
@@ -250,9 +255,6 @@ export class SettingsCache {
 		// Check if the value changed
 		if (oldConfig[key] !== value) {
 			this.cache[guildId][key] = value;
-
-			// Update the storage provider, so our bot works correctly
-			await this.client.storage.guilds.get(guildId).settings.set(key, value);
 
 			await settings.bulkCreate(
 				[
