@@ -680,6 +680,7 @@ export class IMClient extends Client {
 				this.sendCommandToGuild(originGuildId, {
 					cmd: ShardCommand.RESPONSE,
 					id,
+					owner: guild.owner.toJSON(),
 					settings: sets,
 					perms,
 					joinChannelPerms,
