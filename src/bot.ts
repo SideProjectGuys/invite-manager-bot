@@ -37,6 +37,6 @@ sequelize.sync().then(() => {
 		console.log('-------------------------------------');
 		console.log('Starting bot...');
 		console.log('-------------------------------------');
-		client.start();
+		client.connect();
 	});
 });

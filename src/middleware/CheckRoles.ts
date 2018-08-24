@@ -1,5 +1,4 @@
-import { Command, Lang } from '@yamdbf/core';
-import { Message } from 'discord.js';
+import { Message } from 'eris';
 
 import { BotCommand, OwnerCommand, RP } from '../types';
 

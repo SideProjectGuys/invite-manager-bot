@@ -3,7 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { createEmbed, sendEmbed } from './functions/Messaging';
+import { createEmbed, sendEmbed, sendReply } from './functions/Messaging';
 import {
 	channels,
 	customInvites,
@@ -21,17 +21,18 @@ import {
 } from './sequelize';
 import { DBQueue } from './storage/DBQueue';
 import { SettingsCache } from './storage/SettingsCache';
-import { IMStorageProvider } from './storage/StorageProvider';
 import { ShardCommand } from './types';
 import {
-	FakeChannel,
 	getInviteCounts,
 	idToBinary,
 	InviteCounts,
 	promoteIfQualified
 } from './util';
+import { isStrict } from './middleware';
 
 const config = require('../config.json');
+
+const CHANNEL_TYPE_DM = 1;
 
 interface RabbitMqMember {
 	id: string;
@@ -141,7 +142,7 @@ export class IMClient extends Client {
 
 		this.on('ready', this._onClientReady);
 		this.on('guildCreate', this._onGuildCreate);
-		// this.on('messageCreate', this._onMessage);
+		this.on('messageCreate', this._onMessage);
 		this.on('guildMemberAdd', this._onGuildMemberAddOrig);
 		this.on('guildMemberRemove', this._onGuildMemberRemoveOrig);
 		this.on('guildUnavailable', this._onGuildUnavailable);
@@ -285,7 +286,7 @@ export class IMClient extends Client {
 		);
 	}*/
 
-	/*private async _onMessage(message: Message) {
+	private async _onMessage(message: Message) {
 		// Skip if this is our own message, bot message or empty messages
 		if (
 			message.author.id === this.user.id ||
@@ -295,9 +296,69 @@ export class IMClient extends Client {
 			return;
 		}
 
+		// Skip DMs
+		if (message.channel.type === CHANNEL_TYPE_DM) {
+			return;
+		}
+
+		const channel = message.channel as TextChannel;
+		const guild = channel.guild;
+
+		// Check if this guild is disabled due to the pro bot
+		if (
+			this.disabledGuilds.has(guild.id) &&
+			!message.content.startsWith(`<@${this.user.id}>`) &&
+			!message.content.startsWith(`<@!${this.user.id}>`)
+		) {
+			return;
+		}
+
+		const lang = (await SettingsCache.get(guild.id)).lang;
+		const rp = Lang.createResourceProxy(lang) as RP;
+
+		// Always allow admins
+		let member = message.member;
+		if (!member) {
+			member = guild.members.get(message.author.id);
+		}
+		if (!member) {
+			member = await guild.getRESTMember(message.author.id);
+		}
+		if (!member) {
+			console.error(
+				`Could not get member ${message.author.id} for ${guild.id}`
+			);
+			sendReply(this, message, rp.PERMISSIONS_MEMBER_ERROR());
+			return;
+		}
+
+		if (!message.member.permission.has('ADMINISTRATOR')) {
+			const perms = (await SettingsCache.getPermissions(guild.id))[cmd];
+
+			// Allow commands that require no roles, if strict is not true
+			if (!perms || perms.length === 0) {
+				if (isStrict(cmd)) {
+					sendReply(this, message, rp.PERMISSIONS_ADMIN_ONLY());
+					return;
+				}
+			}
+
+			// Check that we have at least one of the required roles
+			if (!perms.some(p => message.member.roles.has(p))) {
+				sendReply(
+					this,
+					message,
+					rp.PERMISSIONS_MISSING_ROLE({
+						roles: perms.map(p => `<@&${p}>`).join(', ')
+					})
+				);
+				return;
+			}
+		}
+
 		// Skip if this is a valid bot command
 		// (technically we ignore all prefixes, but bot only responds to default one)
-		const cmd = message.content.split(' ')[0].toLowerCase();
+		/*const cmd = message.content.split(' ')[0].toLowerCase();
 		if (this.commands.get(cmd) || this.commands.get(cmd.substring(1))) {
 			return;
 		}
@@ -330,8 +391,8 @@ export class IMClient extends Client {
 				embed.setDescription(message.content);
 				await sendEmbed(dmChannel, embed);
 			}
-		}
-	}*/
+		}*/
+	}
 
 	private async _onGuildMemberAdd(_msg: amqplib.Message): Promise<void> {
 		const content = JSON.parse(_msg.content.toString());
@@ -1051,8 +1112,8 @@ export class IMClient extends Client {
 		});
 	}
 
-	private async _onGuildMemberAddOrig(member: Member) {
-		const guildId = member.guild.id;
+	private async _onGuildMemberAddOrig(guild: Guild, member: Member) {
+		const guildId = guild.id;
 
 		// Ignore disabled guilds
 		if (this.disabledGuilds.has(guildId)) {

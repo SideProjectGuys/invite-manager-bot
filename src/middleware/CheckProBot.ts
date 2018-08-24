@@ -1,5 +1,4 @@
-import { Command } from '@yamdbf/core';
-import { Message } from 'discord.js';
+import { Message } from 'eris';
 
 import { IMClient } from '../client';
 

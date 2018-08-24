@@ -248,7 +248,7 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	rankAnnouncementChannel: null,
 	rankAnnouncementMessage:
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
-	hideLeftMembersFromLeaderboard: 'false'
+	hideLeftMembersFromLeaderboard: 'true'
 };
 
 export interface SettingAttributes extends BaseAttributes {

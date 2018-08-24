@@ -1,6 +1,4 @@
-import { TemplateData } from '@yamdbf/core/bin/types/TemplateData';
-
-type TranslateFunc = (data: TemplateData) => string;
+type TranslateFunc = (data: any) => string;
 
 export interface TranslationKeys {
 	// Main
