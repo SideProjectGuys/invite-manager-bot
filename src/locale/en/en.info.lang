@@ -44,7 +44,7 @@ unknown (this only works for new members)
 Regular invites
 
 [CMD_INFO_REGULARINVITES_ENTRY]
-**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**
+**{{ uses }}** from **{{ code }}** {{! args.name ? `(${args.name}) ` : '' !}}- created **{{ createdAt }}**
 
 [CMD_INFO_REGULARINVITES_MORE]
 Plus another **{{ amount }}** more invite codes

@@ -289,7 +289,9 @@ export default class extends Command<IMClient> {
 			value
 		});
 
-		embed.setDescription(rp.CMD_INVITECODECONFIG_CHANGED_TEXT({ prefix }));
+		embed.setDescription(
+			rp.CMD_INVITECODECONFIG_CHANGED_TEXT({ prefix, key, code })
+		);
 
 		// Log the settings change
 		this.client.logAction(message, LogAction.memberConfig, {

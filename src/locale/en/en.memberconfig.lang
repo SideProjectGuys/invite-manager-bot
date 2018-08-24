@@ -32,8 +32,8 @@ New Value
 [CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
 This config is currently set.
 
-Use `{{ prefix }}config ${key} @{{ username }} <value>` to change it.
-Use `{{ prefix }}config ${key} @{{ username }} default` to reset it to the default.
+Use `{{ prefix }}config {{ key }} @{{ username }} <value>` to change it.
+Use `{{ prefix }}config {{ key }} @{{ username }} default` to reset it to the default.
 {{! args.clear ? `Use \`${args.prefix}config ${args.key} @${args.username} none\` to clear it.` : '' !}}
 
 [CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
@@ -47,8 +47,8 @@ This config is already set to that value
 [CMD_MEMBERCONFIG_CHANGED_TEXT]
 This config has been changed.
 
-Use `{{ prefix }}config ${key} @{{ username }} <value>` to change it again.
-Use `{{ prefix }}config ${key} @{{ username }} none` to reset it to the default.
+Use `{{ prefix }}config {{ key }} @{{ username }} <value>` to change it again.
+Use `{{ prefix }}config {{ key }} @{{ username }} none` to reset it to the default.
 
 [CMD_MEMBERCONFIG_NONE]
 None

@@ -16,6 +16,8 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	inviteCodeSettings,
+	InviteCodeSettingsKey,
 	joins,
 	members,
 	sequelize
@@ -56,7 +58,6 @@ export default class extends Command<IMClient> {
 
 		const sets = await SettingsCache.get(message.guild.id);
 		const lang = sets.lang;
-		const prefix = sets.prefix;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
@@ -67,6 +68,16 @@ export default class extends Command<IMClient> {
 				inviterId: user.id
 			},
 			order: [['uses', 'DESC']],
+			include: [
+				{
+					model: inviteCodeSettings,
+					where: {
+						guildId: message.guild.id,
+						key: InviteCodeSettingsKey.name
+					},
+					required: false
+				}
+			],
 			raw: true
 		});
 
@@ -286,14 +297,16 @@ export default class extends Command<IMClient> {
 		if (invs.length > 0) {
 			let invText = '';
 			invs.slice(0, 10).forEach(inv => {
+				const name = (inv as any)['inviteCodeSettings.value'];
+
 				invText +=
 					rp.CMD_INFO_REGULARINVITES_ENTRY({
 						uses: inv.uses,
-						code: inv.code,
+						code: name ? name : inv.code,
+						name: name ? inv.code : undefined,
 						createdAt: moment(inv.createdAt)
 							.locale(lang)
-							.fromNow(),
-						reason: inv.reason
+							.fromNow()
 					}) + '\n';
 			});
 

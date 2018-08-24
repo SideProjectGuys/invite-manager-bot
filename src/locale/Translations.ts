@@ -64,6 +64,9 @@ export interface TranslationKeys {
 
 	CMD_CLEARINVITES_DONE: TranslateFunc;
 
+	CMD_CREATEINVITE_MISSING_PERMISSIONS: TranslateFunc;
+	CMD_CREATEINVITE_DONE: TranslateFunc;
+
 	CMD_CONFIG_TITLE: TranslateFunc;
 	CMD_CONFIG_TEXT: TranslateFunc;
 	CMD_CONFIG_KEY_NOT_FOUND: TranslateFunc;
@@ -172,6 +175,8 @@ export interface TranslationKeys {
 	CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE: TranslateFunc;
 	CMD_INVITECODECONFIG_CHANGED_TEXT: TranslateFunc;
 	CMD_INVITECODECONFIG_NONE: TranslateFunc;
+
+	CMD_INVITEDETAILS_ENTRY: TranslateFunc;
 
 	CMD_INVITES_AMOUNT: TranslateFunc;
 	CMD_INVITES_NEXT_RANK: TranslateFunc;
