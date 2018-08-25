@@ -68,3 +68,6 @@ Only **Administrators** may use this command.
 [PERMISSIONS_MISSING_ROLE]
 You do not have permission to use this command.
 You need one of the following roles: {{ roles }}
+
+[CAPTCHA_INVALID]
+Captcha didn't match, please try again.
