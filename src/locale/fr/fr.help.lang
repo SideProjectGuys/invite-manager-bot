@@ -1,0 +1,36 @@
+[CMD_HELP_TEXT]
+Voila la liste des commandes que vous pouvez utilisez. Vous pouvez avoir plus d'informations sur une commande spécifique en utilisant \`{{ prefix }}help \` (e.g. \`{{ prefix }}help add-ranks\`)
+
+Les arguments sont listé après les commandes. Les parenthèses indiquent un argument **optionnel**. (e.g. \`(reason)\` signifique que \`reason\` est optionnel)
+
+
+[CMD_HELP_COMMAND_TITLE]
+Command
+
+[CMD_HELP_DESCRIPTION_TITLE]
+Description
+
+[CMD_HELP_USAGE_TITLE]
+Utilisation
+
+[CMD_HELP_ALIASES_TITLE]
+Aliases
+
+[CMD_HELP_BOT_PERMISSIONS_TITLE]
+Permissions du bot
+
+[CMD_HELP_USER_PERMISSIONS_TITLE]
+Permission de l'utilisateur
+
+[CMD_HELP_COMMAND_NONE]
+aucun
+
+[CMD_HELP_UNAVAILABLE_COMMAND_TITLE]
+Commandes non disponibles (autorisations manquantes).
+
+[CMD_HELP_UNAVAILABLE_COMMAND]
+{{ prefix }}{{ name }}` ⚠️ * Permission manquante : `{{ missingPermission }}` !*
+
+[CMD_HELP_LINKS]
+Liens
+

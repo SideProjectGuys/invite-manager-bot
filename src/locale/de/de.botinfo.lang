@@ -1,6 +1,18 @@
 [CMD_BOTINFO_VERSION]
 Version
 
+[CMD_BOTINFO_UPTIME]
+Verfügbarkeit
+
+[CMD_BOTINFO_GUILDS]
+Gilden
+
 [CMD_BOTINFO_MEMBERS]
 Mitglieder
+
+[CMD_BOTINFO_SHARD_CURRENT]
+Aktuelle Scherben
+
+[CMD_BOTINFO_SHARD_TOTAL]
+Total Shards
 

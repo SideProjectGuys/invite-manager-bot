@@ -1,0 +1,9 @@
+[CMD_RANKS_NONE]
+Aucun rang n'a encore été créé.
+
+[CMD_RANKS_ENTRY]
+<@&{{ role }}>: **{{ numInvites }} invitations**{{ description ?}}
+
+[CMD_RANKS_TITLE]
+Rang
+

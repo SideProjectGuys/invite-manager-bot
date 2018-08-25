@@ -1,3 +1,8 @@
+[CMD_HELP_TEXT]
+This is a list of commands you can use. You can get more info about a specific command by using \`{{ prefix }}help <command>\` (e.g. \`{{ prefix }}help add-ranks\`)
+
+Arguments are listed after the command. Parentheses \`()\` indicate an **optional** argument. (e.g. \`(reason)\` means the \`reason\` is optional)
+
 [CMD_HELP_COMMAND_TITLE]
 Befehl
 
@@ -7,6 +12,9 @@ Beschreibung
 [CMD_HELP_USAGE_TITLE]
 Verwendung
 
+[CMD_HELP_ALIASES_TITLE]
+Aliase
+
 [CMD_HELP_BOT_PERMISSIONS_TITLE]
 Bot Rechte
 
@@ -15,4 +23,13 @@ Benutzer Rechte
 
 [CMD_HELP_COMMAND_NONE]
 Nichts
+
+[CMD_HELP_UNAVAILABLE_COMMAND_TITLE]
+Nicht verfügbare Befehle (fehlende Berechtigungen)
+
+[CMD_HELP_UNAVAILABLE_COMMAND]
+`{{ prefix }}{{ name }}`  ⚠️ *Missing `{{ missingPermission }}` permission!*
+
+[CMD_HELP_LINKS]
+Links
 

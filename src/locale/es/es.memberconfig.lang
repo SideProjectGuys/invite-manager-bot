@@ -33,8 +33,8 @@ Valor nuevo
 [CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
 Este ajuste ya esta establecido.
 
-Usa `{{ prefix }}config ${key} @{{ username }} <valor>` para cambiarlo.
-Usa `{{ prefix }}config ${key} @{{ username }} default` para dejarlo por defecto.
+Usa `{{ prefix }}config {{ key }} @{{ username }} <valor>` para cambiarlo.
+Usa `{{ prefix }}config {{ key }} @{{ username }} default` para dejarlo por defecto.
 {{! args.clear ? `Usa \`${args.prefix}config ${args.key} @${args.username} ninguno\` para limpiarlo.` : '' !}}
 
 
@@ -50,8 +50,8 @@ Este ajuste esta actualemente configurado a ese valor.
 Este ajuste ha sido cambiado.
 
 
-Usa `{{ prefix }}config ${key} @{{ username }} <valor>` para cambiarlo de nuevo.
-Usa `{{ prefix }}config ${key} @{{ username }} none` para dejarlo por defecto.
+Usa `{{ prefix }}config {{ key }} @{{ username }} <valor>` para cambiarlo de nuevo.
+Usa `{{ prefix }}config {{ key }} @{{ username }} none` para dejarlo por defecto.
 
 
 [CMD_MEMBERCONFIG_NONE]

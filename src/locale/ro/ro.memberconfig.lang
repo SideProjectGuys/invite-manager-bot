@@ -1,0 +1,55 @@
+[CMD_MEMBERCONFIG_TITLE]
+Your config settings
+
+[CMD_MEMBERCONFIG_TEXT]
+Below are all the available config settings.
+
+Use `{{ prefix }}config <key>` to view the users which have a `<key>` setting
+Use `{{ prefix }}config <key> @user` to view the setting for a single `@user`
+Use `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`
+
+[CMD_MEMBERCONFIG_KEY_NOT_FOUND]
+No config setting called **{{ key }}** found.
+
+[CMD_MEMBERCONFIG_KEY_CANT_CLEAR]
+The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.
+
+[CMD_MEMBERCONFIG_KEYS_TITLE]
+Valid config keys
+
+[CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT]
+This config settings is currently not set for any members
+
+[CMD_MEMBERCONFIG_CURRENT_TITLE]
+Current Value
+
+[CMD_MEMBERCONFIG_PREVIOUS_TITLE]
+Previous Value
+
+[CMD_MEMBERCONFIG_NEW_TITLE]
+New Value
+
+[CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
+This config is currently set.
+
+Use `{{ prefix }}config {{ key }} @{{ username }} <value>` to change it.
+Use `{{ prefix }}config {{ key }} @{{ username }} default` to reset it to the default.
+{{! args.clear ? `Use \`${args.prefix}config ${args.key} @${args.username} none\` to clear it.` : '' !}}
+
+[CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
+This config is currently **not** set.
+
+Use `{{ prefix }}config {{ key }} @{{ username }} <value>` to set it.
+
+[CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE]
+This config is already set to that value
+
+[CMD_MEMBERCONFIG_CHANGED_TEXT]
+This config has been changed.
+
+Use `{{ prefix }}config {{ key }} @{{ username }} <value>` to change it again.
+Use `{{ prefix }}config {{ key }} @{{ username }} none` to reset it to the default.
+
+[CMD_MEMBERCONFIG_NONE]
+None
+

@@ -1,0 +1,43 @@
+[CMD_LEADERBOARD_TITLE]
+Classement
+
+[CMD_LEADERBOARD_INVALID_DATE]
+Invalide
+
+[CMD_LEADERBOARD_NO_INVITES]
+Aucune invitations
+
+[CMD_LEADERBOARD_COMPARED_TO]
+changements par rapport à {{ to }}
+
+[CMD_LEADERBOARD_ROW_ENTRY]
+**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** ordinaire, **{{ custom }}** bonus, **{{ fake }}** fausse, **{{ leave }}** partie)
+
+[CMD_LEADERBOARD_COL_CHANGE]
+Changement
+
+[CMD_LEADERBOARD_COL_NAME]
+Nom
+
+[CMD_LEADERBOARD_COL_TOTAL]
+T
+
+[CMD_LEADERBOARD_COL_REGULAR]
+O
+
+[CMD_LEADERBOARD_COL_CUSTOM]
+B
+
+[CMD_LEADERBOARD_COL_FAKE]
+F
+
+[CMD_LEADERBOARD_COL_LEAVE]
+P
+
+[CMD_LEADERBOARD_TABLE_LEGEND]
+`T` = Total
+`O` = Ordinaire
+`B` = Bonus
+`F` = Fake
+`P` = Partis
+

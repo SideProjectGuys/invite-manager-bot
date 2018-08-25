@@ -7,3 +7,9 @@ Aucune fausse invitation détectée jusqu'à présent.
 [CMD_FAKE_NONE_SINCE_JOIN]
 Il n'y a pas eu de fausses invitations depuis que le bot a été ajouté à ce serveur.
 
+[CMD_FAKE_JOIN_ENTRY]
+**{{ name }}** a rejoint **{{ times }} fois**, invité par:
+
+[CMD_FAKE_JOIN_ENTRY_INV]
+**{{ name }}**{{! args.times ? ` (**${args.times}** fois)` : '' !}}
+

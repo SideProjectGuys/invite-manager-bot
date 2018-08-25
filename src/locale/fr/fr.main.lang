@@ -10,6 +10,21 @@ Site Internet du bot
 [BOT_PATREON_TITLE]
 Patreon
 
+[CUSTOM_INVITES_REASON_CLEAR_REGULAR]
+!clear-invites command (ordinaire)
+
+[CUSTOM_INVITES_REASON_CLEAR_CUSTOM]
+!clear-invites command (bonus)
+
+[CUSTOM_INVITES_REASON_CLEAR_FAKE]
+!clear-invites command (fausse)
+
+[CUSTOM_INVITES_REASON_CLEAR_LEAVE]
+!clear-invites command (départ)
+
+[CUSTOM_INVITES_REASON_FAKE]
+Fausse invitations de <@{{ reason }}>
+
 [CUSTOM_INVITES_REASON_LEAVE]
 {user} a quitté
 
@@ -27,4 +42,10 @@ Inconnu(e)
 
 [JOIN_LEAVE_EMBEDS_IS_PREMIUM]
 Utiliser des embeds pour les messages de bienvenue est un avantage Premium.
+
+[ROLES_SHOULD_HAVE]
+Vous avez gagné le rôle {{shouldHave}} mais je ne peux pas vous les attribuer car mon rôle n’est pas suffisant.
+
+[ROLES_SHOULD_NOT_HAVE]
+Vous n'avez pas besoin des rôles {{ shouldNotHave }} mais je ne peux pas les supprimer car mon rôle n'est pas assez élevé.
 

@@ -32,8 +32,8 @@ Nieuwe Waarde
 [CMD_MEMBERCONFIG_CURRENT_SET_TEXT]
 De config is momenteel gezet
 
-Gebruik `{{ prefix}}config ${key} @{{ username }} <waarde>` om te veranderen
-Gebruik `{{ prefix}}config ${key} @{{ username }} default` om het te resetten naar normaal
+Gebruik `{{ prefix}}config {{ key }} @{{ username }} <waarde>` om te veranderen
+Gebruik `{{ prefix}}config {{ key }} @{{ username }} default` om het te resetten naar normaal
 {{! args.clear ? `Gebruik \`${args.prefix}config ${args.key} @${args.username} none\` om het te verwijderen`: '' !}}
 
 [CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT]
@@ -47,8 +47,8 @@ Deze configuratie was al gezet naar die waarde
 [CMD_MEMBERCONFIG_CHANGED_TEXT]
 Deze configuratie is succesvol gezet.
 
-Gebruik`{{ prefix }}config ${key} @{{ username }} <waarde>` om dit opnieuw te veranderen.
-Gebruik `{{ prefix }}config ${key} @{{ username}} <waarde>` om dit te resetten naar de stanaard waarde.
+Gebruik `{{ prefix }}config {{ key }} @{{ username }} <waarde>` om dit opnieuw te veranderen.
+Gebruik `{{ prefix }}config {{ key }} @{{ username}} <waarde>` om dit te resetten naar de stanaard waarde.
 
 [CMD_MEMBERCONFIG_NONE]
 Geen

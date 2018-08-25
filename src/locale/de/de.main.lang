@@ -46,3 +46,6 @@ Dieser Stil ist eine Premium-Funktion.
 [ROLES_SHOULD_HAVE]
 Du hast due Rolle bekommen {{ shuoldHave }} aber ich kann sie dir nicht zuordnen weil meine Rolle nicht genügend Rechte hat
 
+[ROLES_SHOULD_NOT_HAVE]
+Du solltest die Rollen {{ shouldNotHave }} nicht haben, aber ich kann sie nicht entfernen weil meine Rolle nicht hoch genug ist.
+

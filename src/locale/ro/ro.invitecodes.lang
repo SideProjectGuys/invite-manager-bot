@@ -1,3 +1,6 @@
+[CMD_INVITECODES_TITLE]
+You have the following codes on the server {{ guild }}
+
 [CMD_INVITECODES_NO_CODES]
 Nu ai nici o invitatie activa! Pentru ati creea propia invitatie mergi pe canalul #server_update sa vezi cum poti face asta!
 
@@ -13,11 +16,24 @@ Permanenta
 [CMD_INVITECODES_PERMANENT_TEXT]
 Aceste invitatii nu expira!
 
+[CMD_INVITECODES_PERMANENT_ENTRY]
+**Uses**: {{ uses }}
+**Max Age**: {{ maxAge }}
+**Max Uses**: {{ maxUses }}
+**Channel**: <#{{ channel }}>
+
 [CMD_INVITECODES_TEMPORARY_TITLE]
 Temporara
 
 [CMD_INVITECODES_TEMPORARY_TEXT]
 Aceste invitatii vor expira dupa ceva timp
+
+[CMD_INVITECODES_TEMPORARY_ENTRY]
+**Uses**: {{ uses }}
+**Max Age**: {{ maxAge }}
+**Max Uses**: {{ maxUses }}
+**Channel**: <#{{ channel }}>
+**Expires**: {{ expires }}
 
 [CMD_INVITECODES_DM_SENT]
 Ti-am trimis un mesaj privat cu codurile tale de invitatie!

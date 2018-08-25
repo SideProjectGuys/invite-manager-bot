@@ -1,0 +1,10 @@
+[CMD_INVITES_AMOUNT]
+{{! args.self === args.target ? 'Vous avez' : `<@${args.target}> a` !}} **{{ total }}**  invite! (** {{ regular }}** normal, **{{ custom }}** bonus, **{{ fake }}** fausse, **{{congé}}** quitté)
+
+[CMD_INVITES_NEXT_RANK]
+{{! args.target === args.self ? 'Vous avez besoin' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** invite pour atteindre **{{ nextRankName }}** rank!
+
+[CMD_INVITES_HIGHEST_RANK]
+{{! args.target === args.self ? 'Félicitations, vous avez actuellement le plus haut rang!!'
+: `<@${args.target}> a le rang le plus élevé!` !}}
+

@@ -1,6 +1,43 @@
 [CMD_LEADERBOARD_TITLE]
 Rangliste
 
+[CMD_LEADERBOARD_INVALID_DATE]
+Ungültiges Datum
+
 [CMD_LEADERBOARD_NO_INVITES]
 keine Einladungen!
+
+[CMD_LEADERBOARD_COMPARED_TO]
+changes compared to {{ to }}
+
+[CMD_LEADERBOARD_ROW_ENTRY]
+**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)
+
+[CMD_LEADERBOARD_COL_CHANGE]
+Ändern
+
+[CMD_LEADERBOARD_COL_NAME]
+Namen
+
+[CMD_LEADERBOARD_COL_TOTAL]
+T
+
+[CMD_LEADERBOARD_COL_REGULAR]
+R
+
+[CMD_LEADERBOARD_COL_CUSTOM]
+B
+
+[CMD_LEADERBOARD_COL_FAKE]
+F
+
+[CMD_LEADERBOARD_COL_LEAVE]
+L
+
+[CMD_LEADERBOARD_TABLE_LEGEND]
+`T` = Total
+`R` = Regular
+`B` = Bonus
+`F` = Fake
+`L` = Leaves
 

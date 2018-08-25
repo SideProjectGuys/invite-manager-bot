@@ -1,3 +1,6 @@
+[CMD_ADDINVITES_ZERO]
+Null Einladungen hinzuzufügen macht nicht wirklich Sinn...
+
 [CMD_ADDINVITES_AMOUNT_POS]
 **{{ amount }}** Einladungen für <@{{ member }}> hinzugefügt <@{{ member }}> hat jetzt **{{totalInvites }}** Einladungen erhalten
 

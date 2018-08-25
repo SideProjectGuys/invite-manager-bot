@@ -1,0 +1,6 @@
+[CMD_REMOVERANK_RANK_NOT_FOUND]
+Rang {{ role }} gibt es nicht
+
+[CMD_REMOVERANK_DONE]
+Rang {{role }} entfernt.
+
