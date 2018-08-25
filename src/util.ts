@@ -285,7 +285,7 @@ export async function sendCaptchaToUserOnJoin(
 ) {
 	const settings = await SettingsCache.get(member.guild.id);
 
-	if (!settings.captchaVerificationOnJoin) {
+	if (settings.captchaVerificationOnJoin !== 'true') {
 		return;
 	}
 
