@@ -26,7 +26,7 @@ export default class extends Command<IMClient> {
 			name: 'owner-give-premium',
 			aliases: ['ownerGivePremium', 'ogp'],
 			desc: 'Give premium',
-			usage: '<prefix>owner-give-premium <guildID>',
+			usage: '<prefix>owner-give-premium <amount> <user> <guild> <duration> <reason>',
 			ownerOnly: true,
 			hidden: true
 		});

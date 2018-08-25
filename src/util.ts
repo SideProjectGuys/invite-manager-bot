@@ -8,7 +8,10 @@ import {
 	TextChannel
 } from 'discord.js';
 
+import { createCaptcha, FileMode } from './functions/Captcha';
+
 import { IMClient } from './client';
+import { createEmbed } from './functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,7 +21,6 @@ import {
 	ranks,
 	sequelize
 } from './sequelize';
-
 import { SettingsCache } from './storage/SettingsCache';
 
 export interface InviteCounts {
@@ -190,7 +192,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-						`rank announcement channel ${rankChannelId}`
+					`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -257,5 +259,76 @@ export class FakeChannel extends TextChannel {
 			this.listener(options);
 		}
 		return new Promise(resolve => resolve());
+	}
+}
+
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
+
+export async function sendCaptchaToUserOnJoin(client: IMClient, member: GuildMember) {
+	const settings = await SettingsCache.get(member.guild.id);
+
+	if (settings.captchaVerificationOnJoin) {
+		createCaptcha(
+			{
+				size: 6,
+				fileMode: FileMode.BUFFER,
+				height: 50,
+				noiseColor: 'rgb(10,40,100)',
+				color: 'rgb(50,40,50)',
+				spacing: 2,
+				nofLines: 4
+			},
+			(text, buffer) => {
+				const embed = createEmbed(client);
+				embed.setTitle('Captcha');
+				embed.setDescription(settings.captchaVerificationWelcomeMessage);
+				embed.setImage('attachment://captcha.png');
+				embed.attachFiles([
+					{
+						attachment: buffer,
+						name: 'captcha.png'
+					}
+				]);
+
+				let listenToMessage = async (message: Message) => {
+					const confirmation: Message = (await message.channel.awaitMessages(
+						a => a.author.id === message.author.id,
+						{ max: 1, time: settings.captchaVerificationTimeout }
+					)).first();
+
+					if (!confirmation) {
+						return [PromptResult.TIMEOUT, confirmation];
+					}
+					if (confirmation.content.toLowerCase() !== text.toLowerCase()) {
+						return [PromptResult.FAILURE, confirmation];
+					}
+					return [PromptResult.SUCCESS, confirmation];
+				};
+
+				member.send({ embed }).then(async (message: Message) => {
+					const timeout = setTimeout(
+						() => {
+							member.send(settings.captchaVerificationFailedMessage);
+							member.kick();
+						},
+						settings.captchaVerificationTimeout * 1000);
+
+					const [result, value] = await listenToMessage(message);
+
+					if (result === PromptResult.FAILURE) {
+						member.send(`Captcha didn't match, please try again.`);
+						listenToMessage(message);
+					}
+
+					clearTimeout(timeout);
+					member.send(settings.captchaVerificationSuccessMessage);
+				});
+			});
+	} else {
+		return;
 	}
 }

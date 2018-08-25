@@ -30,7 +30,7 @@ export default class extends Command<IMClient> {
 			usage: '<prefix>graph type (duration)',
 			group: CommandGroup.Other,
 			guildOnly: true,
-			hidden: true
+			hidden: false
 		});
 	}
 

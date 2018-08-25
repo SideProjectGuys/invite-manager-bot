@@ -178,7 +178,12 @@ export enum SettingsKey {
 	rankAssignmentStyle = 'rankAssignmentStyle',
 	rankAnnouncementChannel = 'rankAnnouncementChannel',
 	rankAnnouncementMessage = 'rankAnnouncementMessage',
-	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard'
+	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard',
+	captchaVerificationOnJoin = 'captchaVerificationOnJoin',
+	captchaVerificationWelcomeMessage = 'captchaVerificationWelcomeMessage',
+	captchaVerificationSuccessMessage = 'captchaVerificationSuccessMessage',
+	captchaVerificationFailedMessage = 'captchaVerificationFailedMessage',
+	captchaVerificationTimeout = 'captchaVerificationTimeout'
 }
 
 export enum Lang {
@@ -248,7 +253,12 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	rankAnnouncementChannel: null,
 	rankAnnouncementMessage:
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
-	hideLeftMembersFromLeaderboard: 'false'
+	hideLeftMembersFromLeaderboard: 'false',
+	captchaVerificationOnJoin: 'false',
+	captchaVerificationWelcomeMessage: 'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
+	captchaVerificationSuccessMessage: 'You have successfully entered the captcha. Welcome to the server!',
+	captchaVerificationFailedMessage: 'You did not enter the captha right within the specified time. We\'re sorry, but we have to kick you from the server. Feel free to join again.',
+	captchaVerificationTimeout: '180' /* seconds */
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -284,7 +294,12 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 			SettingsKey.rankAssignmentStyle,
 			SettingsKey.rankAnnouncementChannel,
 			SettingsKey.rankAnnouncementMessage,
-			SettingsKey.hideLeftMembersFromLeaderboard
+			SettingsKey.hideLeftMembersFromLeaderboard,
+			SettingsKey.captchaVerificationOnJoin,
+			SettingsKey.captchaVerificationWelcomeMessage,
+			SettingsKey.captchaVerificationSuccessMessage,
+			SettingsKey.captchaVerificationFailedMessage,
+			SettingsKey.captchaVerificationTimeout
 		),
 		value: Sequelize.TEXT
 	},
