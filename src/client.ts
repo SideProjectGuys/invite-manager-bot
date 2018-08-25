@@ -90,7 +90,8 @@ export class IMClient extends Client {
 		conn: amqplib.Connection,
 		token: string,
 		shardId: number,
-		shardCount: number
+		shardCount: number,
+		_prefix: string
 	) {
 		super(
 			{
@@ -140,7 +141,11 @@ export class IMClient extends Client {
 		Lang.setFallbackLang(SettingsLang.en);
 
 		// Setup RabbitMQ channels
-		const prefix = config.rabbitmq.prefix ? config.rabbitmq.prefix + '-' : '';
+		const prefix = _prefix
+			? _prefix + '-'
+			: config.rabbitmq.prefix
+				? config.rabbitmq.prefix + '-'
+				: '';
 
 		this.qJoinsName = prefix + 'joins-' + shardId + '-' + shardCount;
 		conn.createChannel().then(async channel => {
