@@ -36,7 +36,8 @@ import {
 	FakeChannel,
 	getInviteCounts,
 	InviteCounts,
-	promoteIfQualified
+	promoteIfQualified,
+	sendCaptchaToUserOnJoin
 } from './util';
 
 const { on, once } = ListenerUtil;
@@ -1081,6 +1082,10 @@ export class IMClient extends Client {
 				this.disabledGuilds.add(guildId);
 			}
 			return;
+		}
+
+		if (await SettingsCache.isPremium(guildId)) {
+			sendCaptchaToUserOnJoin(this, member);
 		}
 	}
 

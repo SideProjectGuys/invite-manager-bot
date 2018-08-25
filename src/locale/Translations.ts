@@ -37,6 +37,8 @@ export interface TranslationKeys {
 	PERMISSIONS_ADMIN_ONLY: TranslateFunc;
 	PERMISSIONS_MISSING_ROLE: TranslateFunc;
 
+	CAPTCHA_INVALID: TranslateFunc;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: TranslateFunc;
 	CMD_ADDINVITES_AMOUNT_POS: TranslateFunc;
