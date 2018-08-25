@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[invitemanager-bot.enjson-en-json]
+file_filter = src/locale/<lang>/main.json
+minimum_perc = 0
+source_file = src/locale/enjson_en.json
+source_lang = en
+type = KEYVALUEJSON
+

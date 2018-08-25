@@ -1,9 +1,3 @@
-import { ResourceProxy } from '@yamdbf/core';
-
-import { TranslationKeys } from './locale/Translations';
-
-export type RP = ResourceProxy<TranslationKeys>;
-
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',

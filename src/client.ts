@@ -1,9 +1,12 @@
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 
+import { Command } from './commands/Command';
 import { createEmbed, sendEmbed, sendReply } from './functions/Messaging';
+import { isStrict } from './middleware';
 import {
 	channels,
 	customInvites,
@@ -28,11 +31,17 @@ import {
 	InviteCounts,
 	promoteIfQualified
 } from './util';
-import { isStrict } from './middleware';
 
 const config = require('../config.json');
 
 const CHANNEL_TYPE_DM = 1;
+
+i18n.configure({
+	locales: ['en', 'de', 'el', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ro'],
+	defaultLocale: 'en',
+	syncFiles: true,
+	directory: __dirname + '/../locale'
+});
 
 interface RabbitMqMember {
 	id: string;
@@ -50,6 +59,8 @@ interface RabbitMqMember {
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+
+	public commands: Command[];
 
 	public conn: amqplib.Connection;
 	public qJoinsName: string;
@@ -74,9 +85,7 @@ export class IMClient extends Client {
 	private dbl: DBL;
 
 	public disabledGuilds: Set<string> = new Set();
-	public pendingRabbitMqRequests: {
-		[x: string]: (response: any) => void;
-	} = {};
+	public pendingRabbitMqRequests: Map<string, (response: any) => void>;
 
 	public constructor(
 		version: string,
@@ -107,6 +116,7 @@ export class IMClient extends Client {
 		this.startedAt = moment();
 
 		this.dbQueue = new DBQueue(this);
+		this.pendingRabbitMqRequests = new Map();
 
 		// Setup RabbitMQ channels
 		const prefix = config.rabbitmq.prefix ? config.rabbitmq.prefix + '-' : '';
@@ -139,6 +149,9 @@ export class IMClient extends Client {
 		});
 
 		SettingsCache.init(this);
+
+		this.commands = [];
+		this.commands.push(require('./commands/info/botInfo'));
 
 		this.on('ready', this._onClientReady);
 		this.on('guildCreate', this._onGuildCreate);
@@ -296,13 +309,13 @@ export class IMClient extends Client {
 			return;
 		}
 
+		const channel = message.channel as TextChannel;
+		const guild = channel.guild;
+
 		// Skip DMs
 		if (message.channel.type === CHANNEL_TYPE_DM) {
 			return;
 		}
-
-		const channel = message.channel as TextChannel;
-		const guild = channel.guild;
 
 		// Check if this guild is disabled due to the pro bot
 		if (
@@ -313,8 +326,37 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const lang = (await SettingsCache.get(guild.id)).lang;
-		const rp = Lang.createResourceProxy(lang) as RP;
+		console.log(
+			`${guild.name} (${message.author.username}): ${message.content}`
+		);
+
+		const sets = await SettingsCache.get(guild.id);
+		const prefix = sets.prefix;
+
+		console.log(sets);
+
+		// Figure out which command is being run
+		const splits = message.content.split(' ');
+		let cmdStr = splits[0].toLowerCase();
+
+		if (!cmdStr.startsWith(prefix)) {
+			return;
+		}
+
+		cmdStr = cmdStr.substring(prefix.length);
+
+		let cmd: Command = this.commands.find(
+			c => c.name === cmdStr || c.aliases.indexOf(cmdStr) >= 0
+		);
+
+		console.log(cmd);
+
+		// Command not found
+		if (!cmd) {
+			return;
+		}
+
+		const lang = sets.lang;
 
 		// Always allow admins
 		let member = message.member;
@@ -328,33 +370,52 @@ export class IMClient extends Client {
 			console.error(
 				`Could not get member ${message.author.id} for ${guild.id}`
 			);
-			sendReply(this, message, rp.PERMISSIONS_MEMBER_ERROR());
+			sendReply(
+				this,
+				message,
+				i18n.__({ locale: lang, phrase: 'PERMISSIONS_MEMBER_ERROR' })
+			);
 			return;
 		}
 
 		if (!message.member.permission.has('ADMINISTRATOR')) {
-			const perms = (await SettingsCache.getPermissions(guild.id))[cmd];
+			const perms = (await SettingsCache.getPermissions(guild.id))[cmd.name];
 
 			// Allow commands that require no roles, if strict is not true
 			if (!perms || perms.length === 0) {
-				if (isStrict(cmd)) {
-					sendReply(this, message, rp.PERMISSIONS_ADMIN_ONLY());
+				if (cmd.strict) {
+					sendReply(
+						this,
+						message,
+						i18n.__({ locale: lang, phrase: 'PERMISSIONS_ADMIN_ONLY' })
+					);
 					return;
 				}
 			}
 
 			// Check that we have at least one of the required roles
-			if (!perms.some(p => message.member.roles.has(p))) {
+			if (!perms.some(p => message.member.roles.indexOf(p) >= 0)) {
 				sendReply(
 					this,
 					message,
-					rp.PERMISSIONS_MISSING_ROLE({
-						roles: perms.map(p => `<@&${p}>`).join(', ')
-					})
+					i18n.__(
+						{ locale: lang, phrase: 'PERMISSIONS_MISSING_ROLE' },
+						{
+							roles: perms.map(p => `<@&${p}>`).join(', ')
+						}
+					)
 				);
 				return;
 			}
 		}
+
+		cmd.action(
+			guild,
+			message,
+			[],
+			(key: string, replacements?: { [key: string]: string }) =>
+				i18n.__({ locale: lang, phrase: key }, replacements)
+		);
 
 		// Skip if this is a valid bot command
 		// (technically we ignore all prefixes, but bot only responds to default one)
@@ -480,7 +541,10 @@ export class IMClient extends Client {
 			);
 			if (joinChannel) {
 				joinChannel.createMessage(
-					Lang.res(lang, 'JOIN_INVITED_BY_UNKNOWN', { id: member.id })
+					i18n.__(
+						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ id: member.id }
+					)
 				);
 			}
 			return;
@@ -590,9 +654,12 @@ export class IMClient extends Client {
 			);
 			if (leaveChannel) {
 				leaveChannel.createMessage(
-					Lang.res(lang, 'LEAVE_INVITED_BY_UNKNOWN', {
-						tag: member.user.username + '#' + member.user.discriminator
-					})
+					i18n.__(
+						{ locale: lang, phrase: 'LEAVE_INVITED_BY_UNKNOWN' },
+						{
+							tag: member.user.username + '#' + member.user.discriminator
+						}
+					)
 				);
 			}
 			return;
@@ -774,8 +841,8 @@ export class IMClient extends Client {
 				break;*/
 
 			case ShardCommand.RESPONSE:
-				if (this.pendingRabbitMqRequests[id]) {
-					this.pendingRabbitMqRequests[id](content);
+				if (this.pendingRabbitMqRequests.has(id)) {
+					this.pendingRabbitMqRequests.get(id)(content);
 				} else {
 					console.error('NOT EXPECTING RESPONSE FOR ' + id);
 				}
@@ -935,7 +1002,7 @@ export class IMClient extends Client {
 		}
 
 		const lang = (await SettingsCache.get(guild.id)).lang;
-		const unknown = Lang.res(lang, 'TEMPLATE_UNKNOWN');
+		const unknown = i18n.__({ locale: lang, phrase: 'TEMPLATE_UNKNOWN' });
 
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;
@@ -1013,7 +1080,9 @@ export class IMClient extends Client {
 				msg = createEmbed(this, temp);
 			} else {
 				const lang = (await SettingsCache.get(guild.id)).lang;
-				msg += '\n\n' + Lang.res(lang, 'JOIN_LEAVE_EMBEDS_IS_PREMIUM');
+				msg +=
+					'\n\n' +
+					i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
 			}
 		} catch (e) {
 			//
