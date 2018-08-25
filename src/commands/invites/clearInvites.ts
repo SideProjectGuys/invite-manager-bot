@@ -99,7 +99,10 @@ export default class extends Command<IMClient> {
 			],
 			where: {
 				guildId: message.guild.id,
-				...(memberId && { memberId })
+				memberId: {
+					[Op.ne]: null,
+					...(memberId && { [Op.eq]: memberId })
+				}
 			},
 			group: ['memberId', 'generatedReason'],
 			raw: true

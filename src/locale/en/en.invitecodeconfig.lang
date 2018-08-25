@@ -41,8 +41,8 @@ New Value
 [CMD_INVITECODECONFIG_CURRENT_SET_TEXT]
 This config is currently set.
 
-Use `{{ prefix }}config ${key} {{ code }} <value>` to change it.
-Use `{{ prefix }}config ${key} {{ code }} default` to reset it to the default.
+Use `{{ prefix }}config {{ key }} {{ code }} <value>` to change it.
+Use `{{ prefix }}config {{ key }} {{ code }} default` to reset it to the default.
 {{! args.clear ? `Use \`${args.prefix}config ${args.key} ${args.code} none\` to clear it.` : '' !}}
 
 [CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT]
@@ -56,8 +56,8 @@ This config is already set to that value
 [CMD_INVITECODECONFIG_CHANGED_TEXT]
 This config has been changed.
 
-Use `{{ prefix }}config ${key} {{ code }} <value>` to change it again.
-Use `{{ prefix }}config ${key} {{ code }} none` to reset it to the default.
+Use `{{ prefix }}config {{ key }} {{ code }} <value>` to change it again.
+Use `{{ prefix }}config {{ key }} {{ code }} none` to reset it to the default.
 
 [CMD_INVITECODECONFIG_NONE]
 None

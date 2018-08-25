@@ -1,0 +1,40 @@
+[CMD_INVITECODES_TITLE]
+You have the following codes on the server {{ guild }}
+
+[CMD_INVITECODES_NO_CODES]
+You don't have any active invite codes. Please ask the moderators of the server how to create one.
+
+[CMD_INVITECODES_RECOMMENDED_CODE_TITLE]
+Recommended invite code
+
+[CMD_INVITECODES_RECOMMENDED_CODE_NONE]
+Please create a permanent invite code.
+
+[CMD_INVITECODES_PERMANENT_TITLE]
+Permanent
+
+[CMD_INVITECODES_PERMANENT_TEXT]
+These invites don't expire.
+
+[CMD_INVITECODES_PERMANENT_ENTRY]
+**Uses**: {{ uses }}
+**Max Age**: {{ maxAge }}
+**Max Uses**: {{ maxUses }}
+**Channel**: <#{{ channel }}>
+
+[CMD_INVITECODES_TEMPORARY_TITLE]
+Temporary
+
+[CMD_INVITECODES_TEMPORARY_TEXT]
+These invites expire after a certain time.
+
+[CMD_INVITECODES_TEMPORARY_ENTRY]
+**Uses**: {{ uses }}
+**Max Age**: {{ maxAge }}
+**Max Uses**: {{ maxUses }}
+**Channel**: <#{{ channel }}>
+**Expires**: {{ expires }}
+
+[CMD_INVITECODES_DM_SENT]
+I sent you a DM with all your invite codes.
+

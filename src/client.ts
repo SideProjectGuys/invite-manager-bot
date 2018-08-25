@@ -36,7 +36,8 @@ import {
 	FakeChannel,
 	getInviteCounts,
 	InviteCounts,
-	promoteIfQualified
+	promoteIfQualified,
+	sendCaptchaToUserOnJoin
 } from './util';
 
 const { on, once } = ListenerUtil;
@@ -680,6 +681,7 @@ export class IMClient extends Client {
 				this.sendCommandToGuild(originGuildId, {
 					cmd: ShardCommand.RESPONSE,
 					id,
+					owner: guild.owner.toJSON(),
 					settings: sets,
 					perms,
 					joinChannelPerms,
@@ -1080,6 +1082,10 @@ export class IMClient extends Client {
 				this.disabledGuilds.add(guildId);
 			}
 			return;
+		}
+
+		if (await SettingsCache.isPremium(guildId)) {
+			sendCaptchaToUserOnJoin(this, member);
 		}
 	}
 

@@ -1,0 +1,54 @@
+[CMD_SETUP_TITLE]
+Setting up InviteManager
+
+[CMD_SETUP_TEXT]
+After inviting the bot, all invites will be tracked automatically.
+
+[CMD_SETUP_JOINLEAVE_TITLE]
+Setting join and leave message channel
+
+[CMD_SETUP_JOINLEAVE_TEXT]
+If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!
+
+[CMD_SETUP_PREFIX_TITLE]
+Changing the prefix
+
+[CMD_SETUP_PREFIX_TEXT]
+You can change the prefix by doing `!config prefix !`
+
+If you don't know the bots prefix, you can find it using `@InviteManager config prefix`.
+
+[CMD_SETUP_FAQ_TITLE]
+FAQs and more
+
+[CMD_SETUP_FAQ_TEXT]
+Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.
+
+A complete guide on setting up the bot can be found here: https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_SETUP_HELP_TITLE]
+Help
+
+[CMD_SETUP_HELP_TEXT]
+If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{ link }}
+
+[CMD_SETUP_PREMIUM_TITLE]
+Premium
+
+[CMD_SETUP_PREMIUM_TEXT]
+If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{ link }}
+
+Depending on the tier, you will get some additional features.
+
+[CMD_SETUP_MANAGE_GUILD_TITLE]
+Missing permission: Manage Server
+
+[CMD_SETUP_MANAGE_GUILD_TEXT]
+The bot does not have the "Manage Server" permission. This permission is required to read the invites of the user. Without this permission the join messages won't work.
+
+[CMD_SETUP_MANAGE_ROLES_TITLE]
+Missing permission: Manage Roles
+
+[CMD_SETUP_MANAGE_ROLES_TEXT]
+The bot does not have the "Manage Roles" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted.
+

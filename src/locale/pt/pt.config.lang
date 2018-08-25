@@ -10,7 +10,7 @@ Use `{{ prefix }}config <key> <value>` para setar uma configuração <key> para 
 Nenhuma configuração chamada **{{ key }}** encontrada.
 
 [CMD_CONFIG_KEY_CANT_CLEAR]
-A configuração definida **{{ key }}** não pode estar limpar. Você pode usar `config {{ key }} default` para resetar ela para o modelo padrão
+A configuração definida **{{ key }}** não pode estar em branco. Você pode usar `config {{ key }} default` para resetar ela para o modelo padrão
 
 [CMD_CONFIG_NOT_SET]
 Estas configurações não estão definidas.

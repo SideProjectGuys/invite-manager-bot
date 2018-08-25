@@ -4,3 +4,6 @@ Ajouter "0" invitations n'a aucun intérêt.
 [CMD_ADDINVITES_AMOUNT_POS]
 Ajout de {amount} invitations pour {Membre} qui a maintenant {totalInvites} invitations.
 
+[CMD_ADDINVITES_AMOUNT_NEG]
+** {{ amount }} ** invitation Supprimé de <@ {{ member }}>, maintenant à: ** {{ totalInvites }} ** invites.
+

@@ -1,0 +1,2 @@
+[CMD_INVITEDETAILS_ENTRY]
+**{{ uses }}** from **{{ code }}** {{! args.name ? `(${args.name}) ` : '' !}}- created **{{ createdAt }}**

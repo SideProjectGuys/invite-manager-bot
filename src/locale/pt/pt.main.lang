@@ -43,3 +43,9 @@ Desconhecido
 [JOIN_LEAVE_EMBEDS_IS_PREMIUM]
 Usar embeds como messagem de Entrada e Saida é um recurso Premium.
 
+[ROLES_SHOULD_HAVE]
+Você conseguiu os cargos {{ shouldHave }}, porém não posso lhe dar por que meu cargo é menor que ele.
+
+[ROLES_SHOULD_NOT_HAVE]
+Você não precisa do cargo {{ shouldNotHave }} , mas eu não posso remove-lo pois meu cargo é menor que ele.
+

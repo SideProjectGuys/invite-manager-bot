@@ -1,3 +1,9 @@
+[CMD_BOTINFO_VERSION]
+Version
+
+[CMD_BOTINFO_UPTIME]
+disponibilité
+
 [CMD_BOTINFO_GUILDS]
 Guildes
 
@@ -5,5 +11,8 @@ Guildes
 Membres
 
 [CMD_BOTINFO_SHARD_CURRENT]
-Éclat actuel
+Fragment actuel
+
+[CMD_BOTINFO_SHARD_TOTAL]
+Fragment Total 
 

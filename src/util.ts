@@ -1,4 +1,4 @@
-import { Guild, Message } from '@yamdbf/core';
+import { Guild, Lang, Message } from '@yamdbf/core';
 import {
 	GuildMember,
 	MessageAttachment,
@@ -7,8 +7,12 @@ import {
 	Role,
 	TextChannel
 } from 'discord.js';
+import moment from 'moment';
+
+import { createCaptcha, FileMode } from './functions/Captcha';
 
 import { IMClient } from './client';
+import { createEmbed } from './functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,7 +22,6 @@ import {
 	ranks,
 	sequelize
 } from './sequelize';
-
 import { SettingsCache } from './storage/SettingsCache';
 
 export interface InviteCounts {
@@ -258,4 +261,99 @@ export class FakeChannel extends TextChannel {
 		}
 		return new Promise(resolve => resolve());
 	}
+}
+
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
+
+const captchaOptions = {
+	size: 6,
+	fileMode: FileMode.BUFFER,
+	height: 50,
+	noiseColor: 'rgb(10,40,100)',
+	color: 'rgb(50,40,50)',
+	spacing: 2,
+	nofLines: 4
+};
+
+export async function sendCaptchaToUserOnJoin(
+	client: IMClient,
+	member: GuildMember
+) {
+	const settings = await SettingsCache.get(member.guild.id);
+
+	if (!settings.captchaVerificationOnJoin) {
+		return;
+	}
+
+	createCaptcha(captchaOptions, (text, buffer) => {
+		const embed = createEmbed(client);
+		embed.setTitle('Captcha');
+		embed.setDescription(
+			settings.captchaVerificationWelcomeMessage.replace(
+				/\{serverName\}/g,
+				member.guild.name
+			)
+		);
+		embed.setImage('attachment://captcha.png');
+		embed.attachFiles([
+			{
+				attachment: buffer,
+				name: 'captcha.png'
+			}
+		]);
+
+		const startTime = moment();
+
+		let listenToMessage = async (target: GuildMember, message: Message) => {
+			const timeLeft =
+				settings.captchaVerificationTimeout * 1000 -
+				moment().diff(startTime, 'millisecond');
+
+			const confirmation = (await message.channel.awaitMessages(
+				a => a.author.id === target.id,
+				{ max: 1, time: timeLeft }
+			)).first();
+
+			if (!confirmation) {
+				return PromptResult.TIMEOUT;
+			}
+			if (confirmation.content.toLowerCase() === text.toLowerCase()) {
+				return PromptResult.SUCCESS;
+			}
+			return PromptResult.FAILURE;
+		};
+
+		member.send({ embed }).then(async (message: Message) => {
+			while (true) {
+				const result = await listenToMessage(member, message);
+
+				if (result === PromptResult.SUCCESS) {
+					member.send(
+						settings.captchaVerificationSuccessMessage.replace(
+							/\{serverName\}/g,
+							member.guild.name
+						)
+					);
+					return;
+				}
+
+				if (result === PromptResult.TIMEOUT) {
+					await member.send(
+						settings.captchaVerificationFailedMessage.replace(
+							/\{serverName\}/g,
+							member.guild.name
+						)
+					);
+					member.kick();
+					return;
+				}
+
+				member.send(Lang.res(settings.lang, 'CAPTCHA_INVALID'));
+			}
+		});
+	});
 }

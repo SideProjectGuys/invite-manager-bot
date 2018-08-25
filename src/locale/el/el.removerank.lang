@@ -1,0 +1,6 @@
+[CMD_REMOVERANK_RANK_NOT_FOUND]
+Rank {{ role }} does not exist!
+
+[CMD_REMOVERANK_DONE]
+Rank {{ role }} removed.
+

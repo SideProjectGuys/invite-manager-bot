@@ -1,6 +1,96 @@
 [CMD_FAQ_MORE_TITLE]
 Plus
 
+[CMD_FAQ_MORE_TEXT]
+S'il vous plaît consulter notre "readme" pour une liste de toutes les FAQ et bien plus encore!
+https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_FAQ_NOT_FOUND]
+Nom {{ name }} introuvable!
+
 [CMD_FAQ_PREFIX_Q]
 Comment changer le préfixe du bot?
+
+[CMD_FAQ_PREFIX_A]
+Vous pouvez faire `{{ prefix }}config prefix -` pour changer le préfixe.
+Si vous ne connaissez pas votre préfixe actuel, vous pouvez faire `{{ bot }}config` pour voir le préfixe.
+
+[CMD_FAQ_JOINLEAVECHANNEL_Q]
+Puis-je personnaliser le salon des message d'arriver et de départ ?
+
+[CMD_FAQ_JOINLEAVECHANNEL_A]
+Définissez le salon en faisant  `{{ prefix }}config joinMessageChannel #channel` ou
+`{{ prefix }}config leaveMessageChannel #channel`
+Après cela, les prochain messages seront affichées sur ce salon.
+
+[CMD_FAQ_JOINLEAVEMESSAGE_Q]
+Puis-je personnaliser les message d'arriver et de départ ?
+
+[CMD_FAQ_JOINLEAVEMESSAGE_A]
+Absolument!
+Vous pouvez changer le message en faisant par exemple
+`{{ prefix }}config joinMessage {memberMention} **a rejoint le discord**; Invité par **{inviterName}** (**{numInvites}** invites)` or 
+`{{ prefix }}config leaveMessage {memberName} **a disparu du discord**; Invité par **{inviterName}**`.
+Vous pouvez trouver une liste complète de tous les espaces réservés disponibles ici: https://github.com/AndreasGassmann/discord-invite-manager/
+
+[CMD_FAQ_RANKS_Q]
+Qu'est-ce que \"Ranks\" et comment puis-je les utiliser?
+
+[CMD_FAQ_RANKS_A]
+Les rangs sont utilisés pour attribuer des rôles aux personnes lorsqu'elles atteignent un certain nombre d'invitations.
+Par exemple. Si vous avez un rôle appelé `@Débutant` et que vous voulez que des personnes qui ont 5 invitations ou plus soient ajoutées à ce rôle, vous devrez créer un ranks comme ceci:
+`{{ prefix }}add-rank @Débutant 5 (et si vous voulez une description ici)`.
+Dès que quelqu'un aura 5 invitations, il sera automatiquement ajouté à ce rôle!
+
+[CMD_FAQ_BONUS_Q]
+Que sont les invitations bonus?
+
+[CMD_FAQ_BONUS_A]
+Les invitations bonus sont des invitations pouvant être données aux membres par un administrateur. Vous pouvez augmenter ou diminuer le nombre d'invitations. Vous pouvez aussi donner une raison pour laquelle vous l'avez fait. Exemple : si quelqu'un est utile ou si quelqu'un enfreignait les règles.
+`{{ prefix }}add-invites @user 5 Aide le serveur!`.
+Utilisez un nombre négatif, par exemple. `-5` pour diminuer le nombre d'inviations de quelqu'un.
+Vous pouvez voir quand quelqu'un a des invitations bonus en faisant `{{ prefix }}info @user`
+
+[CMD_FAQ_REMOVEINVITES_Q]
+Comment supprimer les invitations de quelqu'un?
+
+[CMD_FAQ_REMOVEINVITES_A]
+Vous pouvez utiliser la commande `{{ prefix }}add-invites` avec un nombre négatif pour le faire (et ajouter une raison facultative pour laquelle vous l'avez fait).
+`{{ prefix }}add-invites @user -5 A enfreint les règles.`
+
+[CMD_FAQ_RESTRICTCHANNEL_Q]
+Comment puis-je désactiver le bot dans un salon ?
+
+[CMD_FAQ_RESTRICTCHANNEL_A]
+Supprimez les autorisations de lecture dans les salons où vous ne souhaitez pas que le bot réponde.
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_Q]
+Comment cacher une personne dans le classement?
+
+[CMD_FAQ_HIDEFROMLEADERBOARD_A]
+Vous pouvez faire `{{ prefix }}memberConfig hideFromLeaderboard @user true` pour masquer un membre spécifique du classement.
+
+[CMD_FAQ_FAKE_Q]
+Comment puis-je voir les tricheurs de mon serveur?
+
+[CMD_FAQ_FAKE_A]
+La commande `{{ prefix }}fake` affiche les personnes qui ont rejoint votre serveur à plusieurs reprises.
+
+[CMD_FAQ_WEBPANEL_Q]
+Y a-t-il un panel web?
+
+[CMD_FAQ_WEBPANEL_A]
+Oui! Il est actuellement en alpha et en fort développement. Mais vous pouvez y accéder ici et nous donner vos commentaires: https://panel.invitemanager.co/
+
+[CMD_FAQ_SUPPORT_Q]
+Le bot ne fonctionne pas, comment puis-je obtenir de l'aide?
+
+[CMD_FAQ_SUPPORT_A]
+Nous pouvons vous aider si vous rejoignez notre discord: https://discord.gg/x3NGUSX
+
+[CMD_FAQ_PREMIUM_Q]
+Comment puis-je soutenir le développement de ce bot?
+
+[CMD_FAQ_PREMIUM_A]
+Vous pouvez nous aider en informant davantage de personnes sur l'existance du bot ou en vous abonnant à l'un de nos niveaux premium. En faisant cela, vous obtenez des fonctionnalités supplémentaires en fonction de votre niveau. https://patreon.com/invitemanager
 

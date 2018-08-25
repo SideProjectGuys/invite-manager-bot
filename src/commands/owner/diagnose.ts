@@ -99,6 +99,14 @@ export default class extends Command<IMClient> {
 					sets[key] = response.settings[key];
 				}
 			});
+
+			embed.addField(
+				'Owner',
+				'```json\n' +
+					JSON.stringify(response.owner, null, 2).substr(0, 1000) +
+					'```'
+			);
+
 			embed.addField(
 				'Settings',
 				'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'

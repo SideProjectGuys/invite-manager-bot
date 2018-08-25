@@ -10,6 +10,7 @@ import { SettingsCache } from '../storage/SettingsCache';
 export function isStrict(cmd: BotCommand | OwnerCommand) {
 	switch (cmd) {
 		case BotCommand.config:
+		case BotCommand.createInvite:
 		case BotCommand.inviteCodeConfig:
 		case BotCommand.memberConfig:
 		case BotCommand.permissions:

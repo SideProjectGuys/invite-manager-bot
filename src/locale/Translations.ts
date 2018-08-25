@@ -37,6 +37,8 @@ export interface TranslationKeys {
 	PERMISSIONS_ADMIN_ONLY: TranslateFunc;
 	PERMISSIONS_MISSING_ROLE: TranslateFunc;
 
+	CAPTCHA_INVALID: TranslateFunc;
+
 	// Commands
 	CMD_ADDINVITES_ZERO: TranslateFunc;
 	CMD_ADDINVITES_AMOUNT_POS: TranslateFunc;
@@ -63,6 +65,9 @@ export interface TranslationKeys {
 	CMD_CHART_USAGE_DESCRIPTION: TranslateFunc;
 
 	CMD_CLEARINVITES_DONE: TranslateFunc;
+
+	CMD_CREATEINVITE_MISSING_PERMISSIONS: TranslateFunc;
+	CMD_CREATEINVITE_DONE: TranslateFunc;
 
 	CMD_CONFIG_TITLE: TranslateFunc;
 	CMD_CONFIG_TEXT: TranslateFunc;
@@ -121,6 +126,8 @@ export interface TranslationKeys {
 	CMD_INFO_LASTJOINED_NOT_IN_GUILD: TranslateFunc;
 	CMD_INFO_INVITES_TITLE: TranslateFunc;
 	CMD_INFO_INVITES_TEXT: TranslateFunc;
+	CMD_INFO_INVITES_CLEARS_TITLE: TranslateFunc;
+	CMD_INFO_INVITES_CLEARS_TEXT: TranslateFunc;
 	CMD_INFO_JOINED_TITLE: TranslateFunc;
 	CMD_INFO_JOINED_TEXT: TranslateFunc;
 	CMD_INFO_CREATED_TITLE: TranslateFunc;
@@ -170,6 +177,8 @@ export interface TranslationKeys {
 	CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE: TranslateFunc;
 	CMD_INVITECODECONFIG_CHANGED_TEXT: TranslateFunc;
 	CMD_INVITECODECONFIG_NONE: TranslateFunc;
+
+	CMD_INVITEDETAILS_ENTRY: TranslateFunc;
 
 	CMD_INVITES_AMOUNT: TranslateFunc;
 	CMD_INVITES_NEXT_RANK: TranslateFunc;

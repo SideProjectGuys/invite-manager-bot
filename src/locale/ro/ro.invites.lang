@@ -6,5 +6,5 @@
 
 [CMD_INVITES_HIGHEST_RANK]
 {{! args.target === args.self ? 'Felicitari,in momentul de fata ai cel mai mare rank!'
-: `<@${args.target}> currently has the highest rank!` !}}
+: `<@${args.target}> are cel mai mare rank in momentul de fata!` !}}
 

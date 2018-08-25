@@ -1,0 +1,6 @@
+[CMD_SUBTRACTLEAVES_NO_LEAVES]
+There have been no leaves so far!
+
+[CMD_SUBTRACTLEAVES_DONE]
+Removed {{ total }} leaves!
+

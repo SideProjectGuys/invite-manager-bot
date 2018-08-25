@@ -1,5 +1,30 @@
+[CMD_SETUP_TITLE]
+Einrichten InviteManager
+
+[CMD_SETUP_TEXT]
+After inviting the bot, all invites will be tracked automatically.
+
+[CMD_SETUP_JOINLEAVE_TITLE]
+Setzen Sie Join und lassen Sie Message Chann
+
+[CMD_SETUP_JOINLEAVE_TEXT]
+If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!
+
+[CMD_SETUP_PREFIX_TITLE]
+Das Präfix ändern
+
+[CMD_SETUP_PREFIX_TEXT]
+You can change the prefix by doing `!config prefix !`
+
+If you don't know the bots prefix, you can find it using `@InviteManager config prefix`.
+
 [CMD_SETUP_FAQ_TITLE]
 Fragen und antworten und noch mehr
+
+[CMD_SETUP_FAQ_TEXT]
+Verwenden Sie den Befehl "! FAQ" für weitere Informationen, z. b. wie man das Präfix ändert oder die Join/Leave-Nachrichten anpasst.
+Einen kompletten Leitfaden zum Einrichten des bot finden Sie hier:
+https://github.com/AndreasGassmann/discord-invite-manager/
 
 [CMD_SETUP_HELP_TITLE]
 Hilfe
@@ -10,6 +35,9 @@ Wenn du Hilfe brauchst oder eine Bewerung an die Entwickler/Inhaber senden wills
 
 [CMD_SETUP_PREMIUM_TITLE]
 Premium
+
+[CMD_SETUP_PREMIUM_TEXT]
+Wenn Sie die Entwicklung dieses bot unterstützen möchten, können Sie dies tun, indem Sie uns auf patreon unterstützen: {{ link }} je nach Tier werden Sie einige zusätzliche Funktionen erhalten
 
 [CMD_SETUP_MANAGE_GUILD_TITLE]
 Fehlende Berechtigung: Server verwalten

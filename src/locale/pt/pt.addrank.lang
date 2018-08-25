@@ -1,9 +1,9 @@
 [CMD_ADDRANK_ROLE_TOO_HIGH]
-O cargo ***{{ role }}** e maior do que meu cargo (**{{ myRole }}**), Então eu não vou ser capaz de atribuí-lo em membros que tiverem ele.
+O cargo ***{{ role }}** é maior do que meu cargo (**{{ myRole }}**), Então eu não vou ser capaz de atribuí-lo em membros que tiverem ele.
 
 [CMD_ADDRANK_UPDATED]
-Cargo **{{ role }}** atualização: Agora precisa {{ invites }} e em seguida uma descrição: "{{ description ?}}"
+Cargo **{{ role }}** atualizado : Agora precisa de {{ invites }} e em tem essa descrição: "{{ description ?}}"
 
 [CMD_ADDRANK_CREATED]
-Adicionado cargo ** {{ role }}** que precisa {{ invites }} e em seguida uma descrição: "{{ description ?}}"
+Adicionado o cargo ** {{ role }}** que precisa de {{ invites }} e tem essa descrição: "{{ description ?}}"
 

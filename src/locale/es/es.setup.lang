@@ -20,7 +20,7 @@ Si no conoces el prefijo del bot, puedes encontrarlo usando `@InviteManager conf
 
 
 [CMD_SETUP_FAQ_TITLE]
-Preguntas y Respuestas y más
+Preguntas & Respuestas y más
 
 [CMD_SETUP_FAQ_TEXT]
 Usa el comando `!faq` para más informacion, ej: como cambiar el prefijo del bot o personalizar los menajes de entrada y salida.

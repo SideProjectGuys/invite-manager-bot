@@ -1,0 +1,5 @@
+[CMD_CREATEINVITE_MISSING_PERMISSIONS]
+I don't have permission to create Invite codes.
+
+[CMD_CREATEINVITE_DONE]
+Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}.

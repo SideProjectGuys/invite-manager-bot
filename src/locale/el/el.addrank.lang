@@ -1,0 +1,9 @@
+[CMD_ADDRANK_ROLE_TOO_HIGH]
+The role **{{ role }}** is higher up than my role (**{{ myRole }}**), so I won't be able to assign it to members that earn it.
+
+[CMD_ADDRANK_UPDATED]
+Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: "{{ description ?}}"
+
+[CMD_ADDRANK_CREATED]
+Added rank **{{ role }}** which needs {{ invites }} and has the following description: "{{ description ?}}"
+

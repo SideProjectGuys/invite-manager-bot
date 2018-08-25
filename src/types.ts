@@ -35,11 +35,13 @@ export enum BotCommand {
 
 	'setup' = 'setup',
 
+	'createInvite' = 'createInvite',
 	'addInvites' = 'addInvites',
 	'clearInvites' = 'clearInvites',
 	'fake' = 'fake',
 	'info' = 'info',
 	'inviteCodes' = 'inviteCodes',
+	'inviteDetails' = 'inviteDetails',
 	'invites' = 'invites',
 	'leaderboard' = 'leaderboard',
 	'members' = 'members',

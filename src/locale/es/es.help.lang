@@ -28,7 +28,7 @@ Ninguno
 Comandos no disponibles (faltan permisos)
 
 [CMD_HELP_UNAVAILABLE_COMMAND]
-`{{ prefix }}{{ name }}` *Permiso `{{ missingPermission }}` no encontrado!*
+`{{ prefix }}{{ name }}` ⚠️*Permiso `{{ missingPermission }}` no encontrado!*
 
 [CMD_HELP_LINKS]
 Enlaces

@@ -7,3 +7,9 @@
 [CMD_FAKE_NONE_SINCE_JOIN]
 Dieses Mitglied hatte keine ungültigen Einladungen seit der bot diesen Discord Server betreten hat
 
+[CMD_FAKE_JOIN_ENTRY]
+**{{ name }}** joined **{{ times }} times**, invited by:
+
+[CMD_FAKE_JOIN_ENTRY_INV]
+**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}
+

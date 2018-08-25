@@ -16,6 +16,8 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	inviteCodeSettings,
+	InviteCodeSettingsKey,
 	joins,
 	members,
 	sequelize
@@ -56,7 +58,6 @@ export default class extends Command<IMClient> {
 
 		const sets = await SettingsCache.get(message.guild.id);
 		const lang = sets.lang;
-		const prefix = sets.prefix;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
@@ -67,6 +68,16 @@ export default class extends Command<IMClient> {
 				inviterId: user.id
 			},
 			order: [['uses', 'DESC']],
+			include: [
+				{
+					model: inviteCodeSettings,
+					where: {
+						guildId: message.guild.id,
+						key: InviteCodeSettingsKey.name
+					},
+					required: false
+				}
+			],
 			raw: true
 		});
 
@@ -84,23 +95,40 @@ export default class extends Command<IMClient> {
 		let fake = 0;
 		let leave = 0;
 
+		let clearRegular = 0;
+		let clearCustom = 0;
+		let clearFake = 0;
+		let clearLeave = 0;
 		customInvs.forEach(inv => {
 			switch (inv.generatedReason) {
 				case CustomInvitesGeneratedReason.clear_regular:
+					clearRegular += inv.amount;
 					regular += inv.amount;
 					break;
 
-				case CustomInvitesGeneratedReason.fake:
 				case CustomInvitesGeneratedReason.clear_fake:
+					clearFake += inv.amount;
 					fake += inv.amount;
 					break;
 
-				case CustomInvitesGeneratedReason.leave:
+				case CustomInvitesGeneratedReason.fake:
+					fake += inv.amount;
+					break;
+
 				case CustomInvitesGeneratedReason.clear_leave:
+					clearLeave += inv.amount;
 					leave += inv.amount;
 					break;
 
-				// 'clear_custom' and 'null' case:
+				case CustomInvitesGeneratedReason.leave:
+					leave += inv.amount;
+					break;
+
+				case CustomInvitesGeneratedReason.clear_custom:
+					clearCustom += inv.amount;
+					custom += inv.amount;
+					break;
+
 				default:
 					custom += inv.amount;
 					break;
@@ -108,6 +136,7 @@ export default class extends Command<IMClient> {
 		});
 
 		const numTotal = regular + custom + fake + leave;
+		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
 
 		const embed = createEmbed(this.client);
 		embed.setTitle(user.username);
@@ -165,6 +194,18 @@ export default class extends Command<IMClient> {
 				custom,
 				fake,
 				leave
+			}),
+			true
+		);
+
+		embed.addField(
+			rp.CMD_INFO_INVITES_CLEARS_TITLE(),
+			rp.CMD_INFO_INVITES_CLEARS_TEXT({
+				total: clearTotal,
+				regular: clearRegular,
+				custom: clearCustom,
+				fake: clearFake,
+				leave: clearLeave
 			}),
 			true
 		);
@@ -256,14 +297,16 @@ export default class extends Command<IMClient> {
 		if (invs.length > 0) {
 			let invText = '';
 			invs.slice(0, 10).forEach(inv => {
+				const name = (inv as any)['inviteCodeSettings.value'];
+
 				invText +=
 					rp.CMD_INFO_REGULARINVITES_ENTRY({
 						uses: inv.uses,
-						code: inv.code,
+						code: name ? name : inv.code,
+						name: name ? inv.code : undefined,
 						createdAt: moment(inv.createdAt)
 							.locale(lang)
-							.fromNow(),
-						reason: inv.reason
+							.fromNow()
 					}) + '\n';
 			});
 
