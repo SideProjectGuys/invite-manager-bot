@@ -1,13 +1,13 @@
 import { Command, Lang } from '@yamdbf/core';
 import { Message } from 'discord.js';
 
-import { BotCommand, OwnerCommand, RP } from '../types';
+import { BotCommand, ModerationCommand, OwnerCommand, RP } from '../types';
 
 import { IMClient } from '../client';
 import { sendReply } from '../functions/Messaging';
 import { SettingsCache } from '../storage/SettingsCache';
 
-export function isStrict(cmd: BotCommand | OwnerCommand) {
+export function isStrict(cmd: BotCommand | ModerationCommand | OwnerCommand) {
 	switch (cmd) {
 		case BotCommand.config:
 		case BotCommand.createInvite:
@@ -26,6 +26,26 @@ export function isStrict(cmd: BotCommand | OwnerCommand) {
 		case BotCommand.addRank:
 		case BotCommand.removeRank:
 
+		case ModerationCommand.automod:
+		case ModerationCommand.punishment:
+		case ModerationCommand.strikeAdd:
+		case ModerationCommand.strikeConfig:
+		case ModerationCommand.strikeRemove:
+		case ModerationCommand.ban:
+		case ModerationCommand.caseDelete:
+		case ModerationCommand.caseUpdate:
+		case ModerationCommand.caseView:
+		case ModerationCommand.kick:
+		case ModerationCommand.mute:
+		case ModerationCommand.softban:
+		case ModerationCommand.unmute:
+		case ModerationCommand.warn:
+		case ModerationCommand.check:
+		case ModerationCommand.clean:
+		case ModerationCommand.purgeSafe:
+		case ModerationCommand.purgeUntil:
+		case ModerationCommand.purge:
+
 		case OwnerCommand.diagnose:
 		case OwnerCommand.dm:
 		case OwnerCommand.flushPremium:
@@ -38,8 +58,8 @@ export function isStrict(cmd: BotCommand | OwnerCommand) {
 	}
 }
 
-export const checkRoles = (cmd: BotCommand | OwnerCommand) => {
-	return async function(
+export const checkRoles = (cmd: BotCommand | ModerationCommand | OwnerCommand) => {
+	return async function (
 		this: Command<IMClient>,
 		message: Message,
 		args: any[]
