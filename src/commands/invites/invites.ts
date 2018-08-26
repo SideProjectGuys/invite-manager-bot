@@ -77,7 +77,7 @@ export default class extends Command {
 						});
 					} else {
 						if (numRanks > 0) {
-							textMessage += rp.CMD_INVITES_HIGHEST_RANK();
+							textMessage += t('CMD_INVITES_HIGHEST_RANK');
 						}
 					}
 

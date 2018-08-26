@@ -18,7 +18,7 @@ export interface CommandOptions {
 	desc: string;
 	aliases: string[];
 	args?: Arg[];
-	group: CommandGroup;
+	group?: CommandGroup;
 	strict?: boolean;
 	guildOnly: boolean;
 	ownerOnly?: boolean;

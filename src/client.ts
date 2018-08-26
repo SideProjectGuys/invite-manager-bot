@@ -484,8 +484,8 @@ export class IMClient extends Client {
 					`${user.username}-${user.discriminator}`,
 					user.avatarURL()
 				);
-				embed.addField('User ID', user.id, true);
-				embed.addField('Initial message', isInitialMessage, true);
+				embed.fields.push('User ID', user.id, true);
+				embed.fields.push('Initial message', isInitialMessage, true);
 				embed.setDescription(message.content);
 				await sendEmbed(dmChannel, embed);
 			}

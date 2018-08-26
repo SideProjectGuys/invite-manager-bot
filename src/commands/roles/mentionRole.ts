@@ -1,60 +1,47 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Role } from 'discord.js';
+import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
-import { BotCommand } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { RoleResolver } from '../resolvers';
 
-const { resolve } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'mention-role',
-			aliases: ['mentionRole', 'mr'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.mentionRole,
+			aliases: ['mention-role', 'mr'],
 			desc: 'Mention an unmentionable role',
-			usage: '<prefix>mention-role Role',
-			info: '',
-			clientPermissions: ['MANAGE_ROLES'],
-			guildOnly: true
+			args: [
+				{
+					name: 'role',
+					resolver: RoleResolver,
+					description: 'The role that you want to mention.'
+				}
+			],
+			// clientPermissions: ['MANAGE_ROLES'],
+			guildOnly: true,
+			group: CommandGroup.Other
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.mentionRole))
-	@using(resolve('role: Role'))
-	public async action(message: Message, [role]: [Role]): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		[role]: [Role],
+		{ t }: Context
+	): Promise<any> {
 		await message.delete();
 
-		if (!role.editable) {
+		if (role.mentionable) {
 			return sendReply(
+				this.client,
 				message,
-				`Cannot edit ${role}. Make sure the role is lower than the bots role.`
+				t('CMD_MENTIONROLE_ALREADY_DONE', { role })
 			);
-		} else if (role.mentionable) {
-			return sendReply(message, `${role} is already mentionable.`);
 		} else {
-			await role.setMentionable(true, 'Pinging role');
-			await message.channel.send(`${role}`);
-			await role.setMentionable(false, 'Done pinging role');
+			await role.edit({ mentionable: true }, 'Pinging role');
+			await message.channel.createMessage(`${role}`);
+			await role.edit({ mentionable: false }, 'Done pinging role');
 		}
 	}
 }

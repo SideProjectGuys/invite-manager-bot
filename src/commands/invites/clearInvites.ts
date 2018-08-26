@@ -1,17 +1,8 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { User } from 'discord.js';
+import { Message, User } from 'eris';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -20,50 +11,47 @@ import {
 	LogAction,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { BooleanResolver, UserResolver } from '../resolvers';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'clear-invites',
-			aliases: ['clearInvites'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.clearInvites,
+			aliases: ['clear-invites'],
 			desc: 'Clear invites of the server/a user',
-			usage: '<prefix>clear-invites (clearBonus) (@user)',
-			info:
-				'`clearBonus`:\n' +
-				'Pass `true` if you want to remove bonus invites, otherwise `false` (default).\n\n' +
-				'`@user`:\n' +
-				'The user to clear all invites from. If omitted clears all users.\n\n',
-			clientPermissions: ['MANAGE_GUILD'],
+			args: [
+				{
+					name: 'clearBonus',
+					resolver: BooleanResolver,
+					description:
+						'Pass `true` if you want to remove bonus invites, otherwise `false` (default).'
+				},
+				{
+					name: 'user',
+					resolver: UserResolver,
+					description:
+						'The user to clear all invites from. If omitted clears all users.'
+				}
+			],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.clearInvites))
-	@using(resolve('clearBonus: Boolean, user: User'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, clearBonus, user]: [RP, boolean, User]
+		[clearBonus, user]: [boolean, User],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		const memberId = user ? user.id : undefined;
 
 		// First clear any previous clearinvites we might have
 		await customInvites.destroy({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				generatedReason: [
 					CustomInvitesGeneratedReason.clear_regular,
 					CustomInvitesGeneratedReason.clear_custom,
@@ -80,7 +68,7 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('SUM', sequelize.col('inviteCode.uses')), 'totalUses']
 			],
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				inviterId: {
 					[Op.ne]: null,
 					...(memberId && { [Op.eq]: memberId })
@@ -98,7 +86,7 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
 			],
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				...(memberId && { memberId })
 			},
 			group: ['memberId', 'generatedReason'],
@@ -138,7 +126,7 @@ export default class extends Command<IMClient> {
 		Object.keys(regular).forEach(memId => {
 			newInvs.push({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
 				amount: -regular[memId],
@@ -150,7 +138,7 @@ export default class extends Command<IMClient> {
 		Object.keys(fake).forEach(memId => {
 			newInvs.push({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
 				amount: -fake[memId],
@@ -162,7 +150,7 @@ export default class extends Command<IMClient> {
 		Object.keys(leave).forEach(memId => {
 			newInvs.push({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
 				amount: -leave[memId],
@@ -186,7 +174,7 @@ export default class extends Command<IMClient> {
 			Object.keys(custom).forEach(memId => {
 				newInvs.push({
 					id: null,
-					guildId: message.guild.id,
+					guildId: guild.id,
 					memberId: memId,
 					creatorId: null,
 					amount: -custom[memId],
@@ -199,14 +187,15 @@ export default class extends Command<IMClient> {
 
 		const createdInvs = await customInvites.bulkCreate(newInvs);
 
-		this.client.logAction(message, LogAction.clearInvites, {
+		this.client.logAction(guild, message, LogAction.clearInvites, {
 			customInviteIds: createdInvs.map(inv => inv.id),
 			...(memberId && { targetId: memberId })
 		});
 
 		return sendReply(
+			this.client,
 			message,
-			rp.CMD_CLEARINVITES_DONE({
+			t('CMD_CLEARINVITES_DONE', {
 				amount: Object.keys(cleared).length
 			})
 		);

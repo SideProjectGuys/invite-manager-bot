@@ -1,11 +1,4 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import {
@@ -13,7 +6,6 @@ import {
 	sendReply,
 	showPaginated
 } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import {
 	inviteCodes,
 	JoinAttributes,
@@ -21,42 +13,36 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
-
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { NumberResolver } from '../resolvers';
 
 const usersPerPage = 20;
 
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'fake',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.fake,
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
 			desc: 'Help find users trying to cheat.',
-			usage: '<prefix>fake (page)',
-			info: '`page`:\n' + 'Which page of the fake list to get.\n\n',
-			clientPermissions: ['MANAGE_GUILD'],
+			args: [
+				{
+					name: 'page',
+					resolver: NumberResolver,
+					description: 'Which page of the fake list to get.'
+				}
+			],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.fake))
-	@using(resolve('page: Number'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _page]: [RP, number]
+		[_page]: [number],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		type ExtendedJoin = JoinAttributes & {
 			memberName: string;
 			totalJoins: string;
@@ -79,7 +65,7 @@ export default class extends Command<IMClient> {
 				]
 			],
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			group: ['join.memberId'],
 			include: [
@@ -107,7 +93,7 @@ export default class extends Command<IMClient> {
 		})) as any;
 
 		if (js.length <= 0) {
-			return sendReply(message, rp.CMD_FAKE_NONE());
+			return sendReply(this.client, message, t('CMD_FAKE_NONE'));
 		}
 
 		const suspiciousJoins = js
@@ -118,7 +104,7 @@ export default class extends Command<IMClient> {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			return sendReply(message, rp.CMD_FAKE_NONE_SINCE_JOIN());
+			return sendReply(this.client, message, t('CMD_FAKE_NONE_SINCE_JOIN'));
 		}
 
 		const maxPage = Math.ceil(suspiciousJoins.length / usersPerPage);
@@ -144,14 +130,14 @@ export default class extends Command<IMClient> {
 						}
 					});
 
-					const mainText = rp.CMD_FAKE_JOIN_ENTRY({
+					const mainText = t('CMD_FAKE_JOIN_ENTRY', {
 						name: join.memberName,
 						times: join.totalJoins
 					});
 
 					const invText = Object.keys(invs)
 						.map(name => {
-							return rp.CMD_FAKE_JOIN_ENTRY_INV({
+							return t('CMD_FAKE_JOIN_ENTRY_INV', {
 								name,
 								times: invs[name] > 1 ? invs[name] : undefined
 							});
@@ -164,9 +150,10 @@ export default class extends Command<IMClient> {
 					}
 				});
 
-			return createEmbed(this.client)
-				.setTitle(rp.CMD_FAKE_TITLE())
-				.setDescription(description);
+			return createEmbed(this.client, {
+				title: t('CMD_FAKE_TITLE'),
+				description
+			});
 		});
 	}
 }

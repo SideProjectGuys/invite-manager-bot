@@ -1,77 +1,57 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { MessageAttachment } from 'discord.js';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { EnumResolver } from '../resolvers';
 
-const { resolve, expect, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'export',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.export,
 			aliases: [],
 			desc: 'Export data of invite manager to a csv sheet',
-			usage: '<prefix>export type',
-			info:
-				'`type`:\n' +
-				'The type of export you want. One of:\n' +
-				'- leaderboard',
+			args: [
+				{
+					name: 'type',
+					resolver: new EnumResolver(client, ['leaderboard']),
+					description:
+						'The type of export you want. One of:\n' + '- leaderboard'
+				}
+			],
 			group: CommandGroup.Premium,
-			hidden: true
+			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.export))
-	@using(resolve('type: String'))
-	@using(expect('type: String'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, type]: [RP, string]
+		[type]: [string],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
+		const embed = createEmbed(this.client, {
+			title: t('CMD_EXPORT_TITLE')
+		});
 
-		const embed = createEmbed(this.client);
-		embed.setTitle(`Export`);
-
-		const isPremium = await SettingsCache.isPremium(message.guild.id);
+		const isPremium = await this.client.cache.isPremium(guild.id);
 		if (!isPremium) {
-			embed.setDescription(rp.CMD_EXPORT_PREMIUM_ONLY());
-			return sendReply(message, embed);
+			embed.description = t('CMD_EXPORT_PREMIUM_ONLY');
+			return sendReply(this.client, message, embed);
 		}
 
-		embed.setDescription(rp.CMD_EXPORT_PREPARING());
+		embed.description = t('CMD_EXPORT_PREPARING');
 
 		if (type !== 'leaderboard') {
-			return sendReply(message, rp.CMD_INVALID_TYPE());
+			return sendReply(this.client, message, t('CMD_INVALID_TYPE'));
 		}
 
-		sendReply(message, embed).then(async (msg: Message) => {
+		sendReply(this.client, message, embed).then(async (msg: Message) => {
 			if (type === 'leaderboard') {
 				let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-				const { keys, invs } = await generateLeaderboard(message.guild);
+				const { keys, invs } = await generateLeaderboard(guild);
 				keys.forEach(id => {
 					const i = invs[id];
 					csv +=
@@ -84,12 +64,12 @@ export default class extends Command<IMClient> {
 						`\n`;
 				});
 
-				const attachment = new MessageAttachment(
-					Buffer.from(csv),
-					'InviteManagerExport.csv'
-				);
-
-				return message.channel.send(attachment).then(() => msg.delete());
+				return message.channel
+					.createMessage('', {
+						file: Buffer.from(csv),
+						name: 'InviteManagerExport.csv'
+					})
+					.then(() => msg.delete());
 			}
 		});
 	}

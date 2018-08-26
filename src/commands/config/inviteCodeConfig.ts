@@ -166,11 +166,11 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle(rp.CMD_INVITECODECONFIG_TITLE());
+			embed.setTitle(t('CMD_INVITECODECONFIG_TITLE'));
 			embed.setDescription(rp.CMD_INVITECODECONFIG_TEXT({ prefix }));
 
 			const keys = Object.keys(InviteCodeSettingsKey);
-			embed.addField(rp.CMD_INVITECODECONFIG_KEYS_TITLE(), keys.join('\n'));
+			embed.fields.push(t('CMD_INVITECODECONFIG_KEYS_TITLE'), keys.join('\n'));
 
 			return sendReply(message, embed);
 		}
@@ -186,10 +186,10 @@ export default class extends Command<IMClient> {
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.addField(set.inviteCode, this.fromDbValue(set.key, set.value))
+					embed.fields.push(set.inviteCode, this.fromDbValue(set.key, set.value))
 				);
 			} else {
-				embed.setDescription(rp.CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT());
+				embed.setDescription(t('CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT'));
 			}
 			return sendReply(message, embed);
 		}
@@ -197,10 +197,10 @@ export default class extends Command<IMClient> {
 		// Check if this is actually a real invite code
 		const inv = await this.client.fetchInvite(code);
 		if (!inv) {
-			return sendReply(message, rp.CMD_INVITECODECONFIG_INVALID_CODE());
+			return sendReply(message, t('CMD_INVITECODECONFIG_INVALID_CODE'));
 		}
 		if (inv.guild.id !== message.guild.id) {
-			return sendReply(message, rp.CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD());
+			return sendReply(message, t('CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD'));
 		}
 
 		const oldSet = await inviteCodeSettings.find({
@@ -233,7 +233,7 @@ export default class extends Command<IMClient> {
 						clear
 					})
 				);
-				embed.addField(rp.CMD_INVITECODECONFIG_CURRENT_TITLE(), oldRawVal);
+				embed.fields.push(t('CMD_INVITECODECONFIG_CURRENT_TITLE'), oldRawVal);
 			} else {
 				embed.setDescription(
 					rp.CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT({ prefix })
@@ -253,8 +253,8 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(rp.CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE());
-			embed.addField(rp.CMD_INVITECODECONFIG_CURRENT_TITLE(), rawValue);
+			embed.setDescription(t('CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE'));
+			embed.fields.push(t('CMD_INVITECODECONFIG_CURRENT_TITLE'), rawValue);
 			return sendReply(message, embed);
 		}
 
@@ -300,12 +300,12 @@ export default class extends Command<IMClient> {
 		});
 
 		if (oldVal) {
-			embed.addField(rp.CMD_INVITECODECONFIG_PREVIOUS_TITLE(), oldRawVal);
+			embed.fields.push(t('CMD_INVITECODECONFIG_PREVIOUS_TITLE'), oldRawVal);
 		}
 
-		embed.addField(
-			rp.CMD_INVITECODECONFIG_NEW_TITLE(),
-			value ? rawValue : rp.CMD_INVITECODECONFIG_NONE()
+		embed.fields.push(
+			t('CMD_INVITECODECONFIG_NEW_TITLE'),
+			value ? rawValue : t('CMD_INVITECODECONFIG_NONE')
 		);
 		oldVal = value; // Update value for future use
 
@@ -375,7 +375,7 @@ export default class extends Command<IMClient> {
 		if (key === InviteCodeSettingsKey.roles) {
 			const roles: string[] = value.split(/[ ,]/g);
 			if (!roles.every(r => !!message.guild.roles.get(r))) {
-				return rp.CMD_INVITECODECONFIG_INVALID_ROLE();
+				return t('CMD_INVITECODECONFIG_INVALID_ROLE');
 			}
 		}
 

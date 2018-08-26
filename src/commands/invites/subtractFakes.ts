@@ -1,15 +1,7 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -17,38 +9,26 @@ import {
 	joins,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'subtract-fakes',
-			aliases: ['subtractfakes', 'subfakes', 'sf'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.subtractFakes,
+			aliases: ['subtract-fakes', 'subfakes', 'sf'],
 			desc: 'Remove fake invites from all users',
-			usage: '<prefix>subtract-fakes',
-			clientPermissions: ['MANAGE_GUILD'],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.subtractFakes))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _page]: [RP, number]
+		args: any[],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		const js = await joins.findAll({
 			attributes: [
 				'memberId',
@@ -56,7 +36,7 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'newestJoinAt']
 			],
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			group: [sequelize.col('join.memberId'), sequelize.col('exactMatch.code')],
 			include: [
@@ -71,13 +51,13 @@ export default class extends Command<IMClient> {
 		});
 
 		if (js.length === 0) {
-			return sendReply(message, rp.CMD_SUBTRACTFAKES_NO_INVITES());
+			return sendReply(this.client, message, t('CMD_SUBTRACTFAKES_NO_INVITES'));
 		}
 
 		// Delete old duplicate removals
 		await customInvites.destroy({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				generatedReason: CustomInvitesGeneratedReason.fake
 			}
 		});
@@ -87,7 +67,7 @@ export default class extends Command<IMClient> {
 			.filter((j: any) => parseInt(j.numJoins, 10) > 1)
 			.map((j: any) => ({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: j['exactMatch.inviterId'],
 				creatorId: null,
 				amount: -(parseInt(j.numJoins, 10) - 1),
@@ -99,6 +79,10 @@ export default class extends Command<IMClient> {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		return sendReply(message, rp.CMD_SUBTRACTFAKES_DONE({ total }));
+		return sendReply(
+			this.client,
+			message,
+			t('CMD_SUBTRACTFAKES_DONE', { total })
+		);
 	}
 }

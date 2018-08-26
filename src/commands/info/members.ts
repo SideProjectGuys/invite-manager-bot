@@ -18,7 +18,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: [],
+		args: any[],
 		{ guild, t }: Context
 	): Promise<any> {
 		await guild.getRESTMembers();

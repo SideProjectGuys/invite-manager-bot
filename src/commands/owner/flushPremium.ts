@@ -1,48 +1,42 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { sendReply } from '../../functions/Messaging';
 import { OwnerCommand, ShardCommand } from '../../types';
+import { Command, Context } from '../Command';
+import { StringResolver } from '../resolvers';
 
 const config = require('../../../config.json');
 
-const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'owner-flush-premium',
-			aliases: ['ownerFlushPremium', 'ofp'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.flushPremium,
+			aliases: ['owner-flush-premium', 'ofp'],
 			desc: 'Flush premium',
-			usage: '<prefix>owner-flush-premium <guildID>',
-			hidden: true
+			args: [
+				{
+					name: 'guildId',
+					resolver: StringResolver,
+					description: 'The id of the guild to flush.'
+				}
+			],
+			hidden: true,
+			guildOnly: false
 		});
 	}
 
-	@using(checkRoles(OwnerCommand.flushPremium))
-	@using(resolve('guild: String'))
-	@using(expect('guild: String'))
-	public async action(message: Message, [guildId]: [any]): Promise<any> {
-		this._logger.log(`(${message.author.username}): ${message.content}`);
-
-		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+	public async action(
+		message: Message,
+		[guildId]: [string],
+		{ guild }: Context
+	): Promise<any> {
+		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		if (isNaN(parseInt(guildId, 10))) {
-			message.reply('Invalid guild id ' + guildId);
-			return;
+			return sendReply(this.client, message, 'Invalid guild id ' + guildId);
 		}
 
 		const { shard, result } = this.client.sendCommandToGuild(guildId, {
@@ -52,11 +46,13 @@ export default class extends Command<IMClient> {
 		});
 
 		if (result) {
-			message.reply(
+			sendReply(
+				this.client,
+				message,
 				`Sent command to flush premium settings for guild ${guildId} to shard ${shard}`
 			);
 		} else {
-			message.reply(`RabbitMQ returned false`);
+			sendReply(this.client, message, `RabbitMQ returned false`);
 		}
 	}
 }

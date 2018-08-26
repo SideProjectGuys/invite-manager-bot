@@ -9,8 +9,6 @@ import {
 
 import { IMClient } from '../client';
 
-const truthy = ['true', 'on', 'y', 'yes', 'enable'];
-
 export function createEmbed(
 	client: IMClient,
 	options: EmbedOptions = {}
@@ -113,7 +111,6 @@ export function sendEmbed(
 	});
 }
 
-/*
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 export async function showPaginated(
@@ -160,7 +157,7 @@ export async function showPaginated(
 		}
 	}
 
-	if (page > 0 || page < maxPage - 1) {
+	/*if (page > 0 || page < maxPage - 1) {
 		const filter = (reaction: MessageReaction, user: GuildMember) =>
 			user.id !== client.user.id &&
 			(reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
@@ -185,14 +182,13 @@ export async function showPaginated(
 				}
 			}
 		});
-	}
+	}*/
 }
-*/
 
 /**
  * Represents possible results of Util#prompt
  */
-/*
+
 export enum PromptResult {
 	SUCCESS,
 	FAILURE,
@@ -218,4 +214,3 @@ export async function prompt(
 	}
 	return [PromptResult.SUCCESS, confirmation];
 }
-*/

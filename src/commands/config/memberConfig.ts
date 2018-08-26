@@ -166,11 +166,11 @@ export default class extends Command<IMClient> {
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle(rp.CMD_MEMBERCONFIG_TITLE());
+			embed.setTitle(t('CMD_MEMBERCONFIG_TITLE'));
 			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT({ prefix }));
 
 			const keys = Object.keys(MemberSettingsKey);
-			embed.addField(rp.CMD_MEMBERCONFIG_KEYS_TITLE(), keys.join('\n'));
+			embed.fields.push(t('CMD_MEMBERCONFIG_KEYS_TITLE'), keys.join('\n'));
 
 			return sendReply(message, embed);
 		}
@@ -197,10 +197,10 @@ export default class extends Command<IMClient> {
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.addField(set.memberName, this.fromDbValue(set.key, set.value))
+					embed.fields.push(set.memberName, this.fromDbValue(set.key, set.value))
 				);
 			} else {
-				embed.setDescription(rp.CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT());
+				embed.setDescription(t('CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT'));
 			}
 			return sendReply(message, embed);
 		}
@@ -236,7 +236,7 @@ export default class extends Command<IMClient> {
 						clear
 					})
 				);
-				embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), oldRawVal);
+				embed.fields.push(t('CMD_MEMBERCONFIG_CURRENT_TITLE'), oldRawVal);
 			} else {
 				embed.setDescription(
 					rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT({ prefix })
@@ -256,8 +256,8 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(rp.CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE());
-			embed.addField(rp.CMD_MEMBERCONFIG_CURRENT_TITLE(), rawValue);
+			embed.setDescription(t('CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE'));
+			embed.fields.push(t('CMD_MEMBERCONFIG_CURRENT_TITLE'), rawValue);
 			return sendReply(message, embed);
 		}
 
@@ -285,12 +285,12 @@ export default class extends Command<IMClient> {
 		});
 
 		if (oldVal) {
-			embed.addField(rp.CMD_MEMBERCONFIG_PREVIOUS_TITLE(), oldRawVal);
+			embed.fields.push(t('CMD_MEMBERCONFIG_PREVIOUS_TITLE'), oldRawVal);
 		}
 
-		embed.addField(
-			rp.CMD_MEMBERCONFIG_NEW_TITLE(),
-			value ? rawValue : rp.CMD_MEMBERCONFIG_NONE()
+		embed.fields.push(
+			t('CMD_MEMBERCONFIG_NEW_TITLE'),
+			value ? rawValue : t('CMD_MEMBERCONFIG_NONE')
 		);
 		oldVal = value; // Update value for future use
 

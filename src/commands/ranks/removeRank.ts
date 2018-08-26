@@ -1,48 +1,35 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Role } from 'discord.js';
+import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { checkProBot, checkRoles } from '../../middleware';
-import { LogAction, ranks } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
 import { sendReply } from '../../functions/Messaging';
+import { LogAction, ranks } from '../../sequelize';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { RoleResolver } from '../resolvers';
 
-const { resolve, expect, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'remove-rank',
-			aliases: ['removeRank'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.removeRank,
+			aliases: ['remove-rank'],
 			desc: 'Remove a rank',
-			usage: '<prefix>remove-rank @role',
-			info: '`@role`:\n' + 'The for which you want to remove the rank.\n\n',
+			args: [
+				{
+					name: 'rank',
+					resolver: RoleResolver,
+					description: 'The for which you want to remove the rank.'
+				}
+			],
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.removeRank))
-	@using(resolve('role: Role'))
-	@using(expect('role: Role'))
-	@using(localize)
-	public async action(message: Message, [rp, role]: [RP, Role]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		[role]: [Role],
+		{ guild, t }: Context
+	): Promise<any> {
 		const rank = await ranks.find({
 			where: {
 				guildId: role.guild.id,
@@ -53,16 +40,21 @@ export default class extends Command<IMClient> {
 		if (rank) {
 			await rank.destroy();
 
-			this.client.logAction(message, LogAction.removeRank, {
+			this.client.logAction(guild, message, LogAction.removeRank, {
 				rankId: rank.id,
 				roleId: role.id
 			});
 
-			return sendReply(message, rp.CMD_REMOVERANK_DONE({ role: role.name }));
+			return sendReply(
+				this.client,
+				message,
+				t('CMD_REMOVERANK_DONE', { role: role.name })
+			);
 		} else {
 			return sendReply(
+				this.client,
 				message,
-				rp.CMD_REMOVERANK_RANK_NOT_FOUND({ role: role.name })
+				t('CMD_REMOVERANK_RANK_NOT_FOUND', { role: role.name })
 			);
 		}
 	}

@@ -1,11 +1,4 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
@@ -15,60 +8,57 @@ import {
 	sendReply,
 	showPaginated
 } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import { LeaderboardStyle } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
+import { NumberResolver, StringResolver } from '../resolvers';
 
 const chrono = require('chrono-node');
-
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const neutralSymbol = '🔹';
 
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'leaderboard',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.leaderboard,
 			aliases: ['top'],
 			desc: 'Show members with most invites.',
-			usage: '<prefix>leaderboard (page) (date)',
-			info:
-				'`page`:\n' +
-				'Which page of the leaderboard to get.\n\n' +
-				'`date`:\n' +
-				'The date (& time) for which the leaderboard is shown\n\n',
-			clientPermissions: ['MANAGE_GUILD'],
+			args: [
+				{
+					name: 'page',
+					resolver: NumberResolver,
+					description: 'Which page of the leaderboard to get.'
+				},
+				{
+					name: 'date',
+					resolver: StringResolver,
+					description: 'The date (& time) for which the leaderboard is shown'
+				}
+			],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.leaderboard))
-	@using(resolve('page: Number, ...date?: String'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _page, _date]: [RP, number, string]
+		[_page, _date]: [number, string],
+		{ guild, t, settings }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		let from = moment();
 		let to = moment().subtract(1, 'day');
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				return sendReply(message, rp.CMD_LEADERBOARD_INVALID_DATE());
+				return sendReply(
+					this.client,
+					message,
+					t('CMD_LEADERBOARD_INVALID_DATE')
+				);
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
@@ -84,11 +74,10 @@ export default class extends Command<IMClient> {
 			to = min;
 		}
 
-		const guildSettings = await SettingsCache.get(message.guild.id);
-		const hideLeft = guildSettings.hideLeftMembersFromLeaderboard === 'true';
+		const hideLeft = settings.hideLeftMembersFromLeaderboard === 'true';
 
 		const { keys, oldKeys, invs, stillInServer } = await generateLeaderboard(
-			message.guild,
+			guild,
 			hideLeft,
 			from,
 			to,
@@ -96,16 +85,17 @@ export default class extends Command<IMClient> {
 		);
 
 		if (keys.length === 0) {
-			const embed = createEmbed(this.client);
-			embed.setDescription(rp.CMD_LEADERBOARD_NO_INVITES());
-			embed.setTitle(rp.CMD_LEADERBOARD_TITLE());
-			return sendReply(message, embed);
+			const embed = createEmbed(this.client, {
+				title: t('CMD_LEADERBOARD_TITLE'),
+				description: t('CMD_LEADERBOARD_NO_INVITES')
+			});
+			return sendReply(this.client, message, embed);
 		}
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		const style: LeaderboardStyle = guildSettings.leaderboardStyle;
+		const style: LeaderboardStyle = settings.leaderboardStyle as LeaderboardStyle;
 
 		// Show the leaderboard as a paginated list
 		showPaginated(this.client, message, p, maxPage, page => {
@@ -113,7 +103,8 @@ export default class extends Command<IMClient> {
 			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
 			let str =
-				fromText + `\n(${rp.CMD_LEADERBOARD_COMPARED_TO({ to: toText })})\n\n`;
+				fromText +
+				`\n(${t('CMD_LEADERBOARD_COMPARED_TO', { to: toText })})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
@@ -122,13 +113,13 @@ export default class extends Command<IMClient> {
 			if (style === LeaderboardStyle.table) {
 				lines.push([
 					'#',
-					rp.CMD_LEADERBOARD_COL_CHANGE(),
-					rp.CMD_LEADERBOARD_COL_NAME(),
-					rp.CMD_LEADERBOARD_COL_TOTAL(),
-					rp.CMD_LEADERBOARD_COL_REGULAR(),
-					rp.CMD_LEADERBOARD_COL_CUSTOM(),
-					rp.CMD_LEADERBOARD_COL_FAKE(),
-					rp.CMD_LEADERBOARD_COL_LEAVE()
+					t('CMD_LEADERBOARD_COL_CHANGE'),
+					t('CMD_LEADERBOARD_COL_NAME'),
+					t('CMD_LEADERBOARD_COL_TOTAL'),
+					t('CMD_LEADERBOARD_COL_REGULAR'),
+					t('CMD_LEADERBOARD_COL_CUSTOM'),
+					t('CMD_LEADERBOARD_COL_FAKE'),
+					t('CMD_LEADERBOARD_COL_LEAVE')
 				]);
 				lines.push(lines[0].map(h => '-'.repeat(h.length)));
 			}
@@ -191,7 +182,7 @@ export default class extends Command<IMClient> {
 					style === LeaderboardStyle.normal ||
 					style === LeaderboardStyle.mentions
 				) {
-					str += rp.CMD_LEADERBOARD_ROW_ENTRY({
+					str += t('CMD_LEADERBOARD_ROW_ENTRY', {
 						pos: line[0],
 						change: line[1],
 						name: line[2],
@@ -206,12 +197,13 @@ export default class extends Command<IMClient> {
 				str += '\n';
 			});
 			if (style === LeaderboardStyle.table) {
-				str += '```\n' + rp.CMD_LEADERBOARD_TABLE_LEGEND();
+				str += '```\n' + t('CMD_LEADERBOARD_TABLE_LEGEND');
 			}
 
-			return createEmbed(this.client)
-				.setTitle(rp.CMD_LEADERBOARD_TITLE())
-				.setDescription(str);
+			return createEmbed(this.client, {
+				title: t('CMD_LEADERBOARD_TITLE'),
+				description: str
+			});
 		});
 	}
 }

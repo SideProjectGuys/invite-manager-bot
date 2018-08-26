@@ -18,7 +18,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: string[],
+		args: any[],
 		{ settings, t }: Context
 	): Promise<any> {
 		sendReply(

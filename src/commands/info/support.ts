@@ -16,7 +16,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: string[]): Promise<any> {
+	public async action(message: Message, args: any[]): Promise<any> {
 		const embed = createEmbed(this.client);
 
 		embed.fields.push({

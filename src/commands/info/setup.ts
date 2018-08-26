@@ -23,7 +23,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: [],
+		args: any[],
 		{ t, me }: Context
 	): Promise<any> {
 		const embed = createEmbed(this.client, {

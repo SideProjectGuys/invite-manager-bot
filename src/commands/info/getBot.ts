@@ -18,7 +18,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: string[],
+		args: any[],
 		{ guild }: Context
 	): Promise<any> {
 		const embed = createEmbed(this.client);

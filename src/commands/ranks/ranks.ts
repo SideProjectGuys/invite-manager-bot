@@ -1,47 +1,30 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import { ranks } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'ranks',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.ranks,
 			aliases: ['show-ranks', 'showRanks'],
 			desc: 'Show all ranks.',
-			usage: '<prefix>show-ranks',
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.ranks))
-	@using(localize)
-	public async action(message: Message, [rp]: [RP]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, t }: Context
+	): Promise<any> {
 		const rs = await ranks.findAll({
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			order: ['numInvites'],
 			raw: true
@@ -50,21 +33,22 @@ export default class extends Command<IMClient> {
 		let output = '';
 
 		if (rs.length === 0) {
-			return sendReply(message, rp.CMD_RANKS_NONE());
+			return sendReply(this.client, message, t('CMD_RANKS_NONE'));
 		} else {
 			rs.forEach(r => {
 				output +=
-					rp.CMD_RANKS_ENTRY({
+					t('CMD_RANKS_ENTRY', {
 						role: r.roleId,
 						numInvites: r.numInvites,
 						description: r.description ? ': ' + r.description : undefined
 					}) + '\n';
 			});
-			const embed = createEmbed(this.client);
-			embed.setTitle(rp.CMD_RANKS_TITLE());
-			embed.setDescription(output);
+			const embed = createEmbed(this.client, {
+				title: t('CMD_RANKS_TITLE'),
+				description: output
+			});
 
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 	}
 }

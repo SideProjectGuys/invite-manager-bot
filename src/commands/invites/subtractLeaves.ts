@@ -1,14 +1,7 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { checkProBot, checkRoles } from '../../middleware';
+import { sendReply } from '../../functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -17,40 +10,26 @@ import {
 	leaves,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
-import { sendReply } from '../../functions/Messaging';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'subtract-leaves',
-			aliases: ['subtractleaves', 'subleaves', 'sl'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.subtractLeaves,
+			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			desc: 'Remove leaves from all users',
-			usage: '<prefix>subtract-leaves',
-			clientPermissions: ['MANAGE_GUILD'],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.subtractLeaves))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _page]: [RP, number]
+		args: any[],
+		{ guild, t, settings }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		const ls = await leaves.findAll({
 			attributes: [
 				'memberId',
@@ -65,7 +44,7 @@ export default class extends Command<IMClient> {
 				]
 			],
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			group: [
 				sequelize.col('leave.memberId'),
@@ -90,26 +69,25 @@ export default class extends Command<IMClient> {
 		});
 
 		if (ls.length === 0) {
-			return sendReply(message, rp.CMD_SUBTRACTLEAVES_NO_LEAVES());
+			return sendReply(this.client, message, t('CMD_SUBTRACTLEAVES_NO_LEAVES'));
 		}
 
 		// Delete old duplicate removals
 		await customInvites.destroy({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				generatedReason: CustomInvitesGeneratedReason.leave
 			}
 		});
 
-		const threshold = (await SettingsCache.get(message.guild.id))
-			.autoSubtractLeaveThreshold;
+		const threshold = parseInt(settings.autoSubtractLeaveThreshold, 10);
 
 		// Add subtracts for leaves
 		const customInvs = ls
 			.filter((l: any) => parseInt(l.timeDiff, 10) < threshold)
 			.map((l: any) => ({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: l['join.exactMatch.inviterId'],
 				creatorId: null,
 				amount: -1,
@@ -121,8 +99,9 @@ export default class extends Command<IMClient> {
 		});
 
 		return sendReply(
+			this.client,
 			message,
-			rp.CMD_SUBTRACTLEAVES_DONE({ total: customInvs.length })
+			t('CMD_SUBTRACTLEAVES_DONE', { total: customInvs.length })
 		);
 	}
 }

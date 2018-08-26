@@ -107,8 +107,8 @@ export default class extends Command {
 								missingPermission
 							}) + '\n';
 					});
-					embed.addField(
-						rp.CMD_HELP_UNAVAILABLE_COMMAND_TITLE(),
+					embed.fields.push(
+						t('CMD_HELP_UNAVAILABLE_COMMAND_TITLE'),
 						unavailableDescription
 					);
 				}

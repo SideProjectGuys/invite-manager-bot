@@ -1,70 +1,52 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'premium',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.premium,
 			aliases: ['patreon', 'donate'],
 			desc: 'Info about premium version.',
-			usage: '<prefix>premium',
 			group: CommandGroup.Premium,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.premium))
-	@using(localize)
-	public async action(message: Message, [rp]: [RP]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, t, settings }: Context
+	): Promise<any> {
 		// TODO: Create list of premium features (also useful for FAQ)
-		const lang = (await SettingsCache.get(message.guild.id)).lang;
+		const lang = settings.lang;
 
 		const embed = createEmbed(this.client);
 
-		const isPremium = await SettingsCache.isPremium(message.guild.id);
+		const isPremium = this.client.cache.isPremium(guild.id);
 
 		if (!isPremium) {
-			embed.setTitle(rp.CMD_PREMIUM_NO_PREMIUM_TITLE());
-			embed.setDescription(rp.CMD_PREMIUM_NO_PREMIUM_DESCRIPTION());
+			embed.title = t('CMD_PREMIUM_NO_PREMIUM_TITLE');
+			embed.description = t('CMD_PREMIUM_NO_PREMIUM_DESCRIPTION');
 
-			embed.addField(
-				rp.CMD_PREMIUM_FEATURE_EMBEDS_TITLE(),
-				rp.CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION()
-			);
+			embed.fields.push({
+				name: t('CMD_PREMIUM_FEATURE_EMBEDS_TITLE'),
+				value: t('CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION')
+			});
 
-			embed.addField(
-				rp.CMD_PREMIUM_FEATURE_EXPORT_TITLE(),
-				rp.CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION()
-			);
+			embed.fields.push({
+				name: t('CMD_PREMIUM_FEATURE_EXPORT_TITLE'),
+				value: t('CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION')
+			});
 		} else {
 			const sub = await premiumSubscriptions.findOne({
 				where: {
-					guildId: message.guild.id,
+					guildId: guild.id,
 					validUntil: {
 						[sequelize.Op.gte]: new Date()
 					}
@@ -72,22 +54,22 @@ export default class extends Command<IMClient> {
 				raw: true
 			});
 
-			embed.setTitle(rp.CMD_PREMIUM_PREMIUM_TITLE());
+			embed.title = t('CMD_PREMIUM_PREMIUM_TITLE');
 
 			let description = '';
 			if (sub) {
 				const date = moment(sub.validUntil)
 					.locale(lang)
 					.fromNow(true);
-				description = rp.CMD_PREMIUM_PREMIUM_DESCRIPTION({
+				description = t('CMD_PREMIUM_PREMIUM_DESCRIPTION', {
 					date
 				});
 			} else {
-				description += rp.CMD_PREMIUM_PREMIUM_NOT_FOUND();
+				description += t('CMD_PREMIUM_PREMIUM_NOT_FOUND');
 			}
-			embed.setDescription(description);
+			embed.description = description;
 		}
 
-		return sendReply(message, embed);
+		return sendReply(this.client, message, embed);
 	}
 }

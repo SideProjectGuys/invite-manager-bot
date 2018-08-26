@@ -57,7 +57,7 @@ export enum BotCommand {
 	'makeMentionable' = 'makeMentionable',
 	'mentionRole' = 'mentionRole',
 
-	'chart' = 'chart'
+	'graph' = 'graph'
 }
 
 export enum OwnerCommand {

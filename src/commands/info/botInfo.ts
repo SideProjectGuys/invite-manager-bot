@@ -21,7 +21,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: [],
+		args: any[],
 		{ t, settings }: Context
 	): Promise<any> {
 		const lang = settings.lang;

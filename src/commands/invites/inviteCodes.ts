@@ -1,68 +1,48 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendEmbed } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import {
 	channels,
 	InviteCodeAttributes,
 	inviteCodes,
 	members
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'invite-codes',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.inviteCodes,
 			aliases: [
+				'inviteCode',
 				'invite-code',
-				'get-invite-codes',
-				'getInviteCode',
 				'invite-codes',
-				'inviteCodes',
-				'InviteCode',
 				'getInviteCode',
 				'get-invite-code',
+				'get-invite-codes',
 				'showInviteCode',
 				'show-invite-code'
 			],
 			desc: 'Get a list of all your invite codes',
-			usage: '<prefix>invite-codes',
-			clientPermissions: ['MANAGE_GUILD'],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.inviteCodes))
-	@using(localize)
-	public async action(message: Message, [rp]: [RP]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		const lang = (await SettingsCache.get(message.guild.id)).lang;
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, t, settings }: Context
+	): Promise<any> {
+		const lang = settings.lang;
 
 		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			include: [
 				{
@@ -78,7 +58,7 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const activeCodes = (await message.guild.fetchInvites())
+		const activeCodes = (await guild.getInvites())
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
@@ -128,49 +108,50 @@ export default class extends Command<IMClient> {
 			permanentInvites[0]
 		);
 
-		const embed = createEmbed(this.client);
-		embed.setTitle(rp.CMD_INVITECODES_TITLE({ guild: message.guild.name }));
+		const embed = createEmbed(this.client, {
+			title: t('CMD_INVITECODES_TITLE', { guild: guild.name })
+		});
 
 		if (permanentInvites.length === 0 && temporaryInvites.length === 0) {
-			embed.setDescription(rp.CMD_INVITECODES_NO_CODES());
+			embed.description = t('CMD_INVITECODES_NO_CODES');
 		} else {
 			if (recommendedCode) {
-				embed.addField(
-					rp.CMD_INVITECODES_RECOMMENDED_CODE_TITLE(),
-					`https://discord.gg/${recommendedCode.code}`
-				);
+				embed.fields.push({
+					name: t('CMD_INVITECODES_RECOMMENDED_CODE_TITLE'),
+					value: `https://discord.gg/${recommendedCode.code}`
+				});
 			} else {
-				embed.addField(
-					rp.CMD_INVITECODES_RECOMMENDED_CODE_TITLE(),
-					rp.CMD_INVITECODES_RECOMMENDED_CODE_NONE()
-				);
+				embed.fields.push({
+					name: t('CMD_INVITECODES_RECOMMENDED_CODE_TITLE'),
+					value: t('CMD_INVITECODES_RECOMMENDED_CODE_NONE')
+				});
 			}
 		}
 		if (permanentInvites.length > 0) {
-			embed.addBlankField();
-			embed.addField(
-				rp.CMD_INVITECODES_PERMANENT_TITLE(),
-				rp.CMD_INVITECODES_PERMANENT_TEXT()
-			);
+			// embed.addBlankField();
+			embed.fields.push({
+				name: t('CMD_INVITECODES_PERMANENT_TITLE'),
+				value: t('CMD_INVITECODES_PERMANENT_TEXT')
+			});
 			permanentInvites.forEach(i => {
-				embed.addField(
-					`${i.code}`,
-					rp.CMD_INVITECODES_PERMANENT_ENTRY({
+				embed.fields.push({
+					name: `${i.code}`,
+					value: t('CMD_INVITECODES_PERMANENT_ENTRY', {
 						uses: i.uses,
 						maxAge: i.maxAge,
 						maxUses: i.maxUses,
 						channelId: i.channelId
 					}),
-					true
-				);
+					inline: true
+				});
 			});
 		}
 		if (temporaryInvites.length > 0) {
-			embed.addBlankField();
-			embed.addField(
-				rp.CMD_INVITECODES_TEMPORARY_TITLE(),
-				rp.CMD_INVITECODES_TEMPORARY_TEXT()
-			);
+			// embed.addBlankField();
+			embed.fields.push({
+				name: t('CMD_INVITECODES_TEMPORARY_TITLE'),
+				value: t('CMD_INVITECODES_TEMPORARY_TEXT')
+			});
 			temporaryInvites.forEach(i => {
 				const maxAge = moment
 					.duration(i.maxAge, 's')
@@ -180,21 +161,22 @@ export default class extends Command<IMClient> {
 					.add(i.maxAge, 's')
 					.locale(lang)
 					.fromNow();
-				embed.addField(
-					`${i.code}`,
-					rp.CMD_INVITECODES_PERMANENT_ENTRY({
+				embed.fields.push({
+					name: `${i.code}`,
+					value: t('CMD_INVITECODES_PERMANENT_ENTRY', {
 						uses: i.uses,
 						maxAge,
 						maxUses: i.maxUses,
 						channelId: i.channelId,
 						expires
 					}),
-					true
-				);
+					inline: true
+				});
 			});
 		}
 
-		sendEmbed(message.author, embed);
-		message.reply(rp.CMD_INVITECODES_DM_SENT());
+		sendEmbed(this.client, await message.author.getDMChannel(), embed);
+		// TODO: Start the message with @user
+		message.channel.createMessage(t('CMD_INVITECODES_DM_SENT'));
 	}
 }

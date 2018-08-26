@@ -1,55 +1,49 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
 import { createEmbed, sendReply } from '../functions/Messaging';
-import { checkProBot, checkRoles } from '../middleware';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
-import { BotCommand, ChartType, CommandGroup, RP } from '../types';
+import { BotCommand, ChartType, CommandGroup } from '../types';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
+import { Command, Context } from './Command';
+import { EnumResolver, NumberResolver } from './resolvers';
 
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'graph',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.graph,
 			aliases: ['g', 'chart'],
 			desc: 'Shows graphs about various stats on this server.',
-			usage: '<prefix>graph type (duration)',
+			args: [
+				{
+					name: 'type',
+					resolver: new EnumResolver(client, []),
+					description: 'The type of chart to display.'
+				},
+				{
+					name: 'duration',
+					resolver: NumberResolver,
+					description: 'The duration period for the chart.'
+				}
+			],
 			group: CommandGroup.Other,
 			guildOnly: true,
 			hidden: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.chart))
-	@using(resolve('type: string, duration: string'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _type, duration]: [RP, string, string]
+		[_type, duration]: [string, string],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		if (!_type) {
 			return sendReply(
+				this.client,
 				message,
-				rp.CMD_CHART_MISSING_TYPE({
+				t('CMD_CHART_MISSING_TYPE', {
 					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
@@ -62,8 +56,9 @@ export default class extends Command<IMClient> {
 		) as ChartType;
 		if (!type) {
 			return sendReply(
+				this.client,
 				message,
-				rp.CMD_CHART_INVALID_TYPE({
+				t('CMD_CHART_INVALID_TYPE', {
 					types: Object.keys(ChartType)
 						.map(k => '`' + k + '`')
 						.join(', ')
@@ -94,8 +89,8 @@ export default class extends Command<IMClient> {
 		const vs: { [x: string]: number } = {};
 
 		if (type === ChartType.joins) {
-			title = rp.CMD_CHART_JOINS_TITLE();
-			description = rp.CMD_CHART_JOINS_DESCRIPTION();
+			title = t('CMD_CHART_JOINS_TITLE');
+			description = t('CMD_CHART_JOINS_DESCRIPTION');
 
 			const js = await joins.findAll({
 				attributes: [
@@ -110,7 +105,7 @@ export default class extends Command<IMClient> {
 					sequelize.fn('DAY', sequelize.col('createdAt'))
 				],
 				where: {
-					guildId: message.guild.id
+					guildId: guild.id
 				},
 				order: [sequelize.literal('MAX(createdAt) DESC')],
 				limit: days,
@@ -119,8 +114,8 @@ export default class extends Command<IMClient> {
 
 			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
 		} else if (type === ChartType.leaves) {
-			title = rp.CMD_CHART_LEAVES_TITLE();
-			description = rp.CMD_CHART_LEAVES_DESCRIPTION();
+			title = t('CMD_CHART_LEAVES_TITLE');
+			description = t('CMD_CHART_LEAVES_DESCRIPTION');
 
 			const lvs = await leaves.findAll({
 				attributes: [
@@ -135,7 +130,7 @@ export default class extends Command<IMClient> {
 					sequelize.fn('DAY', sequelize.col('createdAt'))
 				],
 				where: {
-					guildId: message.guild.id
+					guildId: guild.id
 				},
 				order: [sequelize.literal('MAX(createdAt) DESC')],
 				limit: days,
@@ -144,8 +139,8 @@ export default class extends Command<IMClient> {
 
 			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
 		} else if (type === ChartType.usage) {
-			title = rp.CMD_CHART_USAGE_TITLE();
-			description = rp.CMD_CHART_USAGE_DESCRIPTION();
+			title = t('CMD_CHART_USAGE_TITLE');
+			description = t('CMD_CHART_USAGE_DESCRIPTION');
 
 			const us = await commandUsage.findAll({
 				attributes: [
@@ -160,7 +155,7 @@ export default class extends Command<IMClient> {
 					sequelize.fn('DAY', sequelize.col('createdAt'))
 				],
 				where: {
-					guildId: message.guild.id
+					guildId: guild.id
 				},
 				order: [sequelize.literal('MAX(createdAt) DESC')],
 				limit: days,
@@ -202,20 +197,19 @@ export default class extends Command<IMClient> {
 
 		let chart = new Chart();
 		chart.getChart('line', config).then((buffer: Buffer) => {
-			const embed = createEmbed(this.client);
-			embed.setTitle(title);
-			embed.setDescription(description);
-			embed.setImage('attachment://chart.png');
-			embed.attachFiles([
-				{
-					attachment: buffer,
-					name: 'chart.png'
+			const embed = createEmbed(this.client, {
+				title,
+				description,
+				image: {
+					url: 'attachment://chart.png'
 				}
-			]);
-
-			message.channel.send({ embed }).then(() => {
-				chart.destroy();
 			});
+
+			message.channel
+				.createMessage({ embed }, { file: buffer, name: 'chart.png' })
+				.then(() => {
+					chart.destroy();
+				});
 		});
 	}
 }
