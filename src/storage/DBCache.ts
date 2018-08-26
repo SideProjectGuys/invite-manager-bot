@@ -8,7 +8,8 @@ import {
 	roles,
 	sequelize,
 	settings,
-	SettingsKey
+	SettingsKey,
+	SettingsObject
 } from '../sequelize';
 import { BotCommand, OwnerCommand } from '../types';
 
@@ -16,32 +17,30 @@ const config = require('../../config.json');
 
 const maxCacheDuration = moment.duration(4, 'h');
 
-export class SettingsCache {
-	private static _init: boolean = false;
-	private static client: IMClient;
+type CommandObject = { [key in BotCommand | OwnerCommand]: string[] };
+
+export class DBCache {
+	private client: IMClient;
 
 	// Settings
-	private static cache: {
-		[guildId: string]: { [key in SettingsKey]: any };
-	} = {};
-	private static cacheFetch: { [guildId: string]: moment.Moment } = {};
+	private cache: Map<string, SettingsObject> = new Map();
+	private cacheFetch: Map<string, moment.Moment> = new Map();
 
 	// Role permissions
-	private static permsCache: {
-		[guildId: string]: { [cmd in BotCommand | OwnerCommand]: string[] };
-	} = {};
-	private static permsCacheFetch: { [guildId: string]: moment.Moment } = {};
+	private permsCache: Map<string, CommandObject> = new Map();
+	private permsCacheFetch: Map<string, moment.Moment> = new Map();
 
 	// Premium
-	private static premiumCache: { [guildId: string]: boolean } = {};
-	private static premiumCacheFetch: { [guildId: string]: moment.Moment } = {};
+	private premiumCache: Map<string, boolean> = new Map();
+	private premiumCacheFetch: Map<string, moment.Moment> = new Map();
 
-	// Init
-	public static async init(client: IMClient) {
+	// Constructor
+	public constructor(client: IMClient) {
 		this.client = client;
 	}
 
-	private static async doInit() {
+	// Init
+	public async init() {
 		const it = this.client.guilds.keys();
 
 		const guildIds: string[] = [];
@@ -51,19 +50,22 @@ export class SettingsCache {
 			const id = result.value as string;
 			guildIds.push(id);
 
-			this.cache[id] = { ...defaultSettings };
-			this.cacheFetch[id] = moment();
+			this.cache.set(id, { ...defaultSettings });
+			this.cacheFetch.set(id, moment());
 
-			const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
+			// Create permissions map
+			const obj: CommandObject = {} as any;
 			Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 			if (config.ownerGuildIds.indexOf(id) !== -1) {
 				Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 			}
-			this.permsCache[id] = obj;
-			this.permsCacheFetch[id] = moment();
+			this.permsCache.set(id, obj);
+			this.permsCacheFetch.set(id, moment());
 
-			this.premiumCache[id] = false;
-			this.premiumCacheFetch[id] = moment();
+			this.premiumCache.set(id, false);
+			this.premiumCacheFetch.set(id, moment());
+
+			result = it.next();
 		}
 
 		// Load all settings into initial cache
@@ -82,7 +84,7 @@ export class SettingsCache {
 			if (set.value === null && defaultSettings[set.key] !== null) {
 				return;
 			}
-			this.cache[set.guildId][set.key] = set.value;
+			this.cache.get(set.guildId)[set.key] = set.value;
 		});
 
 		// Load all role permissions
@@ -101,7 +103,7 @@ export class SettingsCache {
 		// Then insert the role permissions we got from the db
 		perms.forEach((p: any) => {
 			const cmd = p.command as BotCommand | OwnerCommand;
-			this.permsCache[p['role.guildId']][cmd].push(p.roleId);
+			this.permsCache.get(p['role.guildId'])[cmd].push(p.roleId);
 		});
 
 		// Load valid premium subs
@@ -117,32 +119,27 @@ export class SettingsCache {
 
 		// Save subs in cache
 		subs.forEach(sub => {
-			this.premiumCache[sub.guildId] = true;
+			this.premiumCache.set(sub.guildId, true);
 		});
-
-		this.cache = this.cache;
-		this._init = true;
 	}
 
-	public static clear() {
-		this.cache = {};
+	public clear() {
+		this.cache = new Map();
 	}
 
-	public static async isPremium(guildId: string) {
-		if (!this._init) {
-			await this.doInit();
-		}
+	public async isPremium(guildId: string) {
+		const cached = this.premiumCache.get(guildId);
 
-		// Check for undefined because our value may be saved as "false" (= no premium)
-		if (this.premiumCache[guildId] !== undefined) {
+		if (cached !== undefined) {
+			const time = this.premiumCacheFetch.get(guildId);
 			if (
-				this.premiumCacheFetch[guildId] &&
-				this.premiumCacheFetch[guildId]
+				time &&
+				time
 					.clone()
 					.add(maxCacheDuration)
 					.isAfter(moment())
 			) {
-				return this.premiumCache[guildId];
+				return cached;
 			}
 		}
 
@@ -155,31 +152,31 @@ export class SettingsCache {
 			}
 		});
 
-		this.premiumCache[guildId] = sub > 0;
-		this.premiumCacheFetch[guildId] = moment();
+		const perm = sub > 0;
+		this.premiumCache.set(guildId, perm);
+		this.premiumCacheFetch.set(guildId, moment());
 
-		return this.premiumCache[guildId];
+		return perm;
 	}
 
-	public static flushPremium(guildId: string) {
-		delete this.premiumCache[guildId];
-		delete this.premiumCacheFetch[guildId];
+	public flushPremium(guildId: string) {
+		this.premiumCache.delete(guildId);
+		this.premiumCacheFetch.delete(guildId);
 	}
 
-	public static async getPermissions(guildId: string) {
-		if (!this._init) {
-			await this.doInit();
-		}
+	public async getPermissions(guildId: string) {
+		const cached = this.permsCache.get(guildId);
 
-		if (this.permsCache[guildId]) {
+		if (cached !== undefined) {
+			const time = this.permsCacheFetch.get(guildId);
 			if (
-				this.permsCacheFetch[guildId] &&
-				this.permsCacheFetch[guildId]
+				time &&
+				time
 					.clone()
 					.add(maxCacheDuration)
 					.isAfter(moment())
 			) {
-				return this.permsCache[guildId];
+				return cached;
 			}
 		}
 
@@ -193,60 +190,58 @@ export class SettingsCache {
 			raw: true
 		});
 
-		const obj: { [x in BotCommand | OwnerCommand]: string[] } = {} as any;
+		const obj: CommandObject = {} as any;
 		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
 			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 		}
-		this.permsCache[guildId] = obj;
 
 		perms.forEach((p: any) => {
 			const cmd = p.command as BotCommand | OwnerCommand;
-			this.permsCache[guildId][cmd].push(p.roleId);
-			this.permsCacheFetch[guildId] = moment();
+			obj[cmd].push(p.roleId);
 		});
 
-		return this.permsCache[guildId];
+		this.permsCache.set(guildId, obj);
+		this.permsCacheFetch.set(guildId, moment());
+
+		return obj;
 	}
 
-	public static flushPermissions(guildId: string) {
-		delete this.permsCache[guildId];
-		delete this.permsCacheFetch[guildId];
+	public flushPermissions(guildId: string) {
+		this.permsCache.delete(guildId);
+		this.permsCacheFetch.delete(guildId);
 	}
 
-	public static async get(guildId: string) {
-		if (!this._init) {
-			await this.doInit();
-		}
+	public async get(guildId: string) {
+		const cached = this.cache.get(guildId);
 
-		if (this.cache[guildId]) {
+		if (cached !== undefined) {
+			const time = this.cacheFetch.get(guildId);
 			if (
-				this.cacheFetch[guildId] &&
-				this.cacheFetch[guildId]
+				time &&
+				time
 					.clone()
 					.add(maxCacheDuration)
 					.isAfter(moment())
 			) {
-				return this.cache[guildId];
+				return cached;
 			}
 		}
 
 		const sets = await settings.findAll({ where: { guildId } });
 
-		const obj: { [k in SettingsKey]: string } = { ...defaultSettings };
+		const obj: SettingsObject = { ...defaultSettings };
 		sets.forEach(set => (obj[set.key] = set.value));
 
-		this.cache[guildId] = obj;
-		this.cacheFetch[guildId] = moment();
+		this.cache.set(guildId, obj);
+		this.cacheFetch.set(guildId, moment());
+
 		return obj;
 	}
 
-	public static async set(guildId: string, key: SettingsKey, value: string) {
-		if (!this._init) {
-			await this.doInit();
-		}
+	public async set(guildId: string, key: SettingsKey, value: string) {
+		let oldConfig = this.cache.get(guildId);
 
-		let oldConfig = this.cache[guildId];
 		// Get these settings if we don't have them yet
 		if (!oldConfig) {
 			oldConfig = await this.get(guildId);
@@ -254,7 +249,7 @@ export class SettingsCache {
 
 		// Check if the value changed
 		if (oldConfig[key] !== value) {
-			this.cache[guildId][key] = value;
+			oldConfig[key] = value;
 
 			await settings.bulkCreate(
 				[
@@ -272,16 +267,8 @@ export class SettingsCache {
 		}
 	}
 
-	public static flush(guildId: string) {
-		delete this.cache[guildId];
-		delete this.cacheFetch[guildId];
-	}
-
-	public static keys() {
-		return Object.keys(this.cache);
-	}
-
-	public static remove(guildId: string) {
-		delete this.cache[guildId];
+	public flush(guildId: string) {
+		this.cache.delete(guildId);
+		this.cacheFetch.delete(guildId);
 	}
 }

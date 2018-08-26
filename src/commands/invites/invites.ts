@@ -1,53 +1,40 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { User } from 'discord.js';
+import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
-import { BotCommand, CommandGroup, RP } from '../../types';
-import { getInviteCounts, promoteIfQualified } from '../../util';
+import { BotCommand, CommandGroup } from '../../types';
+import { getInviteCounts } from '../../util';
+import { Command, Context } from '../Command';
+import { UserResolver } from '../resolvers/UserResolver';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'invites',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.invites,
 			aliases: ['invite', 'rank'],
 			desc: 'Show personal invites',
-			usage: '<prefix>invites (@user)',
-			info: '`@user`:\n' + 'The user for whom you want to show invites.\n\n',
-			clientPermissions: ['MANAGE_GUILD'],
+			args: [
+				{
+					name: 'user',
+					resolver: UserResolver,
+					description: 'The user for whom you want to show invites.'
+				}
+			],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.invites))
-	@using(resolve('user: User'))
-	@using(localize)
-	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		[user]: [User],
+		{ guild, t }: Context
+	): Promise<any> {
 		let target = user ? user : message.author;
-		const invites = await getInviteCounts(message.guild.id, target.id);
+		const invites = await getInviteCounts(guild.id, target.id);
 
 		let textMessage =
-			rp.CMD_INVITES_AMOUNT({
+			t('CMD_INVITES_AMOUNT', {
 				self: message.author.id,
 				target: target.id,
 				total: invites.total,
@@ -57,8 +44,8 @@ export default class extends Command<IMClient> {
 				leave: invites.leave
 			}) + '\n';
 
-		if (!target.bot) {
-			let targetMember = await message.guild.members
+		/*if (!target.bot) {
+			let targetMember = await guild.members
 				.fetch(target.id)
 				.catch(() => undefined);
 
@@ -117,12 +104,13 @@ export default class extends Command<IMClient> {
 					}
 				}
 			}
-		}
+		}*/
 
-		const embed = createEmbed(this.client);
-		embed.setTitle(target.username);
-		embed.setDescription(textMessage);
+		const embed = createEmbed(this.client, {
+			title: target.username,
+			description: textMessage
+		});
 
-		return sendReply(message, embed);
+		return sendReply(this.client, message, embed);
 	}
 }

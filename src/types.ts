@@ -27,7 +27,12 @@ export enum BotCommand {
 	'memberConfig' = 'memberConfig',
 	'permissions' = 'permissions',
 
+	'getBot' = 'getBot',
+	'botInfo' = 'botInfo',
+	'prefix' = 'prefix',
 	'setup' = 'setup',
+	'support' = 'support',
+	'help' = 'help',
 
 	'addInvites' = 'addInvites',
 	'clearInvites' = 'clearInvites',

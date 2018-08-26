@@ -6,11 +6,11 @@ import moment from 'moment';
 
 import { Command } from './commands/Command';
 import { createEmbed, sendEmbed, sendReply } from './functions/Messaging';
-import { isStrict } from './middleware';
 import {
 	channels,
 	customInvites,
 	CustomInvitesGeneratedReason,
+	defaultSettings,
 	guilds,
 	inviteCodes,
 	inviteCodeSettings,
@@ -22,15 +22,10 @@ import {
 	members,
 	sequelize
 } from './sequelize';
+import { DBCache } from './storage/DBCache';
 import { DBQueue } from './storage/DBQueue';
-import { SettingsCache } from './storage/SettingsCache';
 import { ShardCommand } from './types';
-import {
-	getInviteCounts,
-	idToBinary,
-	InviteCounts,
-	promoteIfQualified
-} from './util';
+import { getInviteCounts, idToBinary, InviteCounts } from './util';
 
 const config = require('../config.json');
 
@@ -60,6 +55,7 @@ export class IMClient extends Client {
 	public version: string;
 	public config: any;
 
+	public cache: DBCache;
 	public commands: Command[];
 
 	public conn: amqplib.Connection;
@@ -115,6 +111,7 @@ export class IMClient extends Client {
 		this.numShards = shardCount;
 		this.startedAt = moment();
 
+		this.cache = new DBCache(this);
 		this.dbQueue = new DBQueue(this);
 		this.pendingRabbitMqRequests = new Map();
 
@@ -148,10 +145,22 @@ export class IMClient extends Client {
 			});
 		});
 
-		SettingsCache.init(this);
-
 		this.commands = [];
-		this.commands.push(require('./commands/info/botInfo'));
+
+		let clazz = require('./commands/info/botInfo').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/info/getBot').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/info/members').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/invites/invites').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/info/help').default;
+		this.commands.push(new clazz(this));
 
 		this.on('ready', this._onClientReady);
 		this.on('guildCreate', this._onGuildCreate);
@@ -204,6 +213,8 @@ export class IMClient extends Client {
 
 	private async _onClientReady(): Promise<void> {
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
+
+		await this.cache.init();
 
 		await this.channelJoins.prefetch(5);
 		this.channelJoins.consume(
@@ -309,80 +320,102 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const channel = message.channel as TextChannel;
-		const guild = channel.guild;
+		const channel = message.channel;
+		const guild = (channel as TextChannel).guild;
 
-		// Skip DMs
-		if (message.channel.type === CHANNEL_TYPE_DM) {
-			return;
-		}
-
-		// Check if this guild is disabled due to the pro bot
-		if (
-			this.disabledGuilds.has(guild.id) &&
-			!message.content.startsWith(`<@${this.user.id}>`) &&
-			!message.content.startsWith(`<@!${this.user.id}>`)
-		) {
-			return;
+		if (guild) {
+			// Check if this guild is disabled due to the pro bot
+			if (
+				this.disabledGuilds.has(guild.id) &&
+				!message.content.startsWith(`<@${this.user.id}>`) &&
+				!message.content.startsWith(`<@!${this.user.id}>`)
+			) {
+				return;
+			}
 		}
 
 		console.log(
-			`${guild.name} (${message.author.username}): ${message.content}`
+			`${guild ? guild.name : 'DM'} (${message.author.username}): ` +
+				`${message.content}`
 		);
-
-		const sets = await SettingsCache.get(guild.id);
-		const prefix = sets.prefix;
-
-		console.log(sets);
 
 		// Figure out which command is being run
 		const splits = message.content.split(' ');
 		let cmdStr = splits[0].toLowerCase();
 
-		if (!cmdStr.startsWith(prefix)) {
-			return;
+		let sets = defaultSettings;
+
+		// Check for prefix if this is in a guild
+		if (guild) {
+			sets = await this.cache.get(guild.id);
+			const prefix = sets.prefix;
+
+			if (!cmdStr.startsWith(prefix)) {
+				return;
+			}
+
+			cmdStr = cmdStr.substring(prefix.length);
 		}
 
-		cmdStr = cmdStr.substring(prefix.length);
-
+		// Find the command
 		let cmd: Command = this.commands.find(
-			c => c.name === cmdStr || c.aliases.indexOf(cmdStr) >= 0
+			c => c.name.toLowerCase() === cmdStr || c.aliases.indexOf(cmdStr) >= 0
 		);
 
-		console.log(cmd);
+		console.log(cmd ? cmd.name : 'INVALID COMMAND');
 
-		// Command not found
-		if (!cmd) {
+		// Command not found, or not allowed in DM
+		if (!cmd || (cmd.guildOnly && !guild)) {
 			return;
 		}
 
+		let me: Member = undefined;
 		const lang = sets.lang;
 
-		// Always allow admins
-		let member = message.member;
-		if (!member) {
-			member = guild.members.get(message.author.id);
-		}
-		if (!member) {
-			member = await guild.getRESTMember(message.author.id);
-		}
-		if (!member) {
-			console.error(
-				`Could not get member ${message.author.id} for ${guild.id}`
-			);
-			sendReply(
-				this,
-				message,
-				i18n.__({ locale: lang, phrase: 'PERMISSIONS_MEMBER_ERROR' })
-			);
-			return;
-		}
+		// Guild only stuff
+		if (guild) {
+			// Check permissions for guilds
+			let member = message.member;
+			if (!member) {
+				member = guild.members.get(message.author.id);
+			}
+			if (!member) {
+				member = await guild.getRESTMember(message.author.id);
+			}
+			if (!member) {
+				console.error(
+					`Could not get member ${message.author.id} for ${guild.id}`
+				);
+				sendReply(
+					this,
+					message,
+					i18n.__({ locale: lang, phrase: 'PERMISSIONS_MEMBER_ERROR' })
+				);
+				return;
+			}
 
-		if (!message.member.permission.has('ADMINISTRATOR')) {
-			const perms = (await SettingsCache.getPermissions(guild.id))[cmd.name];
+			// Always allow admins
+			if (!message.member.permission.has('ADMINISTRATOR')) {
+				const perms = (await this.cache.getPermissions(guild.id))[cmd.name];
 
-			// Allow commands that require no roles, if strict is not true
-			if (!perms || perms.length === 0) {
+				if (perms && perms.length > 0) {
+					// Check that we have at least one of the required roles
+					if (!perms.some(p => message.member.roles.indexOf(p) >= 0)) {
+						sendReply(
+							this,
+							message,
+							i18n.__(
+								{ locale: lang, phrase: 'PERMISSIONS_MISSING_ROLE' },
+								{
+									roles: perms.map(p => `<@&${p}>`).join(', ')
+								}
+							)
+						);
+						return;
+					}
+				}
+
+				// Allow commands that require no roles, if strict is not true
 				if (cmd.strict) {
 					sendReply(
 						this,
@@ -393,29 +426,33 @@ export class IMClient extends Client {
 				}
 			}
 
-			// Check that we have at least one of the required roles
-			if (!perms.some(p => message.member.roles.indexOf(p) >= 0)) {
-				sendReply(
-					this,
-					message,
-					i18n.__(
-						{ locale: lang, phrase: 'PERMISSIONS_MISSING_ROLE' },
-						{
-							roles: perms.map(p => `<@&${p}>`).join(', ')
-						}
-					)
-				);
-				return;
+			// Add self context
+			me = guild.members.get(this.user.id);
+			if (!me) {
+				me = await guild.getRESTMember(this.user.id);
 			}
 		}
 
-		cmd.action(
+		const context = {
 			guild,
-			message,
-			[],
-			(key: string, replacements?: { [key: string]: string }) =>
-				i18n.__({ locale: lang, phrase: key }, replacements)
-		);
+			me,
+			t: (key: string, replacements?: { [key: string]: string }) =>
+				i18n.__({ locale: lang, phrase: key }, replacements),
+			settings: sets
+		};
+
+		// Resolve arguments
+		const rawArgs = splits.slice(1);
+		const args: any[] = [];
+		let i = 0;
+		for (const resolver of cmd.resolvers) {
+			args.push(await resolver.resolve(rawArgs[i], context));
+			i++;
+		}
+
+		console.log(args);
+
+		await cmd.action(message, args, context);
 
 		// Skip if this is a valid bot command
 		// (technically we ignore all prefixes, but bot only responds to default one)
@@ -473,7 +510,7 @@ export class IMClient extends Client {
 		const js = await this.findJoins(guild.id, member.id);
 
 		// Get settings
-		const settings = await SettingsCache.get(guild.id);
+		const settings = await this.cache.get(guild.id);
 		const lang = settings.lang;
 		const joinChannelId = settings.joinMessageChannel;
 
@@ -585,7 +622,7 @@ export class IMClient extends Client {
 
 		// Promote the inviter if required
 		if (inviter && !inviter.user.bot) {
-			await promoteIfQualified(guild, inviter, invites.total);
+			// await promoteIfQualified(guild, inviter, invites.total);
 		}
 
 		const joinMessageFormat = settings.joinMessage;
@@ -627,7 +664,7 @@ export class IMClient extends Client {
 		console.log(member.id + ' left ' + guild.id);
 
 		// Get settings
-		const settings = await SettingsCache.get(guild.id);
+		const settings = await this.cache.get(guild.id);
 		const lang = settings.lang;
 		const leaveChannelId = settings.leaveMessageChannel;
 
@@ -684,7 +721,7 @@ export class IMClient extends Client {
 				}
 			});
 
-			const threshold = settings.autoSubtractLeaveThreshold;
+			const threshold = Number(settings.autoSubtractLeaveThreshold);
 			const timeDiff = moment
 				.utc(join.createdAt)
 				.diff(moment.utc(leave.createdAt), 's');
@@ -746,7 +783,7 @@ export class IMClient extends Client {
 					});
 				}
 
-				const sets = await SettingsCache.get(guildId);
+				const sets = await this.cache.get(guildId);
 				const perms = guild.members.get(this.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};
@@ -792,12 +829,12 @@ export class IMClient extends Client {
 
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
 				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
-				SettingsCache.flushPremium(guildId);
+				this.cache.flushPremium(guildId);
 				break;
 
 			case ShardCommand.FLUSH_SETTINGS_CACHE:
 				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
-				SettingsCache.flush(guildId);
+				this.cache.flush(guildId);
 				break;
 
 			/*case ShardCommand.SUDO:
@@ -859,7 +896,7 @@ export class IMClient extends Client {
 		action: LogAction,
 		data: any
 	) {
-		const logChannelId = (await SettingsCache.get(guild.id)).logChannel;
+		const logChannelId = (await this.cache.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;
@@ -1001,7 +1038,7 @@ export class IMClient extends Client {
 			}
 		}
 
-		const lang = (await SettingsCache.get(guild.id)).lang;
+		const lang = (await this.cache.get(guild.id)).lang;
 		const unknown = i18n.__({ locale: lang, phrase: 'TEMPLATE_UNKNOWN' });
 
 		const memberFullName =
@@ -1076,10 +1113,10 @@ export class IMClient extends Client {
 
 		try {
 			const temp = JSON.parse(msg);
-			if (await SettingsCache.isPremium(guild.id)) {
+			if (await this.cache.isPremium(guild.id)) {
 				msg = createEmbed(this, temp);
 			} else {
-				const lang = (await SettingsCache.get(guild.id)).lang;
+				const lang = (await this.cache.get(guild.id)).lang;
 				msg +=
 					'\n\n' +
 					i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });

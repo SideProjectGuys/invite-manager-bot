@@ -17,7 +17,7 @@ import {
 	leaves,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
+import { SettingsCache } from '../../storage/DBCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 import { sendReply } from '../../functions/Messaging';
 

@@ -25,7 +25,8 @@ export function createEmbed(
 			text: client.user.username,
 			icon_url: client.user.avatarURL
 		},
-		timestamp: new Date().toString()
+		fields: [],
+		timestamp: new Date().toISOString()
 	};
 }
 
@@ -76,7 +77,9 @@ export function sendEmbed(
 		target
 			.createMessage({ embed: e })
 			.then(resolve)
-			.catch(() => {
+			.catch(error => {
+				console.log(error);
+
 				const content = convertEmbedToPlain(e);
 				target
 					.createMessage(content)
@@ -110,6 +113,7 @@ export function sendEmbed(
 	});
 }
 
+/*
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 export async function showPaginated(
@@ -183,10 +187,12 @@ export async function showPaginated(
 		});
 	}
 }
+*/
 
 /**
  * Represents possible results of Util#prompt
  */
+/*
 export enum PromptResult {
 	SUCCESS,
 	FAILURE,
@@ -212,3 +218,4 @@ export async function prompt(
 	}
 	return [PromptResult.SUCCESS, confirmation];
 }
+*/

@@ -20,7 +20,7 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
+import { SettingsCache } from '../../storage/DBCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { resolve, expect, localize } = Middleware;

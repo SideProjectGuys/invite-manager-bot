@@ -17,7 +17,7 @@ import {
 	roles,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
+import { SettingsCache } from '../../storage/DBCache';
 import { BotCommand, CommandGroup, OwnerCommand, RP } from '../../types';
 
 const { resolve, localize } = Middleware;

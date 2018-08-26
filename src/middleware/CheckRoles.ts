@@ -4,7 +4,7 @@ import { BotCommand, OwnerCommand, RP } from '../types';
 
 import { IMClient } from '../client';
 import { sendReply } from '../functions/Messaging';
-import { SettingsCache } from '../storage/SettingsCache';
+import { SettingsCache } from '../storage/DBCache';
 
 export function isStrict(cmd: BotCommand | OwnerCommand) {
 	switch (cmd) {

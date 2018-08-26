@@ -19,8 +19,6 @@ import {
 	sequelize
 } from './sequelize';
 
-import { SettingsCache } from './storage/SettingsCache';
-
 export interface InviteCounts {
 	regular: number;
 	custom: number;
@@ -93,8 +91,9 @@ export async function getInviteCounts(
 		total: regular + custom + fake + leave
 	};
 }
-
+/*
 export async function promoteIfQualified(
+	client: IMClient,
 	guild: Guild,
 	member: Member,
 	totalInvites: number
@@ -102,8 +101,8 @@ export async function promoteIfQualified(
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	const settings = await SettingsCache.get(guild.id);
-	const style: RankAssignmentStyle = settings.rankAssignmentStyle;
+	const settings = await client.cache.get(guild.id);
+	const style = settings.rankAssignmentStyle as RankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
 		where: {
@@ -260,6 +259,7 @@ export class FakeChannel extends TextChannel {
 		return new Promise(resolve => resolve());
 	}
 }
+*/
 
 export function idToBinary(num: string) {
 	let bin = '';

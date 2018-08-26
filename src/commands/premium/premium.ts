@@ -12,7 +12,7 @@ import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
+import { SettingsCache } from '../../storage/DBCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
 
 const { localize } = Middleware;

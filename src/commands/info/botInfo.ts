@@ -1,31 +1,30 @@
-import { Guild, Message } from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
+import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { CommandGroup } from '../../types';
-import { Command, TranslateFunc } from '../Command';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
 
 export default class extends Command {
-	public constructor() {
-		super({
-			name: 'bot-info',
-			aliases: ['botInfo'],
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.botInfo,
+			aliases: ['bot-info'],
 			desc: 'Show info about the bot',
-			usage: '<prefix>botInfo',
-			group: CommandGroup.Info
+			group: CommandGroup.Info,
+			guildOnly: true
 		});
 	}
 
 	public async action(
-		guild: Guild,
 		message: Message,
 		args: [],
-		t: TranslateFunc
+		{ t, settings }: Context
 	): Promise<any> {
-		const lang = (await SettingsCache.get(guild.id)).lang;
+		const lang = settings.lang;
 
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();
