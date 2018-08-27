@@ -48,8 +48,7 @@ export default class extends Command {
 			id: role.id,
 			name: role.name,
 			guildId: role.guild.id,
-			// TODO: Convert color to hex code
-			color: '',
+			color: role.color.toString(16),
 			createdAt: role.createdAt
 		});
 

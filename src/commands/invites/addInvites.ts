@@ -5,7 +5,7 @@ import { createEmbed, sendReply } from '../../functions/Messaging';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
-import { getInviteCounts } from '../../util';
+import { getInviteCounts, promoteIfQualified } from '../../util';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -43,7 +43,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user, amount, reason]: [User, number, string],
-		{ guild, t, settings }: Context
+		{ guild, t, me }: Context
 	): Promise<any> {
 		if (amount === 0) {
 			return sendReply(this.client, message, t('cmd.addInvites.zero'));
@@ -95,15 +95,19 @@ export default class extends Command {
 		}
 
 		// Promote the member if it's not a bot
-		/*if (!user.bot) {
-			const member: GuildMember = await message.guild.members
-				.fetch(user.id)
-				.catch(() => undefined);
+		if (!user.bot) {
+			let member = guild.members.get(user.id);
+			if (!member) {
+				member = await guild.getRESTMember(user.id);
+			}
+
 			// Only if the member is still in the guild try and promote them
 			if (member) {
 				const promoteInfo = await promoteIfQualified(
-					message.guild,
+					this.client,
+					guild,
 					member,
+					me,
 					totalInvites
 				);
 
@@ -113,27 +117,27 @@ export default class extends Command {
 					if (shouldHave.length > 0) {
 						descr +=
 							'\n\n' +
-							rp.ROLES_SHOULD_HAVE({
+							t('roles.shouldHave', {
 								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 					if (shouldNotHave.length > 0) {
 						descr +=
 							'\n\n' +
-							rp.ROLES_SHOULD_NOT_HAVE({
+							t('roles.shouldNotHave', {
 								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 					if (dangerous.length > 0) {
 						descr +=
 							'\n\n' +
-							rp.ROLES_DANGEROUS({
+							t('roles.dangerous', {
 								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 				}
 			}
-		}*/
+		}
 
 		embed.description = descr;
 

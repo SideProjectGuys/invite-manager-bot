@@ -226,8 +226,7 @@ export default class extends Command {
 			await roles.insertOrUpdate({
 				id: role.id,
 				name: role.name,
-				// TODO: Set color
-				color: '',
+				color: role.color.toString(16),
 				guildId: role.guild.id
 			});
 

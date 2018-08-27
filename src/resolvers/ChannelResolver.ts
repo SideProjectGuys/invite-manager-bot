@@ -25,7 +25,7 @@ export class ChannelResolver extends Resolver {
 			if (channels.length === 1) {
 				channel = channels[0];
 			} else {
-				// TODO: Show error for multiple user matches
+				// TODO: Show error for multiple channel matches
 			}
 		}
 

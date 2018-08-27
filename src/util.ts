@@ -91,11 +91,12 @@ export async function getInviteCounts(
 		total: regular + custom + fake + leave
 	};
 }
-/*
+
 export async function promoteIfQualified(
 	client: IMClient,
 	guild: Guild,
 	member: Member,
+	me: Member,
 	totalInvites: number
 ) {
 	let nextRankName = '';
@@ -127,7 +128,7 @@ export async function promoteIfQualified(
 		if (role) {
 			if (r.numInvites <= totalInvites) {
 				reached.push(role);
-				if (!highest || highest.comparePositionTo(role) < 0) {
+				if (!highest || highest.position < role.position) {
 					highest = role;
 				}
 			} else {
@@ -144,21 +145,28 @@ export async function promoteIfQualified(
 		}
 	});
 
-	const myRole = guild.me.roles.highest;
-	const tooHighRoles = guild.roles.filter(r => r.comparePositionTo(myRole) > 0);
+	let myRole: Role;
+	me.roles.forEach(r => {
+		const role = guild.roles.get(r);
+		if (!myRole || myRole.position < role.position) {
+			myRole = role;
+		}
+	});
+
+	const tooHighRoles = guild.roles.filter(r => r.position > myRole.position);
 
 	let shouldHave: Role[] = [];
 	let shouldNotHave = notReached.filter(
-		r => tooHighRoles.has(r.id) && member.roles.has(r.id)
+		r => tooHighRoles.includes(r) && member.roles.includes(r.id)
 	);
 
 	// No matter what the rank assignment style is
 	// we always want to remove any roles that we don't have
-	await member.roles.remove(
-		notReached.filter(r => !tooHighRoles.has(r.id) && member.roles.has(r.id))
-	);
+	notReached
+		.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
+		.forEach(r => member.removeRole(r.id));
 
-	if (highest && !member.roles.has(highest.id)) {
+	if (highest && !member.roles.includes(highest.id)) {
 		const rankChannelId = settings.rankAnnouncementChannel;
 		if (rankChannelId) {
 			const rankChannel = rankChannelId
@@ -169,22 +177,20 @@ export async function promoteIfQualified(
 			if (rankChannel) {
 				const rankMessageFormat = settings.rankAnnouncementMessage;
 				if (rankMessageFormat) {
-					const msg = await (guild.client as IMClient).fillTemplate(
-						guild,
-						rankMessageFormat,
-						{
-							memberId: member.id,
-							memberName: member.user.username,
-							memberFullName:
-								member.user.username + '#' + member.user.discriminator,
-							memberMention: `<@${member.id}>`,
-							memberImage: member.user.avatarURL(),
-							rankMention: `<@&${highest.id}>`,
-							rankName: highest.name,
-							totalInvites: totalInvites.toString()
-						}
-					);
-					rankChannel.send(msg).then((m: Message) => m.react('tada'));
+					const msg = await client.fillTemplate(guild, rankMessageFormat, {
+						memberId: member.id,
+						memberName: member.user.username,
+						memberFullName:
+							member.user.username + '#' + member.user.discriminator,
+						memberMention: `<@${member.id}>`,
+						memberImage: member.user.avatarURL,
+						rankMention: `<@&${highest.id}>`,
+						rankName: highest.name,
+						totalInvites: totalInvites.toString()
+					});
+					rankChannel
+						.createMessage(msg)
+						.then((m: Message) => m.addReaction('🎉'));
 				}
 			} else {
 				console.error(
@@ -195,7 +201,7 @@ export async function promoteIfQualified(
 		}
 	}
 
-	if (guild.me.hasPermission('MANAGE_ROLES')) {
+	if (me.permission.has('MANAGE_ROLES')) {
 		// Filter dangerous roles
 		dangerous = reached.filter(
 			r =>
@@ -205,27 +211,31 @@ export async function promoteIfQualified(
 
 		if (style === RankAssignmentStyle.all) {
 			// Add all roles that we've reached to the member
-			let newRoles = reached.filter(r => !member.roles.has(r.id));
+			let newRoles = reached.filter(r => !member.roles.includes(r.id));
 			// Roles that the member should have but we can't assign
-			shouldHave = newRoles.filter(r => tooHighRoles.has(r.id));
+			shouldHave = newRoles.filter(r => tooHighRoles.includes(r));
 			// Assign only the roles that we can assign
-			await member.roles.add(newRoles.filter(r => !tooHighRoles.has(r.id)));
+			newRoles
+				.filter(r => !tooHighRoles.includes(r))
+				.forEach(r => member.addRole(r.id));
 		} else if (style === RankAssignmentStyle.highest) {
 			// Only add the highest role we've reached to the member
 			// Remove roles that we've reached but aren't the highest
 			const oldRoles = reached.filter(
-				r => r !== highest && member.roles.has(r.id)
+				r => r !== highest && member.roles.includes(r.id)
 			);
 			// Add more roles that we shouldn't have
 			shouldNotHave = shouldNotHave.concat(
-				oldRoles.filter(r => tooHighRoles.has(r.id))
+				oldRoles.filter(r => tooHighRoles.includes(r))
 			);
 			// Remove the old ones from the member
-			member.roles.remove(oldRoles.filter(r => !tooHighRoles.has(r.id)));
+			oldRoles
+				.filter(r => !tooHighRoles.includes(r))
+				.forEach(r => member.removeRole(r.id));
 			// Add the highest one if we don't have it yet
-			if (highest && !member.roles.has(highest.id)) {
-				if (!tooHighRoles.has(highest.id)) {
-					member.roles.add(highest);
+			if (highest && !member.roles.includes(highest.id)) {
+				if (!tooHighRoles.includes(highest)) {
+					member.addRole(highest.id);
 				} else {
 					shouldHave = [highest];
 				}
@@ -259,7 +269,6 @@ export class FakeChannel extends TextChannel {
 		return new Promise(resolve => resolve());
 	}
 }
-*/
 
 export function idToBinary(num: string) {
 	let bin = '';

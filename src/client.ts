@@ -25,7 +25,12 @@ import {
 import { DBCache } from './storage/DBCache';
 import { DBQueue } from './storage/DBQueue';
 import { ShardCommand } from './types';
-import { getInviteCounts, idToBinary, InviteCounts } from './util';
+import {
+	getInviteCounts,
+	idToBinary,
+	InviteCounts,
+	promoteIfQualified
+} from './util';
 
 const config = require('../config.json');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
@@ -648,8 +653,12 @@ export class IMClient extends Client {
 		}
 
 		// Promote the inviter if required
+		let me = guild.members.get(this.user.id);
+		if (!me) {
+			me = await guild.getRESTMember(this.user.id);
+		}
 		if (inviter && !inviter.user.bot) {
-			// await promoteIfQualified(guild, inviter, invites.total);
+			await promoteIfQualified(this, guild, inviter, me, invites.total);
 		}
 
 		const joinMessageFormat = settings.joinMessage;
@@ -1123,7 +1132,7 @@ export class IMClient extends Client {
 		template: string,
 		strings?: { [x: string]: string },
 		dates?: { [x: string]: moment.Moment | string }
-	) {
+	): Promise<Embed | string> {
 		let msg: any = template;
 
 		if (strings) {

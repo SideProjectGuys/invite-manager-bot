@@ -25,7 +25,7 @@ export class RoleResolver extends Resolver {
 			if (roles.length === 1) {
 				role = roles[0];
 			} else {
-				// TODO: Show error for multiple user matches
+				// TODO: Show error for multiple role matches
 			}
 		}
 

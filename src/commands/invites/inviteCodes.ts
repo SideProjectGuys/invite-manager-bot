@@ -176,7 +176,8 @@ export default class extends Command {
 		}
 
 		sendEmbed(this.client, await message.author.getDMChannel(), embed);
-		// TODO: Start the message with @user
-		message.channel.createMessage(t('cmd.inviteCodes.dmSent'));
+		message.channel.createMessage(
+			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
+		);
 	}
 }

@@ -4,7 +4,7 @@ import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
 import { UserResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
-import { getInviteCounts } from '../../util';
+import { getInviteCounts, promoteIfQualified } from '../../util';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -28,7 +28,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user]: [User],
-		{ guild, t }: Context
+		{ guild, t, me }: Context
 	): Promise<any> {
 		let target = user ? user : message.author;
 		const invites = await getInviteCounts(guild.id, target.id);
@@ -54,16 +54,19 @@ export default class extends Command {
 		}
 		textMessage += '\n';
 
-		/*if (!target.bot) {
-			let targetMember = await guild.members
-				.fetch(target.id)
-				.catch(() => undefined);
+		if (!target.bot) {
+			let targetMember = guild.members.get(user.id);
+			if (!targetMember) {
+				targetMember = await guild.getRESTMember(user.id);
+			}
 
 			// Only process if the user is still in the guild
 			if (targetMember) {
 				const promoteInfo = await promoteIfQualified(
-					message.guild,
+					this.client,
+					guild,
 					targetMember,
+					me,
 					invites.total
 				);
 
@@ -79,7 +82,7 @@ export default class extends Command {
 
 					if (nextRank) {
 						let nextRankPointsDiff = nextRank.numInvites - invites.total;
-						textMessage += rp.CMD_INVITES_NEXT_RANK({
+						textMessage += t('cmd.invites.nextRank', {
 							self: message.author.id,
 							target: target.id,
 							nextRankPointsDiff,
@@ -87,34 +90,34 @@ export default class extends Command {
 						});
 					} else {
 						if (numRanks > 0) {
-							textMessage += t('CMD_INVITES_HIGHEST_RANK');
+							textMessage += t('cmd.invites.highestRank');
 						}
 					}
 
 					if (shouldHave.length > 0) {
 						textMessage +=
 							'\n\n' +
-							rp.ROLES_SHOULD_HAVE({
+							t('roles.shouldHave', {
 								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 					if (shouldNotHave.length > 0) {
 						textMessage +=
 							'\n\n' +
-							rp.ROLES_SHOULD_NOT_HAVE({
+							t('roles.shouldNotHave', {
 								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 					if (dangerous.length > 0) {
 						textMessage +=
 							'\n\n' +
-							rp.ROLES_DANGEROUS({
+							t('roles.dangerous', {
 								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
 							});
 					}
 				}
 			}
-		}*/
+		}
 
 		const embed = createEmbed(this.client, {
 			title: target.username,
