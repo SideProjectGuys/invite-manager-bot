@@ -4,11 +4,11 @@ import moment from 'moment';
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
 import { createEmbed, sendReply } from '../functions/Messaging';
+import { EnumResolver, NumberResolver } from '../resolvers';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
 import { BotCommand, ChartType, CommandGroup } from '../types';
 
 import { Command, Context } from './Command';
-import { EnumResolver, NumberResolver } from './resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -19,8 +19,9 @@ export default class extends Command {
 			args: [
 				{
 					name: 'type',
-					resolver: new EnumResolver(client, []),
-					description: 'The type of chart to display.'
+					resolver: new EnumResolver(client, Object.values(ChartType)),
+					description: 'The type of chart to display.',
+					required: true
 				},
 				{
 					name: 'duration',
@@ -36,36 +37,9 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[_type, duration]: [string, string],
+		[type, duration]: [ChartType, string],
 		{ guild, t }: Context
 	): Promise<any> {
-		if (!_type) {
-			return sendReply(
-				this.client,
-				message,
-				t('CMD_CHART_MISSING_TYPE', {
-					types: Object.keys(ChartType)
-						.map(k => '`' + k + '`')
-						.join(', ')
-				})
-			);
-		}
-
-		const type = Object.keys(ChartType).find(
-			(k: any) => ChartType[k].toLowerCase() === _type.toLowerCase()
-		) as ChartType;
-		if (!type) {
-			return sendReply(
-				this.client,
-				message,
-				t('CMD_CHART_INVALID_TYPE', {
-					types: Object.keys(ChartType)
-						.map(k => '`' + k + '`')
-						.join(', ')
-				})
-			);
-		}
-
 		let days = 60;
 		if (duration) {
 			const d = parseInt(duration, 10);
@@ -89,8 +63,8 @@ export default class extends Command {
 		const vs: { [x: string]: number } = {};
 
 		if (type === ChartType.joins) {
-			title = t('CMD_CHART_JOINS_TITLE');
-			description = t('CMD_CHART_JOINS_DESCRIPTION');
+			title = t('cmd.chart.joins.title');
+			description = t('cmd.chart.joins.text');
 
 			const js = await joins.findAll({
 				attributes: [
@@ -114,8 +88,8 @@ export default class extends Command {
 
 			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
 		} else if (type === ChartType.leaves) {
-			title = t('CMD_CHART_LEAVES_TITLE');
-			description = t('CMD_CHART_LEAVES_DESCRIPTION');
+			title = t('cmd.chart.leaves.title');
+			description = t('cmd.chart.leaves.text');
 
 			const lvs = await leaves.findAll({
 				attributes: [
@@ -139,8 +113,8 @@ export default class extends Command {
 
 			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
 		} else if (type === ChartType.usage) {
-			title = t('CMD_CHART_USAGE_TITLE');
-			description = t('CMD_CHART_USAGE_DESCRIPTION');
+			title = t('cmd.chart.usage.title');
+			description = t('cmd.chart.usage.text');
 
 			const us = await commandUsage.findAll({
 				attributes: [

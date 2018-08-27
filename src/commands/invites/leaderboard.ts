@@ -8,10 +8,10 @@ import {
 	sendReply,
 	showPaginated
 } from '../../functions/Messaging';
+import { NumberResolver, StringResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { NumberResolver, StringResolver } from '../resolvers';
 
 const chrono = require('chrono-node');
 
@@ -57,7 +57,7 @@ export default class extends Command {
 				return sendReply(
 					this.client,
 					message,
-					t('CMD_LEADERBOARD_INVALID_DATE')
+					t('cmd.leaderboard.invalidDate')
 				);
 			}
 			if (res[0].start) {
@@ -86,8 +86,8 @@ export default class extends Command {
 
 		if (keys.length === 0) {
 			const embed = createEmbed(this.client, {
-				title: t('CMD_LEADERBOARD_TITLE'),
-				description: t('CMD_LEADERBOARD_NO_INVITES')
+				title: t('cmd.leaderboard.title'),
+				description: t('cmd.leaderboard.noInvites')
 			});
 			return sendReply(this.client, message, embed);
 		}
@@ -103,8 +103,7 @@ export default class extends Command {
 			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
 			let str =
-				fromText +
-				`\n(${t('CMD_LEADERBOARD_COMPARED_TO', { to: toText })})\n\n`;
+				fromText + `\n(${t('cmd.leaderboard.comparedTo', { to: toText })})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
@@ -113,13 +112,13 @@ export default class extends Command {
 			if (style === LeaderboardStyle.table) {
 				lines.push([
 					'#',
-					t('CMD_LEADERBOARD_COL_CHANGE'),
-					t('CMD_LEADERBOARD_COL_NAME'),
-					t('CMD_LEADERBOARD_COL_TOTAL'),
-					t('CMD_LEADERBOARD_COL_REGULAR'),
-					t('CMD_LEADERBOARD_COL_CUSTOM'),
-					t('CMD_LEADERBOARD_COL_FAKE'),
-					t('CMD_LEADERBOARD_COL_LEAVE')
+					t('cmd.leaderboard.col.change'),
+					t('cmd.leaderboard.col.name'),
+					t('cmd.leaderboard.col.total'),
+					t('cmd.leaderboard.col.regular'),
+					t('cmd.leaderboard.col.custom'),
+					t('cmd.leaderboard.col.fake'),
+					t('cmd.leaderboard.col.leave')
 				]);
 				lines.push(lines[0].map(h => '-'.repeat(h.length)));
 			}
@@ -182,7 +181,7 @@ export default class extends Command {
 					style === LeaderboardStyle.normal ||
 					style === LeaderboardStyle.mentions
 				) {
-					str += t('CMD_LEADERBOARD_ROW_ENTRY', {
+					str += t('cmd.leaderboard.entry', {
 						pos: line[0],
 						change: line[1],
 						name: line[2],
@@ -197,11 +196,11 @@ export default class extends Command {
 				str += '\n';
 			});
 			if (style === LeaderboardStyle.table) {
-				str += '```\n' + t('CMD_LEADERBOARD_TABLE_LEGEND');
+				str += '```\n' + t('cmd.leaderboard.legend');
 			}
 
 			return createEmbed(this.client, {
-				title: t('CMD_LEADERBOARD_TITLE'),
+				title: t('cmd.leaderboard.title'),
 				description: str
 			});
 		});

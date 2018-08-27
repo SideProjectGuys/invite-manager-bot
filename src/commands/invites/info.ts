@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -13,7 +14,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { UserResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -108,14 +108,14 @@ export default class extends Command {
 				.fromNow();
 
 			embed.fields.push({
-				name: t('CMD_INFO_LASTJOINED_TITLE'),
+				name: t('cmd.info.lastJoined.title'),
 				value: joinedAgo,
 				inline: true
 			});
 		} else {
 			embed.fields.push({
-				name: t('CMD_INFO_LASTJOINED_TITLE'),
-				value: t('CMD_INFO_LASTJOINED_NOT_IN_GUILD'),
+				name: t('cmd.info.lastJoined.title'),
+				value: t('cmd.info.lastJoined.notInGuild'),
 				inline: true
 			});
 		}
@@ -131,15 +131,15 @@ export default class extends Command {
 		);
 
 		embed.fields.push({
-			name: t('CMD_INFO_JOINED_TITLE'),
-			value: t('CMD_INFO_JOINED_TEXT', {
+			name: t('cmd.info.joined.title'),
+			value: t('cmd.info.joined.text', {
 				amount: joinCount
 			}),
 			inline: true
 		});
 
 		embed.fields.push({
-			name: t('CMD_INFO_CREATED_TITLE'),
+			name: t('cmd.info.created.title'),
 			value: moment(user.createdAt)
 				.locale(lang)
 				.fromNow(),
@@ -147,8 +147,8 @@ export default class extends Command {
 		});
 
 		embed.fields.push({
-			name: t('CMD_INFO_INVITES_TITLE'),
-			value: t('CMD_INFO_INVITES_TEXT', {
+			name: t('cmd.info.invites.title'),
+			value: t('cmd.info.invites.text', {
 				total: numTotal,
 				regular,
 				custom,
@@ -211,14 +211,14 @@ export default class extends Command {
 					0
 				);
 
-				const mainText = t('CMD_INFO_JOINS_ENTRY', {
+				const mainText = t('cmd.info.joins.entry.text', {
 					total: total > 1 ? total : undefined,
 					time
 				});
 
 				const invText = Object.keys(joinTime)
 					.map(id =>
-						t('CMD_INFO_JOINS_ENTRY_INV', {
+						t('cmd.info.joins.entry.invite', {
 							id,
 							times: joinTime[id] > 1 ? joinTime[id] : undefined
 						})
@@ -232,19 +232,19 @@ export default class extends Command {
 			if (joinTimesKeys.length > 10) {
 				more =
 					'\n' +
-					t('CMD_INFO_JOINS_MORE', {
+					t('cmd.info.joins.more', {
 						amount: joinTimesKeys.length - 10
 					});
 			}
 
 			embed.fields.push({
-				name: t('CMD_INFO_JOINS_TITLE'),
+				name: t('cmd.info.joins.title'),
 				value: joinText + more
 			});
 		} else {
 			embed.fields.push({
-				name: t('CMD_INFO_JOINS_TITLE'),
-				value: t('CMD_INFO_JOINS_UNKNOWN')
+				name: t('cmd.info.joins.title'),
+				value: t('cmd.info.joins.unknown')
 			});
 		}
 
@@ -252,7 +252,7 @@ export default class extends Command {
 			let invText = '';
 			invs.slice(0, 10).forEach(inv => {
 				invText +=
-					t('CMD_INFO_REGULARINVITES_ENTRY', {
+					t('cmd.info.regularInvites.entry', {
 						uses: inv.uses,
 						code: inv.code,
 						createdAt: moment(inv.createdAt)
@@ -266,19 +266,19 @@ export default class extends Command {
 			if (invs.length > 10) {
 				more =
 					'\n' +
-					t('CMD_INFO_REGULARINVITES_MORE', {
+					t('cmd.info.regularInvites.more', {
 						amount: invs.length - 10
 					});
 			}
 
 			embed.fields.push({
-				name: t('CMD_INFO_REGULARINVITES_TITLE'),
+				name: t('cmd.info.regularInvites.title'),
 				value: invText + more
 			});
 		} else {
 			embed.fields.push({
-				name: t('CMD_INFO_REGULARINVITES_TITLE'),
-				value: t('CMD_INFO_REGULARINVITES_NONE')
+				name: t('cmd.info.regularInvites.title'),
+				value: t('cmd.info.regularInvites.none')
 			});
 		}
 
@@ -289,7 +289,7 @@ export default class extends Command {
 
 			bonusInvs.slice(0, 10).forEach(inv => {
 				customInvText +=
-					t('CMD_INFO_BONUSINVITES_ENTRY', {
+					t('cmd.info.bonusInvites.entry', {
 						amount: inv.amount,
 						creator: inv.creatorId ? inv.creatorId : me.id,
 						date: moment(inv.createdAt)
@@ -303,7 +303,7 @@ export default class extends Command {
 			if (bonusInvs.length > 10) {
 				more =
 					'\n' +
-					t('CMD_INFO_BONUSINVITES_MORE', {
+					t('cmd.info.bonusInvites.more', {
 						amount: bonusInvs.length - 10
 					});
 			}
@@ -320,13 +320,13 @@ export default class extends Command {
 			}
 
 			embed.fields.push({
-				name: t('CMD_INFO_BONUSINVITES_TITLE'),
+				name: t('cmd.info.bonusInvites.title'),
 				value: text
 			});
 		} else {
 			embed.fields.push({
-				name: t('CMD_INFO_BONUSINVITES_TITLE'),
-				value: t('CMD_INFO_BONUSINVITES_NONE')
+				name: t('cmd.info.bonusInvites.title'),
+				value: t('cmd.info.bonusInvites.more')
 			});
 		}
 
@@ -373,19 +373,19 @@ export default class extends Command {
 			if (js2.length > 10) {
 				more =
 					'\n' +
-					t('CMD_INFO_INVITEDMEMBERS_MORE', {
+					t('cmd.info.invitedMembers.more', {
 						amount: js2.length - 10
 					});
 			}
 
 			embed.fields.push({
-				name: t('CMD_INFO_INVITEDMEMBERS_TITLE'),
+				name: t('cmd.info.invitedMembers.title'),
 				value: inviteText + more
 			});
 		} else {
 			embed.fields.push({
-				name: t('CMD_INFO_INVITEDMEMBERS_TITLE'),
-				value: t('CMD_INFO_INVITEDMEMBERS_NONE')
+				name: t('cmd.info.invitedMembers.title'),
+				value: t('cmd.info.invitedMembers.none')
 			});
 		}
 

@@ -2,6 +2,7 @@ import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -9,7 +10,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { UserResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -59,7 +59,7 @@ export default class extends Command {
 		return sendReply(
 			this.client,
 			message,
-			t('CMD_RESTOREINVITES_DONE', { user: user ? user.id : undefined })
+			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
 		);
 	}
 }

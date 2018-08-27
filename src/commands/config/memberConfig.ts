@@ -1,16 +1,13 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Guild, User } from 'discord.js';
+import { Guild, Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import {
+	BooleanResolver,
+	EnumResolver,
+	Resolver,
+	UserResolver
+} from '../../resolvers';
 import {
 	defaultMemberSettings,
 	getMemberSettingsType,
@@ -20,159 +17,76 @@ import {
 	MemberSettingsKey,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { expect, resolve, localize } = Middleware;
-const { using } = CommandDecorators;
+class ValueResolver extends Resolver {
+	public resolve(
+		value: any,
+		context: Context,
+		[key]: [MemberSettingsKey]
+	): Promise<any> {
+		switch (getMemberSettingsType(key)) {
+			case 'Boolean':
+				return new BooleanResolver(this.client).resolve(value, context);
 
-// Used to resolve and expect the correct arguments depending on the config key
-const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return async function(
-		this: Command,
-		message: Message,
-		[rp, ..._args]: [RP, string]
-	): Promise<[Message, any[]]> {
-		const args = _args as string[];
+			case 'String':
+				return value;
 
-		const key = args[0];
-		if (!key) {
-			return [message, [rp]];
+			default:
+				return;
 		}
+	}
+}
 
-		let dbKey: MemberSettingsKey = Object.keys(MemberSettingsKey).find(
-			(k: any) => MemberSettingsKey[k].toLowerCase() === key.toLowerCase()
-		) as MemberSettingsKey;
-		if (!dbKey) {
-			sendReply(message, rp.CMD_MEMBERCONFIG_KEY_NOT_FOUND({ key }));
-			return; // We have to return undefined because this is a middleware
-		}
-
-		const user = args[1];
-		if (!user) {
-			// We call func (resolve or expect) with the string keys, await
-			// the response (which is '[message, args[]]') and unwrap the args
-			// after the resource proxy
-			return [
-				message,
-				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
-			];
-		}
-
-		const value = args[2];
-		if (typeof value === 'undefined') {
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, user: User').call(this, message, [
-						dbKey,
-						user
-					]))[1]
-				]
-			];
-		}
-
-		const newArgs = ([dbKey, user] as any[]).concat(args.slice(2));
-
-		if (value === 'default') {
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, user: User, ...value?: String').call(
-						this,
-						message,
-						newArgs
-					))[1]
-				]
-			];
-		}
-
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			if (defaultMemberSettings[dbKey] !== null) {
-				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				sendReply(
-					message,
-					rp.CMD_MEMBERCONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
-				);
-				return; // We have to return undefined because this is a middleware
-			}
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, user: User, ...value?: String').call(
-						this,
-						message,
-						newArgs
-					))[1]
-				]
-			];
-		}
-
-		const type = getMemberSettingsType(dbKey);
-		return [
-			message,
-			[
-				rp,
-				...(await func(`key: String, user: User, ...value?: ${type}`).call(
-					this,
-					message,
-					newArgs
-				))[1]
-			]
-		];
-	};
-};
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'memberconfig',
-			aliases: ['memberconf', 'memconfig', 'memconf'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.memberConfig,
+			aliases: ['member-config', 'memconf', 'mc'],
 			desc: 'Show and change the config of members of the server',
-			usage: '<prefix>memconf key (@user) (value)',
-			info:
-				'`key`:\n' +
-				'The config setting which you want to show/change.\n\n' +
-				'`@user`:\n' +
-				'The member that the setting is changed for.\n\n' +
-				'`value`:\n' +
-				'The new value of the setting.\n\n' +
-				'Use without args to show all set configs and keys.\n',
+			args: [
+				{
+					name: 'key',
+					resolver: new EnumResolver(client, Object.values(MemberSettingsKey)),
+					description: 'The config setting which you want to show/change.'
+				},
+				{
+					name: 'user',
+					resolver: UserResolver,
+					description: 'The member that the setting is changed for.'
+				},
+				{
+					name: 'value',
+					resolver: ValueResolver,
+					description: 'The new value of the setting.'
+				}
+			],
 			group: CommandGroup.Config,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.memberConfig))
-	@using(localize)
-	@using(checkArgsMiddleware(resolve))
-	@using(checkArgsMiddleware(expect))
 	public async action(
 		message: Message,
-		[rp, key, user, rawValue]: [RP, MemberSettingsKey, User, any]
+		[key, user, rawValue]: [MemberSettingsKey, User, any],
+		context: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+		const { guild, t, settings } = context;
+		const prefix = settings.prefix;
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle(t('CMD_MEMBERCONFIG_TITLE'));
-			embed.setDescription(rp.CMD_MEMBERCONFIG_TEXT({ prefix }));
+			embed.title = t('cmd.memberConfig.title');
+			embed.description = t('cmd.memberConfig.text', { prefix });
 
 			const keys = Object.keys(MemberSettingsKey);
-			embed.fields.push(t('CMD_MEMBERCONFIG_KEYS_TITLE'), keys.join('\n'));
+			embed.fields.push({
+				name: t('cmd.memberConfig.keys.title'),
+				value: keys.join('\n')
+			});
 
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
 		if (!user) {
@@ -184,7 +98,7 @@ export default class extends Command<IMClient> {
 					[sequelize.literal('`member`.`name`'), 'memberName']
 				],
 				where: {
-					guildId: message.guild.id,
+					guildId: guild.id,
 					key
 				},
 				include: [
@@ -197,18 +111,21 @@ export default class extends Command<IMClient> {
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.fields.push(set.memberName, this.fromDbValue(set.key, set.value))
+					embed.fields.push({
+						name: set.memberName,
+						value: this.fromDbValue(set.key, set.value)
+					})
 				);
 			} else {
-				embed.setDescription(t('CMD_MEMBERCONFIG_NOT_SET_ANY_TEXT'));
+				embed.description = t('cmd.memberConfig.notSet');
 			}
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
 		const username = user.username;
 		const oldSet = await memberSettings.find({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: user.id,
 				key
 			},
@@ -221,33 +138,45 @@ export default class extends Command<IMClient> {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
 		}
 
-		embed.setTitle(key);
+		embed.title = key;
 
 		if (typeof rawValue === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
 				const clear = defaultMemberSettings[key] === null ? 't' : undefined;
-				embed.setDescription(
-					rp.CMD_MEMBERCONFIG_CURRENT_SET_TEXT({
-						prefix,
-						key,
-						username,
-						clear
-					})
-				);
-				embed.fields.push(t('CMD_MEMBERCONFIG_CURRENT_TITLE'), oldRawVal);
+				embed.description = t('cmd.memberConfig.current.text', {
+					prefix,
+					key,
+					username,
+					clear
+				});
+				embed.fields.push({
+					name: t('cmd.memberConfig.current.title'),
+					value: oldRawVal
+				});
 			} else {
-				embed.setDescription(
-					rp.CMD_MEMBERCONFIG_CURRENT_NOT_SET_TEXT({ prefix })
-				);
+				embed.description = t('cmd.memberConfig.notSet', {
+					prefix
+				});
 			}
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
-		const parsedValue = this.toDbValue(message.guild, key, rawValue);
+		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+			if (defaultMemberSettings[key] !== null) {
+				sendReply(
+					this.client,
+					message,
+					t('cmd.memberConfig.canNotClear', { prefix, key })
+				);
+				return;
+			}
+		}
+
+		const parsedValue = this.toDbValue(guild, key, rawValue);
 		if (parsedValue.error) {
-			return sendReply(message, parsedValue.error);
+			return sendReply(this.client, message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -256,28 +185,31 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(t('CMD_MEMBERCONFIG_ALREADY_SET_SAME_VALUE'));
-			embed.fields.push(t('CMD_MEMBERCONFIG_CURRENT_TITLE'), rawValue);
-			return sendReply(message, embed);
+			embed.description = t('cmd.memberConfig.sameValue');
+			embed.fields.push({
+				name: t('cmd.memberConfig.current.title'),
+				value: rawValue
+			});
+			return sendReply(this.client, message, embed);
 		}
 
 		const error = this.validate(message, key, value);
 		if (error) {
-			return sendReply(message, error);
+			return sendReply(this.client, message, error);
 		}
 
 		await memberSettings.insertOrUpdate({
 			id: null,
-			guildId: message.guild.id,
+			guildId: guild.id,
 			memberId: user.id,
 			key,
 			value
 		});
 
-		embed.setDescription(rp.CMD_MEMBERCONFIG_CHANGED_TEXT({ prefix }));
+		embed.description = t('cmd.memberConfig.changed.text', { prefix });
 
 		// Log the settings change
-		this.client.logAction(message, LogAction.memberConfig, {
+		this.client.logAction(guild, message, LogAction.memberConfig, {
 			key,
 			userId: user.id,
 			oldValue: oldVal,
@@ -285,16 +217,19 @@ export default class extends Command<IMClient> {
 		});
 
 		if (oldVal) {
-			embed.fields.push(t('CMD_MEMBERCONFIG_PREVIOUS_TITLE'), oldRawVal);
+			embed.fields.push({
+				name: t('cmd.memberConfig.previous.title'),
+				value: oldRawVal
+			});
 		}
 
-		embed.fields.push(
-			t('CMD_MEMBERCONFIG_NEW_TITLE'),
-			value ? rawValue : t('CMD_MEMBERCONFIG_NONE')
-		);
+		embed.fields.push({
+			name: t('cmd.memberConfig.new.title'),
+			value: value ? rawValue : t('cmd.memberConfig.none')
+		});
 		oldVal = value; // Update value for future use
 
-		return sendReply(message, embed);
+		return sendReply(this.client, message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database

@@ -1,7 +1,14 @@
-import { Channel, Guild, Member, Message } from 'eris';
+import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import {
+	BooleanResolver,
+	ChannelResolver,
+	EnumResolver,
+	NumberResolver,
+	Resolver
+} from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -15,50 +22,37 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { EnumResolver, StringResolver } from '../resolvers';
 
-if (value === 'default') {
-	return [
-		message,
-		[
-			rp,
-			...(await func('key: String, ...value?: String').call(
-				this,
-				message,
-				newArgs
-			))[1]
-		]
-	];
-}
+class ValueResolver extends Resolver {
+	public resolve(
+		value: any,
+		context: Context,
+		[key]: [SettingsKey]
+	): Promise<any> {
+		switch (getSettingsType(key)) {
+			case 'Channel':
+				return new ChannelResolver(this.client).resolve(value, context);
 
-if (value === 'none' || value === 'empty' || value === 'null') {
-	if (defaultSettings[dbKey] !== null) {
-		const prefix = settings.prefix;
-		sendReply(
-			this.client,
-			message,
-			rp.CMD_CONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
-		);
-		return; // We have to return undefined because this is a middleware
+			case 'Boolean':
+				return new BooleanResolver(this.client).resolve(value, context);
+
+			case 'Number':
+				return new NumberResolver(this.client).resolve(value, context);
+
+			case 'String':
+				return value;
+
+			default:
+				return;
+		}
 	}
-	return [
-		message,
-		[
-			rp,
-			...(await func('key: String, ...value?: String').call(
-				this,
-				message,
-				newArgs
-			))[1]
-		]
-	];
 }
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.config,
-			aliases: ['set', 'change', 'get', 'show'],
+			aliases: ['c'],
 			desc: 'Show and change the config of the server',
 			args: [
 				{
@@ -68,7 +62,7 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: StringResolver,
+					resolver: ValueResolver,
 					description: 'The new value of the setting.'
 				}
 			],
@@ -87,8 +81,8 @@ export default class extends Command {
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.title = t('CMD_CONFIG_TITLE');
-			embed.description = t('CMD_CONFIG_TEXT', { prefix });
+			embed.title = t('cmd.config.title');
+			embed.description = t('cmd.config.text', { prefix });
 
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
@@ -106,7 +100,7 @@ export default class extends Command {
 
 			if (notSet.length > 0) {
 				embed.fields.push({
-					name: `----- ${t('CMD_CONFIG_NOT_SET')} -----`,
+					name: `----- ${t('cmd.config.notSet')} -----`,
 					value: notSet.join('\n')
 				});
 			}
@@ -127,22 +121,32 @@ export default class extends Command {
 			// Check if the old one is set
 			if (oldVal) {
 				const clear = defaultSettings[key] === null ? 't' : undefined;
-				embed.description = t('CMD_CONFIG_CURRENT_SET_TEXT', {
+				embed.description = t('cmd.config.current.text', {
 					prefix,
 					key,
 					clear
 				});
 				embed.fields.push({
-					name: t('CMD_CONFIG_CURRENT_TITLE'),
+					name: t('cmd.config.current.title'),
 					value: oldRawVal.toString()
 				});
 			} else {
-				embed.description = t('CMD_CONFIG_CURRENT_NOT_SET_TEXT', {
+				embed.description = t('cmd.config.current.notSet', {
 					prefix,
 					key
 				});
 			}
 			return sendReply(this.client, message, embed);
+		}
+
+		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+			if (defaultSettings[key] !== null) {
+				return sendReply(
+					this.client,
+					message,
+					t('cmd.config.canNotClear', { prefix, key })
+				);
+			}
 		}
 
 		const parsedValue = this.toDbValue(key, rawValue);
@@ -156,9 +160,9 @@ export default class extends Command {
 		}
 
 		if (value === oldVal) {
-			embed.description = t('CMD_CONFIG_ALREADY_SET_SAME_VALUE');
+			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
-				name: t('CMD_CONFIG_CURRENT_TITLE'),
+				name: t('cmd.config.current.title'),
 				value: rawValue
 			});
 			return sendReply(this.client, message, embed);
@@ -172,7 +176,7 @@ export default class extends Command {
 		// Set new value
 		this.client.cache.set(guild.id, key, value);
 
-		embed.description = t('CMD_CONFIG_CHANGED_TEXT', { prefix, key });
+		embed.description = t('cmd.config.changed.text', { prefix, key });
 
 		// Log the settings change
 		this.client.logAction(guild, message, LogAction.config, {
@@ -183,20 +187,20 @@ export default class extends Command {
 
 		if (oldVal) {
 			embed.fields.push({
-				name: t('CMD_CONFIG_PREVIOUS_TITLE'),
+				name: t('cmd.config.previous.title'),
 				value: oldRawVal.toString()
 			});
 		}
 
 		embed.fields.push({
-			name: t('CMD_CONFIG_NEW_TITLE'),
-			value: value ? rawValue : t('CMD_CONFIG_NONE')
+			name: t('cmd.config.new.title'),
+			value: value ? rawValue : t('cmd.config.none')
 		});
 		oldVal = value; // Update value for future use
 
 		// Do any post processing, such as example messages
 		// If we updated a config setting, then 'oldVal' is now the new value
-		const cb = await this.after(t, message, embed, key, oldVal);
+		const cb = await this.after(message, embed, key, oldVal, context);
 
 		await sendReply(this.client, message, embed);
 
@@ -218,18 +222,18 @@ export default class extends Command {
 		const type = getSettingsType(key);
 
 		if (type === 'Channel') {
-			const channel = value as Channel;
-			if (!me.permissionsIn(channel).has('VIEW_CHANNEL')) {
-				return t('CMD_CONFIG_CHANNEL_CANT_VIEW');
+			const channel = value as TextChannel;
+			if (!channel.permissionsOf(me.id).has('VIEW_CHANNEL')) {
+				return t('cmd.config.channel.canNotView');
 			}
-			/*if (!message.guild.me.permissionsIn(channel).has('READ_MESSAGES')) {
-				return t('CMD_CONFIG_CHANNEL_CANT_READ');
-			}*/
-			if (!me.permissionsIn(channel).has('SEND_MESSAGES')) {
-				return t('CMD_CONFIG_CHANNEL_CANT_SEND');
+			if (!channel.permissionsOf(me.id).has('READ_MESSAGES')) {
+				return t('cmd.config.channel.canNotReadMessages');
 			}
-			if (!me.permissionsIn(channel).has('EMBED_LINKS')) {
-				return t('CMD_CONFIG_CHANNEL_CANT_EMBED');
+			if (!channel.permissionsOf(me.id).has('SEND_MESSAGES')) {
+				return t('cmd.config.channel.canNotSendMessages');
+			}
+			if (!channel.permissionsOf(me.id).has('EMBED_LINKS')) {
+				return t('cmd.config.channel.canNotSendEmbeds');
 			}
 		}
 		if (key === SettingsKey.lang) {
@@ -237,7 +241,7 @@ export default class extends Command {
 				const langs = Object.keys(Lang)
 					.map(k => `**${k}**`)
 					.join(', ');
-				return t('CMD_CONFIG_INVALID_LANG', { value, langs });
+				return t('cmd.config.invalid.lang', { value, langs });
 			}
 		}
 		if (key === SettingsKey.leaderboardStyle) {
@@ -245,7 +249,7 @@ export default class extends Command {
 				const styles = Object.keys(LeaderboardStyle)
 					.map(k => `**${k}**`)
 					.join(', ');
-				return t('CMD_CONFIG_INVALID_LEADERBOARD_STYLE', { value, styles });
+				return t('cmd.config.invalid.leaderboardStyle', { value, styles });
 			}
 		}
 		if (key === SettingsKey.rankAssignmentStyle) {
@@ -253,7 +257,7 @@ export default class extends Command {
 				const styles = Object.keys(RankAssignmentStyle)
 					.map(k => `**${k}**`)
 					.join(', ');
-				return t('CMD_CONFIG_INVALID_RANKASSIGNMENT_STYLE', { value, styles });
+				return t('cmd.config.invalid.rankAssignmentStyle', { value, styles });
 			}
 		}
 
@@ -262,13 +266,13 @@ export default class extends Command {
 
 	// Attach additional information for a config value, such as examples
 	private async after(
-		rp: RP,
 		message: Message,
-		embed: MessageEmbed,
+		embed: Embed,
 		key: SettingsKey,
-		value: any
+		value: any,
+		context: Context
 	): Promise<Function> {
-		const me = message.member.guild.me;
+		const { guild, t, me } = context;
 		const member = message.member;
 		const user = member.user;
 
@@ -278,25 +282,25 @@ export default class extends Command {
 		) {
 			const preview = await this.client.fillJoinLeaveTemplate(
 				value,
-				message.guild,
+				guild,
 				{
 					id: member.id,
-					nick: member.nickname,
+					nick: member.nick,
 					user: {
 						id: user.id,
-						avatarUrl: user.avatarURL(),
-						createdAt: user.createdTimestamp,
+						avatarUrl: user.avatarURL,
+						createdAt: user.createdAt,
 						bot: user.bot,
 						discriminator: user.discriminator,
 						username: user.username
 					}
 				},
-				member.joinedTimestamp,
+				member.joinedAt,
 				'tEsTcOdE',
 				message.channel.id,
 				(message.channel as any).name,
 				me.id,
-				me.nickname,
+				me.nick,
 				me.user.discriminator,
 				me,
 				{
@@ -309,49 +313,57 @@ export default class extends Command {
 			);
 
 			if (typeof preview === 'string') {
-				embed.fields.push(t('CMD_CONFIG_PREVIEW_TITLE'), preview);
+				embed.fields.push({
+					name: t('cmd.config.preview.title'),
+					value: preview
+				});
 			} else {
-				embed.fields.push(
-					t('CMD_CONFIG_PREVIEW_TITLE'),
-					t('CMD_CONFIG_PREVIEW_NEXT_MESSAGE')
-				);
-				return () => sendReply(message, preview);
+				embed.fields.push({
+					name: t('cmd.config.preview.title'),
+					value: t('cmd.config.preview.nextMessage')
+				});
+				return () => sendReply(this.client, message, preview);
 			}
 		}
 
 		if (value && key === SettingsKey.rankAnnouncementMessage) {
-			const preview = await this.client.fillTemplate(message.guild, value, {
+			const preview = await this.client.fillTemplate(guild, value, {
 				memberId: member.id,
 				memberName: member.user.username,
 				memberFullName: member.user.username + '#' + member.user.discriminator,
 				memberMention: `<@${member.id}>`,
-				memberImage: member.user.avatarURL(),
-				rankMention: `<@&${message.guild.me.roles.highest.id}>`,
-				rankName: message.guild.me.roles.highest.name
+				memberImage: member.user.avatarURL,
+				rankMention: `<@&${me.roles[0]}>`,
+				rankName: me.roles[0]
 			});
 
 			if (typeof preview === 'string') {
-				embed.fields.push(t('CMD_CONFIG_PREVIEW_TITLE'), preview);
+				embed.fields.push({
+					name: t('cmd.config.preview.title'),
+					value: preview
+				});
 			} else {
-				embed.fields.push(
-					t('CMD_CONFIG_PREVIEW_TITLE'),
-					t('CMD_CONFIG_PREVIEW_NEXT_MESSAGE')
-				);
-				return () => sendReply(message, preview);
+				embed.fields.push({
+					name: t('cmd.config.preview.title'),
+					value: t('cmd.config.preview.nextMessage')
+				});
+				return () => sendReply(this.client, message, preview);
 			}
 		}
 
 		if (key === SettingsKey.autoSubtractFakes) {
 			if (value === 'true') {
 				// Subtract fake invites from all members
-				let cmd = this.client.commands.resolve('subtract-fakes');
-				return async () => await cmd.action(message, []);
+				let cmd = this.client.commands.find(
+					c => c.name === BotCommand.subtractFakes
+				);
+				return async () => await cmd.action(message, [], context);
 			} else if (value === 'false') {
 				// Delete old duplicate removals
 				return async () =>
 					await customInvites.destroy({
 						where: {
-							guildId: message.guild.id,
+							guildId: guild.id,
 							generatedReason: CustomInvitesGeneratedReason.fake
 						}
 					});
@@ -361,14 +373,16 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractLeaves) {
 			if (value === 'true') {
 				// Subtract leaves from all members
-				let cmd = this.client.commands.resolve('subtract-leaves');
-				return async () => await cmd.action(message, []);
+				let cmd = this.client.commands.find(
+					c => c.name === BotCommand.subtractLeaves
+				);
+				return async () => await cmd.action(message, [], context);
 			} else if (value === 'false') {
 				// Delete old leave removals
 				return async () =>
 					await customInvites.destroy({
 						where: {
-							guildId: message.guild.id,
+							guildId: guild.id,
 							generatedReason: CustomInvitesGeneratedReason.leave
 						}
 					});
@@ -377,8 +391,10 @@ export default class extends Command {
 
 		if (key === SettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			let cmd = this.client.commands.resolve('subtract-leaves');
-			return async () => await cmd.action(message, []);
+			let cmd = this.client.commands.find(
+				c => c.name === BotCommand.subtractLeaves
+			);
+			return async () => await cmd.action(message, [], context);
 		}
 	}
 

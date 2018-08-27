@@ -1,16 +1,15 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Guild } from 'discord.js';
+import { Guild, Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import {
+	BooleanResolver,
+	ChannelResolver,
+	EnumResolver,
+	InviteCodeResolver,
+	NumberResolver,
+	Resolver
+} from '../../resolvers';
 import {
 	channels,
 	defaultInviteCodeSettings,
@@ -20,193 +19,122 @@ import {
 	InviteCodeSettingsKey,
 	LogAction
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/DBCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { expect, resolve, localize } = Middleware;
-const { using } = CommandDecorators;
+class ValueResolver extends Resolver {
+	public resolve(
+		value: any,
+		context: Context,
+		[key]: [InviteCodeSettingsKey]
+	): Promise<any> {
+		switch (getInviteCodeSettingsType(key)) {
+			case 'Channel':
+				return new ChannelResolver(this.client).resolve(value, context);
 
-// Used to resolve and expect the correct arguments depending on the config key
-const checkArgsMiddleware = (func: typeof resolve | typeof expect) => {
-	return async function(
-		this: Command,
-		message: Message,
-		[rp, ..._args]: [RP, string]
-	): Promise<[Message, any[]]> {
-		const args = _args as string[];
+			case 'Boolean':
+				return new BooleanResolver(this.client).resolve(value, context);
 
-		const key = args[0];
-		if (!key) {
-			return [message, [rp]];
+			case 'Number':
+				return new NumberResolver(this.client).resolve(value, context);
+
+			case 'String':
+				return value;
+
+			default:
+				return;
 		}
+	}
+}
 
-		let dbKey: InviteCodeSettingsKey = Object.keys(InviteCodeSettingsKey).find(
-			(k: any) => InviteCodeSettingsKey[k].toLowerCase() === key.toLowerCase()
-		) as InviteCodeSettingsKey;
-		if (!dbKey) {
-			sendReply(message, rp.CMD_INVITECODECONFIG_KEY_NOT_FOUND({ key }));
-			return; // We have to return undefined because this is a middleware
-		}
-
-		const code = args[1];
-		if (!code) {
-			// We call func (resolve or expect) with the string keys, await
-			// the response (which is '[message, args[]]') and unwrap the args
-			// after the resource proxy
-			return [
-				message,
-				[rp, ...(await func('key: String').call(this, message, [dbKey]))[1]]
-			];
-		}
-
-		const value = args[2];
-		if (typeof value === 'undefined') {
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, code: String').call(this, message, [
-						dbKey,
-						code
-					]))[1]
-				]
-			];
-		}
-
-		const newArgs = ([dbKey, code] as any[]).concat(args.slice(2));
-
-		if (value === 'default') {
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, code: String, ...value?: String').call(
-						this,
-						message,
-						newArgs
-					))[1]
-				]
-			];
-		}
-
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			if (defaultInviteCodeSettings[dbKey] !== null) {
-				const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-				sendReply(
-					message,
-					rp.CMD_INVITECODECONFIG_KEY_CANT_CLEAR({ prefix, key: dbKey })
-				);
-				return; // We have to return undefined because this is a middleware
-			}
-			return [
-				message,
-				[
-					rp,
-					...(await func('key: String, code: String, ...value?: String').call(
-						this,
-						message,
-						newArgs
-					))[1]
-				]
-			];
-		}
-
-		const type = getInviteCodeSettingsType(dbKey);
-		return [
-			message,
-			[
-				rp,
-				...(await func(`key: String, code: String, ...value?: ${type}`).call(
-					this,
-					message,
-					newArgs
-				))[1]
-			]
-		];
-	};
-};
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'invitecodeconfig',
-			aliases: ['invcodeconfig', 'invcodeconf', 'icc'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.inviteCodeConfig,
+			aliases: ['invite-code-config', 'invcodeconf', 'icc'],
 			desc: 'Show and change the config of invite codes of the server',
-			usage: '<prefix>icc key (code) (value)',
-			info:
-				'`key`:\n' +
-				'The config setting which you want to show/change.\n\n' +
-				'`code`:\n' +
-				'The invite code that the setting is changed for.\n\n' +
-				'`value`:\n' +
-				'The new value of the setting.\n\n' +
-				'Use without args to show all set configs and keys.\n',
+			args: [
+				{
+					name: 'key',
+					resolver: new EnumResolver(
+						client,
+						Object.values(InviteCodeSettingsKey)
+					),
+					description: 'The config setting which you want to show/change.'
+				},
+				{
+					name: 'code',
+					resolver: InviteCodeResolver,
+					description: 'The invite code that the setting is changed for.'
+				},
+				{
+					name: 'value',
+					resolver: ValueResolver,
+					description: 'The new value of the setting.'
+				}
+			],
 			group: CommandGroup.Config,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.inviteCodeConfig))
-	@using(localize)
-	@using(checkArgsMiddleware(resolve))
-	@using(checkArgsMiddleware(expect))
 	public async action(
 		message: Message,
-		[rp, key, code, rawValue]: [RP, InviteCodeSettingsKey, string, any]
+		[key, inv, rawValue]: [InviteCodeSettingsKey, Invite, any],
+		context: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
+		const { guild, t, settings } = context;
+		const prefix = settings.prefix;
 		const embed = createEmbed(this.client);
 
 		if (!key) {
-			embed.setTitle(t('CMD_INVITECODECONFIG_TITLE'));
-			embed.setDescription(rp.CMD_INVITECODECONFIG_TEXT({ prefix }));
+			embed.title = t('cmd.inviteCodeConfig.title');
+			embed.description = t('cmd.inviteCodeConfig.text', { prefix });
 
 			const keys = Object.keys(InviteCodeSettingsKey);
-			embed.fields.push(t('CMD_INVITECODECONFIG_KEYS_TITLE'), keys.join('\n'));
+			embed.fields.push({
+				name: t('cmd.inviteCodeConfig.keys.title'),
+				value: keys.join('\n')
+			});
 
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
-		if (!code) {
+		if (!inv) {
 			const allSets = await inviteCodeSettings.findAll({
 				attributes: ['id', 'key', 'value', 'inviteCode'],
 				where: {
-					guildId: message.guild.id,
+					guildId: guild.id,
 					key
 				},
 				raw: true
 			});
 			if (allSets.length > 0) {
 				allSets.forEach((set: any) =>
-					embed.fields.push(set.inviteCode, this.fromDbValue(set.key, set.value))
+					embed.fields.push({
+						name: set.inviteCode,
+						value: this.fromDbValue(set.key, set.value)
+					})
 				);
 			} else {
-				embed.setDescription(t('CMD_INVITECODECONFIG_NOT_SET_ANY_TEXT'));
+				embed.description = t('cmd.inviteCodeConfig.noneSet');
 			}
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
 		// Check if this is actually a real invite code
-		const inv = await this.client.fetchInvite(code);
-		if (!inv) {
-			return sendReply(message, t('CMD_INVITECODECONFIG_INVALID_CODE'));
-		}
-		if (inv.guild.id !== message.guild.id) {
-			return sendReply(message, t('CMD_INVITECODECONFIG_CODE_FOR_OTHER_GUILD'));
+		if (inv.guild.id !== guild.id) {
+			return sendReply(
+				this.client,
+				message,
+				t('cmd.inviteCodeConfig.codeForOtherGuild')
+			);
 		}
 
 		const oldSet = await inviteCodeSettings.find({
 			where: {
-				guildId: message.guild.id,
-				inviteCode: code,
+				guildId: guild.id,
+				inviteCode: inv.code,
 				key
 			},
 			raw: true
@@ -218,33 +146,45 @@ export default class extends Command<IMClient> {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
 		}
 
-		embed.setTitle(key);
+		embed.title = key;
 
 		if (typeof rawValue === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
 				const clear = defaultInviteCodeSettings[key] === null ? 't' : undefined;
-				embed.setDescription(
-					rp.CMD_INVITECODECONFIG_CURRENT_SET_TEXT({
-						prefix,
-						key,
-						code,
-						clear
-					})
-				);
-				embed.fields.push(t('CMD_INVITECODECONFIG_CURRENT_TITLE'), oldRawVal);
+				embed.description = t('cmd.inviteCodeConfig.current.text', {
+					prefix,
+					key,
+					code: inv.code,
+					clear
+				});
+				embed.fields.push({
+					name: t('cmd.inviteCodeConfig.current.title'),
+					value: oldRawVal
+				});
 			} else {
-				embed.setDescription(
-					rp.CMD_INVITECODECONFIG_CURRENT_NOT_SET_TEXT({ prefix })
-				);
+				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
+					prefix
+				});
 			}
-			return sendReply(message, embed);
+			return sendReply(this.client, message, embed);
 		}
 
-		const parsedValue = this.toDbValue(message.guild, key, rawValue);
+		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+			if (defaultInviteCodeSettings[key] !== null) {
+				sendReply(
+					this.client,
+					message,
+					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })
+				);
+				return;
+			}
+		}
+
+		const parsedValue = this.toDbValue(guild, key, rawValue);
 		if (parsedValue.error) {
-			return sendReply(message, parsedValue.error);
+			return sendReply(this.client, message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -253,14 +193,17 @@ export default class extends Command<IMClient> {
 		}
 
 		if (value === oldVal) {
-			embed.setDescription(t('CMD_INVITECODECONFIG_ALREADY_SET_SAME_VALUE'));
-			embed.fields.push(t('CMD_INVITECODECONFIG_CURRENT_TITLE'), rawValue);
-			return sendReply(message, embed);
+			embed.description = t('cmd.inviteCodeConfig.sameValue');
+			embed.fields.push({
+				name: t('cmd.inviteCodeConfig.current.title'),
+				value: rawValue
+			});
+			return sendReply(this.client, message, embed);
 		}
 
-		const error = this.validate(rp, message, key, value);
+		const error = this.validate(message, key, value, context);
 		if (error) {
-			return sendReply(message, error);
+			return sendReply(this.client, message, error);
 		}
 
 		await channels.insertOrUpdate({
@@ -278,38 +221,41 @@ export default class extends Command<IMClient> {
 			maxAge: inv.maxAge,
 			maxUses: inv.maxUses,
 			temporary: inv.temporary,
-			createdAt: inv.createdTimestamp
+			createdAt: inv.createdAt
 		});
 
 		await inviteCodeSettings.insertOrUpdate({
 			id: null,
-			guildId: message.guild.id,
-			inviteCode: code,
+			guildId: guild.id,
+			inviteCode: inv.code,
 			key,
 			value
 		});
 
-		embed.setDescription(rp.CMD_INVITECODECONFIG_CHANGED_TEXT({ prefix }));
+		embed.description = t('cmd.inviteCodeConfig.changed.text', { prefix });
 
 		// Log the settings change
-		this.client.logAction(message, LogAction.memberConfig, {
+		this.client.logAction(guild, message, LogAction.memberConfig, {
 			key,
-			inviteCode: code,
+			inviteCode: inv.code,
 			oldValue: oldVal,
 			newValue: value
 		});
 
 		if (oldVal) {
-			embed.fields.push(t('CMD_INVITECODECONFIG_PREVIOUS_TITLE'), oldRawVal);
+			embed.fields.push({
+				name: t('cmd.inviteCodeConfig.previous.text'),
+				value: oldRawVal
+			});
 		}
 
-		embed.fields.push(
-			t('CMD_INVITECODECONFIG_NEW_TITLE'),
-			value ? rawValue : t('CMD_INVITECODECONFIG_NONE')
-		);
+		embed.fields.push({
+			name: t('cmd.inviteCodeConfig.new.title'),
+			value: value ? rawValue : t('cmd.inviteCodeConfig.none')
+		});
 		oldVal = value; // Update value for future use
 
-		return sendReply(message, embed);
+		return sendReply(this.client, message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database
@@ -363,10 +309,10 @@ export default class extends Command<IMClient> {
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
 	private validate(
-		rp: RP,
 		message: Message,
 		key: InviteCodeSettingsKey,
-		value: any
+		value: any,
+		{ guild, t }: Context
 	): string | null {
 		if (value === null || value === undefined) {
 			return null;
@@ -374,8 +320,8 @@ export default class extends Command<IMClient> {
 
 		if (key === InviteCodeSettingsKey.roles) {
 			const roles: string[] = value.split(/[ ,]/g);
-			if (!roles.every(r => !!message.guild.roles.get(r))) {
-				return t('CMD_INVITECODECONFIG_INVALID_ROLE');
+			if (!roles.every(r => !!guild.roles.get(r))) {
+				return t('cmd.inviteCodeConfig.invalidRole');
 			}
 		}
 

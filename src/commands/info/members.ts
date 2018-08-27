@@ -46,37 +46,37 @@ export default class extends Command {
 
 		const embed = createEmbed(this.client);
 		embed.fields.push({
-			name: t('CMD_MEMBERS_MEMBERS'),
+			name: t('cmd.members.members'),
 			value: guild.memberCount.toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_ONLINE'),
+			name: t('cmd.members.online'),
 			value: (guild.memberCount - offlineCount).toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_HUMANS'),
+			name: t('cmd.members.human'),
 			value: humanCount.toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_BOTS'),
+			name: t('cmd.members.bots'),
 			value: botCount.toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_JOINED_DAY'),
+			name: t('cmd.members.joined.day'),
 			value: joinedToday.toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_JOINED_WEEK'),
+			name: t('cmd.members.joined.week'),
 			value: joinedThisWeek.toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_MEMBERS_JOINED_MONTH'),
+			name: t('cmd.members.joined.month'),
 			value: joinedThisMonth.toString(),
 			inline: true
 		});

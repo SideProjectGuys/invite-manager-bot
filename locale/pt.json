@@ -24,5 +24,77 @@
 	"CMD_HELP_COMMAND_TITLE": "CMD_HELP_COMMAND_TITLE",
 	"CMD_HELP_DESCRIPTION_TITLE": "CMD_HELP_DESCRIPTION_TITLE",
 	"CMD_HELP_USAGE_TITLE": "CMD_HELP_USAGE_TITLE",
-	"CMD_HELP_ALIASES_TITLE": "CMD_HELP_ALIASES_TITLE"
+	"CMD_HELP_ALIASES_TITLE": "CMD_HELP_ALIASES_TITLE",
+	"CMD_INVITES_AMOUNT_SELF": "CMD_INVITES_AMOUNT_SELF",
+	"cmd": {
+		"invites": {
+			"amount": {
+				"self": "cmd.invites.amount.self"
+			}
+		},
+		"botInfo": {
+			"version": "cmd.botInfo.version",
+			"uptime": "cmd.botInfo.uptime",
+			"guilds": "cmd.botInfo.guilds",
+			"members": "cmd.botInfo.members",
+			"shard": {
+				"current": "cmd.botInfo.shard.current",
+				"total": "cmd.botInfo.shard.total"
+			}
+		},
+		"config": {
+			"title": "cmd.config.title",
+			"text": "cmd.config.text",
+			"notSet": "cmd.config.notSet",
+			"current": {
+				"text": "cmd.config.current.text",
+				"title": "cmd.config.current.title"
+			},
+			"sameValue": "cmd.config.sameValue",
+			"changed": {
+				"text": "cmd.config.changed.text"
+			},
+			"previous": {
+				"title": "cmd.config.previous.title"
+			},
+			"new": {
+				"title": "cmd.config.new.title"
+			}
+		},
+		"help": {
+			"command": {
+				"title": "cmd.help.command.title"
+			},
+			"description": {
+				"title": "cmd.help.description.title"
+			},
+			"usage": {
+				"title": "cmd.help.usage.title"
+			},
+			"aliases": {
+				"title": "cmd.help.aliases.title"
+			},
+			"links": "cmd.help.links"
+		}
+	},
+	"arguments": {
+		"missingRequired": "arguments.missingRequired",
+		"enum": {
+			"validValues": "arguments.enum.validValues"
+		}
+	},
+	"bot": {
+		"supportDiscord": {
+			"title": "bot.supportDiscord.title"
+		},
+		"invite": {
+			"title": "bot.invite.title"
+		},
+		"website": {
+			"title": "bot.website.title"
+		},
+		"patreon": {
+			"title": "bot.patreon.title"
+		}
+	}
 }

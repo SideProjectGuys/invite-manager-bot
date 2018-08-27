@@ -3,10 +3,10 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { premiumSubscriptions } from '../../sequelize';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
-import { NumberResolver, StringResolver, UserResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

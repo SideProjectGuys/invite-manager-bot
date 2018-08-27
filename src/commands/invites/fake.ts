@@ -6,6 +6,7 @@ import {
 	sendReply,
 	showPaginated
 } from '../../functions/Messaging';
+import { NumberResolver } from '../../resolvers';
 import {
 	inviteCodes,
 	JoinAttributes,
@@ -15,7 +16,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { NumberResolver } from '../resolvers';
 
 const usersPerPage = 20;
 
@@ -93,7 +93,7 @@ export default class extends Command {
 		})) as any;
 
 		if (js.length <= 0) {
-			return sendReply(this.client, message, t('CMD_FAKE_NONE'));
+			return sendReply(this.client, message, t('cmd.fake.none'));
 		}
 
 		const suspiciousJoins = js
@@ -104,7 +104,7 @@ export default class extends Command {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			return sendReply(this.client, message, t('CMD_FAKE_NONE_SINCE_JOIN'));
+			return sendReply(this.client, message, t('cmd.fake.noneSinceJoin'));
 		}
 
 		const maxPage = Math.ceil(suspiciousJoins.length / usersPerPage);
@@ -130,14 +130,14 @@ export default class extends Command {
 						}
 					});
 
-					const mainText = t('CMD_FAKE_JOIN_ENTRY', {
+					const mainText = t('cmd.fake.join.entry.text', {
 						name: join.memberName,
 						times: join.totalJoins
 					});
 
 					const invText = Object.keys(invs)
 						.map(name => {
-							return t('CMD_FAKE_JOIN_ENTRY_INV', {
+							return t('cmd.fake.join.entry.invite', {
 								name,
 								times: invs[name] > 1 ? invs[name] : undefined
 							});
@@ -151,7 +151,7 @@ export default class extends Command {
 				});
 
 			return createEmbed(this.client, {
-				title: t('CMD_FAKE_TITLE'),
+				title: t('cmd.fake.title'),
 				description
 			});
 		});

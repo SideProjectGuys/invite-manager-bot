@@ -69,7 +69,7 @@ export default class extends Command {
 		});
 
 		if (ls.length === 0) {
-			return sendReply(this.client, message, t('CMD_SUBTRACTLEAVES_NO_LEAVES'));
+			return sendReply(this.client, message, t('cmd.subtractLeaves.none'));
 		}
 
 		// Delete old duplicate removals
@@ -101,7 +101,7 @@ export default class extends Command {
 		return sendReply(
 			this.client,
 			message,
-			t('CMD_SUBTRACTLEAVES_DONE', { total: customInvs.length })
+			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);
 	}
 }

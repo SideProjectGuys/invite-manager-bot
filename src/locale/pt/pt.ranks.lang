@@ -1,9 +1,0 @@
-[CMD_RANKS_NONE]
-Nenhum rank foi criado ainda
-
-[CMD_RANKS_ENTRY]
-<@&{{ role }}>: **{{ numInvites }} convites**{{ description ?}}
-
-[CMD_RANKS_TITLE]
-Cargos
-

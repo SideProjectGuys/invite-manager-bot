@@ -1,6 +1,0 @@
-[CMD_SETUP_PREFIX_TEXT]
-“Poti schimba prefixul folosind comanda ‘!config prefix !’
-
-[CMD_SETUP_FAQ_TEXT]
-In caz ca nu stii ce prefix este in momentul actual,poti folosi ‘@InviteManager config prefix’.”
-

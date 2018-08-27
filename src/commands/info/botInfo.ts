@@ -33,14 +33,14 @@ export default class extends Command {
 
 		// Version
 		embed.fields.push({
-			name: t('CMD_BOTINFO_VERSION'),
+			name: t('cmd.botInfo.version'),
 			value: this.client.version,
 			inline: true
 		});
 
 		// Uptime
 		embed.fields.push({
-			name: t('CMD_BOTINFO_UPTIME'),
+			name: t('cmd.botInfo.uptime'),
 			value: moment
 				.duration(moment().diff(this.client.startedAt))
 				.locale(lang)
@@ -50,26 +50,26 @@ export default class extends Command {
 
 		// Guild count
 		embed.fields.push({
-			name: t('CMD_BOTINFO_GUILDS'),
+			name: t('cmd.botInfo.guilds'),
 			value: numGuilds.toString(),
 			inline: true
 		});
 
 		// Member count
 		embed.fields.push({
-			name: t('CMD_BOTINFO_MEMBERS'),
+			name: t('cmd.botInfo.members'),
 			value: numMembers.toString(),
 			inline: true
 		});
 
 		// Shard info
 		embed.fields.push({
-			name: t('CMD_BOTINFO_SHARD_CURRENT'),
+			name: t('cmd.botInfo.shard.current'),
 			value: (this.client.shardId + 1).toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('CMD_BOTINFO_SHARD_TOTAL'),
+			name: t('cmd.botInfo.shard.total'),
 			value: this.client.numShards.toString(),
 			inline: true
 		});

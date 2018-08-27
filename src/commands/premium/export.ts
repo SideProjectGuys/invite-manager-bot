@@ -3,9 +3,9 @@ import { Message } from 'eris';
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { EnumResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { EnumResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -32,19 +32,19 @@ export default class extends Command {
 		{ guild, t }: Context
 	): Promise<any> {
 		const embed = createEmbed(this.client, {
-			title: t('CMD_EXPORT_TITLE')
+			title: t('cmd.export.title')
 		});
 
 		const isPremium = await this.client.cache.isPremium(guild.id);
 		if (!isPremium) {
-			embed.description = t('CMD_EXPORT_PREMIUM_ONLY');
+			embed.description = t('cmd.export.premiumOnly');
 			return sendReply(this.client, message, embed);
 		}
 
-		embed.description = t('CMD_EXPORT_PREPARING');
+		embed.description = t('cmd.export.preparing');
 
 		if (type !== 'leaderboard') {
-			return sendReply(this.client, message, t('CMD_INVALID_TYPE'));
+			return sendReply(this.client, message, t('cmd.export.invalidType'));
 		}
 
 		sendReply(this.client, message, embed).then(async (msg: Message) => {

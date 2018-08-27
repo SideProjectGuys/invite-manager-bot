@@ -3,7 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
-import { Command } from '../Command';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -16,11 +16,15 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[]): Promise<any> {
+	public async action(
+		message: Message,
+		args: any[],
+		{ t }: Context
+	): Promise<any> {
 		const embed = createEmbed(this.client);
 
 		embed.fields.push({
-			name: 'Support server',
+			name: t('cmd.support.server'),
 			value: `https://discord.gg/Am6p2Hs`
 		});
 

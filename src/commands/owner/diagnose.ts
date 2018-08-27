@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { StringResolver } from '../../resolvers';
 import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
@@ -15,6 +16,13 @@ export default class extends Command {
 			name: OwnerCommand.diagnose,
 			aliases: ['owner-diagnose', 'odiag'],
 			desc: 'Remotely diagnose servers',
+			args: [
+				{
+					name: 'guildId',
+					resolver: StringResolver,
+					description: 'The id of the guild to diagnose.'
+				}
+			],
 			hidden: true,
 			guildOnly: true
 		});

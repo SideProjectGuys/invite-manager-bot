@@ -2,6 +2,7 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { CommandResolver, RoleResolver } from '../../resolvers';
 import {
 	rolePermissions,
 	RolePermissionsInstance,
@@ -10,7 +11,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup, OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
-import { RoleResolver, StringResolver, CommandResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -38,7 +38,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[cmd, role]: [Command, Role],
+		[rawCmd, role]: [Command, Role],
 		{ guild, t }: Context
 	): Promise<any> {
 		if (!rawCmd) {
@@ -57,7 +57,7 @@ export default class extends Command {
 			});
 
 			const embed = createEmbed(this.client, {
-				description: t('CMD_PERMISSIONS_ADMINS_ALL_COMMANDS')
+				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
 			const rs: { [x: string]: string[] } = {
@@ -65,20 +65,20 @@ export default class extends Command {
 				Administrators: []
 			};
 
-			Object.values(BotCommand).forEach(command => {
-				const ps = perms.filter(p => p.command === command);
+			this.client.commands.forEach(command => {
+				const ps = perms.filter(p => p.command === command.name);
 				if (!ps.length) {
-					if (isStrict(command as BotCommand)) {
-						rs.Administrators.push(command);
+					if (command.strict) {
+						rs.Administrators.push(command.name);
 					} else {
-						rs.Everyone.push(command);
+						rs.Everyone.push(command.name);
 					}
 				} else {
 					ps.forEach((p: RolePermissionsInstance & { 'role.name': string }) => {
 						if (!rs['@' + p['role.name']]) {
 							rs['@' + p['role.name']] = [];
 						}
-						rs['@' + p['role.name']].push(command);
+						rs['@' + p['role.name']].push(command.name);
 					});
 				}
 			});
@@ -93,7 +93,9 @@ export default class extends Command {
 			return sendReply(this.client, message, embed);
 		}
 
-		const cmds = [];
+		const cmds = [rawCmd];
+
+		/*const cmds = [];
 		const cmd = rawCmd.toLowerCase();
 		if (cmd === 'mod') {
 			cmds.push(BotCommand.info);
@@ -117,13 +119,13 @@ export default class extends Command {
 		) as OwnerCommand;
 		if (cmOwner) {
 			cmds.push(cmOwner);
-		}
+		}*/
 
 		if (!cmds.length) {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_PERMISSIONS_INVALID_COMMAND', {
+				t('cmd.permissions.invalidCommand', {
 					cmd: rawCmd,
 					cmds: Object.keys(BotCommand)
 						.map(k => '`' + k + '`')
@@ -145,7 +147,7 @@ export default class extends Command {
 					]
 				],
 				where: {
-					command: cmds
+					command: cmds.map(c => c.name)
 				},
 				group: ['command'],
 				include: [
@@ -161,16 +163,16 @@ export default class extends Command {
 			});
 
 			const embed = createEmbed(this.client, {
-				description: t('CMD_PERMISSIONS_ADMINS_ALL_COMMANDS')
+				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
 			if (perms.length === 0) {
 				cmds.forEach(c => {
 					embed.fields.push({
-						name: c,
-						value: isStrict(c)
-							? t('CMD_PERMISSIONS_ADMIN_ONLY')
-							: t('CMD_PERMISSIONS_EVERYONE')
+						name: c.name,
+						value: c.strict
+							? t('cmd.permissions.adminOnly')
+							: t('cmd.permissions.everyone')
 					});
 				});
 			} else {
@@ -188,7 +190,7 @@ export default class extends Command {
 			return sendReply(this.client, message, embed);
 		}
 
-		if (
+		/*if (
 			cmds.indexOf(BotCommand.config) >= 0 ||
 			cmds.indexOf(BotCommand.inviteCodeConfig) >= 0 ||
 			cmds.indexOf(BotCommand.memberConfig) >= 0 ||
@@ -198,13 +200,13 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_PERMISSIONS_CANNOT_CHANGE')
+				t('cmd.permissions.canNotChange')
 			);
-		}
+		}*/
 
 		const oldPerms = await rolePermissions.findAll({
 			where: {
-				command: cmds,
+				command: cmds.map(c => c.name),
 				roleId: role.id
 			}
 		});
@@ -215,7 +217,7 @@ export default class extends Command {
 			sendReply(
 				this.client,
 				message,
-				t('CMD_PERMISSIONS_REMOVED', {
+				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})
@@ -232,7 +234,7 @@ export default class extends Command {
 			await rolePermissions.bulkCreate(
 				cmds.map(c => ({
 					id: null,
-					command: c,
+					command: c.name,
 					roleId: role.id
 				}))
 			);
@@ -240,7 +242,7 @@ export default class extends Command {
 			sendReply(
 				this.client,
 				message,
-				t('CMD_PERMISSIONS_ADDED', {
+				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,
 					cmds: cmds.join(', ')
 				})

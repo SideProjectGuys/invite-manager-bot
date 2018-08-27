@@ -1,6 +1,0 @@
-[CMD_ADDINVITES_ZERO]
-Ajouter "0" invitations n'a aucun intérêt.
-
-[CMD_ADDINVITES_AMOUNT_POS]
-Ajout de {amount} invitations pour {Membre} qui a maintenant {totalInvites} invitations.
-

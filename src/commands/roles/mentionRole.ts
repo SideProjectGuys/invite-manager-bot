@@ -2,9 +2,9 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { RoleResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { RoleResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -36,7 +36,7 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_MENTIONROLE_ALREADY_DONE', { role })
+				t('cmd.mentionRole.alreadyDone', { role })
 			);
 		} else {
 			await role.edit({ mentionable: true }, 'Pinging role');

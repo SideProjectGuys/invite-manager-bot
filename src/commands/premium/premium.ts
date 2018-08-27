@@ -31,17 +31,17 @@ export default class extends Command {
 		const isPremium = this.client.cache.isPremium(guild.id);
 
 		if (!isPremium) {
-			embed.title = t('CMD_PREMIUM_NO_PREMIUM_TITLE');
-			embed.description = t('CMD_PREMIUM_NO_PREMIUM_DESCRIPTION');
+			embed.title = t('cmd.premium.noPremium.title');
+			embed.description = t('cmd.premium.noPremium.text');
 
 			embed.fields.push({
-				name: t('CMD_PREMIUM_FEATURE_EMBEDS_TITLE'),
-				value: t('CMD_PREMIUM_FEATURE_EMBEDS_DESCRIPTION')
+				name: t('cmd.premium.feature.embeds.title'),
+				value: t('cmd.premium.feature.embeds.text')
 			});
 
 			embed.fields.push({
-				name: t('CMD_PREMIUM_FEATURE_EXPORT_TITLE'),
-				value: t('CMD_PREMIUM_FEATURE_EXPORT_DESCRIPTION')
+				name: t('cmd.premium.feature.export.title'),
+				value: t('cmd.premium.feature.export.text')
 			});
 		} else {
 			const sub = await premiumSubscriptions.findOne({
@@ -54,18 +54,18 @@ export default class extends Command {
 				raw: true
 			});
 
-			embed.title = t('CMD_PREMIUM_PREMIUM_TITLE');
+			embed.title = t('cmd.premium.premium.title');
 
 			let description = '';
 			if (sub) {
 				const date = moment(sub.validUntil)
 					.locale(lang)
 					.fromNow(true);
-				description = t('CMD_PREMIUM_PREMIUM_DESCRIPTION', {
+				description = t('cmd.premium.premium.text', {
 					date
 				});
 			} else {
-				description += t('CMD_PREMIUM_PREMIUM_NOT_FOUND');
+				description += t('cmd.premium.premium.notFound');
 			}
 			embed.description = description;
 		}

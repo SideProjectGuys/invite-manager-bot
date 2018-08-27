@@ -19,7 +19,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
-		{ guild }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		const embed = createEmbed(this.client);
 
@@ -31,7 +31,7 @@ export default class extends Command {
 		}
 
 		embed.description =
-			`[Add InviteManager to your server]` +
+			`[${t('cmd.getBot.title')}]` +
 			`(https://invitemanager.co/add-bot?${params.join('&')})`;
 
 		return sendReply(this.client, message, embed);

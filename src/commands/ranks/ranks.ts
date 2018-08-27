@@ -33,18 +33,18 @@ export default class extends Command {
 		let output = '';
 
 		if (rs.length === 0) {
-			return sendReply(this.client, message, t('CMD_RANKS_NONE'));
+			return sendReply(this.client, message, t('cmd.ranks.none'));
 		} else {
 			rs.forEach(r => {
 				output +=
-					t('CMD_RANKS_ENTRY', {
+					t('cmd.ranks.entry', {
 						role: r.roleId,
 						numInvites: r.numInvites,
 						description: r.description ? ': ' + r.description : undefined
 					}) + '\n';
 			});
 			const embed = createEmbed(this.client, {
-				title: t('CMD_RANKS_TITLE'),
+				title: t('cmd.ranks.title'),
 				description: output
 			});
 

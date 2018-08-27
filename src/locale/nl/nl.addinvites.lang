@@ -1,9 +1,0 @@
-[CMD_ADDINVITES_ZERO]
-0 invites geven heeft niet veel zin...
-
-[CMD_ADDINVITES_AMOUNT_POS]
-**{{ amount }}** invites toegevoegt voor <@{{ member }}>, en heeft nu **{{ totalInvites }}** invites.
-
-[CMD_ADDINVITES_AMOUNT_NEG]
-**{{ amount }}** invites verwijdert voor <{{ member }}>, en heeft nu **{{ totalInvites }}**
-

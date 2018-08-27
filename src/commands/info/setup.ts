@@ -27,48 +27,55 @@ export default class extends Command {
 		{ t, me }: Context
 	): Promise<any> {
 		const embed = createEmbed(this.client, {
-			title: t('CMD_SETUP_TITLE'),
-			description: t('CMD_SETUP_TEXT')
+			title: t('cmd.setup.title'),
+			description: t('cmd.setup.text')
 		});
 
 		// TODO: Adapt to what the server already has set
 
 		embed.fields.push({
-			name: t('CMD_SETUP_JOINLEAVE_TITLE'),
-			value: t('CMD_SETUP_JOINLEAVE_TEXT')
+			name: t('cmd.setup.joinLeave.title'),
+			value: t('cmd.setup.joinLeave.text')
 		});
 
 		embed.fields.push({
-			name: t('CMD_SETUP_PREFIX_TITLE'),
-			value: t('CMD_SETUP_PREFIX_TEXT')
+			name: t('cmd.setup.prefix.title'),
+			value: t('cmd.setup.prefix.text')
 		});
 
 		embed.fields.push({
-			name: t('CMD_SETUP_FAQ_TITLE'),
-			value: t('CMD_SETUP_FAQ_TEXT')
+			name: t('cmd.setup.faq.title'),
+			value: t('cmd.setup.faq.text')
 		});
 
 		embed.fields.push({
-			name: t('CMD_SETUP_HELP_TITLE'),
-			value: t('CMD_SETUP_HELP_TEXT', { link: config.botSupport })
+			name: t('cmd.setup.help.title'),
+			value: t('cmd.setup.help.text', { link: config.botSupport })
 		});
 
 		embed.fields.push({
-			name: t('CMD_SETUP_PREMIUM_TITLE'),
-			value: t('CMD_SETUP_PREMIUM_TEXT', { link: config.botPatreon })
+			name: t('cmd.setup.premium.title'),
+			value: t('cmd.setup.premium.text', { link: config.botPatreon })
 		});
 
 		if (!me.permission.has('MANAGE_GUILD')) {
 			embed.fields.push({
-				name: t('CMD_SETUP_MANAGE_GUILD_TITLE'),
-				value: t('CMD_SETUP_MANAGE_GUILD_TEXT')
+				name: t('cmd.setup.manageGuild.title'),
+				value: t('cmd.setup.manageGuild.text')
 			});
 		}
 
 		if (!me.permission.has('MANAGE_ROLES')) {
 			embed.fields.push({
-				name: t('CMD_SETUP_MANAGE_ROLES_TITLE'),
-				value: t('CMD_SETUP_MANAGE_ROLES_TEXT')
+				name: t('cmd.setup.manageRoles.title'),
+				value: t('cmd.setup.manageRoles.text')
+			});
+		}
+
+		if (!me.permission.has('VIEW_AUDIT_LOGS')) {
+			embed.fields.push({
+				name: t('cmd.setup.viewAuditLogs.title'),
+				value: t('cmd.setup.viewAuditLogs.text')
 			});
 		}
 

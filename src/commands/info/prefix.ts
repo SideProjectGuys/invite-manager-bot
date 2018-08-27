@@ -24,7 +24,7 @@ export default class extends Command {
 		sendReply(
 			this.client,
 			message,
-			t('CMD_PREFIX_CURRENT', {
+			t('cmd.prefix.title', {
 				prefix: settings.prefix
 			})
 		);

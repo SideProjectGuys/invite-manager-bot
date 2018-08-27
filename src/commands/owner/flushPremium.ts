@@ -2,9 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
-import { StringResolver } from '../resolvers';
 
 const config = require('../../../config.json');
 

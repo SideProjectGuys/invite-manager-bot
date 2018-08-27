@@ -37,17 +37,17 @@ export default class extends Command {
 		const trialDuration = moment.duration(1, 'week');
 		const validUntil = moment().add(trialDuration);
 
-		embed.title = t('CMD_TRYPREMIUM_TITLE');
+		embed.title = t('cmd.tryPremium.title');
 		if (isPremium) {
-			embed.description = t('CMD_TRYPREMIUM_CURRENTLY_ACTIVE');
+			embed.description = t('cmd.tryPremium.currentlyActive');
 		} else if (await this.guildHadTrial(guild.id)) {
-			embed.description = t('CMD_TRYPREMIUM_ALREADY_USED', {
+			embed.description = t('cmd.tryPremium.alreadyUsed', {
 				prefix
 			});
 		} else {
 			const promptEmbed = createEmbed(this.client);
 
-			promptEmbed.description = t('CMD_TRYPREMIUM_DESCRIPTION', {
+			promptEmbed.description = t('cmd.tryPremium.text', {
 				duration: trialDuration.humanize()
 			});
 
@@ -55,13 +55,13 @@ export default class extends Command {
 
 			const [keyResult, keyValue] = await prompt(
 				message,
-				t('CMD_TRYPREMIUM_PROMPT')
+				t('cmd.tryPremium.prompt')
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return sendReply(this.client, message, t('PROMPT_TIMED_OUT'));
+				return sendReply(this.client, message, t('prompt.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return sendReply(this.client, message, t('PROMPT_CANCELED'));
+				return sendReply(this.client, message, t('prompt.canceled'));
 			}
 
 			await premiumSubscriptions.create({
@@ -73,7 +73,7 @@ export default class extends Command {
 			});
 			this.client.cache.flushPremium(guild.id);
 
-			embed.description = t('CMD_TRYPREMIUM_STARTED', {
+			embed.description = t('cmd.tryPremium.started', {
 				prefix
 			});
 		}

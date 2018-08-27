@@ -109,38 +109,38 @@ export default class extends Command {
 		);
 
 		const embed = createEmbed(this.client, {
-			title: t('CMD_INVITECODES_TITLE', { guild: guild.name })
+			title: t('cmd.inviteCodes.title', { guild: guild.name })
 		});
 
 		if (permanentInvites.length === 0 && temporaryInvites.length === 0) {
-			embed.description = t('CMD_INVITECODES_NO_CODES');
+			embed.description = t('cmd.inviteCodes.noCodes');
 		} else {
 			if (recommendedCode) {
 				embed.fields.push({
-					name: t('CMD_INVITECODES_RECOMMENDED_CODE_TITLE'),
+					name: t('cmd.inviteCodes.recommendedCode.title'),
 					value: `https://discord.gg/${recommendedCode.code}`
 				});
 			} else {
 				embed.fields.push({
-					name: t('CMD_INVITECODES_RECOMMENDED_CODE_TITLE'),
-					value: t('CMD_INVITECODES_RECOMMENDED_CODE_NONE')
+					name: t('cmd.inviteCodes.recommendedCode.title'),
+					value: t('cmd.inviteCodes.recommendedCode.none')
 				});
 			}
 		}
 		if (permanentInvites.length > 0) {
 			// embed.addBlankField();
 			embed.fields.push({
-				name: t('CMD_INVITECODES_PERMANENT_TITLE'),
-				value: t('CMD_INVITECODES_PERMANENT_TEXT')
+				name: t('cmd.inviteCodes.permanent.title'),
+				value: t('cmd.inviteCodes.permanent.text')
 			});
 			permanentInvites.forEach(i => {
 				embed.fields.push({
 					name: `${i.code}`,
-					value: t('CMD_INVITECODES_PERMANENT_ENTRY', {
+					value: t('cmd.inviteCodes.permanent.entry', {
 						uses: i.uses,
 						maxAge: i.maxAge,
 						maxUses: i.maxUses,
-						channelId: i.channelId
+						channel: `<#${i.channelId}>`
 					}),
 					inline: true
 				});
@@ -149,8 +149,8 @@ export default class extends Command {
 		if (temporaryInvites.length > 0) {
 			// embed.addBlankField();
 			embed.fields.push({
-				name: t('CMD_INVITECODES_TEMPORARY_TITLE'),
-				value: t('CMD_INVITECODES_TEMPORARY_TEXT')
+				name: t('cmd.inviteCodes.temporary.title'),
+				value: t('cmd.inviteCodes.temporary.text')
 			});
 			temporaryInvites.forEach(i => {
 				const maxAge = moment
@@ -163,11 +163,11 @@ export default class extends Command {
 					.fromNow();
 				embed.fields.push({
 					name: `${i.code}`,
-					value: t('CMD_INVITECODES_PERMANENT_ENTRY', {
+					value: t('cmd.inviteCodes.temporary.entry', {
 						uses: i.uses,
 						maxAge,
 						maxUses: i.maxUses,
-						channelId: i.channelId,
+						channel: `<#${i.channelId}>`,
 						expires
 					}),
 					inline: true
@@ -177,6 +177,6 @@ export default class extends Command {
 
 		sendEmbed(this.client, await message.author.getDMChannel(), embed);
 		// TODO: Start the message with @user
-		message.channel.createMessage(t('CMD_INVITECODES_DM_SENT'));
+		message.channel.createMessage(t('cmd.inviteCodes.dmSent'));
 	}
 }

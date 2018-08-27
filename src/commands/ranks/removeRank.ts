@@ -2,10 +2,10 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { RoleResolver } from '../../resolvers';
 import { LogAction, ranks } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { RoleResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -48,13 +48,13 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_REMOVERANK_DONE', { role: role.name })
+				t('cmd.removeRank.done', { role: role.name })
 			);
 		} else {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_REMOVERANK_RANK_NOT_FOUND', { role: role.name })
+				t('cmd.removeRank.rankNotFound', { role: role.name })
 			);
 		}
 	}

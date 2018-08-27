@@ -2,11 +2,11 @@ import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { getInviteCounts } from '../../util';
 import { Command, Context } from '../Command';
-import { NumberResolver, StringResolver, UserResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -46,7 +46,7 @@ export default class extends Command {
 		{ guild, t, settings }: Context
 	): Promise<any> {
 		if (amount === 0) {
-			return sendReply(this.client, message, t('CMD_ADDINVITES_ZERO'));
+			return sendReply(this.client, message, t('cmd.addInvites.zero'));
 		}
 
 		const invites = await getInviteCounts(guild.id, user.id);
@@ -81,13 +81,13 @@ export default class extends Command {
 
 		let descr = '';
 		if (amount > 0) {
-			descr += t('CMD_ADDINVITES_AMOUNT_POS', {
+			descr += t('cmd.addInvites.amount.positive', {
 				amount,
 				member: user.id,
 				totalInvites
 			});
 		} else {
-			descr += t('CMD_ADDINVITES_AMOUNT_NEG', {
+			descr += t('cmd.addInvites.amount.negative', {
 				amount: -amount,
 				member: user.id,
 				totalInvites

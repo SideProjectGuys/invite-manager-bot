@@ -2,9 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { CommandResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { CommandResolver } from '../resolvers/CommandResolver';
 
 const config = require('../../../config.json');
 
@@ -29,8 +29,9 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[command]: [Command],
-		{ guild, t, settings, me }: Context
+		context: Context
 	): Promise<any> {
+		const { guild, t, settings } = context;
 		const embed = createEmbed(this.client);
 
 		const prefix = settings ? settings.prefix : '!';
@@ -38,26 +39,27 @@ export default class extends Command {
 		if (command) {
 			const cmd = {
 				...command,
-				usage: command.usage.replace('<prefix>', prefix)
+				usage: command.usage.replace('<prefix>', prefix),
+				info: command.getInfo(context)
 			};
 
 			embed.fields.push({
-				name: t('CMD_HELP_COMMAND_TITLE'),
+				name: t('cmd.help.command.title'),
 				value: cmd.name,
 				inline: true
 			});
 			embed.fields.push({
-				name: t('CMD_HELP_DESCRIPTION_TITLE'),
+				name: t('cmd.help.description.title'),
 				value: cmd.description,
 				inline: true
 			});
 			embed.fields.push({
-				name: t('CMD_HELP_USAGE_TITLE'),
-				value: '`' + cmd.usage + '`' + (cmd.info ? '\n\n' + cmd.info : '')
+				name: t('cmd.help.usage.title'),
+				value: '`' + cmd.usage + '`\n\n' + cmd.info
 			});
 			if (cmd.aliases.length > 0) {
 				embed.fields.push({
-					name: t('CMD_HELP_ALIASES_TITLE'),
+					name: t('cmd.help.aliases.title'),
 					value: cmd.aliases.join(', '),
 					inline: true
 				});
@@ -68,7 +70,7 @@ export default class extends Command {
 				member = await guild.getRESTMember(message.author.id);
 			}
 
-			embed.description = t('CMD_HELP_TEXT', { prefix }) + '\n\n';
+			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
 			const commands = this.client.commands
 				.filter(c => !c.ownerOnly && !c.hidden)
@@ -118,21 +120,21 @@ export default class extends Command {
 		let linksArray = [];
 		if (config.botSupport) {
 			linksArray.push(
-				`[${t('BOT_SUPPORT_DISCORD_TITLE')}](${config.botSupport})`
+				`[${t('bot.supportDiscord.title')}](${config.botSupport})`
 			);
 		}
 		if (config.botAdd) {
-			linksArray.push(`[${t('BOT_INVITE_TITLE')}](${config.botAdd})`);
+			linksArray.push(`[${t('bot.invite.title')}](${config.botAdd})`);
 		}
 		if (config.botWebsite) {
-			linksArray.push(`[${t('BOT_WEBSITE_TITLE')}](${config.botWebsite})`);
+			linksArray.push(`[${t('bot.website.title')}](${config.botWebsite})`);
 		}
 		if (config.botPatreon) {
-			linksArray.push(`[${t('BOT_PATREON_TITLE')}](${config.botPatreon})`);
+			linksArray.push(`[${t('bot.patreon.title')}](${config.botPatreon})`);
 		}
 
 		embed.fields.push({
-			name: t('CMD_HELP_LINKS'),
+			name: t('cmd.help.links'),
 			value: linksArray.join(` | `)
 		});
 

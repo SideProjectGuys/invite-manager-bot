@@ -1,6 +1,0 @@
-[JOIN_INVITED_BY_UNKNOWN]
-<@{{ id }}> a intrat in comunitate folosid un cod de invitatie temporar,nu imi pot da seama cine l-a invitat.
-
-[LEAVE_INVITED_BY_UNKNOWN]
-{{ tag }} a parasit comunitatea,dar nu imi dau seama cine l-a invitat.
-

@@ -28,14 +28,23 @@ import { ShardCommand } from './types';
 import { getInviteCounts, idToBinary, InviteCounts } from './util';
 
 const config = require('../config.json');
-
-const CHANNEL_TYPE_DM = 1;
+const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 
 i18n.configure({
 	locales: ['en', 'de', 'el', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ro'],
 	defaultLocale: 'en',
 	syncFiles: true,
-	directory: __dirname + '/../locale'
+	directory: __dirname + '/../locale',
+	objectNotation: true,
+	logDebugFn: function(msg: string) {
+		console.log('debug', msg);
+	},
+	logWarnFn: function(msg: string) {
+		console.log('warn', msg);
+	},
+	logErrorFn: function(msg: string) {
+		console.log('error', msg);
+	}
 });
 
 interface RabbitMqMember {
@@ -160,6 +169,12 @@ export class IMClient extends Client {
 		this.commands.push(new clazz(this));
 
 		clazz = require('./commands/info/help').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/config/config').default;
+		this.commands.push(new clazz(this));
+
+		clazz = require('./commands/ranks/addRank').default;
 		this.commands.push(new clazz(this));
 
 		this.on('ready', this._onClientReady);
@@ -340,29 +355,40 @@ export class IMClient extends Client {
 		);
 
 		// Figure out which command is being run
-		const splits = message.content.split(' ');
-		let cmdStr = splits[0].toLowerCase();
+		let content = message.content.trim();
+		const sets = guild ? await this.cache.get(guild.id) : defaultSettings;
+		const t = (key: string, replacements?: { [key: string]: string }) =>
+			i18n.__({ locale: lang, phrase: key }, replacements);
 
-		let sets = defaultSettings;
+		if (idRegex.test(content)) {
+			const matches = content.match(idRegex);
 
-		// Check for prefix if this is in a guild
-		if (guild) {
-			sets = await this.cache.get(guild.id);
-			const prefix = sets.prefix;
-
-			if (!cmdStr.startsWith(prefix)) {
+			if (matches[1] !== this.user.id) {
 				return;
 			}
 
-			cmdStr = cmdStr.substring(prefix.length);
+			content = matches[2];
+		} else {
+			// Check for prefix if this is in a guild
+			if (guild) {
+				if (!content.startsWith(sets.prefix)) {
+					return;
+				}
+
+				content = content.substring(sets.prefix.length);
+			}
 		}
+
+		console.log(content);
+		const splits = content.split(' ');
+		const cmdStr = splits[0];
 
 		// Find the command
 		let cmd: Command = this.commands.find(
 			c => c.name.toLowerCase() === cmdStr || c.aliases.indexOf(cmdStr) >= 0
 		);
 
-		console.log(cmd ? cmd.name : 'INVALID COMMAND');
+		console.log(cmd ? cmd.name : 'INVALID COMMAND: ' + cmdStr);
 
 		// Command not found, or not allowed in DM
 		if (!cmd || (cmd.guildOnly && !guild)) {
@@ -386,11 +412,7 @@ export class IMClient extends Client {
 				console.error(
 					`Could not get member ${message.author.id} for ${guild.id}`
 				);
-				sendReply(
-					this,
-					message,
-					i18n.__({ locale: lang, phrase: 'PERMISSIONS_MEMBER_ERROR' })
-				);
+				sendReply(this, message, t('permissions.memberError'));
 				return;
 			}
 
@@ -404,12 +426,9 @@ export class IMClient extends Client {
 						sendReply(
 							this,
 							message,
-							i18n.__(
-								{ locale: lang, phrase: 'PERMISSIONS_MISSING_ROLE' },
-								{
-									roles: perms.map(p => `<@&${p}>`).join(', ')
-								}
-							)
+							t('permissions.role', {
+								roles: perms.map(p => `<@&${p}>`).join(', ')
+							})
 						);
 						return;
 					}
@@ -417,11 +436,7 @@ export class IMClient extends Client {
 
 				// Allow commands that require no roles, if strict is not true
 				if (cmd.strict) {
-					sendReply(
-						this,
-						message,
-						i18n.__({ locale: lang, phrase: 'PERMISSIONS_ADMIN_ONLY' })
-					);
+					sendReply(this, message, t('permissions.adminOnly'));
 					return;
 				}
 			}
@@ -436,8 +451,7 @@ export class IMClient extends Client {
 		const context = {
 			guild,
 			me,
-			t: (key: string, replacements?: { [key: string]: string }) =>
-				i18n.__({ locale: lang, phrase: key }, replacements),
+			t,
 			settings: sets
 		};
 
@@ -445,8 +459,21 @@ export class IMClient extends Client {
 		const rawArgs = splits.slice(1);
 		const args: any[] = [];
 		let i = 0;
-		for (const resolver of cmd.resolvers) {
-			args.push(await resolver.resolve(rawArgs[i], context));
+		for (const arg of cmd.args) {
+			const resolver = cmd.resolvers[i];
+			const val = await resolver.resolve(rawArgs[i], context, args);
+			if (typeof val === typeof undefined && arg.required) {
+				sendReply(
+					this,
+					message,
+					t('arguments.missingRequired', {
+						name: arg.name,
+						help: resolver.getHelp(context)
+					})
+				);
+				return;
+			}
+			args.push(val);
 			i++;
 		}
 

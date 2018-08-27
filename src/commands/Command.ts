@@ -4,7 +4,7 @@ import { IMClient } from '../client';
 import { SettingsObject } from '../sequelize';
 import { BotCommand, CommandGroup, OwnerCommand } from '../types';
 
-import { Resolver, ResolverConstructor } from './Resolver';
+import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 
 export interface Arg {
 	name: string;
@@ -46,7 +46,6 @@ export abstract class Command {
 	public args: Arg[];
 	public description: string;
 	public usage: string;
-	public info?: string;
 	public group: CommandGroup;
 	public strict?: boolean;
 	public guildOnly: boolean;
@@ -57,7 +56,7 @@ export abstract class Command {
 		this.client = client;
 		this.name = props.name;
 		this.aliases = props.aliases.map(a => a.toLowerCase());
-		this.args = props.args;
+		this.args = props.args ? props.args : [];
 		this.description = props.desc;
 		this.group = props.group;
 		this.strict = props.strict;
@@ -66,21 +65,30 @@ export abstract class Command {
 		this.hidden = props.hidden;
 
 		this.usage = `<prefix>${this.name} `;
-		this.info = '';
 
 		this.resolvers = [];
-		if (this.args) {
-			this.args.forEach(arg => {
-				if (arg.resolver instanceof Resolver) {
-					this.resolvers.push(arg.resolver);
-				} else {
-					this.resolvers.push(new arg.resolver(this.client));
-				}
+		this.args.forEach(arg => {
+			if (arg.resolver instanceof Resolver) {
+				this.resolvers.push(arg.resolver);
+			} else {
+				this.resolvers.push(new arg.resolver(this.client));
+			}
+			delete arg.resolver;
 
-				this.usage += arg.required ? `<${arg.name}> ` : `(<${arg.name}>) `;
-				this.info += `\`${arg.name}\`:\n${arg.description}\n\n`;
-			});
+			this.usage += arg.required ? `<${arg.name}> ` : `(<${arg.name}>) `;
+		});
+	}
+
+	public getInfo(context: Context) {
+		let info = '';
+		for (let i = 0; i < this.args.length; i++) {
+			const help = this.resolvers[i].getHelp(context);
+			info +=
+				`**<${this.args[i].name}>**:\n` +
+				`${this.args[i].description}\n` +
+				(help ? `${help}\n\n` : '');
 		}
+		return info;
 	}
 
 	public abstract action(message: Message, args: any[], context: Context): any;

@@ -2,10 +2,10 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { NumberResolver, RoleResolver, StringResolver } from '../../resolvers';
 import { LogAction, ranks, roles } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { NumberResolver, RoleResolver, StringResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -65,7 +65,7 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_ADDRANK_ROLE_TOO_HIGH', { role: role.name, myRole: myRole.name })
+				t('cmd.addRank.roleTooHigh', { role: role.name, myRole: myRole.name })
 			);
 		}
 
@@ -114,7 +114,7 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_ADDRANK_UPDATED', {
+				t('cmd.addRank.updated', {
 					role: role.name,
 					invites,
 					description
@@ -124,7 +124,7 @@ export default class extends Command {
 			return sendReply(
 				this.client,
 				message,
-				t('CMD_ADDRANK_CREATED', {
+				t('cmd.addRank.created', {
 					role: role.name,
 					invites,
 					description

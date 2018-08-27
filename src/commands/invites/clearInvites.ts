@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
+import { BooleanResolver, UserResolver } from '../../resolvers';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -13,7 +14,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-import { BooleanResolver, UserResolver } from '../resolvers';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -195,7 +195,7 @@ export default class extends Command {
 		return sendReply(
 			this.client,
 			message,
-			t('CMD_CLEARINVITES_DONE', {
+			t('cmd.clearInvites.done', {
 				amount: Object.keys(cleared).length
 			})
 		);

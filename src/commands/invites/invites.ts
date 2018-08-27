@@ -2,10 +2,10 @@ import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
+import { UserResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { getInviteCounts } from '../../util';
 import { Command, Context } from '../Command';
-import { UserResolver } from '../resolvers/UserResolver';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -33,16 +33,26 @@ export default class extends Command {
 		let target = user ? user : message.author;
 		const invites = await getInviteCounts(guild.id, target.id);
 
-		let textMessage =
-			t('CMD_INVITES_AMOUNT', {
-				self: message.author.id,
-				target: target.id,
+		let textMessage = '';
+		if (target.id === message.author.id) {
+			textMessage = t('cmd.invites.amount.self', {
 				total: invites.total,
 				regular: invites.regular,
 				custom: invites.custom,
 				fake: invites.fake,
 				leave: invites.leave
-			}) + '\n';
+			});
+		} else {
+			textMessage = t('cmd.invites.amount.other', {
+				target: `<@${target.id}>`,
+				total: invites.total,
+				regular: invites.regular,
+				custom: invites.custom,
+				fake: invites.fake,
+				leave: invites.leave
+			});
+		}
+		textMessage += '\n';
 
 		/*if (!target.bot) {
 			let targetMember = await guild.members
