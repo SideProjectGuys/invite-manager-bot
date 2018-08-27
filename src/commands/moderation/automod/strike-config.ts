@@ -57,10 +57,16 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
+		if (!Object.values(ViolationType).includes(violation)) {
+			return message.channel.send(
+				`This is not a valid type. Please use one of the following\n` +
+				`${Object.values(ViolationType).map(v => `\`${v}\``).join(', ')}`);
+		}
+
 		strikeConfigs.insertOrUpdate({
 			id: null,
 			guildId: message.guild.id,
-			violationType: ViolationType.warn,
+			violationType: violation as ViolationType,
 			amount: strikes
 		});
 

@@ -179,11 +179,55 @@ export enum SettingsKey {
 	rankAnnouncementChannel = 'rankAnnouncementChannel',
 	rankAnnouncementMessage = 'rankAnnouncementMessage',
 	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard',
+
 	captchaVerificationOnJoin = 'captchaVerificationOnJoin',
 	captchaVerificationWelcomeMessage = 'captchaVerificationWelcomeMessage',
 	captchaVerificationSuccessMessage = 'captchaVerificationSuccessMessage',
 	captchaVerificationFailedMessage = 'captchaVerificationFailedMessage',
-	captchaVerificationTimeout = 'captchaVerificationTimeout'
+	captchaVerificationTimeout = 'captchaVerificationTimeout',
+
+	autoModEnabled = 'autoModEnabled',
+	autoModModeratedChannels = 'autoModModeratedChannels',
+	autoModModeratedRoles = 'autoModModeratedRoles',
+	autoModIgnoredChannels = 'autoModIgnoredChannels',
+	autoModIgnoredRoles = 'autoModIgnoredRoles',
+	autoModDeleteBotMessage = 'autoModDeleteBotMessage',
+	autoModDeleteBotMessageTimeoutInSeconds = 'autoModDeleteBotMessageTimeoutInSeconds',
+
+	autoModDisabledForOldMembers = 'autoModDisabledForOldMembers',
+	autoModDisabledForOldMembersThreshold = 'autoModDisabledForOldMembersThreshold',
+	autoModDisabledForOldMembersReceiveSilentWarning = 'autoModDisabledForOldMembersReceiveSilentWarning',
+
+	autoModInvitesEnabled = 'autoModInvitesEnabled',
+
+	autoModLinksEnabled = 'autoModLinksEnabled',
+	autoModLinksWhitelist = 'autoModLinksWhitelist',
+	autoModLinksBlacklist = 'autoModLinksBlacklist',
+	autoModLinksFollowRedirects = 'autoModLinksFollowRedirects',
+
+	autoModWordsEnabled = 'autoModWordsEnabled',
+	autoModWordsWhitelist = 'autoModWordsWhitelist',
+	autoModWordsBlacklist = 'autoModWordsBlacklist',
+
+	autoModAllCapsEnabled = 'autoModAllCapsEnabled',
+	autoModAllCapsMinCharacters = 'autoModAllCapsMinCharacters',
+	autoModAllCapsPercentageCaps = 'autoModAllCapsPercentageCaps',
+
+	autoModDuplicateTextEnabled = 'autoModDuplicateTextEnabled',
+	autoModDuplicateTextTimeframeInSeconds = 'autoModDuplicateTextTimeframeInSeconds',
+
+	autoModQuickMessagesEnabled = 'autoModQuickMessagesEnabled',
+	autoModQuickMessagesNumberOfMessages = 'autoModQuickMessagesNumberOfMessages',
+	autoModQuickMessagesTimeframeInSeconds = 'autoModQuickMessagesTimeframeInSeconds',
+
+	autoModMentionUsersEnabled = 'autoModMentionUsersEnabled',
+	autoModMentionUsersMaxNumberOfMentions = 'autoModMentionUsersMaxNumberOfMentions',
+
+	autoModMentionRolesEnabled = 'autoModMentionRolesEnabled',
+	autoModMentionRolesMaxNumberOfMentions = 'autoModMentionRolesMaxNumberOfMentions',
+
+	autoModEmojisEnabled = 'autoModEmojisEnabled',
+	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis'
 }
 
 export enum Lang {
@@ -231,6 +275,7 @@ export function getSettingsType(key: SettingsKey) {
 		return 'Number';
 	}
 	return 'String';
+	// TODO: Include AutoMod and CaptchaVerification settings
 }
 
 export const defaultSettings: { [k in SettingsKey]: string } = {
@@ -255,10 +300,56 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 	hideLeftMembersFromLeaderboard: 'false',
 	captchaVerificationOnJoin: 'false',
-	captchaVerificationWelcomeMessage: 'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
+	captchaVerificationWelcomeMessage:
+		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
 	captchaVerificationSuccessMessage: 'You have successfully entered the captcha. Welcome to the server!',
-	captchaVerificationFailedMessage: 'You did not enter the captha right within the specified time. We\'re sorry, but we have to kick you from the server. Feel free to join again.',
-	captchaVerificationTimeout: '180' /* seconds */
+	captchaVerificationFailedMessage:
+		'You did not enter the captha right within the specified time.' +
+		'We\'re sorry, but we have to kick you from the server. Feel free to join again.',
+	captchaVerificationTimeout: '180', /* seconds */
+
+	autoModEnabled: 'false',
+	autoModModeratedChannels: null,
+	autoModModeratedRoles: null,
+	autoModIgnoredChannels: null,
+	autoModIgnoredRoles: null,
+	autoModDeleteBotMessage: 'true',
+	autoModDeleteBotMessageTimeoutInSeconds: '5',
+
+	autoModDisabledForOldMembers: 'false',
+	autoModDisabledForOldMembersThreshold: '604800', /* seconds, default 1 week */
+	autoModDisabledForOldMembersReceiveSilentWarning: 'true',
+
+	autoModInvitesEnabled: 'true',
+
+	autoModLinksEnabled: 'true',
+	autoModLinksWhitelist: null,
+	autoModLinksBlacklist: null,
+	autoModLinksFollowRedirects: 'true',
+
+	autoModWordsEnabled: 'true',
+	autoModWordsWhitelist: null,
+	autoModWordsBlacklist: null,
+
+	autoModAllCapsEnabled: 'true',
+	autoModAllCapsMinCharacters: '10',
+	autoModAllCapsPercentageCaps: '70',
+
+	autoModDuplicateTextEnabled: 'true',
+	autoModDuplicateTextTimeframeInSeconds: '60',
+
+	autoModQuickMessagesEnabled: 'true',
+	autoModQuickMessagesNumberOfMessages: '5',
+	autoModQuickMessagesTimeframeInSeconds: '3',
+
+	autoModMentionUsersEnabled: 'true',
+	autoModMentionUsersMaxNumberOfMentions: '5',
+
+	autoModMentionRolesEnabled: 'true',
+	autoModMentionRolesMaxNumberOfMentions: '3',
+
+	autoModEmojisEnabled: 'true',
+	autoModEmojisMaxNumberOfEmojis: '5'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -276,31 +367,7 @@ export interface SettingInstance
 export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
-		key: Sequelize.ENUM(
-			SettingsKey.prefix,
-			SettingsKey.joinMessage,
-			SettingsKey.joinMessageChannel,
-			SettingsKey.leaveMessage,
-			SettingsKey.leaveMessageChannel,
-			SettingsKey.lang,
-			SettingsKey.modRole,
-			SettingsKey.modChannel,
-			SettingsKey.logChannel,
-			SettingsKey.getUpdates,
-			SettingsKey.leaderboardStyle,
-			SettingsKey.autoSubtractFakes,
-			SettingsKey.autoSubtractLeaves,
-			SettingsKey.autoSubtractLeaveThreshold,
-			SettingsKey.rankAssignmentStyle,
-			SettingsKey.rankAnnouncementChannel,
-			SettingsKey.rankAnnouncementMessage,
-			SettingsKey.hideLeftMembersFromLeaderboard,
-			SettingsKey.captchaVerificationOnJoin,
-			SettingsKey.captchaVerificationWelcomeMessage,
-			SettingsKey.captchaVerificationSuccessMessage,
-			SettingsKey.captchaVerificationFailedMessage,
-			SettingsKey.captchaVerificationTimeout
-		),
+		key: Sequelize.ENUM(Object.values(SettingsKey)),
 		value: Sequelize.TEXT
 	},
 	{
@@ -355,7 +422,7 @@ export const memberSettings = sequelize.define<
 	>(
 		'memberSettings',
 		{
-			key: Sequelize.ENUM(MemberSettingsKey.hideFromLeaderboard),
+			key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
 			value: Sequelize.TEXT
 		},
 		{
@@ -470,10 +537,7 @@ export const inviteCodeSettings = sequelize.define<
 	>(
 		'inviteCodeSettings',
 		{
-			key: Sequelize.ENUM(
-				InviteCodeSettingsKey.name,
-				InviteCodeSettingsKey.roles
-			),
+			key: Sequelize.ENUM(Object.values(InviteCodeSettingsKey)),
 			value: Sequelize.TEXT
 		},
 		{
@@ -623,14 +687,7 @@ export const customInvites = sequelize.define<
 		{
 			amount: Sequelize.INTEGER,
 			reason: Sequelize.STRING,
-			generatedReason: Sequelize.ENUM(
-				CustomInvitesGeneratedReason.clear_regular,
-				CustomInvitesGeneratedReason.clear_custom,
-				CustomInvitesGeneratedReason.clear_fake,
-				CustomInvitesGeneratedReason.clear_leave,
-				CustomInvitesGeneratedReason.fake,
-				CustomInvitesGeneratedReason.leave
-			)
+			generatedReason: Sequelize.ENUM(Object.values(CustomInvitesGeneratedReason))
 		},
 		{
 			timestamps: true,
@@ -721,12 +778,7 @@ export interface PresenceInstance
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: Sequelize.ENUM(
-			PresenceStatus.online,
-			PresenceStatus.offline,
-			PresenceStatus.idle,
-			PresenceStatus.dnd
-		),
+		status: Sequelize.ENUM(Object.values(PresenceStatus)),
 		type: Sequelize.TINYINT,
 		game: Sequelize.STRING
 	},
@@ -823,16 +875,7 @@ export interface LogInstance
 export const logs = sequelize.define<LogInstance, LogAttributes>(
 	'log',
 	{
-		action: Sequelize.ENUM(
-			LogAction.addInvites,
-			LogAction.addRank,
-			LogAction.clearInvites,
-			LogAction.config,
-			LogAction.memberConfig,
-			LogAction.removeRank,
-			LogAction.updateRank,
-			LogAction.restoreInvites
-		),
+		action: Sequelize.ENUM(Object.values(LogAction)),
 		message: Sequelize.TEXT,
 		data: Sequelize.JSON
 	},
@@ -961,8 +1004,15 @@ roles.hasMany(rolePermissions);
 // StrikesConfig
 // ------------------------------------
 export enum ViolationType {
-	warn = 'warn',
-	invite = 'invite',
+	invites = 'invites',
+	links = 'links',
+	words = 'words',
+	allCaps = 'allCaps',
+	duplicateText = 'duplicateText',
+	quickMessages = 'quickMessages',
+	mentionUsers = 'mentionUsers',
+	mentionRoles = 'mentionRoles',
+	emojis = 'emojis'
 }
 
 export interface StrikeConfigAttributes extends BaseAttributes {
@@ -984,7 +1034,7 @@ export const strikeConfigs = sequelize.define<
 	>(
 		'strikeConfig',
 		{
-			violationType: Sequelize.ENUM(ViolationType.warn, ViolationType.invite),
+			violationType: Sequelize.ENUM(Object.values(ViolationType)),
 			amount: Sequelize.INTEGER
 		},
 		{
@@ -1068,12 +1118,7 @@ export const punishmentConfigs = sequelize.define<
 	>(
 		'punishmentConfig',
 		{
-			punishmentType: Sequelize.ENUM(
-				PunishmentType.ban,
-				PunishmentType.kick,
-				PunishmentType.softban,
-				PunishmentType.warn,
-				PunishmentType.mute),
+			punishmentType: Sequelize.ENUM(Object.values(ViolationType)),
 			amount: Sequelize.INTEGER,
 			args: Sequelize.STRING
 		},

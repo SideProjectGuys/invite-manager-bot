@@ -58,34 +58,8 @@ export default class extends Command<IMClient> {
 			return;
 		}
 
-		let nofStrikes = 2;
-
-		let strikeConfig = await strikeConfigs.find({
-			where: {
-				violationType: ViolationType.warn
-			}
-		});
-
-		await strikes.create({
-			id: null,
-			guildId: message.guild.id,
-			memberId: user.id,
-			amount: strikeConfig.amount,
-			strikeConfigId: strikeConfig.id
-		});
-
-		let personalStrikes = await strikes.find({
-			where: {
-				guildId: message.guild.id,
-				memberId: user.id
-			}
-		});
-
-		console.log(personalStrikes);
-
 		user.send(
 			`You have been warned by ${message.author.username} because of the following reason: ${reason}\n` +
-			`You now have ${nofStrikes} strikes.\n` +
 			``
 		);
 

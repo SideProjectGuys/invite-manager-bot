@@ -60,8 +60,8 @@ export default class extends Command<IMClient> {
 		invites,
 		copypastes,
 		everyone,
-		mentions-user,
-		mentions-role
+		mentions-user <number>,
+		mentions-role <number>
 		nickname
 		raidmode?
 		banned-word

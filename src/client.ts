@@ -12,6 +12,7 @@ import moment from 'moment';
 import * as path from 'path';
 
 import { createEmbed, sendEmbed } from './functions/Messaging';
+import { scanMessage } from './functions/Moderation';
 import {
 	channels,
 	customInvites,
@@ -270,13 +271,13 @@ export class IMClient extends Client {
 		// The default lang is en_us, so at this point it will always be that
 		owner.send(
 			'Hi! Thanks for inviting me to your server `' +
-				guild.name +
-				'`!\n\n' +
-				'I am now tracking all invites on your server.\n\n' +
-				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-				'You can see a list of all commands using the `!help` command.\n\n' +
-				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-				'https://discord.gg/2eTnsVM'
+			guild.name +
+			'`!\n\n' +
+			'I am now tracking all invites on your server.\n\n' +
+			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+			'You can see a list of all commands using the `!help` command.\n\n' +
+			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+			'https://discord.gg/2eTnsVM'
 		);
 	}
 
@@ -335,6 +336,8 @@ export class IMClient extends Client {
 		if (this.commands.get(cmd) || this.commands.get(cmd.substring(1))) {
 			return;
 		}
+
+		scanMessage(message);
 
 		if (message.channel instanceof DMChannel) {
 			const user = message.author;
@@ -396,7 +399,7 @@ export class IMClient extends Client {
 		if (joinChannelId && !joinChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
+				`join message channel ${joinChannelId}`
 			);
 		}
 
@@ -445,11 +448,11 @@ export class IMClient extends Client {
 		if (!jn) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${guild.id} joinId ${join.id}`
+				`${guild.id} joinId ${join.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (joinChannel) {
 				joinChannel.send(
@@ -545,7 +548,7 @@ export class IMClient extends Client {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid leave ` +
-					`message channel ${leaveChannelId}`
+				`message channel ${leaveChannelId}`
 			);
 		}
 
@@ -553,11 +556,11 @@ export class IMClient extends Client {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${guild.id} leaveId: ${leave.id}`
+				`${guild.id} leaveId: ${leave.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				leaveChannel.send(
