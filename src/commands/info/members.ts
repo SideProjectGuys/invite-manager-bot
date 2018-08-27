@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -44,7 +43,7 @@ export default class extends Command {
 			m => todayTimestamp - m.joinedAt < ONE_MONTH
 		).length;
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 		embed.fields.push({
 			name: t('cmd.members.members'),
 			value: guild.memberCount.toString(),
@@ -81,6 +80,6 @@ export default class extends Command {
 			inline: true
 		});
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

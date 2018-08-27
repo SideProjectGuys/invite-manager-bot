@@ -2,7 +2,6 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -29,7 +28,7 @@ export default class extends Command {
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		// Version
 		embed.fields.push({
@@ -70,36 +69,36 @@ export default class extends Command {
 		});
 		embed.fields.push({
 			name: t('cmd.botInfo.shard.total'),
-			value: this.client.numShards.toString(),
+			value: this.client.shardCount.toString(),
 			inline: true
 		});
 
 		// Support discord
 		if (config.botSupport) {
 			embed.fields.push({
-				name: t('BOT_SUPPORT_DISCORD_TITLE'),
+				name: t('bot.supportDiscord.title'),
 				value: config.botSupport
 			});
 		}
 		// Add bot
 		if (config.botAdd) {
-			embed.fields.push({ name: t('BOT_INVITE_TITLE'), value: config.botAdd });
+			embed.fields.push({ name: t('bot.invite.title'), value: config.botAdd });
 		}
 		// Bot website
 		if (config.botWebsite) {
 			embed.fields.push({
-				name: t('BOT_WEBSITE_TITLE'),
+				name: t('bot.website.title'),
 				value: config.botWebsite
 			});
 		}
 		// Patreon
 		if (config.botPatreon) {
 			embed.fields.push({
-				name: t('BOT_PATREON_TITLE'),
+				name: t('bot.patreon.title'),
 				value: config.botPatreon
 			});
 		}
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

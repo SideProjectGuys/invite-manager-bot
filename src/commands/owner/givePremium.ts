@@ -2,7 +2,6 @@ import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { premiumSubscriptions } from '../../sequelize';
 import { OwnerCommand } from '../../types';
@@ -77,7 +76,7 @@ export default class extends Command {
 			memberId: user.id
 		});
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			description: `Activated premium for ${premiumDuration.humanize()}`,
 			author: {
 				name: user.username,
@@ -86,9 +85,9 @@ export default class extends Command {
 		});
 		embed.fields.push({ name: 'User', value: user.username });
 
-		await sendReply(this.client, message, embed);
+		await this.client.sendReply(message, embed);
 
-		let cmd = this.client.commands.find(
+		let cmd = this.client.cmds.commands.find(
 			c => c.name === OwnerCommand.flushPremium
 		);
 		cmd.action(message, [guildId], context);

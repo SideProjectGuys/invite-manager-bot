@@ -1,3 +1,9 @@
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
+
 export enum CommandGroup {
 	Invites = 'Invites',
 	Ranks = 'Ranks',
@@ -67,4 +73,17 @@ export enum OwnerCommand {
 	'givePremium' = 'ownerGivePremium',
 	'help' = 'ownerHelp',
 	'sudo' = 'sudo'
+}
+
+export interface RabbitMqMember {
+	id: string;
+	nick?: string;
+	user: {
+		id: string;
+		avatarUrl: string | null;
+		createdAt: number;
+		bot: boolean;
+		discriminator: string;
+		username: string;
+	};
 }

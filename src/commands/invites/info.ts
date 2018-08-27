@@ -2,7 +2,6 @@ import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
@@ -92,7 +91,7 @@ export default class extends Command {
 
 		const numTotal = regular + custom + fake + leave;
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: user.username
 		});
 
@@ -389,6 +388,6 @@ export default class extends Command {
 			});
 		}
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

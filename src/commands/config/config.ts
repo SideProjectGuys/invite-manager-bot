@@ -1,7 +1,6 @@
 import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -78,7 +77,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.config.title');
@@ -105,7 +104,7 @@ export default class extends Command {
 				});
 			}
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		let oldVal = settings[key];
@@ -136,13 +135,12 @@ export default class extends Command {
 					key
 				});
 			}
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
 			if (defaultSettings[key] !== null) {
-				return sendReply(
-					this.client,
+				return this.client.sendReply(
 					message,
 					t('cmd.config.canNotClear', { prefix, key })
 				);
@@ -151,7 +149,7 @@ export default class extends Command {
 
 		const parsedValue = this.toDbValue(key, rawValue);
 		if (parsedValue.error) {
-			return sendReply(this.client, message, parsedValue.error);
+			return this.client.sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -165,12 +163,12 @@ export default class extends Command {
 				name: t('cmd.config.current.title'),
 				value: rawValue
 			});
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const error = this.validate(key, value, context);
 		if (error) {
-			return sendReply(this.client, message, error);
+			return this.client.sendReply(message, error);
 		}
 
 		// Set new value
@@ -202,7 +200,7 @@ export default class extends Command {
 		// If we updated a config setting, then 'oldVal' is now the new value
 		const cb = await this.after(message, embed, key, oldVal, context);
 
-		await sendReply(this.client, message, embed);
+		await this.client.sendReply(message, embed);
 
 		if (typeof cb === typeof Function) {
 			await cb();
@@ -280,7 +278,7 @@ export default class extends Command {
 			value &&
 			(key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)
 		) {
-			const preview = await this.client.fillJoinLeaveTemplate(
+			const preview = await this.client.msg.fillJoinLeaveTemplate(
 				value,
 				guild,
 				{
@@ -322,12 +320,12 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => sendReply(this.client, message, preview);
+				return () => this.client.sendReply(message, preview);
 			}
 		}
 
 		if (value && key === SettingsKey.rankAnnouncementMessage) {
-			const preview = await this.client.fillTemplate(guild, value, {
+			const preview = await this.client.msg.fillTemplate(guild, value, {
 				memberId: member.id,
 				memberName: member.user.username,
 				memberFullName: member.user.username + '#' + member.user.discriminator,
@@ -347,14 +345,14 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => sendReply(this.client, message, preview);
+				return () => this.client.sendReply(message, preview);
 			}
 		}
 
 		if (key === SettingsKey.autoSubtractFakes) {
 			if (value === 'true') {
 				// Subtract fake invites from all members
-				let cmd = this.client.commands.find(
+				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractFakes
 				);
 				return async () => await cmd.action(message, [], context);
@@ -373,7 +371,7 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractLeaves) {
 			if (value === 'true') {
 				// Subtract leaves from all members
-				let cmd = this.client.commands.find(
+				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractLeaves
 				);
 				return async () => await cmd.action(message, [], context);
@@ -391,7 +389,7 @@ export default class extends Command {
 
 		if (key === SettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			let cmd = this.client.commands.find(
+			let cmd = this.client.cmds.commands.find(
 				c => c.name === BotCommand.subtractLeaves
 			);
 			return async () => await cmd.action(message, [], context);

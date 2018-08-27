@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -21,8 +20,7 @@ export default class extends Command {
 		args: any[],
 		{ settings, t }: Context
 	): Promise<any> {
-		sendReply(
-			this.client,
+		this.client.sendReply(
 			message,
 			t('cmd.prefix.title', {
 				prefix: settings.prefix

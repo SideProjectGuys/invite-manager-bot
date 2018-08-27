@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
@@ -36,23 +35,22 @@ export default class extends Command {
 		}
 
 		if (isNaN(parseInt(guildId, 10))) {
-			return sendReply(this.client, message, 'Invalid guild id ' + guildId);
+			return this.client.sendReply(message, 'Invalid guild id ' + guildId);
 		}
 
-		const { shard, result } = this.client.sendCommandToGuild(guildId, {
+		const { shard, result } = this.client.rabbitmq.sendCommandToGuild(guildId, {
 			cmd: ShardCommand.FLUSH_PREMIUM_CACHE,
 			id: message.id,
 			guildId
 		});
 
 		if (result) {
-			sendReply(
-				this.client,
+			this.client.sendReply(
 				message,
 				`Sent command to flush premium settings for guild ${guildId} to shard ${shard}`
 			);
 		} else {
-			sendReply(this.client, message, `RabbitMQ returned false`);
+			this.client.sendReply(message, `RabbitMQ returned false`);
 		}
 	}
 }

@@ -1,7 +1,6 @@
 import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
@@ -56,8 +55,7 @@ export default class extends Command {
 			num
 		});
 
-		return sendReply(
-			this.client,
+		return this.client.sendReply(
 			message,
 			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
 		);

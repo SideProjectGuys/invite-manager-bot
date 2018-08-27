@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { StringResolver } from '../../resolvers';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
@@ -40,20 +39,19 @@ export default class extends Command {
 			return;
 		}
 
-		this.client.pendingRabbitMqRequests.set(message.id, response => {
+		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
 			if (response.ok) {
 				message.addReaction('👍');
 			} else {
 				message.addReaction('👎');
-				sendReply(
-					this.client,
+				this.client.sendReply(
 					message,
 					`ERROR ${response.code}: ${response.message}`
 				);
 			}
 		});
 
-		this.client.sendCommandToShard(1, {
+		this.client.rabbitmq.sendCommandToShard(1, {
 			id: message.id,
 			type: 'OWNER_DM',
 			message: msg

@@ -1,7 +1,6 @@
 import { Guild, Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -85,7 +84,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.inviteCodeConfig.title');
@@ -97,7 +96,7 @@ export default class extends Command {
 				value: keys.join('\n')
 			});
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (!inv) {
@@ -119,13 +118,12 @@ export default class extends Command {
 			} else {
 				embed.description = t('cmd.inviteCodeConfig.noneSet');
 			}
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		// Check if this is actually a real invite code
 		if (inv.guild.id !== guild.id) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.inviteCodeConfig.codeForOtherGuild')
 			);
@@ -168,13 +166,12 @@ export default class extends Command {
 					prefix
 				});
 			}
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
 			if (defaultInviteCodeSettings[key] !== null) {
-				sendReply(
-					this.client,
+				this.client.sendReply(
 					message,
 					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })
 				);
@@ -184,7 +181,7 @@ export default class extends Command {
 
 		const parsedValue = this.toDbValue(guild, key, rawValue);
 		if (parsedValue.error) {
-			return sendReply(this.client, message, parsedValue.error);
+			return this.client.sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -198,12 +195,12 @@ export default class extends Command {
 				name: t('cmd.inviteCodeConfig.current.title'),
 				value: rawValue
 			});
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const error = this.validate(message, key, value, context);
 		if (error) {
-			return sendReply(this.client, message, error);
+			return this.client.sendReply(message, error);
 		}
 
 		await channels.insertOrUpdate({
@@ -255,7 +252,7 @@ export default class extends Command {
 		});
 		oldVal = value; // Update value for future use
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database

@@ -3,7 +3,6 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
-import { createEmbed, sendReply } from '../functions/Messaging';
 import { EnumResolver, NumberResolver } from '../resolvers';
 import { commandUsage, joins, leaves, sequelize } from '../sequelize';
 import { BotCommand, ChartType, CommandGroup } from '../types';
@@ -171,7 +170,7 @@ export default class extends Command {
 
 		let chart = new Chart();
 		chart.getChart('line', config).then((buffer: Buffer) => {
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				title,
 				description,
 				image: {

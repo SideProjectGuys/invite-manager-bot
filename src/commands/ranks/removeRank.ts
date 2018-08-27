@@ -1,7 +1,6 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { RoleResolver } from '../../resolvers';
 import { LogAction, ranks } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
@@ -45,14 +44,12 @@ export default class extends Command {
 				roleId: role.id
 			});
 
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.removeRank.done', { role: role.name })
 			);
 		} else {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.removeRank.rankNotFound', { role: role.name })
 			);

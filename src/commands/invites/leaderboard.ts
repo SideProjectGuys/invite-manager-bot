@@ -3,11 +3,6 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
-import {
-	createEmbed,
-	sendReply,
-	showPaginated
-} from '../../functions/Messaging';
 import { NumberResolver, StringResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
@@ -38,7 +33,6 @@ export default class extends Command {
 					description: 'The date (& time) for which the leaderboard is shown'
 				}
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
@@ -54,11 +48,7 @@ export default class extends Command {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				return sendReply(
-					this.client,
-					message,
-					t('cmd.leaderboard.invalidDate')
-				);
+				return this.client.sendReply(message, t('cmd.leaderboard.invalidDate'));
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
@@ -85,11 +75,11 @@ export default class extends Command {
 		);
 
 		if (keys.length === 0) {
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				title: t('cmd.leaderboard.title'),
 				description: t('cmd.leaderboard.noInvites')
 			});
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);
@@ -98,7 +88,7 @@ export default class extends Command {
 		const style: LeaderboardStyle = settings.leaderboardStyle as LeaderboardStyle;
 
 		// Show the leaderboard as a paginated list
-		showPaginated(this.client, message, p, maxPage, page => {
+		this.client.showPaginated(message, p, maxPage, page => {
 			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
 			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
@@ -199,7 +189,7 @@ export default class extends Command {
 				str += '```\n' + t('cmd.leaderboard.legend');
 			}
 
-			return createEmbed(this.client, {
+			return this.client.createEmbed({
 				title: t('cmd.leaderboard.title'),
 				description: str
 			});

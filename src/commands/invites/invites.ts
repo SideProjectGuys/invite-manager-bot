@@ -1,7 +1,6 @@
 import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { UserResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { getInviteCounts, promoteIfQualified } from '../../util';
@@ -119,11 +118,11 @@ export default class extends Command {
 			}
 		}
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: target.username,
 			description: textMessage
 		});
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

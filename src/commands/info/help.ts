@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { CommandResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -31,8 +30,8 @@ export default class extends Command {
 		[command]: [Command],
 		context: Context
 	): Promise<any> {
-		const { guild, t, settings } = context;
-		const embed = createEmbed(this.client);
+		const { guild, t, settings, me } = context;
+		const embed = this.client.createEmbed();
 
 		const prefix = settings ? settings.prefix : '!';
 
@@ -72,7 +71,7 @@ export default class extends Command {
 
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
-			const commands = this.client.commands
+			const commands = this.client.cmds.commands
 				.filter(c => !c.ownerOnly && !c.hidden)
 				.map(c => ({
 					...c,
@@ -91,30 +90,25 @@ export default class extends Command {
 				embed.fields.push({ name: group, value: descr });
 			});
 
-			/*if (guild && member && member.permission.has('ADMINISTRATOR')) {
-				const unavailableCommands = commands.filter(
-					c => !me.permission.has(c.clientPermissions)
-				);
-
-				if (unavailableCommands.length > 0) {
-					let unavailableDescription = '';
-					unavailableCommands.forEach(c => {
-						const missingPermission = c.clientPermissions.find(cp => {
-							return !botMember.hasPermission(cp);
-						});
-						unavailableDescription +=
-							rp.CMD_HELP_UNAVAILABLE_COMMAND({
-								prefix,
-								name: c.name,
-								missingPermission
-							}) + '\n';
-					});
-					embed.fields.push(
-						t('CMD_HELP_UNAVAILABLE_COMMAND_TITLE'),
-						unavailableDescription
-					);
+			if (guild && member && member.permission.has('ADMINISTRATOR')) {
+				const missing: string[] = [];
+				if (!me.permission.has('MANAGE_GUILD')) {
+					missing.push('Manage guilds');
 				}
-			}*/
+				if (!me.permission.has('VIEW_AUDIT_LOGS')) {
+					missing.push('View audit logs');
+				}
+				if (!me.permission.has('MANAGE_ROLES')) {
+					missing.push('Manage roles');
+				}
+
+				if (missing.length > 0) {
+					embed.fields.push({
+						name: t('cmd.help.missingPermissions'),
+						value: missing.map(p => `\`${p}\``).join(', ')
+					});
+				}
+			}
 		}
 
 		let linksArray = [];
@@ -138,6 +132,6 @@ export default class extends Command {
 			value: linksArray.join(` | `)
 		});
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

@@ -177,7 +177,7 @@ export async function promoteIfQualified(
 			if (rankChannel) {
 				const rankMessageFormat = settings.rankAnnouncementMessage;
 				if (rankMessageFormat) {
-					const msg = await client.fillTemplate(guild, rankMessageFormat, {
+					const msg = await client.msg.fillTemplate(guild, rankMessageFormat, {
 						memberId: member.id,
 						memberName: member.user.username,
 						memberFullName:
@@ -284,4 +284,10 @@ export function idToBinary(num: string) {
 		}
 	}
 	return bin;
+}
+
+export function getShardIdForGuild(guildId: any, shardCount: number) {
+	const bin = idToBinary(guildId);
+	const num = parseInt(bin.substring(0, bin.length - 22), 2);
+	return (num % shardCount) + 1;
 }

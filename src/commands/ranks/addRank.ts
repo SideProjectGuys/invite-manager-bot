@@ -1,7 +1,6 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { NumberResolver, RoleResolver, StringResolver } from '../../resolvers';
 import { LogAction, ranks, roles } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
@@ -61,8 +60,7 @@ export default class extends Command {
 		});
 		// Check if we are higher then the role we want to assign
 		if (myRole.position < role.position) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.addRank.roleTooHigh', { role: role.name, myRole: myRole.name })
 			);
@@ -110,8 +108,7 @@ export default class extends Command {
 		);
 
 		if (!isNew) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.addRank.updated', {
 					role: role.name,
@@ -120,8 +117,7 @@ export default class extends Command {
 				})
 			);
 		} else {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.addRank.created', {
 					role: role.name,

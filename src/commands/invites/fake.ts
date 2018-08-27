@@ -1,11 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	createEmbed,
-	sendReply,
-	showPaginated
-} from '../../functions/Messaging';
 import { NumberResolver } from '../../resolvers';
 import {
 	inviteCodes,
@@ -93,7 +88,7 @@ export default class extends Command {
 		})) as any;
 
 		if (js.length <= 0) {
-			return sendReply(this.client, message, t('cmd.fake.none'));
+			return this.client.sendReply(message, t('cmd.fake.none'));
 		}
 
 		const suspiciousJoins = js
@@ -104,13 +99,13 @@ export default class extends Command {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			return sendReply(this.client, message, t('cmd.fake.noneSinceJoin'));
+			return this.client.sendReply(message, t('cmd.fake.noneSinceJoin'));
 		}
 
 		const maxPage = Math.ceil(suspiciousJoins.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		showPaginated(this.client, message, p, maxPage, page => {
+		this.client.showPaginated(message, p, maxPage, page => {
 			let description = '';
 
 			suspiciousJoins
@@ -150,7 +145,7 @@ export default class extends Command {
 					}
 				});
 
-			return createEmbed(this.client, {
+			return this.client.createEmbed({
 				title: t('cmd.fake.title'),
 				description
 			});

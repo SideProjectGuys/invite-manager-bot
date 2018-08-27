@@ -2,14 +2,8 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import {
-	createEmbed,
-	prompt,
-	PromptResult,
-	sendReply
-} from '../../functions/Messaging';
 import { premiumSubscriptions } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, PromptResult } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -30,7 +24,7 @@ export default class extends Command {
 	): Promise<any> {
 		const prefix = settings.prefix;
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		const isPremium = this.client.cache.isPremium(guild.id);
 
@@ -45,23 +39,23 @@ export default class extends Command {
 				prefix
 			});
 		} else {
-			const promptEmbed = createEmbed(this.client);
+			const promptEmbed = this.client.createEmbed();
 
 			promptEmbed.description = t('cmd.tryPremium.text', {
 				duration: trialDuration.humanize()
 			});
 
-			await sendReply(this.client, message, promptEmbed);
+			await this.client.sendReply(message, promptEmbed);
 
-			const [keyResult, keyValue] = await prompt(
+			const [keyResult, keyValue] = await this.client.msg.prompt(
 				message,
 				t('cmd.tryPremium.prompt')
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return sendReply(this.client, message, t('prompt.timedOut'));
+				return this.client.sendReply(message, t('prompt.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return sendReply(this.client, message, t('prompt.canceled'));
+				return this.client.sendReply(message, t('prompt.canceled'));
 			}
 
 			await premiumSubscriptions.create({
@@ -78,7 +72,7 @@ export default class extends Command {
 			});
 		}
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {

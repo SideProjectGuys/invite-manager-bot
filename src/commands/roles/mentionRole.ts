@@ -1,7 +1,6 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { RoleResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -19,7 +18,6 @@ export default class extends Command {
 					description: 'The role that you want to mention.'
 				}
 			],
-			// clientPermissions: ['MANAGE_ROLES'],
 			guildOnly: true,
 			group: CommandGroup.Other
 		});
@@ -33,8 +31,7 @@ export default class extends Command {
 		await message.delete();
 
 		if (role.mentionable) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.mentionRole.alreadyDone', { role })
 			);

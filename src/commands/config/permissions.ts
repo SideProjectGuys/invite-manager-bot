@@ -1,7 +1,6 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { CommandResolver, RoleResolver } from '../../resolvers';
 import {
 	rolePermissions,
@@ -9,7 +8,7 @@ import {
 	roles,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, OwnerCommand } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -56,7 +55,7 @@ export default class extends Command {
 				raw: true
 			});
 
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
@@ -65,7 +64,7 @@ export default class extends Command {
 				Administrators: []
 			};
 
-			this.client.commands.forEach(command => {
+			this.client.cmds.commands.forEach(command => {
 				const ps = perms.filter(p => p.command === command.name);
 				if (!ps.length) {
 					if (command.strict) {
@@ -90,12 +89,15 @@ export default class extends Command {
 				});
 			});
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const cmds = [rawCmd];
 
-		/*const cmds = [];
+		/*
+		TODO: This should be moved to the setup command
+
+		const cmds = [];
 		const cmd = rawCmd.toLowerCase();
 		if (cmd === 'mod') {
 			cmds.push(BotCommand.info);
@@ -119,11 +121,11 @@ export default class extends Command {
 		) as OwnerCommand;
 		if (cmOwner) {
 			cmds.push(cmOwner);
-		}*/
+		}
+		*/
 
 		if (!cmds.length) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				t('cmd.permissions.invalidCommand', {
 					cmd: rawCmd,
@@ -162,7 +164,7 @@ export default class extends Command {
 				raw: true
 			});
 
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
@@ -187,22 +189,18 @@ export default class extends Command {
 				});
 			}
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
-		/*if (
-			cmds.indexOf(BotCommand.config) >= 0 ||
-			cmds.indexOf(BotCommand.inviteCodeConfig) >= 0 ||
-			cmds.indexOf(BotCommand.memberConfig) >= 0 ||
-			cmds.indexOf(BotCommand.permissions) >= 0 ||
-			cmds.indexOf(BotCommand.addRank) >= 0
+		if (
+			cmds.find(c => c.name === BotCommand.config) ||
+			cmds.find(c => c.name === BotCommand.inviteCodeConfig) ||
+			cmds.find(c => c.name === BotCommand.memberConfig) ||
+			cmds.find(c => c.name === BotCommand.permissions) ||
+			cmds.find(c => c.name === BotCommand.addRank)
 		) {
-			return sendReply(
-				this.client,
-				message,
-				t('cmd.permissions.canNotChange')
-			);
-		}*/
+			return this.client.sendReply(message, t('cmd.permissions.canNotChange'));
+		}
 
 		const oldPerms = await rolePermissions.findAll({
 			where: {
@@ -214,8 +212,7 @@ export default class extends Command {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			sendReply(
-				this.client,
+			this.client.sendReply(
 				message,
 				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
@@ -238,8 +235,7 @@ export default class extends Command {
 				}))
 			);
 
-			sendReply(
-				this.client,
+			this.client.sendReply(
 				message,
 				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,

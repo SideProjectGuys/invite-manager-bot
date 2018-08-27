@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -19,7 +18,6 @@ export default class extends Command {
 			name: BotCommand.subtractLeaves,
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			desc: 'Remove leaves from all users',
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
@@ -69,7 +67,7 @@ export default class extends Command {
 		});
 
 		if (ls.length === 0) {
-			return sendReply(this.client, message, t('cmd.subtractLeaves.none'));
+			return this.client.sendReply(message, t('cmd.subtractLeaves.none'));
 		}
 
 		// Delete old duplicate removals
@@ -98,8 +96,7 @@ export default class extends Command {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		return sendReply(
-			this.client,
+		return this.client.sendReply(
 			message,
 			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);

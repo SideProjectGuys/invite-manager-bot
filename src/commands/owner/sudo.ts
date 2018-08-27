@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import {
 	commandUsage,
 	guilds,
@@ -49,33 +48,31 @@ export default class extends Command {
 
 		const args = command.split(' ');
 		const cmdName = args[0].toLowerCase();
-		const sudoCmd = this.client.commands.find(c => c.name === cmdName);
+		const sudoCmd = this.client.cmds.commands.find(c => c.name === cmdName);
 		if (!sudoCmd) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 		if (this.allowedCommands.indexOf(sudoCmd.name.toLowerCase()) === -1) {
-			return sendReply(
-				this.client,
+			return this.client.sendReply(
 				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 
-		this.client.pendingRabbitMqRequests.set(message.id, response => {
+		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
 			if (response.error) {
-				sendReply(this.client, message, response.error);
+				this.client.sendReply(message, response.error);
 			} else {
-				sendReply(this.client, message, response.data);
+				this.client.sendReply(message, response.data);
 			}
 		});
 
-		this.client.sendCommandToGuild(guildId, {
+		this.client.rabbitmq.sendCommandToGuild(guildId, {
 			id: message.id,
 			cmd: ShardCommand.SUDO,
 			originGuildId: guild.id,

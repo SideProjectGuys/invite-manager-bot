@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -29,14 +28,14 @@ export default class extends Command {
 
 		const prefix = settings ? settings.prefix : '!';
 
-		const commands = this.client.commands
+		const commands = this.client.cmds.commands
 			.filter(c => c.ownerOnly || c.hidden)
 			.map(c => c.usage.replace('<prefix>', prefix));
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			description: commands.join('\n')
 		});
 
-		sendReply(this.client, message, embed);
+		this.client.sendReply(message, embed);
 	}
 }

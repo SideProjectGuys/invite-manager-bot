@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,7 +17,6 @@ export default class extends Command {
 			name: BotCommand.subtractFakes,
 			aliases: ['subtract-fakes', 'subfakes', 'sf'],
 			desc: 'Remove fake invites from all users',
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
@@ -51,7 +49,7 @@ export default class extends Command {
 		});
 
 		if (js.length === 0) {
-			return sendReply(this.client, message, t('cmd.subtractFakes.none'));
+			return this.client.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
 		// Delete old duplicate removals
@@ -79,8 +77,7 @@ export default class extends Command {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		return sendReply(
-			this.client,
+		return this.client.sendReply(
 			message,
 			t('cmd.subtractFakes.done', { total })
 		);

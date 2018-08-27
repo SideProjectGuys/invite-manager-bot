@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { EnumResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -31,23 +30,23 @@ export default class extends Command {
 		[type]: [string],
 		{ guild, t }: Context
 	): Promise<any> {
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: t('cmd.export.title')
 		});
 
 		const isPremium = await this.client.cache.isPremium(guild.id);
 		if (!isPremium) {
 			embed.description = t('cmd.export.premiumOnly');
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		embed.description = t('cmd.export.preparing');
 
 		if (type !== 'leaderboard') {
-			return sendReply(this.client, message, t('cmd.export.invalidType'));
+			return this.client.sendReply(message, t('cmd.export.invalidType'));
 		}
 
-		sendReply(this.client, message, embed).then(async (msg: Message) => {
+		this.client.sendReply(message, embed).then(async (msg: Message) => {
 			if (type === 'leaderboard') {
 				let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 

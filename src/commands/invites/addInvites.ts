@@ -1,7 +1,6 @@
 import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
@@ -46,7 +45,7 @@ export default class extends Command {
 		{ guild, t, me }: Context
 	): Promise<any> {
 		if (amount === 0) {
-			return sendReply(this.client, message, t('cmd.addInvites.zero'));
+			return this.client.sendReply(message, t('cmd.addInvites.zero'));
 		}
 
 		const invites = await getInviteCounts(guild.id, user.id);
@@ -75,7 +74,7 @@ export default class extends Command {
 			reason
 		});
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: user.username
 		});
 
@@ -141,6 +140,6 @@ export default class extends Command {
 
 		embed.description = descr;
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

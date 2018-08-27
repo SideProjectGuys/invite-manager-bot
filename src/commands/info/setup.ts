@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -26,7 +25,7 @@ export default class extends Command {
 		args: any[],
 		{ t, me }: Context
 	): Promise<any> {
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: t('cmd.setup.title'),
 			description: t('cmd.setup.text')
 		});
@@ -79,6 +78,6 @@ export default class extends Command {
 			});
 		}
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

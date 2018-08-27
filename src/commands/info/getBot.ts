@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -21,7 +20,7 @@ export default class extends Command {
 		args: any[],
 		{ guild, t }: Context
 	): Promise<any> {
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		let params = [];
 		params.push(`origin=getbot`);
@@ -34,6 +33,6 @@ export default class extends Command {
 			`[${t('cmd.getBot.title')}]` +
 			`(https://invitemanager.co/add-bot?${params.join('&')})`;
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

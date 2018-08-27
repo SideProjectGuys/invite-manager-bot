@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { ranks } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -33,7 +32,7 @@ export default class extends Command {
 		let output = '';
 
 		if (rs.length === 0) {
-			return sendReply(this.client, message, t('cmd.ranks.none'));
+			return this.client.sendReply(message, t('cmd.ranks.none'));
 		} else {
 			rs.forEach(r => {
 				output +=
@@ -43,12 +42,12 @@ export default class extends Command {
 						description: r.description ? ': ' + r.description : undefined
 					}) + '\n';
 			});
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				title: t('cmd.ranks.title'),
 				description: output
 			});
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 	}
 }

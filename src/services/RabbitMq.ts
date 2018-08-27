@@ -1,0 +1,570 @@
+import * as amqplib from 'amqplib';
+import { TextChannel } from 'eris';
+import moment from 'moment';
+
+import { IMClient } from '../client';
+import {
+	channels,
+	customInvites,
+	CustomInvitesGeneratedReason,
+	inviteCodes,
+	inviteCodeSettings,
+	InviteCodeSettingsKey,
+	JoinAttributes,
+	joins,
+	LeaveAttributes,
+	members
+} from '../sequelize';
+import { RabbitMqMember, ShardCommand } from '../types';
+import {
+	getInviteCounts,
+	getShardIdForGuild,
+	promoteIfQualified
+} from '../util';
+
+export class RabbitMq {
+	private client: IMClient;
+
+	public conn: amqplib.Connection;
+	public qJoinsName: string;
+	public channelJoins: amqplib.Channel;
+	public qLeavesName: string;
+	public channelLeaves: amqplib.Channel;
+	public qCmdsName: string;
+	public channelCmds: amqplib.Channel;
+	public pendingRabbitMqRequests: Map<string, (response: any) => void>;
+
+	public constructor(client: IMClient, conn: amqplib.Connection) {
+		this.client = client;
+		this.conn = conn;
+		this.pendingRabbitMqRequests = new Map();
+
+		// Setup RabbitMQ channels
+		const prefix = client.config.rabbitmq.prefix
+			? client.config.rabbitmq.prefix + '-'
+			: '';
+
+		this.qJoinsName =
+			prefix + 'joins-' + this.client.shardId + '-' + this.client.shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelJoins = channel;
+
+			await channel.assertQueue(this.qJoinsName, {
+				durable: true
+			});
+		});
+
+		this.qLeavesName =
+			prefix + 'leaves-' + this.client.shardId + '-' + this.client.shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelLeaves = channel;
+
+			await channel.assertQueue(this.qLeavesName, {
+				durable: true
+			});
+		});
+
+		this.qCmdsName =
+			prefix + 'cmds-' + this.client.shardId + '-' + this.client.shardCount;
+		conn.createChannel().then(async channel => {
+			this.channelCmds = channel;
+
+			await channel.assertQueue(this.qCmdsName, {
+				durable: true
+			});
+		});
+	}
+
+	public async init() {
+		await this.channelJoins.prefetch(5);
+		this.channelJoins.consume(
+			this.qJoinsName,
+			msg => this.onGuildMemberAdd(msg),
+			{
+				noAck: false
+			}
+		);
+
+		await this.channelLeaves.prefetch(5);
+		this.channelLeaves.consume(
+			this.qLeavesName,
+			msg => this.onGuildMemberRemove(msg),
+			{
+				noAck: false
+			}
+		);
+
+		await this.channelCmds.prefetch(5);
+		this.channelCmds.consume(this.qCmdsName, msg => this.onShardCommand(msg), {
+			noAck: false
+		});
+	}
+
+	public sendCommandToShard(
+		shardId: number,
+		payload: { id: string; [x: string]: any }
+	) {
+		const shardCount = this.client.shardCount;
+
+		const rabbitMqPrefix = this.client.config.rabbitmq.prefix
+			? `${this.client.config.rabbitmq.prefix}-`
+			: '';
+
+		console.log(
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${payload}`
+		);
+
+		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
+		return {
+			shard: shardId,
+			result: this.channelCmds.sendToQueue(
+				queueName,
+				Buffer.from(JSON.stringify(payload))
+			)
+		};
+	}
+
+	public sendCommandToGuild(
+		guildId: any,
+		payload: { id: string; [x: string]: any }
+	) {
+		return this.sendCommandToShard(
+			getShardIdForGuild(guildId, this.client.shardCount),
+			payload
+		);
+	}
+
+	private async onGuildMemberAdd(_msg: amqplib.Message): Promise<void> {
+		const content = JSON.parse(_msg.content.toString());
+		const guildId: string = content.guildId;
+		const guild = this.client.guilds.get(guildId);
+		const member: RabbitMqMember = content.member;
+		const join: JoinAttributes = content.join;
+
+		this.channelJoins.ack(_msg, false);
+
+		if (member.user.bot) {
+			return;
+		}
+
+		console.log(member.id + ' joined ' + guild.id);
+
+		// Get settings
+		const settings = await this.client.cache.get(guild.id);
+		const lang = settings.lang;
+		const joinChannelId = settings.joinMessageChannel;
+
+		const joinChannel = joinChannelId
+			? (guild.channels.get(joinChannelId) as TextChannel)
+			: undefined;
+		// Check if it's a valid channel
+		if (joinChannelId && !joinChannel) {
+			console.error(
+				`Guild ${guild.id} has invalid ` +
+					`join message channel ${joinChannelId}`
+			);
+		}
+
+		// Auto remove leaves if enabled
+		if (settings.autoSubtractLeaves === 'true') {
+			// Delete removals for this member because the member rejoined
+			await customInvites.destroy({
+				where: {
+					guildId: guild.id,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				}
+			});
+		}
+
+		// Exit if we can't find the join
+		if (!join) {
+			console.error(
+				`Could not find join for ${member.id} in ${guild.id}: ` +
+					JSON.stringify(content)
+			);
+			if (joinChannel) {
+				joinChannel.createMessage(
+					i18n.__(
+						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ id: member.id }
+					)
+				);
+			}
+			return;
+		}
+
+		const jn: any = await joins.findById(join.id, {
+			include: [
+				{
+					model: inviteCodes,
+					attributes: ['code', 'inviterId', 'channelId'],
+					as: 'exactMatch',
+					required: true,
+					include: [
+						{
+							model: members,
+							attributes: ['name', 'discriminator'],
+							as: 'inviter',
+							required: true
+						},
+						{
+							model: channels,
+							attributes: ['name']
+						}
+					]
+				}
+			],
+			raw: true
+		});
+
+		const inviterId = jn['exactMatch.inviterId'];
+
+		// Auto remove fakes if enabled
+		if (settings.autoSubtractFakes === 'true') {
+			const numJoins = await joins.count({
+				where: {
+					memberId: member.id,
+					guildId
+				},
+				include: [
+					{
+						model: inviteCodes,
+						as: 'exactMatch',
+						where: {
+							inviterId
+						},
+						required: true
+					}
+				]
+			});
+
+			// Remove old custom invites
+			await customInvites.destroy({
+				where: {
+					guildId: guild.id,
+					memberId: inviterId,
+					reason: member.id
+				}
+			});
+
+			// Add removals for duplicate invites
+			await customInvites.insertOrUpdate({
+				id: null,
+				creatorId: null,
+				guildId: guild.id,
+				memberId: inviterId,
+				amount: -(numJoins - 1),
+				reason: member.id,
+				generatedReason: CustomInvitesGeneratedReason.fake
+			});
+		}
+
+		let inviter = guild.members.get(inviterId);
+		if (!inviter) {
+			inviter = await guild.getRESTMember(inviterId);
+		}
+		const invites = await getInviteCounts(guild.id, inviterId);
+
+		// Add any roles for this invite code
+		let mem = guild.members.get(member.id);
+		if (!mem) {
+			mem = await guild.getRESTMember(member.id);
+		}
+		if (mem) {
+			const roleSet = await inviteCodeSettings.find({
+				where: {
+					guildId: guild.id,
+					inviteCode: join.exactMatchCode,
+					key: InviteCodeSettingsKey.roles
+				},
+				raw: true
+			});
+			if (roleSet && roleSet.value) {
+				const roles = roleSet.value.split(',');
+				roles.forEach(r => mem.addRole(r));
+			}
+		}
+
+		// Promote the inviter if required
+		let me = guild.members.get(this.client.user.id);
+		if (!me) {
+			me = await guild.getRESTMember(this.client.user.id);
+		}
+		if (inviter && !inviter.user.bot) {
+			await promoteIfQualified(this.client, guild, inviter, me, invites.total);
+		}
+
+		const channelName = jn['exactMatch.channel.name'];
+		const channelId = jn['exactMatch.channelId'];
+		const inviterName = jn['exactMatch.inviter.name'];
+		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
+
+		const joinMessageFormat = settings.joinMessage;
+		if (joinChannel && joinMessageFormat) {
+			const msg = await this.client.msg.fillJoinLeaveTemplate(
+				joinMessageFormat,
+				guild,
+				member,
+				jn.createdAt,
+				jn.exactMatchCode,
+				channelId,
+				channelName,
+				inviterId,
+				inviterName,
+				inviterDiscriminator,
+				inviter,
+				invites
+			);
+
+			// Send the message now so it doesn't take too long
+			await joinChannel.createMessage(msg);
+		}
+	}
+
+	private async onGuildMemberRemove(_msg: amqplib.Message) {
+		const content = JSON.parse(_msg.content.toString());
+		const guildId: string = content.guildId;
+		const guild = this.client.guilds.get(guildId);
+		const member: RabbitMqMember = content.member;
+		const join: any = content.join;
+		const leave: LeaveAttributes = content.leave;
+
+		this.channelLeaves.ack(_msg, false);
+
+		if (member.user.bot) {
+			return;
+		}
+
+		console.log(member.id + ' left ' + guild.id);
+
+		// Get settings
+		const settings = await this.client.cache.get(guild.id);
+		const lang = settings.lang;
+		const leaveChannelId = settings.leaveMessageChannel;
+
+		// Check if leave channel is valid
+		const leaveChannel = leaveChannelId
+			? (guild.channels.get(leaveChannelId) as TextChannel)
+			: undefined;
+		if (leaveChannelId && !leaveChannel) {
+			console.error(
+				`Guild ${guild.id} has invalid leave ` +
+					`message channel ${leaveChannelId}`
+			);
+		}
+
+		// Exit if we can't find the join
+		if (!join) {
+			console.error(
+				`Could not find join for ${member.id} in ` +
+					`${guild.id} leaveId: ${leave.id}`
+			);
+			console.error(
+				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
+					JSON.stringify(content)
+			);
+			if (leaveChannel) {
+				leaveChannel.createMessage(
+					i18n.__(
+						{ locale: lang, phrase: 'LEAVE_INVITED_BY_UNKNOWN' },
+						{
+							tag: member.user.username + '#' + member.user.discriminator
+						}
+					)
+				);
+			}
+			return;
+		}
+
+		const inviteCode = join['exactMatch.code'];
+		const channelName = join['exactMatch.channel.name'];
+		const channelId = join['exactMatch.channelId'];
+
+		const inviterId = join['exactMatch.inviterId'];
+		const inviterName = join['exactMatch.inviter.name'];
+		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
+
+		// Auto remove leaves if enabled (and if we know the inviter)
+		if (inviterId && settings.autoSubtractLeaves === 'true') {
+			// Delete any old entries for the leaving of this member
+			await customInvites.destroy({
+				where: {
+					guildId: guild.id,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				}
+			});
+
+			const threshold = Number(settings.autoSubtractLeaveThreshold);
+			const timeDiff = moment
+				.utc(join.createdAt)
+				.diff(moment.utc(leave.createdAt), 's');
+			if (timeDiff < threshold) {
+				// Add removals for leaves
+				await customInvites.create({
+					id: null,
+					creatorId: null,
+					guildId: guild.id,
+					memberId: inviterId,
+					amount: -1,
+					reason: member.id,
+					generatedReason: CustomInvitesGeneratedReason.leave
+				});
+			}
+		}
+
+		const leaveMessageFormat = settings.leaveMessage;
+		if (leaveChannel && leaveMessageFormat) {
+			const msg = await this.client.msg.fillJoinLeaveTemplate(
+				leaveMessageFormat,
+				guild,
+				member,
+				join.createdAt,
+				inviteCode,
+				channelId,
+				channelName,
+				inviterId,
+				inviterName,
+				inviterDiscriminator
+			);
+
+			leaveChannel.createMessage(msg);
+		}
+	}
+
+	private async onShardCommand(msg: amqplib.Message) {
+		const content = JSON.parse(msg.content.toString());
+		const cmd: ShardCommand = content.cmd;
+		const id: string = content.id;
+
+		const guildId = content.guildId;
+		const guild = this.client.guilds.get(guildId);
+		const originGuildId = content.originGuildId;
+
+		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
+
+		this.channelCmds.ack(msg, false);
+
+		switch (cmd) {
+			case ShardCommand.DIAGNOSE:
+				console.log(`DIAGNOSING ${guildId}`);
+
+				if (!guild) {
+					return this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						error: 'Guild not found'
+					});
+				}
+
+				const sets = await this.client.cache.get(guildId);
+				const perms = guild.members.get(this.client.user.id).permission.json;
+
+				let joinChannelPerms: { [key: string]: boolean } = {};
+				if (sets.joinMessageChannel) {
+					const joinChannel = guild.channels.get(sets.joinMessageChannel);
+					if (joinChannel) {
+						joinChannelPerms = joinChannel.permissionsOf(this.client.user.id)
+							.json;
+					} else {
+						joinChannelPerms = { 'Invalid channel': true };
+					}
+				}
+
+				let leaveChannelPerms: { [key: string]: boolean } = {};
+				if (sets.leaveMessageChannel) {
+					const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
+					if (leaveChannel) {
+						leaveChannelPerms = leaveChannel.permissionsOf(this.client.user.id)
+							.json;
+					} else {
+						leaveChannelPerms = { 'Invalid channel': true };
+					}
+				}
+
+				let annChannelPerms: { [key: string]: boolean } = {};
+				if (sets.rankAnnouncementChannel) {
+					const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
+					if (annChannel) {
+						annChannelPerms = annChannel.permissionsOf(this.client.user.id)
+							.json;
+					} else {
+						annChannelPerms = { 'Invalid channel': true };
+					}
+				}
+
+				this.sendCommandToGuild(originGuildId, {
+					cmd: ShardCommand.RESPONSE,
+					id,
+					settings: sets,
+					perms,
+					joinChannelPerms,
+					leaveChannelPerms,
+					announceChannelPerms: annChannelPerms
+				});
+				break;
+
+			case ShardCommand.FLUSH_PREMIUM_CACHE:
+				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
+				this.client.cache.flushPremium(guildId);
+				break;
+
+			case ShardCommand.FLUSH_SETTINGS_CACHE:
+				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
+				this.client.cache.flush(guildId);
+				break;
+
+			/*case ShardCommand.SUDO:
+				if (!guild) {
+					return this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						error: 'Guild not found'
+					});
+				}
+
+				const cmdName = content.sudoCmd;
+				const sudoCmd = this.commands.resolve(cmdName);
+				const channel = new FakeChannel(guild, {});
+
+				channel.listener = data => {
+					this.sendCommandToGuild(originGuildId, {
+						cmd: ShardCommand.RESPONSE,
+						id,
+						data
+					});
+				};
+
+				const fakeMsg = new Message(
+					this,
+					{
+						id,
+						content:
+							`<@!${this.user.id}>` +
+							content.sudoCmd +
+							' ' +
+							content.args.join(' '),
+						author: await this.users.fetch(content.authorId),
+						embeds: [],
+						attachments: []
+					},
+					channel
+				);
+				(fakeMsg as any).__sudo = true;
+				sudoCmd.action(fakeMsg, content.args);
+				break;*/
+
+			case ShardCommand.RESPONSE:
+				if (this.pendingRabbitMqRequests.has(id)) {
+					this.pendingRabbitMqRequests.get(id)(content);
+				} else {
+					console.error('NOT EXPECTING RESPONSE FOR ' + id);
+				}
+				break;
+
+			default:
+				console.error(`UNKNOWN COMMAND: ${cmd}`);
+		}
+	}
+}

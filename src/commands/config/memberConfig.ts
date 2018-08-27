@@ -1,7 +1,6 @@
 import { Guild, Message, User } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import {
 	BooleanResolver,
 	EnumResolver,
@@ -74,7 +73,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.memberConfig.title');
@@ -86,7 +85,7 @@ export default class extends Command {
 				value: keys.join('\n')
 			});
 
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (!user) {
@@ -119,7 +118,7 @@ export default class extends Command {
 			} else {
 				embed.description = t('cmd.memberConfig.notSet');
 			}
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const username = user.username;
@@ -160,13 +159,12 @@ export default class extends Command {
 					prefix
 				});
 			}
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
 			if (defaultMemberSettings[key] !== null) {
-				sendReply(
-					this.client,
+				this.client.sendReply(
 					message,
 					t('cmd.memberConfig.canNotClear', { prefix, key })
 				);
@@ -176,7 +174,7 @@ export default class extends Command {
 
 		const parsedValue = this.toDbValue(guild, key, rawValue);
 		if (parsedValue.error) {
-			return sendReply(this.client, message, parsedValue.error);
+			return this.client.sendReply(message, parsedValue.error);
 		}
 
 		const value = parsedValue.value;
@@ -190,12 +188,12 @@ export default class extends Command {
 				name: t('cmd.memberConfig.current.title'),
 				value: rawValue
 			});
-			return sendReply(this.client, message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		const error = this.validate(message, key, value);
 		if (error) {
-			return sendReply(this.client, message, error);
+			return this.client.sendReply(message, error);
 		}
 
 		await memberSettings.insertOrUpdate({
@@ -229,7 +227,7 @@ export default class extends Command {
 		});
 		oldVal = value; // Update value for future use
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 
 	// Convert a raw value into something we can save in the database

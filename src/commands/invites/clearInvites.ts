@@ -2,7 +2,6 @@ import { Message, User } from 'eris';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
 import { BooleanResolver, UserResolver } from '../../resolvers';
 import {
 	CustomInviteAttributes,
@@ -192,8 +191,7 @@ export default class extends Command {
 			...(memberId && { targetId: memberId })
 		});
 
-		return sendReply(
-			this.client,
+		return this.client.sendReply(
 			message,
 			t('cmd.clearInvites.done', {
 				amount: Object.keys(cleared).length

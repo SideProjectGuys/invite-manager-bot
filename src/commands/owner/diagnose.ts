@@ -2,7 +2,6 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { StringResolver } from '../../resolvers';
 import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
@@ -67,13 +66,13 @@ export default class extends Command {
 			raw: true
 		});
 
-		this.client.pendingRabbitMqRequests.set(message.id, response => {
+		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
 			if (response.error) {
-				sendReply(this.client, message, response.error);
+				this.client.sendReply(message, response.error);
 				return;
 			}
 
-			const embed = createEmbed(this.client, {
+			const embed = this.client.createEmbed({
 				description: ''
 			});
 
@@ -112,7 +111,7 @@ export default class extends Command {
 			msg.edit(embed).catch(e => msg.edit(e));
 
 			// Send second message with permissions info
-			const permsEmbed = createEmbed(this.client);
+			const permsEmbed = this.client.createEmbed();
 
 			permsEmbed.fields.push({
 				name: 'Bot permissions',
@@ -146,7 +145,7 @@ export default class extends Command {
 				.catch(e => message.channel.createMessage(e));
 		});
 
-		const { shard } = this.client.sendCommandToGuild(guildId, {
+		const { shard } = this.client.rabbitmq.sendCommandToGuild(guildId, {
 			cmd: ShardCommand.DIAGNOSE,
 			id: message.id,
 			guildId,

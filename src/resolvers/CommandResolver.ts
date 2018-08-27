@@ -9,7 +9,7 @@ export class CommandResolver extends Resolver {
 		}
 
 		const name = value.toLowerCase();
-		return this.client.commands.find(
+		return this.client.cmds.commands.find(
 			c => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0
 		);
 	}

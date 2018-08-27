@@ -2,7 +2,6 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
 import { premiumSubscriptions, sequelize } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -26,7 +25,7 @@ export default class extends Command {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		const isPremium = this.client.cache.isPremium(guild.id);
 
@@ -70,6 +69,6 @@ export default class extends Command {
 			embed.description = description;
 		}
 
-		return sendReply(this.client, message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

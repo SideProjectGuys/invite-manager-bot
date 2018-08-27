@@ -2,7 +2,6 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendEmbed } from '../../functions/Messaging';
 import {
 	channels,
 	InviteCodeAttributes,
@@ -108,7 +107,7 @@ export default class extends Command {
 			permanentInvites[0]
 		);
 
-		const embed = createEmbed(this.client, {
+		const embed = this.client.createEmbed({
 			title: t('cmd.inviteCodes.title', { guild: guild.name })
 		});
 
@@ -175,7 +174,7 @@ export default class extends Command {
 			});
 		}
 
-		sendEmbed(this.client, await message.author.getDMChannel(), embed);
+		this.client.sendEmbed(await message.author.getDMChannel(), embed);
 		message.channel.createMessage(
 			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
 		);
