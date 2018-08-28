@@ -178,7 +178,58 @@ export enum SettingsKey {
 	rankAssignmentStyle = 'rankAssignmentStyle',
 	rankAnnouncementChannel = 'rankAnnouncementChannel',
 	rankAnnouncementMessage = 'rankAnnouncementMessage',
-	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard'
+	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard',
+
+	captchaVerificationOnJoin = 'captchaVerificationOnJoin',
+	captchaVerificationWelcomeMessage = 'captchaVerificationWelcomeMessage',
+	captchaVerificationSuccessMessage = 'captchaVerificationSuccessMessage',
+	captchaVerificationFailedMessage = 'captchaVerificationFailedMessage',
+	captchaVerificationTimeout = 'captchaVerificationTimeout',
+	captchaVerificationLogEnabled = 'captchaVerificationLogEnabled',
+
+	autoModEnabled = 'autoModEnabled',
+	autoModModeratedChannels = 'autoModModeratedChannels',
+	autoModModeratedRoles = 'autoModModeratedRoles',
+	autoModIgnoredChannels = 'autoModIgnoredChannels',
+	autoModIgnoredRoles = 'autoModIgnoredRoles',
+	autoModDeleteBotMessage = 'autoModDeleteBotMessage',
+	autoModDeleteBotMessageTimeoutInSeconds = 'autoModDeleteBotMessageTimeoutInSeconds',
+	autoModLogEnabled = 'autoModLogEnabled',
+
+	autoModDisabledForOldMembers = 'autoModDisabledForOldMembers',
+	autoModDisabledForOldMembersThreshold = 'autoModDisabledForOldMembersThreshold',
+	autoModDisabledForOldMembersReceiveSilentWarning = 'autoModDisabledForOldMembersReceiveSilentWarning',
+
+	autoModInvitesEnabled = 'autoModInvitesEnabled',
+
+	autoModLinksEnabled = 'autoModLinksEnabled',
+	autoModLinksWhitelist = 'autoModLinksWhitelist',
+	autoModLinksBlacklist = 'autoModLinksBlacklist',
+	autoModLinksFollowRedirects = 'autoModLinksFollowRedirects',
+
+	autoModWordsEnabled = 'autoModWordsEnabled',
+	autoModWordsWhitelist = 'autoModWordsWhitelist',
+	autoModWordsBlacklist = 'autoModWordsBlacklist',
+
+	autoModAllCapsEnabled = 'autoModAllCapsEnabled',
+	autoModAllCapsMinCharacters = 'autoModAllCapsMinCharacters',
+	autoModAllCapsPercentageCaps = 'autoModAllCapsPercentageCaps',
+
+	autoModDuplicateTextEnabled = 'autoModDuplicateTextEnabled',
+	autoModDuplicateTextTimeframeInSeconds = 'autoModDuplicateTextTimeframeInSeconds',
+
+	autoModQuickMessagesEnabled = 'autoModQuickMessagesEnabled',
+	autoModQuickMessagesNumberOfMessages = 'autoModQuickMessagesNumberOfMessages',
+	autoModQuickMessagesTimeframeInSeconds = 'autoModQuickMessagesTimeframeInSeconds',
+
+	autoModMentionUsersEnabled = 'autoModMentionUsersEnabled',
+	autoModMentionUsersMaxNumberOfMentions = 'autoModMentionUsersMaxNumberOfMentions',
+
+	autoModMentionRolesEnabled = 'autoModMentionRolesEnabled',
+	autoModMentionRolesMaxNumberOfMentions = 'autoModMentionRolesMaxNumberOfMentions',
+
+	autoModEmojisEnabled = 'autoModEmojisEnabled',
+	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis'
 }
 
 export type SettingsObject = { [k in SettingsKey]: string };
@@ -228,6 +279,7 @@ export function getSettingsType(key: SettingsKey) {
 		return 'Number';
 	}
 	return 'String';
+	// TODO: Include AutoMod and CaptchaVerification settings
 }
 
 export const defaultSettings: SettingsObject = {
@@ -250,7 +302,61 @@ export const defaultSettings: SettingsObject = {
 	rankAnnouncementChannel: null,
 	rankAnnouncementMessage:
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
-	hideLeftMembersFromLeaderboard: 'true'
+	hideLeftMembersFromLeaderboard: 'false',
+	captchaVerificationOnJoin: 'false',
+	captchaVerificationWelcomeMessage:
+		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
+	captchaVerificationSuccessMessage:
+		'You have successfully entered the captcha. Welcome to the server!',
+	captchaVerificationFailedMessage:
+		'You did not enter the captha right within the specified time.' +
+		`We're sorry, but we have to kick you from the server. Feel free to join again.`,
+	captchaVerificationTimeout: '180' /* seconds */,
+	captchaVerificationLogEnabled: 'true',
+
+	autoModEnabled: 'false',
+	autoModModeratedChannels: null,
+	autoModModeratedRoles: null,
+	autoModIgnoredChannels: null,
+	autoModIgnoredRoles: null,
+	autoModDeleteBotMessage: 'true',
+	autoModDeleteBotMessageTimeoutInSeconds: '5',
+	autoModLogEnabled: 'true',
+
+	autoModDisabledForOldMembers: 'false',
+	autoModDisabledForOldMembersThreshold: '604800' /* seconds, default 1 week */,
+	autoModDisabledForOldMembersReceiveSilentWarning: 'true',
+
+	autoModInvitesEnabled: 'true',
+
+	autoModLinksEnabled: 'true',
+	autoModLinksWhitelist: null,
+	autoModLinksBlacklist: null,
+	autoModLinksFollowRedirects: 'true',
+
+	autoModWordsEnabled: 'true',
+	autoModWordsWhitelist: null,
+	autoModWordsBlacklist: null,
+
+	autoModAllCapsEnabled: 'true',
+	autoModAllCapsMinCharacters: '10',
+	autoModAllCapsPercentageCaps: '70',
+
+	autoModDuplicateTextEnabled: 'true',
+	autoModDuplicateTextTimeframeInSeconds: '60',
+
+	autoModQuickMessagesEnabled: 'true',
+	autoModQuickMessagesNumberOfMessages: '5',
+	autoModQuickMessagesTimeframeInSeconds: '3',
+
+	autoModMentionUsersEnabled: 'true',
+	autoModMentionUsersMaxNumberOfMentions: '5',
+
+	autoModMentionRolesEnabled: 'true',
+	autoModMentionRolesMaxNumberOfMentions: '3',
+
+	autoModEmojisEnabled: 'true',
+	autoModEmojisMaxNumberOfEmojis: '5'
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -268,26 +374,7 @@ export interface SettingInstance
 export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
-		key: Sequelize.ENUM(
-			SettingsKey.prefix,
-			SettingsKey.joinMessage,
-			SettingsKey.joinMessageChannel,
-			SettingsKey.leaveMessage,
-			SettingsKey.leaveMessageChannel,
-			SettingsKey.lang,
-			SettingsKey.modRole,
-			SettingsKey.modChannel,
-			SettingsKey.logChannel,
-			SettingsKey.getUpdates,
-			SettingsKey.leaderboardStyle,
-			SettingsKey.autoSubtractFakes,
-			SettingsKey.autoSubtractLeaves,
-			SettingsKey.autoSubtractLeaveThreshold,
-			SettingsKey.rankAssignmentStyle,
-			SettingsKey.rankAnnouncementChannel,
-			SettingsKey.rankAnnouncementMessage,
-			SettingsKey.hideLeftMembersFromLeaderboard
-		),
+		key: Sequelize.ENUM(Object.values(SettingsKey)),
 		value: Sequelize.TEXT
 	},
 	{
@@ -342,7 +429,7 @@ export const memberSettings = sequelize.define<
 >(
 	'memberSettings',
 	{
-		key: Sequelize.ENUM(MemberSettingsKey.hideFromLeaderboard),
+		key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
 		value: Sequelize.TEXT
 	},
 	{
@@ -374,7 +461,6 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	uses: number;
 	temporary: boolean;
 	deletedAt?: Date;
-	reason?: string;
 	guildId: string;
 	inviterId: string;
 }
@@ -384,6 +470,9 @@ export interface InviteCodeInstance
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getInviter: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getJoins: Sequelize.HasManyGetAssociationsMixin<JoinInstance>;
+	getSettings: Sequelize.HasManyGetAssociationsMixin<
+		InviteCodeSettingsInstance
+	>;
 }
 
 export const inviteCodes = sequelize.define<
@@ -396,11 +485,11 @@ export const inviteCodes = sequelize.define<
 			type: Sequelize.STRING(16) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 			primaryKey: true
 		},
-		reason: Sequelize.STRING,
 		maxAge: Sequelize.INTEGER,
 		maxUses: Sequelize.INTEGER,
 		uses: Sequelize.INTEGER,
-		temporary: Sequelize.BOOLEAN
+		temporary: Sequelize.BOOLEAN,
+		reason: Sequelize.STRING
 	},
 	{
 		timestamps: true,
@@ -456,10 +545,7 @@ export const inviteCodeSettings = sequelize.define<
 >(
 	'inviteCodeSettings',
 	{
-		key: Sequelize.ENUM(
-			InviteCodeSettingsKey.name,
-			InviteCodeSettingsKey.roles
-		),
+		key: Sequelize.ENUM(Object.values(InviteCodeSettingsKey)),
 		value: Sequelize.TEXT
 	},
 	{
@@ -481,7 +567,7 @@ inviteCodeSettings.belongsTo(inviteCodes, {
 	as: 'invite',
 	foreignKey: 'inviteCode'
 });
-inviteCodes.hasOne(inviteCodeSettings, { foreignKey: 'inviteCode' });
+inviteCodes.hasMany(inviteCodeSettings, { foreignKey: 'inviteCode' });
 
 // ------------------------------------
 // Joins
@@ -609,14 +695,7 @@ export const customInvites = sequelize.define<
 	{
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
-		generatedReason: Sequelize.ENUM(
-			CustomInvitesGeneratedReason.clear_regular,
-			CustomInvitesGeneratedReason.clear_custom,
-			CustomInvitesGeneratedReason.clear_fake,
-			CustomInvitesGeneratedReason.clear_leave,
-			CustomInvitesGeneratedReason.fake,
-			CustomInvitesGeneratedReason.leave
-		)
+		generatedReason: Sequelize.ENUM(Object.values(CustomInvitesGeneratedReason))
 	},
 	{
 		timestamps: true,
@@ -707,12 +786,7 @@ export interface PresenceInstance
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: Sequelize.ENUM(
-			PresenceStatus.online,
-			PresenceStatus.offline,
-			PresenceStatus.idle,
-			PresenceStatus.dnd
-		),
+		status: Sequelize.ENUM(Object.values(PresenceStatus)),
 		type: Sequelize.TINYINT,
 		game: Sequelize.STRING
 	},
@@ -809,16 +883,7 @@ export interface LogInstance
 export const logs = sequelize.define<LogInstance, LogAttributes>(
 	'log',
 	{
-		action: Sequelize.ENUM(
-			LogAction.addInvites,
-			LogAction.addRank,
-			LogAction.clearInvites,
-			LogAction.config,
-			LogAction.memberConfig,
-			LogAction.removeRank,
-			LogAction.updateRank,
-			LogAction.restoreInvites
-		),
+		action: Sequelize.ENUM(Object.values(LogAction)),
 		message: Sequelize.TEXT,
 		data: Sequelize.JSON
 	},
@@ -942,3 +1007,173 @@ export const rolePermissions = sequelize.define<
 
 rolePermissions.belongsTo(roles);
 roles.hasMany(rolePermissions);
+
+// ------------------------------------
+// StrikesConfig
+// ------------------------------------
+export enum ViolationType {
+	invites = 'invites',
+	links = 'links',
+	words = 'words',
+	allCaps = 'allCaps',
+	duplicateText = 'duplicateText',
+	quickMessages = 'quickMessages',
+	mentionUsers = 'mentionUsers',
+	mentionRoles = 'mentionRoles',
+	emojis = 'emojis'
+}
+
+export interface StrikeConfigAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	violationType: ViolationType;
+	amount: number;
+}
+export interface StrikeConfigInstance
+	extends Sequelize.Instance<StrikeConfigAttributes>,
+		StrikeConfigAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getStrikes: Sequelize.HasManyGetAssociationsMixin<StrikeInstance>;
+}
+
+export const strikeConfigs = sequelize.define<
+	StrikeConfigInstance,
+	StrikeConfigAttributes
+>(
+	'strikeConfig',
+	{
+		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		amount: Sequelize.INTEGER
+	},
+	{
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'violationType']
+			}
+		]
+	}
+);
+
+strikeConfigs.belongsTo(guilds);
+guilds.hasMany(strikeConfigs);
+
+// ------------------------------------
+// Strikes
+// ------------------------------------
+export interface StrikeAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	amount: number;
+	strikeConfigId: number;
+}
+export interface StrikeInstance
+	extends Sequelize.Instance<StrikeAttributes>,
+		StrikeAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+	getStrikeConfigs: Sequelize.BelongsToGetAssociationMixin<
+		StrikeConfigInstance
+	>;
+}
+
+export const strikes = sequelize.define<StrikeInstance, StrikeAttributes>(
+	'strike',
+	{
+		amount: Sequelize.INTEGER
+	}
+);
+
+strikes.belongsTo(guilds);
+guilds.hasMany(strikes);
+
+strikes.belongsTo(members);
+members.hasMany(strikes);
+
+strikes.belongsTo(strikeConfigs);
+strikeConfigs.hasMany(strikes);
+
+// ------------------------------------
+// PunishmentConfigs
+// ------------------------------------
+export enum PunishmentType {
+	ban = 'ban',
+	kick = 'kick',
+	softban = 'softban',
+	warn = 'warn',
+	mute = 'mute'
+}
+
+export interface PunishmentConfigAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	punishmentType: PunishmentType;
+	amount: number;
+	args: string;
+}
+export interface PunishmentConfigInstance
+	extends Sequelize.Instance<PunishmentConfigAttributes>,
+		PunishmentConfigAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getPunishments: Sequelize.HasManyGetAssociationsMixin<PunishmentInstance>;
+}
+
+export const punishmentConfigs = sequelize.define<
+	PunishmentConfigInstance,
+	PunishmentConfigAttributes
+>(
+	'punishmentConfig',
+	{
+		punishmentType: Sequelize.ENUM(Object.values(ViolationType)),
+		amount: Sequelize.INTEGER,
+		args: Sequelize.STRING
+	},
+	{
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'punishmentType']
+			}
+		]
+	}
+);
+
+punishmentConfigs.belongsTo(guilds);
+guilds.hasMany(punishmentConfigs);
+
+// ------------------------------------
+// Punishments
+// ------------------------------------
+export interface PunishmentAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	punishmentConfigId: number;
+	reason: string;
+}
+export interface PunishmentInstance
+	extends Sequelize.Instance<PunishmentAttributes>,
+		PunishmentAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+	getPunishmentConfigs: Sequelize.BelongsToGetAssociationMixin<
+		PunishmentConfigInstance
+	>;
+}
+
+export const punishments = sequelize.define<
+	PunishmentInstance,
+	PunishmentAttributes
+>('punishment', {
+	reason: Sequelize.STRING
+});
+
+punishments.belongsTo(guilds);
+guilds.hasMany(punishments);
+
+punishments.belongsTo(members);
+members.hasMany(punishments);
+
+punishments.belongsTo(punishmentConfigs);
+punishmentConfigs.hasMany(punishments);

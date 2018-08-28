@@ -71,7 +71,8 @@ export class IMClient extends Client {
 		conn: amqplib.Connection,
 		token: string,
 		shardId: number,
-		shardCount: number
+		shardCount: number,
+		_prefix: string
 	) {
 		super(token, {
 			disableEveryone: true,

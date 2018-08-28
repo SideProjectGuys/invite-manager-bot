@@ -102,6 +102,12 @@ export default class extends Command {
 					value:
 						'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
 				});
+			embed.addField(
+				'Owner',
+				'```json\n' +
+					JSON.stringify(response.owner, null, 2).substr(0, 1000) +
+					'```'
+			);
 
 				embed.fields.push({
 					name: 'Premium',

@@ -10,6 +10,7 @@ export enum CommandGroup {
 	Config = 'Config',
 	Info = 'Info',
 	Premium = 'Premium',
+	Moderation = 'Moderation',
 	Other = 'Other'
 }
 
@@ -42,11 +43,13 @@ export enum BotCommand {
 	'support' = 'support',
 	'help' = 'help',
 
+	'createInvite' = 'createInvite',
 	'addInvites' = 'addInvites',
 	'clearInvites' = 'clearInvites',
 	'fake' = 'fake',
 	'info' = 'info',
 	'inviteCodes' = 'inviteCodes',
+	'inviteDetails' = 'inviteDetails',
 	'invites' = 'invites',
 	'leaderboard' = 'leaderboard',
 	'members' = 'members',
@@ -66,6 +69,31 @@ export enum BotCommand {
 	'mentionRole' = 'mentionRole',
 
 	'graph' = 'graph'
+}
+
+export enum ModerationCommand {
+	'automod' = 'automod',
+	'punishment' = 'punishment',
+	'strikeAdd' = 'strike-add',
+	'strikeConfig' = 'strikeConfig',
+	'strikeRemove' = 'strike-remove',
+
+	'ban' = 'ban',
+	'caseDelete' = 'case-delete',
+	'caseUpdate' = 'case-update',
+	'caseView' = 'case-view',
+	'kick' = 'kick',
+	'mute' = 'mute',
+	'softban' = 'softban',
+	'unmute' = 'unmute',
+	'warn' = 'warn',
+
+	'check' = 'check',
+
+	'clean' = 'clean',
+	'purgeSafe' = 'purge-safe',
+	'purgeUntil' = 'purge-until',
+	'purge' = 'purge',
 }
 
 export enum OwnerCommand {
