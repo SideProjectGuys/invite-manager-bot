@@ -6,8 +6,8 @@ import { Resolver } from './Resolver';
 export class EnumResolver extends Resolver {
 	private values: string[];
 
-	public constructor(client: IMClient, values: string[]) {
-		super(client);
+	public constructor(client: IMClient, values: string[], rest?: boolean) {
+		super(client, rest);
 
 		this.values = values.map(v => v.toLowerCase());
 	}

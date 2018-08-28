@@ -3,14 +3,16 @@ import { IMClient } from '../client';
 import { Context } from '../commands/Command';
 
 export interface ResolverConstructor {
-	new (client: IMClient): Resolver;
+	new (client: IMClient, rest?: boolean): Resolver;
 }
 
 export abstract class Resolver {
 	protected client: IMClient;
+	public rest: boolean;
 
-	public constructor(client: IMClient) {
+	public constructor(client: IMClient, rest?: boolean) {
 		this.client = client;
+		this.rest = rest;
 	}
 
 	public abstract async resolve(

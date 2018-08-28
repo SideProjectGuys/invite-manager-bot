@@ -5,6 +5,7 @@ import path from 'path';
 
 import { IMClient } from '../client';
 import { Command } from '../commands/Command';
+import { Resolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
 import { ShardCommand } from '../types';
 
@@ -237,7 +238,21 @@ export class Commands {
 		const args: any[] = [];
 		let i = 0;
 		for (const arg of cmd.args) {
-			const resolver = cmd.resolvers[i];
+			let resolver: Resolver;
+			if (i < cmd.resolvers.length) {
+				resolver = cmd.resolvers[i];
+			} else if (cmd.resolvers[cmd.resolvers.length - 1].rest) {
+				resolver = cmd.resolvers[cmd.resolvers.length - 1];
+			} else {
+				this.client.sendReply(
+					message,
+					t('arguments.tooMany', {
+						help: resolver.getHelp(context)
+					})
+				);
+				return;
+			}
+
 			const val = await resolver.resolve(rawArgs[i], context, args);
 			if (typeof val === typeof undefined && arg.required) {
 				this.client.sendReply(
