@@ -112,7 +112,7 @@ export default class extends Command {
 			return this.client.sendReply(
 				message,
 				t('cmd.addRank.updated', {
-					role: role.name,
+					role: `<@&${role.id}>`,
 					invites,
 					description
 				})
@@ -121,7 +121,7 @@ export default class extends Command {
 			return this.client.sendReply(
 				message,
 				t('cmd.addRank.created', {
-					role: role.name,
+					role: `<@&${role.id}>`,
 					invites,
 					description
 				})

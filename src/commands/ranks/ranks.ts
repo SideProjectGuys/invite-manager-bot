@@ -37,9 +37,9 @@ export default class extends Command {
 			rs.forEach(r => {
 				output +=
 					t('cmd.ranks.entry', {
-						role: r.roleId,
+						role: `<@&${r.roleId}>`,
 						numInvites: r.numInvites,
-						description: r.description ? ': ' + r.description : undefined
+						description: r.description
 					}) + '\n';
 			});
 			const embed = this.client.createEmbed({

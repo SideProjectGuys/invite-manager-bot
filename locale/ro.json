@@ -31,7 +31,8 @@
 			"amount": {
 				"self": "cmd.invites.amount.self",
 				"other": "cmd.invites.amount.other"
-			}
+			},
+			"nextRank": "cmd.invites.nextRank"
 		},
 		"botInfo": {
 			"version": "cmd.botInfo.version",
@@ -218,6 +219,73 @@
 		},
 		"subtractFakes": {
 			"none": "cmd.subtractFakes.none"
+		},
+		"addRank": {
+			"created": "cmd.addRank.created"
+		},
+		"ranks": {
+			"entry": "cmd.ranks.entry",
+			"title": "cmd.ranks.title",
+			"none": "cmd.ranks.none"
+		},
+		"removeRank": {
+			"done": "cmd.removeRank.done"
+		},
+		"subtractLeaves": {
+			"none": "cmd.subtractLeaves.none"
+		},
+		"prefix": {
+			"title": "cmd.prefix.title"
+		},
+		"setup": {
+			"title": "cmd.setup.title",
+			"text": "cmd.setup.text",
+			"joinLeave": {
+				"title": "cmd.setup.joinLeave.title",
+				"text": "cmd.setup.joinLeave.text"
+			},
+			"prefix": {
+				"title": "cmd.setup.prefix.title",
+				"text": "cmd.setup.prefix.text"
+			},
+			"faq": {
+				"title": "cmd.setup.faq.title",
+				"text": "cmd.setup.faq.text"
+			},
+			"help": {
+				"title": "cmd.setup.help.title",
+				"text": "cmd.setup.help.text"
+			},
+			"premium": {
+				"title": "cmd.setup.premium.title",
+				"text": "cmd.setup.premium.text"
+			},
+			"manageGuild": {
+				"title": "cmd.setup.manageGuild.title",
+				"text": "cmd.setup.manageGuild.text"
+			},
+			"manageRoles": {
+				"title": "cmd.setup.manageRoles.title",
+				"text": "cmd.setup.manageRoles.text"
+			},
+			"viewAuditLogs": {
+				"title": "cmd.setup.viewAuditLogs.title",
+				"text": "cmd.setup.viewAuditLogs.text"
+			}
+		},
+		"getBot": {
+			"title": "cmd.getBot.title"
+		},
+		"members": {
+			"members": "cmd.members.members",
+			"online": "cmd.members.online",
+			"human": "cmd.members.human",
+			"bots": "cmd.members.bots",
+			"joined": {
+				"day": "cmd.members.joined.day",
+				"week": "cmd.members.joined.week",
+				"month": "cmd.members.joined.month"
+			}
 		}
 	},
 	"arguments": {
