@@ -16,6 +16,7 @@ export interface Arg {
 	resolver: Resolver | ResolverConstructor;
 	required?: boolean;
 	description?: string;
+	rest?: boolean;
 }
 
 export interface CommandOptions {

@@ -238,22 +238,14 @@ export class Commands {
 		const args: any[] = [];
 		let i = 0;
 		for (const arg of cmd.args) {
-			let resolver: Resolver;
-			if (i < cmd.resolvers.length) {
-				resolver = cmd.resolvers[i];
-			} else if (cmd.resolvers[cmd.resolvers.length - 1].rest) {
-				resolver = cmd.resolvers[cmd.resolvers.length - 1];
-			} else {
-				this.client.sendReply(
-					message,
-					t('arguments.tooMany', {
-						help: resolver.getHelp(context)
-					})
-				);
-				return;
+			const resolver = cmd.resolvers[i];
+
+			let rawVal = rawArgs[i];
+			if (arg.rest) {
+				rawVal = rawArgs.slice(i).join(' ');
 			}
 
-			const val = await resolver.resolve(rawArgs[i], context, args);
+			const val = await resolver.resolve(rawVal, context, args);
 			if (typeof val === typeof undefined && arg.required) {
 				this.client.sendReply(
 					message,
