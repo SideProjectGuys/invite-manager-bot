@@ -26,7 +26,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

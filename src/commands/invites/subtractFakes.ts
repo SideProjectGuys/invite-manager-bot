@@ -18,7 +18,8 @@ export default class extends Command {
 			aliases: ['subtract-fakes', 'subfakes', 'sf'],
 			desc: 'Remove fake invites from all users',
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

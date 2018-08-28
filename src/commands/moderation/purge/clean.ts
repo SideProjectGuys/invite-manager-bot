@@ -1,16 +1,9 @@
 import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Collection, GuildMember, User } from 'discord.js';
+	Member, Message,
+} from 'eris';
 
 import { IMClient } from '../../../client';
-import { createEmbed, sendEmbed, sendReply } from '../../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../../middleware';
+import { NumberResolver, UserResolver } from '../../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,85 +11,69 @@ import {
 	joins,
 	sequelize
 } from '../../../sequelize';
-import { BotCommand, CommandGroup, ModerationCommand, RP } from '../../../types';
+import { ModerationCommand } from '../../../types';
 import { to } from '../../../util';
+import { Command, Context } from '../../Command';
 
-const { localize, resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'clean',
-			aliases: [],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: ModerationCommand.purge,
+			aliases: ['prune'],
+			args: [
+				{
+					name: 'quantity',
+					resolver: NumberResolver,
+					description: 'How many messages should be deleted',
+					required: true
+				},
+				{
+					name: 'member',
+					resolver: UserResolver,
+					description: 'User whose messages get deleted'
+				}
+			],
 			desc: 'Remove fake invites from all users',
-			usage: '<prefix>clean <number> <user>',
-			clientPermissions: ['MANAGE_MESSAGES'],
-			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(ModerationCommand.clean))
-	@using(resolve('quantity: number, member: Member'))
-	@using(expect('quantity: number'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, quantity, member]: [RP, number, GuildMember]
+		[quantity, member]: [number, Member],
+		{ guild }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (this.client.config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		/*
-
-		types:
-
-		images
-		mentions
-		words
-		maxlines
-
-		*/
-
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		if (!quantity || quantity < 1) {
-			return message.channel.send('You must enter a number of messages to purge.');
+			return message.channel.createMessage('You must enter a number of messages to purge.');
 		}
 
 		let messages: Message[];
 		if (member) {
-			messages = (await message.channel.messages.fetch(
-				{ limit: Math.min(quantity, 100), before: message.id }))
-				.filter((a: Message) => a.author.id === member.id)
-				.array();
+			messages = (await message.channel.getMessages(Math.min(quantity, 100), message.id))
+				.filter((a: Message) => a.author.id === member.id);
 		} else {
-			messages = (await message.channel.messages.fetch(
-				{ limit: Math.min(quantity, 100), before: message.id }))
-				.array();
+			messages = (await message.channel.getMessages(
+				Math.min(quantity, 100), message.id)
+			);
 		}
 
 		message.delete();
-		let [error, _] = await to(message.channel.bulkDelete(messages));
+		let [error, _] = await to(this.client.deleteMessages(message.channel.id, messages.map(m => m.id)));
 		if (error) {
-			embed.setTitle('Error');
-			embed.setDescription(error);
+			embed.title = 'Error';
+			embed.description = error;
 		} else {
-			embed.setTitle('Deleted Messages');
-			embed.setDescription(`Deleted **${messages.length}** messages.\nThis message will be deleted in 5 seconds.`);
+			embed.title = 'Deleted Messages';
+			embed.description = `Deleted **${messages.length}** messages.\nThis message will be deleted in 5 seconds.`;
 		}
 
-		let response = await sendReply(message, embed) as Message;
+		let response = await this.client.sendReply(message, embed) as Message;
 
 		setTimeout(
 			() => {

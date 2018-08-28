@@ -1,3 +1,7 @@
+export enum Permissions {
+	ADMINISTRATOR = 'administrator'
+}
+
 export enum PromptResult {
 	SUCCESS,
 	FAILURE,
@@ -74,14 +78,15 @@ export enum BotCommand {
 export enum ModerationCommand {
 	'automod' = 'automod',
 	'punishment' = 'punishment',
-	'strikeAdd' = 'strike-add',
+	'punishmentConfig' = 'punishmentConfig',
+	'strikeAdd' = 'strikeAdd',
 	'strikeConfig' = 'strikeConfig',
-	'strikeRemove' = 'strike-remove',
+	'strikeRemove' = 'strikeRemove',
 
 	'ban' = 'ban',
-	'caseDelete' = 'case-delete',
-	'caseUpdate' = 'case-update',
-	'caseView' = 'case-view',
+	'caseDelete' = 'caseDelete',
+	'caseUpdate' = 'caseUpdate',
+	'caseView' = 'caseView',
 	'kick' = 'kick',
 	'mute' = 'mute',
 	'softban' = 'softban',
@@ -91,8 +96,8 @@ export enum ModerationCommand {
 	'check' = 'check',
 
 	'clean' = 'clean',
-	'purgeSafe' = 'purge-safe',
-	'purgeUntil' = 'purge-until',
+	'purgeSafe' = 'purgeSafe',
+	'purgeUntil' = 'purgeUntil',
 	'purge' = 'purge',
 }
 

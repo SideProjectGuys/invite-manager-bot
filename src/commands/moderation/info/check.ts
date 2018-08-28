@@ -1,64 +1,95 @@
 import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { GuildMember } from 'discord.js';
+	Member, Message,
+} from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { createEmbed, sendReply } from '../../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../../middleware';
+import { NumberResolver, UserResolver } from '../../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
-	sequelize
+	punishments,
+	sequelize,
+	strikeConfigs,
+	strikes
 } from '../../../sequelize';
-import { CommandGroup, ModerationCommand, RP } from '../../../types';
-
-const { localize, resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'check',
-			aliases: [],
-			desc: 'Remove fake invites from all users',
-			usage: '<prefix>ban <user> <limit> <reason>',
-			clientPermissions: ['BAN_MEMBERS'],
+import { CommandGroup, ModerationCommand } from '../../../types';
+import { to } from '../../../util';
+import { Command, Context } from '../../Command';
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: ModerationCommand.check,
+			aliases: ['history'],
+			args: [
+				{
+					name: 'user',
+					resolver: UserResolver,
+					description: 'User to check',
+					required: true
+				}
+			],
+			desc: 'Check history of a user',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(ModerationCommand.check))
-	@using(resolve('user: Member, limit: Number, reason: String'))
-	@using(expect('user: Member'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, user, limit, reason]: [RP, GuildMember, number, string]
+		[user]: [Member],
+		{ guild }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (this.client.config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed({
+			title: user.username
+		});
 
-		embed.setDescription(`Not implemented yet.`);
-		sendReply(message, embed);
+		let punishmentList = await punishments.findAll({
+			where: {
+				guildId: guild.id,
+				memberId: user.id
+			}
+		});
+
+		let strikeList = await strikes.findAll({
+			where: {
+				guildId: guild.id,
+				memberId: user.id
+			}
+		});
+
+		let strikeText =
+			strikeList.map(s => `${s.amount} for ${s.violationType} ${moment(s.createdAt).fromNow()}`)
+				.join('\n');
+
+		if (strikeText) {
+			embed.fields.push({
+				name: 'Strikes',
+				value: strikeText
+			});
+		}
+
+		let punishmentText =
+			punishmentList.map(p => `${p.punishmentType} because he had ${p.amount} strikes ${moment(p.createdAt).fromNow()}`)
+				.join('\n');
+
+		if (punishmentText) {
+			embed.fields.push({
+				name: 'Punishments',
+				value: punishmentText
+			});
+		}
+
+		if (!punishmentText && !strikeText) {
+			embed.description = `User does not have any history.`;
+		}
+
+		this.client.sendReply(message, embed);
 	}
 }

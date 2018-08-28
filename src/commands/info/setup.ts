@@ -15,8 +15,8 @@ export default class extends Command {
 				'Help with setting up the bot and ' +
 				'checking for problems (e.g. missing permissions)',
 			group: CommandGroup.Info,
-			strict: true,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

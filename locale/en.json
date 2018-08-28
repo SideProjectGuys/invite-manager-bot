@@ -69,10 +69,31 @@
 		},
 		"fake": {
 			"none": "No fake invites detected so far."
+		},
+		"inviteCodes": {
+			"title": "cmd.inviteCodes.title",
+			"recommendedCode": {
+				"title": "cmd.inviteCodes.recommendedCode.title"
+			},
+			"permanent": {
+				"title": "cmd.inviteCodes.permanent.title",
+				"text": "cmd.inviteCodes.permanent.text",
+				"entry": "cmd.inviteCodes.permanent.entry"
+			},
+			"temporary": {
+				"title": "cmd.inviteCodes.temporary.title",
+				"text": "cmd.inviteCodes.temporary.text",
+				"entry": "cmd.inviteCodes.temporary.entry"
+			},
+			"dmSent": "cmd.inviteCodes.dmSent"
+		},
+		"permissions": {
+			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
+			"added": "cmd.permissions.added"
 		}
 	},
 	"arguments": {
-		"missingRequired": "arguments.missingRequired",
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ help }}}",
 		"enum": {
 			"validValues": "Use one of the following values: {{{ values }}}"
 		}
@@ -90,5 +111,8 @@
 		"patreon": {
 			"title": "bot.patreon.title"
 		}
+	},
+	"permissions": {
+		"adminOnly": "permissions.adminOnly"
 	}
 }

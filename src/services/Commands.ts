@@ -1,4 +1,4 @@
-import { Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
+import { Constants, Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
 import path from 'path';
@@ -7,7 +7,7 @@ import { IMClient } from '../client';
 import { Command } from '../commands/Command';
 import { Resolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
-import { ShardCommand } from '../types';
+import { Permissions, ShardCommand } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
@@ -44,7 +44,7 @@ export class Commands {
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-							`\x1b[2m${path.basename(file)}\x1b[0m`
+						`\x1b[2m${path.basename(file)}\x1b[0m`
 					);
 				}
 			});
@@ -95,7 +95,7 @@ export class Commands {
 
 		console.log(
 			`${guild ? guild.name : 'DM'} (${message.author.username}): ` +
-				`${message.content}`
+			`${message.content}`
 		);
 
 		// Figure out which command is being run
@@ -194,14 +194,14 @@ export class Commands {
 			}
 
 			// Always allow admins
-			if (!message.member.permission.has('ADMINISTRATOR')) {
+			if (!member.permission.has(Permissions.ADMINISTRATOR) || guild.ownerID !== member.id) {
 				const perms = (await this.client.cache.getPermissions(guild.id))[
 					cmd.name
 				];
 
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
-					if (!perms.some(p => message.member.roles.indexOf(p) >= 0)) {
+					if (!perms.some(p => member.roles.indexOf(p) >= 0)) {
 						this.client.sendReply(
 							message,
 							t('permissions.role', {
@@ -314,13 +314,11 @@ export class Commands {
 		}
 	}
 
-	private async onGuildMemberRemove(member: Member) {
-		const guildId = member.guild.id;
-
+	private async onGuildMemberRemove(guild: Guild, member: Member) {
 		// If the pro version of our bot left, re-enable this version
 		if (member.user.bot && member.user.id === this.client.config.proBotId) {
-			this.disabledGuilds.delete(guildId);
-			console.log(`ENABLING BOT IN ${guildId} BECAUSE PRO VERSION LEFT`);
+			this.disabledGuilds.delete(guild.id);
+			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
 	}
 }

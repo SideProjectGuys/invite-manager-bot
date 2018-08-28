@@ -13,7 +13,8 @@ export default class extends Command {
 			aliases: ['patreon', 'donate'],
 			desc: 'Info about premium version.',
 			group: CommandGroup.Premium,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

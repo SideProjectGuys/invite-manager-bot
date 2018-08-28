@@ -195,7 +195,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-						`rank announcement channel ${rankChannelId}`
+					`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -290,4 +290,24 @@ export function getShardIdForGuild(guildId: any, shardCount: number) {
 	const bin = idToBinary(guildId);
 	const num = parseInt(bin.substring(0, bin.length - 22), 2);
 	return (num % shardCount) + 1;
+}
+
+export function to<T, U = any>(
+	promise: Promise<T>,
+	errorExt?: object
+): Promise<[U | null, T | undefined]> {
+	return promise
+		.then<[null, T]>((data: T) => [null, data])
+		.catch<[U, undefined]>(err => {
+			if (errorExt) {
+				Object.assign(err, errorExt);
+			}
+
+			return [err, undefined];
+		});
+}
+
+export function getHighestRole(guild: Guild, roles: string[]): Role {
+	return roles.map(role => guild.roles.get(role))
+		.reduce((prev, role) => role.position > prev.position ? role : prev, { position: -1 } as Role);
 }

@@ -36,7 +36,8 @@ export default class extends Command {
 			],
 			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

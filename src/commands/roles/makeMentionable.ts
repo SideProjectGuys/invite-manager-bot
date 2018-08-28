@@ -18,8 +18,9 @@ export default class extends Command {
 					description: 'The role that you want to mention.'
 				}
 			],
+			group: CommandGroup.Other,
 			guildOnly: true,
-			group: CommandGroup.Other
+			strict: true
 		});
 	}
 

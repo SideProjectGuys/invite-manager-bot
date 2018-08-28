@@ -6,8 +6,8 @@ import { IMClient } from '../../../client';
 
 import { EnumResolver, NumberResolver, StringResolver } from '../../../resolvers';
 import {
-	strikeConfigs,
-	ViolationType
+	punishmentConfigs,
+	PunishmentType,
 } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
@@ -15,19 +15,25 @@ import { Command, Context } from '../../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.strikeConfig,
+			name: ModerationCommand.punishmentConfig,
 			aliases: [],
 			args: [
 				{
-					name: 'violation',
-					resolver: new EnumResolver(client, Object.values(ViolationType)),
-					description: 'Violation type',
+					name: 'punishment',
+					resolver: new EnumResolver(client, Object.values(PunishmentType)),
+					description: 'Punishment type',
 					required: true
 				},
 				{
 					name: 'strikes',
 					resolver: NumberResolver,
 					description: 'Number of strikes'
+				},
+				{
+					name: 'args',
+					resolver: StringResolver,
+					description: 'Arguments passed to the punishment command',
+					rest: true
 				}
 			],
 			desc: 'Add or edit strike config',
@@ -38,7 +44,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[violation, strikes]: [ViolationType, number],
+		[punishment, strikes, args]: [PunishmentType, number, string],
 		{ guild }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -46,26 +52,27 @@ export default class extends Command {
 		}
 
 		const embed = this.client.createEmbed({
-			title: 'Strike Config'
+			title: 'Punishment Config'
 		});
 
 		if (typeof strikes !== typeof undefined) {
-			strikeConfigs.insertOrUpdate({
+			punishmentConfigs.insertOrUpdate({
 				id: null,
 				guildId: guild.id,
-				violationType: violation,
-				amount: strikes
+				punishmentType: punishment,
+				amount: strikes,
+				args: args
 			});
-			embed.description = `The violation ${violation} gives a user ${strikes} strikes.`;
+			embed.description = `The punishment ${punishment} gives a user ${strikes} strikes.`;
 		} else {
-			let strike = await strikeConfigs.find({
+			let punishmentConfig = await punishmentConfigs.find({
 				where: {
 					guildId: guild.id,
-					violationType: violation
+					punishmentType: punishment
 				}
 			});
-			embed.description = `The violation ${strike.violationType} gives a user ${strike.amount} strikes.`;
-			// TODO: expiration
+			embed.description =
+				`The violation ${punishmentConfig.punishmentType} gives a user ${punishmentConfig.amount} strikes.`;
 		}
 
 		this.client.sendReply(message, embed);

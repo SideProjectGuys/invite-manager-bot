@@ -34,7 +34,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Ranks,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

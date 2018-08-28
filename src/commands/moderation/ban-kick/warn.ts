@@ -1,71 +1,89 @@
 import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { GuildMember, User } from 'discord.js';
+	Guild, Member, Message, Role, User,
+} from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { createEmbed, sendEmbed, sendReply } from '../../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../../middleware';
+import { MemberResolver, NumberResolver, StringResolver } from '../../../resolvers';
 import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	joins,
-	sequelize,
-	strikeConfigs,
-	strikes,
-	ViolationType
+	punishments,
+	strikes
 } from '../../../sequelize';
-import { BotCommand, CommandGroup, ModerationCommand, RP } from '../../../types';
-
-const { localize, resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'warn',
+import { CommandGroup, ModerationCommand } from '../../../types';
+import { getHighestRole, to } from '../../../util';
+import { Command, Context } from '../../Command';
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: ModerationCommand.warn,
 			aliases: [],
-			desc: 'Send warning to the user',
-			usage: '<prefix>ban <user> <limit> <reason>',
+			args: [
+				{
+					name: 'member',
+					resolver: MemberResolver,
+					description: 'Member to warn',
+					required: true
+				},
+				{
+					name: 'reason',
+					resolver: StringResolver,
+					description: 'Why was the user banned',
+					rest: true
+				}
+			],
+			desc: 'Warn member',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(ModerationCommand.warn))
-	@using(resolve('user: Member, reason: String'))
-	@using(expect('user: Member'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, user, reason]: [RP, GuildMember, string]
+		[member, reason]: [Member, string],
+		{ guild, me, settings }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (this.client.config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		user.send(
-			`You have been warned by ${message.author.username} because of the following reason: ${reason}\n` +
-			``
-		);
+		const embed = this.client.createEmbed({
+			author: { name: member.username, icon_url: member.avatarURL }
+		});
 
-		const embed = createEmbed(this.client);
-		embed.setAuthor(`Warning sent to ${user.user.username}!`, user.user.avatarURL());
-		embed.setDescription(`Reason: ${reason}`);
-		sendReply(message, embed);
+		let highestBotRole = getHighestRole(guild, me.roles);
+		let highestMemberRole = getHighestRole(guild, member.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
+
+		if (
+			member.id !== guild.ownerID
+			&& member.id !== me.user.id
+			&& highestBotRole.position > highestMemberRole.position
+			&& highestAuthorRole.position > highestMemberRole.position
+		) {
+			let dmChannel = await member.user.getDMChannel();
+
+			let messageToUser = `You have been warned on server ${guild.name}`;
+			if (reason) { messageToUser += `Reason: ${reason}`; }
+			let [error, _] = await to(dmChannel.createMessage(messageToUser));
+
+			if (error) {
+				embed.description = `User was not able to receive DM:\n${error}`;
+			} else {
+				embed.description = `The user was successfully warned.`;
+			}
+		} else {
+			embed.description = `I cannot warn this user.`;
+		}
+
+		let response = await this.client.sendReply(message, embed);
+
+		if (settings.modPunishmentWarnDeleteMessage) {
+			setTimeout(
+				() => {
+					message.delete();
+					response.delete();
+				},
+				4000);
+		}
 	}
 }

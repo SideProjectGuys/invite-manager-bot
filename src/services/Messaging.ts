@@ -47,12 +47,12 @@ export type CreateEmbedFunc = (options?: EmbedOptions) => Embed;
 export type SendReplyFunc = (
 	message: Message,
 	reply: EmbedOptions | string
-) => Promise<Message | Message[]>;
+) => Promise<Message>;
 export type SendEmbedFunc = (
 	target: TextableChannel,
 	embed: EmbedOptions | string,
 	fallbackUser?: User
-) => Promise<Message | Message[]>;
+) => Promise<Message>;
 export type ShowPaginatedFunc = (
 	prevMsg: Message,
 	page: number,
@@ -120,7 +120,7 @@ export class Messaging {
 									channel
 										.createMessage(
 											'**I do not have permissions to post to that channel.\n' +
-												`Please tell an admin to allow me to send messages in the channel.**\n\n`
+											`Please tell an admin to allow me to send messages in the channel.**\n\n`
 										)
 										.then(resolve)
 										.catch(err2 => {

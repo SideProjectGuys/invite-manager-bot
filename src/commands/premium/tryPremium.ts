@@ -13,7 +13,8 @@ export default class extends Command {
 			aliases: ['try', 'try-premium'],
 			desc: 'Try premium version.',
 			group: CommandGroup.Premium,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

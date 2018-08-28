@@ -47,27 +47,16 @@ export class Moderation {
 			order: [['amount', 'DESC']]
 		});
 
-		console.log('iterating over list', strikesList);
 		for (let strike of strikesList) {
 			console.log('checking new strike');
-			this.strikeConfigFunctions[strike.violationType](message);
-		}
-
-		if (this.scanForInviteLinks(message)) {
-			console.log('FOUND LINK');
+			let foundViolation = this.strikeConfigFunctions[strike.violationType](message);
+			if (foundViolation) {
+				// message.delete();
+			}
 		}
 	}
 
-	private scanForLink(message: Message): boolean {
-		let regex = new RegExp(
-			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
-		);
-		let matches = message.content.match(regex);
-		let hasLink = matches && matches.length > 0;
-		return true;
-	}
-
-	private scanForInviteLinks(message: Message): boolean {
+	private invites(message: Message): boolean {
 		const inviteLinks = ['invites.referralranks.com'];
 		let hasInviteLink = inviteLinks.some(link => {
 			return message.content.indexOf(link) >= 0;
@@ -84,48 +73,47 @@ export class Moderation {
 		return hasInviteLink;
 	}
 
-	private invites(message: Message): boolean {
-		console.log('CHECKING invite VIOLATIONS');
-		return true;
-	}
-
 	private links(message: Message): boolean {
-		console.log('CHECKING links VIOLATIONS');
-		return true;
+		let regex = new RegExp(
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+		);
+		let matches = message.content.match(regex);
+		let hasLink = matches && matches.length > 0;
+		return hasLink;
 	}
 
 	private words(message: Message): boolean {
 		console.log('CHECKING words VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private allCaps(message: Message): boolean {
 		console.log('CHECKING caps VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private duplicateText(message: Message): boolean {
 		console.log('CHECKING duplicateText VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private quickMessages(message: Message): boolean {
 		console.log('CHECKING quickMessage VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private mentionUsers(message: Message): boolean {
 		console.log('CHECKING mentionUser VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private mentionRoles(message: Message): boolean {
 		console.log('CHECKING mentionRole VIOLATIONS');
-		return true;
+		return false;
 	}
 
 	private emojis(message: Message): boolean {
 		console.log('CHECKING emoji VIOLATIONS');
-		return true;
+		return false;
 	}
 }

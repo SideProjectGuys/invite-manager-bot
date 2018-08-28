@@ -1,64 +1,87 @@
 import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { GuildMember, User } from 'discord.js';
+	Guild, Member, Message, Role, User,
+} from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { createEmbed, sendEmbed, sendReply } from '../../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../../middleware';
+import { MemberResolver, NumberResolver, StringResolver } from '../../../resolvers';
 import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	joins,
-	sequelize
+	punishments,
+	strikes
 } from '../../../sequelize';
-import { BotCommand, CommandGroup, ModerationCommand, RP } from '../../../types';
-
-const { localize, resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'kick',
+import { CommandGroup, ModerationCommand } from '../../../types';
+import { getHighestRole, to } from '../../../util';
+import { Command, Context } from '../../Command';
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: ModerationCommand.kick,
 			aliases: [],
-			desc: 'Remove fake invites from all users',
-			usage: '<prefix>ban <user> <limit> <reason>',
-			clientPermissions: ['BAN_MEMBERS'],
+			args: [
+				{
+					name: 'member',
+					resolver: MemberResolver,
+					description: 'Member to kick',
+					required: true
+				},
+				{
+					name: 'reason',
+					resolver: StringResolver,
+					description: 'Why was the user banned',
+					rest: true
+				}
+			],
+			desc: 'Kick member',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(ModerationCommand.kick))
-	@using(resolve('user: Member, limit: Number, reason: String'))
-	@using(expect('user: Member'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, user, limit, reason]: [RP, GuildMember, number, string]
+		[member, reason]: [Member, string],
+		{ guild, me, settings }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (this.client.config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed({
+			author: { name: member.username, icon_url: member.avatarURL }
+		});
 
-		embed.setDescription(`Not implemented yet.`);
-		sendReply(message, embed);
+		let highestBotRole = getHighestRole(guild, me.roles);
+		let highestMemberRole = getHighestRole(guild, member.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
+
+		if (me.permission.has('KICK_MEMBERS')) {
+			embed.description = 'I need the `KICK_MEMBERS` permission to kick members';
+		} else if (
+			member.id !== guild.ownerID
+			&& member.id !== me.user.id
+			&& highestBotRole.position > highestMemberRole.position
+			&& highestAuthorRole.position > highestMemberRole.position
+		) {
+			let [error, _] = await to(member.kick(reason));
+			if (error) {
+				embed.description = `There was an error kicking this user:\n${error}`;
+			} else {
+				embed.description = `The user was successfully kicked.`;
+			}
+		} else {
+			embed.description = `I cannot kick this user.`;
+		}
+
+		let response = await this.client.sendReply(message, embed);
+
+		if (settings.modPunishmentKickDeleteMessage) {
+			setTimeout(
+				() => {
+					message.delete();
+					response.delete();
+				},
+				4000);
+		}
 	}
+
 }

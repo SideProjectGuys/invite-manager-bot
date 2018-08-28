@@ -73,7 +73,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Config,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 

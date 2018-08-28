@@ -19,7 +19,8 @@ export default class extends Command {
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			desc: 'Remove leaves from all users',
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
