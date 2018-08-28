@@ -1128,7 +1128,7 @@ export const punishmentConfigs = sequelize.define<
 	>(
 		'punishmentConfig',
 		{
-			punishmentType: Sequelize.ENUM(Object.values(ViolationType)),
+			punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
 			amount: Sequelize.INTEGER,
 			args: Sequelize.STRING
 		},
@@ -1171,7 +1171,7 @@ export const punishments = sequelize.define<
 	>(
 		'punishment',
 		{
-			punishmentType: Sequelize.ENUM(Object.values(ViolationType)),
+			punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
 			amount: Sequelize.INTEGER,
 			args: Sequelize.STRING
 		}

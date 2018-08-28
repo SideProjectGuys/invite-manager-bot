@@ -1,8 +1,9 @@
-import { Message, TextChannel } from 'eris';
+import { Embed, Guild, Member, Message, TextChannel } from 'eris';
 
-import { SettingsObject, strikeConfigs, strikes, ViolationType } from '../sequelize';
+import { punishmentConfigs, punishments, PunishmentType, sequelize, SettingsObject, strikeConfigs, strikes, ViolationType } from '../sequelize';
 
 import { IMClient } from '../client';
+import memberConfig from '../commands/config/memberConfig';
 
 interface Arguments {
 	settings: SettingsObject;
@@ -13,20 +14,31 @@ export class Moderation {
 	private strikeConfigFunctions: {
 		[key in ViolationType]: (message: Message, args: Arguments) => Promise<boolean>
 	};
+	private punishmentFunctions: {
+		[key in PunishmentType]: (message: Message, guild: Guild, amount: number) => Promise<boolean>
+	};
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
 		this.strikeConfigFunctions = {
-			[ViolationType.invites]: this.invites,
-			[ViolationType.links]: this.links,
-			[ViolationType.words]: this.words,
-			[ViolationType.allCaps]: this.allCaps,
-			[ViolationType.duplicateText]: this.duplicateText,
-			[ViolationType.quickMessages]: this.quickMessages,
-			[ViolationType.mentionUsers]: this.mentionUsers,
-			[ViolationType.mentionRoles]: this.mentionRoles,
-			[ViolationType.emojis]: this.emojis
+			[ViolationType.invites]: this.invites.bind(this),
+			[ViolationType.links]: this.links.bind(this),
+			[ViolationType.words]: this.words.bind(this),
+			[ViolationType.allCaps]: this.allCaps.bind(this),
+			[ViolationType.duplicateText]: this.duplicateText.bind(this),
+			[ViolationType.quickMessages]: this.quickMessages.bind(this),
+			[ViolationType.mentionUsers]: this.mentionUsers.bind(this),
+			[ViolationType.mentionRoles]: this.mentionRoles.bind(this),
+			[ViolationType.emojis]: this.emojis.bind(this)
+		};
+
+		this.punishmentFunctions = {
+			[PunishmentType.ban]: this.ban.bind(this),
+			[PunishmentType.kick]: this.kick.bind(this),
+			[PunishmentType.softban]: this.softban.bind(this),
+			[PunishmentType.warn]: this.warn.bind(this),
+			[PunishmentType.mute]: this.mute.bind(this),
 		};
 
 		client.on('messageCreate', this.onMessage.bind(this));
@@ -62,14 +74,57 @@ export class Moderation {
 			foundViolation = await this.strikeConfigFunctions[strike.violationType](message, { settings: settings });
 			if (foundViolation) {
 				message.delete();
-				strikes.create({
-					id: null,
-					guildId: guild.id,
-					memberId: message.author.id,
-					amount: strike.amount,
-					violationType: strike.violationType
-				});
+				this.addStrikesAndCheckIfPunishable(message, guild, strike.amount, strike.violationType);
 			}
+		}
+	}
+
+	private async addStrikesAndCheckIfPunishable(
+		message: Message,
+		guild: Guild,
+		amount: number,
+		violationType: ViolationType
+	) {
+		let strikesBefore = await strikes.sum('amount', {
+			where: {
+				guildId: guild.id,
+				memberId: message.author.id
+			}
+		});
+
+		await strikes.create({
+			id: null,
+			guildId: guild.id,
+			memberId: message.author.id,
+			amount: amount,
+			violationType: violationType
+		});
+
+		let strikesAfter = strikesBefore + amount;
+
+		let punishmentConfig = await punishmentConfigs.find({
+			where: {
+				guildId: guild.id,
+				amount: {
+					[sequelize.Op.gt]: strikesBefore,
+					[sequelize.Op.lte]: strikesAfter,
+				}
+			}, order: [['amount', 'DESC']]
+		});
+
+		if (punishmentConfig) {
+			await punishments.create({
+				id: null,
+				guildId: guild.id,
+				memberId: message.author.id,
+				punishmentType: punishmentConfig.punishmentType,
+				amount: punishmentConfig.amount,
+				args: punishmentConfig.args,
+				reason: 'automod',
+				creatorId: null
+			});
+
+			this.punishmentFunctions[punishmentConfig.punishmentType](message, guild, punishmentConfig.amount);
 		}
 	}
 
@@ -94,7 +149,7 @@ export class Moderation {
 	private async links(message: Message, args: Arguments): Promise<boolean> {
 		if (args.settings.autoModLinksEnabled === 'false') { return false; }
 		let regex = new RegExp(
-			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.\w{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
 		);
 		let matches = message.content.match(regex);
 		console.log(matches);
@@ -197,5 +252,80 @@ export class Moderation {
 		hasEmoji = nofRegularEmojis + nofDiscordEmojis > maxEmojis;
 
 		return hasEmoji;
+	}
+
+	//////////////////////////////
+	// PUNISHMENT FUNCTIONS
+	//////////////////////////////
+
+	private async ban(message: Message, guild: Guild, amount: number) {
+		await message.member.ban(7, 'automod');
+		const embed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			description: `${message.member.username} has been banned because he surpassed ${amount} strikes.`
+		});
+		let dmChannel = await message.member.user.getDMChannel();
+		await dmChannel.createMessage(`You have been banned from the server ${guild.name}`);
+		await message.member.ban(7, 'automod');
+		this.sendAndDelete(message, embed);
+		return true;
+	}
+
+	private async kick(message: Message, guild: Guild, amount: number) {
+		await message.member.kick('automod');
+		const embed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			description: `${message.member.username} has been kicked because he surpassed ${amount} strikes.`
+		});
+		let dmChannel = await message.member.user.getDMChannel();
+		await dmChannel.createMessage(`You have been kicked from the server ${guild.name}`);
+		await message.member.kick('automod');
+		this.sendAndDelete(message, embed);
+		return true;
+	}
+
+	private async softban(message: Message, guild: Guild, amount: number) {
+		const embed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			description: `${message.member.username} has been softbanned because he surpassed ${amount} strikes.`
+		});
+		let dmChannel = await message.member.user.getDMChannel();
+		await dmChannel.createMessage(`You have been softbanned on the server ${guild.name}`);
+		await message.member.ban(7, 'automod');
+		await message.member.unban('softban');
+		this.sendAndDelete(message, embed);
+		return true;
+	}
+
+	private async warn(message: Message, guild: Guild, amount: number) {
+		console.log(this);
+		const embed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			description: `${message.member.username} has been warned because he surpassed ${amount} strikes.`
+		});
+		let dmChannel = await message.member.user.getDMChannel();
+		dmChannel.createMessage(`You have been warned on the server ${guild.name}`);
+		this.sendAndDelete(message, embed);
+		return true;
+	}
+
+	private async mute(message: Message, guild: Guild, amount: number) {
+		const embed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			description: `${message.member.username} has been muted because he surpassed ${amount} strikes.`
+		});
+		let dmChannel = await message.member.user.getDMChannel();
+		dmChannel.createMessage(`You have been muted on the server ${guild.name}`);
+		this.sendAndDelete(message, embed);
+		return true;
+	}
+
+	private async sendAndDelete(message: Message, embed: Embed) {
+		let reply = await this.client.sendReply(message, embed);
+		setTimeout(
+			() => {
+				reply.delete();
+			},
+			4000);
 	}
 }
