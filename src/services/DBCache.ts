@@ -11,13 +11,15 @@ import {
 	SettingsKey,
 	SettingsObject
 } from '../sequelize';
-import { BotCommand, OwnerCommand } from '../types';
+import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
 
 const config = require('../../config.json');
 
 const maxCacheDuration = moment.duration(4, 'h');
 
-type CommandObject = { [key in BotCommand | OwnerCommand]: string[] };
+type PermissionsObject = {
+	[key in BotCommand | OwnerCommand | ModerationCommand]: string[]
+};
 
 export class DBCache {
 	private client: IMClient;
@@ -27,7 +29,7 @@ export class DBCache {
 	private cacheFetch: Map<string, moment.Moment> = new Map();
 
 	// Role permissions
-	private permsCache: Map<string, CommandObject> = new Map();
+	private permsCache: Map<string, PermissionsObject> = new Map();
 	private permsCacheFetch: Map<string, moment.Moment> = new Map();
 
 	// Premium
@@ -54,7 +56,7 @@ export class DBCache {
 			this.cacheFetch.set(id, moment());
 
 			// Create permissions map
-			const obj: CommandObject = {} as any;
+			const obj: PermissionsObject = {} as any;
 			Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 			if (config.ownerGuildIds.indexOf(id) !== -1) {
 				Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
@@ -190,7 +192,7 @@ export class DBCache {
 			raw: true
 		});
 
-		const obj: CommandObject = {} as any;
+		const obj: PermissionsObject = {} as any;
 		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
 		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
 			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));

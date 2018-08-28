@@ -8,10 +8,7 @@ import {
 	TextChannel
 } from 'eris';
 
-import { createCaptcha, FileMode } from './functions/Captcha';
-
 import { IMClient } from './client';
-import { createEmbed } from './functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -198,7 +195,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-					`rank announcement channel ${rankChannelId}`
+						`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
