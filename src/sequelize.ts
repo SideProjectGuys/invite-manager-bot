@@ -214,7 +214,6 @@ export enum SettingsKey {
 	autoModLinksFollowRedirects = 'autoModLinksFollowRedirects',
 
 	autoModWordsEnabled = 'autoModWordsEnabled',
-	autoModWordsWhitelist = 'autoModWordsWhitelist',
 	autoModWordsBlacklist = 'autoModWordsBlacklist',
 
 	autoModAllCapsEnabled = 'autoModAllCapsEnabled',
@@ -347,7 +346,6 @@ export const defaultSettings: SettingsObject = {
 	autoModLinksFollowRedirects: 'true',
 
 	autoModWordsEnabled: 'true',
-	autoModWordsWhitelist: null,
 	autoModWordsBlacklist: null,
 
 	autoModAllCapsEnabled: 'true',
