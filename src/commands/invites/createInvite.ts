@@ -1,70 +1,64 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import { ChannelResolver, StringResolver } from '../../resolvers';
 import {
 	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey
 } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, expect, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'create-invite',
-			aliases: ['createInvite'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.createInvite,
+			aliases: ['create-invite'],
 			desc: 'Creates unique invite codes',
-			usage: '<prefix>create-invite name',
-			info: '`name`:\n' + 'The name of the invite code.\n\n',
+			args: [
+				{
+					name: 'name',
+					resolver: StringResolver,
+					description: 'The name of the invite code.',
+					required: true
+				},
+				{
+					name: 'channel',
+					resolver: ChannelResolver,
+					description:
+						'The channel for which the invite code is created. Uses the current channel by default.'
+				}
+			],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.createInvite))
-	@using(resolve('name: String, channel: Channel'))
-	@using(expect('name: String'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, name, _channel]: [RP, string, TextChannel]
+		[name, _channel]: [string, TextChannel],
+		{ guild, t, me }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		let channel = _channel ? _channel : (message.channel as TextChannel);
 
-		if (
-			!channel.permissionsFor(message.guild.me).has('CREATE_INSTANT_INVITE')
-		) {
-			return sendReply(message, rp.CMD_CREATEINVITE_MISSING_PERMISSIONS());
+		if (!channel.permissionsOf(me.id).has('CREATE_INSTANT_INVITE')) {
+			return this.client.sendReply(
+				message,
+				t('cmd.createInvite.missingPermissions')
+			);
 		}
 
-		const inv = await channel.createInvite({
-			maxAge: 0,
-			maxUses: 0,
-			reason: name,
-			temporary: false,
-			unique: true
-		});
+		// TODO: Eris typescript is missing the 'unique' parameter
+		const inv = await channel.createInvite(
+			{
+				maxAge: 0,
+				maxUses: 0,
+				temporary: false,
+				unique: true
+			} as any,
+			name
+		);
 
 		await inviteCodes.insertOrUpdate({
 			code: inv.code,
@@ -79,15 +73,15 @@ export default class extends Command<IMClient> {
 
 		await inviteCodeSettings.insertOrUpdate({
 			id: null,
-			guildId: message.guild.id,
+			guildId: guild.id,
 			inviteCode: inv.code,
 			key: InviteCodeSettingsKey.name,
 			value: name
 		});
 
-		sendReply(
+		this.client.sendReply(
 			message,
-			rp.CMD_CREATEINVITE_DONE({
+			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,
 				channel: channel.toString(),
 				name

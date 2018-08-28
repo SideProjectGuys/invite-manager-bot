@@ -85,7 +85,7 @@ export default class extends Command {
 				[sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
 			],
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: {
 					[Op.ne]: null,
 					...(memberId && { [Op.eq]: memberId })

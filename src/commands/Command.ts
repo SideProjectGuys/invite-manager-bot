@@ -46,7 +46,7 @@ export abstract class Command {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | OwnerCommand;
+	public name: BotCommand | OwnerCommand | ModerationCommand;
 	public aliases: string[];
 	public args: Arg[];
 	public description: string;

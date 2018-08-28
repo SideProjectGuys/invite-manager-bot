@@ -55,7 +55,7 @@ export default class extends Command {
 				{
 					model: inviteCodeSettings,
 					where: {
-						guildId: message.guild.id,
+						guildId: guild.id,
 						key: InviteCodeSettingsKey.name
 					},
 					required: false
@@ -187,17 +187,17 @@ export default class extends Command {
 			inline: true
 		});
 
-		embed.addField(
-			rp.CMD_INFO_INVITES_CLEARS_TITLE(),
-			rp.CMD_INFO_INVITES_CLEARS_TEXT({
+		embed.fields.push({
+			name: t('cmd.info.invites.clear.title'),
+			value: t('cmd.info.invites.clear.text', {
 				total: clearTotal,
 				regular: clearRegular,
 				custom: clearCustom,
 				fake: clearFake,
 				leave: clearLeave
 			}),
-			true
-		);
+			inline: true
+		});
 
 		const js = await joins.findAll({
 			attributes: ['createdAt'],

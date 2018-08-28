@@ -1,61 +1,44 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { User } from 'discord.js';
+import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import { UserResolver } from '../../resolvers';
 import {
 	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
-import { getInviteCounts } from '../../util';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'invite-details',
-			aliases: ['inviteDetails'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.inviteDetails,
+			aliases: ['invite-details'],
 			desc: 'Shows details about where your invites are from',
-			usage: '<prefix>invite-details (@user)',
-			info:
-				'`@user`:\n' +
-				'The user for whom you want to show detailed invites.\n\n',
+			args: [
+				{
+					name: 'user',
+					resolver: UserResolver,
+					description: 'The user for whom you want to show detailed invites.'
+				}
+			],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.inviteDetails))
-	@using(resolve('user: User'))
-	@using(localize)
-	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		[user]: [User],
+		{ guild, t, settings }: Context
+	): Promise<any> {
 		let target = user ? user : message.author;
 
 		const invs = await inviteCodes.findAll({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				inviterId: target.id
 			},
 			order: [['uses', 'DESC']],
@@ -63,7 +46,7 @@ export default class extends Command<IMClient> {
 				{
 					model: inviteCodeSettings,
 					where: {
-						guildId: message.guild.id,
+						guildId: guild.id,
 						key: InviteCodeSettingsKey.name
 					},
 					required: false
@@ -72,14 +55,14 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		const lang = (await SettingsCache.get(message.guild.id)).lang;
+		const lang = settings.lang;
 
 		let invText = '';
 		invs.slice(0, 100).forEach(inv => {
 			const name = (inv as any)['inviteCodeSettings.value'];
 
 			invText +=
-				rp.CMD_INVITEDETAILS_ENTRY({
+				t('cmd.inviteDetails.entry', {
 					uses: inv.uses,
 					code: name ? name : inv.code,
 					name: name ? inv.code : undefined,
@@ -89,6 +72,6 @@ export default class extends Command<IMClient> {
 				}) + '\n';
 		});
 
-		sendReply(message, invText);
+		this.client.sendReply(message, invText);
 	}
 }
