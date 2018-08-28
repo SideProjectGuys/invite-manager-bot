@@ -185,6 +185,7 @@ export enum SettingsKey {
 	captchaVerificationSuccessMessage = 'captchaVerificationSuccessMessage',
 	captchaVerificationFailedMessage = 'captchaVerificationFailedMessage',
 	captchaVerificationTimeout = 'captchaVerificationTimeout',
+	captchaVerificationLogEnabled = 'captchaVerificationLogEnabled',
 
 	autoModEnabled = 'autoModEnabled',
 	autoModModeratedChannels = 'autoModModeratedChannels',
@@ -193,6 +194,7 @@ export enum SettingsKey {
 	autoModIgnoredRoles = 'autoModIgnoredRoles',
 	autoModDeleteBotMessage = 'autoModDeleteBotMessage',
 	autoModDeleteBotMessageTimeoutInSeconds = 'autoModDeleteBotMessageTimeoutInSeconds',
+	autoModLogEnabled = 'autoModLogEnabled',
 
 	autoModDisabledForOldMembers = 'autoModDisabledForOldMembers',
 	autoModDisabledForOldMembersThreshold = 'autoModDisabledForOldMembersThreshold',
@@ -307,6 +309,7 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 		'You did not enter the captha right within the specified time.' +
 		'We\'re sorry, but we have to kick you from the server. Feel free to join again.',
 	captchaVerificationTimeout: '180', /* seconds */
+	captchaVerificationLogEnabled: 'true',
 
 	autoModEnabled: 'false',
 	autoModModeratedChannels: null,
@@ -315,6 +318,7 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 	autoModIgnoredRoles: null,
 	autoModDeleteBotMessage: 'true',
 	autoModDeleteBotMessageTimeoutInSeconds: '5',
+	autoModLogEnabled: 'true',
 
 	autoModDisabledForOldMembers: 'false',
 	autoModDisabledForOldMembersThreshold: '604800', /* seconds, default 1 week */
