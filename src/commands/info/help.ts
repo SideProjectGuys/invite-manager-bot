@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { CommandResolver } from '../../resolvers';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
@@ -90,16 +90,16 @@ export default class extends Command {
 				embed.fields.push({ name: group, value: descr });
 			});
 
-			if (guild && member && member.permission.has('ADMINISTRATOR')) {
+			if (guild && member && member.permission.has(Permissions.ADMINISTRATOR)) {
 				const missing: string[] = [];
-				if (!me.permission.has('MANAGE_GUILD')) {
-					missing.push('Manage guilds');
+				if (!me.permission.has(Permissions.MANAGE_GUILD)) {
+					missing.push(t('permissions.manageGuild'));
 				}
-				if (!me.permission.has('VIEW_AUDIT_LOGS')) {
-					missing.push('View audit logs');
+				if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
+					missing.push(t('permissions.viewAuditLogs'));
 				}
-				if (!me.permission.has('MANAGE_ROLES')) {
-					missing.push('Manage roles');
+				if (!me.permission.has(Permissions.MANAGE_ROLES)) {
+					missing.push(t('permissions.manageRoles'));
 				}
 
 				if (missing.length > 0) {

@@ -29,6 +29,7 @@ export interface CommandOptions {
 	guildOnly: boolean;
 	ownerOnly?: boolean;
 	hidden?: boolean;
+	premiumOnly?: boolean;
 }
 
 export type TranslateFunc = (
@@ -41,6 +42,7 @@ export type Context = {
 	me: Member;
 	t: TranslateFunc;
 	settings: SettingsObject;
+	isPremium: boolean;
 };
 
 export abstract class Command {
@@ -57,6 +59,7 @@ export abstract class Command {
 	public guildOnly: boolean;
 	public ownerOnly?: boolean;
 	public hidden?: boolean;
+	public premiumOnly?: boolean;
 
 	public constructor(client: IMClient, props: CommandOptions) {
 		this.client = client;
@@ -69,6 +72,7 @@ export abstract class Command {
 		this.guildOnly = props.guildOnly;
 		this.ownerOnly = props.ownerOnly;
 		this.hidden = props.hidden;
+		this.premiumOnly = props.premiumOnly;
 
 		this.usage = `<prefix>${this.name} `;
 

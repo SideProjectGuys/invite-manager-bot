@@ -1,6 +1,4 @@
-import {
-	Message
-} from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { StringResolver } from '../../../resolvers';
@@ -54,20 +52,23 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		} else {
 			message.delete();
-			let [error, _] = await to(this.client.deleteMessages(message.channel.id, messages.map(m => m.id)));
+			let [error, _] = await to(
+				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
+			);
 			if (error) {
 				embed.title = 'Error';
 				embed.description = error;
 			} else {
-				embed.description = `Deleted **${messages.length}** messages.\nThis message will be deleted in 5 seconds.`;
+				embed.description = `Deleted **${
+					messages.length
+				}** messages.\nThis message will be deleted in 5 seconds.`;
 			}
 
-			let response: Message = await this.client.sendReply(message, embed) as Message;
-			setTimeout(
-				() => {
-					response.delete();
-				},
-				5000);
+			let response: Message = await this.client.sendReply(message, embed);
+			const func = () => {
+				response.delete();
+			};
+			setTimeout(func, 5000);
 		}
 	}
 }

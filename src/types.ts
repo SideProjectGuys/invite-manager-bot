@@ -1,5 +1,14 @@
 export enum Permissions {
-	ADMINISTRATOR = 'administrator'
+	ADMINISTRATOR = 'administrator',
+	READ_MESSAGES = 'readMessages',
+	SEND_MESSAGES = 'sendMessages',
+	EMBED_LINKS = 'embedLinks',
+	MANAGE_GUILD = 'manageGuild',
+	VIEW_AUDIT_LOGS = 'viewAuditLogs',
+	MANAGE_ROLES = 'manageRoles',
+	CREATE_INSTANT_INVITE = 'createInstantInvite',
+	BAN_MEMBERS = 'banMembers',
+	KICK_MEMBERS = 'kickMembers'
 }
 
 export enum PromptResult {
@@ -98,7 +107,7 @@ export enum ModerationCommand {
 	'clean' = 'clean',
 	'purgeSafe' = 'purgeSafe',
 	'purgeUntil' = 'purgeUntil',
-	'purge' = 'purge',
+	'purge' = 'purge'
 }
 
 export enum OwnerCommand {

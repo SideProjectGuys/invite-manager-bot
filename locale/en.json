@@ -34,7 +34,8 @@
 				"title": "Aliases"
 			},
 			"links": "Links",
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)"
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
+			"missingPermissions": "cmd.help.missingPermissions"
 		},
 		"leaderboard": {
 			"title": "Leaderboard",
@@ -90,6 +91,47 @@
 		"permissions": {
 			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
 			"added": "cmd.permissions.added"
+		},
+		"chart": {
+			"joins": {
+				"title": "cmd.chart.joins.title",
+				"text": "cmd.chart.joins.text"
+			}
+		},
+		"export": {
+			"title": "InviteManager - Export",
+			"preparing": "Please wait while we prepare the file..."
+		},
+		"tryPremium": {
+			"title": "InviteManager Premium - Free Trial",
+			"currentlyActive": "You currently have an active premium subscription!",
+			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
+			"prompt": "Please reply with **yes** or **no**.",
+			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left."
+		},
+		"premium": {
+			"premium": {
+				"title": "InviteManager Premium",
+				"notFound": "Could not find subscription info.",
+				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)"
+			},
+			"noPremium": {
+				"title": "This server currently does not have a premium subscription",
+				"text": "By subscribing to a premium tier you help the development of the bot and also get some additional features."
+			},
+			"feature": {
+				"embeds": {
+					"title": "Premium Feature: Embeds in join messages",
+					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)"
+				},
+				"export": {
+					"title": "Premium Feature: History export",
+					"text": "You can export all the joins and leaves that happened on your server since you invited our bot."
+				}
+			}
+		},
+		"createInvite": {
+			"done": "Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}."
 		}
 	},
 	"arguments": {
@@ -113,6 +155,11 @@
 		}
 	},
 	"permissions": {
-		"adminOnly": "permissions.adminOnly"
+		"adminOnly": "permissions.adminOnly",
+		"premiumOnly": "This command is only available for premium subscribers!",
+		"createInviteCode": "Create Instant Invite",
+		"manageGuild": "Manage Server",
+		"viewAuditLogs": "View Audit Logs",
+		"manageRoles": "Manage Roles"
 	}
 }

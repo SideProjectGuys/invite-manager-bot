@@ -1,14 +1,9 @@
-import {
-	Message,
-} from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 
-import { EnumResolver, NumberResolver, StringResolver } from '../../../resolvers';
-import {
-	strikeConfigs,
-	ViolationType
-} from '../../../sequelize';
+import { EnumResolver, NumberResolver } from '../../../resolvers';
+import { strikeConfigs, ViolationType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
@@ -64,7 +59,9 @@ export default class extends Command {
 					violationType: violation
 				}
 			});
-			embed.description = `The violation ${strike.violationType} gives a user ${strike.amount} strikes.`;
+			embed.description = `The violation ${strike.violationType} gives a user ${
+				strike.amount
+			} strikes.`;
 			// TODO: expiration
 		}
 

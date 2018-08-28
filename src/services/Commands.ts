@@ -1,10 +1,17 @@
-import { Constants, Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
+import {
+	Constants,
+	Guild,
+	Member,
+	Message,
+	PrivateChannel,
+	TextChannel
+} from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
 import path from 'path';
 
 import { IMClient } from '../client';
-import { Command } from '../commands/Command';
+import { Command, Context } from '../commands/Command';
 import { Resolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
 import { Permissions, ShardCommand } from '../types';
@@ -44,7 +51,7 @@ export class Commands {
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-						`\x1b[2m${path.basename(file)}\x1b[0m`
+							`\x1b[2m${path.basename(file)}\x1b[0m`
 					);
 				}
 			});
@@ -95,7 +102,7 @@ export class Commands {
 
 		console.log(
 			`${guild ? guild.name : 'DM'} (${message.author.username}): ` +
-			`${message.content}`
+				`${message.content}`
 		);
 
 		// Figure out which command is being run
@@ -172,6 +179,13 @@ export class Commands {
 			return;
 		}
 
+		const isPremium = await this.client.cache.isPremium(guild.id);
+
+		if (!isPremium && cmd.premiumOnly) {
+			this.client.sendReply(message, t('permissions.premiumOnly'));
+			return;
+		}
+
 		let me: Member = undefined;
 		const lang = sets.lang;
 
@@ -194,7 +208,10 @@ export class Commands {
 			}
 
 			// Always allow admins
-			if (!member.permission.has(Permissions.ADMINISTRATOR) || guild.ownerID !== member.id) {
+			if (
+				!member.permission.has(Permissions.ADMINISTRATOR) &&
+				guild.ownerID !== member.id
+			) {
 				const perms = (await this.client.cache.getPermissions(guild.id))[
 					cmd.name
 				];
@@ -226,11 +243,12 @@ export class Commands {
 			}
 		}
 
-		const context = {
+		const context: Context = {
 			guild,
 			me,
 			t,
-			settings: sets
+			settings: sets,
+			isPremium
 		};
 
 		// Resolve arguments

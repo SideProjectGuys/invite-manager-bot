@@ -77,7 +77,8 @@
 				"title": "cmd.help.aliases.title"
 			},
 			"links": "cmd.help.links",
-			"text": "cmd.help.text"
+			"text": "cmd.help.text",
+			"missingPermissions": "cmd.help.missingPermissions"
 		},
 		"leaderboard": {
 			"title": "cmd.leaderboard.title",
@@ -126,6 +127,53 @@
 		"permissions": {
 			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
 			"added": "cmd.permissions.added"
+		},
+		"chart": {
+			"joins": {
+				"title": "cmd.chart.joins.title",
+				"text": "cmd.chart.joins.text"
+			}
+		},
+		"export": {
+			"title": "cmd.export.title",
+			"premiumOnly": "cmd.export.premiumOnly",
+			"preparing": "cmd.export.preparing",
+			"invalidType": "cmd.export.invalidType"
+		},
+		"tryPremium": {
+			"title": "cmd.tryPremium.title",
+			"currentlyActive": "cmd.tryPremium.currentlyActive",
+			"text": "cmd.tryPremium.text",
+			"prompt": "cmd.tryPremium.prompt",
+			"started": "cmd.tryPremium.started"
+		},
+		"premium": {
+			"premium": {
+				"title": "cmd.premium.premium.title",
+				"notFound": "cmd.premium.premium.notFound",
+				"text": "cmd.premium.premium.text"
+			},
+			"noPremium": {
+				"title": "cmd.premium.noPremium.title",
+				"text": "cmd.premium.noPremium.text"
+			},
+			"feature": {
+				"embeds": {
+					"title": "cmd.premium.feature.embeds.title",
+					"text": "cmd.premium.feature.embeds.text"
+				},
+				"export": {
+					"title": "cmd.premium.feature.export.title",
+					"text": "cmd.premium.feature.export.text"
+				}
+			}
+		},
+		"createInvite": {
+			"missingPermissions": "cmd.createInvite.missingPermissions",
+			"done": "cmd.createInvite.done"
+		},
+		"permssions": {
+			"manageGuild": "cmd.permssions.manageGuild"
 		}
 	},
 	"arguments": {
@@ -149,6 +197,7 @@
 		}
 	},
 	"permissions": {
-		"adminOnly": "permissions.adminOnly"
+		"adminOnly": "permissions.adminOnly",
+		"manageGuild": "permissions.manageGuild"
 	}
 }

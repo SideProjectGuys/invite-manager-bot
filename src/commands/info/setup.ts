@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
@@ -57,21 +57,21 @@ export default class extends Command {
 			value: t('cmd.setup.premium.text', { link: config.botPatreon })
 		});
 
-		if (!me.permission.has('MANAGE_GUILD')) {
+		if (!me.permission.has(Permissions.MANAGE_GUILD)) {
 			embed.fields.push({
 				name: t('cmd.setup.manageGuild.title'),
 				value: t('cmd.setup.manageGuild.text')
 			});
 		}
 
-		if (!me.permission.has('MANAGE_ROLES')) {
+		if (!me.permission.has(Permissions.MANAGE_ROLES)) {
 			embed.fields.push({
 				name: t('cmd.setup.manageRoles.title'),
 				value: t('cmd.setup.manageRoles.text')
 			});
 		}
 
-		if (!me.permission.has('VIEW_AUDIT_LOGS')) {
+		if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
 			embed.fields.push({
 				name: t('cmd.setup.viewAuditLogs.title'),
 				value: t('cmd.setup.viewAuditLogs.text')

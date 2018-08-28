@@ -120,7 +120,7 @@ export class Messaging {
 									channel
 										.createMessage(
 											'**I do not have permissions to post to that channel.\n' +
-											`Please tell an admin to allow me to send messages in the channel.**\n\n`
+												`Please tell an admin to allow me to send messages in the channel.**\n\n`
 										)
 										.then(resolve)
 										.catch(err2 => {
@@ -333,9 +333,9 @@ export class Messaging {
 				return [PromptResult.TIMEOUT, confirmation];
 			}
 			if (truthy.has(confirmation.content.toLowerCase())) {
-				return [PromptResult.FAILURE, confirmation];
+				return [PromptResult.SUCCESS, confirmation];
 			}
-			return [PromptResult.SUCCESS, confirmation];
+			return [PromptResult.FAILURE, confirmation];
 		};
 
 		return new Promise<[PromptResult, Message]>(resolve => {

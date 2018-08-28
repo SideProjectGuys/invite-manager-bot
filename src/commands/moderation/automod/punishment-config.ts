@@ -1,14 +1,13 @@
-import {
-	Message,
-} from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 
-import { EnumResolver, NumberResolver, StringResolver } from '../../../resolvers';
 import {
-	punishmentConfigs,
-	PunishmentType,
-} from '../../../sequelize';
+	EnumResolver,
+	NumberResolver,
+	StringResolver
+} from '../../../resolvers';
+import { punishmentConfigs, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
@@ -71,8 +70,9 @@ export default class extends Command {
 					punishmentType: punishment
 				}
 			});
-			embed.description =
-				`The violation ${punishmentConfig.punishmentType} gives a user ${punishmentConfig.amount} strikes.`;
+			embed.description = `The violation ${
+				punishmentConfig.punishmentType
+			} gives a user ${punishmentConfig.amount} strikes.`;
 		}
 
 		this.client.sendReply(message, embed);

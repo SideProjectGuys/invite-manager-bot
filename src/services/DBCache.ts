@@ -253,6 +253,8 @@ export class DBCache {
 		if (oldConfig[key] !== value) {
 			oldConfig[key] = value;
 
+			this.cache.set(guildId, oldConfig);
+
 			await settings.bulkCreate(
 				[
 					{

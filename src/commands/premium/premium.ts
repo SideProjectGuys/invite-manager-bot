@@ -21,14 +21,12 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
-		{ guild, t, settings }: Context
+		{ guild, t, settings, isPremium }: Context
 	): Promise<any> {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
 
 		const embed = this.client.createEmbed();
-
-		const isPremium = this.client.cache.isPremium(guild.id);
 
 		if (!isPremium) {
 			embed.title = t('cmd.premium.noPremium.title');

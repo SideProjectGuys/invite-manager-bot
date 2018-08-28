@@ -1,23 +1,12 @@
-import {
-	Member, Message,
-} from 'eris';
+import { Member, Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { NumberResolver, UserResolver } from '../../../resolvers';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	joins,
-	punishments,
-	sequelize,
-	strikeConfigs,
-	strikes
-} from '../../../sequelize';
+import { UserResolver } from '../../../resolvers';
+import { punishments, strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { to } from '../../../util';
 import { Command, Context } from '../../Command';
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -64,9 +53,12 @@ export default class extends Command {
 			}
 		});
 
-		let strikeText =
-			strikeList.map(s => `${s.amount} for ${s.violationType} ${moment(s.createdAt).fromNow()}`)
-				.join('\n');
+		let strikeText = strikeList
+			.map(
+				s =>
+					`${s.amount} for ${s.violationType} ${moment(s.createdAt).fromNow()}`
+			)
+			.join('\n');
 
 		if (strikeText) {
 			embed.fields.push({
@@ -75,9 +67,14 @@ export default class extends Command {
 			});
 		}
 
-		let punishmentText =
-			punishmentList.map(p => `${p.punishmentType} because he had ${p.amount} strikes ${moment(p.createdAt).fromNow()}`)
-				.join('\n');
+		let punishmentText = punishmentList
+			.map(
+				p =>
+					`${p.punishmentType} because he had ${p.amount} strikes ${moment(
+						p.createdAt
+					).fromNow()}`
+			)
+			.join('\n');
 
 		if (punishmentText) {
 			embed.fields.push({

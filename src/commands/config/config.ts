@@ -1,4 +1,4 @@
-import { Embed, Message, TextChannel } from 'eris';
+import { Embed, Message, TextChannel, Permission } from 'eris';
 
 import { IMClient } from '../../client';
 import {
@@ -19,7 +19,7 @@ import {
 	RankAssignmentStyle,
 	SettingsKey
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 class ValueResolver extends Resolver {
@@ -222,16 +222,13 @@ export default class extends Command {
 
 		if (type === 'Channel') {
 			const channel = value as TextChannel;
-			if (!channel.permissionsOf(me.id).has('VIEW_CHANNEL')) {
-				return t('cmd.config.channel.canNotView');
-			}
-			if (!channel.permissionsOf(me.id).has('READ_MESSAGES')) {
+			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
 				return t('cmd.config.channel.canNotReadMessages');
 			}
-			if (!channel.permissionsOf(me.id).has('SEND_MESSAGES')) {
+			if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
 				return t('cmd.config.channel.canNotSendMessages');
 			}
-			if (!channel.permissionsOf(me.id).has('EMBED_LINKS')) {
+			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
 				return t('cmd.config.channel.canNotSendEmbeds');
 			}
 		}

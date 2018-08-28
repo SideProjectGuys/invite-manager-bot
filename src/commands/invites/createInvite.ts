@@ -3,11 +3,12 @@ import { Message, TextChannel } from 'eris';
 import { IMClient } from '../../client';
 import { ChannelResolver, StringResolver } from '../../resolvers';
 import {
+	channels,
 	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -43,11 +44,8 @@ export default class extends Command {
 	): Promise<any> {
 		let channel = _channel ? _channel : (message.channel as TextChannel);
 
-		if (!channel.permissionsOf(me.id).has('CREATE_INSTANT_INVITE')) {
-			return this.client.sendReply(
-				message,
-				t('cmd.createInvite.missingPermissions')
-			);
+		if (!channel.permissionsOf(me.id).has(Permissions.CREATE_INSTANT_INVITE)) {
+			return this.client.sendReply(message, t('permissions.createInviteCode'));
 		}
 
 		// TODO: Eris typescript is missing the 'unique' parameter
@@ -60,6 +58,12 @@ export default class extends Command {
 			} as any,
 			name
 		);
+
+		await channels.insertOrUpdate({
+			id: inv.channel.id,
+			name: inv.channel.name,
+			guildId: guild.id
+		});
 
 		await inviteCodes.insertOrUpdate({
 			code: inv.code,

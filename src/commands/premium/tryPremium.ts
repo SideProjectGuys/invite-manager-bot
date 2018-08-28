@@ -21,16 +21,16 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
-		{ guild, settings, t }: Context
+		{ guild, settings, t, isPremium }: Context
 	): Promise<any> {
 		const prefix = settings.prefix;
 
 		const embed = this.client.createEmbed();
 
-		const isPremium = this.client.cache.isPremium(guild.id);
-
 		const trialDuration = moment.duration(1, 'week');
 		const validUntil = moment().add(trialDuration);
+
+		console.log(isPremium);
 
 		embed.title = t('cmd.tryPremium.title');
 		if (isPremium) {

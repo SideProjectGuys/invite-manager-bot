@@ -1,6 +1,4 @@
-import {
-	Member, Message,
-} from 'eris';
+import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { NumberResolver, UserResolver } from '../../../resolvers';
@@ -50,35 +48,43 @@ export default class extends Command {
 		const embed = this.client.createEmbed();
 
 		if (!quantity || quantity < 1) {
-			return message.channel.createMessage('You must enter a number of messages to purge.');
+			return message.channel.createMessage(
+				'You must enter a number of messages to purge.'
+			);
 		}
 
 		let messages: Message[];
 		if (member) {
-			messages = (await message.channel.getMessages(Math.min(quantity, 100), message.id))
-				.filter((a: Message) => a.author.id === member.id);
-		} else {
 			messages = (await message.channel.getMessages(
-				Math.min(quantity, 100), message.id)
+				Math.min(quantity, 100),
+				message.id
+			)).filter((a: Message) => a.author.id === member.id);
+		} else {
+			messages = await message.channel.getMessages(
+				Math.min(quantity, 100),
+				message.id
 			);
 		}
 
 		message.delete();
-		let [error, _] = await to(this.client.deleteMessages(message.channel.id, messages.map(m => m.id)));
+		let [error, _] = await to(
+			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
+		);
 		if (error) {
 			embed.title = 'Error';
 			embed.description = error;
 		} else {
 			embed.title = 'Deleted Messages';
-			embed.description = `Deleted **${messages.length}** messages.\nThis message will be deleted in 5 seconds.`;
+			embed.description = `Deleted **${
+				messages.length
+			}** messages.\nThis message will be deleted in 5 seconds.`;
 		}
 
-		let response = await this.client.sendReply(message, embed) as Message;
+		let response = (await this.client.sendReply(message, embed)) as Message;
 
-		setTimeout(
-			() => {
-				response.delete();
-			},
-			5000);
+		const func = () => {
+			response.delete();
+		};
+		setTimeout(func, 5000);
 	}
 }

@@ -1,17 +1,15 @@
-import {
-	Guild, Member, Message, Role, User,
-} from 'eris';
-import moment from 'moment';
+import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { MemberResolver, NumberResolver, StringResolver } from '../../../resolvers';
 import {
-	punishments,
-	strikes
-} from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+	MemberResolver,
+	NumberResolver,
+	StringResolver
+} from '../../../resolvers';
+import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { getHighestRole, to } from '../../../util';
 import { Command, Context } from '../../Command';
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -59,13 +57,14 @@ export default class extends Command {
 		let highestMemberRole = getHighestRole(guild, member.roles);
 		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
 
-		if (me.permission.has('BAN_MEMBERS')) {
-			embed.description = 'I need the `BAN_MEMBERS` permission to use this command';
+		if (me.permission.has(Permissions.BAN_MEMBERS)) {
+			embed.description =
+				'I need the `Ban Members` permission to use this command';
 		} else if (
-			member.id !== guild.ownerID
-			&& member.id !== me.user.id
-			&& highestBotRole.position > highestMemberRole.position
-			&& highestAuthorRole.position > highestMemberRole.position
+			member.id !== guild.ownerID &&
+			member.id !== me.user.id &&
+			highestBotRole.position > highestMemberRole.position &&
+			highestAuthorRole.position > highestMemberRole.position
 		) {
 			let [error, _] = await to(member.ban(deleteMessageDays, reason));
 			if (error) {
@@ -85,13 +84,11 @@ export default class extends Command {
 		let response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentSoftbanDeleteMessage) {
-			setTimeout(
-				() => {
-					message.delete();
-					response.delete();
-				},
-				4000);
+			const func = () => {
+				message.delete();
+				response.delete();
+			};
+			setTimeout(func, 4000);
 		}
 	}
-
 }

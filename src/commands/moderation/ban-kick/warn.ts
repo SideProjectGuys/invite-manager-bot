@@ -1,17 +1,11 @@
-import {
-	Guild, Member, Message, Role, User,
-} from 'eris';
-import moment from 'moment';
+import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { MemberResolver, NumberResolver, StringResolver } from '../../../resolvers';
-import {
-	punishments,
-	strikes
-} from '../../../sequelize';
+import { MemberResolver, StringResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { getHighestRole, to } from '../../../util';
 import { Command, Context } from '../../Command';
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -55,15 +49,17 @@ export default class extends Command {
 		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
 
 		if (
-			member.id !== guild.ownerID
-			&& member.id !== me.user.id
-			&& highestBotRole.position > highestMemberRole.position
-			&& highestAuthorRole.position > highestMemberRole.position
+			member.id !== guild.ownerID &&
+			member.id !== me.user.id &&
+			highestBotRole.position > highestMemberRole.position &&
+			highestAuthorRole.position > highestMemberRole.position
 		) {
 			let dmChannel = await member.user.getDMChannel();
 
 			let messageToUser = `You have been warned on server ${guild.name}`;
-			if (reason) { messageToUser += `Reason: ${reason}`; }
+			if (reason) {
+				messageToUser += `Reason: ${reason}`;
+			}
 			let [error, _] = await to(dmChannel.createMessage(messageToUser));
 
 			if (error) {
@@ -78,12 +74,11 @@ export default class extends Command {
 		let response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentWarnDeleteMessage) {
-			setTimeout(
-				() => {
-					message.delete();
-					response.delete();
-				},
-				4000);
+			const func = () => {
+				message.delete();
+				response.delete();
+			};
+			setTimeout(func, 4000);
 		}
 	}
 }
