@@ -64,22 +64,24 @@ export default class extends Command {
 			);
 		}
 
-		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
-			if (response.error) {
-				this.client.sendReply(message, response.error);
-			} else {
-				this.client.sendReply(message, response.data);
-			}
-		});
-
-		this.client.rabbitmq.sendCommandToGuild(guildId, {
-			id: message.id,
-			cmd: ShardCommand.SUDO,
-			originGuildId: guild.id,
+		this.client.rabbitmq.sendCommandToGuild(
 			guildId,
-			sudoCmd: sudoCmd.name,
-			args: args.slice(1),
-			authorId: message.author.id
-		});
+			{
+				id: message.id,
+				cmd: ShardCommand.SUDO,
+				originGuildId: guild.id,
+				guildId,
+				sudoCmd: sudoCmd.name,
+				args: args.slice(1),
+				authorId: message.author.id
+			},
+			response => {
+				if (response.error) {
+					this.client.sendReply(message, response.error);
+				} else {
+					this.client.sendReply(message, response.data);
+				}
+			}
+		);
 	}
 }

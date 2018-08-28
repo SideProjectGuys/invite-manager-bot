@@ -66,90 +66,94 @@ export default class extends Command {
 			raw: true
 		});
 
-		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
-			if (response.error) {
-				this.client.sendReply(message, response.error);
-				return;
-			}
-
-			const embed = this.client.createEmbed({
-				description: ''
-			});
-
-			embed.fields.push({
-				name: 'Guild',
-				value: `Id: ${guildId}\n` + `Shard: ${shard}\n`
-			});
-
-			const sets: { [x: string]: string } = {};
-			Object.keys(response.settings).forEach(key => {
-				if (typeof response.settings[key] === 'string') {
-					sets[key] = response.settings[key].substr(0, 200);
-				} else {
-					sets[key] = response.settings[key];
-				}
-			});
-			embed.fields.push({
-				name: 'Settings',
-				value:
-					'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
-			});
-
-			embed.fields.push({
-				name: 'Premium',
-				value:
-					'```json\n' +
-					(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
-					'```'
-			});
-
-			embed.fields.push({
-				name: 'Last command usage',
-				value: lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
-			});
-
-			msg.edit(embed).catch(e => msg.edit(e));
-
-			// Send second message with permissions info
-			const permsEmbed = this.client.createEmbed();
-
-			permsEmbed.fields.push({
-				name: 'Bot permissions',
-				value: '```\n' + response.perms.join('\n').substr(0, 1000) + '```'
-			});
-
-			permsEmbed.fields.push({
-				name: 'Join channel permissions',
-				value:
-					'```\n' + response.joinChannelPerms.join('\n').substr(0, 1000) + '```'
-			});
-
-			permsEmbed.fields.push({
-				name: 'Leave channel permissions',
-				value:
-					'```\n' +
-					response.leaveChannelPerms.join('\n').substr(0, 1000) +
-					'```'
-			});
-
-			permsEmbed.fields.push({
-				name: 'Rank announcement channel permissions',
-				value:
-					'```\n' +
-					response.announceChannelPerms.join('\n').substr(0, 1000) +
-					'```'
-			});
-
-			message.channel
-				.createMessage(permsEmbed)
-				.catch(e => message.channel.createMessage(e));
-		});
-
-		const { shard } = this.client.rabbitmq.sendCommandToGuild(guildId, {
-			cmd: ShardCommand.DIAGNOSE,
-			id: message.id,
+		const { shard } = this.client.rabbitmq.sendCommandToGuild(
 			guildId,
-			originGuildId: guild.id
-		});
+			{
+				cmd: ShardCommand.DIAGNOSE,
+				id: message.id,
+				guildId,
+				originGuildId: guild.id
+			},
+			response => {
+				if (response.error) {
+					this.client.sendReply(message, response.error);
+					return;
+				}
+
+				const embed = this.client.createEmbed({
+					description: ''
+				});
+
+				embed.fields.push({
+					name: 'Guild',
+					value: `Id: ${guildId}\n` + `Shard: ${shard}\n`
+				});
+
+				const sets: { [x: string]: string } = {};
+				Object.keys(response.settings).forEach(key => {
+					if (typeof response.settings[key] === 'string') {
+						sets[key] = response.settings[key].substr(0, 200);
+					} else {
+						sets[key] = response.settings[key];
+					}
+				});
+				embed.fields.push({
+					name: 'Settings',
+					value:
+						'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
+				});
+
+				embed.fields.push({
+					name: 'Premium',
+					value:
+						'```json\n' +
+						(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
+						'```'
+				});
+
+				embed.fields.push({
+					name: 'Last command usage',
+					value: lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
+				});
+
+				msg.edit(embed).catch(e => msg.edit(e));
+
+				// Send second message with permissions info
+				const permsEmbed = this.client.createEmbed();
+
+				permsEmbed.fields.push({
+					name: 'Bot permissions',
+					value: '```\n' + response.perms.join('\n').substr(0, 1000) + '```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Join channel permissions',
+					value:
+						'```\n' +
+						response.joinChannelPerms.join('\n').substr(0, 1000) +
+						'```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Leave channel permissions',
+					value:
+						'```\n' +
+						response.leaveChannelPerms.join('\n').substr(0, 1000) +
+						'```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Rank announcement channel permissions',
+					value:
+						'```\n' +
+						response.announceChannelPerms.join('\n').substr(0, 1000) +
+						'```'
+				});
+
+				message.channel
+					.createMessage(permsEmbed)
+					.catch(e => message.channel.createMessage(e));
+			}
+		);
 	}
 }

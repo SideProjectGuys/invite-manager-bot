@@ -54,9 +54,9 @@ export default class extends Command {
 		textMessage += '\n';
 
 		if (!target.bot) {
-			let targetMember = guild.members.get(user.id);
+			let targetMember = guild.members.get(target.id);
 			if (!targetMember) {
-				targetMember = await guild.getRESTMember(user.id);
+				targetMember = await guild.getRESTMember(target.id);
 			}
 
 			// Only process if the user is still in the guild

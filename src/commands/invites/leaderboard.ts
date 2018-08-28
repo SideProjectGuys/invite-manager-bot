@@ -11,9 +11,6 @@ import { Command, Context } from '../Command';
 const chrono = require('chrono-node');
 
 const usersPerPage = 10;
-const upSymbol = '🔺';
-const downSymbol = '🔻';
-const neutralSymbol = '🔹';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -97,12 +94,12 @@ export default class extends Command {
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
-			let lengths: number[] = [1, 6, 4, 1, 1, 1, 1];
+			let lengths: number[] = [2, 1, 4, 1, 1, 1, 1];
 
 			if (style === LeaderboardStyle.table) {
 				lines.push([
+					'⇳',
 					'#',
-					t('cmd.leaderboard.col.change'),
 					t('cmd.leaderboard.col.name'),
 					t('cmd.leaderboard.col.total'),
 					t('cmd.leaderboard.col.regular'),
@@ -110,7 +107,7 @@ export default class extends Command {
 					t('cmd.leaderboard.col.fake'),
 					t('cmd.leaderboard.col.leave')
 				]);
-				lines.push(lines[0].map(h => '-'.repeat(h.length)));
+				lines.push(lines[0].map(h => '―'.repeat(h.length + 1)));
 			}
 
 			keys
@@ -125,24 +122,18 @@ export default class extends Command {
 					const name =
 						style === LeaderboardStyle.mentions && stillInServer[k]
 							? `<@${k}>`
-							: `${inv.name}`;
-					const symbol =
-						posChange > 0
-							? upSymbol
-							: posChange < 0
-								? downSymbol
-								: neutralSymbol;
+							: inv.name.substring(0, 10);
 
 					const posText =
 						posChange > 0
 							? '+' + posChange
 							: posChange === 0
-								? '--'
+								? '*0'
 								: posChange;
 
 					const line = [
+						`${posText}`,
 						`${pos}.`,
-						`${symbol} (${posText})`,
 						name,
 						`${inv.total}`,
 						`${inv.regular}`,
@@ -160,7 +151,7 @@ export default class extends Command {
 
 			// Put string together
 			if (style === LeaderboardStyle.table) {
-				str += '```';
+				str += '```diff\n';
 			}
 			lines.forEach(line => {
 				if (style === LeaderboardStyle.table) {
@@ -186,7 +177,7 @@ export default class extends Command {
 				str += '\n';
 			});
 			if (style === LeaderboardStyle.table) {
-				str += '```\n' + t('cmd.leaderboard.legend');
+				str += '\n```\n' + t('cmd.leaderboard.legend');
 			}
 
 			return this.client.createEmbed({

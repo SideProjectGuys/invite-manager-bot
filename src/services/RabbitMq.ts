@@ -1,5 +1,5 @@
 import * as amqplib from 'amqplib';
-import { TextChannel } from 'eris';
+import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../client';
@@ -17,26 +17,35 @@ import {
 } from '../sequelize';
 import { RabbitMqMember, ShardCommand } from '../types';
 import {
+	FakeChannel,
 	getInviteCounts,
 	getShardIdForGuild,
 	promoteIfQualified
 } from '../util';
 
+interface ShardMessageOptions {
+	id: string;
+	cmd: ShardCommand;
+	[x: string]: any;
+}
+
+interface ShardMessage extends ShardMessageOptions {
+	shardId: number;
+}
+
 export class RabbitMq {
 	private client: IMClient;
 
-	public conn: amqplib.Connection;
-	public qJoinsName: string;
-	public channelJoins: amqplib.Channel;
-	public qLeavesName: string;
-	public channelLeaves: amqplib.Channel;
-	public qCmdsName: string;
-	public channelCmds: amqplib.Channel;
-	public pendingRabbitMqRequests: Map<string, (response: any) => void>;
+	private qJoinsName: string;
+	private channelJoins: amqplib.Channel;
+	private qLeavesName: string;
+	private channelLeaves: amqplib.Channel;
+	private qCmdsName: string;
+	private channelCmds: amqplib.Channel;
+	private pendingRabbitMqRequests: Map<string, (response: any) => void>;
 
 	public constructor(client: IMClient, conn: amqplib.Connection) {
 		this.client = client;
-		this.conn = conn;
 		this.pendingRabbitMqRequests = new Map();
 
 		// Setup RabbitMQ channels
@@ -102,16 +111,23 @@ export class RabbitMq {
 
 	public sendCommandToShard(
 		shardId: number,
-		payload: { id: string; [x: string]: any }
+		message: ShardMessageOptions,
+		callback?: (response: any) => void
 	) {
-		const shardCount = this.client.shardCount;
+		// Attach our shard in case of responses
+		message.shardId = this.client.shardId;
 
+		const shardCount = this.client.shardCount;
 		const rabbitMqPrefix = this.client.config.rabbitmq.prefix
 			? `${this.client.config.rabbitmq.prefix}-`
 			: '';
 
+		if (callback) {
+			this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, callback);
+		}
+
 		console.log(
-			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${payload}`
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${message}`
 		);
 
 		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
@@ -119,18 +135,20 @@ export class RabbitMq {
 			shard: shardId,
 			result: this.channelCmds.sendToQueue(
 				queueName,
-				Buffer.from(JSON.stringify(payload))
+				Buffer.from(JSON.stringify(message))
 			)
 		};
 	}
 
 	public sendCommandToGuild(
 		guildId: any,
-		payload: { id: string; [x: string]: any }
+		message: ShardMessageOptions,
+		callback?: (response: any) => void
 	) {
 		return this.sendCommandToShard(
 			getShardIdForGuild(guildId, this.client.shardCount),
-			payload
+			message,
+			callback
 		);
 	}
 
@@ -434,26 +452,29 @@ export class RabbitMq {
 	}
 
 	private async onShardCommand(msg: amqplib.Message) {
-		const content = JSON.parse(msg.content.toString());
-		const cmd: ShardCommand = content.cmd;
-		const id: string = content.id;
+		const content = JSON.parse(msg.content.toString()) as ShardMessage;
+		const cmd = content.cmd;
 
 		const guildId = content.guildId;
 		const guild = this.client.guilds.get(guildId);
-		const originGuildId = content.originGuildId;
 
 		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
 		this.channelCmds.ack(msg, false);
+
+		const sendResponse = (message: { [x: string]: any }) =>
+			this.sendCommandToShard(content.shardId, {
+				id: content.id,
+				cmd: ShardCommand.RESPONSE,
+				...message
+			});
 
 		switch (cmd) {
 			case ShardCommand.DIAGNOSE:
 				console.log(`DIAGNOSING ${guildId}`);
 
 				if (!guild) {
-					return this.sendCommandToGuild(originGuildId, {
-						cmd: ShardCommand.RESPONSE,
-						id,
+					return sendResponse({
 						error: 'Guild not found'
 					});
 				}
@@ -494,9 +515,7 @@ export class RabbitMq {
 					}
 				}
 
-				this.sendCommandToGuild(originGuildId, {
-					cmd: ShardCommand.RESPONSE,
-					id,
+				sendResponse({
 					settings: sets,
 					perms,
 					joinChannelPerms,
@@ -515,47 +534,74 @@ export class RabbitMq {
 				this.client.cache.flush(guildId);
 				break;
 
-			/*case ShardCommand.SUDO:
+			case ShardCommand.SUDO:
 				if (!guild) {
-					return this.sendCommandToGuild(originGuildId, {
-						cmd: ShardCommand.RESPONSE,
-						id,
+					return sendResponse({
 						error: 'Guild not found'
 					});
 				}
 
-				const cmdName = content.sudoCmd;
-				const sudoCmd = this.commands.resolve(cmdName);
-				const channel = new FakeChannel(guild, {});
+				const channel = new FakeChannel({ id: 'fake' }, guild, 100);
 
 				channel.listener = data => {
-					this.sendCommandToGuild(originGuildId, {
-						cmd: ShardCommand.RESPONSE,
-						id,
-						data
-					});
+					console.log(data);
+					sendResponse({ data });
 				};
 
 				const fakeMsg = new Message(
-					this,
 					{
-						id,
+						id: content.id,
 						content:
-							`<@!${this.user.id}>` +
+							`<@!${this.client.user.id}>` +
 							content.sudoCmd +
 							' ' +
 							content.args.join(' '),
-						author: await this.users.fetch(content.authorId),
+						author: await this.client.users.get(content.authorId),
 						embeds: [],
 						attachments: []
 					},
-					channel
+					this.client
 				);
 				(fakeMsg as any).__sudo = true;
-				sudoCmd.action(fakeMsg, content.args);
-				break;*/
+				this.client.cmds.onMessage(fakeMsg);
+				break;
+
+			case ShardCommand.OWNER_DM:
+				const user = await this.client.getRESTUser(content.userId);
+				const userChannel = await user.getDMChannel();
+				await userChannel.createMessage(content.message);
+				sendResponse({ ok: true });
+				break;
+
+			case ShardCommand.USER_DM:
+				const dmChannel = guild.channels.get(content.channelId) as TextChannel;
+				const sender = content.user;
+
+				const embed = this.client.createEmbed({
+					author: {
+						name: `${sender.username}#${sender.discriminator}`,
+						url: sender.avatarURL
+					},
+					description: content.message
+				});
+				embed.fields.push({
+					name: 'User ID',
+					value: sender.id,
+					inline: true
+				});
+				embed.fields.push({
+					name: 'Initial message',
+					value: content.isInitial,
+					inline: true
+				});
+
+				dmChannel.createMessage({
+					embed
+				});
+				break;
 
 			case ShardCommand.RESPONSE:
+				const id = content.id;
 				if (this.pendingRabbitMqRequests.has(id)) {
 					this.pendingRabbitMqRequests.get(id)(content);
 				} else {

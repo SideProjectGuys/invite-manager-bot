@@ -6,6 +6,8 @@ import moment from 'moment';
 
 import { guilds, LogAction, members } from './sequelize';
 import { Commands } from './services/Commands';
+import { DBCache } from './services/DBCache';
+import { DBQueue } from './services/DBQueue';
 import {
 	CreateEmbedFunc,
 	Messaging,
@@ -14,8 +16,6 @@ import {
 	ShowPaginatedFunc
 } from './services/Messaging';
 import { RabbitMq } from './services/RabbitMq';
-import { DBCache } from './storage/DBCache';
-import { DBQueue } from './storage/DBQueue';
 
 const config = require('../config.json');
 
@@ -96,9 +96,10 @@ export class IMClient extends Client {
 		this.dbQueue = new DBQueue(this);
 
 		this.msg = new Messaging(this);
-		this.createEmbed = this.msg.createEmbed;
-		this.sendReply = this.msg.sendReply;
-		this.sendEmbed = this.msg.sendEmbed;
+		this.createEmbed = this.msg.createEmbed.bind(this.msg);
+		this.sendReply = this.msg.sendReply.bind(this.msg);
+		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
+		this.showPaginated = this.msg.showPaginated.bind(this.msg);
 
 		this.shardId = shardId;
 		this.shardCount = shardCount;

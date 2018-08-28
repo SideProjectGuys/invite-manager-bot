@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { StringResolver } from '../../resolvers';
-import { OwnerCommand } from '../../types';
+import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
@@ -39,22 +39,16 @@ export default class extends Command {
 			return;
 		}
 
-		this.client.rabbitmq.pendingRabbitMqRequests.set(message.id, response => {
-			if (response.ok) {
-				message.addReaction('👍');
-			} else {
-				message.addReaction('👎');
-				this.client.sendReply(
-					message,
-					`ERROR ${response.code}: ${response.message}`
-				);
-			}
-		});
-
-		this.client.rabbitmq.sendCommandToShard(1, {
-			id: message.id,
-			type: 'OWNER_DM',
-			message: msg
-		});
+		this.client.rabbitmq.sendCommandToShard(
+			1,
+			{
+				id: message.id,
+				cmd: ShardCommand.OWNER_DM,
+				shardId: this.client.shardId,
+				userId,
+				message: msg
+			},
+			() => message.addReaction('👍')
+		);
 	}
 }

@@ -5,7 +5,8 @@
 			"notSet": "cmd.config.notSet",
 			"current": {
 				"text": "cmd.config.current.text",
-				"title": "cmd.config.current.title"
+				"title": "cmd.config.current.title",
+				"notSet": "cmd.config.current.notSet"
 			},
 			"sameValue": "cmd.config.sameValue",
 			"changed": {
@@ -21,18 +22,53 @@
 		},
 		"help": {
 			"command": {
-				"title": "cmd.help.command.title"
+				"title": "Command"
 			},
 			"description": {
-				"title": "cmd.help.description.title"
+				"title": "Description"
 			},
 			"usage": {
-				"title": "cmd.help.usage.title"
+				"title": "Usage"
 			},
 			"aliases": {
-				"title": "cmd.help.aliases.title"
+				"title": "Aliases"
 			},
-			"links": "cmd.help.links"
+			"links": "Links",
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)"
+		},
+		"leaderboard": {
+			"title": "Leaderboard",
+			"noInvites": "No invites!",
+			"comparedTo": "changes compared to {{ to }}",
+			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"col": {
+				"change": "Change",
+				"name": "Name",
+				"total": "T",
+				"regular": "R",
+				"custom": "B",
+				"fake": "F",
+				"leave": "L"
+			},
+			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves"
+		},
+		"invites": {
+			"amount": {
+				"self": "You have **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"other": "{{{ target }}} has **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+			}
+		},
+		"addInvites": {
+			"amount": {
+				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
+				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
+			}
+		},
+		"clearInvites": {
+			"done": "Cleared invites for {{ amount }} users!"
+		},
+		"fake": {
+			"none": "No fake invites detected so far."
 		}
 	},
 	"arguments": {

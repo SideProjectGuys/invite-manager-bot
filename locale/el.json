@@ -29,7 +29,8 @@
 	"cmd": {
 		"invites": {
 			"amount": {
-				"self": "cmd.invites.amount.self"
+				"self": "cmd.invites.amount.self",
+				"other": "cmd.invites.amount.other"
 			}
 		},
 		"botInfo": {
@@ -48,7 +49,8 @@
 			"notSet": "cmd.config.notSet",
 			"current": {
 				"text": "cmd.config.current.text",
-				"title": "cmd.config.current.title"
+				"title": "cmd.config.current.title",
+				"notSet": "cmd.config.current.notSet"
 			},
 			"sameValue": "cmd.config.sameValue",
 			"changed": {
@@ -74,7 +76,35 @@
 			"aliases": {
 				"title": "cmd.help.aliases.title"
 			},
-			"links": "cmd.help.links"
+			"links": "cmd.help.links",
+			"text": "cmd.help.text"
+		},
+		"leaderboard": {
+			"title": "cmd.leaderboard.title",
+			"noInvites": "cmd.leaderboard.noInvites",
+			"comparedTo": "cmd.leaderboard.comparedTo",
+			"entry": "cmd.leaderboard.entry",
+			"col": {
+				"change": "cmd.leaderboard.col.change",
+				"name": "cmd.leaderboard.col.name",
+				"total": "cmd.leaderboard.col.total",
+				"regular": "cmd.leaderboard.col.regular",
+				"custom": "cmd.leaderboard.col.custom",
+				"fake": "cmd.leaderboard.col.fake",
+				"leave": "cmd.leaderboard.col.leave"
+			},
+			"legend": "cmd.leaderboard.legend"
+		},
+		"addInvites": {
+			"amount": {
+				"positive": "cmd.addInvites.amount.positive"
+			}
+		},
+		"clearInvites": {
+			"done": "cmd.clearInvites.done"
+		},
+		"fake": {
+			"none": "cmd.fake.none"
 		}
 	},
 	"arguments": {

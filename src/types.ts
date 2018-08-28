@@ -18,7 +18,9 @@ export enum ShardCommand {
 	'FLUSH_PREMIUM_CACHE' = 'FLUSH_PREMIUM_CACHE',
 	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE',
 	'SUDO' = 'SUDO',
-	'RESPONSE' = 'RESPONSE'
+	'RESPONSE' = 'RESPONSE',
+	'OWNER_DM' = 'OWNER_DM',
+	'USER_DM' = 'USER_DM'
 }
 
 export enum ChartType {

@@ -1,9 +1,14 @@
-import { Guild, Member, Message, TextChannel } from 'eris';
+import { Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
+import fs from 'fs';
+import i18n from 'i18n';
+import path from 'path';
 
 import { IMClient } from '../client';
 import { Command } from '../commands/Command';
 import { defaultSettings } from '../sequelize';
+import { ShardCommand } from '../types';
 
+const cmdDir = path.resolve(__dirname, '../commands/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 
 export class Commands {
@@ -18,31 +23,38 @@ export class Commands {
 		this.commands = [];
 		this.disabledGuilds = new Set();
 
-		let clazz = require('../commands/info/botInfo').default;
-		this.commands.push(new clazz(this));
+		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
 
-		clazz = require('../commands/info/getBot').default;
-		this.commands.push(new clazz(this));
+		// Load all commands
+		const loadRecursive = (dir: string) =>
+			fs.readdirSync(dir).forEach((fileName: string) => {
+				const file = dir + '/' + fileName;
 
-		clazz = require('../commands/info/members').default;
-		this.commands.push(new clazz(this));
+				if (fs.statSync(file).isDirectory()) {
+					loadRecursive(file);
+					return;
+				}
 
-		clazz = require('../commands/invites/invites').default;
-		this.commands.push(new clazz(this));
+				const clazz = require(file);
+				if (clazz.default) {
+					const constr = clazz.default;
+					const inst = new constr(this.client);
+					this.commands.push(inst);
 
-		clazz = require('../commands/info/help').default;
-		this.commands.push(new clazz(this));
+					console.log(
+						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
+							`\x1b[2m${path.basename(file)}\x1b[0m`
+					);
+				}
+			});
+		loadRecursive(cmdDir);
 
-		clazz = require('../commands/config/config').default;
-		this.commands.push(new clazz(this));
-
-		clazz = require('../commands/ranks/addRank').default;
-		this.commands.push(new clazz(this));
+		console.log(`Loaded \x1b[32m${this.commands.length}\x1b[0m commands!`);
 
 		// Attach events
-		this.client.on('messageCreate', this.onMessage);
-		this.client.on('guildMemberAdd', this.onGuildMemberAdd);
-		this.client.on('guildMemberRemove', this.onGuildMemberRemove);
+		this.client.on('messageCreate', this.onMessage.bind(this));
+		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
+		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
 	public init() {
@@ -54,7 +66,7 @@ export class Commands {
 		});
 	}
 
-	private async onMessage(message: Message) {
+	public async onMessage(message: Message) {
 		// Skip if this is our own message, bot message or empty messages
 		if (
 			message.author.id === this.client.user.id ||
@@ -121,10 +133,41 @@ export class Commands {
 			c => c.name.toLowerCase() === cmdStr || c.aliases.indexOf(cmdStr) >= 0
 		);
 
-		console.log(cmd ? cmd.name : 'INVALID COMMAND: ' + cmdStr);
+		// Command not found
+		if (!cmd) {
+			// Send message to InviteManager Guild if it's a DM
+			if (message.channel instanceof PrivateChannel) {
+				const user = message.author;
 
-		// Command not found, or not allowed in DM
-		if (!cmd || (cmd.guildOnly && !guild)) {
+				let oldMessages = await message.channel.getMessages(2);
+				const isInitialMessage = oldMessages.length <= 1;
+				if (isInitialMessage) {
+					const initialMessage =
+						`Hi there, thanks for writing me!\n\n` +
+						`To invite me to your own server, just click here: https://invitemanager.co/add-bot?origin=initial-dm \n\n` +
+						`If you need help, you can either write me here (try "help") or join our discord support server: ` +
+						`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
+					const embed = this.client.createEmbed({
+						description: initialMessage
+					});
+					await this.client.sendEmbed(await user.getDMChannel(), embed);
+				}
+
+				this.client.rabbitmq.sendCommandToGuild(this.client.config.dmGuild, {
+					id: message.id,
+					cmd: ShardCommand.USER_DM,
+					userId: user.id,
+					guildId: this.client.config.dmGuild,
+					channelId: this.client.config.dmChannel,
+					isInitial: isInitialMessage,
+					message: message.content
+				});
+			}
+			return;
+		}
+
+		// Command not allowed in DM
+		if (cmd.guildOnly && !guild) {
 			return;
 		}
 
@@ -210,8 +253,6 @@ export class Commands {
 			i++;
 		}
 
-		console.log(args);
-
 		// Run command
 		await cmd.action(message, args, context);
 
@@ -244,44 +285,6 @@ export class Commands {
 				}
 			);
 		}
-
-		// TODO: Reimplement sending bot DMs
-		// Skip if this is a valid bot command
-		// (technically we ignore all prefixes, but bot only responds to default one)
-		/*const cmd = message.content.split(' ')[0].toLowerCase();
-		if (this.commands.get(cmd) || this.commands.get(cmd.substring(1))) {
-			return;
-		}
-
-		if (message.channel instanceof DMChannel) {
-			const user = message.author;
-			const dmChannel = this.channels.get(config.dmChannel) as TextChannel;
-
-			let oldMessages = await message.channel.messages.fetch({ limit: 2 });
-			const isInitialMessage = oldMessages.size <= 1;
-			if (isInitialMessage) {
-				const initialMessage =
-					`Hi there, thanks for writing me!\n\n` +
-					`To invite me to your own server, just click here: https://invitemanager.co/add-bot?origin=initial-dm \n\n` +
-					`If you need help, you can either write me here (try "help") or join our discord support server: ` +
-					`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
-				const embed = createEmbed(this);
-				embed.setDescription(initialMessage);
-				await sendEmbed(user, embed);
-			}
-
-			if (dmChannel) {
-				const embed = createEmbed(this);
-				embed.setAuthor(
-					`${user.username}-${user.discriminator}`,
-					user.avatarURL()
-				);
-				embed.fields.push('User ID', user.id, true);
-				embed.fields.push('Initial message', isInitialMessage, true);
-				embed.setDescription(message.content);
-				await sendEmbed(dmChannel, embed);
-			}
-		}*/
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
