@@ -121,11 +121,11 @@ export default class extends Command {
 			// Check if the old one is set
 			if (oldVal) {
 				const clear = defaultSettings[key] === null ? 't' : undefined;
-				embed.description = t('cmd.config.current.text', {
-					prefix,
-					key,
-					clear
-				});
+				embed.description =
+					t('cmd.config.current.text', {
+						prefix,
+						key
+					}) + (clear ? '\n' + t('cmd.config.current.clear') : '');
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
 					value: oldRawVal.toString()

@@ -174,6 +174,50 @@
 		},
 		"permssions": {
 			"manageGuild": "cmd.permssions.manageGuild"
+		},
+		"info": {
+			"lastJoined": {
+				"title": "cmd.info.lastJoined.title"
+			},
+			"joined": {
+				"title": "cmd.info.joined.title",
+				"text": "cmd.info.joined.text"
+			},
+			"created": {
+				"title": "cmd.info.created.title"
+			},
+			"invites": {
+				"title": "cmd.info.invites.title",
+				"text": "cmd.info.invites.text",
+				"clear": {
+					"title": "cmd.info.invites.clear.title",
+					"text": "cmd.info.invites.clear.text"
+				}
+			},
+			"joins": {
+				"title": "cmd.info.joins.title",
+				"unknown": "cmd.info.joins.unknown"
+			},
+			"regularInvites": {
+				"title": "cmd.info.regularInvites.title",
+				"none": "cmd.info.regularInvites.none",
+				"entry": "cmd.info.regularInvites.entry"
+			},
+			"bonusInvites": {
+				"entry": "cmd.info.bonusInvites.entry",
+				"title": "cmd.info.bonusInvites.title",
+				"noReason": "cmd.info.bonusInvites.noReason"
+			},
+			"invitedMembers": {
+				"title": "cmd.info.invitedMembers.title",
+				"none": "cmd.info.invitedMembers.none"
+			}
+		},
+		"inviteDetails": {
+			"entry": "cmd.inviteDetails.entry"
+		},
+		"subtractFakes": {
+			"none": "cmd.subtractFakes.none"
 		}
 	},
 	"arguments": {

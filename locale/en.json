@@ -1,24 +1,25 @@
 {
 	"cmd": {
 		"config": {
-			"text": "cmd.config.text",
-			"notSet": "cmd.config.notSet",
+			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
+			"notSet": "These settings are not set",
 			"current": {
-				"text": "cmd.config.current.text",
-				"title": "cmd.config.current.title",
-				"notSet": "cmd.config.current.notSet"
+				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
+				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
+				"title": "Current Value",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
 			},
-			"sameValue": "cmd.config.sameValue",
+			"sameValue": "This config is already set to that value.",
 			"changed": {
-				"text": "cmd.config.changed.text"
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
 			},
 			"previous": {
-				"title": "cmd.config.previous.title"
+				"title": "Previous Value"
 			},
 			"new": {
-				"title": "cmd.config.new.title"
+				"title": "New Value"
 			},
-			"title": "cmd.config.title"
+			"title": "Your config settings"
 		},
 		"help": {
 			"command": {
@@ -72,21 +73,23 @@
 			"none": "No fake invites detected so far."
 		},
 		"inviteCodes": {
-			"title": "cmd.inviteCodes.title",
+			"title": "You have the following codes on the server {{ guild }}",
 			"recommendedCode": {
-				"title": "cmd.inviteCodes.recommendedCode.title"
+				"title": "Recommended invite code",
+				"none": "Please create a permanent invite code."
 			},
 			"permanent": {
-				"title": "cmd.inviteCodes.permanent.title",
-				"text": "cmd.inviteCodes.permanent.text",
-				"entry": "cmd.inviteCodes.permanent.entry"
+				"title": "Permanent",
+				"text": "These invites don't expire.",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Uses**: {{ maxUses }}\n**Channel**: {{{ channel }}}"
 			},
 			"temporary": {
-				"title": "cmd.inviteCodes.temporary.title",
-				"text": "cmd.inviteCodes.temporary.text",
-				"entry": "cmd.inviteCodes.temporary.entry"
+				"title": "Temporary",
+				"text": "These invites expire after a certain time.",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Uses**: {{ maxUses }}\n**Channel**: {{{ channel }}}\n**Expires**: {{ expires }}"
 			},
-			"dmSent": "cmd.inviteCodes.dmSent"
+			"dmSent": "I sent you a DM with all your invite codes.",
+			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one."
 		},
 		"permissions": {
 			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
@@ -132,6 +135,51 @@
 		},
 		"createInvite": {
 			"done": "Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}."
+		},
+		"info": {
+			"lastJoined": {
+				"title": "Last joined",
+				"notInGuild": "<Not in guild>"
+			},
+			"joined": {
+				"title": "Joined",
+				"text": "{{ amount }} times"
+			},
+			"created": {
+				"title": "Created"
+			},
+			"invites": {
+				"title": "Invites",
+				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"clear": {
+					"title": "Cleared invites",
+					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+				}
+			},
+			"joins": {
+				"title": "Joins",
+				"unknown": "unknown (this only works for new members)"
+			},
+			"regularInvites": {
+				"title": "Regular invites",
+				"none": "This member has not invited anyone so far",
+				"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}**"
+			},
+			"bonusInvites": {
+				"entry": "**{{ amount }}** from {{{ creator }}} - **{{ date }}**, reason: **{{ reason }}**",
+				"title": "Bonus invites",
+				"noReason": "None"
+			},
+			"invitedMembers": {
+				"title": "Invited members",
+				"none": "This member has not invited anyone else so far"
+			}
+		},
+		"inviteDetails": {
+			"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}**"
+		},
+		"subtractFakes": {
+			"none": "There have been no fake invites so far!"
 		}
 	},
 	"arguments": {

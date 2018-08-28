@@ -297,8 +297,7 @@ export default class extends Command {
 				invText +=
 					t('cmd.info.regularInvites.entry', {
 						uses: inv.uses,
-						code: name ? name : inv.code,
-						name: name ? inv.code : undefined,
+						code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
 						createdAt: moment(inv.createdAt)
 							.locale(lang)
 							.fromNow()
@@ -334,11 +333,13 @@ export default class extends Command {
 				customInvText +=
 					t('cmd.info.bonusInvites.entry', {
 						amount: inv.amount,
-						creator: inv.creatorId ? inv.creatorId : me.id,
+						creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
 						date: moment(inv.createdAt)
 							.locale(lang)
 							.fromNow(),
 						reason: inv.reason
+							? inv.reason
+							: t('cmd.info.bonusInvites.noReason')
 					}) + '\n';
 			});
 

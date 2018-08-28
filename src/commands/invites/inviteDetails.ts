@@ -64,8 +64,7 @@ export default class extends Command {
 			invText +=
 				t('cmd.inviteDetails.entry', {
 					uses: inv.uses,
-					code: name ? name : inv.code,
-					name: name ? inv.code : undefined,
+					code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
 					createdAt: moment(inv.createdAt)
 						.locale(lang)
 						.fromNow()
