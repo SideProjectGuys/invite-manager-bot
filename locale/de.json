@@ -34,10 +34,6 @@
 			"shards": {
 				"current": "Aktuelle Scherben",
 				"total": "Total Shards"
-			},
-			"shard": {
-				"current": "",
-				"total": ""
 			}
 		},
 		"clearInvites": {
@@ -233,8 +229,7 @@
 				"day": "Kam zuletzt 24h",
 				"week": "Diese Woche beigetreten",
 				"month": "Trat in diesem Monat"
-			},
-			"human": ""
+			}
 		},
 		"ranks": {
 			"none": "Keine Ränge wurden jetzt erstellt",

@@ -34,10 +34,6 @@
 			"shards": {
 				"current": "Shard actual",
 				"total": "Shards totales"
-			},
-			"shard": {
-				"current": "",
-				"total": ""
 			}
 		},
 		"clearInvites": {
@@ -233,8 +229,7 @@
 				"day": "Entraron en las ultimas 24h",
 				"week": "Entraron esta semana",
 				"month": "Entraron este mes"
-			},
-			"human": ""
+			}
 		},
 		"ranks": {
 			"none": "No se ha creado ningun rango hasta el momento.",

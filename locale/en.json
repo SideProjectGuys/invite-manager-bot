@@ -49,10 +49,6 @@
 			"shards": {
 				"current": "Current Shard",
 				"total": "Total Shards"
-			},
-			"shard": {
-				"current": "cmd.botInfo.shard.current",
-				"total": "cmd.botInfo.shard.total"
 			}
 		},
 		"clearInvites": {
@@ -192,7 +188,7 @@
 		"invites": {
 			"amount": {
 				"self": "cmd.invites.amount.self",
-				"other": ""
+				"other": "cmd.invites.amount.other"
 			},
 			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
 			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
@@ -248,8 +244,7 @@
 				"day": "Joined last 24h",
 				"week": "Joined this week",
 				"month": "Joined this month"
-			},
-			"human": "cmd.members.human"
+			}
 		},
 		"ranks": {
 			"none": "No ranks have been created yet.",

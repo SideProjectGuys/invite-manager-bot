@@ -34,10 +34,6 @@
 			"shards": {
 				"current": "Huidige Shard",
 				"total": "Totale Shards"
-			},
-			"shard": {
-				"current": "",
-				"total": ""
 			}
 		},
 		"clearInvites": {
@@ -233,8 +229,7 @@
 				"day": "Is gejoint in de laatste 24 uur",
 				"week": "Is gejoint deze week",
 				"month": "Is gejoint deze maan"
-			},
-			"human": ""
+			}
 		},
 		"ranks": {
 			"none": "Er zijn geen ranken gecreëerd.",

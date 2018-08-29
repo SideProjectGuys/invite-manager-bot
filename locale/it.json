@@ -11,11 +11,7 @@
 			"version": "",
 			"uptime": "",
 			"guilds": "",
-			"members": "",
-			"shard": {
-				"current": "",
-				"total": ""
-			}
+			"members": ""
 		},
 		"config": {
 			"title": "",
@@ -264,7 +260,7 @@
 		"members": {
 			"members": "",
 			"online": "",
-			"human": "",
+			"humans": "",
 			"bots": "",
 			"joined": {
 				"day": "",

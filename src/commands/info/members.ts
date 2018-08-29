@@ -55,7 +55,7 @@ export default class extends Command {
 			inline: true
 		});
 		embed.fields.push({
-			name: t('cmd.members.human'),
+			name: t('cmd.members.humans'),
 			value: humanCount.toString(),
 			inline: true
 		});

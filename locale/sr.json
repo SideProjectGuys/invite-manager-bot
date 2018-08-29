@@ -34,10 +34,6 @@
 			"shards": {
 				"current": "Current Shard",
 				"total": "Total Shards"
-			},
-			"shard": {
-				"current": "",
-				"total": ""
 			}
 		},
 		"clearInvites": {
@@ -233,8 +229,7 @@
 				"day": "Joined last 24h",
 				"week": "Joined this week",
 				"month": "Joined this month"
-			},
-			"human": ""
+			}
 		},
 		"ranks": {
 			"none": "No ranks have been created yet.",

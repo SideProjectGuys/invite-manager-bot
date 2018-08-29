@@ -63,12 +63,12 @@ export default class extends Command {
 
 		// Shard info
 		embed.fields.push({
-			name: t('cmd.botInfo.shard.current'),
+			name: t('cmd.botInfo.shards.current'),
 			value: (this.client.shardId + 1).toString(),
 			inline: true
 		});
 		embed.fields.push({
-			name: t('cmd.botInfo.shard.total'),
+			name: t('cmd.botInfo.shards.total'),
 			value: this.client.shardCount.toString(),
 			inline: true
 		});

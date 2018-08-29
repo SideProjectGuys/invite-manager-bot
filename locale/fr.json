@@ -34,10 +34,6 @@
 			"shards": {
 				"current": "Fragment actuel",
 				"total": "Fragment Total "
-			},
-			"shard": {
-				"current": "",
-				"total": ""
 			}
 		},
 		"clearInvites": {
@@ -233,8 +229,7 @@
 				"day": "A rejoint dans les 24 dernier heure",
 				"week": "A rejoint cette semaine",
 				"month": "A rejoint ce mois-ci"
-			},
-			"human": ""
+			}
 		},
 		"ranks": {
 			"none": "Aucun rang n'a encore été créé.",
