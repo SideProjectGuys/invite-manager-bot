@@ -16,16 +16,13 @@ export default class extends Command {
 				{
 					name: 'violation',
 					resolver: new EnumResolver(client, Object.values(ViolationType)),
-					description: 'Violation type',
 					required: true
 				},
 				{
 					name: 'strikes',
-					resolver: NumberResolver,
-					description: 'Number of strikes'
+					resolver: NumberResolver
 				}
 			],
-			desc: 'Configure strikes received for various violations',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

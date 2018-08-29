@@ -21,12 +21,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.info,
 			aliases: ['showinfo'],
-			desc: 'Show info about a specific member',
 			args: [
 				{
 					name: 'user',
 					resolver: UserResolver,
-					description: 'The user for whom you want to see additional info.',
 					required: true
 				}
 			],

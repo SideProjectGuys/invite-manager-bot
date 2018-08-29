@@ -10,12 +10,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.mentionRole,
 			aliases: ['mention-role', 'mr'],
-			desc: 'Mention an unmentionable role',
 			args: [
 				{
 					name: 'role',
 					resolver: RoleResolver,
-					description: 'The role that you want to mention.',
 					required: true
 				}
 			],

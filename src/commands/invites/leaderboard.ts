@@ -17,17 +17,14 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.leaderboard,
 			aliases: ['top'],
-			desc: 'Show members with most invites.',
 			args: [
 				{
 					name: 'page',
-					resolver: NumberResolver,
-					description: 'Which page of the leaderboard to get.'
+					resolver: NumberResolver
 				},
 				{
 					name: 'date',
-					resolver: StringResolver,
-					description: 'The date (& time) for which the leaderboard is shown'
+					resolver: StringResolver
 				}
 			],
 			group: CommandGroup.Invites,

@@ -16,7 +16,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.subtractFakes,
 			aliases: ['subtract-fakes', 'subfakes', 'sf'],
-			desc: 'Remove fake invites from all users',
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			strict: true

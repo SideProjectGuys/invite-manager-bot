@@ -14,18 +14,15 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.graph,
 			aliases: ['g', 'chart'],
-			desc: 'Shows graphs about various stats on this server.',
 			args: [
 				{
 					name: 'type',
 					resolver: new EnumResolver(client, Object.values(ChartType)),
-					description: 'The type of chart to display.',
 					required: true
 				},
 				{
 					name: 'duration',
-					resolver: NumberResolver,
-					description: 'The duration period for the chart.'
+					resolver: NumberResolver
 				}
 			],
 			group: CommandGroup.Other,
@@ -62,8 +59,8 @@ export default class extends Command {
 		const vs: { [x: string]: number } = {};
 
 		if (type === ChartType.joins) {
-			title = t('cmd.chart.joins.title');
-			description = t('cmd.chart.joins.text');
+			title = t('cmd.graph.joins.title');
+			description = t('cmd.graph.joins.text');
 
 			const js = await joins.findAll({
 				attributes: [
@@ -87,8 +84,8 @@ export default class extends Command {
 
 			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
 		} else if (type === ChartType.leaves) {
-			title = t('cmd.chart.leaves.title');
-			description = t('cmd.chart.leaves.text');
+			title = t('cmd.graph.leaves.title');
+			description = t('cmd.graph.leaves.text');
 
 			const lvs = await leaves.findAll({
 				attributes: [
@@ -112,8 +109,8 @@ export default class extends Command {
 
 			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
 		} else if (type === ChartType.usage) {
-			title = t('cmd.chart.usage.title');
-			description = t('cmd.chart.usage.text');
+			title = t('cmd.graph.usage.title');
+			description = t('cmd.graph.usage.text');
 
 			const us = await commandUsage.findAll({
 				attributes: [

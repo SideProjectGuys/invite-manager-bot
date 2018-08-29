@@ -15,17 +15,14 @@ export default class extends Command {
 				{
 					name: 'member',
 					resolver: MemberResolver,
-					description: 'Member to kick',
 					required: true
 				},
 				{
 					name: 'reason',
 					resolver: StringResolver,
-					description: 'Why was the user banned',
 					rest: true
 				}
 			],
-			desc: 'Kick a member from the server',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

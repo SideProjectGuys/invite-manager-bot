@@ -19,12 +19,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.fake,
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
-			desc: 'Help find users trying to cheat.',
 			args: [
 				{
 					name: 'page',
-					resolver: NumberResolver,
-					description: 'Which page of the fake list to get.'
+					resolver: NumberResolver
 				}
 			],
 			// clientPermissions: ['MANAGE_GUILD'],

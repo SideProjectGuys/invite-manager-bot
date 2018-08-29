@@ -43,22 +43,18 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.memberConfig,
 			aliases: ['member-config', 'memconf', 'mc'],
-			desc: 'Show and change the config of members of the server',
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(MemberSettingsKey)),
-					description: 'The config setting which you want to show/change.'
+					resolver: new EnumResolver(client, Object.values(MemberSettingsKey))
 				},
 				{
 					name: 'user',
-					resolver: UserResolver,
-					description: 'The member that the setting is changed for.'
+					resolver: UserResolver
 				},
 				{
 					name: 'value',
 					resolver: ValueResolver,
-					description: 'The new value of the setting.',
 					rest: true
 				}
 			],

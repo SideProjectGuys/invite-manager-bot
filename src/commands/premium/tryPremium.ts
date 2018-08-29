@@ -11,7 +11,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.tryPremium,
 			aliases: ['try', 'try-premium'],
-			desc: 'Try premium version.',
 			group: CommandGroup.Premium,
 			guildOnly: true,
 			strict: true

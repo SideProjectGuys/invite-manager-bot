@@ -51,25 +51,21 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.inviteCodeConfig,
 			aliases: ['invite-code-config', 'invcodeconf', 'icc'],
-			desc: 'Show and change the config of invite codes of the server',
 			args: [
 				{
 					name: 'key',
 					resolver: new EnumResolver(
 						client,
 						Object.values(InviteCodeSettingsKey)
-					),
-					description: 'The config setting which you want to show/change.'
+					)
 				},
 				{
 					name: 'code',
-					resolver: InviteCodeResolver,
-					description: 'The invite code that the setting is changed for.'
+					resolver: InviteCodeResolver
 				},
 				{
 					name: 'value',
 					resolver: ValueResolver,
-					description: 'The new value of the setting.',
 					rest: true
 				}
 			],

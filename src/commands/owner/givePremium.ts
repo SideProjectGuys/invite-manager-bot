@@ -12,30 +12,30 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.givePremium,
 			aliases: ['owner-give-premium', 'ogp'],
-			desc: 'Give premium',
+			// desc: 'Give premium',
 			args: [
 				{
 					name: 'amount',
 					resolver: NumberResolver,
-					description: 'The amount paid for premium.',
+					// description: 'The amount paid for premium.',
 					required: true
 				},
 				{
 					name: 'user',
 					resolver: UserResolver,
-					description: 'The user that paid for premium.',
+					// description: 'The user that paid for premium.',
 					required: true
 				},
 				{
 					name: 'guildId',
 					resolver: StringResolver,
-					description: 'The id of the guild that receives premium.',
+					// description: 'The id of the guild that receives premium.',
 					required: true
 				},
 				{
 					name: 'duration',
 					resolver: StringResolver,
-					description: 'The duration of the premium activation.',
+					// description: 'The duration of the premium activation.',
 					required: true
 				}
 			],

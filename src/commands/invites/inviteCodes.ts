@@ -25,7 +25,6 @@ export default class extends Command {
 				'showInviteCode',
 				'show-invite-code'
 			],
-			desc: 'Get a list of all your invite codes',
 			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true

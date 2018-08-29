@@ -19,19 +19,14 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.clearInvites,
 			aliases: ['clear-invites'],
-			desc: 'Clear invites of the server/a user',
 			args: [
 				{
 					name: 'clearBonus',
-					resolver: BooleanResolver,
-					description:
-						'Pass `true` if you want to remove bonus invites, otherwise `false` (default).'
+					resolver: BooleanResolver
 				},
 				{
 					name: 'user',
-					resolver: UserResolver,
-					description:
-						'The user to clear all invites from. If omitted clears all users.'
+					resolver: UserResolver
 				}
 			],
 			// clientPermissions: ['MANAGE_GUILD'],

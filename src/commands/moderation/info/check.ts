@@ -16,11 +16,9 @@ export default class extends Command {
 				{
 					name: 'user',
 					resolver: UserResolver,
-					description: 'User to check',
 					required: true
 				}
 			],
-			desc: 'Check history of a user',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

@@ -15,11 +15,9 @@ export default class extends Command {
 			args: [
 				{
 					name: 'command',
-					description: 'The command to get detailed information for',
 					resolver: CommandResolver
 				}
 			],
-			desc: 'Display help',
 			group: CommandGroup.Info,
 			guildOnly: false
 		});
@@ -49,7 +47,7 @@ export default class extends Command {
 			});
 			embed.fields.push({
 				name: t('cmd.help.description.title'),
-				value: cmd.description,
+				value: t(`cmd.${cmd.name}.self.description`),
 				inline: true
 			});
 			embed.fields.push({

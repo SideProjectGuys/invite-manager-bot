@@ -10,7 +10,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.ranks,
 			aliases: ['show-ranks', 'showRanks'],
-			desc: 'Show all ranks.',
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});

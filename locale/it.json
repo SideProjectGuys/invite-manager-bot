@@ -5,13 +5,22 @@
 				"self": "",
 				"other": ""
 			},
-			"nextRank": ""
+			"nextRank": "",
+			"self": {
+				"args": {
+					"user": "cmd.invites.self.args.user"
+				},
+				"description": "cmd.invites.self.description"
+			}
 		},
 		"botInfo": {
 			"version": "",
 			"uptime": "",
 			"guilds": "",
-			"members": ""
+			"members": "",
+			"self": {
+				"description": "cmd.botInfo.self.description"
+			}
 		},
 		"config": {
 			"title": "",
@@ -31,24 +40,37 @@
 			},
 			"new": {
 				"title": ""
+			},
+			"self": {
+				"args": {
+					"key": "cmd.config.self.args.key",
+					"value": "cmd.config.self.args.value"
+				},
+				"description": "cmd.config.self.description"
 			}
 		},
 		"help": {
 			"command": {
-				"title": ""
+				"title": "cmd.help.command.title"
 			},
 			"description": {
-				"title": ""
+				"title": "cmd.help.description.title"
 			},
 			"usage": {
-				"title": ""
+				"title": "cmd.help.usage.title"
 			},
 			"aliases": {
-				"title": ""
+				"title": "cmd.help.aliases.title"
 			},
-			"links": "",
-			"text": "",
-			"missingPermissions": ""
+			"links": "cmd.help.links",
+			"text": "cmd.help.text",
+			"missingPermissions": "",
+			"self": {
+				"args": {
+					"command": "cmd.help.self.args.command"
+				},
+				"description": "cmd.help.self.description"
+			}
 		},
 		"leaderboard": {
 			"title": "",
@@ -64,20 +86,48 @@
 				"fake": "",
 				"leave": ""
 			},
-			"legend": ""
+			"legend": "",
+			"self": {
+				"args": {
+					"page": "cmd.leaderboard.self.args.page",
+					"date": "cmd.leaderboard.self.args.date"
+				},
+				"description": "cmd.leaderboard.self.description"
+			}
 		},
 		"addInvites": {
 			"amount": {
 				"positive": "",
 				"negative": ""
 			},
-			"zero": ""
+			"zero": "",
+			"self": {
+				"args": {
+					"user": "cmd.addInvites.self.args.user",
+					"amount": "cmd.addInvites.self.args.amount",
+					"reason": "cmd.addInvites.self.args.reason"
+				},
+				"description": "cmd.addInvites.self.description"
+			}
 		},
 		"clearInvites": {
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"clearBonus": "cmd.clearInvites.self.args.clearBonus",
+					"user": "cmd.clearInvites.self.args.user"
+				},
+				"description": "cmd.clearInvites.self.description"
+			}
 		},
 		"fake": {
-			"none": ""
+			"none": "",
+			"self": {
+				"args": {
+					"page": "cmd.fake.self.args.page"
+				},
+				"description": "cmd.fake.self.description"
+			}
 		},
 		"inviteCodes": {
 			"title": "",
@@ -94,13 +144,23 @@
 				"text": "",
 				"entry": ""
 			},
-			"dmSent": ""
+			"dmSent": "",
+			"self": {
+				"description": "cmd.inviteCodes.self.description"
+			}
 		},
 		"permissions": {
 			"adminsCanUseAll": "",
 			"added": "",
 			"everyone": "",
-			"removed": ""
+			"removed": "",
+			"self": {
+				"args": {
+					"cmd": "cmd.permissions.self.args.cmd",
+					"role": "cmd.permissions.self.args.role"
+				},
+				"description": "cmd.permissions.self.description"
+			}
 		},
 		"chart": {
 			"joins": {
@@ -120,14 +180,23 @@
 			"title": "",
 			"premiumOnly": "",
 			"preparing": "",
-			"invalidType": ""
+			"invalidType": "",
+			"self": {
+				"args": {
+					"type": "cmd.export.self.args.type"
+				},
+				"description": "cmd.export.self.description"
+			}
 		},
 		"tryPremium": {
 			"title": "",
 			"currentlyActive": "",
 			"text": "",
 			"prompt": "",
-			"started": ""
+			"started": "",
+			"self": {
+				"description": "cmd.tryPremium.self.description"
+			}
 		},
 		"premium": {
 			"premium": {
@@ -148,11 +217,21 @@
 					"title": "",
 					"text": ""
 				}
+			},
+			"self": {
+				"description": "cmd.premium.self.description"
 			}
 		},
 		"createInvite": {
 			"missingPermissions": "",
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"name": "cmd.createInvite.self.args.name",
+					"channel": "cmd.createInvite.self.args.channel"
+				},
+				"description": "cmd.createInvite.self.description"
+			}
 		},
 		"permssions": {
 			"manageGuild": ""
@@ -193,30 +272,68 @@
 			"invitedMembers": {
 				"title": "",
 				"none": ""
+			},
+			"self": {
+				"args": {
+					"user": "cmd.info.self.args.user"
+				},
+				"description": "cmd.info.self.description"
 			}
 		},
 		"inviteDetails": {
-			"entry": ""
+			"entry": "",
+			"self": {
+				"args": {
+					"user": "cmd.inviteDetails.self.args.user"
+				},
+				"description": "cmd.inviteDetails.self.description"
+			}
 		},
 		"subtractFakes": {
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractFakes.self.description"
+			}
 		},
 		"addRank": {
-			"created": ""
+			"created": "",
+			"self": {
+				"args": {
+					"role": "cmd.addRank.self.args.role",
+					"invites": "cmd.addRank.self.args.invites",
+					"info": "cmd.addRank.self.args.info"
+				},
+				"description": "cmd.addRank.self.description"
+			}
 		},
 		"ranks": {
 			"entry": "",
 			"title": "",
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.ranks.self.description"
+			}
 		},
 		"removeRank": {
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"rank": "cmd.removeRank.self.args.rank"
+				},
+				"description": "cmd.removeRank.self.description"
+			}
 		},
 		"subtractLeaves": {
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractLeaves.self.description"
+			}
 		},
 		"prefix": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.prefix.self.description"
+			}
 		},
 		"setup": {
 			"title": "",
@@ -252,10 +369,16 @@
 			"viewAuditLogs": {
 				"title": "",
 				"text": ""
+			},
+			"self": {
+				"description": "cmd.setup.self.description"
 			}
 		},
 		"getBot": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.getBot.self.description"
+			}
 		},
 		"members": {
 			"members": "",
@@ -266,25 +389,160 @@
 				"day": "",
 				"week": "",
 				"month": ""
+			},
+			"self": {
+				"description": "cmd.members.self.description"
 			}
 		},
 		"restoreInvites": {
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"user": "cmd.restoreInvites.self.args.user"
+				},
+				"description": "cmd.restoreInvites.self.description"
+			}
 		},
 		"support": {
-			"server": ""
+			"server": "",
+			"self": {
+				"description": "cmd.support.self.description"
+			}
 		},
 		"makeMentionable": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.makeMentionable.self.args.role"
+				},
+				"description": "cmd.makeMentionable.self.description"
+			}
 		},
 		"mentionRole": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.mentionRole.self.args.role"
+				},
+				"description": "cmd.mentionRole.self.description"
+			}
+		},
+		"inviteCodeConfig": {
+			"self": {
+				"args": {
+					"key": "cmd.inviteCodeConfig.self.args.key",
+					"code": "cmd.inviteCodeConfig.self.args.code",
+					"value": "cmd.inviteCodeConfig.self.args.value"
+				},
+				"description": "cmd.inviteCodeConfig.self.description"
+			}
+		},
+		"memberConfig": {
+			"self": {
+				"args": {
+					"key": "cmd.memberConfig.self.args.key",
+					"user": "cmd.memberConfig.self.args.user",
+					"value": "cmd.memberConfig.self.args.value"
+				},
+				"description": "cmd.memberConfig.self.description"
+			}
+		},
+		"ban": {
+			"self": {
+				"args": {
+					"user": "cmd.ban.self.args.user",
+					"deleteMessageDays": "cmd.ban.self.args.deleteMessageDays",
+					"reason": "cmd.ban.self.args.reason"
+				},
+				"description": "cmd.ban.self.description"
+			}
+		},
+		"check": {
+			"self": {
+				"args": {
+					"user": "cmd.check.self.args.user"
+				},
+				"description": "cmd.check.self.description"
+			}
+		},
+		"kick": {
+			"self": {
+				"args": {
+					"member": "cmd.kick.self.args.member",
+					"reason": "cmd.kick.self.args.reason"
+				},
+				"description": "cmd.kick.self.description"
+			}
+		},
+		"punishmentConfig": {
+			"self": {
+				"args": {
+					"punishment": "cmd.punishmentConfig.self.args.punishment",
+					"strikes": "cmd.punishmentConfig.self.args.strikes",
+					"args": "cmd.punishmentConfig.self.args.args"
+				},
+				"description": "cmd.punishmentConfig.self.description"
+			}
+		},
+		"purgeUntil": {
+			"self": {
+				"args": {
+					"messageID": "cmd.purgeUntil.self.args.messageID"
+				},
+				"description": "cmd.purgeUntil.self.description"
+			}
+		},
+		"purge": {
+			"self": {
+				"args": {
+					"quantity": "cmd.purge.self.args.quantity",
+					"member": "cmd.purge.self.args.member"
+				},
+				"description": "cmd.purge.self.description"
+			}
+		},
+		"softBan": {
+			"self": {
+				"args": {
+					"user": "cmd.softBan.self.args.user",
+					"deleteMessageDays": "cmd.softBan.self.args.deleteMessageDays",
+					"reason": "cmd.softBan.self.args.reason"
+				},
+				"description": "cmd.softBan.self.description"
+			}
+		},
+		"strikeConfig": {
+			"self": {
+				"args": {
+					"violation": "cmd.strikeConfig.self.args.violation",
+					"strikes": "cmd.strikeConfig.self.args.strikes"
+				},
+				"description": "cmd.strikeConfig.self.description"
+			}
+		},
+		"warn": {
+			"self": {
+				"args": {
+					"member": "cmd.warn.self.args.member",
+					"reason": "cmd.warn.self.args.reason"
+				},
+				"description": "cmd.warn.self.description"
+			}
+		},
+		"graph": {
+			"self": {
+				"args": {
+					"type": "cmd.graph.self.args.type",
+					"duration": "cmd.graph.self.args.duration"
+				},
+				"description": "cmd.graph.self.description"
+			}
 		}
 	},
 	"arguments": {
 		"missingRequired": "",
 		"enum": {
-			"validValues": "",
+			"validValues": "arguments.enum.validValues",
 			"invalid": ""
 		},
 		"user": {
@@ -294,20 +552,24 @@
 		"number": {
 			"invalid": ""
 		},
-		"invalid": ""
+		"invalid": "arguments.invalid",
+		"command": {
+			"notFound": "arguments.command.notFound",
+			"multiple": "arguments.command.multiple"
+		}
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": ""
+			"title": "bot.supportDiscord.title"
 		},
 		"invite": {
-			"title": ""
+			"title": "bot.invite.title"
 		},
 		"website": {
-			"title": ""
+			"title": "bot.website.title"
 		},
 		"patreon": {
-			"title": ""
+			"title": "bot.patreon.title"
 		}
 	},
 	"permissions": {

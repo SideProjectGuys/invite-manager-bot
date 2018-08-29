@@ -15,14 +15,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.restoreInvites,
 			aliases: ['restore-invites', 'unclear-invites', 'unclearInvites'],
-			desc: 'Restore all previously cleared invites',
 			args: [
 				{
 					name: 'user',
-					resolver: UserResolver,
-					description:
-						'The user to restore all invites to. ' +
-						'If omitted restores invites for all users.'
+					resolver: UserResolver
 				}
 			],
 			group: CommandGroup.Invites,

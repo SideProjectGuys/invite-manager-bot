@@ -9,7 +9,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.members,
 			aliases: ['member', 'membersCount'],
-			desc: 'Show member count of current server.',
 			group: CommandGroup.Info,
 			guildOnly: true
 		});

@@ -9,7 +9,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.prefix,
 			aliases: [],
-			desc: 'Shows the current prefix of the bot',
 			group: CommandGroup.Info,
 			guildOnly: true
 		});

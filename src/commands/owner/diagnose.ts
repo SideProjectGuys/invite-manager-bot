@@ -14,12 +14,12 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.diagnose,
 			aliases: ['owner-diagnose', 'odiag'],
-			desc: 'Remotely diagnose servers',
+			// desc: 'Remotely diagnose servers',
 			args: [
 				{
 					name: 'guildId',
-					resolver: StringResolver,
-					description: 'The id of the guild to diagnose.'
+					resolver: StringResolver
+					// description: 'The id of the guild to diagnose.'
 				}
 			],
 			hidden: true,

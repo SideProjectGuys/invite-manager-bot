@@ -19,22 +19,18 @@ export default class extends Command {
 				{
 					name: 'user',
 					resolver: MemberResolver,
-					description: 'User to ban',
 					required: true
 				},
 				{
 					name: 'deleteMessageDays',
-					resolver: NumberResolver,
-					description: 'How far back messages will be deleted (in days)'
+					resolver: NumberResolver
 				},
 				{
 					name: 'reason',
 					resolver: StringResolver,
-					description: 'Why was the user banned',
 					rest: true
 				}
 			],
-			desc: 'Ban a member from the server',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

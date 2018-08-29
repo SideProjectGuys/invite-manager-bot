@@ -11,9 +11,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.setup,
 			aliases: ['guide', 'test', 'testBot', 'test-bot'],
-			desc:
-				'Help with setting up the bot and ' +
-				'checking for problems (e.g. missing permissions)',
 			group: CommandGroup.Info,
 			guildOnly: true,
 			strict: true

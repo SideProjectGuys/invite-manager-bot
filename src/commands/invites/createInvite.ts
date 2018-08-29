@@ -16,19 +16,15 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.createInvite,
 			aliases: ['create-invite'],
-			desc: 'Creates unique invite codes',
 			args: [
 				{
 					name: 'name',
 					resolver: StringResolver,
-					description: 'The name of the invite code.',
 					required: true
 				},
 				{
 					name: 'channel',
-					resolver: ChannelResolver,
-					description:
-						'The channel for which the invite code is created. Uses the current channel by default.'
+					resolver: ChannelResolver
 				}
 			],
 			group: CommandGroup.Invites,

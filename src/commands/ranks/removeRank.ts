@@ -11,12 +11,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.removeRank,
 			aliases: ['remove-rank'],
-			desc: 'Remove a rank',
 			args: [
 				{
 					name: 'rank',
-					resolver: RoleResolver,
-					description: 'The for which you want to remove the rank.'
+					resolver: RoleResolver
 				}
 			],
 			group: CommandGroup.Ranks,

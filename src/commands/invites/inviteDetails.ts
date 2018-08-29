@@ -16,12 +16,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.inviteDetails,
 			aliases: ['invite-details'],
-			desc: 'Shows details about where your invites are from',
 			args: [
 				{
 					name: 'user',
-					resolver: UserResolver,
-					description: 'The user for whom you want to show detailed invites.'
+					resolver: UserResolver
 				}
 			],
 			group: CommandGroup.Invites,

@@ -24,7 +24,7 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.sudo,
 			aliases: ['owner-sudo', 'osu'],
-			desc: 'Run commands for another guild',
+			// desc: 'Run commands for another guild',
 			guildOnly: true,
 			hidden: true
 		});

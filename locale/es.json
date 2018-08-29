@@ -19,12 +19,28 @@
 			"amount": {
 				"positive": "Se agregó **{{ amount }}** invitaciones a <@{{ member }}>, ahora tiene: **{{ totalInvites }}** invitaciones.",
 				"negative": "Se quitaron **{{ amount }}** invitaciones a <@{{ member }}>, ahora tiene: **{{ totalInvites }}** invitaciones."
+			},
+			"self": {
+				"args": {
+					"user": "cmd.addInvites.self.args.user",
+					"amount": "cmd.addInvites.self.args.amount",
+					"reason": "cmd.addInvites.self.args.reason"
+				},
+				"description": "cmd.addInvites.self.description"
 			}
 		},
 		"addRank": {
 			"updated": "Rango **{{ role }}** actualizado: Ahora necesita {{ invites }} y tiene la siguiente descripción: \"{{ description ?}}\"",
 			"created": "Se agregó el rango **{{ role }}** que necesita {{ invites }} y tiene la siguiente descripción: \"{{ description ?}}\"",
-			"roleTooHigh": "El rol **{{ role }}** es más alto que mi propio rol (**{{ myRole }}**), así que no podré otorgarlo a los miembros que lo obtengan."
+			"roleTooHigh": "El rol **{{ role }}** es más alto que mi propio rol (**{{ myRole }}**), así que no podré otorgarlo a los miembros que lo obtengan.",
+			"self": {
+				"args": {
+					"role": "cmd.addRank.self.args.role",
+					"invites": "cmd.addRank.self.args.invites",
+					"info": "cmd.addRank.self.args.info"
+				},
+				"description": "cmd.addRank.self.description"
+			}
 		},
 		"botInfo": {
 			"version": "Versión",
@@ -34,11 +50,21 @@
 			"shards": {
 				"current": "Shard actual",
 				"total": "Shards totales"
+			},
+			"self": {
+				"description": "cmd.botInfo.self.description"
 			}
 		},
 		"clearInvites": {
 			"DONE": "Invitaciones eliminadas para {{ amount }} usuarios!",
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"clearBonus": "cmd.clearInvites.self.args.clearBonus",
+					"user": "cmd.clearInvites.self.args.user"
+				},
+				"description": "cmd.clearInvites.self.description"
+			}
 		},
 		"config": {
 			"title": "Tu ajustes de configuración",
@@ -74,6 +100,13 @@
 				"lang": "Lenguaje invalido **{{ value }}**. Los siguientes lenguajes son soportados: {{ langs }}",
 				"leaderboardStyle": "Estilo de tabla de puntuación invalido **{{ value }}**. Los siguientes estilos son soportados: {{ styles }}",
 				"rankAssignmentStyle": "Estilo de asignamiento de rango invalido **{{ value }}**. Los siguientes estilos son soportados: {{ styles }}"
+			},
+			"self": {
+				"args": {
+					"key": "cmd.config.self.args.key",
+					"value": "cmd.config.self.args.value"
+				},
+				"description": "cmd.config.self.description"
 			}
 		},
 		"fake": {
@@ -85,6 +118,12 @@
 					"text": "**{{ name }}** a entrado **{{ times }} veces**, invitado por:",
 					"invite": "**{{ name }}**{{! args.times ? ` (**$(args.times)** times)` : '' !}}"
 				}
+			},
+			"self": {
+				"args": {
+					"page": "cmd.fake.self.args.page"
+				},
+				"description": "cmd.fake.self.description"
 			}
 		},
 		"help": {
@@ -102,7 +141,13 @@
 				"title": "Alias"
 			},
 			"links": "Enlaces",
-			"missingPermissions": ""
+			"missingPermissions": "",
+			"self": {
+				"args": {
+					"command": "cmd.help.self.args.command"
+				},
+				"description": "cmd.help.self.description"
+			}
 		},
 		"info": {
 			"lastJoined": {
@@ -150,6 +195,12 @@
 				"title": "Miembros invitados",
 				"more": "Más otras **{{ amount }}** más invitaciones bonus",
 				"none": "Este miembro no ha invitado a nadie hasta el momento"
+			},
+			"self": {
+				"args": {
+					"user": "cmd.info.self.args.user"
+				},
+				"description": "cmd.info.self.description"
 			}
 		},
 		"inviteCodes": {
@@ -169,14 +220,23 @@
 				"text": "Estas invitaciones caducan luego de cierto tiempo.",
 				"entry": "\n\n\n**Usos**: {{ uses }}\n**Edad maxima**: {{ maxAge }}\n**Usos maximos**: {{ maxUses }}\n**Canal**: <#{{ channel }} >\n**Caduca**: {{ expires }}"
 			},
-			"dmSent": "Te he enviado un mensaje privado con todos tus codigos de invitacion."
+			"dmSent": "Te he enviado un mensaje privado con todos tus codigos de invitacion.",
+			"self": {
+				"description": "cmd.inviteCodes.self.description"
+			}
 		},
 		"invites": {
 			"amount": {
 				"self": ""
 			},
 			"nextRank": "{{! args.self === args.self ? 'Tu necesitas' : `<@${args.target}> necesita` !}} **{{ nextRankPointsDiff }}** más invitaciones para alcanzar el rango **{{ nextRankName }}**!",
-			"highestRank": "{{! args.target === args.self ? 'Felicitaciones, actualmente tienes el rango más alto!'\n: `<@${args.target}> actualmente tiene el rango más alto!` !}}\n"
+			"highestRank": "{{! args.target === args.self ? 'Felicitaciones, actualmente tienes el rango más alto!'\n: `<@${args.target}> actualmente tiene el rango más alto!` !}}\n",
+			"self": {
+				"args": {
+					"user": "cmd.invites.self.args.user"
+				},
+				"description": "cmd.invites.self.description"
+			}
 		},
 		"leaderboard": {
 			"title": "Tabla de puntaje",
@@ -193,7 +253,14 @@
 				"fake": "F",
 				"leave": "S"
 			},
-			"legend": "`T` = Total\n`R` = Regular\n`B` = Bonus\n`F` = Falsas\n`S` = Salidas\n"
+			"legend": "`T` = Total\n`R` = Regular\n`B` = Bonus\n`F` = Falsas\n`S` = Salidas\n",
+			"self": {
+				"args": {
+					"page": "cmd.leaderboard.self.args.page",
+					"date": "cmd.leaderboard.self.args.date"
+				},
+				"description": "cmd.leaderboard.self.description"
+			}
 		},
 		"memberConfig": {
 			"title": "Tus ajustes",
@@ -218,7 +285,15 @@
 			"changed": {
 				"text": "Este ajuste ha sido cambiado.\n\n\nUsa `{{ prefix }}config ${key} @{{ username }} <valor>` para cambiarlo de nuevo.\nUsa `{{ prefix }}config ${key} @{{ username }} none` para dejarlo por defecto.\n"
 			},
-			"none": "Ninguno"
+			"none": "Ninguno",
+			"self": {
+				"args": {
+					"key": "cmd.memberConfig.self.args.key",
+					"user": "cmd.memberConfig.self.args.user",
+					"value": "cmd.memberConfig.self.args.value"
+				},
+				"description": "cmd.memberConfig.self.description"
+			}
 		},
 		"members": {
 			"members": "Miembros",
@@ -229,19 +304,37 @@
 				"day": "Entraron en las ultimas 24h",
 				"week": "Entraron esta semana",
 				"month": "Entraron este mes"
+			},
+			"self": {
+				"description": "cmd.members.self.description"
 			}
 		},
 		"ranks": {
 			"none": "No se ha creado ningun rango hasta el momento.",
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invitaciones**{{ description ?}}",
-			"title": "Rangos"
+			"title": "Rangos",
+			"self": {
+				"description": "cmd.ranks.self.description"
+			}
 		},
 		"removeRank": {
 			"rankNotFound": "¡Rango {{ role }} no existe!",
-			"done": "Rango {{ role }} removido."
+			"done": "Rango {{ role }} removido.",
+			"self": {
+				"args": {
+					"rank": "cmd.removeRank.self.args.rank"
+				},
+				"description": "cmd.removeRank.self.description"
+			}
 		},
 		"restoreInvites": {
-			"done": "Invitaciones reestablecidas{{! args.user ? ` para <@${args.user}>` : '' !}}"
+			"done": "Invitaciones reestablecidas{{! args.user ? ` para <@${args.user}>` : '' !}}",
+			"self": {
+				"args": {
+					"user": "cmd.restoreInvites.self.args.user"
+				},
+				"description": "cmd.restoreInvites.self.description"
+			}
 		},
 		"setup": {
 			"title": "Configurando InviteManager",
@@ -273,32 +366,63 @@
 			"manageRoles": {
 				"title": "Permiso faltante: Administrar Roles",
 				"text": "El bot no tiene el permiso \"Administrar Roles\". El permiso es necesario para asignar roles a los usuarios, sin el, no se otorgara automaticamente el rol a los usuarios."
+			},
+			"self": {
+				"description": "cmd.setup.self.description"
 			}
 		},
 		"subtractFakes": {
 			"noInvites": "¡No han habido invitaciones hasta el momento!",
 			"done": "Removido {{ total }} invitaciones falsas!",
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractFakes.self.description"
+			}
 		},
 		"subtractLeaves": {
 			"noLeaves": "No han habido salidas hasta el momento!",
 			"done": "Quitado {{ total }} salidas!",
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractLeaves.self.description"
+			}
 		},
 		"createInvite": {
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"name": "cmd.createInvite.self.args.name",
+					"channel": "cmd.createInvite.self.args.channel"
+				},
+				"description": "cmd.createInvite.self.description"
+			}
 		},
 		"inviteDetails": {
-			"entry": ""
+			"entry": "",
+			"self": {
+				"args": {
+					"user": "cmd.inviteDetails.self.args.user"
+				},
+				"description": "cmd.inviteDetails.self.description"
+			}
 		},
 		"getBot": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.getBot.self.description"
+			}
 		},
 		"prefix": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.prefix.self.description"
+			}
 		},
 		"support": {
-			"server": ""
+			"server": "",
+			"self": {
+				"description": "cmd.support.self.description"
+			}
 		},
 		"premium": {
 			"noPremium": {
@@ -318,17 +442,29 @@
 			"premium": {
 				"title": "",
 				"text": ""
+			},
+			"self": {
+				"description": "cmd.premium.self.description"
 			}
 		},
 		"tryPremium": {
 			"title": "",
 			"text": "",
 			"prompt": "",
-			"started": ""
+			"started": "",
+			"self": {
+				"description": "cmd.tryPremium.self.description"
+			}
 		},
 		"export": {
 			"title": "",
-			"preparing": ""
+			"preparing": "",
+			"self": {
+				"args": {
+					"type": "cmd.export.self.args.type"
+				},
+				"description": "cmd.export.self.description"
+			}
 		},
 		"chart": {
 			"joins": {
@@ -345,16 +481,138 @@
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.makeMentionable.self.args.role"
+				},
+				"description": "cmd.makeMentionable.self.description"
+			}
 		},
 		"mentionRole": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.mentionRole.self.args.role"
+				},
+				"description": "cmd.mentionRole.self.description"
+			}
+		},
+		"inviteCodeConfig": {
+			"self": {
+				"args": {
+					"key": "cmd.inviteCodeConfig.self.args.key",
+					"code": "cmd.inviteCodeConfig.self.args.code",
+					"value": "cmd.inviteCodeConfig.self.args.value"
+				},
+				"description": "cmd.inviteCodeConfig.self.description"
+			}
+		},
+		"permissions": {
+			"self": {
+				"args": {
+					"cmd": "cmd.permissions.self.args.cmd",
+					"role": "cmd.permissions.self.args.role"
+				},
+				"description": "cmd.permissions.self.description"
+			}
+		},
+		"ban": {
+			"self": {
+				"args": {
+					"user": "cmd.ban.self.args.user",
+					"deleteMessageDays": "cmd.ban.self.args.deleteMessageDays",
+					"reason": "cmd.ban.self.args.reason"
+				},
+				"description": "cmd.ban.self.description"
+			}
+		},
+		"check": {
+			"self": {
+				"args": {
+					"user": "cmd.check.self.args.user"
+				},
+				"description": "cmd.check.self.description"
+			}
+		},
+		"kick": {
+			"self": {
+				"args": {
+					"member": "cmd.kick.self.args.member",
+					"reason": "cmd.kick.self.args.reason"
+				},
+				"description": "cmd.kick.self.description"
+			}
+		},
+		"punishmentConfig": {
+			"self": {
+				"args": {
+					"punishment": "cmd.punishmentConfig.self.args.punishment",
+					"strikes": "cmd.punishmentConfig.self.args.strikes",
+					"args": "cmd.punishmentConfig.self.args.args"
+				},
+				"description": "cmd.punishmentConfig.self.description"
+			}
+		},
+		"purgeUntil": {
+			"self": {
+				"args": {
+					"messageID": "cmd.purgeUntil.self.args.messageID"
+				},
+				"description": "cmd.purgeUntil.self.description"
+			}
+		},
+		"purge": {
+			"self": {
+				"args": {
+					"quantity": "cmd.purge.self.args.quantity",
+					"member": "cmd.purge.self.args.member"
+				},
+				"description": "cmd.purge.self.description"
+			}
+		},
+		"softBan": {
+			"self": {
+				"args": {
+					"user": "cmd.softBan.self.args.user",
+					"deleteMessageDays": "cmd.softBan.self.args.deleteMessageDays",
+					"reason": "cmd.softBan.self.args.reason"
+				},
+				"description": "cmd.softBan.self.description"
+			}
+		},
+		"strikeConfig": {
+			"self": {
+				"args": {
+					"violation": "cmd.strikeConfig.self.args.violation",
+					"strikes": "cmd.strikeConfig.self.args.strikes"
+				},
+				"description": "cmd.strikeConfig.self.description"
+			}
+		},
+		"warn": {
+			"self": {
+				"args": {
+					"member": "cmd.warn.self.args.member",
+					"reason": "cmd.warn.self.args.reason"
+				},
+				"description": "cmd.warn.self.description"
+			}
+		},
+		"graph": {
+			"self": {
+				"args": {
+					"type": "cmd.graph.self.args.type",
+					"duration": "cmd.graph.self.args.duration"
+				},
+				"description": "cmd.graph.self.description"
+			}
 		}
 	},
 	"arguments": {
 		"missingRequired": "",
 		"enum": {
-			"validValues": "",
+			"validValues": "arguments.enum.validValues",
 			"invalid": ""
 		},
 		"user": {
@@ -364,7 +622,11 @@
 		"number": {
 			"invalid": ""
 		},
-		"invalid": ""
+		"invalid": "arguments.invalid",
+		"command": {
+			"notFound": "arguments.command.notFound",
+			"multiple": "arguments.command.multiple"
+		}
 	},
 	"permissions": {
 		"manageGuild": "",

@@ -12,26 +12,20 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.addInvites,
 			aliases: ['add-invites'],
-			desc: 'Adds/Removes invites to/from a member',
 			args: [
 				{
 					name: 'user',
 					resolver: UserResolver,
-					description: 'The user that will receive/lose the bonus invites',
 					required: true
 				},
 				{
 					name: 'amount',
 					resolver: NumberResolver,
-					description:
-						'The amount of invites the user will get/lose. ' +
-						'Use a negative (-) number to remove invites.\n\n',
 					required: true
 				},
 				{
 					name: 'reason',
 					resolver: StringResolver,
-					description: 'The reason for adding/removing the invites.',
 					rest: true
 				}
 			],

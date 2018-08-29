@@ -16,18 +16,14 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.permissions,
 			aliases: ['perms', 'p'],
-			desc: 'Configure permissions to use commands',
 			args: [
 				{
 					name: 'cmd',
-					resolver: CommandResolver,
-					description: 'The command to configure permissions for.'
+					resolver: CommandResolver
 				},
 				{
 					name: 'role',
-					resolver: RoleResolver,
-					description:
-						'The role which should be granted or denied access to the command.'
+					resolver: RoleResolver
 				}
 			],
 			group: CommandGroup.Config,

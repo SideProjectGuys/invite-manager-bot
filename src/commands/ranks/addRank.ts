@@ -11,26 +11,20 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.addRank,
 			aliases: ['add-rank', 'set-rank', 'setRank'],
-			desc: 'Add a new rank',
 			args: [
 				{
 					name: 'role',
 					resolver: RoleResolver,
-					description:
-						'The role which the user will receive when reaching this rank',
 					required: true
 				},
 				{
 					name: 'invites',
 					resolver: NumberResolver,
-					description: 'The amount of invites needed to reach the rank',
 					required: true
 				},
 				{
 					name: 'info',
 					resolver: StringResolver,
-					description:
-						'A description that users will see so they know more about this rank',
 					rest: true
 				}
 			],

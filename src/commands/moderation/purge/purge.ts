@@ -22,16 +22,13 @@ export default class extends Command {
 				{
 					name: 'quantity',
 					resolver: NumberResolver,
-					description: 'How many messages should be deleted',
 					required: true
 				},
 				{
 					name: 'member',
-					resolver: UserResolver,
-					description: 'User whose messages get deleted'
+					resolver: UserResolver
 				}
 			],
-			desc: 'Purge messages in a channel',
 			guildOnly: true
 		});
 	}

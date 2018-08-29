@@ -12,7 +12,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.botInfo,
 			aliases: ['bot-info'],
-			desc: 'Show info about the bot',
 			group: CommandGroup.Info,
 			guildOnly: true
 		});

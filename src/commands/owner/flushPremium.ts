@@ -12,12 +12,12 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.flushPremium,
 			aliases: ['owner-flush-premium', 'ofp'],
-			desc: 'Flush premium',
+			// desc: 'Flush premium',
 			args: [
 				{
 					name: 'guildId',
-					resolver: StringResolver,
-					description: 'The id of the guild to flush.'
+					resolver: StringResolver
+					// description: 'The id of the guild to flush.'
 				}
 			],
 			hidden: true,

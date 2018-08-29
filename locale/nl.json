@@ -19,12 +19,28 @@
 			"amount": {
 				"positive": "**{{ amount }}** invites toegevoegt voor <@{{ member }}>, en heeft nu **{{ totalInvites }}** invites.",
 				"negative": "**{{ amount }}** invites verwijdert voor <{{ member }}>, en heeft nu **{{ totalInvites }}**"
+			},
+			"self": {
+				"args": {
+					"user": "cmd.addInvites.self.args.user",
+					"amount": "cmd.addInvites.self.args.amount",
+					"reason": "cmd.addInvites.self.args.reason"
+				},
+				"description": "cmd.addInvites.self.description"
 			}
 		},
 		"addRank": {
 			"updated": "Role **{{ role}}** geupdate: heeft nu {{ invites }} nodig en heeft de volgende beschrijving: \"{{ description ?}}\"",
 			"created": "De role **{{ role }}** is toegevoegt en heeft {{ invites }} nodig met de volgende beschrijving: \"{{ description ?}}\"",
-			"roleTooHigh": "De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven aan mensen die het aantal invites bereiken."
+			"roleTooHigh": "De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven aan mensen die het aantal invites bereiken.",
+			"self": {
+				"args": {
+					"role": "cmd.addRank.self.args.role",
+					"invites": "cmd.addRank.self.args.invites",
+					"info": "cmd.addRank.self.args.info"
+				},
+				"description": "cmd.addRank.self.description"
+			}
 		},
 		"botInfo": {
 			"version": "Versie",
@@ -34,11 +50,21 @@
 			"shards": {
 				"current": "Huidige Shard",
 				"total": "Totale Shards"
+			},
+			"self": {
+				"description": "cmd.botInfo.self.description"
 			}
 		},
 		"clearInvites": {
 			"DONE": "Invites voor {{ amount}} gebruikers verwijdert!",
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"clearBonus": "cmd.clearInvites.self.args.clearBonus",
+					"user": "cmd.clearInvites.self.args.user"
+				},
+				"description": "cmd.clearInvites.self.description"
+			}
 		},
 		"config": {
 			"title": "Jouw configuratie instellingen",
@@ -74,6 +100,13 @@
 				"lang": "Ongeldige taal **{{ value }}**. De volgende talen worden ondersteunt: {{ langs }}",
 				"leaderboardStyle": "Ongeldige leaderboard stijl **{{ value }}**. De volgende stijlen worden ondersteunt: {{ styles }}",
 				"rankAssignmentStyle": "Ongeldige rank toewijzing stijl **{{ value }}**. De volgende stijlen zijn ondersteunt: {{ styles }}"
+			},
+			"self": {
+				"args": {
+					"key": "cmd.config.self.args.key",
+					"value": "cmd.config.self.args.value"
+				},
+				"description": "cmd.config.self.description"
 			}
 		},
 		"fake": {
@@ -85,6 +118,12 @@
 					"text": "**{{ name}}** is gejoint **{{ times }} keren**, geïnvite door:",
 					"invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** keren)` : '' !}}"
 				}
+			},
+			"self": {
+				"args": {
+					"page": "cmd.fake.self.args.page"
+				},
+				"description": "cmd.fake.self.description"
 			}
 		},
 		"help": {
@@ -102,7 +141,13 @@
 				"title": "Aliases"
 			},
 			"links": "Links",
-			"missingPermissions": ""
+			"missingPermissions": "",
+			"self": {
+				"args": {
+					"command": "cmd.help.self.args.command"
+				},
+				"description": "cmd.help.self.description"
+			}
 		},
 		"info": {
 			"lastJoined": {
@@ -150,6 +195,12 @@
 				"title": "Geinvite gebruikers",
 				"more": "Plus **{{ amount }}** meer andere bonus invites",
 				"none": "Deze gebruiker heeft niemand geinvite tot nu toe"
+			},
+			"self": {
+				"args": {
+					"user": "cmd.info.self.args.user"
+				},
+				"description": "cmd.info.self.description"
 			}
 		},
 		"inviteCodes": {
@@ -169,14 +220,23 @@
 				"text": "Deze invites verlopen na een bepaalde tijd.",
 				"entry": "**Gebruikt**: {{ uses }}\n**Maximale tijd te gebruiken**: {{ maxAge }}\n**Maximale keren te gebruiken**: {{ maxUses }}\n**Kanaal**: <#{{ channel }}>\n**Verloopt**: {{ expires }}"
 			},
-			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes."
+			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
+			"self": {
+				"description": "cmd.inviteCodes.self.description"
+			}
 		},
 		"invites": {
 			"amount": {
 				"self": ""
 			},
 			"nextRank": "{{! args.target === args.self ? 'Je hebt' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** meer invites nodig om de **{{ nextRankName }}** rank te behalen.",
-			"highestRank": "{{! args.target === args.self ? 'Gefeliciteerd, je hebt momenteel de hoogste rank!'\n: `<@${args.target}> heeft momenteel de hoogste rank!` !}}"
+			"highestRank": "{{! args.target === args.self ? 'Gefeliciteerd, je hebt momenteel de hoogste rank!'\n: `<@${args.target}> heeft momenteel de hoogste rank!` !}}",
+			"self": {
+				"args": {
+					"user": "cmd.invites.self.args.user"
+				},
+				"description": "cmd.invites.self.description"
+			}
 		},
 		"leaderboard": {
 			"title": "Leaderboard",
@@ -193,7 +253,14 @@
 				"fake": "F",
 				"leave": "L"
 			},
-			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves"
+			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves",
+			"self": {
+				"args": {
+					"page": "cmd.leaderboard.self.args.page",
+					"date": "cmd.leaderboard.self.args.date"
+				},
+				"description": "cmd.leaderboard.self.description"
+			}
 		},
 		"memberConfig": {
 			"title": "Jouw configuratie settings",
@@ -218,7 +285,15 @@
 			"changed": {
 				"text": "Deze configuratie is succesvol gezet.\n\nGebruik`{{ prefix }}config ${key} @{{ username }} <waarde>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}config ${key} @{{ username}} <waarde>` om dit te resetten naar de stanaard waarde."
 			},
-			"none": "Geen"
+			"none": "Geen",
+			"self": {
+				"args": {
+					"key": "cmd.memberConfig.self.args.key",
+					"user": "cmd.memberConfig.self.args.user",
+					"value": "cmd.memberConfig.self.args.value"
+				},
+				"description": "cmd.memberConfig.self.description"
+			}
 		},
 		"members": {
 			"members": "Gebruikers",
@@ -229,19 +304,37 @@
 				"day": "Is gejoint in de laatste 24 uur",
 				"week": "Is gejoint deze week",
 				"month": "Is gejoint deze maan"
+			},
+			"self": {
+				"description": "cmd.members.self.description"
 			}
 		},
 		"ranks": {
 			"none": "Er zijn geen ranken gecreëerd.",
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
-			"title": "Ranken"
+			"title": "Ranken",
+			"self": {
+				"description": "cmd.ranks.self.description"
+			}
 		},
 		"removeRank": {
 			"rankNotFound": "De {{ role }} bestaat niet!",
-			"done": "De rank {{ role }} is verwijdert."
+			"done": "De rank {{ role }} is verwijdert.",
+			"self": {
+				"args": {
+					"rank": "cmd.removeRank.self.args.rank"
+				},
+				"description": "cmd.removeRank.self.description"
+			}
 		},
 		"restoreInvites": {
-			"done": "Invites terug gezet{{! args.user ? ` for <@${args.user}>` : '' !}}"
+			"done": "Invites terug gezet{{! args.user ? ` for <@${args.user}>` : '' !}}",
+			"self": {
+				"args": {
+					"user": "cmd.restoreInvites.self.args.user"
+				},
+				"description": "cmd.restoreInvites.self.description"
+			}
 		},
 		"setup": {
 			"title": "Opzetten InviteManager",
@@ -273,32 +366,63 @@
 			"manageRoles": {
 				"title": "Ik mis de permissie: Rollen beheren.",
 				"text": "De bot heeft de \"Rollen beheren\" permissies niet. Deze permissie is nodig om iemand een role te geven die hij / zij krijgt wanneer hij de zoveel invites heeft behaald. Zonder deze permissie kan de bot niet automatisch de role geven."
+			},
+			"self": {
+				"description": "cmd.setup.self.description"
 			}
 		},
 		"subtractFakes": {
 			"noInvites": "Er zijn geen invites tot nu toe!",
 			"done": "{{ total }} fake invites verwijdert!",
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractFakes.self.description"
+			}
 		},
 		"subtractLeaves": {
 			"noLeaves": "Er zijn geen leaves tot nu toe!",
 			"done": "{{ total }} leaves verwijdert!",
-			"none": ""
+			"none": "",
+			"self": {
+				"description": "cmd.subtractLeaves.self.description"
+			}
 		},
 		"createInvite": {
-			"done": ""
+			"done": "",
+			"self": {
+				"args": {
+					"name": "cmd.createInvite.self.args.name",
+					"channel": "cmd.createInvite.self.args.channel"
+				},
+				"description": "cmd.createInvite.self.description"
+			}
 		},
 		"inviteDetails": {
-			"entry": ""
+			"entry": "",
+			"self": {
+				"args": {
+					"user": "cmd.inviteDetails.self.args.user"
+				},
+				"description": "cmd.inviteDetails.self.description"
+			}
 		},
 		"getBot": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.getBot.self.description"
+			}
 		},
 		"prefix": {
-			"title": ""
+			"title": "",
+			"self": {
+				"description": "cmd.prefix.self.description"
+			}
 		},
 		"support": {
-			"server": ""
+			"server": "",
+			"self": {
+				"description": "cmd.support.self.description"
+			}
 		},
 		"premium": {
 			"noPremium": {
@@ -318,17 +442,29 @@
 			"premium": {
 				"title": "",
 				"text": ""
+			},
+			"self": {
+				"description": "cmd.premium.self.description"
 			}
 		},
 		"tryPremium": {
 			"title": "",
 			"text": "",
 			"prompt": "",
-			"started": ""
+			"started": "",
+			"self": {
+				"description": "cmd.tryPremium.self.description"
+			}
 		},
 		"export": {
 			"title": "",
-			"preparing": ""
+			"preparing": "",
+			"self": {
+				"args": {
+					"type": "cmd.export.self.args.type"
+				},
+				"description": "cmd.export.self.description"
+			}
 		},
 		"chart": {
 			"joins": {
@@ -345,16 +481,138 @@
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.makeMentionable.self.args.role"
+				},
+				"description": "cmd.makeMentionable.self.description"
+			}
 		},
 		"mentionRole": {
-			"alreadyDone": ""
+			"alreadyDone": "",
+			"self": {
+				"args": {
+					"role": "cmd.mentionRole.self.args.role"
+				},
+				"description": "cmd.mentionRole.self.description"
+			}
+		},
+		"inviteCodeConfig": {
+			"self": {
+				"args": {
+					"key": "cmd.inviteCodeConfig.self.args.key",
+					"code": "cmd.inviteCodeConfig.self.args.code",
+					"value": "cmd.inviteCodeConfig.self.args.value"
+				},
+				"description": "cmd.inviteCodeConfig.self.description"
+			}
+		},
+		"permissions": {
+			"self": {
+				"args": {
+					"cmd": "cmd.permissions.self.args.cmd",
+					"role": "cmd.permissions.self.args.role"
+				},
+				"description": "cmd.permissions.self.description"
+			}
+		},
+		"ban": {
+			"self": {
+				"args": {
+					"user": "cmd.ban.self.args.user",
+					"deleteMessageDays": "cmd.ban.self.args.deleteMessageDays",
+					"reason": "cmd.ban.self.args.reason"
+				},
+				"description": "cmd.ban.self.description"
+			}
+		},
+		"check": {
+			"self": {
+				"args": {
+					"user": "cmd.check.self.args.user"
+				},
+				"description": "cmd.check.self.description"
+			}
+		},
+		"kick": {
+			"self": {
+				"args": {
+					"member": "cmd.kick.self.args.member",
+					"reason": "cmd.kick.self.args.reason"
+				},
+				"description": "cmd.kick.self.description"
+			}
+		},
+		"punishmentConfig": {
+			"self": {
+				"args": {
+					"punishment": "cmd.punishmentConfig.self.args.punishment",
+					"strikes": "cmd.punishmentConfig.self.args.strikes",
+					"args": "cmd.punishmentConfig.self.args.args"
+				},
+				"description": "cmd.punishmentConfig.self.description"
+			}
+		},
+		"purgeUntil": {
+			"self": {
+				"args": {
+					"messageID": "cmd.purgeUntil.self.args.messageID"
+				},
+				"description": "cmd.purgeUntil.self.description"
+			}
+		},
+		"purge": {
+			"self": {
+				"args": {
+					"quantity": "cmd.purge.self.args.quantity",
+					"member": "cmd.purge.self.args.member"
+				},
+				"description": "cmd.purge.self.description"
+			}
+		},
+		"softBan": {
+			"self": {
+				"args": {
+					"user": "cmd.softBan.self.args.user",
+					"deleteMessageDays": "cmd.softBan.self.args.deleteMessageDays",
+					"reason": "cmd.softBan.self.args.reason"
+				},
+				"description": "cmd.softBan.self.description"
+			}
+		},
+		"strikeConfig": {
+			"self": {
+				"args": {
+					"violation": "cmd.strikeConfig.self.args.violation",
+					"strikes": "cmd.strikeConfig.self.args.strikes"
+				},
+				"description": "cmd.strikeConfig.self.description"
+			}
+		},
+		"warn": {
+			"self": {
+				"args": {
+					"member": "cmd.warn.self.args.member",
+					"reason": "cmd.warn.self.args.reason"
+				},
+				"description": "cmd.warn.self.description"
+			}
+		},
+		"graph": {
+			"self": {
+				"args": {
+					"type": "cmd.graph.self.args.type",
+					"duration": "cmd.graph.self.args.duration"
+				},
+				"description": "cmd.graph.self.description"
+			}
 		}
 	},
 	"arguments": {
 		"missingRequired": "",
 		"enum": {
-			"validValues": "",
+			"validValues": "arguments.enum.validValues",
 			"invalid": ""
 		},
 		"user": {
@@ -364,7 +622,11 @@
 		"number": {
 			"invalid": ""
 		},
-		"invalid": ""
+		"invalid": "arguments.invalid",
+		"command": {
+			"notFound": "arguments.command.notFound",
+			"multiple": "arguments.command.multiple"
+		}
 	},
 	"permissions": {
 		"manageGuild": "",

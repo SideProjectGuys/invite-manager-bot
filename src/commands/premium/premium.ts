@@ -11,7 +11,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.premium,
 			aliases: ['patreon', 'donate'],
-			desc: 'Info about premium version.',
 			group: CommandGroup.Premium,
 			guildOnly: true,
 			strict: true

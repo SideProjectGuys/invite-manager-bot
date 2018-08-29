@@ -9,7 +9,7 @@ import {
 	joins,
 	sequelize
 } from '../../../sequelize';
-import { ModerationCommand } from '../../../types';
+import { CommandGroup, ModerationCommand } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -22,16 +22,14 @@ export default class extends Command {
 				{
 					name: 'quantity',
 					resolver: NumberResolver,
-					description: 'How many messages should be deleted',
 					required: true
 				},
 				{
 					name: 'member',
-					resolver: UserResolver,
-					description: 'User whose messages get deleted'
+					resolver: UserResolver
 				}
 			],
-			desc: 'Clean a channel of certain message types',
+			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
 	}

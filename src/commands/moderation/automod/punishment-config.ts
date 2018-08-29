@@ -20,22 +20,18 @@ export default class extends Command {
 				{
 					name: 'punishment',
 					resolver: new EnumResolver(client, Object.values(PunishmentType)),
-					description: 'Punishment type',
 					required: true
 				},
 				{
 					name: 'strikes',
-					resolver: NumberResolver,
-					description: 'Number of strikes'
+					resolver: NumberResolver
 				},
 				{
 					name: 'args',
 					resolver: StringResolver,
-					description: 'Arguments passed to the punishment command',
 					rest: true
 				}
 			],
-			desc: 'Configure punishments when reaching a certain amount of strikes',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

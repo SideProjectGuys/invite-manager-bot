@@ -9,7 +9,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.support,
 			aliases: [],
-			desc: 'Get an invite link to our support server',
 			group: CommandGroup.Info,
 			guildOnly: false
 		});

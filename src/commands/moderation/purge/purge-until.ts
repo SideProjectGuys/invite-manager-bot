@@ -15,11 +15,9 @@ export default class extends Command {
 				{
 					name: 'messageID',
 					resolver: StringResolver,
-					description: 'Last message ID to be deleted',
 					required: true
 				}
 			],
-			desc: 'Purge messages in a channel up until a specified message',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});

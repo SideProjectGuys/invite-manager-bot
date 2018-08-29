@@ -15,12 +15,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.export,
 			aliases: [],
-			desc: 'Export data of invite manager to a csv sheet',
 			args: [
 				{
 					name: 'type',
 					resolver: new EnumResolver(client, Object.values(ExportType)),
-					description: 'The type of export you want.',
 					required: true
 				}
 			],

@@ -52,17 +52,14 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.config,
 			aliases: ['c'],
-			desc: 'Show and change the config of the server',
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(SettingsKey)),
-					description: 'The config setting which you want to show/change.'
+					resolver: new EnumResolver(client, Object.values(SettingsKey))
 				},
 				{
 					name: 'value',
 					resolver: ValueResolver,
-					description: 'The new value of the setting.',
 					rest: true
 				}
 			],

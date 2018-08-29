@@ -15,13 +15,11 @@ export interface Arg {
 	name: string;
 	resolver: Resolver | ResolverConstructor;
 	required?: boolean;
-	description?: string;
 	rest?: boolean;
 }
 
 export interface CommandOptions {
 	name: BotCommand | OwnerCommand | ModerationCommand;
-	desc: string;
 	aliases: string[];
 	args?: Arg[];
 	group?: CommandGroup;
@@ -52,7 +50,7 @@ export abstract class Command {
 	public name: BotCommand | OwnerCommand | ModerationCommand;
 	public aliases: string[];
 	public args: Arg[];
-	public description: string;
+	// public description: string;
 	public usage: string;
 	public group: CommandGroup;
 	public strict?: boolean;
@@ -66,7 +64,6 @@ export abstract class Command {
 		this.name = props.name;
 		this.aliases = props.aliases.map(a => a.toLowerCase());
 		this.args = props.args ? props.args : [];
-		this.description = props.desc;
 		this.group = props.group;
 		this.strict = props.strict;
 		this.guildOnly = props.guildOnly;
@@ -92,11 +89,10 @@ export abstract class Command {
 	public getInfo(context: Context) {
 		let info = '';
 		for (let i = 0; i < this.args.length; i++) {
+			const arg = this.args[i];
 			const help = this.resolvers[i].getHelp(context);
-			info +=
-				`**<${this.args[i].name}>**:\n` +
-				`${this.args[i].description}\n` +
-				(help ? `${help}\n\n` : '');
+			const descr = context.t(`cmd.${this.name}.self.args.${arg.name}`);
+			info += `**<${arg.name}>**:\n${descr}\n` + (help ? `${help}\n\n` : '');
 		}
 		return info;
 	}

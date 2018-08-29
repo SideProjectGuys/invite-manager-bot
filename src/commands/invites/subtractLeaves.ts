@@ -17,7 +17,6 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.subtractLeaves,
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
-			desc: 'Remove leaves from all users',
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			strict: true

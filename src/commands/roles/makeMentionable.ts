@@ -10,12 +10,10 @@ export default class extends Command {
 		super(client, {
 			name: BotCommand.makeMentionable,
 			aliases: ['make-mentionable', 'mm'],
-			desc: 'Make a role mentionable for 60 seconds or until it was used.',
 			args: [
 				{
 					name: 'role',
 					resolver: RoleResolver,
-					description: 'The role that you want to mention.',
 					required: true
 				}
 			],
