@@ -163,8 +163,8 @@ export default class extends Command {
 					style === LeaderboardStyle.mentions
 				) {
 					str += t('cmd.leaderboard.entry', {
-						pos: line[0],
-						change: line[1],
+						change: line[0],
+						pos: line[1],
 						name: line[2],
 						total: line[3],
 						regular: line[4],

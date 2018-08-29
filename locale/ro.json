@@ -1,278 +1,374 @@
 {
-  "bot": {
-    "supportDiscord": {
-      "title": "Support Discord"
-    },
-    "invite": {
-      "title": "Adaugă botul pe serverul tău"
-    },
-    "website": {
-      "title": "Site-ul botului"
-    },
-    "patreon": {
-      "title": "Patreon"
-    }
-  },
-  "cmd": {
-    "addInvites": {
-      "zero": "Nu prea are sens sa adaugi 0 invitatii...",
-      "amount": {
-        "positive": "Ai adaugat **{{ amount }}** invitatii pentru <@{{ member }}>, acum are **{{ totalInvites }}**",
-        "negative": "Ai sters **{{ amount }}** invitatii lui <@{{ member }}>, acum are doar **{{ totalInvites }}**"
-      },
-      "roleTooHigh": "Gradul ***{{ role }}**  este mai sus decat al meu  (**{{ myRole }}**), deci nu il voi putea atribui membrilor care il castiga."
-    },
-    "addRank": {
-      "updated": "Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: \"{{ description ?}}\"",
-      "created": "Added rank **{{ role }}** which needs {{ invites }} and has the following description: \"{{ description ?}}\""
-    },
-    "botInfo": {
-      "version": "Versiune",
-      "uptime": "Uptime",
-      "guilds": "Servere",
-      "members": "Membrii",
-      "shards": {
-        "current": "Current Shard",
-        "total": "Total Shards"
-      }
-    },
-    "clearInvites": {
-      "DONE": "Ai sters {{ amount }} la membrii!"
-    },
-    "config": {
-      "title": "Your config settings",
-      "text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-      "canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
-      "notSet": "Setarile astea nu sunt setate",
-      "current": {
-        "title": "Valoarea curenta",
-        "text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
-        "notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
-      },
-      "previous": {
-        "title": "Valoarea precedenta"
-      },
-      "new": {
-        "title": "Valoarea noua"
-      },
-      "sameValue": "Acest config este deja setat la acea valoare.",
-      "changed": {
-        "text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
-      },
-      "preview": {
-        "title": "Previzualizeaza",
-        "nextMessage": "<See next message>"
-      },
-      "none": "Niciuna ",
-      "channel": {
-        "canNotReadMessages": "Nu am permisiuni sa **citesc mesaje** in acel canal.",
-        "canNotSendMessages": "Nu am permisiuni sa **trimit mesaje** in acel canal.",
-        "canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
-      },
-      "invalid": {
-        "lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
-        "leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
-        "rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
-      }
-    },
-    "fake": {
-      "title": "Invitatii false",
-      "none": "Nicio invitatie falsa detactata pana acum.",
-      "noneSinceJoin": "Nu au mai fost invitatii false de cand botul a fost adaugat pe acest server.",
-      "join": {
-        "entry": {
-          "text": "**{{ name }}** joined **{{ times }} times**, invited by:",
-          "invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}"
-        }
-      }
-    },
-    "help": {
-      "text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
-      "command": {
-        "title": "Comanda"
-      },
-      "description": {
-        "title": "Descriere"
-      },
-      "usage": {
-        "title": "Folosire"
-      },
-      "aliases": {
-        "title": "Aliasuri"
-      },
-      "links": "Links"
-    },
-    "info": {
-      "lastJoined": {
-        "notInGuild": "User is not part of your guild",
-        "title": "Last joined"
-      },
-      "invites": {
-        "title": "Invitatii",
-        "text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
-      },
-      "joined": {
-        "title": "Joined",
-        "text": "{{ amount }} times"
-      },
-      "created": {
-        "title": "Created"
-      },
-      "joins": {
-        "title": "Intrari",
-        "entry": {
-          "text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:",
-          "invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
-        },
-        "more": "Plus another **{{ amount }}** more joins",
-        "unknown": "unknown (this only works for new members)"
-      },
-      "regularInvites": {
-        "title": "Regular invites",
-        "entry": "**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**",
-        "more": "Plus another **{{ amount }}** more invite codes",
-        "none": "This member has not invited anyone so far"
-      },
-      "bonusInvites": {
-        "title": "Invitatii Bonus",
-        "entry": "**{{ amount }}** de la <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, motiv **${args.reason}**` : '' !}}",
-        "more": "Plus another **{{ amount }}** more bonus invites",
-        "none": "This member has received no bonuses so far"
-      },
-      "invitedMembers": {
-        "title": "Invited members",
-        "more": "Plus another **{{ amount }}** more bonus invites",
-        "none": "This member has not invited anyone else so far"
-      }
-    },
-    "inviteCodes": {
-      "title": "You have the following codes on the server {{ guild }}",
-      "noCodes": "Nu ai nici o invitatie activa! Pentru ati creea propia invitatie mergi pe canalul #server_update sa vezi cum poti face asta!",
-      "recommendedCode": {
-        "title": "Cod de invitatie recomanda",
-        "none": "Creeaza o invitatie permanenta!"
-      },
-      "permanent": {
-        "title": "Permanenta",
-        "text": "Aceste invitatii nu expira!",
-        "entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>"
-      },
-      "temporary": {
-        "title": "Temporara",
-        "text": "Aceste invitatii vor expira dupa ceva timp",
-        "entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>\r\n**Expires**: {{ expires }}"
-      },
-      "dmSent": "Ti-am trimis un mesaj privat cu codurile tale de invitatie!"
-    },
-    "invites": {
-      "amount": "{{! args.self === args.target ? 'Tu ai' : `<@${args.target}> has` !}} **{{ total }}** invitatii (**{{ regular }}** Normale, **{{ custom }}** Invitatii Bonus, **{{ fake }}** Invitatii fake, **{{ leave }}** Membrii plecati)",
-      "nextRank": "{{! args.target === args.self ? 'Mai ai nevoie de inca' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** Pentru a urca la rank-ul **{{ nextRankName }}** Succes!",
-      "highestRank": "{{! args.target === args.self ? 'Felicitari,in momentul de fata ai cel mai mare rank!'\n: `<@${args.target}> are cel mai mare rank in momentul de fata!` !}}"
-    },
-    "leaderboard": {
-      "title": "Topul",
-      "invalidDate": "Invalid date: {{ date }}",
-      "noInvites": "No invites!",
-      "comparedTo": "changes compared to {{ to }}",
-      "entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
-      "col": {
-        "change": "Change",
-        "name": "Name",
-        "total": "T",
-        "regular": "R",
-        "custom": "B",
-        "fake": "F",
-        "leave": "L"
-      },
-      "legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves"
-    },
-    "memberConfig": {
-      "title": "Your config settings",
-      "text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-      "canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
-      "keys": {
-        "title": "Valid config keys"
-      },
-      "notSet": "This config settings is currently not set for any members",
-      "current": {
-        "title": "Current Value",
-        "text": "This config is currently set.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it.\nUse `{{ prefix }}config ${key} @{{ username }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} @${args.username} none\\` to clear it.` : '' !}}",
-        "notSet": "This config is currently **not** set.\n\nUse `{{ prefix }}config {{ key }} @{{ username }} <value>` to set it."
-      },
-      "previous": {
-        "title": "Previous Value"
-      },
-      "new": {
-        "title": "New Value"
-      },
-      "sameValue": "This config is already set to that value",
-      "changed": {
-        "text": "This config has been changed.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it again.\nUse `{{ prefix }}config ${key} @{{ username }} none` to reset it to the default."
-      },
-      "none": "None"
-    },
-    "members": {
-      "members": "Members",
-      "online": "Online",
-      "humans": "Humans",
-      "bots": "Bots",
-      "joined": {
-        "day": "Joined last 24h",
-        "week": "Joined this week",
-        "month": "Joined this month"
-      }
-    },
-    "ranks": {
-      "none": "No ranks have been created yet.",
-      "entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
-      "title": "Ranks"
-    },
-    "removeRank": {
-      "rankNotFound": "Rank {{ role }} does not exist!",
-      "done": "Rank {{ role }} removed."
-    },
-    "restoreInvites": {
-      "done": "Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}"
-    },
-    "setup": {
-      "title": "Setting up InviteManager",
-      "text": "After inviting the bot, all invites will be tracked automatically.",
-      "joinLeave": {
-        "title": "Setting join and leave message channel",
-        "text": "If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!"
-      },
-      "prefix": {
-        "title": "Changing the prefix",
-        "text": "“Poti schimba prefixul folosind comanda ‘!config prefix !’"
-      },
-      "faq": {
-        "title": "FAQs and more",
-        "text": "In caz ca nu stii ce prefix este in momentul actual,poti folosi ‘@InviteManager config prefix’.”"
-      },
-      "help": {
-        "title": "Help",
-        "text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{ link }}"
-      },
-      "premium": {
-        "title": "Premium",
-        "text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{ link }}\n\nDepending on the tier, you will get some additional features."
-      },
-      "manageGuild": {
-        "title": "Missing permission: Manage Server",
-        "text": "The bot does not have the \"Manage Server\" permission. This permission is required to read the invites of the user. Without this permission the join messages won't work."
-      },
-      "manageRoles": {
-        "title": "Missing permission: Manage Roles",
-        "text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted."
-      }
-    },
-    "subtractFakes": {
-      "noInvites": "There have been no invites so far!",
-      "done": "Ai sters {{ total }} invitatii fake!"
-    },
-    "subtractLeaves": {
-      "noLeaves": "There have been no leaves so far!",
-      "done": "Ai sters {{ total }} leaves!"
-    }
-  }
+	"bot": {
+		"supportDiscord": {
+			"title": "Support Discord"
+		},
+		"invite": {
+			"title": "Adaugă botul pe serverul tău"
+		},
+		"website": {
+			"title": "Site-ul botului"
+		},
+		"patreon": {
+			"title": "Patreon"
+		}
+	},
+	"cmd": {
+		"addInvites": {
+			"zero": "Nu prea are sens sa adaugi 0 invitatii...",
+			"amount": {
+				"positive": "Ai adaugat **{{ amount }}** invitatii pentru <@{{ member }}>, acum are **{{ totalInvites }}**",
+				"negative": "Ai sters **{{ amount }}** invitatii lui <@{{ member }}>, acum are doar **{{ totalInvites }}**"
+			}
+		},
+		"addRank": {
+			"updated": "Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: \"{{ description ?}}\"",
+			"created": "Added rank **{{ role }}** which needs {{ invites }} and has the following description: \"{{ description ?}}\"",
+			"roleTooHigh": "Gradul ***{{ role }}**  este mai sus decat al meu  (**{{ myRole }}**), deci nu il voi putea atribui membrilor care il castiga."
+		},
+		"botInfo": {
+			"version": "Versiune",
+			"uptime": "Uptime",
+			"guilds": "Servere",
+			"members": "Membrii",
+			"shards": {
+				"current": "Current Shard",
+				"total": "Total Shards"
+			},
+			"shard": {
+				"current": "cmd.botInfo.shard.current",
+				"total": "cmd.botInfo.shard.total"
+			}
+		},
+		"clearInvites": {
+			"DONE": "Ai sters {{ amount }} la membrii!",
+			"done": "cmd.clearInvites.done"
+		},
+		"config": {
+			"title": "Your config settings",
+			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"notSet": "Setarile astea nu sunt setate",
+			"current": {
+				"title": "Valoarea curenta",
+				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
+			},
+			"previous": {
+				"title": "Valoarea precedenta"
+			},
+			"new": {
+				"title": "Valoarea noua"
+			},
+			"sameValue": "Acest config este deja setat la acea valoare.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
+			},
+			"preview": {
+				"title": "Previzualizeaza",
+				"nextMessage": "<See next message>"
+			},
+			"none": "Niciuna ",
+			"channel": {
+				"canNotReadMessages": "Nu am permisiuni sa **citesc mesaje** in acel canal.",
+				"canNotSendMessages": "Nu am permisiuni sa **trimit mesaje** in acel canal.",
+				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
+			},
+			"invalid": {
+				"lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
+				"leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
+				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
+			}
+		},
+		"fake": {
+			"title": "Invitatii false",
+			"none": "Nicio invitatie falsa detactata pana acum.",
+			"noneSinceJoin": "Nu au mai fost invitatii false de cand botul a fost adaugat pe acest server.",
+			"join": {
+				"entry": {
+					"text": "**{{ name }}** joined **{{ times }} times**, invited by:",
+					"invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}"
+				}
+			}
+		},
+		"help": {
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
+			"command": {
+				"title": "Comanda"
+			},
+			"description": {
+				"title": "Descriere"
+			},
+			"usage": {
+				"title": "Folosire"
+			},
+			"aliases": {
+				"title": "Aliasuri"
+			},
+			"links": "Links",
+			"missingPermissions": "cmd.help.missingPermissions"
+		},
+		"info": {
+			"lastJoined": {
+				"notInGuild": "User is not part of your guild",
+				"title": "Last joined"
+			},
+			"invites": {
+				"title": "Invitatii",
+				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"clear": {
+					"title": "cmd.info.invites.clear.title",
+					"text": "cmd.info.invites.clear.text"
+				}
+			},
+			"joined": {
+				"title": "Joined",
+				"text": "{{ amount }} times"
+			},
+			"created": {
+				"title": "Created"
+			},
+			"joins": {
+				"title": "Intrari",
+				"entry": {
+					"text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:",
+					"invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
+				},
+				"more": "Plus another **{{ amount }}** more joins",
+				"unknown": "unknown (this only works for new members)"
+			},
+			"regularInvites": {
+				"title": "Regular invites",
+				"entry": "**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**",
+				"more": "Plus another **{{ amount }}** more invite codes",
+				"none": "This member has not invited anyone so far"
+			},
+			"bonusInvites": {
+				"title": "Invitatii Bonus",
+				"entry": "**{{ amount }}** de la <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, motiv **${args.reason}**` : '' !}}",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "This member has received no bonuses so far",
+				"noReason": "cmd.info.bonusInvites.noReason"
+			},
+			"invitedMembers": {
+				"title": "Invited members",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "This member has not invited anyone else so far"
+			}
+		},
+		"inviteCodes": {
+			"title": "You have the following codes on the server {{ guild }}",
+			"noCodes": "Nu ai nici o invitatie activa! Pentru ati creea propia invitatie mergi pe canalul #server_update sa vezi cum poti face asta!",
+			"recommendedCode": {
+				"title": "Cod de invitatie recomanda",
+				"none": "Creeaza o invitatie permanenta!"
+			},
+			"permanent": {
+				"title": "Permanenta",
+				"text": "Aceste invitatii nu expira!",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>"
+			},
+			"temporary": {
+				"title": "Temporara",
+				"text": "Aceste invitatii vor expira dupa ceva timp",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>\r\n**Expires**: {{ expires }}"
+			},
+			"dmSent": "Ti-am trimis un mesaj privat cu codurile tale de invitatie!"
+		},
+		"invites": {
+			"amount": {
+				"self": "cmd.invites.amount.self"
+			},
+			"nextRank": "{{! args.target === args.self ? 'Mai ai nevoie de inca' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** Pentru a urca la rank-ul **{{ nextRankName }}** Succes!",
+			"highestRank": "{{! args.target === args.self ? 'Felicitari,in momentul de fata ai cel mai mare rank!'\n: `<@${args.target}> are cel mai mare rank in momentul de fata!` !}}"
+		},
+		"leaderboard": {
+			"title": "Topul",
+			"invalidDate": "Invalid date: {{ date }}",
+			"noInvites": "No invites!",
+			"comparedTo": "changes compared to {{ to }}",
+			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"col": {
+				"change": "Change",
+				"name": "Name",
+				"total": "T",
+				"regular": "R",
+				"custom": "B",
+				"fake": "F",
+				"leave": "L"
+			},
+			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves"
+		},
+		"memberConfig": {
+			"title": "Your config settings",
+			"text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"keys": {
+				"title": "Valid config keys"
+			},
+			"notSet": "This config settings is currently not set for any members",
+			"current": {
+				"title": "Current Value",
+				"text": "This config is currently set.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it.\nUse `{{ prefix }}config ${key} @{{ username }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} @${args.username} none\\` to clear it.` : '' !}}",
+				"notSet": "This config is currently **not** set.\n\nUse `{{ prefix }}config {{ key }} @{{ username }} <value>` to set it."
+			},
+			"previous": {
+				"title": "Previous Value"
+			},
+			"new": {
+				"title": "New Value"
+			},
+			"sameValue": "This config is already set to that value",
+			"changed": {
+				"text": "This config has been changed.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it again.\nUse `{{ prefix }}config ${key} @{{ username }} none` to reset it to the default."
+			},
+			"none": "None"
+		},
+		"members": {
+			"members": "Members",
+			"online": "Online",
+			"humans": "Humans",
+			"bots": "Bots",
+			"joined": {
+				"day": "Joined last 24h",
+				"week": "Joined this week",
+				"month": "Joined this month"
+			},
+			"human": "cmd.members.human"
+		},
+		"ranks": {
+			"none": "No ranks have been created yet.",
+			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
+			"title": "Ranks"
+		},
+		"removeRank": {
+			"rankNotFound": "Rank {{ role }} does not exist!",
+			"done": "Rank {{ role }} removed."
+		},
+		"restoreInvites": {
+			"done": "Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}"
+		},
+		"setup": {
+			"title": "Setting up InviteManager",
+			"text": "After inviting the bot, all invites will be tracked automatically.",
+			"joinLeave": {
+				"title": "Setting join and leave message channel",
+				"text": "If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!"
+			},
+			"prefix": {
+				"title": "Changing the prefix",
+				"text": "“Poti schimba prefixul folosind comanda ‘!config prefix !’"
+			},
+			"faq": {
+				"title": "FAQs and more",
+				"text": "In caz ca nu stii ce prefix este in momentul actual,poti folosi ‘@InviteManager config prefix’.”"
+			},
+			"help": {
+				"title": "Help",
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{ link }}"
+			},
+			"premium": {
+				"title": "Premium",
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{ link }}\n\nDepending on the tier, you will get some additional features."
+			},
+			"manageGuild": {
+				"title": "Missing permission: Manage Server",
+				"text": "The bot does not have the \"Manage Server\" permission. This permission is required to read the invites of the user. Without this permission the join messages won't work."
+			},
+			"manageRoles": {
+				"title": "Missing permission: Manage Roles",
+				"text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted."
+			}
+		},
+		"subtractFakes": {
+			"noInvites": "There have been no invites so far!",
+			"done": "Ai sters {{ total }} invitatii fake!",
+			"none": "cmd.subtractFakes.none"
+		},
+		"subtractLeaves": {
+			"noLeaves": "There have been no leaves so far!",
+			"done": "Ai sters {{ total }} leaves!",
+			"none": "cmd.subtractLeaves.none"
+		},
+		"createInvite": {
+			"done": "cmd.createInvite.done"
+		},
+		"inviteDetails": {
+			"entry": "cmd.inviteDetails.entry"
+		},
+		"getBot": {
+			"title": "cmd.getBot.title"
+		},
+		"prefix": {
+			"title": "cmd.prefix.title"
+		},
+		"support": {
+			"server": "cmd.support.server"
+		},
+		"premium": {
+			"noPremium": {
+				"title": "cmd.premium.noPremium.title",
+				"text": "cmd.premium.noPremium.text"
+			},
+			"feature": {
+				"embeds": {
+					"title": "cmd.premium.feature.embeds.title",
+					"text": "cmd.premium.feature.embeds.text"
+				},
+				"export": {
+					"title": "cmd.premium.feature.export.title",
+					"text": "cmd.premium.feature.export.text"
+				}
+			},
+			"premium": {
+				"title": "cmd.premium.premium.title",
+				"text": "cmd.premium.premium.text"
+			}
+		},
+		"tryPremium": {
+			"title": "cmd.tryPremium.title",
+			"text": "cmd.tryPremium.text",
+			"prompt": "cmd.tryPremium.prompt",
+			"started": "cmd.tryPremium.started"
+		},
+		"export": {
+			"title": "cmd.export.title",
+			"preparing": "cmd.export.preparing"
+		},
+		"chart": {
+			"joins": {
+				"title": "cmd.chart.joins.title",
+				"text": "cmd.chart.joins.text"
+			},
+			"leaves": {
+				"title": "cmd.chart.leaves.title",
+				"text": "cmd.chart.leaves.text"
+			},
+			"usage": {
+				"title": "cmd.chart.usage.title",
+				"text": "cmd.chart.usage.text"
+			}
+		},
+		"makeMentionable": {
+			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+		},
+		"mentionRole": {
+			"alreadyDone": "cmd.mentionRole.alreadyDone"
+		}
+	},
+	"arguments": {
+		"missingRequired": "arguments.missingRequired",
+		"enum": {
+			"validValues": "arguments.enum.validValues"
+		}
+	},
+	"permissions": {
+		"manageGuild": "permissions.manageGuild",
+		"viewAuditLogs": "permissions.viewAuditLogs",
+		"manageRoles": "permissions.manageRoles",
+		"premiumOnly": "permissions.premiumOnly"
+	},
+	"prompt": {
+		"canceled": "prompt.canceled"
+	}
 }

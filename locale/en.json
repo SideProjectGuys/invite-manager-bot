@@ -23,14 +23,14 @@
 		"addInvites": {
 			"zero": "Adding zero invites doesn't really make sense...",
 			"amount": {
-				"positive": "Added **{{ amount }}** invites for <@{{ member }}>, now at: **{{ totalInvites }}** invites.",
-				"negative": "Removed **{{ amount }}** invites from <@{{ member }}>, now at: **{{ totalInvites }}** invites."
-			},
-			"roleTooHigh": "The role **{{ role }}** is higher up than my role (**{{ myRole }}**), so I won't be able to assign it to members that earn it."
+				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
+				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
+			}
 		},
 		"addRank": {
-			"updated": "Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: \"{{ description ?}}\"",
-			"created": "Added rank **{{ role }}** which needs {{ invites }} and has the following description: \"{{ description ?}}\""
+			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} and has the following description: {{ description }}",
+			"created": "Added rank {{{ role }}} which needs {{ invites }} and has the following description: {{ description }}",
+			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it."
 		},
 		"botInfo": {
 			"version": "Version",
@@ -40,10 +40,15 @@
 			"shards": {
 				"current": "Current Shard",
 				"total": "Total Shards"
+			},
+			"shard": {
+				"current": "cmd.botInfo.shard.current",
+				"total": "cmd.botInfo.shard.total"
 			}
 		},
 		"clearInvites": {
-			"DONE": "Cleared invites for {{ amount }} users!"
+			"DONE": "Cleared invites for {{ amount }} users!",
+			"done": "cmd.clearInvites.done"
 		},
 		"config": {
 			"title": "Your config settings",
@@ -106,7 +111,8 @@
 			"aliases": {
 				"title": "Aliases"
 			},
-			"links": "Links"
+			"links": "Links",
+			"missingPermissions": "cmd.help.missingPermissions"
 		},
 		"info": {
 			"lastJoined": {
@@ -115,7 +121,11 @@
 			},
 			"invites": {
 				"title": "Invites",
-				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"clear": {
+					"title": "Cleared invites",
+					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+				}
 			},
 			"joined": {
 				"title": "Joined",
@@ -127,23 +137,24 @@
 			"joins": {
 				"title": "Joins",
 				"entry": {
-					"text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:",
-					"invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
+					"text": "**${{ total }}** times **{{ time }}**, invited by:",
+					"invite": "{{{ member }}} (**{{ times }}** times)"
 				},
 				"more": "Plus another **{{ amount }}** more joins",
 				"unknown": "unknown (this only works for new members)"
 			},
 			"regularInvites": {
 				"title": "Regular invites",
-				"entry": "**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**",
+				"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}",
 				"more": "Plus another **{{ amount }}** more invite codes",
 				"none": "This member has not invited anyone so far"
 			},
 			"bonusInvites": {
 				"title": "Bonus invites",
-				"entry": "**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}",
+				"entry": "**{{ amount }}** from {{{ creator }}} - **{{ date }}**, reason: {{ reason }}",
 				"more": "Plus another **{{ amount }}** more bonus invites",
-				"none": "This member has received no bonuses so far"
+				"none": "This member has received no bonuses so far",
+				"noReason": "cmd.info.bonusInvites.noReason"
 			},
 			"invitedMembers": {
 				"title": "Invited members",
@@ -171,7 +182,10 @@
 			"dmSent": "I sent you a DM with all your invite codes."
 		},
 		"invites": {
-			"amount": "{{! args.self === args.target ? 'You have' : `<@${args.target}> has` !}} **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"amount": {
+				"self": "cmd.invites.amount.self",
+				"other": ""
+			},
 			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
 			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
 		},
@@ -179,7 +193,7 @@
 			"title": "Leaderboard",
 			"invalidDate": "Invalid date: {{ date }}",
 			"noInvites": "No invites!",
-			"comparedTo": "changes compared to {{ to }}",
+			"comparedTo": "changes compared to {{{ to }}}",
 			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"col": {
 				"change": "Change",
@@ -226,19 +240,20 @@
 				"day": "Joined last 24h",
 				"week": "Joined this week",
 				"month": "Joined this month"
-			}
+			},
+			"human": "cmd.members.human"
 		},
 		"ranks": {
 			"none": "No ranks have been created yet.",
-			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
+			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
 			"title": "Ranks"
 		},
 		"removeRank": {
-			"rankNotFound": "Rank {{ role }} does not exist!",
-			"done": "Rank {{ role }} removed."
+			"rankNotFound": "Rank {{{ role }}} does not exist!",
+			"done": "Rank {{{ role }}} removed."
 		},
 		"restoreInvites": {
-			"done": "Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}"
+			"done": "Restored invites"
 		},
 		"setup": {
 			"title": "Setting up InviteManager",
@@ -278,11 +293,78 @@
 		},
 		"subtractFakes": {
 			"noInvites": "There have been no invites so far!",
-			"done": "Removed {{ total }} fake invites!"
+			"done": "Removed {{ total }} fake invites!",
+			"none": "cmd.subtractFakes.none"
 		},
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
-			"done": "Removed {{ total }} leaves!"
+			"done": "Removed {{ total }} leaves!",
+			"none": "cmd.subtractLeaves.none"
+		},
+		"createInvite": {
+			"done": "cmd.createInvite.done"
+		},
+		"inviteDetails": {
+			"entry": "cmd.inviteDetails.entry"
+		},
+		"getBot": {
+			"title": "cmd.getBot.title"
+		},
+		"prefix": {
+			"title": "cmd.prefix.title"
+		},
+		"support": {
+			"server": "cmd.support.server"
+		},
+		"premium": {
+			"noPremium": {
+				"title": "cmd.premium.noPremium.title",
+				"text": "cmd.premium.noPremium.text"
+			},
+			"feature": {
+				"embeds": {
+					"title": "cmd.premium.feature.embeds.title",
+					"text": "cmd.premium.feature.embeds.text"
+				},
+				"export": {
+					"title": "cmd.premium.feature.export.title",
+					"text": "cmd.premium.feature.export.text"
+				}
+			},
+			"premium": {
+				"title": "cmd.premium.premium.title",
+				"text": "cmd.premium.premium.text"
+			}
+		},
+		"tryPremium": {
+			"title": "cmd.tryPremium.title",
+			"text": "cmd.tryPremium.text",
+			"prompt": "cmd.tryPremium.prompt",
+			"started": "cmd.tryPremium.started"
+		},
+		"export": {
+			"title": "cmd.export.title",
+			"preparing": "cmd.export.preparing"
+		},
+		"chart": {
+			"joins": {
+				"title": "cmd.chart.joins.title",
+				"text": "cmd.chart.joins.text"
+			},
+			"leaves": {
+				"title": "cmd.chart.leaves.title",
+				"text": "cmd.chart.leaves.text"
+			},
+			"usage": {
+				"title": "cmd.chart.usage.title",
+				"text": "cmd.chart.usage.text"
+			}
+		},
+		"makeMentionable": {
+			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+		},
+		"mentionRole": {
+			"alreadyDone": "cmd.mentionRole.alreadyDone"
 		}
 	},
 	"permissions": {
@@ -293,5 +375,8 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageRoles": "Manage Roles",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}"
+	},
+	"prompt": {
+		"canceled": "prompt.canceled"
 	}
 }

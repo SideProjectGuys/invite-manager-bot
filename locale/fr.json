@@ -1,278 +1,374 @@
 {
-  "bot": {
-    "supportDiscord": {
-      "title": "Support Discord"
-    },
-    "invite": {
-      "title": "Inviter le bot sur votre serveur"
-    },
-    "website": {
-      "title": "Site Internet du bot"
-    },
-    "patreon": {
-      "title": "Patreon"
-    }
-  },
-  "cmd": {
-    "addInvites": {
-      "zero": "Ajouter \"0\" invitations n'a aucun intérêt.",
-      "amount": {
-        "positive": "Ajout de {amount} invitations pour {Membre} qui a maintenant {totalInvites} invitations.",
-        "negative": "** {{ amount }} ** invitation Supprimé de <@ {{ member }}>, maintenant à: ** {{ totalInvites }} ** invites."
-      },
-      "roleTooHigh": "Le rôle ** {{ role }} ** est plus élevé que mon rôle (** {{ myRole }} **), donc je ne pourrai pas l'assigner aux membres qui le gagnent."
-    },
-    "addRank": {
-      "updated": "Le rôle **{{ role }}** a été mis a jour:  A maitenant besoin de {{ invites }} invitation et a la description suivante : \"{{ description ?}}\".",
-      "created": "Ajout du rang ** {{role}} ** qui nécessite {{invite}}, avec comme description: \"{{description?}}\""
-    },
-    "botInfo": {
-      "version": "Version",
-      "uptime": "disponibilité",
-      "guilds": "Guildes",
-      "members": "Membres",
-      "shards": {
-        "current": "Fragment actuel",
-        "total": "Fragment Total "
-      }
-    },
-    "clearInvites": {
-      "DONE": "Invitations effacées pour {{ amount }} utilisateurs !"
-    },
-    "config": {
-      "title": "Vos paramètres de configuration",
-      "text": "Vous trouverez ci-dessous tous les paramètres de configuration de votre serveur.\nUtilisez  `{{ prefix }}config <key>` pour afficher un seul paramètre\nUtilisez `{{ prefix }}config <key> <value>` pour définir la configuration <key> à <value>",
-      "canNotClear": "Le paramètre de configuration ** {{ key }} ** ne peut pas être effacé. Vous pouvez utiliser `config {{ key }} default` pour rétablir la valeur par défaut.",
-      "notSet": "Ces paramètres ne sont pas définis",
-      "current": {
-        "title": "Valeur actuelle",
-        "text": "Cette configuration est actuellement définie.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour le changer.\nUtilisez `{{ prefix }}config {{ key }} default` pour le réinitialiser.\n{{! args.clear ? `Utilisez \\`${args.prefix}config ${args.key} none\\`pour le vider.` : '' !}}",
-        "notSet": "Cette configuration est actuellement **pas** définie.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour le configurer."
-      },
-      "previous": {
-        "title": "Valeur précédente"
-      },
-      "new": {
-        "title": "Nouvelle valeur"
-      },
-      "sameValue": "Cette configuration est déjà définie sur cette valeur.",
-      "changed": {
-        "text": "Cette configuration a été modifiée.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour la changer à nouveau.\nUtilisez `{{ prefix }}config {{ key }} none` pour la réinitialiser."
-      },
-      "preview": {
-        "title": "Aperçu",
-        "nextMessage": "voir message suivant"
-      },
-      "none": "Aucun",
-      "channel": {
-        "canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce canal.",
-        "canNotSendMessages": "Je n'ai pas la permission **envoyer des messages** dans ce canal.",
-        "canNotSendEmbeds": "Je n'ai pas la permission de **intégrer des liens** dans ce canal."
-      },
-      "invalid": {
-        "lang": "Langue invalide ** {{valeur}} **. Les langues supportées sont les suivantes: {{langs}}",
-        "leaderboardStyle": "Style de classement invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}",
-        "rankAssignmentStyle": "Style d'attribution de rang invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}"
-      }
-    },
-    "fake": {
-      "title": "Fausses invitations",
-      "none": "Aucune fausse invitation détectée jusqu'à présent.",
-      "noneSinceJoin": "Il n'y a pas eu de fausses invitations depuis que le bot a été ajouté à ce serveur.",
-      "join": {
-        "entry": {
-          "text": "**{{ name }}** a rejoint **{{ times }} fois**, invité par:",
-          "invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** fois)` : '' !}}"
-        }
-      }
-    },
-    "help": {
-      "text": "Voila la liste des commandes que vous pouvez utilisez. Vous pouvez avoir plus d'informations sur une commande spécifique en utilisant \\`{{ prefix }}help \\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nLes arguments sont listé après les commandes. Les parenthèses indiquent un argument **optionnel**. (e.g. \\`(reason)\\` signifique que \\`reason\\` est optionnel)\n",
-      "command": {
-        "title": "Command"
-      },
-      "description": {
-        "title": "Description"
-      },
-      "usage": {
-        "title": "Utilisation"
-      },
-      "aliases": {
-        "title": "Aliases"
-      },
-      "links": "Liens"
-    },
-    "info": {
-      "lastJoined": {
-        "notInGuild": "L'utilisateur ne fait pas partie de votre serveur.",
-        "title": "Dernier rejoint"
-      },
-      "invites": {
-        "title": "Invites",
-        "text": "**{{ total }}** (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** quitté)"
-      },
-      "joined": {
-        "title": "Rejoint",
-        "text": "{{ amount }} fois"
-      },
-      "created": {
-        "title": "créé"
-      },
-      "joins": {
-        "title": "joint",
-        "entry": {
-          "text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invité par:",
-          "invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
-        },
-        "more": "Plus another **{{ amount }}** more joins",
-        "unknown": "inconnu (cela ne fonctionne que pour les nouveaux membres)"
-      },
-      "regularInvites": {
-        "title": "Invitations régulières",
-        "entry": "**{{ uses }}** de ** {{ code }} ** - créé **{{ createdAt }}{{! args.reason ? `,  raison: **${args.reason}**` : '' !}}**",
-        "more": "Plus another **{{ amount }}** more invite codes",
-        "none": "Ce membre n'a invité personne jusqu'ici"
-      },
-      "bonusInvites": {
-        "title": "Invitations bonus",
-        "entry": "**{{ amount }}** de<@{{ creator }}> - **{{ date }}**{{! args.reason ? `, raison: **${args.reason}**` : '' !}}",
-        "more": "Plus another **{{ amount }}** more bonus invites",
-        "none": "Ce membre n'a reçu aucun bonus jusqu'à présent"
-      },
-      "invitedMembers": {
-        "title": "Membres invtés",
-        "more": "Plus another **{{ amount }}** more bonus invites",
-        "none": "Ce membre n'a invité personne d'autre jusqu'à présent"
-      }
-    },
-    "inviteCodes": {
-      "title": "Vous avez les codes d'invitation suivants sur le serveur {{ guild }}",
-      "noCodes": "Vous n'avez aucun code d'invitation actif. Veuillez demander aux modérateurs du serveur comment en créer un.",
-      "recommendedCode": {
-        "title": "Code d'invitation recommandé",
-        "none": "Veuillez créer un code d'invitation permanent."
-      },
-      "permanent": {
-        "title": "Permanent",
-        "text": "Ces invitations n'expirent pas.",
-        "entry": "**Utilisaiton**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Utilisation**: {{ maxUses }}\n**Salon**: <#{{ channel }}>"
-      },
-      "temporary": {
-        "title": "Temporaire",
-        "text": "Ces invitations expirent après un certain temps.",
-        "entry": "**Utilisation**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Utilisation**: {{ maxUses }}\n**Salon**: <#{{ channel }}>\n**Expires**: {{ expires }}"
-      },
-      "dmSent": "Je vous ai envoyé un MP avec tous vos codes d'invitation."
-    },
-    "invites": {
-      "amount": "{{! args.self === args.target ? 'Vous avez' : `<@${args.target}> a` !}} **{{ total }}**  invite! (** {{ regular }}** normal, **{{ custom }}** bonus, **{{ fake }}** fausse, **{{congé}}** quitté)",
-      "nextRank": "{{! args.target === args.self ? 'Vous avez besoin' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** invite pour atteindre **{{ nextRankName }}** rank!",
-      "highestRank": "{{! args.target === args.self ? 'Félicitations, vous avez actuellement le plus haut rang!!'\n: `<@${args.target}> a le rang le plus élevé!` !}}"
-    },
-    "leaderboard": {
-      "title": "Classement",
-      "invalidDate": "Invalide: {{ date }}",
-      "noInvites": "Aucune invitations",
-      "comparedTo": "changements par rapport à {{ to }}",
-      "entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** ordinaire, **{{ custom }}** bonus, **{{ fake }}** fausse, **{{ leave }}** partie)",
-      "col": {
-        "change": "Changement",
-        "name": "Nom",
-        "total": "T",
-        "regular": "O",
-        "custom": "B",
-        "fake": "F",
-        "leave": "P"
-      },
-      "legend": "`T` = Total\n`O` = Ordinaire\n`B` = Bonus\n`F` = Fake\n`P` = Partis"
-    },
-    "memberConfig": {
-      "title": "Vos paramètres de configuration",
-      "text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-      "canNotClear": "Le paramètre de configuration ** {{ key }} ** ne peut pas être effacé. Vous pouvez utiliser `config {{ key }} default` pour rétablir la valeur par défaut.",
-      "keys": {
-        "title": "Clef de configuration valide"
-      },
-      "notSet": "Ces paramètres de configuration ne sont actuellement définis pour aucun membre.",
-      "current": {
-        "title": "Valeur actuelle",
-        "text": "Cette configuration est actuellement définie.\n\nUtilisez `{{ prefix }}config ${key} @{{ username }} <value> ` pour la changer.\nUtilisez `{{ prefix }}config ${key} @{{ username }} default` pour la réinitialiser.\n{{! args.clear ? `Utilisez \\\\`${args.prefix}config ${args.key} @${args.username} none\\` pour le nettoyer.` : '' !}}",
-        "notSet": "Cette configuration est actuellement ** pas ** définie.\n\nUtilisé : `{{ prefix }}config {{ key }} @{{ username }} <value> ` pour le régler."
-      },
-      "previous": {
-        "title": "Valeur précédente"
-      },
-      "new": {
-        "title": "Nouvelle Valeur"
-      },
-      "sameValue": "Cette configuration est déjà définie sur cette valeur.",
-      "changed": {
-        "text": "Cette configuration a été modifiée.\n\nUtilisez `{{ prefix }}config ${key} @{{ username }} <value>` pour le changer à nouveau.\nUtilisez `{{ prefix }}config ${key} @{{ username }} none` pour le réinitialiser à la valeur par défaut."
-      },
-      "none": "aucun"
-    },
-    "members": {
-      "members": "membres",
-      "online": "Connectés",
-      "humans": "Humains",
-      "bots": "Bots",
-      "joined": {
-        "day": "A rejoint dans les 24 dernier heure",
-        "week": "A rejoint cette semaine",
-        "month": "A rejoint ce mois-ci"
-      }
-    },
-    "ranks": {
-      "none": "Aucun rang n'a encore été créé.",
-      "entry": "<@&{{ role }}>: **{{ numInvites }} invitations**{{ description ?}}",
-      "title": "Rang"
-    },
-    "removeRank": {
-      "rankNotFound": "Le rang {{ role }} n'existe pas!",
-      "done": "Rang {{ role }} supprimé."
-    },
-    "restoreInvites": {
-      "done": "Invitations restaurées {{! args.user ? ` pour <@${args.user}>` : '' !}}"
-    },
-    "setup": {
-      "title": "Configurer InviteManager",
-      "text": "Après avoir invité le bot, toutes les invitations seront automatiquement suivies.",
-      "joinLeave": {
-        "title": "Paramétrage du salon pour les message de d'arrivé et de départ",
-        "text": "Si vous souhaitez afficher les message d'arriver et de départ dans l'un de vos salon, vous devez configurer ce salon en exécutant `!config joinMessageChannel #channel` ou `!config leaveMessageChannel #channel`. Assurez-vous que le bot dispose des droits d'écriture sur ces canaux!"
-      },
-      "prefix": {
-        "title": "Changer le préfixe",
-        "text": "Vous pouvez changer le préfixe en faisant `!config prefix !`\n\nSi vous ne connaissez pas le préfixe du bots, vous pouvez le trouver en utilisant `@InviteManager config prefix`."
-      },
-      "faq": {
-        "title": "FAQs et plus",
-        "text": "Utilisez la commande `!faq` pour plus d'informations. par exemple, comment modifier le préfixe ou personnaliser les messages.\n\nUn guide complet sur la configuration du bot peut être trouvé ici: https://github.com/AndreasGassmann/discord-invite-manager/"
-      },
-      "help": {
-        "title": "Aide",
-        "text": "Si vous avez besoin d'aide ou si vous avez des commentaires, vous pouvez nous contactez soit utiliser la commande `!feedback` ou rejoindre notre serveur de support discord: {{ link }}"
-      },
-      "premium": {
-        "title": "Premium",
-        "text": "Si vous souhaitez soutenir le développement de ce bot, vous pouvez le faire en nous aidant sur Patreon: {{ link }}\n\nSelon le montant de votre don, vous obtiendrez des fonctionnalités supplémentaires."
-      },
-      "manageGuild": {
-        "title": "Autorisation manquante: Gérer le serveur",
-        "text": "Le bot n'a pas l'autorisation \"Manage Server\". Cette autorisation est nécessaire pour lire les invitations de l'utilisateur. Sans cette permission, les messages d'arriver ne fonctionneront pas."
-      },
-      "manageRoles": {
-        "title": "Autorisation manquante: Gérer les rôles.",
-        "text": "Le bot n'a pas les autorisations \"Gérer les rôles\". Cette autorisation est requise pour attribuer des rôles à un utilisateur. Sans cette permission, les membres ne peuvent pas être auto-promus."
-      }
-    },
-    "subtractFakes": {
-      "noInvites": "Il n'y a pas eu d'invitation jusqu'à présent!",
-      "done": "Suppression de {{ total }} fausses invitations !"
-    },
-    "subtractLeaves": {
-      "noLeaves": "Il n'y a pas eu de départ jusqu'à présent!",
-      "done": "{{ total }} départ du serveur supprimé."
-    }
-  }
+	"bot": {
+		"supportDiscord": {
+			"title": "Support Discord"
+		},
+		"invite": {
+			"title": "Inviter le bot sur votre serveur"
+		},
+		"website": {
+			"title": "Site Internet du bot"
+		},
+		"patreon": {
+			"title": "Patreon"
+		}
+	},
+	"cmd": {
+		"addInvites": {
+			"zero": "Ajouter \"0\" invitations n'a aucun intérêt.",
+			"amount": {
+				"positive": "Ajout de {amount} invitations pour {Membre} qui a maintenant {totalInvites} invitations.",
+				"negative": "** {{ amount }} ** invitation Supprimé de <@ {{ member }}>, maintenant à: ** {{ totalInvites }} ** invites."
+			}
+		},
+		"addRank": {
+			"updated": "Le rôle **{{ role }}** a été mis a jour:  A maitenant besoin de {{ invites }} invitation et a la description suivante : \"{{ description ?}}\".",
+			"created": "Ajout du rang ** {{role}} ** qui nécessite {{invite}}, avec comme description: \"{{description?}}\"",
+			"roleTooHigh": "Le rôle ** {{ role }} ** est plus élevé que mon rôle (** {{ myRole }} **), donc je ne pourrai pas l'assigner aux membres qui le gagnent."
+		},
+		"botInfo": {
+			"version": "Version",
+			"uptime": "disponibilité",
+			"guilds": "Guildes",
+			"members": "Membres",
+			"shards": {
+				"current": "Fragment actuel",
+				"total": "Fragment Total "
+			},
+			"shard": {
+				"current": "cmd.botInfo.shard.current",
+				"total": "cmd.botInfo.shard.total"
+			}
+		},
+		"clearInvites": {
+			"DONE": "Invitations effacées pour {{ amount }} utilisateurs !",
+			"done": "cmd.clearInvites.done"
+		},
+		"config": {
+			"title": "Vos paramètres de configuration",
+			"text": "Vous trouverez ci-dessous tous les paramètres de configuration de votre serveur.\nUtilisez  `{{ prefix }}config <key>` pour afficher un seul paramètre\nUtilisez `{{ prefix }}config <key> <value>` pour définir la configuration <key> à <value>",
+			"canNotClear": "Le paramètre de configuration ** {{ key }} ** ne peut pas être effacé. Vous pouvez utiliser `config {{ key }} default` pour rétablir la valeur par défaut.",
+			"notSet": "Ces paramètres ne sont pas définis",
+			"current": {
+				"title": "Valeur actuelle",
+				"text": "Cette configuration est actuellement définie.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour le changer.\nUtilisez `{{ prefix }}config {{ key }} default` pour le réinitialiser.\n{{! args.clear ? `Utilisez \\`${args.prefix}config ${args.key} none\\`pour le vider.` : '' !}}",
+				"notSet": "Cette configuration est actuellement **pas** définie.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour le configurer."
+			},
+			"previous": {
+				"title": "Valeur précédente"
+			},
+			"new": {
+				"title": "Nouvelle valeur"
+			},
+			"sameValue": "Cette configuration est déjà définie sur cette valeur.",
+			"changed": {
+				"text": "Cette configuration a été modifiée.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour la changer à nouveau.\nUtilisez `{{ prefix }}config {{ key }} none` pour la réinitialiser."
+			},
+			"preview": {
+				"title": "Aperçu",
+				"nextMessage": "voir message suivant"
+			},
+			"none": "Aucun",
+			"channel": {
+				"canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce canal.",
+				"canNotSendMessages": "Je n'ai pas la permission **envoyer des messages** dans ce canal.",
+				"canNotSendEmbeds": "Je n'ai pas la permission de **intégrer des liens** dans ce canal."
+			},
+			"invalid": {
+				"lang": "Langue invalide ** {{valeur}} **. Les langues supportées sont les suivantes: {{langs}}",
+				"leaderboardStyle": "Style de classement invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}",
+				"rankAssignmentStyle": "Style d'attribution de rang invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}"
+			}
+		},
+		"fake": {
+			"title": "Fausses invitations",
+			"none": "Aucune fausse invitation détectée jusqu'à présent.",
+			"noneSinceJoin": "Il n'y a pas eu de fausses invitations depuis que le bot a été ajouté à ce serveur.",
+			"join": {
+				"entry": {
+					"text": "**{{ name }}** a rejoint **{{ times }} fois**, invité par:",
+					"invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** fois)` : '' !}}"
+				}
+			}
+		},
+		"help": {
+			"text": "Voila la liste des commandes que vous pouvez utilisez. Vous pouvez avoir plus d'informations sur une commande spécifique en utilisant \\`{{ prefix }}help \\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nLes arguments sont listé après les commandes. Les parenthèses indiquent un argument **optionnel**. (e.g. \\`(reason)\\` signifique que \\`reason\\` est optionnel)\n",
+			"command": {
+				"title": "Command"
+			},
+			"description": {
+				"title": "Description"
+			},
+			"usage": {
+				"title": "Utilisation"
+			},
+			"aliases": {
+				"title": "Aliases"
+			},
+			"links": "Liens",
+			"missingPermissions": "cmd.help.missingPermissions"
+		},
+		"info": {
+			"lastJoined": {
+				"notInGuild": "L'utilisateur ne fait pas partie de votre serveur.",
+				"title": "Dernier rejoint"
+			},
+			"invites": {
+				"title": "Invites",
+				"text": "**{{ total }}** (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** quitté)",
+				"clear": {
+					"title": "cmd.info.invites.clear.title",
+					"text": "cmd.info.invites.clear.text"
+				}
+			},
+			"joined": {
+				"title": "Rejoint",
+				"text": "{{ amount }} fois"
+			},
+			"created": {
+				"title": "créé"
+			},
+			"joins": {
+				"title": "joint",
+				"entry": {
+					"text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invité par:",
+					"invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
+				},
+				"more": "Plus another **{{ amount }}** more joins",
+				"unknown": "inconnu (cela ne fonctionne que pour les nouveaux membres)"
+			},
+			"regularInvites": {
+				"title": "Invitations régulières",
+				"entry": "**{{ uses }}** de ** {{ code }} ** - créé **{{ createdAt }}{{! args.reason ? `,  raison: **${args.reason}**` : '' !}}**",
+				"more": "Plus another **{{ amount }}** more invite codes",
+				"none": "Ce membre n'a invité personne jusqu'ici"
+			},
+			"bonusInvites": {
+				"title": "Invitations bonus",
+				"entry": "**{{ amount }}** de<@{{ creator }}> - **{{ date }}**{{! args.reason ? `, raison: **${args.reason}**` : '' !}}",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "Ce membre n'a reçu aucun bonus jusqu'à présent",
+				"noReason": "cmd.info.bonusInvites.noReason"
+			},
+			"invitedMembers": {
+				"title": "Membres invtés",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "Ce membre n'a invité personne d'autre jusqu'à présent"
+			}
+		},
+		"inviteCodes": {
+			"title": "Vous avez les codes d'invitation suivants sur le serveur {{ guild }}",
+			"noCodes": "Vous n'avez aucun code d'invitation actif. Veuillez demander aux modérateurs du serveur comment en créer un.",
+			"recommendedCode": {
+				"title": "Code d'invitation recommandé",
+				"none": "Veuillez créer un code d'invitation permanent."
+			},
+			"permanent": {
+				"title": "Permanent",
+				"text": "Ces invitations n'expirent pas.",
+				"entry": "**Utilisaiton**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Utilisation**: {{ maxUses }}\n**Salon**: <#{{ channel }}>"
+			},
+			"temporary": {
+				"title": "Temporaire",
+				"text": "Ces invitations expirent après un certain temps.",
+				"entry": "**Utilisation**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Utilisation**: {{ maxUses }}\n**Salon**: <#{{ channel }}>\n**Expires**: {{ expires }}"
+			},
+			"dmSent": "Je vous ai envoyé un MP avec tous vos codes d'invitation."
+		},
+		"invites": {
+			"amount": {
+				"self": "cmd.invites.amount.self"
+			},
+			"nextRank": "{{! args.target === args.self ? 'Vous avez besoin' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** invite pour atteindre **{{ nextRankName }}** rank!",
+			"highestRank": "{{! args.target === args.self ? 'Félicitations, vous avez actuellement le plus haut rang!!'\n: `<@${args.target}> a le rang le plus élevé!` !}}"
+		},
+		"leaderboard": {
+			"title": "Classement",
+			"invalidDate": "Invalide: {{ date }}",
+			"noInvites": "Aucune invitations",
+			"comparedTo": "changements par rapport à {{ to }}",
+			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** ordinaire, **{{ custom }}** bonus, **{{ fake }}** fausse, **{{ leave }}** partie)",
+			"col": {
+				"change": "Changement",
+				"name": "Nom",
+				"total": "T",
+				"regular": "O",
+				"custom": "B",
+				"fake": "F",
+				"leave": "P"
+			},
+			"legend": "`T` = Total\n`O` = Ordinaire\n`B` = Bonus\n`F` = Fake\n`P` = Partis"
+		},
+		"memberConfig": {
+			"title": "Vos paramètres de configuration",
+			"text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "Le paramètre de configuration ** {{ key }} ** ne peut pas être effacé. Vous pouvez utiliser `config {{ key }} default` pour rétablir la valeur par défaut.",
+			"keys": {
+				"title": "Clef de configuration valide"
+			},
+			"notSet": "Ces paramètres de configuration ne sont actuellement définis pour aucun membre.",
+			"current": {
+				"title": "Valeur actuelle",
+				"text": "Cette configuration est actuellement définie.\n\nUtilisez `{{ prefix }}config ${key} @{{ username }} <value> ` pour la changer.\nUtilisez `{{ prefix }}config ${key} @{{ username }} default` pour la réinitialiser.\n{{! args.clear ? `Utilisez \\\\`${args.prefix}config ${args.key} @${args.username} none\\` pour le nettoyer.` : '' !}}",
+				"notSet": "Cette configuration est actuellement ** pas ** définie.\n\nUtilisé : `{{ prefix }}config {{ key }} @{{ username }} <value> ` pour le régler."
+			},
+			"previous": {
+				"title": "Valeur précédente"
+			},
+			"new": {
+				"title": "Nouvelle Valeur"
+			},
+			"sameValue": "Cette configuration est déjà définie sur cette valeur.",
+			"changed": {
+				"text": "Cette configuration a été modifiée.\n\nUtilisez `{{ prefix }}config ${key} @{{ username }} <value>` pour le changer à nouveau.\nUtilisez `{{ prefix }}config ${key} @{{ username }} none` pour le réinitialiser à la valeur par défaut."
+			},
+			"none": "aucun"
+		},
+		"members": {
+			"members": "membres",
+			"online": "Connectés",
+			"humans": "Humains",
+			"bots": "Bots",
+			"joined": {
+				"day": "A rejoint dans les 24 dernier heure",
+				"week": "A rejoint cette semaine",
+				"month": "A rejoint ce mois-ci"
+			},
+			"human": "cmd.members.human"
+		},
+		"ranks": {
+			"none": "Aucun rang n'a encore été créé.",
+			"entry": "<@&{{ role }}>: **{{ numInvites }} invitations**{{ description ?}}",
+			"title": "Rang"
+		},
+		"removeRank": {
+			"rankNotFound": "Le rang {{ role }} n'existe pas!",
+			"done": "Rang {{ role }} supprimé."
+		},
+		"restoreInvites": {
+			"done": "Invitations restaurées {{! args.user ? ` pour <@${args.user}>` : '' !}}"
+		},
+		"setup": {
+			"title": "Configurer InviteManager",
+			"text": "Après avoir invité le bot, toutes les invitations seront automatiquement suivies.",
+			"joinLeave": {
+				"title": "Paramétrage du salon pour les message de d'arrivé et de départ",
+				"text": "Si vous souhaitez afficher les message d'arriver et de départ dans l'un de vos salon, vous devez configurer ce salon en exécutant `!config joinMessageChannel #channel` ou `!config leaveMessageChannel #channel`. Assurez-vous que le bot dispose des droits d'écriture sur ces canaux!"
+			},
+			"prefix": {
+				"title": "Changer le préfixe",
+				"text": "Vous pouvez changer le préfixe en faisant `!config prefix !`\n\nSi vous ne connaissez pas le préfixe du bots, vous pouvez le trouver en utilisant `@InviteManager config prefix`."
+			},
+			"faq": {
+				"title": "FAQs et plus",
+				"text": "Utilisez la commande `!faq` pour plus d'informations. par exemple, comment modifier le préfixe ou personnaliser les messages.\n\nUn guide complet sur la configuration du bot peut être trouvé ici: https://github.com/AndreasGassmann/discord-invite-manager/"
+			},
+			"help": {
+				"title": "Aide",
+				"text": "Si vous avez besoin d'aide ou si vous avez des commentaires, vous pouvez nous contactez soit utiliser la commande `!feedback` ou rejoindre notre serveur de support discord: {{ link }}"
+			},
+			"premium": {
+				"title": "Premium",
+				"text": "Si vous souhaitez soutenir le développement de ce bot, vous pouvez le faire en nous aidant sur Patreon: {{ link }}\n\nSelon le montant de votre don, vous obtiendrez des fonctionnalités supplémentaires."
+			},
+			"manageGuild": {
+				"title": "Autorisation manquante: Gérer le serveur",
+				"text": "Le bot n'a pas l'autorisation \"Manage Server\". Cette autorisation est nécessaire pour lire les invitations de l'utilisateur. Sans cette permission, les messages d'arriver ne fonctionneront pas."
+			},
+			"manageRoles": {
+				"title": "Autorisation manquante: Gérer les rôles.",
+				"text": "Le bot n'a pas les autorisations \"Gérer les rôles\". Cette autorisation est requise pour attribuer des rôles à un utilisateur. Sans cette permission, les membres ne peuvent pas être auto-promus."
+			}
+		},
+		"subtractFakes": {
+			"noInvites": "Il n'y a pas eu d'invitation jusqu'à présent!",
+			"done": "Suppression de {{ total }} fausses invitations !",
+			"none": "cmd.subtractFakes.none"
+		},
+		"subtractLeaves": {
+			"noLeaves": "Il n'y a pas eu de départ jusqu'à présent!",
+			"done": "{{ total }} départ du serveur supprimé.",
+			"none": "cmd.subtractLeaves.none"
+		},
+		"createInvite": {
+			"done": "cmd.createInvite.done"
+		},
+		"inviteDetails": {
+			"entry": "cmd.inviteDetails.entry"
+		},
+		"getBot": {
+			"title": "cmd.getBot.title"
+		},
+		"prefix": {
+			"title": "cmd.prefix.title"
+		},
+		"support": {
+			"server": "cmd.support.server"
+		},
+		"premium": {
+			"noPremium": {
+				"title": "cmd.premium.noPremium.title",
+				"text": "cmd.premium.noPremium.text"
+			},
+			"feature": {
+				"embeds": {
+					"title": "cmd.premium.feature.embeds.title",
+					"text": "cmd.premium.feature.embeds.text"
+				},
+				"export": {
+					"title": "cmd.premium.feature.export.title",
+					"text": "cmd.premium.feature.export.text"
+				}
+			},
+			"premium": {
+				"title": "cmd.premium.premium.title",
+				"text": "cmd.premium.premium.text"
+			}
+		},
+		"tryPremium": {
+			"title": "cmd.tryPremium.title",
+			"text": "cmd.tryPremium.text",
+			"prompt": "cmd.tryPremium.prompt",
+			"started": "cmd.tryPremium.started"
+		},
+		"export": {
+			"title": "cmd.export.title",
+			"preparing": "cmd.export.preparing"
+		},
+		"chart": {
+			"joins": {
+				"title": "cmd.chart.joins.title",
+				"text": "cmd.chart.joins.text"
+			},
+			"leaves": {
+				"title": "cmd.chart.leaves.title",
+				"text": "cmd.chart.leaves.text"
+			},
+			"usage": {
+				"title": "cmd.chart.usage.title",
+				"text": "cmd.chart.usage.text"
+			}
+		},
+		"makeMentionable": {
+			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+		},
+		"mentionRole": {
+			"alreadyDone": "cmd.mentionRole.alreadyDone"
+		}
+	},
+	"arguments": {
+		"missingRequired": "arguments.missingRequired",
+		"enum": {
+			"validValues": "arguments.enum.validValues"
+		}
+	},
+	"permissions": {
+		"manageGuild": "permissions.manageGuild",
+		"viewAuditLogs": "permissions.viewAuditLogs",
+		"manageRoles": "permissions.manageRoles",
+		"premiumOnly": "permissions.premiumOnly"
+	},
+	"prompt": {
+		"canceled": "prompt.canceled"
+	}
 }

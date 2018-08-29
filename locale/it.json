@@ -1,31 +1,4 @@
 {
-	"PERMISSIONS_MEMBER_ERROR": "PERMISSIONS_MEMBER_ERROR",
-	"PERMISSIONS_MISSING_ROLE": "PERMISSIONS_MISSING_ROLE",
-	"CMD_BOTINFO_VERSION": "CMD_BOTINFO_VERSION",
-	"CMD_BOTINFO_UPTIME": "CMD_BOTINFO_UPTIME",
-	"CMD_BOTINFO_GUILDS": "CMD_BOTINFO_GUILDS",
-	"CMD_BOTINFO_MEMBERS": "CMD_BOTINFO_MEMBERS",
-	"CMD_BOTINFO_SHARD_CURRENT": "CMD_BOTINFO_SHARD_CURRENT",
-	"CMD_BOTINFO_SHARD_TOTAL": "CMD_BOTINFO_SHARD_TOTAL",
-	"BOT_SUPPORT_DISCORD_TITLE": "BOT_SUPPORT_DISCORD_TITLE",
-	"BOT_INVITE_TITLE": "BOT_INVITE_TITLE",
-	"BOT_WEBSITE_TITLE": "BOT_WEBSITE_TITLE",
-	"BOT_PATREON_TITLE": "BOT_PATREON_TITLE",
-	"CMD_MEMBERS_MEMBERS": "CMD_MEMBERS_MEMBERS",
-	"CMD_MEMBERS_ONLINE": "CMD_MEMBERS_ONLINE",
-	"CMD_MEMBERS_HUMANS": "CMD_MEMBERS_HUMANS",
-	"CMD_MEMBERS_BOTS": "CMD_MEMBERS_BOTS",
-	"CMD_MEMBERS_JOINED_DAY": "CMD_MEMBERS_JOINED_DAY",
-	"CMD_MEMBERS_JOINED_WEEK": "CMD_MEMBERS_JOINED_WEEK",
-	"CMD_MEMBERS_JOINED_MONTH": "CMD_MEMBERS_JOINED_MONTH",
-	"CMD_INVITES_AMOUNT": "CMD_INVITES_AMOUNT",
-	"CMD_HELP_TEXT": "CMD_HELP_TEXT",
-	"CMD_HELP_LINKS": "CMD_HELP_LINKS",
-	"CMD_HELP_COMMAND_TITLE": "CMD_HELP_COMMAND_TITLE",
-	"CMD_HELP_DESCRIPTION_TITLE": "CMD_HELP_DESCRIPTION_TITLE",
-	"CMD_HELP_USAGE_TITLE": "CMD_HELP_USAGE_TITLE",
-	"CMD_HELP_ALIASES_TITLE": "CMD_HELP_ALIASES_TITLE",
-	"CMD_INVITES_AMOUNT_SELF": "CMD_INVITES_AMOUNT_SELF",
 	"cmd": {
 		"invites": {
 			"amount": {
@@ -99,8 +72,10 @@
 		},
 		"addInvites": {
 			"amount": {
-				"positive": "cmd.addInvites.amount.positive"
-			}
+				"positive": "cmd.addInvites.amount.positive",
+				"negative": "cmd.addInvites.amount.negative"
+			},
+			"zero": "cmd.addInvites.zero"
 		},
 		"clearInvites": {
 			"done": "cmd.clearInvites.done"
@@ -135,6 +110,14 @@
 			"joins": {
 				"title": "cmd.chart.joins.title",
 				"text": "cmd.chart.joins.text"
+			},
+			"leaves": {
+				"title": "cmd.chart.leaves.title",
+				"text": "cmd.chart.leaves.text"
+			},
+			"usage": {
+				"title": "cmd.chart.usage.title",
+				"text": "cmd.chart.usage.text"
 			}
 		},
 		"export": {
@@ -288,6 +271,18 @@
 				"week": "cmd.members.joined.week",
 				"month": "cmd.members.joined.month"
 			}
+		},
+		"restoreInvites": {
+			"done": "cmd.restoreInvites.done"
+		},
+		"support": {
+			"server": "cmd.support.server"
+		},
+		"makeMentionable": {
+			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+		},
+		"mentionRole": {
+			"alreadyDone": "cmd.mentionRole.alreadyDone"
 		}
 	},
 	"arguments": {
@@ -313,6 +308,12 @@
 	"permissions": {
 		"adminOnly": "permissions.adminOnly",
 		"manageGuild": "permissions.manageGuild",
-		"role": "permissions.role"
+		"role": "permissions.role",
+		"viewAuditLogs": "permissions.viewAuditLogs",
+		"manageRoles": "permissions.manageRoles",
+		"premiumOnly": "permissions.premiumOnly"
+	},
+	"prompt": {
+		"canceled": "prompt.canceled"
 	}
 }

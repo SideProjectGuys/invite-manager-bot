@@ -260,8 +260,8 @@ export default class extends Command {
 				const invText = Object.keys(joinTime)
 					.map(id =>
 						t('cmd.info.joins.entry.invite', {
-							id,
-							times: joinTime[id] > 1 ? joinTime[id] : undefined
+							member: `<@!${id}>`,
+							times: joinTime[id]
 						})
 					)
 					.join(', ');

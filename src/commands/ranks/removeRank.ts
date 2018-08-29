@@ -47,12 +47,12 @@ export default class extends Command {
 
 			return this.client.sendReply(
 				message,
-				t('cmd.removeRank.done', { role: role.name })
+				t('cmd.removeRank.done', { role: `<@!${role.id}>` })
 			);
 		} else {
 			return this.client.sendReply(
 				message,
-				t('cmd.removeRank.rankNotFound', { role: role.name })
+				t('cmd.removeRank.rankNotFound', { role: `<@!${role.id}>` })
 			);
 		}
 	}

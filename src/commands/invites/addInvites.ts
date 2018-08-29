@@ -83,13 +83,13 @@ export default class extends Command {
 		if (amount > 0) {
 			descr += t('cmd.addInvites.amount.positive', {
 				amount,
-				member: `<${user.id}>`,
+				member: `<@${user.id}>`,
 				totalInvites
 			});
 		} else {
 			descr += t('cmd.addInvites.amount.negative', {
 				amount: -amount,
-				member: `<${user.id}>`,
+				member: `<@${user.id}>`,
 				totalInvites
 			});
 		}

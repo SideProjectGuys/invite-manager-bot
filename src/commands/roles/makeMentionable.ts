@@ -15,7 +15,8 @@ export default class extends Command {
 				{
 					name: 'role',
 					resolver: RoleResolver,
-					description: 'The role that you want to mention.'
+					description: 'The role that you want to mention.',
+					required: true
 				}
 			],
 			group: CommandGroup.Other,

@@ -110,6 +110,8 @@ export class Commands {
 		const sets = guild
 			? await this.client.cache.get(guild.id)
 			: defaultSettings;
+		const lang = sets.lang;
+
 		const t = (key: string, replacements?: { [key: string]: string }) =>
 			i18n.__({ locale: lang, phrase: key }, replacements);
 
@@ -187,7 +189,6 @@ export class Commands {
 		}
 
 		let me: Member = undefined;
-		const lang = sets.lang;
 
 		// Guild only stuff
 		if (guild) {
