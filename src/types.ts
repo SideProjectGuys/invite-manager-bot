@@ -85,7 +85,7 @@ export enum BotCommand {
 }
 
 export enum ModerationCommand {
-	'automod' = 'automod',
+	'autoMod' = 'autoMod',
 	'punishment' = 'punishment',
 	'punishmentConfig' = 'punishmentConfig',
 	'strikeAdd' = 'strikeAdd',
@@ -98,7 +98,7 @@ export enum ModerationCommand {
 	'caseView' = 'caseView',
 	'kick' = 'kick',
 	'mute' = 'mute',
-	'softban' = 'softban',
+	'softBan' = 'softBan',
 	'unmute' = 'unmute',
 	'warn' = 'warn',
 

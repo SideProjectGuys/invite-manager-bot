@@ -13,7 +13,7 @@ import { Command, Context } from '../../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.softban,
+			name: ModerationCommand.softBan,
 			aliases: [],
 			args: [
 				{
@@ -34,7 +34,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			desc: 'Check history of a user',
+			desc: 'Ban and then automatically unban a member from the server',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -43,7 +43,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[member, deleteMessageDays, reason]: [Member, number, string],
-		{ guild, me, settings }: Context
+		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -68,17 +68,17 @@ export default class extends Command {
 		) {
 			let [error, _] = await to(member.ban(deleteMessageDays, reason));
 			if (error) {
-				embed.description = `There was an error banning this user:\n${error}`;
+				embed.description = t('cmd.softBan.error');
 			} else {
 				[error, _] = await to(member.unban('softban'));
 				if (error) {
-					embed.description = `The user was but could not be unbanned...\n${error}`;
+					embed.description = t('cmd.softBan.unBanError');
 				} else {
-					embed.description = `The user was successfully softbanned.`;
+					embed.description = t('cmd.softBan.done');
 				}
 			}
 		} else {
-			embed.description = `I cannot ban this user.`;
+			embed.description = t('cmd.ban.canNotSoftBan');
 		}
 
 		let response = await this.client.sendReply(message, embed);

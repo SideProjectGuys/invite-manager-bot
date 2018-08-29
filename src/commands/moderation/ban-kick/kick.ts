@@ -25,7 +25,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			desc: 'Kick member',
+			desc: 'Kick a member from the server',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -34,7 +34,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[member, reason]: [Member, string],
-		{ guild, me, settings }: Context
+		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -59,12 +59,12 @@ export default class extends Command {
 		) {
 			let [error, _] = await to(member.kick(reason));
 			if (error) {
-				embed.description = `There was an error kicking this user:\n${error}`;
+				embed.description = t('cmd.kick.error');
 			} else {
-				embed.description = `The user was successfully kicked.`;
+				embed.description = t('cmd.kick.done');
 			}
 		} else {
-			embed.description = `I cannot kick this user.`;
+			embed.description = t('cmd.kick.canNotKick');
 		}
 
 		let response = await this.client.sendReply(message, embed);

@@ -29,7 +29,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user]: [Member],
-		{ guild }: Context
+		{ guild, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -54,37 +54,45 @@ export default class extends Command {
 		});
 
 		let strikeText = strikeList
-			.map(
-				s =>
-					`${s.amount} for ${s.violationType} ${moment(s.createdAt).fromNow()}`
+			.map(s =>
+				t('cmd.check.strikes.entry', {
+					amount: `**${s.amount}**`,
+					violation: `**${s.violationType}**`,
+					date: moment(s.createdAt)
+						.locale(settings.lang)
+						.fromNow()
+				})
 			)
 			.join('\n');
 
 		if (strikeText) {
 			embed.fields.push({
-				name: 'Strikes',
+				name: t('cmd.check.strikes.title'),
 				value: strikeText
 			});
 		}
 
 		let punishmentText = punishmentList
-			.map(
-				p =>
-					`${p.punishmentType} because he had ${p.amount} strikes ${moment(
-						p.createdAt
-					).fromNow()}`
+			.map(p =>
+				t('cmd.check.punishments.entry', {
+					punishment: `**${p.punishmentType}**`,
+					amount: `**${p.amount}**`,
+					date: moment(p.createdAt)
+						.locale(settings.lang)
+						.fromNow()
+				})
 			)
 			.join('\n');
 
 		if (punishmentText) {
 			embed.fields.push({
-				name: 'Punishments',
+				name: t('cmd.check.punishments.title'),
 				value: punishmentText
 			});
 		}
 
 		if (!punishmentText && !strikeText) {
-			embed.description = `User does not have any history.`;
+			embed.description = t('cmd.check.noHistory');
 		}
 
 		this.client.sendReply(message, embed);

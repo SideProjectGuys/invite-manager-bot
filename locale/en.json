@@ -41,6 +41,11 @@
 			"created": "Added rank {{{ role }}} which needs {{ invites }} and has the following description: {{ description }}",
 			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it."
 		},
+		"ban": {
+			"error": "There was an error banning this user:\n{{ error }}",
+			"done": "The user was successfully banned.",
+			"canNotBan": "I cannot ban this user."
+		},
 		"botInfo": {
 			"version": "Version",
 			"uptime": "Uptime",
@@ -50,6 +55,23 @@
 				"current": "Current Shard",
 				"total": "Total Shards"
 			}
+		},
+		"check": {
+			"strikes": {
+				"title": "Strikes",
+				"entry": "{{ amount }} for {{ violation }} {{ date }}"
+			},
+			"punishments": {
+				"title": "Punishments",
+				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}"
+			},
+			"noHistory": "User does not have any history."
+		},
+		"clean": {
+			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"error": "Error",
+			"title": "Deleted Messages",
+			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds."
 		},
 		"clearInvites": {
 			"done": "Cleared invites for {{ amount }} users!"
@@ -193,6 +215,11 @@
 			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
 			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
 		},
+		"kick": {
+			"canNotKick": "I cannot kick this user.",
+			"done": "The user was successfully kicked.",
+			"error": "There was an error kicking this user:\n{{ error }}"
+		},
 		"leaderboard": {
 			"title": "Leaderboard",
 			"invalidDate": "Invalid date: {{ date }}",
@@ -246,6 +273,23 @@
 				"month": "Joined this month"
 			}
 		},
+		"punishmentConfig": {
+			"title": "Punishment Config",
+			"text": "{{ strikes }} strikes are punished with a {{ punishment }}"
+		},
+		"purge": {
+			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"error": "Error",
+			"title": "Deleted Messages",
+			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds."
+		},
+		"purgeUntil": {
+			"title": "Delete Messages",
+			"none": "No messages found to delete.",
+			"msgNotFound": "Could not find messageID in the last 100 messages.",
+			"error": "Error",
+			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds."
+		},
 		"ranks": {
 			"none": "No ranks have been created yet.",
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -294,10 +338,20 @@
 				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites."
 			}
 		},
+		"softBan": {
+			"canNotSoftBan": "I cannot soft-ban this user.",
+			"done": "The user was successfully soft-banned.",
+			"error": "There was an error banning this user:\n{{ error }}",
+			"unBanError": "The user was but could not be unbanned...\n{{ error }}"
+		},
 		"subtractFakes": {
 			"noInvites": "There have been no invites so far!",
 			"done": "Removed {{ total }} fake invites!",
 			"none": "cmd.subtractFakes.none"
+		},
+		"strikeConfig": {
+			"title": "Strike Config",
+			"text": "The violation {{ violation }} gives a user {{ strikes }} strikes."
 		},
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
@@ -368,6 +422,12 @@
 		},
 		"mentionRole": {
 			"alreadyDone": "cmd.mentionRole.alreadyDone"
+		},
+		"warn": {
+			"text": "You have been warned on server {{ guild }}\n{{ text }}",
+			"canNotDm": "User was not able to receive DM:\n{{ error }}",
+			"canNotWarn": "I cannot warn this user.",
+			"done": "The user was successfully warned."
 		}
 	},
 	"permissions": {

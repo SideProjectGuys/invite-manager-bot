@@ -31,7 +31,7 @@ export default class extends Command {
 					description: 'User whose messages get deleted'
 				}
 			],
-			desc: 'Remove fake invites from all users',
+			desc: 'Purge messages in a channel',
 			guildOnly: true
 		});
 	}
@@ -39,7 +39,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[quantity, member]: [number, Member],
-		{ guild }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -47,10 +47,8 @@ export default class extends Command {
 
 		const embed = this.client.createEmbed();
 
-		if (!quantity || quantity < 1) {
-			return message.channel.createMessage(
-				'You must enter a number of messages to purge.'
-			);
+		if (quantity < 1) {
+			return this.client.sendReply(message, t('cmd.purge.invalidQuantity'));
 		}
 
 		let messages: Message[];
@@ -71,13 +69,13 @@ export default class extends Command {
 			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 		);
 		if (error) {
-			embed.title = 'Error';
+			embed.title = t('cmd.purge.error');
 			embed.description = error;
 		} else {
-			embed.title = 'Deleted Messages';
-			embed.description = `Deleted **${
-				messages.length
-			}** messages.\nThis message will be deleted in 5 seconds.`;
+			embed.title = t('cmd.purge.title');
+			embed.description = t('cmd.purge.text', {
+				amount: `**${messages.length}**`
+			});
 		}
 
 		let response = (await this.client.sendReply(message, embed)) as Message;

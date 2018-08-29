@@ -25,7 +25,7 @@ export default class extends Command {
 					description: 'Number of strikes'
 				}
 			],
-			desc: 'Add or edit strike config',
+			desc: 'Configure strikes received for various violations',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -34,14 +34,14 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[violation, strikes]: [ViolationType, number],
-		{ guild }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		const embed = this.client.createEmbed({
-			title: 'Strike Config'
+			title: t('cmd.strikeConfig.title')
 		});
 
 		if (typeof strikes !== typeof undefined) {
@@ -51,7 +51,10 @@ export default class extends Command {
 				violationType: violation,
 				amount: strikes
 			});
-			embed.description = `The violation ${violation} gives a user ${strikes} strikes.`;
+			embed.description = t('cmd.strikeConfig.text', {
+				violation: `**${violation}**`,
+				strikes: `**${strikes}**`
+			});
 		} else {
 			let strike = await strikeConfigs.find({
 				where: {
@@ -59,9 +62,10 @@ export default class extends Command {
 					violationType: violation
 				}
 			});
-			embed.description = `The violation ${strike.violationType} gives a user ${
-				strike.amount
-			} strikes.`;
+			embed.description = t('cmd.strikeConfig.text', {
+				violation: `**${strike.violationType}**`,
+				strikes: `**${strike.amount}**`
+			});
 			// TODO: expiration
 		}
 

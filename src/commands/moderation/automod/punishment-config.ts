@@ -35,7 +35,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			desc: 'Add or edit strike config',
+			desc: 'Configure punishments when reaching a certain amount of strikes',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -44,14 +44,14 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[punishment, strikes, args]: [PunishmentType, number, string],
-		{ guild }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		const embed = this.client.createEmbed({
-			title: 'Punishment Config'
+			title: t('cmd.punishmentConfig.title')
 		});
 
 		if (typeof strikes !== typeof undefined) {
@@ -62,17 +62,21 @@ export default class extends Command {
 				amount: strikes,
 				args: args
 			});
-			embed.description = `The punishment ${punishment} gives a user ${strikes} strikes.`;
+			embed.description = t('cmd.punishmentConfig.text', {
+				punishment: `**${punishment}**`,
+				strikes: `**${strikes}**`
+			});
 		} else {
-			let punishmentConfig = await punishmentConfigs.find({
+			const pc = await punishmentConfigs.find({
 				where: {
 					guildId: guild.id,
 					punishmentType: punishment
 				}
 			});
-			embed.description = `The violation ${
-				punishmentConfig.punishmentType
-			} gives a user ${punishmentConfig.amount} strikes.`;
+			embed.description = t('cmd.punishmentConfig.text', {
+				punishment: `**${pc.punishmentType}**`,
+				strikes: `**${pc.amount}**`
+			});
 		}
 
 		this.client.sendReply(message, embed);

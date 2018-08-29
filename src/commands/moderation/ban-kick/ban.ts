@@ -1,5 +1,4 @@
-import { Guild, Member, Message, Role, User } from 'eris';
-import moment from 'moment';
+import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import {
@@ -7,10 +6,10 @@ import {
 	NumberResolver,
 	StringResolver
 } from '../../../resolvers';
-import { punishments, strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { getHighestRole, to } from '../../../util';
 import { Command, Context } from '../../Command';
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -35,7 +34,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			desc: 'Check history of a user',
+			desc: 'Ban a member from the server',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -44,7 +43,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[member, deleteMessageDays, reason]: [Member, number, string],
-		{ guild, me, settings }: Context
+		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -69,12 +68,12 @@ export default class extends Command {
 		) {
 			let [error, _] = await to(member.ban(deleteMessageDays, reason));
 			if (error) {
-				embed.description = `There was an error banning this user:\n${error}`;
+				embed.description = t('cmd.ban.error');
 			} else {
-				embed.description = `The user was successfully banned.`;
+				embed.description = t('cmd.ban.done');
 			}
 		} else {
-			embed.description = `I cannot ban this user.`;
+			embed.description = t('cmd.ban.canNotBan');
 		}
 
 		let response = await this.client.sendReply(message, embed);

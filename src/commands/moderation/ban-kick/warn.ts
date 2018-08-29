@@ -25,7 +25,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			desc: 'Warn member',
+			desc: 'Warn a member',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -34,7 +34,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[member, reason]: [Member, string],
-		{ guild, me, settings }: Context
+		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -44,9 +44,9 @@ export default class extends Command {
 			author: { name: member.username, icon_url: member.avatarURL }
 		});
 
-		let highestBotRole = getHighestRole(guild, me.roles);
-		let highestMemberRole = getHighestRole(guild, member.roles);
-		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
+		const highestBotRole = getHighestRole(guild, me.roles);
+		const highestMemberRole = getHighestRole(guild, member.roles);
+		const highestAuthorRole = getHighestRole(guild, message.member!.roles);
 
 		if (
 			member.id !== guild.ownerID &&
@@ -54,24 +54,24 @@ export default class extends Command {
 			highestBotRole.position > highestMemberRole.position &&
 			highestAuthorRole.position > highestMemberRole.position
 		) {
-			let dmChannel = await member.user.getDMChannel();
+			const dmChannel = await member.user.getDMChannel();
 
-			let messageToUser = `You have been warned on server ${guild.name}`;
-			if (reason) {
-				messageToUser += `Reason: ${reason}`;
-			}
-			let [error, _] = await to(dmChannel.createMessage(messageToUser));
+			const messageToUser = t('cmd.warn.text', {
+				guild: guild.name,
+				text: reason
+			});
+			const [error, _] = await to(dmChannel.createMessage(messageToUser));
 
 			if (error) {
-				embed.description = `User was not able to receive DM:\n${error}`;
+				embed.description = t('cmd.warn.canNotDm');
 			} else {
-				embed.description = `The user was successfully warned.`;
+				embed.description = t('cmd.warn.done');
 			}
 		} else {
-			embed.description = `I cannot warn this user.`;
+			embed.description = t('cmd.warn.canNotWarn');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentWarnDeleteMessage) {
 			const func = () => {

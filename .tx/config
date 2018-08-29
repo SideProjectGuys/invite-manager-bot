@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[invitemanager-bot.en-json]
+[invitemanager-bot.main]
 file_filter = locale/<lang>.json
 minimum_perc = 0
 source_file = locale/en.json

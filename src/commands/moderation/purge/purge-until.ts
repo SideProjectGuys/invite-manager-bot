@@ -19,7 +19,7 @@ export default class extends Command {
 					required: true
 				}
 			],
-			desc: 'Remove fake invites from all users',
+			desc: 'Purge messages in a channel up until a specified message',
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
@@ -28,14 +28,14 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[untilMessageID]: [string],
-		{ guild }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		const embed = this.client.createEmbed({
-			title: 'Delete Messages'
+			title: t('cmd.purgeUntil.title')
 		});
 
 		let messages: Message[] = (await message.channel.getMessages(
@@ -45,10 +45,10 @@ export default class extends Command {
 		)).filter((m: Message) => m.id >= untilMessageID);
 
 		if (messages.length === 0) {
-			embed.description = `No messages found to delete.`;
+			embed.description = t('cmd.purgeUntil.none');
 			return this.client.sendReply(message, embed);
 		} else if (messages.length > 100) {
-			embed.description = `Could not find messageID in the last 100 messages.`;
+			embed.description = t('cmd.purgeUntil.msgNotFound');
 			return this.client.sendReply(message, embed);
 		} else {
 			message.delete();
@@ -56,12 +56,12 @@ export default class extends Command {
 				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 			);
 			if (error) {
-				embed.title = 'Error';
+				embed.title = t('cmd.purgeUntil.error');
 				embed.description = error;
 			} else {
-				embed.description = `Deleted **${
-					messages.length
-				}** messages.\nThis message will be deleted in 5 seconds.`;
+				embed.description = t('cmd.purgeUntil.text', {
+					amount: `**${messages.length}**`
+				});
 			}
 
 			let response: Message = await this.client.sendReply(message, embed);
