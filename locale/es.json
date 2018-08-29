@@ -36,13 +36,13 @@
 				"total": "Shards totales"
 			},
 			"shard": {
-				"current": "cmd.botInfo.shard.current",
-				"total": "cmd.botInfo.shard.total"
+				"current": "",
+				"total": ""
 			}
 		},
 		"clearInvites": {
 			"DONE": "Invitaciones eliminadas para {{ amount }} usuarios!",
-			"done": "cmd.clearInvites.done"
+			"done": ""
 		},
 		"config": {
 			"title": "Tu ajustes de configuración",
@@ -106,7 +106,7 @@
 				"title": "Alias"
 			},
 			"links": "Enlaces",
-			"missingPermissions": "cmd.help.missingPermissions"
+			"missingPermissions": ""
 		},
 		"info": {
 			"lastJoined": {
@@ -117,8 +117,8 @@
 				"title": "Invitaciones",
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)",
 				"clear": {
-					"title": "cmd.info.invites.clear.title",
-					"text": "cmd.info.invites.clear.text"
+					"title": "",
+					"text": ""
 				}
 			},
 			"joined": {
@@ -148,7 +148,7 @@
 				"entry": "**{{ amount }}** de <@{{ creator }}> - ** {{ date ]]**{{! args.reason ? `, razon: **${args.reason}**` : '' !}}",
 				"more": "Más otras **{{ amount }}** más invitaciones bonus",
 				"none": "Este miembro no ha recibido invitaciones bonus hasta el momento",
-				"noReason": "cmd.info.bonusInvites.noReason"
+				"noReason": ""
 			},
 			"invitedMembers": {
 				"title": "Miembros invitados",
@@ -177,7 +177,7 @@
 		},
 		"invites": {
 			"amount": {
-				"self": "cmd.invites.amount.self"
+				"self": ""
 			},
 			"nextRank": "{{! args.self === args.self ? 'Tu necesitas' : `<@${args.target}> necesita` !}} **{{ nextRankPointsDiff }}** más invitaciones para alcanzar el rango **{{ nextRankName }}**!",
 			"highestRank": "{{! args.target === args.self ? 'Felicitaciones, actualmente tienes el rango más alto!'\n: `<@${args.target}> actualmente tiene el rango más alto!` !}}\n"
@@ -234,7 +234,7 @@
 				"week": "Entraron esta semana",
 				"month": "Entraron este mes"
 			},
-			"human": "cmd.members.human"
+			"human": ""
 		},
 		"ranks": {
 			"none": "No se ha creado ningun rango hasta el momento.",
@@ -283,104 +283,104 @@
 		"subtractFakes": {
 			"noInvites": "¡No han habido invitaciones hasta el momento!",
 			"done": "Removido {{ total }} invitaciones falsas!",
-			"none": "cmd.subtractFakes.none"
+			"none": ""
 		},
 		"subtractLeaves": {
 			"noLeaves": "No han habido salidas hasta el momento!",
 			"done": "Quitado {{ total }} salidas!",
-			"none": "cmd.subtractLeaves.none"
+			"none": ""
 		},
 		"createInvite": {
-			"done": "cmd.createInvite.done"
+			"done": ""
 		},
 		"inviteDetails": {
-			"entry": "cmd.inviteDetails.entry"
+			"entry": ""
 		},
 		"getBot": {
-			"title": "cmd.getBot.title"
+			"title": ""
 		},
 		"prefix": {
-			"title": "cmd.prefix.title"
+			"title": ""
 		},
 		"support": {
-			"server": "cmd.support.server"
+			"server": ""
 		},
 		"premium": {
 			"noPremium": {
-				"title": "cmd.premium.noPremium.title",
-				"text": "cmd.premium.noPremium.text"
+				"title": "",
+				"text": ""
 			},
 			"feature": {
 				"embeds": {
-					"title": "cmd.premium.feature.embeds.title",
-					"text": "cmd.premium.feature.embeds.text"
+					"title": "",
+					"text": ""
 				},
 				"export": {
-					"title": "cmd.premium.feature.export.title",
-					"text": "cmd.premium.feature.export.text"
+					"title": "",
+					"text": ""
 				}
 			},
 			"premium": {
-				"title": "cmd.premium.premium.title",
-				"text": "cmd.premium.premium.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"tryPremium": {
-			"title": "cmd.tryPremium.title",
-			"text": "cmd.tryPremium.text",
-			"prompt": "cmd.tryPremium.prompt",
-			"started": "cmd.tryPremium.started"
+			"title": "",
+			"text": "",
+			"prompt": "",
+			"started": ""
 		},
 		"export": {
-			"title": "cmd.export.title",
-			"preparing": "cmd.export.preparing"
+			"title": "",
+			"preparing": ""
 		},
 		"chart": {
 			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
+				"title": "",
+				"text": ""
 			},
 			"leaves": {
-				"title": "cmd.chart.leaves.title",
-				"text": "cmd.chart.leaves.text"
+				"title": "",
+				"text": ""
 			},
 			"usage": {
-				"title": "cmd.chart.usage.title",
-				"text": "cmd.chart.usage.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+			"alreadyDone": ""
 		},
 		"mentionRole": {
-			"alreadyDone": "cmd.mentionRole.alreadyDone"
+			"alreadyDone": ""
 		}
 	},
 	"arguments": {
-		"missingRequired": "arguments.missingRequired",
+		"missingRequired": "",
 		"enum": {
-			"validValues": "arguments.enum.validValues",
-			"invalid": "arguments.enum.invalid"
+			"validValues": "",
+			"invalid": ""
 		},
 		"user": {
-			"notFound": "arguments.user.notFound",
-			"multiple": "arguments.user.multiple"
+			"notFound": "",
+			"multiple": ""
 		},
 		"number": {
-			"invalid": "arguments.number.invalid"
+			"invalid": ""
 		},
-		"invalid": "arguments.invalid"
+		"invalid": ""
 	},
 	"permissions": {
-		"manageGuild": "permissions.manageGuild",
-		"viewAuditLogs": "permissions.viewAuditLogs",
-		"manageRoles": "permissions.manageRoles",
-		"premiumOnly": "permissions.premiumOnly"
+		"manageGuild": "",
+		"viewAuditLogs": "",
+		"manageRoles": "",
+		"premiumOnly": ""
 	},
 	"prompt": {
-		"canceled": "prompt.canceled"
+		"canceled": ""
 	},
 	"command": {
-		"error": "command.error"
+		"error": ""
 	}
 }

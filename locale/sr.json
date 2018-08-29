@@ -36,13 +36,13 @@
 				"total": "Total Shards"
 			},
 			"shard": {
-				"current": "cmd.botInfo.shard.current",
-				"total": "cmd.botInfo.shard.total"
+				"current": "",
+				"total": ""
 			}
 		},
 		"clearInvites": {
 			"DONE": "Cleared invites for {{ amount }} users!",
-			"done": "cmd.clearInvites.done"
+			"done": ""
 		},
 		"config": {
 			"title": "Your config settings",
@@ -106,7 +106,7 @@
 				"title": "Aliases"
 			},
 			"links": "Links",
-			"missingPermissions": "cmd.help.missingPermissions"
+			"missingPermissions": ""
 		},
 		"info": {
 			"lastJoined": {
@@ -117,8 +117,8 @@
 				"title": "Invites",
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
-					"title": "cmd.info.invites.clear.title",
-					"text": "cmd.info.invites.clear.text"
+					"title": "",
+					"text": ""
 				}
 			},
 			"joined": {
@@ -148,7 +148,7 @@
 				"entry": "**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}",
 				"more": "Plus another **{{ amount }}** more bonus invites",
 				"none": "This member has received no bonuses so far",
-				"noReason": "cmd.info.bonusInvites.noReason"
+				"noReason": ""
 			},
 			"invitedMembers": {
 				"title": "Invited members",
@@ -177,7 +177,7 @@
 		},
 		"invites": {
 			"amount": {
-				"self": "cmd.invites.amount.self"
+				"self": ""
 			},
 			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
 			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
@@ -234,7 +234,7 @@
 				"week": "Joined this week",
 				"month": "Joined this month"
 			},
-			"human": "cmd.members.human"
+			"human": ""
 		},
 		"ranks": {
 			"none": "No ranks have been created yet.",
@@ -283,104 +283,104 @@
 		"subtractFakes": {
 			"noInvites": "There have been no invites so far!",
 			"done": "Removed {{ total }} fake invites!",
-			"none": "cmd.subtractFakes.none"
+			"none": ""
 		},
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
 			"done": "Removed {{ total }} leaves!",
-			"none": "cmd.subtractLeaves.none"
+			"none": ""
 		},
 		"createInvite": {
-			"done": "cmd.createInvite.done"
+			"done": ""
 		},
 		"inviteDetails": {
-			"entry": "cmd.inviteDetails.entry"
+			"entry": ""
 		},
 		"getBot": {
-			"title": "cmd.getBot.title"
+			"title": ""
 		},
 		"prefix": {
-			"title": "cmd.prefix.title"
+			"title": ""
 		},
 		"support": {
-			"server": "cmd.support.server"
+			"server": ""
 		},
 		"premium": {
 			"noPremium": {
-				"title": "cmd.premium.noPremium.title",
-				"text": "cmd.premium.noPremium.text"
+				"title": "",
+				"text": ""
 			},
 			"feature": {
 				"embeds": {
-					"title": "cmd.premium.feature.embeds.title",
-					"text": "cmd.premium.feature.embeds.text"
+					"title": "",
+					"text": ""
 				},
 				"export": {
-					"title": "cmd.premium.feature.export.title",
-					"text": "cmd.premium.feature.export.text"
+					"title": "",
+					"text": ""
 				}
 			},
 			"premium": {
-				"title": "cmd.premium.premium.title",
-				"text": "cmd.premium.premium.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"tryPremium": {
-			"title": "cmd.tryPremium.title",
-			"text": "cmd.tryPremium.text",
-			"prompt": "cmd.tryPremium.prompt",
-			"started": "cmd.tryPremium.started"
+			"title": "",
+			"text": "",
+			"prompt": "",
+			"started": ""
 		},
 		"export": {
-			"title": "cmd.export.title",
-			"preparing": "cmd.export.preparing"
+			"title": "",
+			"preparing": ""
 		},
 		"chart": {
 			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
+				"title": "",
+				"text": ""
 			},
 			"leaves": {
-				"title": "cmd.chart.leaves.title",
-				"text": "cmd.chart.leaves.text"
+				"title": "",
+				"text": ""
 			},
 			"usage": {
-				"title": "cmd.chart.usage.title",
-				"text": "cmd.chart.usage.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+			"alreadyDone": ""
 		},
 		"mentionRole": {
-			"alreadyDone": "cmd.mentionRole.alreadyDone"
+			"alreadyDone": ""
 		}
 	},
 	"arguments": {
-		"missingRequired": "arguments.missingRequired",
+		"missingRequired": "",
 		"enum": {
-			"validValues": "arguments.enum.validValues",
-			"invalid": "arguments.enum.invalid"
+			"validValues": "",
+			"invalid": ""
 		},
 		"user": {
-			"notFound": "arguments.user.notFound",
-			"multiple": "arguments.user.multiple"
+			"notFound": "",
+			"multiple": ""
 		},
 		"number": {
-			"invalid": "arguments.number.invalid"
+			"invalid": ""
 		},
-		"invalid": "arguments.invalid"
+		"invalid": ""
 	},
 	"permissions": {
-		"manageGuild": "permissions.manageGuild",
-		"viewAuditLogs": "permissions.viewAuditLogs",
-		"manageRoles": "permissions.manageRoles",
-		"premiumOnly": "permissions.premiumOnly"
+		"manageGuild": "",
+		"viewAuditLogs": "",
+		"manageRoles": "",
+		"premiumOnly": ""
 	},
 	"prompt": {
-		"canceled": "prompt.canceled"
+		"canceled": ""
 	},
 	"command": {
-		"error": "command.error"
+		"error": ""
 	}
 }

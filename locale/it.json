@@ -2,330 +2,330 @@
 	"cmd": {
 		"invites": {
 			"amount": {
-				"self": "cmd.invites.amount.self",
-				"other": "cmd.invites.amount.other"
+				"self": "",
+				"other": ""
 			},
-			"nextRank": "cmd.invites.nextRank"
+			"nextRank": ""
 		},
 		"botInfo": {
-			"version": "cmd.botInfo.version",
-			"uptime": "cmd.botInfo.uptime",
-			"guilds": "cmd.botInfo.guilds",
-			"members": "cmd.botInfo.members",
+			"version": "",
+			"uptime": "",
+			"guilds": "",
+			"members": "",
 			"shard": {
-				"current": "cmd.botInfo.shard.current",
-				"total": "cmd.botInfo.shard.total"
+				"current": "",
+				"total": ""
 			}
 		},
 		"config": {
-			"title": "cmd.config.title",
-			"text": "cmd.config.text",
-			"notSet": "cmd.config.notSet",
+			"title": "",
+			"text": "",
+			"notSet": "",
 			"current": {
-				"text": "cmd.config.current.text",
-				"title": "cmd.config.current.title",
-				"notSet": "cmd.config.current.notSet"
+				"text": "",
+				"title": "",
+				"notSet": ""
 			},
-			"sameValue": "cmd.config.sameValue",
+			"sameValue": "",
 			"changed": {
-				"text": "cmd.config.changed.text"
+				"text": ""
 			},
 			"previous": {
-				"title": "cmd.config.previous.title"
+				"title": ""
 			},
 			"new": {
-				"title": "cmd.config.new.title"
+				"title": ""
 			}
 		},
 		"help": {
 			"command": {
-				"title": "cmd.help.command.title"
+				"title": ""
 			},
 			"description": {
-				"title": "cmd.help.description.title"
+				"title": ""
 			},
 			"usage": {
-				"title": "cmd.help.usage.title"
+				"title": ""
 			},
 			"aliases": {
-				"title": "cmd.help.aliases.title"
+				"title": ""
 			},
-			"links": "cmd.help.links",
-			"text": "cmd.help.text",
-			"missingPermissions": "cmd.help.missingPermissions"
+			"links": "",
+			"text": "",
+			"missingPermissions": ""
 		},
 		"leaderboard": {
-			"title": "cmd.leaderboard.title",
-			"noInvites": "cmd.leaderboard.noInvites",
-			"comparedTo": "cmd.leaderboard.comparedTo",
-			"entry": "cmd.leaderboard.entry",
+			"title": "",
+			"noInvites": "",
+			"comparedTo": "",
+			"entry": "",
 			"col": {
-				"change": "cmd.leaderboard.col.change",
-				"name": "cmd.leaderboard.col.name",
-				"total": "cmd.leaderboard.col.total",
-				"regular": "cmd.leaderboard.col.regular",
-				"custom": "cmd.leaderboard.col.custom",
-				"fake": "cmd.leaderboard.col.fake",
-				"leave": "cmd.leaderboard.col.leave"
+				"change": "",
+				"name": "",
+				"total": "",
+				"regular": "",
+				"custom": "",
+				"fake": "",
+				"leave": ""
 			},
-			"legend": "cmd.leaderboard.legend"
+			"legend": ""
 		},
 		"addInvites": {
 			"amount": {
-				"positive": "cmd.addInvites.amount.positive",
-				"negative": "cmd.addInvites.amount.negative"
+				"positive": "",
+				"negative": ""
 			},
-			"zero": "cmd.addInvites.zero"
+			"zero": ""
 		},
 		"clearInvites": {
-			"done": "cmd.clearInvites.done"
+			"done": ""
 		},
 		"fake": {
-			"none": "cmd.fake.none"
+			"none": ""
 		},
 		"inviteCodes": {
-			"title": "cmd.inviteCodes.title",
+			"title": "",
 			"recommendedCode": {
-				"title": "cmd.inviteCodes.recommendedCode.title"
+				"title": ""
 			},
 			"permanent": {
-				"title": "cmd.inviteCodes.permanent.title",
-				"text": "cmd.inviteCodes.permanent.text",
-				"entry": "cmd.inviteCodes.permanent.entry"
+				"title": "",
+				"text": "",
+				"entry": ""
 			},
 			"temporary": {
-				"title": "cmd.inviteCodes.temporary.title",
-				"text": "cmd.inviteCodes.temporary.text",
-				"entry": "cmd.inviteCodes.temporary.entry"
+				"title": "",
+				"text": "",
+				"entry": ""
 			},
-			"dmSent": "cmd.inviteCodes.dmSent"
+			"dmSent": ""
 		},
 		"permissions": {
-			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added",
-			"everyone": "cmd.permissions.everyone",
-			"removed": "cmd.permissions.removed"
+			"adminsCanUseAll": "",
+			"added": "",
+			"everyone": "",
+			"removed": ""
 		},
 		"chart": {
 			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
+				"title": "",
+				"text": ""
 			},
 			"leaves": {
-				"title": "cmd.chart.leaves.title",
-				"text": "cmd.chart.leaves.text"
+				"title": "",
+				"text": ""
 			},
 			"usage": {
-				"title": "cmd.chart.usage.title",
-				"text": "cmd.chart.usage.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"export": {
-			"title": "cmd.export.title",
-			"premiumOnly": "cmd.export.premiumOnly",
-			"preparing": "cmd.export.preparing",
-			"invalidType": "cmd.export.invalidType"
+			"title": "",
+			"premiumOnly": "",
+			"preparing": "",
+			"invalidType": ""
 		},
 		"tryPremium": {
-			"title": "cmd.tryPremium.title",
-			"currentlyActive": "cmd.tryPremium.currentlyActive",
-			"text": "cmd.tryPremium.text",
-			"prompt": "cmd.tryPremium.prompt",
-			"started": "cmd.tryPremium.started"
+			"title": "",
+			"currentlyActive": "",
+			"text": "",
+			"prompt": "",
+			"started": ""
 		},
 		"premium": {
 			"premium": {
-				"title": "cmd.premium.premium.title",
-				"notFound": "cmd.premium.premium.notFound",
-				"text": "cmd.premium.premium.text"
+				"title": "",
+				"notFound": "",
+				"text": ""
 			},
 			"noPremium": {
-				"title": "cmd.premium.noPremium.title",
-				"text": "cmd.premium.noPremium.text"
+				"title": "",
+				"text": ""
 			},
 			"feature": {
 				"embeds": {
-					"title": "cmd.premium.feature.embeds.title",
-					"text": "cmd.premium.feature.embeds.text"
+					"title": "",
+					"text": ""
 				},
 				"export": {
-					"title": "cmd.premium.feature.export.title",
-					"text": "cmd.premium.feature.export.text"
+					"title": "",
+					"text": ""
 				}
 			}
 		},
 		"createInvite": {
-			"missingPermissions": "cmd.createInvite.missingPermissions",
-			"done": "cmd.createInvite.done"
+			"missingPermissions": "",
+			"done": ""
 		},
 		"permssions": {
-			"manageGuild": "cmd.permssions.manageGuild"
+			"manageGuild": ""
 		},
 		"info": {
 			"lastJoined": {
-				"title": "cmd.info.lastJoined.title"
+				"title": ""
 			},
 			"joined": {
-				"title": "cmd.info.joined.title",
-				"text": "cmd.info.joined.text"
+				"title": "",
+				"text": ""
 			},
 			"created": {
-				"title": "cmd.info.created.title"
+				"title": ""
 			},
 			"invites": {
-				"title": "cmd.info.invites.title",
-				"text": "cmd.info.invites.text",
+				"title": "",
+				"text": "",
 				"clear": {
-					"title": "cmd.info.invites.clear.title",
-					"text": "cmd.info.invites.clear.text"
+					"title": "",
+					"text": ""
 				}
 			},
 			"joins": {
-				"title": "cmd.info.joins.title",
-				"unknown": "cmd.info.joins.unknown"
+				"title": "",
+				"unknown": ""
 			},
 			"regularInvites": {
-				"title": "cmd.info.regularInvites.title",
-				"none": "cmd.info.regularInvites.none",
-				"entry": "cmd.info.regularInvites.entry"
+				"title": "",
+				"none": "",
+				"entry": ""
 			},
 			"bonusInvites": {
-				"entry": "cmd.info.bonusInvites.entry",
-				"title": "cmd.info.bonusInvites.title",
-				"noReason": "cmd.info.bonusInvites.noReason"
+				"entry": "",
+				"title": "",
+				"noReason": ""
 			},
 			"invitedMembers": {
-				"title": "cmd.info.invitedMembers.title",
-				"none": "cmd.info.invitedMembers.none"
+				"title": "",
+				"none": ""
 			}
 		},
 		"inviteDetails": {
-			"entry": "cmd.inviteDetails.entry"
+			"entry": ""
 		},
 		"subtractFakes": {
-			"none": "cmd.subtractFakes.none"
+			"none": ""
 		},
 		"addRank": {
-			"created": "cmd.addRank.created"
+			"created": ""
 		},
 		"ranks": {
-			"entry": "cmd.ranks.entry",
-			"title": "cmd.ranks.title",
-			"none": "cmd.ranks.none"
+			"entry": "",
+			"title": "",
+			"none": ""
 		},
 		"removeRank": {
-			"done": "cmd.removeRank.done"
+			"done": ""
 		},
 		"subtractLeaves": {
-			"none": "cmd.subtractLeaves.none"
+			"none": ""
 		},
 		"prefix": {
-			"title": "cmd.prefix.title"
+			"title": ""
 		},
 		"setup": {
-			"title": "cmd.setup.title",
-			"text": "cmd.setup.text",
+			"title": "",
+			"text": "",
 			"joinLeave": {
-				"title": "cmd.setup.joinLeave.title",
-				"text": "cmd.setup.joinLeave.text"
+				"title": "",
+				"text": ""
 			},
 			"prefix": {
-				"title": "cmd.setup.prefix.title",
-				"text": "cmd.setup.prefix.text"
+				"title": "",
+				"text": ""
 			},
 			"faq": {
-				"title": "cmd.setup.faq.title",
-				"text": "cmd.setup.faq.text"
+				"title": "",
+				"text": ""
 			},
 			"help": {
-				"title": "cmd.setup.help.title",
-				"text": "cmd.setup.help.text"
+				"title": "",
+				"text": ""
 			},
 			"premium": {
-				"title": "cmd.setup.premium.title",
-				"text": "cmd.setup.premium.text"
+				"title": "",
+				"text": ""
 			},
 			"manageGuild": {
-				"title": "cmd.setup.manageGuild.title",
-				"text": "cmd.setup.manageGuild.text"
+				"title": "",
+				"text": ""
 			},
 			"manageRoles": {
-				"title": "cmd.setup.manageRoles.title",
-				"text": "cmd.setup.manageRoles.text"
+				"title": "",
+				"text": ""
 			},
 			"viewAuditLogs": {
-				"title": "cmd.setup.viewAuditLogs.title",
-				"text": "cmd.setup.viewAuditLogs.text"
+				"title": "",
+				"text": ""
 			}
 		},
 		"getBot": {
-			"title": "cmd.getBot.title"
+			"title": ""
 		},
 		"members": {
-			"members": "cmd.members.members",
-			"online": "cmd.members.online",
-			"human": "cmd.members.human",
-			"bots": "cmd.members.bots",
+			"members": "",
+			"online": "",
+			"human": "",
+			"bots": "",
 			"joined": {
-				"day": "cmd.members.joined.day",
-				"week": "cmd.members.joined.week",
-				"month": "cmd.members.joined.month"
+				"day": "",
+				"week": "",
+				"month": ""
 			}
 		},
 		"restoreInvites": {
-			"done": "cmd.restoreInvites.done"
+			"done": ""
 		},
 		"support": {
-			"server": "cmd.support.server"
+			"server": ""
 		},
 		"makeMentionable": {
-			"alreadyDone": "cmd.makeMentionable.alreadyDone"
+			"alreadyDone": ""
 		},
 		"mentionRole": {
-			"alreadyDone": "cmd.mentionRole.alreadyDone"
+			"alreadyDone": ""
 		}
 	},
 	"arguments": {
-		"missingRequired": "arguments.missingRequired",
+		"missingRequired": "",
 		"enum": {
-			"validValues": "arguments.enum.validValues",
-			"invalid": "arguments.enum.invalid"
+			"validValues": "",
+			"invalid": ""
 		},
 		"user": {
-			"notFound": "arguments.user.notFound",
-			"multiple": "arguments.user.multiple"
+			"notFound": "",
+			"multiple": ""
 		},
 		"number": {
-			"invalid": "arguments.number.invalid"
+			"invalid": ""
 		},
-		"invalid": "arguments.invalid"
+		"invalid": ""
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": "bot.supportDiscord.title"
+			"title": ""
 		},
 		"invite": {
-			"title": "bot.invite.title"
+			"title": ""
 		},
 		"website": {
-			"title": "bot.website.title"
+			"title": ""
 		},
 		"patreon": {
-			"title": "bot.patreon.title"
+			"title": ""
 		}
 	},
 	"permissions": {
-		"adminOnly": "permissions.adminOnly",
-		"manageGuild": "permissions.manageGuild",
-		"role": "permissions.role",
-		"viewAuditLogs": "permissions.viewAuditLogs",
-		"manageRoles": "permissions.manageRoles",
-		"premiumOnly": "permissions.premiumOnly"
+		"adminOnly": "",
+		"manageGuild": "",
+		"role": "",
+		"viewAuditLogs": "",
+		"manageRoles": "",
+		"premiumOnly": ""
 	},
 	"prompt": {
-		"canceled": "prompt.canceled"
+		"canceled": ""
 	},
 	"command": {
-		"error": "command.error"
+		"error": ""
 	}
 }
