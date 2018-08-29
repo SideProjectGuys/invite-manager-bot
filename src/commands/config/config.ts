@@ -1,4 +1,4 @@
-import { Embed, Message, TextChannel, Permission } from 'eris';
+import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import {
@@ -62,7 +62,8 @@ export default class extends Command {
 				{
 					name: 'value',
 					resolver: ValueResolver,
-					description: 'The new value of the setting.'
+					description: 'The new value of the setting.',
+					rest: true
 				}
 			],
 			group: CommandGroup.Config,

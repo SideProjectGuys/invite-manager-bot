@@ -359,8 +359,17 @@
 	"arguments": {
 		"missingRequired": "arguments.missingRequired",
 		"enum": {
-			"validValues": "arguments.enum.validValues"
-		}
+			"validValues": "arguments.enum.validValues",
+			"invalid": "arguments.enum.invalid"
+		},
+		"user": {
+			"notFound": "arguments.user.notFound",
+			"multiple": "arguments.user.multiple"
+		},
+		"number": {
+			"invalid": "arguments.number.invalid"
+		},
+		"invalid": "arguments.invalid"
 	},
 	"permissions": {
 		"manageGuild": "permissions.manageGuild",
@@ -370,5 +379,8 @@
 	},
 	"prompt": {
 		"canceled": "prompt.canceled"
+	},
+	"command": {
+		"error": "command.error"
 	}
 }

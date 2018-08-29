@@ -31,7 +31,8 @@ export default class extends Command {
 				{
 					name: 'reason',
 					resolver: StringResolver,
-					description: 'The reason for adding/removing the invites.'
+					description: 'The reason for adding/removing the invites.',
+					rest: true
 				}
 			],
 			group: CommandGroup.Invites,

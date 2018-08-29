@@ -26,7 +26,8 @@ export default class extends Command {
 				{
 					name: 'user',
 					resolver: UserResolver,
-					description: 'The user for whom you want to see additional info.'
+					description: 'The user for whom you want to see additional info.',
+					required: true
 				}
 			],
 			// clientPermissions: ['MANAGE_GUILD'],
@@ -122,7 +123,7 @@ export default class extends Command {
 		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
 
 		const embed = this.client.createEmbed({
-			title: user.username
+			title: `${user.username}#${user.discriminator}`
 		});
 
 		// Try and get the member if they are still in the guild

@@ -58,7 +58,8 @@ export default class extends Command {
 				{
 					name: 'value',
 					resolver: ValueResolver,
-					description: 'The new value of the setting.'
+					description: 'The new value of the setting.',
+					rest: true
 				}
 			],
 			group: CommandGroup.Config,

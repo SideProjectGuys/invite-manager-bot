@@ -1,9 +1,18 @@
 {
 	"arguments": {
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ help }}}",
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
 		"enum": {
-			"validValues": "Use one of the following values: {{{ values }}}"
-		}
+			"validValues": "Use one of the following values: {{{ values }}}",
+			"invalid": "Not a valid value."
+		},
+		"user": {
+			"notFound": "User was not found.",
+			"multiple": "Multiple matching users found."
+		},
+		"number": {
+			"invalid": "Not a valid number."
+		},
+		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"bot": {
 		"supportDiscord": {
@@ -47,8 +56,7 @@
 			}
 		},
 		"clearInvites": {
-			"DONE": "Cleared invites for {{ amount }} users!",
-			"done": "cmd.clearInvites.done"
+			"done": "Cleared invites for {{ amount }} users!"
 		},
 		"config": {
 			"title": "Your config settings",
@@ -302,62 +310,62 @@
 			"none": "cmd.subtractLeaves.none"
 		},
 		"createInvite": {
-			"done": "cmd.createInvite.done"
+			"done": "Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}."
 		},
 		"inviteDetails": {
-			"entry": "cmd.inviteDetails.entry"
+			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**"
 		},
 		"getBot": {
-			"title": "cmd.getBot.title"
+			"title": "Add InviteManager to your server"
 		},
 		"prefix": {
-			"title": "cmd.prefix.title"
+			"title": "The current prefix is {{ prefix }}"
 		},
 		"support": {
-			"server": "cmd.support.server"
+			"server": "Support server"
 		},
 		"premium": {
 			"noPremium": {
-				"title": "cmd.premium.noPremium.title",
-				"text": "cmd.premium.noPremium.text"
+				"title": "This server currently does not have a premium subscription",
+				"text": "By subscribing to a premium tier you help the development of the bot and also get some additional features."
 			},
 			"feature": {
 				"embeds": {
-					"title": "cmd.premium.feature.embeds.title",
-					"text": "cmd.premium.feature.embeds.text"
+					"title": "Premium Feature: Embeds in join messages",
+					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{ link }})"
 				},
 				"export": {
-					"title": "cmd.premium.feature.export.title",
-					"text": "cmd.premium.feature.export.text"
+					"title": "Premium Feature: History export",
+					"text": "You can export all the joins and leaves that happened on your server since you invited our bot."
 				}
 			},
 			"premium": {
-				"title": "cmd.premium.premium.title",
-				"text": "cmd.premium.premium.text"
+				"title": "InviteManager Premium",
+				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?]({{ link }})"
 			}
 		},
 		"tryPremium": {
-			"title": "cmd.tryPremium.title",
-			"text": "cmd.tryPremium.text",
-			"prompt": "cmd.tryPremium.prompt",
-			"started": "cmd.tryPremium.started"
+			"title": "InviteManager - Try Premium",
+			"text": "You currently have an active premium subscription!",
+			"prompt": "Please reply with **yes** or **no**.",
+			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left."
 		},
 		"export": {
-			"title": "cmd.export.title",
-			"preparing": "cmd.export.preparing"
+			"title": "InviteManager - Export",
+			"preparing": "Please wait while we prepare the file..."
 		},
 		"chart": {
 			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
+				"title": "User joining",
+				"text": "This chart shows the number of users joining your server."
 			},
 			"leaves": {
-				"title": "cmd.chart.leaves.title",
-				"text": "cmd.chart.leaves.text"
+				"title": "Users leaving",
+				"text": "This chart shows the number of users leaving your server."
 			},
 			"usage": {
-				"title": "cmd.chart.usage.title",
-				"text": "cmd.chart.usage.text"
+				"title": "Command usage",
+				"text": "This chart shows the usage of InviteManager commands on this server."
 			}
 		},
 		"makeMentionable": {
@@ -378,5 +386,8 @@
 	},
 	"prompt": {
 		"canceled": "prompt.canceled"
+	},
+	"command": {
+		"error": "There was an error executing the command."
 	}
 }

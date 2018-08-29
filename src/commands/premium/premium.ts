@@ -34,7 +34,10 @@ export default class extends Command {
 
 			embed.fields.push({
 				name: t('cmd.premium.feature.embeds.title'),
-				value: t('cmd.premium.feature.embeds.text')
+				value: t('cmd.premium.feature.embeds.text', {
+					link:
+						'https://docs.invitemanager.co/bot/custom-messages/join-message-examples'
+				})
 			});
 
 			embed.fields.push({
@@ -60,7 +63,8 @@ export default class extends Command {
 					.locale(lang)
 					.fromNow(true);
 				description = t('cmd.premium.premium.text', {
-					date
+					date,
+					link: 'https://docs.invitemanager.co/bot/premium/extra-features'
 				});
 			} else {
 				description += t('cmd.premium.premium.notFound');

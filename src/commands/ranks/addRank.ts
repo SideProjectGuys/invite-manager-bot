@@ -30,7 +30,8 @@ export default class extends Command {
 					name: 'info',
 					resolver: StringResolver,
 					description:
-						'A description that users will see so they know more about this rank'
+						'A description that users will see so they know more about this rank',
+					rest: true
 				}
 			],
 			group: CommandGroup.Ranks,
