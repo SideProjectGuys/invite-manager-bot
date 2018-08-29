@@ -1,17 +1,59 @@
 {
+	"arguments": {
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ help }}}",
+		"enum": {
+			"validValues": "Use one of the following values: {{{ values }}}"
+		}
+	},
+	"bot": {
+		"supportDiscord": {
+			"title": "Support Discord"
+		},
+		"invite": {
+			"title": "Add bot to your server"
+		},
+		"website": {
+			"title": "Bot website"
+		},
+		"patreon": {
+			"title": "Patreon"
+		}
+	},
 	"cmd": {
+		"addInvites": {
+			"zero": "Adding zero invites doesn't really make sense...",
+			"amount": {
+				"positive": "Added **{{ amount }}** invites for <@{{ member }}>, now at: **{{ totalInvites }}** invites.",
+				"negative": "Removed **{{ amount }}** invites from <@{{ member }}>, now at: **{{ totalInvites }}** invites."
+			},
+			"roleTooHigh": "The role **{{ role }}** is higher up than my role (**{{ myRole }}**), so I won't be able to assign it to members that earn it."
+		},
+		"addRank": {
+			"updated": "Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: \"{{ description ?}}\"",
+			"created": "Added rank **{{ role }}** which needs {{ invites }} and has the following description: \"{{ description ?}}\""
+		},
+		"botInfo": {
+			"version": "Version",
+			"uptime": "Uptime",
+			"guilds": "Guilds",
+			"members": "Members",
+			"shards": {
+				"current": "Current Shard",
+				"total": "Total Shards"
+			}
+		},
+		"clearInvites": {
+			"DONE": "Cleared invites for {{ amount }} users!"
+		},
 		"config": {
+			"title": "Your config settings",
 			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
 			"notSet": "These settings are not set",
 			"current": {
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
 				"title": "Current Value",
+				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
-			},
-			"sameValue": "This config is already set to that value.",
-			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
 			},
 			"previous": {
 				"title": "Previous Value"
@@ -19,9 +61,39 @@
 			"new": {
 				"title": "New Value"
 			},
-			"title": "Your config settings"
+			"sameValue": "This config is already set to that value.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
+			},
+			"preview": {
+				"title": "Preview",
+				"nextMessage": "<See next message>"
+			},
+			"none": "None",
+			"channel": {
+				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
+				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
+			},
+			"invalid": {
+				"lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
+				"leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
+				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
+			}
+		},
+		"fake": {
+			"title": "Fake invites",
+			"none": "No fake invites detected so far.",
+			"noneSinceJoin": "There have been no fake invites since the bot has been added to this server.",
+			"join": {
+				"entry": {
+					"text": "**{{ name }}** joined **{{ times }} times**, invited by:",
+					"invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}"
+				}
+			}
 		},
 		"help": {
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
 			"command": {
 				"title": "Command"
 			},
@@ -34,12 +106,78 @@
 			"aliases": {
 				"title": "Aliases"
 			},
-			"links": "Links",
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)",
-			"missingPermissions": "cmd.help.missingPermissions"
+			"links": "Links"
+		},
+		"info": {
+			"lastJoined": {
+				"notInGuild": "User is not part of your guild",
+				"title": "Last joined"
+			},
+			"invites": {
+				"title": "Invites",
+				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+			},
+			"joined": {
+				"title": "Joined",
+				"text": "{{ amount }} times"
+			},
+			"created": {
+				"title": "Created"
+			},
+			"joins": {
+				"title": "Joins",
+				"entry": {
+					"text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:",
+					"invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
+				},
+				"more": "Plus another **{{ amount }}** more joins",
+				"unknown": "unknown (this only works for new members)"
+			},
+			"regularInvites": {
+				"title": "Regular invites",
+				"entry": "**{{ uses }}** from **{{ code }}** - created **{{ createdAt }}{{! args.reason ? `, reason: **${args.reason}**` : '' !}}**",
+				"more": "Plus another **{{ amount }}** more invite codes",
+				"none": "This member has not invited anyone so far"
+			},
+			"bonusInvites": {
+				"title": "Bonus invites",
+				"entry": "**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "This member has received no bonuses so far"
+			},
+			"invitedMembers": {
+				"title": "Invited members",
+				"more": "Plus another **{{ amount }}** more bonus invites",
+				"none": "This member has not invited anyone else so far"
+			}
+		},
+		"inviteCodes": {
+			"title": "You have the following codes on the server {{ guild }}",
+			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one.",
+			"recommendedCode": {
+				"title": "Recommended invite code",
+				"none": "Please create a permanent invite code."
+			},
+			"permanent": {
+				"title": "Permanent",
+				"text": "These invites don't expire.",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>"
+			},
+			"temporary": {
+				"title": "Temporary",
+				"text": "These invites expire after a certain time.",
+				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>\r\n**Expires**: {{ expires }}"
+			},
+			"dmSent": "I sent you a DM with all your invite codes."
+		},
+		"invites": {
+			"amount": "{{! args.self === args.target ? 'You have' : `<@${args.target}> has` !}} **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
+			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
 		},
 		"leaderboard": {
 			"title": "Leaderboard",
+			"invalidDate": "Invalid date: {{ date }}",
 			"noInvites": "No invites!",
 			"comparedTo": "changes compared to {{ to }}",
 			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
@@ -54,163 +192,53 @@
 			},
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves"
 		},
-		"invites": {
-			"amount": {
-				"self": "You have **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
-				"other": "{{{ target }}} has **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+		"memberConfig": {
+			"title": "Your config settings",
+			"text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"keys": {
+				"title": "Valid config keys"
 			},
-			"nextRank": "cmd.invites.nextRank"
-		},
-		"addInvites": {
-			"amount": {
-				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
-				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
-			}
-		},
-		"clearInvites": {
-			"done": "Cleared invites for {{ amount }} users!"
-		},
-		"fake": {
-			"none": "No fake invites detected so far."
-		},
-		"inviteCodes": {
-			"title": "You have the following codes on the server {{ guild }}",
-			"recommendedCode": {
-				"title": "Recommended invite code",
-				"none": "Please create a permanent invite code."
+			"notSet": "This config settings is currently not set for any members",
+			"current": {
+				"title": "Current Value",
+				"text": "This config is currently set.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it.\nUse `{{ prefix }}config ${key} @{{ username }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} @${args.username} none\\` to clear it.` : '' !}}",
+				"notSet": "This config is currently **not** set.\n\nUse `{{ prefix }}config {{ key }} @{{ username }} <value>` to set it."
 			},
-			"permanent": {
-				"title": "Permanent",
-				"text": "These invites don't expire.",
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Uses**: {{ maxUses }}\n**Channel**: {{{ channel }}}"
+			"previous": {
+				"title": "Previous Value"
 			},
-			"temporary": {
-				"title": "Temporary",
-				"text": "These invites expire after a certain time.",
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\n**Max Uses**: {{ maxUses }}\n**Channel**: {{{ channel }}}\n**Expires**: {{ expires }}"
+			"new": {
+				"title": "New Value"
 			},
-			"dmSent": "I sent you a DM with all your invite codes.",
-			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one."
-		},
-		"permissions": {
-			"adminOnly": "**Administrators** only",
-			"adminsCanUseAll": "Keep in mind that **Administrators** can **always** use **all** commands",
-			"added": "Added {{{ role }}} to **{{ cmds }}**",
-			"everyone": "**Everyone**",
-			"removed": "Removed {{{ role }}} from **{{ cmds }}**"
-		},
-		"chart": {
-			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
-			}
-		},
-		"export": {
-			"title": "InviteManager - Export",
-			"preparing": "Please wait while we prepare the file..."
-		},
-		"tryPremium": {
-			"title": "InviteManager Premium - Free Trial",
-			"currentlyActive": "You currently have an active premium subscription!",
-			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
-			"prompt": "Please reply with **yes** or **no**.",
-			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left."
-		},
-		"premium": {
-			"premium": {
-				"title": "InviteManager Premium",
-				"notFound": "Could not find subscription info.",
-				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?](https://docs.invitemanager.co/bot/premium/extra-features)"
+			"sameValue": "This config is already set to that value",
+			"changed": {
+				"text": "This config has been changed.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it again.\nUse `{{ prefix }}config ${key} @{{ username }} none` to reset it to the default."
 			},
-			"noPremium": {
-				"title": "This server currently does not have a premium subscription",
-				"text": "By subscribing to a premium tier you help the development of the bot and also get some additional features."
-			},
-			"feature": {
-				"embeds": {
-					"title": "Premium Feature: Embeds in join messages",
-					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)"
-				},
-				"export": {
-					"title": "Premium Feature: History export",
-					"text": "You can export all the joins and leaves that happened on your server since you invited our bot."
-				}
-			}
+			"none": "None"
 		},
-		"createInvite": {
-			"done": "Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}."
-		},
-		"info": {
-			"lastJoined": {
-				"title": "Last joined",
-				"notInGuild": "<Not in guild>"
-			},
+		"members": {
+			"members": "Members",
+			"online": "Online",
+			"humans": "Humans",
+			"bots": "Bots",
 			"joined": {
-				"title": "Joined",
-				"text": "{{ amount }} times"
-			},
-			"created": {
-				"title": "Created"
-			},
-			"invites": {
-				"title": "Invites",
-				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
-				"clear": {
-					"title": "Cleared invites",
-					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
-				}
-			},
-			"joins": {
-				"title": "Joins",
-				"unknown": "unknown (this only works for new members)"
-			},
-			"regularInvites": {
-				"title": "Regular invites",
-				"none": "This member has not invited anyone so far",
-				"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}**"
-			},
-			"bonusInvites": {
-				"entry": "**{{ amount }}** from {{{ creator }}} - **{{ date }}**, reason: **{{ reason }}**",
-				"title": "Bonus invites",
-				"noReason": "None"
-			},
-			"invitedMembers": {
-				"title": "Invited members",
-				"none": "This member has not invited anyone else so far"
+				"day": "Joined last 24h",
+				"week": "Joined this week",
+				"month": "Joined this month"
 			}
-		},
-		"inviteDetails": {
-			"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}**"
-		},
-		"subtractFakes": {
-			"none": "There have been no fake invites so far!"
-		},
-		"addRank": {
-			"created": "Added rank **{{{ role }}}** which needs {{ invites }} invites and has the following description: {{ description }}"
 		},
 		"ranks": {
-			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
-			"title": "Ranks",
-			"none": "No ranks have been created yet."
+			"none": "No ranks have been created yet.",
+			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
+			"title": "Ranks"
 		},
 		"removeRank": {
-			"done": "cmd.removeRank.done"
+			"rankNotFound": "Rank {{ role }} does not exist!",
+			"done": "Rank {{ role }} removed."
 		},
-		"botInfo": {
-			"version": "Version",
-			"uptime": "Uptime",
-			"guilds": "Guilds",
-			"members": "Members",
-			"shard": {
-				"current": "Current Shard",
-				"total": "Total Shards"
-			}
-		},
-		"subtractLeaves": {
-			"none": "cmd.subtractLeaves.none"
-		},
-		"prefix": {
-			"title": "cmd.prefix.title"
+		"restoreInvites": {
+			"done": "Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}"
 		},
 		"setup": {
 			"title": "Setting up InviteManager",
@@ -237,50 +265,24 @@
 			},
 			"manageGuild": {
 				"title": "Missing permission: Manage Server",
-				"text": "The bot does not have the `Manage Server` permission. This permission is required to read the invites of the user. Without this permission the join messages won't work."
+				"text": "The bot does not have the \"Manage Server\" permission. This permission is required to read the invites of the user. Without this permission the join messages won't work."
 			},
 			"manageRoles": {
 				"title": "Missing permission: Manage Roles",
-				"text": "The bot does not have the `Manage Roles` permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted."
+				"text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted."
 			},
 			"viewAuditLogs": {
 				"title": "Missing permission: View Audit Logs",
 				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites."
 			}
 		},
-		"getBot": {
-			"title": "cmd.getBot.title"
+		"subtractFakes": {
+			"noInvites": "There have been no invites so far!",
+			"done": "Removed {{ total }} fake invites!"
 		},
-		"members": {
-			"members": "Members",
-			"online": "Online",
-			"human": "Humans",
-			"bots": "Bots",
-			"joined": {
-				"day": "Joined last 24h",
-				"week": "Joined this week",
-				"month": "Joined this month"
-			}
-		}
-	},
-	"arguments": {
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ help }}}",
-		"enum": {
-			"validValues": "Use one of the following values: {{{ values }}}"
-		}
-	},
-	"bot": {
-		"supportDiscord": {
-			"title": "Support Discord"
-		},
-		"invite": {
-			"title": "Add bot to your server"
-		},
-		"website": {
-			"title": "Bot website"
-		},
-		"patreon": {
-			"title": "Patreon"
+		"subtractLeaves": {
+			"noLeaves": "There have been no leaves so far!",
+			"done": "Removed {{ total }} leaves!"
 		}
 	},
 	"permissions": {

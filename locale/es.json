@@ -1,318 +1,278 @@
 {
-	"PERMISSIONS_MEMBER_ERROR": "PERMISSIONS_MEMBER_ERROR",
-	"PERMISSIONS_MISSING_ROLE": "PERMISSIONS_MISSING_ROLE",
-	"CMD_BOTINFO_VERSION": "CMD_BOTINFO_VERSION",
-	"CMD_BOTINFO_UPTIME": "CMD_BOTINFO_UPTIME",
-	"CMD_BOTINFO_GUILDS": "CMD_BOTINFO_GUILDS",
-	"CMD_BOTINFO_MEMBERS": "CMD_BOTINFO_MEMBERS",
-	"CMD_BOTINFO_SHARD_CURRENT": "CMD_BOTINFO_SHARD_CURRENT",
-	"CMD_BOTINFO_SHARD_TOTAL": "CMD_BOTINFO_SHARD_TOTAL",
-	"BOT_SUPPORT_DISCORD_TITLE": "BOT_SUPPORT_DISCORD_TITLE",
-	"BOT_INVITE_TITLE": "BOT_INVITE_TITLE",
-	"BOT_WEBSITE_TITLE": "BOT_WEBSITE_TITLE",
-	"BOT_PATREON_TITLE": "BOT_PATREON_TITLE",
-	"CMD_MEMBERS_MEMBERS": "CMD_MEMBERS_MEMBERS",
-	"CMD_MEMBERS_ONLINE": "CMD_MEMBERS_ONLINE",
-	"CMD_MEMBERS_HUMANS": "CMD_MEMBERS_HUMANS",
-	"CMD_MEMBERS_BOTS": "CMD_MEMBERS_BOTS",
-	"CMD_MEMBERS_JOINED_DAY": "CMD_MEMBERS_JOINED_DAY",
-	"CMD_MEMBERS_JOINED_WEEK": "CMD_MEMBERS_JOINED_WEEK",
-	"CMD_MEMBERS_JOINED_MONTH": "CMD_MEMBERS_JOINED_MONTH",
-	"CMD_INVITES_AMOUNT": "CMD_INVITES_AMOUNT",
-	"CMD_HELP_TEXT": "CMD_HELP_TEXT",
-	"CMD_HELP_LINKS": "CMD_HELP_LINKS",
-	"CMD_HELP_COMMAND_TITLE": "CMD_HELP_COMMAND_TITLE",
-	"CMD_HELP_DESCRIPTION_TITLE": "CMD_HELP_DESCRIPTION_TITLE",
-	"CMD_HELP_USAGE_TITLE": "CMD_HELP_USAGE_TITLE",
-	"CMD_HELP_ALIASES_TITLE": "CMD_HELP_ALIASES_TITLE",
-	"CMD_INVITES_AMOUNT_SELF": "CMD_INVITES_AMOUNT_SELF",
-	"cmd": {
-		"invites": {
-			"amount": {
-				"self": "cmd.invites.amount.self",
-				"other": "cmd.invites.amount.other"
-			},
-			"nextRank": "cmd.invites.nextRank"
-		},
-		"botInfo": {
-			"version": "cmd.botInfo.version",
-			"uptime": "cmd.botInfo.uptime",
-			"guilds": "cmd.botInfo.guilds",
-			"members": "cmd.botInfo.members",
-			"shard": {
-				"current": "cmd.botInfo.shard.current",
-				"total": "cmd.botInfo.shard.total"
-			}
-		},
-		"config": {
-			"title": "cmd.config.title",
-			"text": "cmd.config.text",
-			"notSet": "cmd.config.notSet",
-			"current": {
-				"text": "cmd.config.current.text",
-				"title": "cmd.config.current.title",
-				"notSet": "cmd.config.current.notSet"
-			},
-			"sameValue": "cmd.config.sameValue",
-			"changed": {
-				"text": "cmd.config.changed.text"
-			},
-			"previous": {
-				"title": "cmd.config.previous.title"
-			},
-			"new": {
-				"title": "cmd.config.new.title"
-			}
-		},
-		"help": {
-			"command": {
-				"title": "cmd.help.command.title"
-			},
-			"description": {
-				"title": "cmd.help.description.title"
-			},
-			"usage": {
-				"title": "cmd.help.usage.title"
-			},
-			"aliases": {
-				"title": "cmd.help.aliases.title"
-			},
-			"links": "cmd.help.links",
-			"text": "cmd.help.text",
-			"missingPermissions": "cmd.help.missingPermissions"
-		},
-		"leaderboard": {
-			"title": "cmd.leaderboard.title",
-			"noInvites": "cmd.leaderboard.noInvites",
-			"comparedTo": "cmd.leaderboard.comparedTo",
-			"entry": "cmd.leaderboard.entry",
-			"col": {
-				"change": "cmd.leaderboard.col.change",
-				"name": "cmd.leaderboard.col.name",
-				"total": "cmd.leaderboard.col.total",
-				"regular": "cmd.leaderboard.col.regular",
-				"custom": "cmd.leaderboard.col.custom",
-				"fake": "cmd.leaderboard.col.fake",
-				"leave": "cmd.leaderboard.col.leave"
-			},
-			"legend": "cmd.leaderboard.legend"
-		},
-		"addInvites": {
-			"amount": {
-				"positive": "cmd.addInvites.amount.positive"
-			}
-		},
-		"clearInvites": {
-			"done": "cmd.clearInvites.done"
-		},
-		"fake": {
-			"none": "cmd.fake.none"
-		},
-		"inviteCodes": {
-			"title": "cmd.inviteCodes.title",
-			"recommendedCode": {
-				"title": "cmd.inviteCodes.recommendedCode.title"
-			},
-			"permanent": {
-				"title": "cmd.inviteCodes.permanent.title",
-				"text": "cmd.inviteCodes.permanent.text",
-				"entry": "cmd.inviteCodes.permanent.entry"
-			},
-			"temporary": {
-				"title": "cmd.inviteCodes.temporary.title",
-				"text": "cmd.inviteCodes.temporary.text",
-				"entry": "cmd.inviteCodes.temporary.entry"
-			},
-			"dmSent": "cmd.inviteCodes.dmSent"
-		},
-		"permissions": {
-			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added",
-			"everyone": "cmd.permissions.everyone",
-			"removed": "cmd.permissions.removed"
-		},
-		"chart": {
-			"joins": {
-				"title": "cmd.chart.joins.title",
-				"text": "cmd.chart.joins.text"
-			}
-		},
-		"export": {
-			"title": "cmd.export.title",
-			"premiumOnly": "cmd.export.premiumOnly",
-			"preparing": "cmd.export.preparing",
-			"invalidType": "cmd.export.invalidType"
-		},
-		"tryPremium": {
-			"title": "cmd.tryPremium.title",
-			"currentlyActive": "cmd.tryPremium.currentlyActive",
-			"text": "cmd.tryPremium.text",
-			"prompt": "cmd.tryPremium.prompt",
-			"started": "cmd.tryPremium.started"
-		},
-		"premium": {
-			"premium": {
-				"title": "cmd.premium.premium.title",
-				"notFound": "cmd.premium.premium.notFound",
-				"text": "cmd.premium.premium.text"
-			},
-			"noPremium": {
-				"title": "cmd.premium.noPremium.title",
-				"text": "cmd.premium.noPremium.text"
-			},
-			"feature": {
-				"embeds": {
-					"title": "cmd.premium.feature.embeds.title",
-					"text": "cmd.premium.feature.embeds.text"
-				},
-				"export": {
-					"title": "cmd.premium.feature.export.title",
-					"text": "cmd.premium.feature.export.text"
-				}
-			}
-		},
-		"createInvite": {
-			"missingPermissions": "cmd.createInvite.missingPermissions",
-			"done": "cmd.createInvite.done"
-		},
-		"permssions": {
-			"manageGuild": "cmd.permssions.manageGuild"
-		},
-		"info": {
-			"lastJoined": {
-				"title": "cmd.info.lastJoined.title"
-			},
-			"joined": {
-				"title": "cmd.info.joined.title",
-				"text": "cmd.info.joined.text"
-			},
-			"created": {
-				"title": "cmd.info.created.title"
-			},
-			"invites": {
-				"title": "cmd.info.invites.title",
-				"text": "cmd.info.invites.text",
-				"clear": {
-					"title": "cmd.info.invites.clear.title",
-					"text": "cmd.info.invites.clear.text"
-				}
-			},
-			"joins": {
-				"title": "cmd.info.joins.title",
-				"unknown": "cmd.info.joins.unknown"
-			},
-			"regularInvites": {
-				"title": "cmd.info.regularInvites.title",
-				"none": "cmd.info.regularInvites.none",
-				"entry": "cmd.info.regularInvites.entry"
-			},
-			"bonusInvites": {
-				"entry": "cmd.info.bonusInvites.entry",
-				"title": "cmd.info.bonusInvites.title",
-				"noReason": "cmd.info.bonusInvites.noReason"
-			},
-			"invitedMembers": {
-				"title": "cmd.info.invitedMembers.title",
-				"none": "cmd.info.invitedMembers.none"
-			}
-		},
-		"inviteDetails": {
-			"entry": "cmd.inviteDetails.entry"
-		},
-		"subtractFakes": {
-			"none": "cmd.subtractFakes.none"
-		},
-		"addRank": {
-			"created": "cmd.addRank.created"
-		},
-		"ranks": {
-			"entry": "cmd.ranks.entry",
-			"title": "cmd.ranks.title",
-			"none": "cmd.ranks.none"
-		},
-		"removeRank": {
-			"done": "cmd.removeRank.done"
-		},
-		"subtractLeaves": {
-			"none": "cmd.subtractLeaves.none"
-		},
-		"prefix": {
-			"title": "cmd.prefix.title"
-		},
-		"setup": {
-			"title": "cmd.setup.title",
-			"text": "cmd.setup.text",
-			"joinLeave": {
-				"title": "cmd.setup.joinLeave.title",
-				"text": "cmd.setup.joinLeave.text"
-			},
-			"prefix": {
-				"title": "cmd.setup.prefix.title",
-				"text": "cmd.setup.prefix.text"
-			},
-			"faq": {
-				"title": "cmd.setup.faq.title",
-				"text": "cmd.setup.faq.text"
-			},
-			"help": {
-				"title": "cmd.setup.help.title",
-				"text": "cmd.setup.help.text"
-			},
-			"premium": {
-				"title": "cmd.setup.premium.title",
-				"text": "cmd.setup.premium.text"
-			},
-			"manageGuild": {
-				"title": "cmd.setup.manageGuild.title",
-				"text": "cmd.setup.manageGuild.text"
-			},
-			"manageRoles": {
-				"title": "cmd.setup.manageRoles.title",
-				"text": "cmd.setup.manageRoles.text"
-			},
-			"viewAuditLogs": {
-				"title": "cmd.setup.viewAuditLogs.title",
-				"text": "cmd.setup.viewAuditLogs.text"
-			}
-		},
-		"getBot": {
-			"title": "cmd.getBot.title"
-		},
-		"members": {
-			"members": "cmd.members.members",
-			"online": "cmd.members.online",
-			"human": "cmd.members.human",
-			"bots": "cmd.members.bots",
-			"joined": {
-				"day": "cmd.members.joined.day",
-				"week": "cmd.members.joined.week",
-				"month": "cmd.members.joined.month"
-			}
-		}
-	},
-	"arguments": {
-		"missingRequired": "arguments.missingRequired",
-		"enum": {
-			"validValues": "arguments.enum.validValues"
-		}
-	},
-	"bot": {
-		"supportDiscord": {
-			"title": "bot.supportDiscord.title"
-		},
-		"invite": {
-			"title": "bot.invite.title"
-		},
-		"website": {
-			"title": "bot.website.title"
-		},
-		"patreon": {
-			"title": "bot.patreon.title"
-		}
-	},
-	"permissions": {
-		"adminOnly": "permissions.adminOnly",
-		"manageGuild": "permissions.manageGuild",
-		"role": "permissions.role"
-	}
+  "bot": {
+    "supportDiscord": {
+      "title": "Discord de soporte"
+    },
+    "invite": {
+      "title": "Agrega el bot a tu servidor"
+    },
+    "website": {
+      "title": "Pagina web"
+    },
+    "patreon": {
+      "title": "Patreon"
+    }
+  },
+  "cmd": {
+    "addInvites": {
+      "zero": "Agregar cero invitaciones no tiene mucho sentido...",
+      "amount": {
+        "positive": "Se agregó **{{ amount }}** invitaciones a <@{{ member }}>, ahora tiene: **{{ totalInvites }}** invitaciones.",
+        "negative": "Se quitaron **{{ amount }}** invitaciones a <@{{ member }}>, ahora tiene: **{{ totalInvites }}** invitaciones."
+      },
+      "roleTooHigh": "El rol **{{ role }}** es más alto que mi propio rol (**{{ myRole }}**), así que no podré otorgarlo a los miembros que lo obtengan."
+    },
+    "addRank": {
+      "updated": "Rango **{{ role }}** actualizado: Ahora necesita {{ invites }} y tiene la siguiente descripción: \"{{ description ?}}\"",
+      "created": "Se agregó el rango **{{ role }}** que necesita {{ invites }} y tiene la siguiente descripción: \"{{ description ?}}\""
+    },
+    "botInfo": {
+      "version": "Versión",
+      "uptime": "Tiempo activo",
+      "guilds": "Servidores",
+      "members": "Miembros",
+      "shards": {
+        "current": "Shard actual",
+        "total": "Shards totales"
+      }
+    },
+    "clearInvites": {
+      "DONE": "Invitaciones eliminadas para {{ amount }} usuarios!"
+    },
+    "config": {
+      "title": "Tu ajustes de configuración",
+      "text": "Debajo están todos los ajustes de configuración de tu servidor. \nUsa `{{ prefix }}config <key>` para ver un solo ajuste.\nUsa `{{ prefix }}config <key> <value>` para poner la configuración <key> a <value>",
+      "canNotClear": "El ajuste de configuración **{{ key }}** no se puede borrar. Tu puedes usar `config {{ key }} default` para resetearlo al valor original.",
+      "notSet": "Estos ajustes no están configurados",
+      "current": {
+        "title": "Valor actual",
+        "text": "Estos ajustes ya están configurados.\nUsa `{{ prefix }}config {{ key }} <value>` para cambiarlo.\nUsa `{{ prefix }}config {{ key }} default` para resetearlo al valor original.\n",
+        "notSet": "Estos ajustes **no** estan actualmente configurados.\nUsa `{{ prefix }}config {{ key }} <value> para ajustarlo.\n"
+      },
+      "previous": {
+        "title": "Valor previo"
+      },
+      "new": {
+        "title": "Nuevo valor"
+      },
+      "sameValue": "Este ajuste esta actualemente configurado a ese valor.",
+      "changed": {
+        "text": "Estos ajustes han sido cambiados.\nUsa `{{ prefix }}config {{ key }} <value>` para cambiarlo.\nUsa `{{ prefix }}config {{ key }} default` para resetearlo al valor original.\n"
+      },
+      "preview": {
+        "title": "Vista previa",
+        "nextMessage": "<Ver siguiente mensaje>"
+      },
+      "none": "Ninguno",
+      "channel": {
+        "canNotReadMessages": "No tengo permisos para **leer mensajes** en ese canal.",
+        "canNotSendMessages": "No tengo permisos para **enviar mensajes** en ese canal.",
+        "canNotSendEmbeds": "No tengo permisos para **insertar enlaces** en ese canal."
+      },
+      "invalid": {
+        "lang": "Lenguaje invalido **{{ value }}**. Los siguientes lenguajes son soportados: {{ langs }}",
+        "leaderboardStyle": "Estilo de tabla de puntuación invalido **{{ value }}**. Los siguientes estilos son soportados: {{ styles }}",
+        "rankAssignmentStyle": "Estilo de asignamiento de rango invalido **{{ value }}**. Los siguientes estilos son soportados: {{ styles }}"
+      }
+    },
+    "fake": {
+      "title": "Invitaciones falsas",
+      "none": "No hay invitaciones falsas detectadas hasta el momento.",
+      "noneSinceJoin": "No han habído invitaciones falsas desde que el bot ha sido añadido a este servidor.",
+      "join": {
+        "entry": {
+          "text": "**{{ name }}** a entrado **{{ times }} veces**, invitado por:",
+          "invite": "**{{ name }}**{{! args.times ? ` (**$(args.times)** times)` : '' !}}"
+        }
+      }
+    },
+    "help": {
+      "text": "Esta es una lista de comandos que puedes usar. Puedes obtener más información de un comando en especifico haciendo `{{ prefix }}help <comando>` (ej: `{{ prefix }}help add-ranks`)\n\nLos argumentos se usan luego del comando. Parentesis \\`()\\` indican un argumento **opcional**. (ej: `(razón)` significa que `razón` es opcional)",
+      "command": {
+        "title": "Comando"
+      },
+      "description": {
+        "title": "Descripción"
+      },
+      "usage": {
+        "title": "Uso"
+      },
+      "aliases": {
+        "title": "Alias"
+      },
+      "links": "Enlaces"
+    },
+    "info": {
+      "lastJoined": {
+        "notInGuild": "El usuario no es parte de tu servidor",
+        "title": "Ultima entrada"
+      },
+      "invites": {
+        "title": "Invitaciones",
+        "text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)"
+      },
+      "joined": {
+        "title": "Entrado",
+        "text": "{{ amount }} veces"
+      },
+      "created": {
+        "title": "Creada"
+      },
+      "joins": {
+        "title": "Entradas",
+        "entry": {
+          "text": "{{! args.total ? `**${args.total}** veces` : 'una vez' !}} **{{ time }}**, invitado por:",
+          "invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** veces)` : '' !}}"
+        },
+        "more": "Más otras **{{ amount }}** más entradas",
+        "unknown": "desconocido (esto solo funciona con nuevos miembros)"
+      },
+      "regularInvites": {
+        "title": "Invitaciones regulares",
+        "entry": "**{{ uses }}** de **{{ code }}** - creado **{{ createdAt }}{{! args.reason ? `, razon: **${args.reason}**` : '' !}}**",
+        "more": "Más otras **{{ amount }}** más codigos de invitacion",
+        "none": "Más otras **{{ amount }}** más invitaciones bonus"
+      },
+      "bonusInvites": {
+        "title": "Invitaciones bonus",
+        "entry": "**{{ amount }}** de <@{{ creator }}> - ** {{ date ]]**{{! args.reason ? `, razon: **${args.reason}**` : '' !}}",
+        "more": "Más otras **{{ amount }}** más invitaciones bonus",
+        "none": "Este miembro no ha recibido invitaciones bonus hasta el momento"
+      },
+      "invitedMembers": {
+        "title": "Miembros invitados",
+        "more": "Más otras **{{ amount }}** más invitaciones bonus",
+        "none": "Este miembro no ha invitado a nadie hasta el momento"
+      }
+    },
+    "inviteCodes": {
+      "title": "Tu tienes los siguientes codigos en el servidor {{ guild }}",
+      "noCodes": "No tienes ningun codigo de invitacion activo. Por favor pregunta a los moderadores del servidor como crear uno.",
+      "recommendedCode": {
+        "title": "Codigo de invitacion recomendado",
+        "none": "Por favor crea un codigo de invitacion permanente."
+      },
+      "permanent": {
+        "title": "Permanente",
+        "text": "Estas invitaciones no caducan.",
+        "entry": "\n\n\n**Usos**: {{ uses }}\n**Edad maxima**: {{ maxAge }}\n**Usos maximos**: {{ maxUses }}\n**Canal**: <#{{ channel }} >\n"
+      },
+      "temporary": {
+        "title": "Temporal",
+        "text": "Estas invitaciones caducan luego de cierto tiempo.",
+        "entry": "\n\n\n**Usos**: {{ uses }}\n**Edad maxima**: {{ maxAge }}\n**Usos maximos**: {{ maxUses }}\n**Canal**: <#{{ channel }} >\n**Caduca**: {{ expires }}"
+      },
+      "dmSent": "Te he enviado un mensaje privado con todos tus codigos de invitacion."
+    },
+    "invites": {
+      "amount": "{{! args.self === args.target ? 'Tu tienes' : `<@${args.target}> tiene` !}} **{{ total }}** invitaciones! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)",
+      "nextRank": "{{! args.self === args.self ? 'Tu necesitas' : `<@${args.target}> necesita` !}} **{{ nextRankPointsDiff }}** más invitaciones para alcanzar el rango **{{ nextRankName }}**!",
+      "highestRank": "{{! args.target === args.self ? 'Felicitaciones, actualmente tienes el rango más alto!'\n: `<@${args.target}> actualmente tiene el rango más alto!` !}}\n"
+    },
+    "leaderboard": {
+      "title": "Tabla de puntaje",
+      "invalidDate": "Fecha invalida: {{ date }}",
+      "noInvites": "¡No hay invitaciones!",
+      "comparedTo": "cambios comparado con {{ to }}",
+      "entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invitaciones (**{{ custom }}** bonus, **{{ fake }}** falsas, **{{ leave }}** salidas)",
+      "col": {
+        "change": "Cambio",
+        "name": "Nombre",
+        "total": "T",
+        "regular": "R",
+        "custom": "B",
+        "fake": "F",
+        "leave": "S"
+      },
+      "legend": "`T` = Total\n`R` = Regular\n`B` = Bonus\n`F` = Falsas\n`S` = Salidas\n"
+    },
+    "memberConfig": {
+      "title": "Tus ajustes",
+      "text": "Debajo están todos los ajustes de configuración disponibles. \n\nUsa `{{ prefix }}config <key>` para ver usuarios que tengan un ajuste `<key>`\nUsa `{{ prefix }}config <key> @usuario` para poner la configuración de un solo `@usuario`\nUsa `{{ prefix }}config <key> @usuario <valor>` para ajustar `<key>` a `<valor>` a `@usuario`\n",
+      "canNotClear": "El ajuste de configuración **{{ key }}** no se puede borrar. Tu puedes usar `config {{ key }} default` para resetearlo al valor original.",
+      "keys": {
+        "title": "Keys de configuracion valido"
+      },
+      "notSet": "Este ajuste de configuracion actualmente no esta establecido para ningun miembro",
+      "current": {
+        "title": "Valor actual",
+        "text": "Este ajuste ya esta establecido.\n\nUsa `{{ prefix }}config ${key} @{{ username }} <valor>` para cambiarlo.\nUsa `{{ prefix }}config ${key} @{{ username }} default` para dejarlo por defecto.\n{{! args.clear ? `Usa \\`${args.prefix}config ${args.key} @${args.username} ninguno\\` para limpiarlo.` : '' !}}\n",
+        "notSet": "Este ajuste no esta actualmente configurado.\n\nUsa `{{ prefix}}config {{ key }} @{{ username }} <valor>` para ajustarlo."
+      },
+      "previous": {
+        "title": "Valor previo"
+      },
+      "new": {
+        "title": "Valor nuevo"
+      },
+      "sameValue": "Este ajuste esta actualemente configurado a ese valor.",
+      "changed": {
+        "text": "Este ajuste ha sido cambiado.\n\n\nUsa `{{ prefix }}config ${key} @{{ username }} <valor>` para cambiarlo de nuevo.\nUsa `{{ prefix }}config ${key} @{{ username }} none` para dejarlo por defecto.\n"
+      },
+      "none": "Ninguno"
+    },
+    "members": {
+      "members": "Miembros",
+      "online": "En linea",
+      "humans": "Humanos",
+      "bots": "Bots",
+      "joined": {
+        "day": "Entraron en las ultimas 24h",
+        "week": "Entraron esta semana",
+        "month": "Entraron este mes"
+      }
+    },
+    "ranks": {
+      "none": "No se ha creado ningun rango hasta el momento.",
+      "entry": "<@&{{ role }}>: **{{ numInvites }} invitaciones**{{ description ?}}",
+      "title": "Rangos"
+    },
+    "removeRank": {
+      "rankNotFound": "¡Rango {{ role }} no existe!",
+      "done": "Rango {{ role }} removido."
+    },
+    "restoreInvites": {
+      "done": "Invitaciones reestablecidas{{! args.user ? ` para <@${args.user}>` : '' !}}"
+    },
+    "setup": {
+      "title": "Configurando InviteManager",
+      "text": "Luego de invitar al bot, todas las invitaciones seran rastreadas automaticamente.",
+      "joinLeave": {
+        "title": "Ajusta el canal de mensajes de entrada y salida",
+        "text": "Si quieres mostrar mensajes de entrada o salida en un canal, tienes que configurar el canal haciendo `!config joinMessageChannel #canal` o `!config leaveMessageChannel #canal`, asegurate de que el bot tenga permisos para escribir!"
+      },
+      "prefix": {
+        "title": "Cambiando prefijo",
+        "text": "Puedes cambiar el prefijo haciendo `!config prefix !`\n\nSi no conoces el prefijo del bot, puedes encontrarlo usando `@InviteManager config prefix`.\n"
+      },
+      "faq": {
+        "title": "Preguntas & Respuestas y más",
+        "text": "Usa el comando `!faq` para más informacion, ej: como cambiar el prefijo del bot o personalizar los menajes de entrada y salida.\n\nUna guia completa de como configurar el bot puede ser encontrada aquí: https://github.com/AndreasGassmann/discord-invite-manager/"
+      },
+      "help": {
+        "title": "Ayuda",
+        "text": "Si necesitas ayuda o sugerencias, puedes usar el comando `!feedback` o entrar a nuestro discord de soporte: {{ link }}"
+      },
+      "premium": {
+        "title": "Premium",
+        "text": "Si quieres apoyar el desarrollo del bot, puedes hacerlo a traves de nuestro patreon: {{ link }}\n\nDependiendo del nivel, conseguiras caracteristicas adicionales.\n"
+      },
+      "manageGuild": {
+        "title": "Permiso faltante: Administrar el Servidor",
+        "text": "El bot no tiene el permiso \"Administrar el Servidor\". El permiso es necesario para leer las invitaciones de los usuarios, sin el, los mensajes de entrada no funcionaran."
+      },
+      "manageRoles": {
+        "title": "Permiso faltante: Administrar Roles",
+        "text": "El bot no tiene el permiso \"Administrar Roles\". El permiso es necesario para asignar roles a los usuarios, sin el, no se otorgara automaticamente el rol a los usuarios."
+      }
+    },
+    "subtractFakes": {
+      "noInvites": "¡No han habido invitaciones hasta el momento!",
+      "done": "Removido {{ total }} invitaciones falsas!"
+    },
+    "subtractLeaves": {
+      "noLeaves": "No han habido salidas hasta el momento!",
+      "done": "Quitado {{ total }} salidas!"
+    }
+  }
 }

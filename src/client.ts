@@ -21,18 +21,31 @@ import { RabbitMq } from './services/RabbitMq';
 const config = require('../config.json');
 
 i18n.configure({
-	locales: ['en', 'de', 'el', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ro'],
+	locales: [
+		'en',
+		'de',
+		'el',
+		'en',
+		'es',
+		'fr',
+		'it',
+		'lt',
+		'nl',
+		'pt',
+		'ro',
+		'sr'
+	],
 	defaultLocale: 'en',
 	syncFiles: true,
 	directory: __dirname + '/../locale',
 	objectNotation: true,
-	logDebugFn: function (msg: string) {
+	logDebugFn: function(msg: string) {
 		console.log('debug', msg);
 	},
-	logWarnFn: function (msg: string) {
+	logWarnFn: function(msg: string) {
 		console.log('warn', msg);
 	},
-	logErrorFn: function (msg: string) {
+	logErrorFn: function(msg: string) {
 		console.log('error', msg);
 	}
 });
@@ -146,13 +159,13 @@ export class IMClient extends Client {
 		const channel = await owner.user.getDMChannel();
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
-			guild.name +
-			'`!\n\n' +
-			'I am now tracking all invites on your server.\n\n' +
-			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-			'You can see a list of all commands using the `!help` command.\n\n' +
-			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-			'https://discord.gg/2eTnsVM'
+				guild.name +
+				'`!\n\n' +
+				'I am now tracking all invites on your server.\n\n' +
+				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+				'You can see a list of all commands using the `!help` command.\n\n' +
+				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+				'https://discord.gg/2eTnsVM'
 		);
 	}
 

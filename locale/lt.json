@@ -1,13 +1,13 @@
 {
   "bot": {
     "supportDiscord": {
-      "title": "Support Discord"
+      "title": "parama Discord"
     },
     "invite": {
-      "title": "Adaugă botul pe serverul tău"
+      "title": "Pridėti bot prie serverio"
     },
     "website": {
-      "title": "Site-ul botului"
+      "title": "Bot Tinklalapis"
     },
     "patreon": {
       "title": "Patreon"
@@ -15,90 +15,90 @@
   },
   "cmd": {
     "addInvites": {
-      "zero": "Nu prea are sens sa adaugi 0 invitatii...",
+      "zero": "Pridėjimas nulių kvietimų tikrai nėra prasmės...",
       "amount": {
-        "positive": "Ai adaugat **{{ amount }}** invitatii pentru <@{{ member }}>, acum are **{{ totalInvites }}**",
-        "negative": "Ai sters **{{ amount }}** invitatii lui <@{{ member }}>, acum are doar **{{ totalInvites }}**"
+        "positive": "Pridėta **{{suma}}** kviečia <@ {{narys}}>, šiuo metu: **{{Iš viso kviečia}}** kviečia.",
+        "negative": "Pašalinti **{{suma}}** kviečia iš <@ {{narys}}>, šiuo metu: **{{Iš viso kviečia}}** kviečia."
       },
-      "roleTooHigh": "Gradul ***{{ role }}**  este mai sus decat al meu  (**{{ myRole }}**), deci nu il voi putea atribui membrilor care il castiga."
+      "roleTooHigh": "Vaidmuo **{{vaidmuo}}** yra aukščiau nei mano vaidmens (**{{mano vaidmuo}}**), todėl aš nebus suteikta galimybė priskirti nariams, kad uždirbti."
     },
     "addRank": {
-      "updated": "Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: \"{{ description ?}}\"",
-      "created": "Added rank **{{ role }}** which needs {{ invites }} and has the following description: \"{{ description ?}}\""
+      "updated": "Reitingas **{{vaidmuo}}** atnaujintas: dabar reikia {{kviečia}} ir turi tokį aprašymą: \"{{apibūdinimas?}}\"",
+      "created": "Įdėta rangas ** {{vaidmuo}} **, kuris turi {{kviečia}} ir turi tokį aprašymą: \"{{apibūdinimas?}}\""
     },
     "botInfo": {
-      "version": "Versiune",
-      "uptime": "Uptime",
-      "guilds": "Servere",
-      "members": "Membrii",
+      "version": "Versija",
+      "uptime": "Aukštyn laikas",
+      "guilds": "Gildijos",
+      "members": "Nariai",
       "shards": {
-        "current": "Current Shard",
-        "total": "Total Shards"
+        "current": "Dabartinis shard",
+        "total": "iš viso shards"
       }
     },
     "clearInvites": {
-      "DONE": "Ai sters {{ amount }} la membrii!"
+      "DONE": "Pašalinta kviečia {{suma}} vartotojų!"
     },
     "config": {
-      "title": "Your config settings",
-      "text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-      "canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
-      "notSet": "Setarile astea nu sunt setate",
+      "title": "Jūsų konfigūracijos nustatymai",
+      "text": "Žemiau yra visi jūsų serverio konfigūracijos nustatymai.\nNaudokite `{{prefix}} config<key>` peržiūrėti vieną nustatymą.\nNaudokite `{{prefix}} config<key><value>` to set the config<key> to <value>",
+      "canNotClear": "Sąrankos nustatymas ** {{ klavišas }} ** negalima išvalyti. Galite naudoti `config {{ klavišas }} numatytąjį`, kad iš naujo nustatytumėte numatytąją vertę.",
+      "notSet": "Šie parametrai nenustatyti",
       "current": {
-        "title": "Valoarea curenta",
-        "text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
-        "notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
+        "title": "Dabartinė vertė",
+        "text": "Ši konfigūracija šiuo metu nustatyta.\nNaudokite `{{ prefiksas }} config {{ klavišas}} <value>jį pakeisti.\nNaudokite `{{ prefiksas }} config {{ klavišas }} numatytasis` kad iš naujo nustatytumėte numatytąsias.\n{{! args.clear? `Naudokite \\` $ {args.prefix} config $ {args.key} nera \\ `ją išvalyti. ':' '!}}",
+        "notSet": "Ši konfigūracija šiuo metu **nėra** nustatyta.\nNaudokite `{{ prefiksas }} config {{ klavišas }} <value>` jį nustatyti."
       },
       "previous": {
-        "title": "Valoarea precedenta"
+        "title": "Ankstesnė vertė"
       },
       "new": {
-        "title": "Valoarea noua"
+        "title": "Naujoji vertė"
       },
-      "sameValue": "Acest config este deja setat la acea valoare.",
+      "sameValue": "Ši konfigūracija jau nustatyta šiai vertei.",
       "changed": {
-        "text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
+        "text": "Ši konfigūracija buvo pakeista.\nNaudokite `{{ prefiksas }} konfigūracija {{ klavišas}} <value>` pakeisti jį dar kartą.\nNaudokite `{{ prefiksas }} konfigūracija {{ klavišas}} nė vienas` kad iš naujo nustatytumėte numatytąsias."
       },
       "preview": {
-        "title": "Previzualizeaza",
+        "title": "Peržiūra",
         "nextMessage": "<See next message>"
       },
-      "none": "Niciuna ",
+      "none": "Nė vienas",
       "channel": {
-        "canNotReadMessages": "Nu am permisiuni sa **citesc mesaje** in acel canal.",
-        "canNotSendMessages": "Nu am permisiuni sa **trimit mesaje** in acel canal.",
-        "canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
+        "canNotReadMessages": "Aš neturiu leidimo **skaityti žinutės** šiame kanale.",
+        "canNotSendMessages": "Aš neturiu leidimo **siųsti žinutės** toje kanale.",
+        "canNotSendEmbeds": "Aš neturiu leidimo ** pridėti nuorodų ** šiame kanale."
       },
       "invalid": {
-        "lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
-        "leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
-        "rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
+        "lang": "Netinkama kalba ** {{ vertę }} **. Palaikomos šios kalbos: {{ kalbos }}",
+        "leaderboardStyle": "Invalid leaderboard style **{{ vertę }}**. The following styles are supported: {{ stilius }}",
+        "rankAssignmentStyle": "Neteisingas rango priskyrimo stilius ** {{vertę}} **. Palaikomi šie stiliai: {{stiliai}}"
       }
     },
     "fake": {
-      "title": "Invitatii false",
-      "none": "Nicio invitatie falsa detactata pana acum.",
-      "noneSinceJoin": "Nu au mai fost invitatii false de cand botul a fost adaugat pe acest server.",
+      "title": "netikrą kviečia",
+      "none": "Kol kas nėra aptikta netikrų kvietimų.",
+      "noneSinceJoin": "Nuo to laiko, kai botas buvo pridėtas prie šio serverio, nebuvo netikru kvietimų.",
       "join": {
         "entry": {
-          "text": "**{{ name }}** joined **{{ times }} times**, invited by:",
-          "invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** times)` : '' !}}"
+          "text": "** {{vardas}} ** prisijungė prie ** {{laikai}} kartų **, pakvietė:",
+          "invite": "**{{ vardas }}**{{! args.times? `(** $ {args.times} ** kartus)`: ''!}}"
         }
       }
     },
     "help": {
       "text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
       "command": {
-        "title": "Comanda"
+        "title": "Command"
       },
       "description": {
-        "title": "Descriere"
+        "title": "Description"
       },
       "usage": {
-        "title": "Folosire"
+        "title": "Usage"
       },
       "aliases": {
-        "title": "Aliasuri"
+        "title": "Aliases"
       },
       "links": "Links"
     },
@@ -108,7 +108,7 @@
         "title": "Last joined"
       },
       "invites": {
-        "title": "Invitatii",
+        "title": "Invites",
         "text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
       },
       "joined": {
@@ -119,7 +119,7 @@
         "title": "Created"
       },
       "joins": {
-        "title": "Intrari",
+        "title": "Joins",
         "entry": {
           "text": "{{! args.total ? `**${args.total}** times` : 'once' !}} **{{ time }}**, invited by:",
           "invite": "<@{{ id }}>{{! args.times ? ` (**{{ args.times }}** times)` : '' !}}"
@@ -134,8 +134,8 @@
         "none": "This member has not invited anyone so far"
       },
       "bonusInvites": {
-        "title": "Invitatii Bonus",
-        "entry": "**{{ amount }}** de la <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, motiv **${args.reason}**` : '' !}}",
+        "title": "Bonus invites",
+        "entry": "**{{ amount }}** from <@{{ creator }}> - **{{ date }}**{{! args.reason ? `, reason: **${args.reason}**` : '' !}}",
         "more": "Plus another **{{ amount }}** more bonus invites",
         "none": "This member has received no bonuses so far"
       },
@@ -147,30 +147,30 @@
     },
     "inviteCodes": {
       "title": "You have the following codes on the server {{ guild }}",
-      "noCodes": "Nu ai nici o invitatie activa! Pentru ati creea propia invitatie mergi pe canalul #server_update sa vezi cum poti face asta!",
+      "noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one.",
       "recommendedCode": {
-        "title": "Cod de invitatie recomanda",
-        "none": "Creeaza o invitatie permanenta!"
+        "title": "Recommended invite code",
+        "none": "Please create a permanent invite code."
       },
       "permanent": {
-        "title": "Permanenta",
-        "text": "Aceste invitatii nu expira!",
+        "title": "Permanent",
+        "text": "These invites don't expire.",
         "entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>"
       },
       "temporary": {
-        "title": "Temporara",
-        "text": "Aceste invitatii vor expira dupa ceva timp",
+        "title": "Temporary",
+        "text": "These invites expire after a certain time.",
         "entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: <#{{ channel }}>\r\n**Expires**: {{ expires }}"
       },
-      "dmSent": "Ti-am trimis un mesaj privat cu codurile tale de invitatie!"
+      "dmSent": "I sent you a DM with all your invite codes."
     },
     "invites": {
-      "amount": "{{! args.self === args.target ? 'Tu ai' : `<@${args.target}> has` !}} **{{ total }}** invitatii (**{{ regular }}** Normale, **{{ custom }}** Invitatii Bonus, **{{ fake }}** Invitatii fake, **{{ leave }}** Membrii plecati)",
-      "nextRank": "{{! args.target === args.self ? 'Mai ai nevoie de inca' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** Pentru a urca la rank-ul **{{ nextRankName }}** Succes!",
-      "highestRank": "{{! args.target === args.self ? 'Felicitari,in momentul de fata ai cel mai mare rank!'\n: `<@${args.target}> are cel mai mare rank in momentul de fata!` !}}"
+      "amount": "{{! args.self === args.target ? 'You have' : `<@${args.target}> has` !}} **{{ total }}** invites! (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+      "nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
+      "highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}"
     },
     "leaderboard": {
-      "title": "Topul",
+      "title": "Leaderboard",
       "invalidDate": "Invalid date: {{ date }}",
       "noInvites": "No invites!",
       "comparedTo": "changes compared to {{ to }}",
@@ -243,11 +243,11 @@
       },
       "prefix": {
         "title": "Changing the prefix",
-        "text": "“Poti schimba prefixul folosind comanda ‘!config prefix !’"
+        "text": "You can change the prefix by doing `!config prefix !`\n\nIf you don't know the bots prefix, you can find it using `@InviteManager config prefix`."
       },
       "faq": {
         "title": "FAQs and more",
-        "text": "In caz ca nu stii ce prefix este in momentul actual,poti folosi ‘@InviteManager config prefix’.”"
+        "text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://github.com/AndreasGassmann/discord-invite-manager/"
       },
       "help": {
         "title": "Help",
@@ -268,11 +268,11 @@
     },
     "subtractFakes": {
       "noInvites": "There have been no invites so far!",
-      "done": "Ai sters {{ total }} invitatii fake!"
+      "done": "Removed {{ total }} fake invites!"
     },
     "subtractLeaves": {
       "noLeaves": "There have been no leaves so far!",
-      "done": "Ai sters {{ total }} leaves!"
+      "done": "Removed {{ total }} leaves!"
     }
   }
 }
