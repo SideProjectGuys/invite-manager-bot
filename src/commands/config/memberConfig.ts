@@ -156,7 +156,7 @@ export default class extends Command {
 					value: oldRawVal
 				});
 			} else {
-				embed.description = t('cmd.memberConfig.notSet', {
+				embed.description = t('cmd.memberConfig.current.notSet', {
 					prefix
 				});
 			}

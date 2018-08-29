@@ -93,8 +93,11 @@
 			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one."
 		},
 		"permissions": {
-			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added"
+			"adminOnly": "**Administrators** only",
+			"adminsCanUseAll": "Keep in mind that **Administrators** can **always** use **all** commands",
+			"added": "Added {{{ role }}} to **{{ cmds }}**",
+			"everyone": "**Everyone**",
+			"removed": "Removed {{{ role }}} from **{{ cmds }}**"
 		},
 		"chart": {
 			"joins": {
@@ -281,11 +284,12 @@
 		}
 	},
 	"permissions": {
-		"adminOnly": "permissions.adminOnly",
+		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"createInviteCode": "Create Instant Invite",
 		"manageGuild": "Manage Server",
 		"viewAuditLogs": "View Audit Logs",
-		"manageRoles": "Manage Roles"
+		"manageRoles": "Manage Roles",
+		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}"
 	}
 }

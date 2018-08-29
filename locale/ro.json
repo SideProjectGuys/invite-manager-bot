@@ -127,7 +127,9 @@
 		},
 		"permissions": {
 			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added"
+			"added": "cmd.permissions.added",
+			"everyone": "cmd.permissions.everyone",
+			"removed": "cmd.permissions.removed"
 		},
 		"chart": {
 			"joins": {
@@ -310,6 +312,7 @@
 	},
 	"permissions": {
 		"adminOnly": "permissions.adminOnly",
-		"manageGuild": "permissions.manageGuild"
+		"manageGuild": "permissions.manageGuild",
+		"role": "permissions.role"
 	}
 }
