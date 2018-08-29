@@ -21,6 +21,7 @@ export class EnumResolver extends Resolver {
 		if (this.values.includes(val)) {
 			return val;
 		}
+		throw Error(t('arguments.enum.invalid'));
 	}
 
 	public getHelp({ t }: Context) {

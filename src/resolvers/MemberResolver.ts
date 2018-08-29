@@ -7,7 +7,7 @@ import { Resolver } from './Resolver';
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class MemberResolver extends Resolver {
-	public async resolve(value: string, { guild }: Context): Promise<Member> {
+	public async resolve(value: string, { guild, t }: Context): Promise<Member> {
 		if (!value || !guild) {
 			return;
 		}
@@ -19,6 +19,9 @@ export class MemberResolver extends Resolver {
 			if (!member) {
 				member = await guild.getRESTMember(id);
 			}
+			if (!member) {
+				throw Error(t('arguments.member.notFound'));
+			}
 		} else {
 			const name = value.toLowerCase();
 			const members = guild.members.filter(m => {
@@ -28,7 +31,17 @@ export class MemberResolver extends Resolver {
 			if (members.length === 1) {
 				member = members[0];
 			} else {
-				// TODO: Show error for multiple user matches
+				if (members.length === 0) {
+					throw Error(t('arguments.member.notFound'));
+				} else {
+					throw Error(
+						t('arguments.member.multiple', {
+							members: members
+								.map(m => `\`${m.username}#${m.discriminator}\``)
+								.join(', ')
+						})
+					);
+				}
 			}
 		}
 

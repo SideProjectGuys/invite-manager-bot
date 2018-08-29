@@ -1,11 +1,13 @@
 import { Invite } from 'eris';
 
+import { Context } from '../commands/Command';
+
 import { Resolver } from './Resolver';
 
 const codeRegex = /^(?:(?:https?:\/\/)?discord.gg\/)?(.*)$/;
 
 export class InviteCodeResolver extends Resolver {
-	public async resolve(value: string): Promise<Invite> {
+	public async resolve(value: string, { t }: Context): Promise<Invite> {
 		if (!value) {
 			return;
 		}
@@ -14,6 +16,9 @@ export class InviteCodeResolver extends Resolver {
 		if (codeRegex.test(value)) {
 			const id = value.match(codeRegex)[1];
 			inv = await this.client.getInvite(id);
+		}
+		if (!inv) {
+			throw Error(t('arguments.inviteCode.notFound'));
 		}
 
 		return inv;

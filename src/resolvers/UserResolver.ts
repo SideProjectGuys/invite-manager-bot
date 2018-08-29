@@ -1,11 +1,13 @@
 import { User } from 'eris';
 
+import { Context } from '../commands/Command';
+
 import { Resolver } from './Resolver';
 
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class UserResolver extends Resolver {
-	public async resolve(value: string): Promise<User> {
+	public async resolve(value: string, { t }: Context): Promise<User> {
 		if (!value) {
 			return;
 		}
@@ -17,6 +19,9 @@ export class UserResolver extends Resolver {
 			if (!user) {
 				user = await this.client.getRESTUser(id);
 			}
+			if (!user) {
+				throw Error(t('arguments.user.notFound'));
+			}
 		} else {
 			const name = value.toLowerCase();
 			const users = this.client.users.filter(u => {
@@ -26,7 +31,17 @@ export class UserResolver extends Resolver {
 			if (users.length === 1) {
 				user = users[0];
 			} else {
-				// TODO: Show error for multiple user matches
+				if (users.length === 0) {
+					throw Error(t('arguments.user.notFound'));
+				} else {
+					throw Error(
+						t('arguments.user.multiple', {
+							users: users
+								.map(u => `\`${u.username}#${u.discriminator}\``)
+								.join(', ')
+						})
+					);
+				}
 			}
 		}
 

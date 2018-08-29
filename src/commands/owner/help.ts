@@ -30,7 +30,7 @@ export default class extends Command {
 
 		const commands = this.client.cmds.commands
 			.filter(c => c.ownerOnly || c.hidden)
-			.map(c => c.usage.replace('<prefix>', prefix));
+			.map(c => c.usage.replace('{prefix}', prefix));
 
 		const embed = this.client.createEmbed({
 			description: commands.join('\n')

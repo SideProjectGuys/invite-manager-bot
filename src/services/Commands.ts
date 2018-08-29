@@ -252,8 +252,33 @@ export class Commands {
 			isPremium
 		};
 
+		// Format arguments
+		let rawArgs: string[] = [];
+		let quote = false;
+		let acc = '';
+		for (let j = 1; j < splits.length; j++) {
+			const split = splits[j];
+
+			if (split.startsWith(`"`)) {
+				quote = true;
+				acc = '';
+			}
+
+			if (split.endsWith(`"`)) {
+				quote = false;
+				acc += ' ' + split.substring(0, split.length - 1);
+				rawArgs.push(acc.substring(2));
+				continue;
+			}
+
+			if (quote) {
+				acc += ' ' + split;
+			} else {
+				rawArgs.push(split);
+			}
+		}
+
 		// Resolve arguments
-		const rawArgs = splits.slice(1);
 		const args: any[] = [];
 		let i = 0;
 		for (const arg of cmd.args) {
@@ -264,23 +289,47 @@ export class Commands {
 				rawVal = rawArgs.slice(i).join(' ');
 			}
 
-			const val = await resolver.resolve(rawVal, context, args);
-			if (typeof val === typeof undefined && arg.required) {
+			try {
+				const val = await resolver.resolve(rawVal, context, args);
+
+				if (typeof val === typeof undefined && arg.required) {
+					this.client.sendReply(
+						message,
+						t('arguments.missingRequired', {
+							name: arg.name,
+							usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
+							help: resolver.getHelp(context)
+						})
+					);
+					return;
+				}
+
+				args.push(val);
+			} catch (e) {
 				this.client.sendReply(
 					message,
-					t('arguments.missingRequired', {
+					t('arguments.invalid', {
 						name: arg.name,
+						usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
+						arg: arg.name,
+						error: e.message,
 						help: resolver.getHelp(context)
 					})
 				);
 				return;
 			}
-			args.push(val);
+
 			i++;
 		}
 
 		// Run command
-		await cmd.action(message, args, context);
+		try {
+			await cmd.action(message, args, context);
+		} catch (e) {
+			console.error(e);
+			this.client.sendReply(message, t('command.error'));
+			return;
+		}
 
 		const execTime: number = Date.now() - start;
 

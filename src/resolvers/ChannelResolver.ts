@@ -7,7 +7,7 @@ import { Resolver } from './Resolver';
 const channelRegex = /^(?:<#)?(\d+)>?$/;
 
 export class ChannelResolver extends Resolver {
-	public async resolve(value: string, { guild }: Context): Promise<Channel> {
+	public async resolve(value: string, { guild, t }: Context): Promise<Channel> {
 		if (!guild || !value) {
 			return;
 		}
@@ -16,16 +16,28 @@ export class ChannelResolver extends Resolver {
 		if (channelRegex.test(value)) {
 			const id = value.match(channelRegex)[1];
 			channel = guild.channels.get(id);
+			if (!channel) {
+				throw Error(t('arguments.channel.notFound'));
+			}
 		} else {
 			const name = value.toLowerCase();
 			const channels = guild.channels.filter(r => {
 				const rName = r.name.toLowerCase();
 				return rName.includes(name) || name.includes(rName);
 			});
+
 			if (channels.length === 1) {
 				channel = channels[0];
 			} else {
-				// TODO: Show error for multiple channel matches
+				if (channels.length === 0) {
+					throw Error(t('arguments.channel.notFound'));
+				} else {
+					throw Error(
+						t('arguments.channel.multiple', {
+							channels: channels.map(c => `\`${c.name}\``).join(', ')
+						})
+					);
+				}
 			}
 		}
 

@@ -74,7 +74,7 @@ export abstract class Command {
 		this.hidden = props.hidden;
 		this.premiumOnly = props.premiumOnly;
 
-		this.usage = `<prefix>${this.name} `;
+		this.usage = `{prefix}${this.name} `;
 
 		this.resolvers = [];
 		this.args.forEach(arg => {

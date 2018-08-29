@@ -38,7 +38,7 @@ export default class extends Command {
 		if (command) {
 			const cmd = {
 				...command,
-				usage: command.usage.replace('<prefix>', prefix),
+				usage: command.usage.replace('{prefix}', prefix),
 				info: command.getInfo(context)
 			};
 
@@ -75,7 +75,7 @@ export default class extends Command {
 				.filter(c => !c.ownerOnly && !c.hidden)
 				.map(c => ({
 					...c,
-					usage: c.usage.replace('<prefix>', prefix)
+					usage: c.usage.replace('{prefix}', prefix)
 				}))
 				.sort((a, b) => a.name.localeCompare(b.name));
 
