@@ -393,7 +393,9 @@
 					"args": "Arguments passed to the punishment."
 				},
 				"description": "Configure punishments when reaching a certain amount of strikes."
-			}
+			},
+			"unusedPunishment": "Unused Punishment",
+			"deletedText": "Members will no longer receive the punishment {{ punishment }}"
 		},
 		"purge": {
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
@@ -519,7 +521,8 @@
 				},
 				"description": "Configure strikes received for various violations."
 			},
-			"deletedText": "Members who violate the rule {{ violation }} will no longer receive strikes."
+			"deletedText": "Members who violate the rule {{ violation }} will no longer receive strikes.",
+			"unusedViolations": "Unused violations"
 		},
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
