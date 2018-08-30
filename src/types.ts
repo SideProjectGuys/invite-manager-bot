@@ -28,13 +28,13 @@ export enum CommandGroup {
 }
 
 export enum ShardCommand {
-	'DIAGNOSE' = 'DIAGNOSE',
-	'FLUSH_PREMIUM_CACHE' = 'FLUSH_PREMIUM_CACHE',
-	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE',
-	'SUDO' = 'SUDO',
-	'RESPONSE' = 'RESPONSE',
-	'OWNER_DM' = 'OWNER_DM',
-	'USER_DM' = 'USER_DM'
+	DIAGNOSE = 'DIAGNOSE',
+	FLUSH_PREMIUM_CACHE = 'FLUSH_PREMIUM_CACHE',
+	FLUSH_SETTINGS_CACHE = 'FLUSH_SETTINGS_CACHE',
+	SUDO = 'SUDO',
+	RESPONSE = 'RESPONSE',
+	OWNER_DM = 'OWNER_DM',
+	USER_DM = 'USER_DM'
 }
 
 export enum ChartType {
@@ -44,81 +44,82 @@ export enum ChartType {
 }
 
 export enum BotCommand {
-	'config' = 'config',
-	'inviteCodeConfig' = 'inviteCodeConfig',
-	'memberConfig' = 'memberConfig',
-	'permissions' = 'permissions',
+	config = 'config',
+	inviteCodeConfig = 'inviteCodeConfig',
+	memberConfig = 'memberConfig',
+	permissions = 'permissions',
+	interactiveConfig = 'interactiveConfig',
 
-	'getBot' = 'getBot',
-	'botInfo' = 'botInfo',
-	'prefix' = 'prefix',
-	'setup' = 'setup',
-	'support' = 'support',
-	'help' = 'help',
+	getBot = 'getBot',
+	botInfo = 'botInfo',
+	prefix = 'prefix',
+	setup = 'setup',
+	support = 'support',
+	help = 'help',
 
-	'createInvite' = 'createInvite',
-	'addInvites' = 'addInvites',
-	'clearInvites' = 'clearInvites',
-	'fake' = 'fake',
-	'info' = 'info',
-	'inviteCodes' = 'inviteCodes',
-	'inviteDetails' = 'inviteDetails',
-	'invites' = 'invites',
-	'leaderboard' = 'leaderboard',
-	'members' = 'members',
-	'restoreInvites' = 'restoreInvites',
-	'subtractFakes' = 'subtractFakes',
-	'subtractLeaves' = 'subtractLeaves',
+	createInvite = 'createInvite',
+	addInvites = 'addInvites',
+	clearInvites = 'clearInvites',
+	fake = 'fake',
+	info = 'info',
+	inviteCodes = 'inviteCodes',
+	inviteDetails = 'inviteDetails',
+	invites = 'invites',
+	leaderboard = 'leaderboard',
+	members = 'members',
+	restoreInvites = 'restoreInvites',
+	subtractFakes = 'subtractFakes',
+	subtractLeaves = 'subtractLeaves',
 
-	'export' = 'export',
-	'premium' = 'premium',
-	'tryPremium' = 'tryPremium',
+	export = 'export',
+	premium = 'premium',
+	tryPremium = 'tryPremium',
 
-	'addRank' = 'addRank',
-	'ranks' = 'ranks',
-	'removeRank' = 'removeRank',
+	addRank = 'addRank',
+	ranks = 'ranks',
+	removeRank = 'removeRank',
 
-	'makeMentionable' = 'makeMentionable',
-	'mentionRole' = 'mentionRole',
+	makeMentionable = 'makeMentionable',
+	mentionRole = 'mentionRole',
 
-	'graph' = 'graph'
+	graph = 'graph'
 }
 
 export enum ModerationCommand {
-	'autoMod' = 'autoMod',
-	'punishment' = 'punishment',
-	'punishmentConfig' = 'punishmentConfig',
-	'strikeAdd' = 'strikeAdd',
-	'strikeConfig' = 'strikeConfig',
-	'strikeRemove' = 'strikeRemove',
+	autoMod = 'autoMod',
+	punishment = 'punishment',
+	punishmentConfig = 'punishmentConfig',
+	strikeAdd = 'strikeAdd',
+	strikeConfig = 'strikeConfig',
+	strikeRemove = 'strikeRemove',
 
-	'ban' = 'ban',
-	'caseDelete' = 'caseDelete',
-	'caseUpdate' = 'caseUpdate',
-	'caseView' = 'caseView',
-	'kick' = 'kick',
-	'mute' = 'mute',
-	'softBan' = 'softBan',
-	'unmute' = 'unmute',
-	'warn' = 'warn',
+	ban = 'ban',
+	caseDelete = 'caseDelete',
+	caseUpdate = 'caseUpdate',
+	caseView = 'caseView',
+	kick = 'kick',
+	mute = 'mute',
+	softBan = 'softBan',
+	unmute = 'unmute',
+	warn = 'warn',
 
-	'check' = 'check',
+	check = 'check',
 
-	'clean' = 'clean',
-	'cleanText' = 'cleanText',
-	'cleanShort' = 'cleanShort',
-	'purgeSafe' = 'purgeSafe',
-	'purgeUntil' = 'purgeUntil',
-	'purge' = 'purge'
+	clean = 'clean',
+	cleanText = 'cleanText',
+	cleanShort = 'cleanShort',
+	purgeSafe = 'purgeSafe',
+	purgeUntil = 'purgeUntil',
+	purge = 'purge'
 }
 
 export enum OwnerCommand {
-	'diagnose' = 'ownerDiagnose',
-	'dm' = 'ownerDm',
-	'flushPremium' = 'ownerFlushPremium',
-	'givePremium' = 'ownerGivePremium',
-	'help' = 'ownerHelp',
-	'sudo' = 'sudo'
+	diagnose = 'ownerDiagnose',
+	dm = 'ownerDm',
+	flushPremium = 'ownerFlushPremium',
+	givePremium = 'ownerGivePremium',
+	help = 'ownerHelp',
+	sudo = 'sudo'
 }
 
 export interface RabbitMqMember {
