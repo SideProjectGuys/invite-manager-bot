@@ -45,6 +45,7 @@ export class Moderation {
 	}
 
 	private async onMessage(message: Message) {
+		if (message.author.bot) { return; }
 		const channel = message.channel;
 		const guild = (channel as TextChannel).guild;
 
