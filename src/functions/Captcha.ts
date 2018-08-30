@@ -27,10 +27,10 @@ export function createCaptcha(config: CaptchaConfig, callback: (text: string, da
 	config.fileMode = config.fileMode || FileMode.BASE64;
 	config.size = config.size || 4;
 	config.height = config.height || 24;
-	config.width = config.width || config.height * config.size;
+	config.width = config.width || config.height * config.size / 1.5;
 	config.color = config.color || 'rgb(0,0,0)';
 	config.background = config.background || 'rgb(255,255,255)';
-	config.lineWidth = config.lineWidth || 2;
+	config.lineWidth = config.lineWidth || 1;
 	config.saveDir = config.saveDir || __dirname;
 	config.text = config.text || Math.random().toString().substr(2, config.size);
 	config.noise = (config.noise !== false) ? true : false;
@@ -41,7 +41,7 @@ export function createCaptcha(config: CaptchaConfig, callback: (text: string, da
 	config.spacing = (config.spacing < 1 || config.spacing > 3) ? 2 : config.spacing;
 	config.nofLines = config.nofLines || 2;
 
-	const fontSize = Math.round(config.height * 0.5 + (15 - config.complexity * 3));
+	const fontSize = Math.round(config.height * 0.25 + (15 - config.complexity * 3));
 	const canvas = new canvasClass(config.width, config.height);
 	const ctx = canvas.getContext('2d');
 	ctx.fillStyle = config.background;
@@ -56,11 +56,11 @@ export function createCaptcha(config: CaptchaConfig, callback: (text: string, da
 		for (let i = 0; i < config.nofLines; i++) {
 			ctx.moveTo(20, Math.random() * noiseHeight);
 			ctx.bezierCurveTo(
-				80,
+				config.width / 2,
 				Math.random() * noiseHeight,
-				160,
+				config.width / 1.5,
 				Math.random() * noiseHeight,
-				230,
+				config.width,
 				Math.random() * noiseHeight);
 			ctx.stroke();
 		}
@@ -74,7 +74,7 @@ export function createCaptcha(config: CaptchaConfig, callback: (text: string, da
 			Math.random() * modifier + modifier / 3,
 			Math.random() * modifier + modifier / 3,
 			Math.random() * modifier + 1 + modifier / 3,
-			(config.height * i) / (4 - config.spacing) + (config.height - fontSize) / 3 + 10,
+			(config.height * i) / (4 - config.spacing) + (config.height - fontSize) / 3 + 40,
 			config.height - (config.height - fontSize) / 2);
 		ctx.fillText(config.text.charAt(i), 0, 0);
 	}

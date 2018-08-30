@@ -193,7 +193,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-						`rank announcement channel ${rankChannelId}`
+					`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -272,7 +272,7 @@ export enum PromptResult {
 const captchaOptions = {
 	size: 6,
 	fileMode: FileMode.BUFFER,
-	height: 50,
+	height: 100,
 	noiseColor: 'rgb(10,40,100)',
 	color: 'rgb(50,40,50)',
 	spacing: 2,
