@@ -15,8 +15,7 @@ export default class extends Command {
 			args: [
 				{
 					name: 'violation',
-					resolver: new EnumResolver(client, Object.values(ViolationType)),
-					required: true
+					resolver: new EnumResolver(client, Object.values(ViolationType))
 				},
 				{
 					name: 'strikes',
@@ -41,27 +40,44 @@ export default class extends Command {
 			title: t('cmd.strikeConfig.title')
 		});
 
-		if (typeof strikes !== typeof undefined) {
+		let violationQuery = {
+			guildId: guild.id,
+			violationType: violation
+		};
+
+		if (typeof violation === typeof undefined) {
+			let allViolations: ViolationType[] = Object.values(ViolationType);
+			let strikeConfigList = await strikeConfigs.findAll({ where: { guildId: guild.id }, order: [['amount', 'DESC']] });
+			let unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.violationType).indexOf(v) < 0);
+			embed.description =
+				strikeConfigList.map(scl => t('cmd.strikeConfig.text', {
+					violation: `**${scl.violationType}**`,
+					strikes: `**${scl.amount}**`
+				})).join('\n');
+			embed.fields.push({
+				name: t('cmd.strikeConfig.unusedViolations'),
+				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
+			});
+		} else if (typeof strikes === typeof undefined) {
+			let strike = await strikeConfigs.find({ where: violationQuery });
+			embed.description = t('cmd.strikeConfig.text', {
+				violation: `**${strike.violationType}**`,
+				strikes: `**${strike.amount}**`
+			});
+		} else if (strikes === 0) {
+			await strikeConfigs.destroy({ where: violationQuery });
+			embed.description = t('cmd.strikeConfig.deletedText', {
+				violation: `**${violation}**`
+			});
+		} else {
 			strikeConfigs.insertOrUpdate({
 				id: null,
-				guildId: guild.id,
-				violationType: violation,
-				amount: strikes
+				amount: strikes,
+				...violationQuery
 			});
 			embed.description = t('cmd.strikeConfig.text', {
 				violation: `**${violation}**`,
 				strikes: `**${strikes}**`
-			});
-		} else {
-			let strike = await strikeConfigs.find({
-				where: {
-					guildId: guild.id,
-					violationType: violation
-				}
-			});
-			embed.description = t('cmd.strikeConfig.text', {
-				violation: `**${strike.violationType}**`,
-				strikes: `**${strike.amount}**`
 			});
 			// TODO: expiration
 		}

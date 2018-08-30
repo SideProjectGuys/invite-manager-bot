@@ -518,7 +518,8 @@
 					"strikes": "Number of strikes."
 				},
 				"description": "Configure strikes received for various violations."
-			}
+			},
+			"deletedText": "Members who violate the rule {{ violation }} will no longer receive strikes."
 		},
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
