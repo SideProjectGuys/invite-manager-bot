@@ -39,8 +39,8 @@ export default class extends Command {
 		let messages: Message[] = (await message.channel.getMessages(
 			100,
 			undefined,
-			message.id
-		)).filter((m: Message) => m.id >= untilMessageID);
+			untilMessageID
+		));
 
 		if (messages.length === 0) {
 			embed.description = t('cmd.purgeUntil.none');
