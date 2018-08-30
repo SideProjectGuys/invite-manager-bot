@@ -1,7 +1,7 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { NumberResolver, UserResolver } from '../../../resolvers';
+import { EnumResolver, NumberResolver, UserResolver } from '../../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -13,20 +13,29 @@ import { CommandGroup, ModerationCommand } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
+enum CleanType {
+	images = 'image',
+	links = 'link',
+	mentions = 'mention',
+	bots = 'bots',
+	embeds = 'embeds',
+	text = 'text'
+}
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.purge,
-			aliases: ['prune'],
+			name: ModerationCommand.clean,
+			aliases: [],
 			args: [
 				{
-					name: 'quantity',
-					resolver: NumberResolver,
+					name: 'type',
+					resolver: new EnumResolver(client, Object.values(CleanType)),
 					required: true
 				},
 				{
-					name: 'member',
-					resolver: UserResolver
+					name: 'numberOfMessages',
+					resolver: NumberResolver,
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -36,7 +45,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[quantity, member]: [number, Member],
+		[type, numberOfMessages]: [CleanType, number],
 		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -45,24 +54,18 @@ export default class extends Command {
 
 		const embed = this.client.createEmbed();
 
-		if (quantity < 1) {
+		if (numberOfMessages < 1) {
 			return this.client.sendReply(message, t('cmd.clean.invalidQuantity'));
 		}
+		let messages = await message.channel.getMessages(
+			Math.min(numberOfMessages, 100),
+			message.id
+		);
 
-		let messages: Message[];
-		if (member) {
-			messages = (await message.channel.getMessages(
-				Math.min(quantity, 100),
-				message.id
-			)).filter((a: Message) => a.author.id === member.id);
-		} else {
-			messages = await message.channel.getMessages(
-				Math.min(quantity, 100),
-				message.id
-			);
+		// TODO continue here
+		if (type === CleanType.images) {
+			message.delete();
 		}
-
-		message.delete();
 		let [error, _] = await to(
 			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 		);
