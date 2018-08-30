@@ -14,19 +14,23 @@ import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 enum CleanType {
-	images = 'image',
-	links = 'link',
-	mentions = 'mention',
+	images = 'images',
+	links = 'links',
+	mentions = 'mentions',
 	bots = 'bots',
 	embeds = 'embeds',
-	text = 'text'
+	emoji = 'emoji',
+	reacted = 'reacted',
+	reactions = 'reactions'
 }
 
 export default class extends Command {
+	public cleanFunctions: { [k in CleanType]: (messages: Message[]) => Message[] };
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.clean,
-			aliases: [],
+			aliases: ['clear'],
 			args: [
 				{
 					name: 'type',
@@ -41,6 +45,17 @@ export default class extends Command {
 			group: CommandGroup.Moderation,
 			guildOnly: true
 		});
+
+		this.cleanFunctions = {
+			[CleanType.images]: this.images.bind(this),
+			[CleanType.links]: this.links.bind(this),
+			[CleanType.mentions]: this.mentions.bind(this),
+			[CleanType.bots]: this.bots.bind(this),
+			[CleanType.embeds]: this.embeds.bind(this),
+			[CleanType.emoji]: this.emoji.bind(this),
+			[CleanType.reacted]: this.reacted.bind(this),
+			[CleanType.reactions]: this.reacted.bind(this),
+		};
 	}
 
 	public async action(
@@ -57,33 +72,95 @@ export default class extends Command {
 		if (numberOfMessages < 1) {
 			return this.client.sendReply(message, t('cmd.clean.invalidQuantity'));
 		}
+		if (numberOfMessages === undefined) {
+			numberOfMessages = 5;
+		}
+
 		let messages = await message.channel.getMessages(
 			Math.min(numberOfMessages, 100),
 			message.id
 		);
 
-		// TODO continue here
-		if (type === CleanType.images) {
-			message.delete();
+		let messagesToBeDeleted = this.cleanFunctions[type](messages);
+
+		let error: any;
+		let _: void;
+		if (type === CleanType.reactions) {
+			for (let messageToBeDeleted of messagesToBeDeleted) {
+				await messageToBeDeleted.removeReactions();
+			}
+		} else {
+			[error, _] = await to(
+				this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id))
+			);
 		}
-		let [error, _] = await to(
-			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
-		);
 		if (error) {
 			embed.title = t('cmd.clean.error');
 			embed.description = error;
 		} else {
-			embed.title = t('cmd.clean.title');
-			embed.description = t('cmd.clean.text', {
-				amount: `**${messages.length}**`
-			});
+			if (type === CleanType.reactions) {
+				embed.title = t('cmd.clean.title');
+				embed.description = t('cmd.clean.textReactions', {
+					amount: `**${messagesToBeDeleted.length}**`
+				});
+			} else {
+				embed.title = t('cmd.clean.title');
+				embed.description = t('cmd.clean.text', {
+					amount: `**${messagesToBeDeleted.length}**`
+				});
+			}
 		}
 
 		let response = (await this.client.sendReply(message, embed)) as Message;
+		message.delete();
 
 		const func = () => {
 			response.delete();
 		};
 		setTimeout(func, 5000);
+	}
+
+	private images(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			return message.attachments.length > 0;
+		});
+	}
+
+	private links(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			let matches = this.client.mod.getLinks(message);
+			return matches && matches.length > 0;
+		});
+	}
+
+	private mentions(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			return message.mentionEveryone || message.mentions.length > 0 || message.roleMentions.length > 0;
+		});
+	}
+
+	private bots(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			return message.author.bot;
+		});
+	}
+
+	private embeds(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			return message.embeds.length > 0;
+		});
+	}
+
+	private emoji(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			return this.client.mod.countEmojis(message) > 0;
+		});
+	}
+
+	private reacted(messages: Message[]): Message[] {
+		return messages.filter(message => {
+			let reactionsKeys = Object.keys(message.reactions);
+			return reactionsKeys.length > 0;
+		});
 	}
 }
