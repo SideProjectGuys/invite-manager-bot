@@ -69,12 +69,13 @@ export class Moderation {
 		});
 
 		let foundViolation = false;
-		for (let strike of strikesList) {
+		let violation: ViolationType;
+		for (violation of Object.values(ViolationType)) {
 			if (foundViolation) { return; }
-			foundViolation = await this.strikeConfigFunctions[strike.violationType](message, { settings: settings });
+			foundViolation = await this.strikeConfigFunctions[violation](message, { settings: settings });
 			if (foundViolation) {
 				message.delete();
-				this.addStrikesAndCheckIfPunishable(message, guild, strike.amount, strike.violationType);
+				// this.addStrikesAndCheckIfPunishable(message, guild, strike.amount, strike.violationType);
 			}
 		}
 	}
@@ -182,7 +183,7 @@ export class Moderation {
 		let words = blacklist.split(',');
 		let content = message.content.toLowerCase();
 
-		let hasBlacklistedWords = words.some(word => content.indexOf(word) > -1);
+		let hasBlacklistedWords = words.some(word => content.includes(word));
 
 		return hasBlacklistedWords;
 	}
