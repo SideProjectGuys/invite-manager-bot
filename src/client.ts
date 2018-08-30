@@ -36,7 +36,7 @@ i18n.configure({
 		'sr'
 	],
 	defaultLocale: 'en',
-	syncFiles: true,
+	// syncFiles: true,
 	directory: __dirname + '/../locale',
 	objectNotation: true,
 	logDebugFn: function(msg: string) {
