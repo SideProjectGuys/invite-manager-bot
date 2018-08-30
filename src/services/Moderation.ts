@@ -331,6 +331,6 @@ export class Moderation {
 			() => {
 				reply.delete();
 			},
-			4000);
+			5000);
 	}
 }

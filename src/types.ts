@@ -105,6 +105,8 @@ export enum ModerationCommand {
 	'check' = 'check',
 
 	'clean' = 'clean',
+	'cleanText' = 'cleanText',
+	'cleanShort' = 'cleanShort',
 	'purgeSafe' = 'purgeSafe',
 	'purgeUntil' = 'purgeUntil',
 	'purge' = 'purge'

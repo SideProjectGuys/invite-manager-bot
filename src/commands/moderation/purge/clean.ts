@@ -19,7 +19,7 @@ enum CleanType {
 	mentions = 'mentions',
 	bots = 'bots',
 	embeds = 'embeds',
-	emoji = 'emoji',
+	emojis = 'emojis',
 	reacted = 'reacted',
 	reactions = 'reactions'
 }
@@ -52,7 +52,7 @@ export default class extends Command {
 			[CleanType.mentions]: this.mentions.bind(this),
 			[CleanType.bots]: this.bots.bind(this),
 			[CleanType.embeds]: this.embeds.bind(this),
-			[CleanType.emoji]: this.emoji.bind(this),
+			[CleanType.emojis]: this.emojis.bind(this),
 			[CleanType.reacted]: this.reacted.bind(this),
 			[CleanType.reactions]: this.reacted.bind(this),
 		};
@@ -151,7 +151,7 @@ export default class extends Command {
 		});
 	}
 
-	private emoji(messages: Message[]): Message[] {
+	private emojis(messages: Message[]): Message[] {
 		return messages.filter(message => {
 			return this.client.mod.countEmojis(message) > 0;
 		});
