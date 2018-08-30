@@ -10,7 +10,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.purgeUntil,
-			aliases: ['prune-until', 'pruneu', 'purgeu'],
+			aliases: ['purge-until', 'prune-until', 'pruneu', 'purgeu'],
 			args: [
 				{
 					name: 'messageID',

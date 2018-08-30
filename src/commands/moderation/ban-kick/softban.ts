@@ -14,7 +14,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.softBan,
-			aliases: [],
+			aliases: ['soft-ban'],
 			args: [
 				{
 					name: 'user',
