@@ -12,5 +12,7 @@ export class NumberResolver extends Resolver {
 		if (isNaN(val) || !isFinite(val)) {
 			throw Error(t('arguments.number.invalid'));
 		}
+
+		return val;
 	}
 }
