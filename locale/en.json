@@ -16,6 +16,9 @@
 		"command": {
 			"notFound": "arguments.command.notFound",
 			"multiple": "arguments.command.multiple"
+		},
+		"channel": {
+			"notFound": "arguments.channel.notFound"
 		}
 	},
 	"bot": {

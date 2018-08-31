@@ -82,7 +82,7 @@ export abstract class Command {
 			}
 			delete arg.resolver;
 
-			this.usage += arg.required ? `<${arg.name}> ` : `(<${arg.name}>) `;
+			this.usage += arg.required ? `<${arg.name}> ` : `[${arg.name}] `;
 		});
 	}
 
