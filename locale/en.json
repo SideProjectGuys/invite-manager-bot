@@ -93,7 +93,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ amount }} for {{ violation }} {{ date }}"
+				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Punishments",
@@ -684,6 +684,12 @@
 				},
 				"description": "Shows graphs about various stats on this server."
 			}
+		},
+		"unban": {
+			"canNotUnban": "cmd.unban.canNotUnban"
+		},
+		"mute": {
+			"error": "cmd.mute.error"
 		}
 	},
 	"permissions": {

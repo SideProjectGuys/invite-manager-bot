@@ -94,16 +94,16 @@ export enum ModerationCommand {
 	strikeRemove = 'strikeRemove',
 
 	ban = 'ban',
-	caseDelete = 'caseDelete',
-	caseUpdate = 'caseUpdate',
-	caseView = 'caseView',
+	unban = 'unban',
 	kick = 'kick',
-	mute = 'mute',
 	softBan = 'softBan',
-	unmute = 'unmute',
 	warn = 'warn',
+	mute = 'mute',
+	unmute = 'unmute',
 
 	check = 'check',
+	caseDelete = 'caseDelete',
+	caseView = 'caseView',
 
 	clean = 'clean',
 	cleanText = 'cleanText',

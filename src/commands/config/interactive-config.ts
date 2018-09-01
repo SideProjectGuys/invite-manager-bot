@@ -7,14 +7,13 @@ import {
 	NumberResolver
 } from '../../resolvers';
 import {
-	getSettingsType,
 	InviteCodeSettingsKey,
-	MemberSettingsKey,
-	SettingsKey,
 	Lang,
 	LeaderboardStyle,
+	MemberSettingsKey,
 	RankAssignmentStyle,
-	defaultSettings
+	SettingsKey,
+	settingsTypes
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
@@ -253,10 +252,7 @@ export default class extends Command {
 			embed.fields = keys.map((key, i) => {
 				let val =
 					typeof menu.items[key] === 'string'
-						? this.fromDbValue(
-								menu.items[key] as SettingsKey,
-								context.settings[menu.items[key] as SettingsKey]
-						  )
+						? context.settings[menu.items[key] as SettingsKey]
 						: (menu.items[key] as any).descr;
 				if (!val) {
 					val = '<None>';
@@ -290,11 +286,11 @@ export default class extends Command {
 				const key = subMenu as SettingsKey;
 				const currentVal = context.settings[key];
 				let newVal = undefined;
-				if (getSettingsType(key) === 'Boolean') {
-					if (currentVal.toLowerCase() === 'true') {
-						newVal = 'false';
+				if (settingsTypes[key] === 'Boolean') {
+					if (currentVal === true) {
+						newVal = false;
 					} else {
-						newVal = 'true';
+						newVal = true;
 					}
 				} else {
 					newVal = await this.changeConfigSetting(
@@ -304,14 +300,12 @@ export default class extends Command {
 						key,
 						currentVal
 					);
-					if (newVal) {
+					if (newVal !== undefined) {
 						const err = this.validate(key, newVal, context);
 						if (err) {
 							embed.description = err;
 							await msg.edit({ embed });
 							newVal = undefined;
-						} else {
-							newVal = this.toDbValue(key, newVal);
 						}
 					}
 				}
@@ -339,17 +333,16 @@ export default class extends Command {
 		ownerId: string,
 		msg: Message,
 		key: SettingsKey,
-		val: string
+		val: any
 	): Promise<string> {
 		return new Promise<string>(async resolve => {
 			const embed = this.client.createEmbed({
 				title: `Edit ${key}`,
-				description: `Current value: ${this.fromDbValue(
-					key,
-					val
-				)}\n\nEnter a new value:`
+				description: `Current value: ${val}\n\nEnter a new value:`
 			});
 			await msg.edit({ embed });
+
+			let timeOut: NodeJS.Timer;
 
 			const func = async (userMsg: Message, emoji: Emoji, userId: string) => {
 				if (userMsg.author.id === ownerId) {
@@ -357,7 +350,7 @@ export default class extends Command {
 
 					let newVal: any;
 					try {
-						switch (getSettingsType(key)) {
+						switch (settingsTypes[key]) {
 							case 'Channel':
 								newVal = await new ChannelResolver(this.client).resolve(
 									newRawVal,
@@ -422,12 +415,13 @@ export default class extends Command {
 				resolve();
 			};
 
-			const timeOut = setTimeout(timeOutFunc, 60000);
+			timeOut = setTimeout(timeOutFunc, 60000);
 		});
 	}
 
 	private async awaitChoice(authorId: string, msg: Message): Promise<number> {
 		return new Promise<number>(async resolve => {
+			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message, emoji: Emoji, userId: string) => {
 				if (resp.id !== msg.id || authorId !== userId) {
 					return;
@@ -463,7 +457,7 @@ export default class extends Command {
 				resolve(undefined);
 			};
 
-			const timeOut = setTimeout(timeOutFunc, 60000);
+			timeOut = setTimeout(timeOutFunc, 60000);
 		});
 	}
 
@@ -476,7 +470,7 @@ export default class extends Command {
 			return null;
 		}
 
-		const type = getSettingsType(key);
+		const type = settingsTypes[key];
 
 		if (type === 'Channel') {
 			const channel = value as TextChannel;
@@ -516,43 +510,5 @@ export default class extends Command {
 		}
 
 		return null;
-	}
-
-	private toDbValue(key: SettingsKey, value: any): string {
-		if (value === 'default') {
-			return defaultSettings[key];
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return null;
-		}
-
-		const type = getSettingsType(key);
-		if (type === 'Channel') {
-			return (value as any).id;
-		} else if (type === 'Boolean') {
-			return value ? 'true' : 'false';
-		}
-
-		return value;
-	}
-
-	private fromDbValue(
-		key: SettingsKey,
-		value: string
-	): string | number | boolean {
-		if (value === undefined || value === null) {
-			return value;
-		}
-
-		const type = getSettingsType(key);
-		if (type === 'Channel') {
-			return `<#${value}>`;
-		} else if (type === 'Boolean') {
-			return value === 'true' ? 'True' : 'False';
-		} else if (type === 'Number') {
-			return parseInt(value, 10);
-		}
-
-		return value;
 	}
 }

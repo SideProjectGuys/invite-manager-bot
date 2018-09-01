@@ -1,7 +1,9 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { MemberResolver, StringResolver } from '../../../resolvers';
+import {
+	MemberResolver
+} from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { getHighestRole, to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -9,18 +11,13 @@ import { Command, Context } from '../../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.warn,
+			name: ModerationCommand.unmute,
 			aliases: [],
 			args: [
 				{
-					name: 'member',
+					name: 'user',
 					resolver: MemberResolver,
 					required: true
-				},
-				{
-					name: 'reason',
-					resolver: StringResolver,
-					rest: true
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -30,7 +27,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[member, reason]: [Member, string],
+		[member]: [Member],
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -41,36 +38,34 @@ export default class extends Command {
 			author: { name: member.username, icon_url: member.avatarURL }
 		});
 
-		const highestBotRole = getHighestRole(guild, me.roles);
-		const highestMemberRole = getHighestRole(guild, member.roles);
-		const highestAuthorRole = getHighestRole(guild, message.member.roles);
+		let mutedRole = settings.mutedRole;
 
-		if (
+		let highestBotRole = getHighestRole(guild, me.roles);
+		let highestMemberRole = getHighestRole(guild, member.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member.roles);
+
+		if (mutedRole && guild.roles.has(mutedRole)) {
+			embed.description =
+				'Muted role not set or does not exist!';
+		} else if (
 			member.id !== guild.ownerID &&
 			member.id !== me.user.id &&
 			highestBotRole.position > highestMemberRole.position &&
 			highestAuthorRole.position > highestMemberRole.position
 		) {
-			const dmChannel = await member.user.getDMChannel();
-
-			const messageToUser = t('cmd.warn.text', {
-				guild: guild.name,
-				text: reason
-			});
-			const [error] = await to(dmChannel.createMessage(messageToUser));
-
+			let [error] = await to(member.removeRole(mutedRole));
 			if (error) {
-				embed.description = t('cmd.warn.canNotDm');
+				embed.description = t('cmd.unmute.error');
 			} else {
-				embed.description = t('cmd.warn.done');
+				embed.description = t('cmd.unmute.done');
 			}
 		} else {
-			embed.description = t('cmd.warn.canNotWarn');
+			embed.description = t('cmd.unmute.canNotUnmute');
 		}
 
-		const response = await this.client.sendReply(message, embed);
+		let response = await this.client.sendReply(message, embed);
 
-		if (settings.modPunishmentWarnDeleteMessage) {
+		if (settings.modPunishmentMuteDeleteMessage) {
 			const func = () => {
 				message.delete();
 				response.delete();

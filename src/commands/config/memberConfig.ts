@@ -177,7 +177,7 @@ export default class extends Command {
 
 		const value = parsedValue.value;
 		if (rawValue.length > 1000) {
-			rawValue = rawValue.substr(0, 1000) + '...';
+			rawValue = `${rawValue.substr(0, 1000)}...`;
 		}
 
 		if (value === oldVal) {
@@ -257,7 +257,7 @@ export default class extends Command {
 
 		/*const type = getMemberSettingsType(key);
 		if (type === 'Channel') {
-			return `<#${value}>`;
+			return `<#${ value }> `;
 		}*/
 
 		return value;

@@ -58,7 +58,7 @@ export default class extends Command {
 			to = min;
 		}
 
-		const hideLeft = settings.hideLeftMembersFromLeaderboard === 'true';
+		const hideLeft = settings.hideLeftMembersFromLeaderboard;
 
 		const { keys, oldKeys, invs, stillInServer } = await generateLeaderboard(
 			guild,
@@ -87,7 +87,7 @@ export default class extends Command {
 			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
 			let str =
-				fromText + `\n(${t('cmd.leaderboard.comparedTo', { to: toText })})\n\n`;
+				`${fromText}\n(${t('cmd.leaderboard.comparedTo', { to: toText })})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
@@ -123,20 +123,20 @@ export default class extends Command {
 
 					const posText =
 						posChange > 0
-							? '+' + posChange
+							? `+${posChange}`
 							: posChange === 0
-								? '*0'
+								? `*0`
 								: posChange;
 
 					const line = [
 						`${posText}`,
 						`${pos}.`,
 						name,
-						`${inv.total}`,
-						`${inv.regular}`,
-						`${inv.custom}`,
-						`${inv.fake}`,
-						`${inv.leaves}`
+						`${inv.total} `,
+						`${inv.regular} `,
+						`${inv.custom} `,
+						`${inv.fake} `,
+						`${inv.leaves} `
 					];
 
 					lines.push(line);

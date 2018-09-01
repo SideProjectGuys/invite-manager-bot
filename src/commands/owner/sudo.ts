@@ -1,12 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	commandUsage,
-	guilds,
-	premiumSubscriptions,
-	sequelize
-} from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -53,14 +47,14 @@ export default class extends Command {
 			return this.client.sendReply(
 				message,
 				'Use one of the following commands: ' +
-					this.allowedCommands.map(c => `\`${c}\``).join(', ')
+				this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 		if (this.allowedCommands.indexOf(sudoCmd.name.toLowerCase()) === -1) {
 			return this.client.sendReply(
 				message,
 				'Use one of the following commands: ' +
-					this.allowedCommands.map(c => `\`${c}\``).join(', ')
+				this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 

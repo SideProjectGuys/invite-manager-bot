@@ -1,9 +1,17 @@
-import { Embed, Guild, Member, Message, TextChannel } from 'eris';
+import { Embed, Guild, Message, TextChannel } from 'eris';
 
-import { punishmentConfigs, punishments, PunishmentType, sequelize, SettingsObject, strikeConfigs, strikes, ViolationType } from '../sequelize';
+import {
+	punishmentConfigs,
+	punishments,
+	PunishmentType,
+	sequelize,
+	SettingsObject,
+	strikeConfigs,
+	strikes,
+	ViolationType
+} from '../sequelize';
 
 import { IMClient } from '../client';
-import memberConfig from '../commands/config/memberConfig';
 
 interface Arguments {
 	settings: SettingsObject;
@@ -55,7 +63,7 @@ export class Moderation {
 
 		const settings = await this.client.cache.get(guild.id);
 
-		if (settings.autoModEnabled === 'false') {
+		if (!settings.autoModEnabled) {
 			return;
 		}
 
@@ -131,7 +139,7 @@ export class Moderation {
 	}
 
 	private async invites(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModInvitesEnabled === 'false') { return false; }
+		if (!args.settings.autoModInvitesEnabled) { return false; }
 		const inviteLinks = ['invites.referralranks.com'];
 		let hasInviteLink = inviteLinks.some(link => {
 			return message.content.indexOf(link) >= 0;
@@ -149,7 +157,7 @@ export class Moderation {
 	}
 
 	private async links(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModLinksEnabled === 'false') { return false; }
+		if (!args.settings.autoModLinksEnabled) { return false; }
 
 		let matches = this.getLinks(message);
 		let hasLink = matches && matches.length > 0;
@@ -180,7 +188,7 @@ export class Moderation {
 	}
 
 	private async words(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModWordsEnabled === 'false') { return false; }
+		if (!args.settings.autoModWordsEnabled) { return false; }
 		let blacklist = args.settings.autoModWordsBlacklist;
 		if (!blacklist) { return false; }
 		if (blacklist.length === 0) { return false; }
@@ -194,7 +202,7 @@ export class Moderation {
 	}
 
 	private async allCaps(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModAllCapsEnabled === 'false') { return false; }
+		if (!args.settings.autoModAllCapsEnabled) { return false; }
 
 		let minCharacters = Number(args.settings.autoModAllCapsMinCharacters);
 		if (isNaN(minCharacters)) { return false; }
@@ -209,19 +217,19 @@ export class Moderation {
 	}
 
 	private async duplicateText(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModDuplicateTextEnabled === 'false') { return false; }
+		if (!args.settings.autoModDuplicateTextEnabled) { return false; }
 		console.log('CHECKING duplicateText VIOLATIONS');
 		return false;
 	}
 
 	private async quickMessages(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModQuickMessagesEnabled === 'false') { return false; }
+		if (!args.settings.autoModQuickMessagesEnabled) { return false; }
 		console.log('CHECKING quickMessage VIOLATIONS');
 		return false;
 	}
 
 	private async mentionUsers(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModMentionUsersEnabled === 'false') { return false; }
+		if (!args.settings.autoModMentionUsersEnabled) { return false; }
 		let maxMentions = Number(args.settings.autoModMentionUsersMaxNumberOfMentions);
 		if (isNaN(maxMentions)) { return false; }
 
@@ -229,7 +237,7 @@ export class Moderation {
 	}
 
 	private async mentionRoles(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModMentionRolesEnabled === 'false') { return false; }
+		if (!args.settings.autoModMentionRolesEnabled) { return false; }
 		let maxMentions = Number(args.settings.autoModMentionRolesMaxNumberOfMentions);
 		if (isNaN(maxMentions)) { return false; }
 
@@ -237,7 +245,7 @@ export class Moderation {
 	}
 
 	private async emojis(message: Message, args: Arguments): Promise<boolean> {
-		if (args.settings.autoModEmojisEnabled === 'false') { return false; }
+		if (!args.settings.autoModEmojisEnabled) { return false; }
 		let maxEmojis = Number(args.settings.autoModEmojisMaxNumberOfEmojis);
 		if (isNaN(maxEmojis)) { return; }
 

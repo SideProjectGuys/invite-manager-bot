@@ -1,14 +1,7 @@
-import { Member, Message } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { EnumResolver, NumberResolver, UserResolver } from '../../../resolvers';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	joins,
-	sequelize
-} from '../../../sequelize';
+import { EnumResolver, NumberResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -84,13 +77,12 @@ export default class extends Command {
 		let messagesToBeDeleted = this.cleanFunctions[type](messages);
 
 		let error: any;
-		let _: void;
 		if (type === CleanType.reactions) {
 			for (let messageToBeDeleted of messagesToBeDeleted) {
 				await messageToBeDeleted.removeReactions();
 			}
 		} else {
-			[error, _] = await to(
+			[error] = await to(
 				this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id))
 			);
 		}
@@ -111,7 +103,7 @@ export default class extends Command {
 			}
 		}
 
-		let response = (await this.client.sendReply(message, embed)) as Message;
+		let response = (await this.client.sendReply(message, embed));
 		message.delete();
 
 		const func = () => {

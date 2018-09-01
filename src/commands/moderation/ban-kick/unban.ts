@@ -1,19 +1,22 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { MemberResolver, StringResolver } from '../../../resolvers';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import {
+	MemberResolver,
+	StringResolver
+} from '../../../resolvers';
+import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { getHighestRole, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.warn,
+			name: ModerationCommand.unban,
 			aliases: [],
 			args: [
 				{
-					name: 'member',
+					name: 'user',
 					resolver: MemberResolver,
 					required: true
 				},
@@ -41,36 +44,32 @@ export default class extends Command {
 			author: { name: member.username, icon_url: member.avatarURL }
 		});
 
-		const highestBotRole = getHighestRole(guild, me.roles);
-		const highestMemberRole = getHighestRole(guild, member.roles);
-		const highestAuthorRole = getHighestRole(guild, message.member.roles);
+		let highestBotRole = getHighestRole(guild, me.roles);
+		let highestMemberRole = getHighestRole(guild, member.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member.roles);
 
-		if (
+		if (me.permission.has(Permissions.BAN_MEMBERS)) {
+			embed.description =
+				'I need the `Ban Members` permission to use this command';
+		} else if (
 			member.id !== guild.ownerID &&
 			member.id !== me.user.id &&
 			highestBotRole.position > highestMemberRole.position &&
 			highestAuthorRole.position > highestMemberRole.position
 		) {
-			const dmChannel = await member.user.getDMChannel();
-
-			const messageToUser = t('cmd.warn.text', {
-				guild: guild.name,
-				text: reason
-			});
-			const [error] = await to(dmChannel.createMessage(messageToUser));
-
+			let [error] = await to(member.unban(reason));
 			if (error) {
-				embed.description = t('cmd.warn.canNotDm');
+				embed.description = t('cmd.unban.error');
 			} else {
-				embed.description = t('cmd.warn.done');
+				embed.description = t('cmd.unban.done');
 			}
 		} else {
-			embed.description = t('cmd.warn.canNotWarn');
+			embed.description = t('cmd.unban.canNotUnban');
 		}
 
-		const response = await this.client.sendReply(message, embed);
+		let response = await this.client.sendReply(message, embed) as Message;
 
-		if (settings.modPunishmentWarnDeleteMessage) {
+		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {
 				message.delete();
 				response.delete();

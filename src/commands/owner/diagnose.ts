@@ -130,14 +130,14 @@ export default class extends Command {
 
 				permsEmbed.fields.push({
 					name: 'Bot permissions',
-					value: '```\n' + response.perms.join('\n').substr(0, 1000) + '```'
+					value: '```\n' + (response.perms.join('\n').substr(0, 1000) as string) + '```'
 				});
 
 				permsEmbed.fields.push({
 					name: 'Join channel permissions',
 					value:
 						'```\n' +
-						response.joinChannelPerms.join('\n').substr(0, 1000) +
+						(response.joinChannelPerms.join('\n').substr(0, 1000) as string) +
 						'```'
 				});
 
@@ -145,7 +145,7 @@ export default class extends Command {
 					name: 'Leave channel permissions',
 					value:
 						'```\n' +
-						response.leaveChannelPerms.join('\n').substr(0, 1000) +
+						(response.leaveChannelPerms.join('\n').substr(0, 1000) as string) +
 						'```'
 				});
 
@@ -153,7 +153,7 @@ export default class extends Command {
 					name: 'Rank announcement channel permissions',
 					value:
 						'```\n' +
-						response.announceChannelPerms.join('\n').substr(0, 1000) +
+						(response.announceChannelPerms.join('\n').substr(0, 1000) as string) +
 						'```'
 				});
 

@@ -51,7 +51,7 @@ export default class extends Command {
 
 		let highestBotRole = getHighestRole(guild, me.roles);
 		let highestMemberRole = getHighestRole(guild, member.roles);
-		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member.roles);
 
 		if (me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description =
@@ -62,11 +62,11 @@ export default class extends Command {
 			highestBotRole.position > highestMemberRole.position &&
 			highestAuthorRole.position > highestMemberRole.position
 		) {
-			let [error, _] = await to(member.ban(deleteMessageDays, reason));
+			let [error] = await to(member.ban(deleteMessageDays, reason));
 			if (error) {
 				embed.description = t('cmd.softBan.error');
 			} else {
-				[error, _] = await to(member.unban('softban'));
+				[error] = await to(member.unban('softban'));
 				if (error) {
 					embed.description = t('cmd.softBan.unBanError');
 				} else {

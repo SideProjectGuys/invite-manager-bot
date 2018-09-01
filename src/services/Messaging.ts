@@ -120,7 +120,7 @@ export class Messaging {
 									channel
 										.createMessage(
 											'**I do not have permissions to post to that channel.\n' +
-												`Please tell an admin to allow me to send messages in the channel.**\n\n`
+											`Please tell an admin to allow me to send messages in the channel.**\n\n`
 										)
 										.then(resolve)
 										.catch(err2 => {
@@ -378,11 +378,11 @@ export class Messaging {
 		if (prevMsg.author.id === this.client.user.id) {
 			prevMsg.edit({ embed });
 		} else {
-			prevMsg = (await this.client.sendEmbed(
+			prevMsg = await this.client.sendEmbed(
 				prevMsg.channel,
 				embed,
 				prevMsg.author
-			)) as Message;
+			);
 		}
 
 		if (page > 0) {

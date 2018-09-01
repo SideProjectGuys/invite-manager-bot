@@ -54,6 +54,7 @@ export default class extends Command {
 		let strikeText = strikeList
 			.map(s =>
 				t('cmd.check.strikes.entry', {
+					id: `${s.id}`,
 					amount: `**${s.amount}**`,
 					violation: `**${s.violationType}**`,
 					date: moment(s.createdAt)

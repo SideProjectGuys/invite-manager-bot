@@ -36,11 +36,11 @@ export default class extends Command {
 			title: t('cmd.purgeUntil.title')
 		});
 
-		let messages: Message[] = (await message.channel.getMessages(
+		let messages: Message[] = await message.channel.getMessages(
 			100,
 			undefined,
 			untilMessageID
-		));
+		);
 
 		if (messages.length === 0) {
 			embed.description = t('cmd.purgeUntil.none');
@@ -50,7 +50,7 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		} else {
 			message.delete();
-			let [error, _] = await to(
+			let [error] = await to(
 				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 			);
 			if (error) {
@@ -62,7 +62,7 @@ export default class extends Command {
 				});
 			}
 
-			let response: Message = await this.client.sendReply(message, embed);
+			let response = await this.client.sendReply(message, embed);
 			const func = () => {
 				response.delete();
 			};

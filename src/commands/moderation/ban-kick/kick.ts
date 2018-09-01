@@ -43,7 +43,7 @@ export default class extends Command {
 
 		let highestBotRole = getHighestRole(guild, me.roles);
 		let highestMemberRole = getHighestRole(guild, member.roles);
-		let highestAuthorRole = getHighestRole(guild, message.member!.roles);
+		let highestAuthorRole = getHighestRole(guild, message.member.roles);
 
 		if (me.permission.has(Permissions.KICK_MEMBERS)) {
 			embed.description =
@@ -54,7 +54,7 @@ export default class extends Command {
 			highestBotRole.position > highestMemberRole.position &&
 			highestAuthorRole.position > highestMemberRole.position
 		) {
-			let [error, _] = await to(member.kick(reason));
+			let [error] = await to(member.kick(reason));
 			if (error) {
 				embed.description = t('cmd.kick.error');
 			} else {

@@ -6,18 +6,19 @@ import {
 	ChannelResolver,
 	EnumResolver,
 	NumberResolver,
-	Resolver
+	Resolver,
+	RoleResolver
 } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	defaultSettings,
-	getSettingsType,
 	Lang,
 	LeaderboardStyle,
 	LogAction,
 	RankAssignmentStyle,
-	SettingsKey
+	SettingsKey,
+	settingsTypes
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
@@ -28,7 +29,7 @@ class ValueResolver extends Resolver {
 		context: Context,
 		[key]: [SettingsKey]
 	): Promise<any> {
-		switch (getSettingsType(key)) {
+		switch (settingsTypes[key]) {
 			case 'Channel':
 				return new ChannelResolver(this.client).resolve(value, context);
 
@@ -37,6 +38,9 @@ class ValueResolver extends Resolver {
 
 			case 'Number':
 				return new NumberResolver(this.client).resolve(value, context);
+
+			case 'Role':
+				return new RoleResolver(this.client).resolve(value, context);
 
 			case 'String':
 				return value;
@@ -71,7 +75,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, rawValue]: [SettingsKey, any],
+		[key, value]: [SettingsKey, any],
 		context: Context
 	): Promise<any> {
 		const { guild, settings, t } = context;
@@ -85,11 +89,12 @@ export default class extends Command {
 			const notSet = [];
 			const keys = Object.keys(SettingsKey);
 			for (let i = 0; i < keys.length; i++) {
-				const val = settings[keys[i] as SettingsKey];
+				const k = keys[i] as SettingsKey;
+				const val = settings[k];
 				if (val) {
 					embed.fields.push({
 						name: keys[i],
-						value: this.fromDbValue(keys[i] as SettingsKey, val).toString()
+						value: this.beautify(k, val)
 					});
 				} else {
 					notSet.push(keys[i]);
@@ -107,14 +112,9 @@ export default class extends Command {
 		}
 
 		let oldVal = settings[key];
-		let oldRawVal = this.fromDbValue(key, oldVal);
-		if (typeof oldRawVal === 'string' && oldRawVal.length > 1000) {
-			oldRawVal = oldRawVal.substr(0, 1000) + '...';
-		}
-
 		embed.title = key;
 
-		if (typeof rawValue === typeof undefined) {
+		if (typeof value === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal) {
@@ -126,7 +126,7 @@ export default class extends Command {
 					}) + (clear ? '\n' + t('cmd.config.current.clear') : '');
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
-					value: oldRawVal.toString()
+					value: this.beautify(key, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.config.current.notSet', {
@@ -137,7 +137,7 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+		if (value === 'none' || value === 'empty' || value === 'null') {
 			if (defaultSettings[key] !== null) {
 				return this.client.sendReply(
 					message,
@@ -146,21 +146,11 @@ export default class extends Command {
 			}
 		}
 
-		const parsedValue = this.toDbValue(key, rawValue);
-		if (parsedValue.error) {
-			return this.client.sendReply(message, parsedValue.error);
-		}
-
-		const value = parsedValue.value;
-		if (rawValue.length > 1000) {
-			rawValue = rawValue.substr(0, 1000) + '...';
-		}
-
 		if (value === oldVal) {
 			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
 				name: t('cmd.config.current.title'),
-				value: rawValue
+				value: this.beautify(key, value)
 			});
 			return this.client.sendReply(message, embed);
 		}
@@ -185,13 +175,13 @@ export default class extends Command {
 		if (oldVal) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
-				value: oldRawVal.toString()
+				value: this.beautify(key, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.config.new.title'),
-			value: value ? rawValue : t('cmd.config.none')
+			value: value ? this.beautify(key, value) : t('cmd.config.none')
 		});
 		oldVal = value; // Update value for future use
 
@@ -216,7 +206,7 @@ export default class extends Command {
 			return null;
 		}
 
-		const type = getSettingsType(key);
+		const type = settingsTypes[key];
 
 		if (type === 'Channel') {
 			const channel = value as TextChannel;
@@ -233,7 +223,7 @@ export default class extends Command {
 		if (key === SettingsKey.lang) {
 			if (!Lang[value]) {
 				const langs = Object.keys(Lang)
-					.map(k => `**${k}**`)
+					.map(k => `** ${k}** `)
 					.join(', ');
 				return t('cmd.config.invalid.lang', { value, langs });
 			}
@@ -241,7 +231,7 @@ export default class extends Command {
 		if (key === SettingsKey.leaderboardStyle) {
 			if (!LeaderboardStyle[value]) {
 				const styles = Object.keys(LeaderboardStyle)
-					.map(k => `**${k}**`)
+					.map(k => `** ${k}** `)
 					.join(', ');
 				return t('cmd.config.invalid.leaderboardStyle', { value, styles });
 			}
@@ -249,7 +239,7 @@ export default class extends Command {
 		if (key === SettingsKey.rankAssignmentStyle) {
 			if (!RankAssignmentStyle[value]) {
 				const styles = Object.keys(RankAssignmentStyle)
-					.map(k => `**${k}**`)
+					.map(k => `** ${k}** `)
 					.join(', ');
 				return t('cmd.config.invalid.rankAssignmentStyle', { value, styles });
 			}
@@ -325,9 +315,9 @@ export default class extends Command {
 				memberId: member.id,
 				memberName: member.user.username,
 				memberFullName: member.user.username + '#' + member.user.discriminator,
-				memberMention: `<@${member.id}>`,
+				memberMention: `<@${member.id}> `,
 				memberImage: member.user.avatarURL,
-				rankMention: `<@&${me.roles[0]}>`,
+				rankMention: `<@& ${me.roles[0]}> `,
 				rankName: me.roles[0]
 			});
 
@@ -346,13 +336,13 @@ export default class extends Command {
 		}
 
 		if (key === SettingsKey.autoSubtractFakes) {
-			if (value === 'true') {
+			if (value) {
 				// Subtract fake invites from all members
 				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractFakes
 				);
 				return async () => await cmd.action(message, [], context);
-			} else if (value === 'false') {
+			} else {
 				// Delete old duplicate removals
 				return async () =>
 					await customInvites.destroy({
@@ -365,13 +355,13 @@ export default class extends Command {
 		}
 
 		if (key === SettingsKey.autoSubtractLeaves) {
-			if (value === 'true') {
+			if (value) {
 				// Subtract leaves from all members
 				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractLeaves
 				);
 				return async () => await cmd.action(message, [], context);
-			} else if (value === 'false') {
+			} else {
 				// Delete old leave removals
 				return async () =>
 					await customInvites.destroy({
@@ -392,44 +382,18 @@ export default class extends Command {
 		}
 	}
 
-	private fromDbValue(
-		key: SettingsKey,
-		value: string
-	): string | number | boolean {
-		if (value === undefined || value === null) {
-			return value;
-		}
-
-		const type = getSettingsType(key);
+	private beautify(key: SettingsKey, value: any) {
+		const type = settingsTypes[key];
 		if (type === 'Channel') {
 			return `<#${value}>`;
 		} else if (type === 'Boolean') {
-			return !!value;
-		} else if (type === 'Number') {
-			return parseInt(value, 10);
+			return value ? 'True' : 'False';
+		} else if (type === 'Role') {
+			return `<@&${value}>`;
 		}
-
+		if (typeof value === 'string' && value.length > 1000) {
+			return value.substr(0, 1000) + '...';
+		}
 		return value;
-	}
-
-	private toDbValue(
-		key: SettingsKey,
-		value: any
-	): { value?: string; error?: string } {
-		if (value === 'default') {
-			return { value: defaultSettings[key] };
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return { value: null };
-		}
-
-		const type = getSettingsType(key);
-		if (type === 'Channel') {
-			return { value: (value as any).id };
-		} else if (type === 'Boolean') {
-			return { value: value ? 'true' : 'false' };
-		}
-
-		return { value };
 	}
 }

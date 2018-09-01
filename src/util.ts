@@ -169,9 +169,7 @@ export async function promoteIfQualified(
 	if (highest && !member.roles.includes(highest.id)) {
 		const rankChannelId = settings.rankAnnouncementChannel;
 		if (rankChannelId) {
-			const rankChannel = rankChannelId
-				? (guild.channels.get(rankChannelId) as TextChannel)
-				: undefined;
+			const rankChannel = guild.channels.get(rankChannelId) as TextChannel;
 
 			// Check if it's a valid channel
 			if (rankChannel) {

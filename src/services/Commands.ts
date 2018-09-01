@@ -1,5 +1,4 @@
 import {
-	Constants,
 	Guild,
 	Member,
 	Message,
@@ -12,7 +11,6 @@ import path from 'path';
 
 import { IMClient } from '../client';
 import { Command, Context } from '../commands/Command';
-import { Resolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
 import { Permissions, ShardCommand } from '../types';
 
@@ -51,7 +49,7 @@ export class Commands {
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-							`\x1b[2m${path.basename(file)}\x1b[0m`
+						`\x1b[2m${path.basename(file)}\x1b[0m`
 					);
 				}
 			});
@@ -65,7 +63,7 @@ export class Commands {
 		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
-	public init() {
+	public async init() {
 		// Disable guilds of pro bot
 		this.client.guilds.forEach(g => {
 			if (g.members.has(this.client.config.proBotId)) {
@@ -102,7 +100,7 @@ export class Commands {
 
 		console.log(
 			`${guild ? guild.name : 'DM'} (${message.author.username}): ` +
-				`${message.content}`
+			`${message.content}`
 		);
 
 		// Figure out which command is being run

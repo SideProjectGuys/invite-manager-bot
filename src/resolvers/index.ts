@@ -9,3 +9,4 @@ export * from './RoleResolver';
 export * from './StringResolver';
 export * from './UserResolver';
 export * from './MemberResolver';
+export * from './DurationResolver';

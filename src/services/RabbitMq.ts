@@ -50,11 +50,11 @@ export class RabbitMq {
 
 		// Setup RabbitMQ channels
 		const prefix = client.config.rabbitmq.prefix
-			? client.config.rabbitmq.prefix + '-'
+			? `${client.config.rabbitmq.prefix}-`
 			: '';
 
 		this.qJoinsName =
-			prefix + 'joins-' + this.client.shardId + '-' + this.client.shardCount;
+			`${prefix}joins-${this.client.shardId}-${this.client.shardCount}`;
 		conn.createChannel().then(async channel => {
 			this.channelJoins = channel;
 
@@ -64,7 +64,7 @@ export class RabbitMq {
 		});
 
 		this.qLeavesName =
-			prefix + 'leaves-' + this.client.shardId + '-' + this.client.shardCount;
+			`${prefix}leaves-${this.client.shardId}-${this.client.shardCount}`;
 		conn.createChannel().then(async channel => {
 			this.channelLeaves = channel;
 
@@ -74,7 +74,7 @@ export class RabbitMq {
 		});
 
 		this.qCmdsName =
-			prefix + 'cmds-' + this.client.shardId + '-' + this.client.shardCount;
+			`${prefix}cmds-${this.client.shardId}-${this.client.shardCount}`;
 		conn.createChannel().then(async channel => {
 			this.channelCmds = channel;
 
@@ -179,12 +179,12 @@ export class RabbitMq {
 		if (joinChannelId && !joinChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
+				`join message channel ${joinChannelId}`
 			);
 		}
 
 		// Auto remove leaves if enabled
-		if (settings.autoSubtractLeaves === 'true') {
+		if (settings.autoSubtractLeaves) {
 			// Delete removals for this member because the member rejoined
 			await customInvites.destroy({
 				where: {
@@ -199,7 +199,7 @@ export class RabbitMq {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ${guild.id}: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (joinChannel) {
 				joinChannel.createMessage(
@@ -239,7 +239,7 @@ export class RabbitMq {
 		const inviterId = jn['exactMatch.inviterId'];
 
 		// Auto remove fakes if enabled
-		if (settings.autoSubtractFakes === 'true') {
+		if (settings.autoSubtractFakes) {
 			const numJoins = await joins.count({
 				where: {
 					memberId: member.id,
@@ -368,7 +368,7 @@ export class RabbitMq {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid leave ` +
-					`message channel ${leaveChannelId}`
+				`message channel ${leaveChannelId}`
 			);
 		}
 
@@ -376,11 +376,11 @@ export class RabbitMq {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-					`${guild.id} leaveId: ${leave.id}`
+				`${guild.id} leaveId: ${leave.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-					JSON.stringify(content)
+				JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				leaveChannel.createMessage(
@@ -404,7 +404,7 @@ export class RabbitMq {
 		const inviterDiscriminator = join['exactMatch.inviter.discriminator'];
 
 		// Auto remove leaves if enabled (and if we know the inviter)
-		if (inviterId && settings.autoSubtractLeaves === 'true') {
+		if (inviterId && settings.autoSubtractLeaves) {
 			// Delete any old entries for the leaving of this member
 			await customInvites.destroy({
 				where: {
@@ -552,11 +552,8 @@ export class RabbitMq {
 					{
 						id: content.id,
 						content:
-							`<@!${this.client.user.id}>` +
-							content.sudoCmd +
-							' ' +
-							content.args.join(' '),
-						author: await this.client.users.get(content.authorId),
+							`<@!${this.client.user.id}>${content.sudoCmd} ${content.args.join(' ')}`,
+						author: this.client.users.get(content.authorId),
 						embeds: [],
 						attachments: []
 					},

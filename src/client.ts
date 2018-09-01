@@ -5,8 +5,8 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { guilds, LogAction, members } from './sequelize';
+import { Cache } from './services/Cache';
 import { Commands } from './services/Commands';
-import { DBCache } from './services/DBCache';
 import { DBQueue } from './services/DBQueue';
 import {
 	CreateEmbedFunc,
@@ -17,6 +17,7 @@ import {
 } from './services/Messaging';
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
+import { Scheduler } from './services/Scheduler';
 
 const config = require('../config.json');
 
@@ -39,13 +40,13 @@ i18n.configure({
 	// syncFiles: true,
 	directory: __dirname + '/../locale',
 	objectNotation: true,
-	logDebugFn: function(msg: string) {
+	logDebugFn: function (msg: string) {
 		console.log('debug', msg);
 	},
-	logWarnFn: function(msg: string) {
+	logWarnFn: function (msg: string) {
 		console.log('warn', msg);
 	},
-	logErrorFn: function(msg: string) {
+	logErrorFn: function (msg: string) {
 		console.log('error', msg);
 	}
 });
@@ -54,7 +55,7 @@ export class IMClient extends Client {
 	public version: string;
 	public config: any;
 
-	public cache: DBCache;
+	public cache: Cache;
 	public dbQueue: DBQueue;
 
 	public msg: Messaging;
@@ -68,6 +69,8 @@ export class IMClient extends Client {
 	public shardCount: number;
 
 	public mod: Moderation;
+
+	public scheduler: Scheduler;
 
 	public cmds: Commands;
 
@@ -109,7 +112,7 @@ export class IMClient extends Client {
 		this.version = version;
 		this.config = config;
 
-		this.cache = new DBCache(this);
+		this.cache = new Cache(this);
 		this.dbQueue = new DBQueue(this);
 
 		this.msg = new Messaging(this);
@@ -123,6 +126,8 @@ export class IMClient extends Client {
 		this.rabbitmq = new RabbitMq(this, conn);
 
 		this.mod = new Moderation(this);
+
+		this.scheduler = new Scheduler(this);
 
 		this.cmds = new Commands(this);
 
@@ -159,13 +164,13 @@ export class IMClient extends Client {
 		const channel = await owner.user.getDMChannel();
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
-				guild.name +
-				'`!\n\n' +
-				'I am now tracking all invites on your server.\n\n' +
-				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-				'You can see a list of all commands using the `!help` command.\n\n' +
-				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-				'https://discord.gg/2eTnsVM'
+			guild.name +
+			'`!\n\n' +
+			'I am now tracking all invites on your server.\n\n' +
+			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+			'You can see a list of all commands using the `!help` command.\n\n' +
+			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+			'https://discord.gg/2eTnsVM'
 		);
 	}
 
