@@ -242,12 +242,7 @@ export class DBCache {
 	}
 
 	public async set(guildId: string, key: SettingsKey, value: string) {
-		let oldConfig = this.cache.get(guildId);
-
-		// Get these settings if we don't have them yet
-		if (!oldConfig) {
-			oldConfig = await this.get(guildId);
-		}
+		let oldConfig = await this.get(guildId);
 
 		// Check if the value changed
 		if (oldConfig[key] !== value) {

@@ -13,7 +13,8 @@ import {
 	SettingsKey,
 	Lang,
 	LeaderboardStyle,
-	RankAssignmentStyle
+	RankAssignmentStyle,
+	defaultSettings
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
@@ -36,6 +37,20 @@ export default class extends Command {
 		});
 	}
 
+	private back: string = '↩';
+	private cancel: string = '❌';
+	private choices: string[] = [
+		'1⃣',
+		'2⃣',
+		'3⃣',
+		'4⃣',
+		'5⃣',
+		'6⃣',
+		'7⃣',
+		'8⃣',
+		'9⃣'
+	];
+
 	public async action(
 		message: Message,
 		args: any[],
@@ -49,7 +64,13 @@ export default class extends Command {
 		message.delete();
 
 		const msg = await this.client.sendReply(message, embed);
-		const more = { maxChoices: 0 };
+
+		for (let i = 0; i < 9; i++) {
+			msg.addReaction(this.choices[i]);
+		}
+
+		msg.addReaction(this.back);
+		msg.addReaction(this.cancel);
 
 		while (
 			(await this.showConfigMenu(
@@ -59,133 +80,132 @@ export default class extends Command {
 				'InviteManager',
 				{
 					items: {
-						'General settings': {
-							descr:
-								'General settings for the InviteManager. Includes AutoMod settings, Join & Leave messages and more.',
+						Basic: {
+							descr: 'Base bot settings such as prefix, language and logging.',
 							items: {
-								AutoMod: {
-									descr: 'Auto moderation settings.',
+								Prefix: SettingsKey.prefix,
+								Language: SettingsKey.lang,
+								'Logging channel': SettingsKey.logChannel,
+								'Get update messages': SettingsKey.getUpdates
+							}
+						},
+						Moderation: {
+							descr: 'Moderation and auto moderation settings.',
+							items: {
+								General: {
+									descr: 'General AutoMod settings',
 									items: {
-										General: {
-											descr: 'General AutoMod settings',
-											items: {
-												Enabled: SettingsKey.autoModEnabled,
-												'Moderated Channels':
-													SettingsKey.autoModModeratedChannels,
-												'Moderated Roles': SettingsKey.autoModModeratedRoles,
-												'Ignored Channels': SettingsKey.autoModIgnoredChannels,
-												'Ignored Roles': SettingsKey.autoModIgnoredRoles,
-												'Delete Bot Messages':
-													SettingsKey.autoModDeleteBotMessage,
-												'Delete Bot Messages Timeout':
-													SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
-												'Log Enabled': SettingsKey.autoModLogEnabled
-											}
-										},
-										'Invites & Links': {
-											descr: 'Removal of links and discord invites.',
-											items: {
-												'Invites Enabled': SettingsKey.autoModInvitesEnabled,
-												'Links Enabled': SettingsKey.autoModLinksEnabled,
-												'Links whitelist': SettingsKey.autoModLinksWhitelist,
-												'Links Blacklist': SettingsKey.autoModLinksBlacklist,
-												'Follow link redirects':
-													SettingsKey.autoModLinksFollowRedirects
-											}
-										},
-										'Banned words': {
-											descr: 'Blacklist certain words.',
-											items: {
-												Enabled: SettingsKey.autoModWordsEnabled,
-												Blacklist: SettingsKey.autoModWordsBlacklist
-											}
-										},
-										Caps: {
-											descr: 'Remove ALL-CAPS messages.',
-											items: {
-												Enabled: SettingsKey.autoModAllCapsEnabled,
-												'Min Characters':
-													SettingsKey.autoModAllCapsMinCharacters,
-												'Percentage Caps':
-													SettingsKey.autoModAllCapsPercentageCaps
-											}
-										},
-										Duplicate: {
-											descr: 'No more copy-pasta.',
-											items: {
-												Enabled: SettingsKey.autoModDuplicateTextEnabled,
-												Timeframe:
-													SettingsKey.autoModDuplicateTextTimeframeInSeconds
-											}
-										},
-										Spam: {
-											descr: 'Repeated sending of the same message.',
-											items: {
-												Enabled: SettingsKey.autoModQuickMessagesEnabled,
-												'Number of messages':
-													SettingsKey.autoModQuickMessagesNumberOfMessages,
-												Timeframe:
-													SettingsKey.autoModQuickMessagesTimeframeInSeconds
-											}
-										},
-										Mentions: {
-											descr: 'Stop mentions of lots of users or roles.',
-											items: {
-												'Users Enabled': SettingsKey.autoModMentionUsersEnabled,
-												'Users Max':
-													SettingsKey.autoModMentionUsersMaxNumberOfMentions,
-												'Roles Enabled': SettingsKey.autoModMentionRolesEnabled,
-												'Roles Max':
-													SettingsKey.autoModMentionRolesMaxNumberOfMentions
-											}
-										},
-										Emojis: {
-											descr: 'Ban messages with too many emojis.',
-											items: {
-												Enabled: SettingsKey.autoModEmojisEnabled,
-												Max: SettingsKey.autoModEmojisMaxNumberOfEmojis
-											}
-										}
+										Enabled: SettingsKey.autoModEnabled,
+										'Moderated Channels': SettingsKey.autoModModeratedChannels,
+										'Moderated Roles': SettingsKey.autoModModeratedRoles,
+										'Ignored Channels': SettingsKey.autoModIgnoredChannels,
+										'Ignored Roles': SettingsKey.autoModIgnoredRoles,
+										'Delete Bot Messages': SettingsKey.autoModDeleteBotMessage,
+										'Delete Bot Messages Timeout':
+											SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
+										'Auto Log Enabled': SettingsKey.autoModLogEnabled,
+										'Log Channel': SettingsKey.modLogChannel
 									}
 								},
-								Captcha: {
-									descr:
-										'Settings related to the captcha verification of InviteManager',
+								'Invites & Links': {
+									descr: 'Removal of links and discord invites.',
 									items: {
-										Enabled: SettingsKey.captchaVerificationOnJoin,
-										Welcome: SettingsKey.captchaVerificationWelcomeMessage,
-										Success: SettingsKey.captchaVerificationSuccessMessage,
-										Failed: SettingsKey.captchaVerificationFailedMessage,
-										Timeout: SettingsKey.captchaVerificationTimeout,
-										Logs: SettingsKey.captchaVerificationLogEnabled
+										'Invites Enabled': SettingsKey.autoModInvitesEnabled,
+										'Links Enabled': SettingsKey.autoModLinksEnabled,
+										'Links whitelist': SettingsKey.autoModLinksWhitelist,
+										'Links Blacklist': SettingsKey.autoModLinksBlacklist,
+										'Follow link redirects':
+											SettingsKey.autoModLinksFollowRedirects
 									}
 								},
-								Leaderboard: {
-									descr: 'Customize the invites leaderboard.',
+								'Banned words': {
+									descr: 'Blacklist certain words.',
 									items: {
-										Style: SettingsKey.leaderboardStyle,
-										'Hide left members':
-											SettingsKey.hideLeftMembersFromLeaderboard
+										Enabled: SettingsKey.autoModWordsEnabled,
+										Blacklist: SettingsKey.autoModWordsBlacklist
 									}
 								},
-								Ranks: {
-									descr: 'Adjust settings related to ranks on your server.',
+								Caps: {
+									descr: 'Remove ALL-CAPS messages.',
 									items: {
-										Style: SettingsKey.rankAssignmentStyle,
-										Channel: SettingsKey.rankAnnouncementChannel,
-										Message: SettingsKey.rankAnnouncementMessage
+										Enabled: SettingsKey.autoModAllCapsEnabled,
+										'Min Characters': SettingsKey.autoModAllCapsMinCharacters,
+										'Percentage Caps': SettingsKey.autoModAllCapsPercentageCaps
 									}
 								},
-								'Join & Leave Message': {
-									descr:
-										'Change the join and leave messages, and where they are posted.',
+								Duplicate: {
+									descr: 'No more copy-pasta.',
 									items: {
-										'Join Channel': SettingsKey.joinMessageChannel,
-										'Join Message': SettingsKey.joinMessage,
-										'Leave Channel': SettingsKey.leaveMessageChannel,
-										'Laeve Message': SettingsKey.leaveMessage
+										Enabled: SettingsKey.autoModDuplicateTextEnabled,
+										Timeframe:
+											SettingsKey.autoModDuplicateTextTimeframeInSeconds
+									}
+								},
+								Spam: {
+									descr: 'Repeated sending of the same message.',
+									items: {
+										Enabled: SettingsKey.autoModQuickMessagesEnabled,
+										'Number of messages':
+											SettingsKey.autoModQuickMessagesNumberOfMessages,
+										Timeframe:
+											SettingsKey.autoModQuickMessagesTimeframeInSeconds
+									}
+								},
+								Mentions: {
+									descr: 'Stop mentions of lots of users or roles.',
+									items: {
+										'Users Enabled': SettingsKey.autoModMentionUsersEnabled,
+										'Users Max':
+											SettingsKey.autoModMentionUsersMaxNumberOfMentions,
+										'Roles Enabled': SettingsKey.autoModMentionRolesEnabled,
+										'Roles Max':
+											SettingsKey.autoModMentionRolesMaxNumberOfMentions
+									}
+								},
+								Emojis: {
+									descr: 'Ban messages with too many emojis.',
+									items: {
+										Enabled: SettingsKey.autoModEmojisEnabled,
+										Max: SettingsKey.autoModEmojisMaxNumberOfEmojis
 									}
 								}
+							}
+						},
+						Captcha: {
+							descr:
+								'Settings related to the captcha verification of InviteManager',
+							items: {
+								Enabled: SettingsKey.captchaVerificationOnJoin,
+								Welcome: SettingsKey.captchaVerificationWelcomeMessage,
+								Success: SettingsKey.captchaVerificationSuccessMessage,
+								Failed: SettingsKey.captchaVerificationFailedMessage,
+								Timeout: SettingsKey.captchaVerificationTimeout,
+								Logs: SettingsKey.captchaVerificationLogEnabled
+							}
+						},
+						Leaderboard: {
+							descr: 'Customize the invites leaderboard.',
+							items: {
+								Style: SettingsKey.leaderboardStyle,
+								'Hide left members': SettingsKey.hideLeftMembersFromLeaderboard
+							}
+						},
+						Ranks: {
+							descr: 'Adjust settings related to ranks on your server.',
+							items: {
+								Style: SettingsKey.rankAssignmentStyle,
+								Channel: SettingsKey.rankAnnouncementChannel,
+								Message: SettingsKey.rankAnnouncementMessage
+							}
+						},
+						'Join & Leave Message': {
+							descr:
+								'Change the join and leave messages, and where they are posted.',
+							items: {
+								'Join Channel': SettingsKey.joinMessageChannel,
+								'Join Message': SettingsKey.joinMessage,
+								'Leave Channel': SettingsKey.leaveMessageChannel,
+								'Leave Message': SettingsKey.leaveMessage
 							}
 						},
 						'Member Settings': {
@@ -203,8 +223,7 @@ export default class extends Command {
 							}
 						}
 					}
-				},
-				more
+				}
 			)) === -1
 		) {
 			// NOP
@@ -216,8 +235,7 @@ export default class extends Command {
 		ownerId: string,
 		msg: Message,
 		title: string,
-		menu: ConfigMenu,
-		more: { maxChoices?: number }
+		menu: ConfigMenu
 	) {
 		if (typeof menu === 'string') {
 			return -1;
@@ -225,26 +243,6 @@ export default class extends Command {
 
 		const embed = this.client.createEmbed();
 		const keys = Object.keys(menu.items);
-
-		const currChoices = more.maxChoices;
-		more.maxChoices = Math.max(more.maxChoices, keys.length);
-
-		if (more.maxChoices > currChoices) {
-			if (currChoices > 0) {
-				embed.description = 'Loading...';
-				await msg.edit({ embed });
-
-				await msg.removeReaction(this.back);
-				await msg.removeReaction(this.cancel);
-			}
-
-			for (let i = currChoices; i < more.maxChoices; i++) {
-				await msg.addReaction(this.choices[i]);
-			}
-
-			await msg.addReaction(this.back);
-			await msg.addReaction(this.cancel);
-		}
 
 		let choice: number;
 		do {
@@ -255,7 +253,10 @@ export default class extends Command {
 			embed.fields = keys.map((key, i) => {
 				let val =
 					typeof menu.items[key] === 'string'
-						? context.settings[menu.items[key] as SettingsKey]
+						? this.fromDbValue(
+								menu.items[key] as SettingsKey,
+								context.settings[menu.items[key] as SettingsKey]
+						  )
 						: (menu.items[key] as any).descr;
 				if (!val) {
 					val = '<None>';
@@ -270,10 +271,17 @@ export default class extends Command {
 
 			choice = await this.awaitChoice(ownerId, msg);
 			if (choice === undefined) {
+				// Quit menu
 				return;
 			}
 			if (choice === -1) {
+				// Move one menu up
 				return -1;
+			}
+			if (choice >= keys.length) {
+				// Restart this menu
+				choice = -1;
+				continue;
 			}
 
 			const subMenu = menu.items[keys[choice]];
@@ -282,10 +290,12 @@ export default class extends Command {
 				const key = subMenu as SettingsKey;
 				const currentVal = context.settings[key];
 				let newVal = undefined;
-				if (currentVal === 'true') {
-					newVal = 'false';
-				} else if (currentVal === 'false') {
-					newVal = 'true';
+				if (getSettingsType(key) === 'Boolean') {
+					if (currentVal.toLowerCase() === 'true') {
+						newVal = 'false';
+					} else {
+						newVal = 'true';
+					}
 				} else {
 					newVal = await this.changeConfigSetting(
 						context,
@@ -300,6 +310,8 @@ export default class extends Command {
 							embed.description = err;
 							await msg.edit({ embed });
 							newVal = undefined;
+						} else {
+							newVal = this.toDbValue(key, newVal);
 						}
 					}
 				}
@@ -313,8 +325,7 @@ export default class extends Command {
 					ownerId,
 					msg,
 					title + ' - ' + keys[choice],
-					subMenu,
-					more
+					subMenu
 				);
 				if (choice === undefined) {
 					return;
@@ -333,7 +344,10 @@ export default class extends Command {
 		return new Promise<string>(async resolve => {
 			const embed = this.client.createEmbed({
 				title: `Edit ${key}`,
-				description: `Current value: ${val}\n\nEnter a new value:`
+				description: `Current value: ${this.fromDbValue(
+					key,
+					val
+				)}\n\nEnter a new value:`
 			});
 			await msg.edit({ embed });
 
@@ -378,12 +392,14 @@ export default class extends Command {
 
 					await userMsg.delete();
 
+					clearTimeout(timeOut);
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
 					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 					resolve(newVal);
 				} else if (emoji && userId === ownerId) {
+					clearTimeout(timeOut);
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
 					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
@@ -409,20 +425,6 @@ export default class extends Command {
 			const timeOut = setTimeout(timeOutFunc, 60000);
 		});
 	}
-
-	private back: string = '↩';
-	private cancel: string = '❌';
-	private choices: string[] = [
-		'1⃣',
-		'2⃣',
-		'3⃣',
-		'4⃣',
-		'5⃣',
-		'6⃣',
-		'7⃣',
-		'8⃣',
-		'9⃣'
-	];
 
 	private async awaitChoice(authorId: string, msg: Message): Promise<number> {
 		return new Promise<number>(async resolve => {
@@ -514,5 +516,43 @@ export default class extends Command {
 		}
 
 		return null;
+	}
+
+	private toDbValue(key: SettingsKey, value: any): string {
+		if (value === 'default') {
+			return defaultSettings[key];
+		}
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			return null;
+		}
+
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
+			return (value as any).id;
+		} else if (type === 'Boolean') {
+			return value ? 'true' : 'false';
+		}
+
+		return value;
+	}
+
+	private fromDbValue(
+		key: SettingsKey,
+		value: string
+	): string | number | boolean {
+		if (value === undefined || value === null) {
+			return value;
+		}
+
+		const type = getSettingsType(key);
+		if (type === 'Channel') {
+			return `<#${value}>`;
+		} else if (type === 'Boolean') {
+			return value === 'true' ? 'True' : 'False';
+		} else if (type === 'Number') {
+			return parseInt(value, 10);
+		}
+
+		return value;
 	}
 }
