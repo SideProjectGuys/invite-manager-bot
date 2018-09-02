@@ -57,6 +57,7 @@ export default class extends Command {
 				&& msg.embeds.length === 0;
 		});
 
+		messagesToBeDeleted.push(message);
 		let [error] = await to(
 			this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id))
 		);
@@ -72,7 +73,6 @@ export default class extends Command {
 		}
 
 		let response = (await this.client.sendReply(message, embed));
-		message.delete();
 
 		const func = () => {
 			response.delete();

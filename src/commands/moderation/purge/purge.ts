@@ -53,8 +53,7 @@ export default class extends Command {
 				message.id
 			);
 		}
-
-		message.delete();
+		messages.push(message);
 		let [error] = await to(
 			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 		);
