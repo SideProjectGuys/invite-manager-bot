@@ -11,13 +11,11 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: OwnerCommand.flushPremium,
-			aliases: ['owner-flush-premium', 'ofp'],
-			// desc: 'Flush premium',
+			aliases: ['owner-flush', 'of'],
 			args: [
 				{
 					name: 'guildId',
 					resolver: StringResolver
-					// description: 'The id of the guild to flush.'
 				}
 			],
 			hidden: true,
@@ -39,7 +37,7 @@ export default class extends Command {
 		}
 
 		const { shard, result } = this.client.rabbitmq.sendCommandToGuild(guildId, {
-			cmd: ShardCommand.FLUSH_PREMIUM_CACHE,
+			cmd: ShardCommand.FLUSH_CACHE,
 			id: message.id,
 			guildId
 		});
@@ -47,7 +45,7 @@ export default class extends Command {
 		if (result) {
 			this.client.sendReply(
 				message,
-				`Sent command to flush premium settings for guild ${guildId} to shard ${shard}`
+				`Sent command to flush all caches of guild ${guildId} to shard ${shard}`
 			);
 		} else {
 			this.client.sendReply(message, `RabbitMQ returned false`);

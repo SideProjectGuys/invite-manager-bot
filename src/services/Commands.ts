@@ -100,7 +100,7 @@ export class Commands {
 		// Figure out which command is being run
 		let content = message.content.trim();
 		const sets = guild
-			? await this.client.cache.get(guild.id)
+			? await this.client.cache.settings.get(guild.id)
 			: defaultSettings;
 		const lang = sets.lang;
 
@@ -173,7 +173,7 @@ export class Commands {
 			return;
 		}
 
-		const isPremium = await this.client.cache.isPremium(guild.id);
+		const isPremium = await this.client.cache.premium.get(guild.id);
 
 		if (!isPremium && cmd.premiumOnly) {
 			this.client.sendReply(message, t('permissions.premiumOnly'));
@@ -205,7 +205,7 @@ export class Commands {
 				!member.permission.has(Permissions.ADMINISTRATOR) &&
 				guild.ownerID !== member.id
 			) {
-				const perms = (await this.client.cache.getPermissions(guild.id))[
+				const perms = (await this.client.cache.permissions.get(guild.id))[
 					cmd.name
 				];
 

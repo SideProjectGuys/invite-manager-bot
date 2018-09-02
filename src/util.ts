@@ -102,7 +102,7 @@ export async function promoteIfQualified(
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	const settings = await client.cache.get(guild.id);
+	const settings = await client.cache.settings.get(guild.id);
 	const style = settings.rankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
@@ -193,7 +193,7 @@ export async function promoteIfQualified(
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-					`rank announcement channel ${rankChannelId}`
+						`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
@@ -306,17 +306,27 @@ export function to<T, U = any>(
 }
 
 export function getHighestRole(guild: Guild, roles: string[]): Role {
-	return roles.map(role => guild.roles.get(role))
-		.reduce((prev, role) => role.position > prev.position ? role : prev, { position: -1 } as Role);
+	return roles
+		.map(role => guild.roles.get(role))
+		.reduce((prev, role) => (role.position > prev.position ? role : prev), {
+			position: -1
+		} as Role);
 }
 
-export function isPunishable(guild: Guild, targetMember: Member, authorMember: Member, me: Member) {
+export function isPunishable(
+	guild: Guild,
+	targetMember: Member,
+	authorMember: Member,
+	me: Member
+) {
 	let highestBotRole = getHighestRole(guild, me.roles);
 	let highestMemberRole = getHighestRole(guild, targetMember.roles);
 	let highestAuthorRole = getHighestRole(guild, authorMember.roles);
 
-	return targetMember.id !== guild.ownerID &&
+	return (
+		targetMember.id !== guild.ownerID &&
 		targetMember.id !== me.user.id &&
 		highestBotRole.position > highestMemberRole.position &&
-		highestAuthorRole.position > highestMemberRole.position;
+		highestAuthorRole.position > highestMemberRole.position
+	);
 }

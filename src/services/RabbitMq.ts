@@ -53,8 +53,9 @@ export class RabbitMq {
 			? `${client.config.rabbitmq.prefix}-`
 			: '';
 
-		this.qJoinsName =
-			`${prefix}joins-${this.client.shardId}-${this.client.shardCount}`;
+		this.qJoinsName = `${prefix}joins-${this.client.shardId}-${
+			this.client.shardCount
+		}`;
 		conn.createChannel().then(async channel => {
 			this.channelJoins = channel;
 
@@ -63,8 +64,9 @@ export class RabbitMq {
 			});
 		});
 
-		this.qLeavesName =
-			`${prefix}leaves-${this.client.shardId}-${this.client.shardCount}`;
+		this.qLeavesName = `${prefix}leaves-${this.client.shardId}-${
+			this.client.shardCount
+		}`;
 		conn.createChannel().then(async channel => {
 			this.channelLeaves = channel;
 
@@ -73,8 +75,9 @@ export class RabbitMq {
 			});
 		});
 
-		this.qCmdsName =
-			`${prefix}cmds-${this.client.shardId}-${this.client.shardCount}`;
+		this.qCmdsName = `${prefix}cmds-${this.client.shardId}-${
+			this.client.shardCount
+		}`;
 		conn.createChannel().then(async channel => {
 			this.channelCmds = channel;
 
@@ -168,7 +171,7 @@ export class RabbitMq {
 		console.log(member.id + ' joined ' + guild.id);
 
 		// Get settings
-		const settings = await this.client.cache.get(guild.id);
+		const settings = await this.client.cache.settings.get(guild.id);
 		const lang = settings.lang;
 		const joinChannelId = settings.joinMessageChannel;
 
@@ -179,7 +182,7 @@ export class RabbitMq {
 		if (joinChannelId && !joinChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid ` +
-				`join message channel ${joinChannelId}`
+					`join message channel ${joinChannelId}`
 			);
 		}
 
@@ -199,7 +202,7 @@ export class RabbitMq {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ${guild.id}: ` +
-				JSON.stringify(content)
+					JSON.stringify(content)
 			);
 			if (joinChannel) {
 				joinChannel.createMessage(
@@ -357,7 +360,7 @@ export class RabbitMq {
 		console.log(member.id + ' left ' + guild.id);
 
 		// Get settings
-		const settings = await this.client.cache.get(guild.id);
+		const settings = await this.client.cache.settings.get(guild.id);
 		const lang = settings.lang;
 		const leaveChannelId = settings.leaveMessageChannel;
 
@@ -368,7 +371,7 @@ export class RabbitMq {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(
 				`Guild ${guild.id} has invalid leave ` +
-				`message channel ${leaveChannelId}`
+					`message channel ${leaveChannelId}`
 			);
 		}
 
@@ -376,11 +379,11 @@ export class RabbitMq {
 		if (!join) {
 			console.error(
 				`Could not find join for ${member.id} in ` +
-				`${guild.id} leaveId: ${leave.id}`
+					`${guild.id} leaveId: ${leave.id}`
 			);
 			console.error(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
-				JSON.stringify(content)
+					JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				leaveChannel.createMessage(
@@ -479,7 +482,7 @@ export class RabbitMq {
 					});
 				}
 
-				const sets = await this.client.cache.get(guildId);
+				const sets = await this.client.cache.settings.get(guildId);
 				const perms = guild.members.get(this.client.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};
@@ -524,14 +527,9 @@ export class RabbitMq {
 				});
 				break;
 
-			case ShardCommand.FLUSH_PREMIUM_CACHE:
-				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
-				this.client.cache.flushPremium(guildId);
-				break;
-
-			case ShardCommand.FLUSH_SETTINGS_CACHE:
+			case ShardCommand.FLUSH_CACHE:
 				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
-				this.client.cache.flush(guildId);
+				Object.values(this.client.cache).forEach(c => c.flush(guildId));
 				break;
 
 			case ShardCommand.SUDO:
@@ -551,8 +549,9 @@ export class RabbitMq {
 				const fakeMsg = new Message(
 					{
 						id: content.id,
-						content:
-							`<@!${this.client.user.id}>${content.sudoCmd} ${content.args.join(' ')}`,
+						content: `<@!${this.client.user.id}>${
+							content.sudoCmd
+						} ${content.args.join(' ')}`,
 						author: this.client.users.get(content.authorId),
 						embeds: [],
 						attachments: []

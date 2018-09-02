@@ -65,7 +65,7 @@ export default class extends Command {
 				guildId: guild.id,
 				memberId: message.author.id
 			});
-			this.client.cache.flushPremium(guild.id);
+			this.client.cache.premium.flush(guild.id);
 
 			embed.description = t('cmd.tryPremium.started', {
 				prefix

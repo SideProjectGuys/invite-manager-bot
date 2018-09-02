@@ -1,11 +1,11 @@
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
-import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
+import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
 import { guilds, LogAction, members } from './sequelize';
-import { Cache } from './services/Cache';
+import { SettingsCache } from './cache/SettingsCache';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
 import {
@@ -18,6 +18,10 @@ import {
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
+import { PermissionsCache } from './cache/PermissionsCache';
+import { PremiumCache } from './cache/PremiumCache';
+import { StrikesCache } from './cache/StrikesCache';
+import { PunishmentCache } from './cache/PunishmentsCache';
 
 const config = require('../config.json');
 
@@ -40,13 +44,13 @@ i18n.configure({
 	// syncFiles: true,
 	directory: __dirname + '/../locale',
 	objectNotation: true,
-	logDebugFn: function (msg: string) {
+	logDebugFn: function(msg: string) {
 		console.log('debug', msg);
 	},
-	logWarnFn: function (msg: string) {
+	logWarnFn: function(msg: string) {
 		console.log('warn', msg);
 	},
-	logErrorFn: function (msg: string) {
+	logErrorFn: function(msg: string) {
 		console.log('error', msg);
 	}
 });
@@ -55,7 +59,13 @@ export class IMClient extends Client {
 	public version: string;
 	public config: any;
 
-	public cache: Cache;
+	public cache: {
+		settings: SettingsCache;
+		premium: PremiumCache;
+		permissions: PermissionsCache;
+		strikes: StrikesCache;
+		punishments: PunishmentCache;
+	};
 	public dbQueue: DBQueue;
 
 	public msg: Messaging;
@@ -112,7 +122,13 @@ export class IMClient extends Client {
 		this.version = version;
 		this.config = config;
 
-		this.cache = new Cache(this);
+		this.cache = {
+			settings: new SettingsCache(this),
+			premium: new PremiumCache(this),
+			permissions: new PermissionsCache(this),
+			strikes: new StrikesCache(this),
+			punishments: new PunishmentCache(this)
+		};
 		this.dbQueue = new DBQueue(this);
 
 		this.msg = new Messaging(this);
@@ -143,7 +159,10 @@ export class IMClient extends Client {
 	private async onClientReady(): Promise<void> {
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 
-		await this.cache.init();
+		// Init all caches
+		Promise.all(Object.values(this.cache).map(c => c.init()));
+
+		// Other services
 		await this.rabbitmq.init();
 		await this.cmds.init();
 
@@ -164,21 +183,19 @@ export class IMClient extends Client {
 		const channel = await owner.user.getDMChannel();
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
-			guild.name +
-			'`!\n\n' +
-			'I am now tracking all invites on your server.\n\n' +
-			'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-			'You can see a list of all commands using the `!help` command.\n\n' +
-			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-			'https://discord.gg/2eTnsVM'
+				guild.name +
+				'`!\n\n' +
+				'I am now tracking all invites on your server.\n\n' +
+				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+				'You can see a list of all commands using the `!help` command.\n\n' +
+				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+				'https://discord.gg/2eTnsVM'
 		);
 	}
 
-	public async logModAction(
-		guild: Guild,
-		embed: Embed
-	) {
-		const modLogChannelId = (await this.cache.get(guild.id)).modLogChannel;
+	public async logModAction(guild: Guild, embed: Embed) {
+		const modLogChannelId = (await this.cache.settings.get(guild.id))
+			.modLogChannel;
 
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
@@ -194,7 +211,7 @@ export class IMClient extends Client {
 		action: LogAction,
 		data: any
 	) {
-		const logChannelId = (await this.cache.get(guild.id)).logChannel;
+		const logChannelId = (await this.cache.settings.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;

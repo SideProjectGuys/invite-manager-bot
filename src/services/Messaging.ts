@@ -120,7 +120,7 @@ export class Messaging {
 									channel
 										.createMessage(
 											'**I do not have permissions to post to that channel.\n' +
-											`Please tell an admin to allow me to send messages in the channel.**\n\n`
+												`Please tell an admin to allow me to send messages in the channel.**\n\n`
 										)
 										.then(resolve)
 										.catch(err2 => {
@@ -159,10 +159,10 @@ export class Messaging {
 
 		try {
 			const temp = JSON.parse(msg);
-			if (await this.client.cache.isPremium(guild.id)) {
+			if (await this.client.cache.premium.get(guild.id)) {
 				msg = this.createEmbed(temp);
 			} else {
-				const lang = (await this.client.cache.get(guild.id)).lang;
+				const lang = (await this.client.cache.settings.get(guild.id)).lang;
 				msg +=
 					'\n\n' +
 					i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
@@ -268,7 +268,7 @@ export class Messaging {
 			}
 		}
 
-		const lang = (await this.client.cache.get(guild.id)).lang;
+		const lang = (await this.client.cache.settings.get(guild.id)).lang;
 		const unknown = i18n.__({ locale: lang, phrase: 'TEMPLATE_UNKNOWN' });
 
 		const memberFullName =

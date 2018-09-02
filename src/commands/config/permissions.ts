@@ -241,6 +241,6 @@ export default class extends Command {
 			);
 		}
 
-		this.client.cache.flushPermissions(guild.id);
+		this.client.cache.permissions.flush(guild.id);
 	}
 }

@@ -318,7 +318,11 @@ export default class extends Command {
 					}
 				}
 				if (newVal) {
-					await this.client.cache.set(context.guild.id, key, newVal);
+					await this.client.cache.settings.setOne(
+						context.guild.id,
+						key,
+						newVal
+					);
 				}
 				choice = -1;
 			} else {
