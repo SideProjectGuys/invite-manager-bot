@@ -5,7 +5,7 @@ import {
 	MemberResolver
 } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { getHighestRole, to } from '../../../util';
+import { getHighestRole, isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -27,37 +27,33 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[member]: [Member],
+		[targetMember]: [Member],
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
-			author: { name: member.username, icon_url: member.avatarURL }
-		});
+		const embed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
 
 		let mutedRole = settings.mutedRole;
-
-		let highestBotRole = getHighestRole(guild, me.roles);
-		let highestMemberRole = getHighestRole(guild, member.roles);
-		let highestAuthorRole = getHighestRole(guild, message.member.roles);
 
 		if (mutedRole && guild.roles.has(mutedRole)) {
 			embed.description =
 				'Muted role not set or does not exist!';
-		} else if (
-			member.id !== guild.ownerID &&
-			member.id !== me.user.id &&
-			highestBotRole.position > highestMemberRole.position &&
-			highestAuthorRole.position > highestMemberRole.position
-		) {
-			let [error] = await to(member.removeRole(mutedRole));
+		} else if (isPunishable(guild, targetMember, message.member, me)) {
+			let [error] = await to(targetMember.removeRole(mutedRole));
 			if (error) {
 				embed.description = t('cmd.unmute.error');
 			} else {
 				embed.description = t('cmd.unmute.done');
+				const logEmbed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+				logEmbed.description += `**Target**: ${targetMember}\n`;
+				logEmbed.description +=
+					`**Target**: ${targetMember.username}#${targetMember.discriminator} (ID: ${targetMember.id})\n`;
+				logEmbed.description += `**Action**: Unban\n`;
+				logEmbed.description += `**Mod**: ${message.author.username}\n`;
+				this.client.logModAction(guild, logEmbed);
 			}
 		} else {
 			embed.description = t('cmd.unmute.canNotUnmute');

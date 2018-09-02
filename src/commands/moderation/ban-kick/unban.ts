@@ -5,8 +5,9 @@ import {
 	MemberResolver,
 	StringResolver
 } from '../../../resolvers';
+import { PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
-import { getHighestRole, to } from '../../../util';
+import { getHighestRole, isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -33,35 +34,32 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[member, reason]: [Member, string],
+		[targetMember, reason]: [Member, string],
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
-			author: { name: member.username, icon_url: member.avatarURL }
-		});
-
-		let highestBotRole = getHighestRole(guild, me.roles);
-		let highestMemberRole = getHighestRole(guild, member.roles);
-		let highestAuthorRole = getHighestRole(guild, message.member.roles);
+		const embed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
 
 		if (me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description =
 				'I need the `Ban Members` permission to use this command';
-		} else if (
-			member.id !== guild.ownerID &&
-			member.id !== me.user.id &&
-			highestBotRole.position > highestMemberRole.position &&
-			highestAuthorRole.position > highestMemberRole.position
-		) {
-			let [error] = await to(member.unban(reason));
+		} else if (isPunishable(guild, targetMember, message.member, me)) {
+			let [error] = await to(targetMember.unban(reason));
 			if (error) {
 				embed.description = t('cmd.unban.error');
 			} else {
 				embed.description = t('cmd.unban.done');
+				const logEmbed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+				logEmbed.description += `**Target**: ${targetMember}\n`;
+				logEmbed.description +=
+					`**Target**: ${targetMember.username}#${targetMember.discriminator} (ID: ${targetMember.id})\n`;
+				logEmbed.description += `**Action**: Unban\n`;
+				logEmbed.description += `**Mod**: ${message.author.username}\n`;
+				logEmbed.description += `**Reason**: ${reason}\n`;
+				this.client.logModAction(guild, logEmbed);
 			}
 		} else {
 			embed.description = t('cmd.unban.canNotUnban');

@@ -1,6 +1,6 @@
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
-import { Client, Guild, Message, TextChannel } from 'eris';
+import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -172,6 +172,20 @@ export class IMClient extends Client {
 			`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
 			'https://discord.gg/2eTnsVM'
 		);
+	}
+
+	public async logModAction(
+		guild: Guild,
+		embed: Embed
+	) {
+		const modLogChannelId = (await this.cache.get(guild.id)).modLogChannel;
+
+		if (modLogChannelId) {
+			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
+			if (logChannel) {
+				this.sendEmbed(logChannel, embed);
+			}
+		}
 	}
 
 	public async logAction(
