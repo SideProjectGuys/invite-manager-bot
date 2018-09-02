@@ -20,6 +20,7 @@ import {
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 import { ArrayResolver } from '../../resolvers/ArrayResolver';
+import { settingsDescription } from '../../exportConfigTypes';
 
 type ConfigMenu =
 	| { descr?: string; items: { [x: string]: ConfigMenu } }
@@ -253,16 +254,20 @@ export default class extends Command {
 				`Welcome to the InviteManager settings menu.\n` +
 				`Use the reactions to pick one of the available options.\n\n`;
 			embed.fields = keys.map((key, i) => {
-				let val =
-					typeof menu.items[key] === 'string'
-						? context.settings[menu.items[key] as SettingsKey]
-						: (menu.items[key] as any).descr;
+				let val: any;
+				if (typeof menu.items[key] === 'string') {
+					const settingsKey = menu.items[key] as SettingsKey;
+					val = this.beautify(settingsKey, context.settings[settingsKey]);
+				} else {
+					val = (menu.items[key] as any).descr;
+				}
+
 				if (!val) {
 					val = '<None>';
 				}
 				return {
 					name: `${i + 1}. ${key}`,
-					value: val
+					value: `${val}`
 				};
 			});
 
@@ -339,9 +344,21 @@ export default class extends Command {
 		val: any
 	): Promise<string> {
 		return new Promise<string>(async resolve => {
+			const info = settingsDescription[key];
+
+			const description =
+				info.description +
+				'\n\n' +
+				`Current value: ${this.beautify(key, val)}\n` +
+				(info.possibleValues
+					? `Allowed values: ${info.possibleValues
+							.map(v => '`' + v + '`')
+							.join(', ')}\n\n`
+					: '\n') +
+				`Enter a new value:`;
 			const embed = this.client.createEmbed({
-				title: `Edit ${key}`,
-				description: `Current value: ${val}\n\nEnter a new value:`
+				title: `${key}`,
+				description
 			});
 			await msg.edit({ embed });
 
@@ -350,6 +367,8 @@ export default class extends Command {
 			const func = async (userMsg: Message, emoji: Emoji, userId: string) => {
 				if (userMsg.author.id === ownerId) {
 					const newRawVal = userMsg.content;
+
+					await userMsg.delete();
 
 					let newVal: any;
 					try {
@@ -412,9 +431,10 @@ export default class extends Command {
 						}
 					} catch (err) {
 						newVal = undefined;
+						embed.description = description + '\n\n' + err.message;
+						await msg.edit({ embed });
+						return;
 					}
-
-					await userMsg.delete();
 
 					clearTimeout(timeOut);
 					this.client.removeListener('messageCreate', func);
@@ -541,5 +561,26 @@ export default class extends Command {
 		}
 
 		return null;
+	}
+
+	private beautify(key: SettingsKey, value: any) {
+		const type = settingsTypes[key];
+		if (type === 'Channel') {
+			return `<#${value}>`;
+		} else if (type === 'Boolean') {
+			return value ? 'True' : 'False';
+		} else if (type === 'Role') {
+			return `<@&${value}>`;
+		} else if (type === 'Role[]') {
+			return value.map((v: any) => `<@&${v}>`).join(' ');
+		} else if (type === 'Channel[]') {
+			return value.map((v: any) => `<#${v}>`).join(' ');
+		} else if (type === 'String[]') {
+			return value.map((v: any) => '`' + v + '`').join(', ');
+		}
+		if (typeof value === 'string' && value.length > 1000) {
+			return value.substr(0, 1000) + '...';
+		}
+		return value;
 	}
 }

@@ -417,7 +417,7 @@ export default class extends Command {
 		} else if (type === 'Channel[]') {
 			return value.map((v: any) => `<#${v}>`).join(' ');
 		} else if (type === 'String[]') {
-			return value.map((v: any) => '`' + v + '`').join(' ');
+			return value.map((v: any) => '`' + v + '`').join(', ');
 		}
 		if (typeof value === 'string' && value.length > 1000) {
 			return value.substr(0, 1000) + '...';
