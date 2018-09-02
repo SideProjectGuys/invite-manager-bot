@@ -253,14 +253,14 @@ export type SettingsObject = {
 	leaveMessage: string,
 	leaveMessageChannel: string,
 
-	leaderboardStyle: string,
+	leaderboardStyle: LeaderboardStyle,
 	hideLeftMembersFromLeaderboard: boolean,
 
 	autoSubtractFakes: boolean,
 	autoSubtractLeaves: boolean,
 	autoSubtractLeaveThreshold: number /* seconds */,
 
-	rankAssignmentStyle: string,
+	rankAssignmentStyle: RankAssignmentStyle,
 	rankAnnouncementChannel: string,
 	rankAnnouncementMessage: string,
 

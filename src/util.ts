@@ -103,7 +103,7 @@ export async function promoteIfQualified(
 	let nextRank: RankInstance = null;
 
 	const settings = await client.cache.get(guild.id);
-	const style = settings.rankAssignmentStyle as RankAssignmentStyle;
+	const style = settings.rankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
 		where: {

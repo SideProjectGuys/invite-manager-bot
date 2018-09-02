@@ -79,7 +79,7 @@ export default class extends Command {
 		const maxPage = Math.ceil(keys.length / usersPerPage);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		const style: LeaderboardStyle = settings.leaderboardStyle as LeaderboardStyle;
+		const style: LeaderboardStyle = settings.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
 		this.client.showPaginated(message, p, maxPage, page => {
