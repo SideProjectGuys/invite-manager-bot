@@ -8,6 +8,7 @@ import {
 	PunishmentType,
 	sequelize,
 	SettingsObject,
+	StrikeConfigInstance,
 	strikeConfigs,
 	strikes,
 	ViolationType
@@ -17,6 +18,7 @@ import { to } from '../util';
 
 interface Arguments {
 	settings: SettingsObject;
+	guild: Guild;
 }
 
 interface PunishmentDetails {
@@ -24,8 +26,16 @@ interface PunishmentDetails {
 	strikeAmount?: number;
 }
 
+interface MiniMessage {
+	createdAt: number;
+	content: string;
+	mentions: number;
+	roleMentions: number;
+}
+
 export class Moderation {
 	private client: IMClient;
+	private messageCache: Map<string, MiniMessage[]>;
 
 	private strikeConfigFunctions: {
 		[key in ViolationType]: (
@@ -44,6 +54,8 @@ export class Moderation {
 
 	public constructor(client: IMClient) {
 		this.client = client;
+
+		this.messageCache = new Map();
 
 		this.strikeConfigFunctions = {
 			[ViolationType.invites]: this.invites.bind(this),
@@ -79,7 +91,7 @@ export class Moderation {
 			return;
 		}
 
-		const settings = await this.client.settings.get(guild.id);
+		const settings = await this.client.cache.settings.get(guild.id);
 
 		if (!settings.autoModEnabled) {
 			console.log('AUTOMOD STOPPED: autoModEnabled false');
@@ -148,82 +160,124 @@ export class Moderation {
 			}
 		}
 
-		console.log('SCANNING MESSAGE', message.content);
-
-		// TODO: Start with violations that have strike configs
-		let foundViolation = false;
-		let violation: ViolationType;
-		for (violation of Object.values(ViolationType)) {
-			if (foundViolation) {
-				return;
-			}
-			foundViolation = await this.strikeConfigFunctions[violation](message, {
-				settings: settings
-			});
-			if (foundViolation) {
-				message.delete();
-				let strike = await strikeConfigs.find({
-					where: {
-						guildId: guild.id,
-						violationType: violation
-					}
-				});
-
-				const logEmbed = this.createPunishmentEmbed('AutoModerator');
-				logEmbed.description = `**Channel** <#${channel.id}>\n`;
-				logEmbed.description += `**User**: ${message.author.username}#${
-					message.author.discriminator
-				} (ID: ${message.author.id})\n`;
-				logEmbed.description += `**Violation**: ${violation}\n`;
-				if (strike) {
-					logEmbed.description += `**Strikes given**: ${strike.amount}\n`;
-				} else {
-					logEmbed.description += `No strikes given.\n`;
-				}
-				logEmbed.fields.push({
-					name: 'Message content',
-					value: message.content
-				});
-				this.client.logModAction(guild, logEmbed);
-
-				const embed = this.createPunishmentEmbed('AutoModerator');
-				embed.description = `Message by <@${
-					message.author.id
-				}> was removed because it violated the \`${violation}\` rule.\n`;
-				if (strike) {
-					embed.description += `\n\nUser got ${strike.amount} strikes.`;
-				}
-				this.sendAndDelete(message, embed, settings);
-				if (strike) {
-					this.addStrikesAndCheckIfPunishable(
-						message,
-						guild,
-						strike.amount,
-						strike.violationType,
-						{ settings: settings }
-					);
-				}
+		{
+			const cacheKey = `${guild.id}-${message.author.id}`;
+			let msgs = this.messageCache.get(cacheKey);
+			if (msgs) {
+				msgs.push(this.getMiniMessage(message));
+				this.messageCache.set(cacheKey, msgs);
+			} else {
+				this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 			}
 		}
+
+		console.log('SCANNING MESSAGE', message.content);
+
+		let strikesCache = await this.client.cache.strikes.get(guild.id);
+		let allViolations: ViolationType[] = Object.values(ViolationType);
+
+		console.log(strikesCache);
+
+		for (let strike of strikesCache) {
+			allViolations = allViolations.filter(av => av !== strike.violationType);
+			let foundViolation = await this.strikeConfigFunctions[strike.violationType](message, {
+				settings: settings,
+				guild: guild
+			});
+			console.log(strike.violationType, foundViolation);
+			if (!foundViolation) {
+				continue;
+			}
+			message.delete();
+
+			this.createLogModAction(guild, channel, message, strike.violationType, strike.amount);
+
+			const embed = this.createPunishmentEmbed('AutoModerator');
+			embed.description = `Message by <@${
+				message.author.id
+				}> was removed because it violated the \`${strike.violationType}\` rule.\n`;
+			embed.description += `\n\nUser got ${strike.amount} strikes.`;
+
+			this.sendAndDelete(message, embed, settings);
+			this.addStrikesAndCheckIfPunishable(
+				message,
+				strike.amount,
+				strike.violationType,
+				{ settings: settings, guild: guild }
+			);
+			return;
+		}
+
+		for (let violation of allViolations) {
+			let foundViolation = await this.strikeConfigFunctions[violation](message, {
+				settings: settings,
+				guild: guild
+			});
+			if (!foundViolation) {
+				continue;
+			}
+			message.delete();
+
+			this.createLogModAction(guild, channel, message, violation);
+
+			const embed = this.createPunishmentEmbed('AutoModerator');
+			embed.description = `Message by <@${
+				message.author.id
+				}> was removed because it violated the \`${violation}\` rule.\n`;
+			this.sendAndDelete(message, embed, settings);
+			return;
+		}
+	}
+
+	private createLogModAction(
+		guild: Guild,
+		channel: TextChannel,
+		message: Message,
+		violationType: ViolationType,
+		amount?: number) {
+		const logEmbed = this.createPunishmentEmbed('AutoModerator');
+		logEmbed.description = `**Channel** <#${channel.id}>\n`;
+		logEmbed.description += `**User**: ${message.author.username}#${
+			message.author.discriminator
+			} (ID: ${message.author.id})\n`;
+		logEmbed.description += `**Violation**: ${violationType}\n`;
+		if (amount) {
+			logEmbed.description += `**Strikes given**: ${amount}\n`;
+		} else {
+			logEmbed.description += `No strikes given.\n`;
+		}
+		logEmbed.fields.push({
+			name: 'Message content',
+			value: message.content
+		});
+		this.client.logModAction(guild, logEmbed);
+	}
+
+	private getMiniMessage(message: Message): MiniMessage {
+		return {
+			createdAt: message.createdAt,
+			content: message.content,
+			mentions: message.mentions.length,
+			roleMentions: message.roleMentions.length
+		};
 	}
 
 	private async addStrikesAndCheckIfPunishable(
 		message: Message,
-		guild: Guild,
 		amount: number,
 		violationType: ViolationType,
 		args: Arguments
 	) {
 		let strikesBefore = await strikes.sum('amount', {
 			where: {
-				guildId: guild.id,
+				guildId: args.guild.id,
 				memberId: message.author.id
 			}
 		});
 
 		await strikes.create({
 			id: null,
-			guildId: guild.id,
+			guildId: args.guild.id,
 			memberId: message.author.id,
 			amount: amount,
 			violationType: violationType
@@ -236,7 +290,7 @@ export class Moderation {
 
 		let punishmentConfig = await punishmentConfigs.find({
 			where: {
-				guildId: guild.id,
+				guildId: args.guild.id,
 				amount: {
 					[sequelize.Op.gt]: strikesBefore,
 					[sequelize.Op.lte]: strikesAfter
@@ -246,14 +300,13 @@ export class Moderation {
 		});
 
 		if (punishmentConfig) {
-			let punishmentResult = await this.punishmentFunctions[
-				punishmentConfig.punishmentType
-			](message, guild, punishmentConfig.amount, args);
+			let punishmentResult =
+				await this.punishmentFunctions[punishmentConfig.punishmentType](message, args.guild, punishmentConfig.amount, args);
 
 			if (punishmentResult) {
 				await punishments.create({
 					id: null,
-					guildId: guild.id,
+					guildId: args.guild.id,
 					memberId: message.author.id,
 					punishmentType: punishmentConfig.punishmentType,
 					amount: punishmentConfig.amount,
@@ -365,7 +418,6 @@ export class Moderation {
 		return numUppercase / message.content.length > percentageCaps / 100;
 	}
 
-	// TODO
 	private async duplicateText(
 		message: Message,
 		args: Arguments
@@ -374,10 +426,26 @@ export class Moderation {
 			return false;
 		}
 		console.log('CHECKING duplicateText VIOLATIONS');
-		return false;
+
+		let timeframe = args.settings.autoModDuplicateTextTimeframeInSeconds;
+
+		let cachedMessages = this.messageCache.get(`${args.guild.id}-${message.author.id}`);
+		if (cachedMessages.length === 1) {
+			return false;
+		} else {
+			cachedMessages = cachedMessages.filter(m => moment().diff(m.createdAt, 'second') < timeframe);
+			let tempMessages: string[] = [];
+			return cachedMessages.some(m => {
+				if (tempMessages.indexOf(m.content.toLowerCase()) >= 0) {
+					return true;
+				} else {
+					tempMessages.push(m.content.toLowerCase());
+					return false;
+				}
+			});
+		}
 	}
 
-	// TODO
 	private async quickMessages(
 		message: Message,
 		args: Arguments
@@ -386,7 +454,16 @@ export class Moderation {
 			return false;
 		}
 		console.log('CHECKING quickMessage VIOLATIONS');
-		return false;
+		let numberOfMessages = args.settings.autoModQuickMessagesNumberOfMessages;
+		let timeframe = args.settings.autoModQuickMessagesTimeframeInSeconds;
+
+		let cachedMessages = this.messageCache.get(`${args.guild.id}-${message.author.id}`);
+		if (cachedMessages.length === 1) {
+			return false;
+		} else {
+			cachedMessages = cachedMessages.filter(m => moment().diff(m.createdAt, 'second') < timeframe);
+			return cachedMessages.length >= numberOfMessages;
+		}
 	}
 
 	private async mentionUsers(
@@ -477,7 +554,7 @@ export class Moderation {
 		if (error) {
 			embed.description = `Tried to auto-mod ${
 				message.member
-			}, but couldn't send them a DM.`;
+				}, but couldn't send them a DM.`;
 			this.logToModChannel(message, embed);
 		}
 
@@ -486,11 +563,11 @@ export class Moderation {
 		if (error) {
 			embed.description = `${
 				message.member.username
-			} could not be banned.\n${error}`;
+				} could not be banned.\n${error}`;
 		} else {
 			embed.description = `${
 				message.member.username
-			} has been banned because he surpassed ${amount} strikes.`;
+				} has been banned because he surpassed ${amount} strikes.`;
 			success = true;
 		}
 		this.sendAndDelete(message, embed, args.settings);
@@ -516,11 +593,11 @@ export class Moderation {
 		if (error) {
 			embed.description = `${
 				message.member.username
-			} could not be kicked.\n${error}`;
+				} could not be kicked.\n${error}`;
 		} else {
 			embed.description = `${
 				message.member.username
-			} has been kicked because he surpassed ${amount} strikes.`;
+				} has been kicked because he surpassed ${amount} strikes.`;
 			success = true;
 		}
 
@@ -550,11 +627,11 @@ export class Moderation {
 		if (error) {
 			embed.description = `${
 				message.member.username
-			} could not be softbanned.\n${error}`;
+				} could not be softbanned.\n${error}`;
 		} else {
 			embed.description = `${
 				message.member.username
-			} has been softbanned because he surpassed ${amount} strikes.`;
+				} has been softbanned because he surpassed ${amount} strikes.`;
 			success = true;
 		}
 
@@ -569,20 +646,12 @@ export class Moderation {
 		args: Arguments
 	) {
 		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.warn, {
-			strikeAmount: amount
-		});
+		await this.dmMember(guild, message.member, PunishmentType.softban, { strikeAmount: amount });
 
-		// const embed = this.createPunishmentEmbed('AutoModerator');
+		const embed = this.createPunishmentEmbed('AutoModerator');
+		embed.thumbnail = { url: message.member.avatarURL };
+		embed.description = `${message.member.username} has been warned because he surpassed ${amount} strikes.`;
 
-		const embed = this.client.createEmbed({
-			author: { name: 'AutoModerator' },
-			description: `${
-				message.member.username
-			} has been warned because he surpassed ${amount} strikes.`
-		});
-		let dmChannel = await message.member.user.getDMChannel();
-		dmChannel.createMessage(`You have been warned on the server ${guild.name}`);
 		this.sendAndDelete(message, embed, args.settings);
 		return success;
 	}
@@ -594,20 +663,24 @@ export class Moderation {
 		args: Arguments
 	) {
 		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.mute, {
-			strikeAmount: amount
-		});
+		await this.dmMember(guild, message.member, PunishmentType.softban, { strikeAmount: amount });
 
-		// const embed = this.createPunishmentEmbed('AutoModerator');
+		let mutedRole = args.settings.mutedRole;
 
-		const embed = this.client.createEmbed({
-			author: { name: 'AutoModerator' },
-			description: `${
-				message.member.username
-			} has been muted because he surpassed ${amount} strikes.`
-		});
-		let dmChannel = await message.member.user.getDMChannel();
-		dmChannel.createMessage(`You have been muted on the server ${guild.name}`);
+		const embed = this.createPunishmentEmbed('AutoModerator');
+		embed.thumbnail = { url: message.member.avatarURL };
+
+		if (!mutedRole || !guild.roles.has(mutedRole)) {
+			embed.description = `Muted role is not set.`;
+		} else {
+			let [error] = await to(message.member.addRole(mutedRole, 'AutoMod muted'));
+			if (error) {
+				embed.description = `Could not mute member. ${error}`;
+			} else {
+				embed.description = `${message.member.username} has been muted because he surpassed ${amount} strikes.`;
+			}
+		}
+
 		this.sendAndDelete(message, embed, args.settings);
 		return success;
 	}
@@ -627,7 +700,7 @@ export class Moderation {
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(() => {
 				reply.delete();
-			}, settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
+			},         settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
 		}
 	}
 
@@ -663,7 +736,7 @@ export class Moderation {
 		} else if (args.strikeAmount) {
 			message += `\n\n**Reason**: You reached **${
 				args.strikeAmount
-			}** strikes.`;
+				}** strikes.`;
 		}
 		return await dmChannel.createMessage(message);
 	}
