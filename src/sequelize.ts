@@ -1312,7 +1312,7 @@ export interface PunishmentAttributes extends BaseAttributes {
 	amount: number;
 	args: string;
 	reason: string;
-	creatorId: number;
+	creatorId: string;
 }
 export interface PunishmentInstance
 	extends Sequelize.Instance<PunishmentAttributes>,
