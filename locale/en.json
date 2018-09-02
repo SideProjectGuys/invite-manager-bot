@@ -18,7 +18,8 @@
 			"multiple": "arguments.command.multiple"
 		},
 		"channel": {
-			"notFound": "arguments.channel.notFound"
+			"notFound": "arguments.channel.notFound",
+			"multiple": "arguments.channel.multiple"
 		},
 		"role": {
 			"notFound": "arguments.role.notFound"

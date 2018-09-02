@@ -262,7 +262,7 @@ export default class extends Command {
 					val = (menu.items[key] as any).descr;
 				}
 
-				if (!val) {
+				if (typeof val === 'undefined') {
 					val = '<None>';
 				}
 				return {
@@ -564,6 +564,10 @@ export default class extends Command {
 	}
 
 	private beautify(key: SettingsKey, value: any) {
+		if (typeof value === typeof undefined || value === null) {
+			return;
+		}
+
 		const type = settingsTypes[key];
 		if (type === 'Channel') {
 			return `<#${value}>`;
