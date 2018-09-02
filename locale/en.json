@@ -19,6 +19,9 @@
 		},
 		"channel": {
 			"notFound": "arguments.channel.notFound"
+		},
+		"role": {
+			"notFound": "arguments.role.notFound"
 		}
 	},
 	"bot": {
@@ -138,7 +141,8 @@
 			"current": {
 				"title": "Current Value",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it."
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"clear": "cmd.config.current.clear"
 			},
 			"previous": {
 				"title": "Previous Value"

@@ -88,7 +88,10 @@ export class Cache {
 			if (set.value === null && defaultSettings[set.key] !== null) {
 				return;
 			}
-			this.cache.get(set.guildId)[set.key] = this.fromDbValue(set.key, set.value);
+			this.cache.get(set.guildId)[set.key] = this.fromDbValue(
+				set.key,
+				set.value
+			);
 		});
 
 		// Load all role permissions
@@ -245,11 +248,11 @@ export class Cache {
 
 	public async set(guildId: string, key: SettingsKey, value: any) {
 		const cfg = await this.get(guildId);
+		const dbVal = this.toDbValue(key, value);
+		const val = this.fromDbValue(key, dbVal);
 
 		// Check if the value changed
-		if (cfg[key] !== value) {
-			const dbVal = this.toDbValue(key, value);
-
+		if (cfg[key] !== val) {
 			settings.bulkCreate(
 				[
 					{
@@ -264,9 +267,11 @@ export class Cache {
 				}
 			);
 
-			cfg[key] = this.fromDbValue(key, dbVal);
+			cfg[key] = val;
 			this.cache.set(guildId, cfg);
 		}
+
+		return val;
 	}
 
 	private toDbValue(key: SettingsKey, value: any): string {
@@ -305,10 +310,7 @@ export class Cache {
 		return value;
 	}
 
-	private fromDbValue(
-		key: SettingsKey,
-		value: string
-	): any {
+	private fromDbValue(key: SettingsKey, value: string): any {
 		const type = settingsTypes[key];
 		return this._fromDbValue(type, value);
 	}
@@ -324,7 +326,10 @@ export class Cache {
 		} else if (type.endsWith('[]')) {
 			const subType = type.substring(0, type.length - 2);
 			const splits = value.split(',');
-			return splits.map(s => this._fromDbValue(subType, s)) as string[] | number[] | boolean[];
+			return splits.map(s => this._fromDbValue(subType, s)) as
+				| string[]
+				| number[]
+				| boolean[];
 		}
 
 		return value;

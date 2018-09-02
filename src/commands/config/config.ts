@@ -22,6 +22,7 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
+import { settingsDescription } from '../../exportConfigTypes';
 
 class ValueResolver extends Resolver {
 	public resolve(
@@ -29,6 +30,13 @@ class ValueResolver extends Resolver {
 		context: Context,
 		[key]: [SettingsKey]
 	): Promise<any> {
+		if (typeof value === typeof undefined) {
+			return;
+		}
+		if (value === 'none' || value === 'empty' || value === 'null') {
+			return value;
+		}
+
 		switch (settingsTypes[key]) {
 			case 'Channel':
 				return new ChannelResolver(this.client).resolve(value, context);
@@ -40,6 +48,7 @@ class ValueResolver extends Resolver {
 				return new NumberResolver(this.client).resolve(value, context);
 
 			case 'Role':
+			case 'Role[]':
 				return new RoleResolver(this.client).resolve(value, context);
 
 			case 'String':
@@ -84,29 +93,21 @@ export default class extends Command {
 
 		if (!key) {
 			embed.title = t('cmd.config.title');
-			embed.description = t('cmd.config.text', { prefix });
+			embed.description = t('cmd.config.text', { prefix }) + '\n\n';
 
-			const notSet = [];
-			const keys = Object.keys(SettingsKey);
-			for (let i = 0; i < keys.length; i++) {
-				const k = keys[i] as SettingsKey;
-				const val = settings[k];
-				if (val) {
-					embed.fields.push({
-						name: keys[i],
-						value: this.beautify(k, val)
-					});
-				} else {
-					notSet.push(keys[i]);
+			const configs: { [x: string]: string[] } = {};
+			Object.keys(settingsDescription).forEach((k: SettingsKey) => {
+				const descr = settingsDescription[k];
+				if (!configs[descr.group]) {
+					configs[descr.group] = [];
 				}
-			}
+				configs[descr.group].push('`' + k + '`');
+			});
 
-			if (notSet.length > 0) {
-				embed.fields.push({
-					name: `----- ${t('cmd.config.notSet')} -----`,
-					value: notSet.join('\n')
-				});
-			}
+			Object.keys(configs).forEach(group => {
+				embed.description +=
+					`**${group}**\n` + configs[group].join(', ') + '\n\n';
+			});
 
 			return this.client.sendReply(message, embed);
 		}
@@ -146,11 +147,15 @@ export default class extends Command {
 			}
 		}
 
+		// Set new value (we override the local value, because the formatting probably changed)
+		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
+		value = await this.client.cache.set(guild.id, key, value);
+
 		if (value === oldVal) {
 			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
 				name: t('cmd.config.current.title'),
-				value: this.beautify(key, value)
+				value: this.beautify(key, oldVal)
 			});
 			return this.client.sendReply(message, embed);
 		}
@@ -159,9 +164,6 @@ export default class extends Command {
 		if (error) {
 			return this.client.sendReply(message, error);
 		}
-
-		// Set new value
-		this.client.cache.set(guild.id, key, value);
 
 		embed.description = t('cmd.config.changed.text', { prefix, key });
 
@@ -183,11 +185,9 @@ export default class extends Command {
 			name: t('cmd.config.new.title'),
 			value: value ? this.beautify(key, value) : t('cmd.config.none')
 		});
-		oldVal = value; // Update value for future use
 
 		// Do any post processing, such as example messages
-		// If we updated a config setting, then 'oldVal' is now the new value
-		const cb = await this.after(message, embed, key, oldVal, context);
+		const cb = await this.after(message, embed, key, value, context);
 
 		await this.client.sendReply(message, embed);
 
