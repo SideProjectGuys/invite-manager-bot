@@ -28,13 +28,16 @@ export class ArrayResolver extends Resolver {
 			return;
 		}
 
-		const rawSplits = value.split(' ');
+		const rawSplits = value.split(/[,\s]/);
 
 		const splits: string[] = [];
 		let quote = false;
 		let acc = '';
 		for (let j = 0; j < rawSplits.length; j++) {
 			const split = rawSplits[j];
+			if (!split.length) {
+				continue;
+			}
 
 			if (split.startsWith(`"`)) {
 				quote = true;
