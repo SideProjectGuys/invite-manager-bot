@@ -7,7 +7,8 @@ import {
 	EnumResolver,
 	NumberResolver,
 	Resolver,
-	RoleResolver
+	RoleResolver,
+	StringResolver
 } from '../../resolvers';
 import {
 	customInvites,
@@ -23,6 +24,7 @@ import {
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 import { settingsDescription } from '../../exportConfigTypes';
+import { ArrayResolver } from '../../resolvers/ArrayResolver';
 
 class ValueResolver extends Resolver {
 	public resolve(
@@ -41,6 +43,13 @@ class ValueResolver extends Resolver {
 			case 'Channel':
 				return new ChannelResolver(this.client).resolve(value, context);
 
+			case 'Channel[]':
+				return new ArrayResolver(this.client, ChannelResolver).resolve(
+					value,
+					context,
+					[key]
+				);
+
 			case 'Boolean':
 				return new BooleanResolver(this.client).resolve(value, context);
 
@@ -48,11 +57,24 @@ class ValueResolver extends Resolver {
 				return new NumberResolver(this.client).resolve(value, context);
 
 			case 'Role':
-			case 'Role[]':
 				return new RoleResolver(this.client).resolve(value, context);
+
+			case 'Role[]':
+				return new ArrayResolver(this.client, RoleResolver).resolve(
+					value,
+					context,
+					[key]
+				);
 
 			case 'String':
 				return value;
+
+			case 'String[]':
+				return new ArrayResolver(this.client, StringResolver).resolve(
+					value,
+					context,
+					[key]
+				);
 
 			default:
 				return;
@@ -147,6 +169,11 @@ export default class extends Command {
 			}
 		}
 
+		const error = this.validate(key, value, context);
+		if (error) {
+			return this.client.sendReply(message, error);
+		}
+
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
 		value = await this.client.cache.set(guild.id, key, value);
@@ -158,11 +185,6 @@ export default class extends Command {
 				value: this.beautify(key, oldVal)
 			});
 			return this.client.sendReply(message, embed);
-		}
-
-		const error = this.validate(key, value, context);
-		if (error) {
-			return this.client.sendReply(message, error);
 		}
 
 		embed.description = t('cmd.config.changed.text', { prefix, key });
@@ -390,6 +412,12 @@ export default class extends Command {
 			return value ? 'True' : 'False';
 		} else if (type === 'Role') {
 			return `<@&${value}>`;
+		} else if (type === 'Role[]') {
+			return value.map((v: any) => `<@&${v}>`).join(' ');
+		} else if (type === 'Channel[]') {
+			return value.map((v: any) => `<#${v}>`).join(' ');
+		} else if (type === 'String[]') {
+			return value.map((v: any) => '`' + v + '`').join(' ');
 		}
 		if (typeof value === 'string' && value.length > 1000) {
 			return value.substr(0, 1000) + '...';

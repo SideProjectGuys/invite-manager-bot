@@ -1,10 +1,4 @@
-import {
-	Guild,
-	Member,
-	Message,
-	PrivateChannel,
-	TextChannel
-} from 'eris';
+import { Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
 import path from 'path';
@@ -49,7 +43,7 @@ export class Commands {
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-						`\x1b[2m${path.basename(file)}\x1b[0m`
+							`\x1b[2m${path.basename(file)}\x1b[0m`
 					);
 				}
 			});
@@ -100,7 +94,7 @@ export class Commands {
 
 		console.log(
 			`${guild ? guild.name : 'DM'} (${message.author.username}): ` +
-			`${message.content}`
+				`${message.content}`
 		);
 
 		// Figure out which command is being run
@@ -251,7 +245,7 @@ export class Commands {
 		};
 
 		// Format arguments
-		let rawArgs: string[] = [];
+		const rawArgs: string[] = [];
 		let quote = false;
 		let acc = '';
 		for (let j = 1; j < splits.length; j++) {
@@ -284,7 +278,11 @@ export class Commands {
 
 			let rawVal = rawArgs[i];
 			if (arg.rest) {
-				rawVal = rawArgs.slice(i).join(' ');
+				// Since we are concatinating all arguments we have to restore quotes where required
+				rawVal = rawArgs
+					.slice(i)
+					.map(a => (a.indexOf(' ') > 0 ? `"${a}"` : a))
+					.join(' ');
 			}
 
 			try {

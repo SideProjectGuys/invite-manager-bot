@@ -304,7 +304,7 @@ export class Cache {
 			return value ? 'true' : 'false';
 		} else if (type.endsWith('[]')) {
 			const subType = type.substring(0, type.length - 2);
-			return value.map((v: any) => this._toDbValue(subType, v));
+			return value.map((v: any) => this._toDbValue(subType, v)).join(',');
 		}
 
 		return value;

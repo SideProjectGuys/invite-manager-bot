@@ -4,7 +4,9 @@ import { IMClient } from '../../client';
 import {
 	BooleanResolver,
 	ChannelResolver,
-	NumberResolver
+	NumberResolver,
+	RoleResolver,
+	StringResolver
 } from '../../resolvers';
 import {
 	InviteCodeSettingsKey,
@@ -17,6 +19,7 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
+import { ArrayResolver } from '../../resolvers/ArrayResolver';
 
 type ConfigMenu =
 	| { descr?: string; items: { [x: string]: ConfigMenu } }
@@ -358,6 +361,27 @@ export default class extends Command {
 								);
 								break;
 
+							case 'Channel[]':
+								newVal = await new ArrayResolver(
+									this.client,
+									ChannelResolver
+								).resolve(newRawVal, context, []);
+								break;
+
+							case 'Role':
+								newVal = await new RoleResolver(this.client).resolve(
+									newRawVal,
+									context
+								);
+								break;
+
+							case 'Role[]':
+								newVal = await new ArrayResolver(
+									this.client,
+									RoleResolver
+								).resolve(newRawVal, context, []);
+								break;
+
 							case 'Boolean':
 								newVal = await new BooleanResolver(this.client).resolve(
 									newRawVal,
@@ -374,6 +398,13 @@ export default class extends Command {
 
 							case 'String':
 								newVal = newRawVal;
+								break;
+
+							case 'String[]':
+								newVal = await new ArrayResolver(
+									this.client,
+									StringResolver
+								).resolve(newRawVal, context, []);
 								break;
 
 							default:
