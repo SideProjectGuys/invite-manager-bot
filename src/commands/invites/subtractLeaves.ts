@@ -78,7 +78,7 @@ export default class extends Command {
 			}
 		});
 
-		const threshold = parseInt(settings.autoSubtractLeaveThreshold, 10);
+		const threshold = settings.autoSubtractLeaveThreshold;
 
 		// Add subtracts for leaves
 		const customInvs = ls

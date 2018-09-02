@@ -271,7 +271,7 @@ export type SettingsObject = {
 	captchaVerificationSuccessMessage: string,
 	captchaVerificationFailedMessage: string,
 	captchaVerificationTimeout: number /* seconds */,
-	captchaVerificationLogEnabled: string,
+	captchaVerificationLogEnabled: boolean,
 
 	modLogChannel: string,
 	modPunishmentBanDeleteMessage: boolean,
@@ -388,7 +388,7 @@ export const settingsTypes: SettingsTypesObject = {
 	captchaVerificationSuccessMessage: 'String',
 	captchaVerificationFailedMessage: 'String',
 	captchaVerificationTimeout: 'Number' /* seconds */,
-	captchaVerificationLogEnabled: 'String',
+	captchaVerificationLogEnabled: 'Boolean',
 
 	modLogChannel: 'Channel',
 	modPunishmentBanDeleteMessage: 'Boolean',
