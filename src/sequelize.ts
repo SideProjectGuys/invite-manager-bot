@@ -209,7 +209,6 @@ export enum SettingsKey {
 
 	autoModDisabledForOldMembers = 'autoModDisabledForOldMembers',
 	autoModDisabledForOldMembersThreshold = 'autoModDisabledForOldMembersThreshold',
-	autoModDisabledForOldMembersReceiveSilentWarning = 'autoModDisabledForOldMembersReceiveSilentWarning',
 
 	autoModInvitesEnabled = 'autoModInvitesEnabled',
 
@@ -291,7 +290,6 @@ export type SettingsObject = {
 
 	autoModDisabledForOldMembers: boolean,
 	autoModDisabledForOldMembersThreshold: number /* seconds, default 1 week */,
-	autoModDisabledForOldMembersReceiveSilentWarning: boolean,
 
 	autoModInvitesEnabled: boolean,
 
@@ -408,7 +406,6 @@ export const settingsTypes: SettingsTypesObject = {
 
 	autoModDisabledForOldMembers: 'Boolean',
 	autoModDisabledForOldMembersThreshold: 'Number' /* seconds, default 1 week */,
-	autoModDisabledForOldMembersReceiveSilentWarning: 'Boolean',
 
 	autoModInvitesEnabled: 'Boolean',
 
@@ -496,7 +493,6 @@ export const defaultSettings: SettingsObject = {
 
 	autoModDisabledForOldMembers: false,
 	autoModDisabledForOldMembersThreshold: 604800 /* seconds, default 1 week */,
-	autoModDisabledForOldMembersReceiveSilentWarning: true,
 
 	autoModInvitesEnabled: true,
 
