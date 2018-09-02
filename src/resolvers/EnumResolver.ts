@@ -4,12 +4,13 @@ import { Context } from '../commands/Command';
 import { Resolver } from './Resolver';
 
 export class EnumResolver extends Resolver {
-	private values: string[];
+	private values: Map<string, string>;
 
 	public constructor(client: IMClient, values: string[]) {
 		super(client);
 
-		this.values = values.map(v => v.toLowerCase());
+		this.values = new Map();
+		values.forEach(v => this.values.set(v.toLowerCase(), v));
 	}
 
 	public async resolve(value: string, { t }: Context): Promise<string> {
@@ -18,15 +19,19 @@ export class EnumResolver extends Resolver {
 		}
 
 		const val = value.toLowerCase();
-		if (this.values.includes(val)) {
-			return val;
+		if (this.values.has(val)) {
+			return this.values.get(val);
 		}
 		throw Error(t('arguments.enum.invalid'));
 	}
 
 	public getHelp({ t }: Context) {
+		const vals: string[] = [];
+		for (let value in this.values.values()) {
+			vals.push('`' + value + '`');
+		}
 		return t('arguments.enum.validValues', {
-			values: this.values.map(v => '`' + v + '`').join(', ')
+			values: vals.join(', ')
 		});
 	}
 }
