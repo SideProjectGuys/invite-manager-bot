@@ -49,7 +49,7 @@ export default class extends Command {
 			embed.description = t('cmd.purgeUntil.msgNotFound');
 			return this.client.sendReply(message, embed);
 		} else {
-			message.delete();
+			messages.push(message);
 			let [error] = await to(
 				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 			);
