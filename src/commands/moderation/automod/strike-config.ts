@@ -82,6 +82,7 @@ export default class extends Command {
 			// TODO: expiration
 		}
 
+		this.client.cache.strikes.flush(guild.id);
 		this.client.sendReply(message, embed);
 	}
 }

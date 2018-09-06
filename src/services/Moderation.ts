@@ -77,6 +77,14 @@ export class Moderation {
 			[PunishmentType.mute]: this.mute.bind(this)
 		};
 
+		setInterval(
+			() => {
+				this.messageCache.forEach((value, key) => {
+					this.messageCache.set(key, value.filter(m => moment().diff(m.createdAt, 'second') < 60));
+				});
+			},
+			60 * 1000);
+
 		client.on('messageCreate', this.onMessage.bind(this));
 	}
 
@@ -433,16 +441,12 @@ export class Moderation {
 		if (cachedMessages.length === 1) {
 			return false;
 		} else {
+			// Filter old messages
 			cachedMessages = cachedMessages.filter(m => moment().diff(m.createdAt, 'second') < timeframe);
-			let tempMessages: string[] = [];
-			return cachedMessages.some(m => {
-				if (tempMessages.indexOf(m.content.toLowerCase()) >= 0) {
-					return true;
-				} else {
-					tempMessages.push(m.content.toLowerCase());
-					return false;
-				}
-			});
+			// Filter current message
+			cachedMessages = cachedMessages.filter(m => !(m.createdAt === message.createdAt && m.content === message.content));
+			let lastMessages = cachedMessages.map(m => m.content.toLowerCase());
+			return lastMessages.indexOf(message.content.toLowerCase()) >= 0;
 		}
 	}
 
@@ -646,7 +650,7 @@ export class Moderation {
 		args: Arguments
 	) {
 		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.softban, { strikeAmount: amount });
+		await this.dmMember(guild, message.member, PunishmentType.warn, { strikeAmount: amount });
 
 		const embed = this.createPunishmentEmbed('AutoModerator');
 		embed.thumbnail = { url: message.member.avatarURL };
@@ -663,7 +667,7 @@ export class Moderation {
 		args: Arguments
 	) {
 		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.softban, { strikeAmount: amount });
+		await this.dmMember(guild, message.member, PunishmentType.mute, { strikeAmount: amount });
 
 		let mutedRole = args.settings.mutedRole;
 
@@ -700,7 +704,7 @@ export class Moderation {
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(() => {
 				reply.delete();
-			},         settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
+			}, settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
 		}
 	}
 

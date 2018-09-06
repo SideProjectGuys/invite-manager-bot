@@ -23,6 +23,9 @@
 		},
 		"role": {
 			"notFound": "arguments.role.notFound"
+		},
+		"boolean": {
+			"invalid": "arguments.boolean.invalid"
 		}
 	},
 	"bot": {
@@ -120,7 +123,9 @@
 				"description": "Clean a channel of certain message types.",
 				"args": {
 					"quantity": "How many messages should be deleted.",
-					"member": "User whose messages get deleted."
+					"member": "User whose messages get deleted.",
+					"type": "cmd.clean.self.args.type",
+					"numberOfMessages": "cmd.clean.self.args.numberOfMessages"
 				}
 			}
 		},
@@ -658,6 +663,11 @@
 					"value": "The new value of the setting."
 				},
 				"description": "Show and change the config of invite codes of the server."
+			},
+			"title": "cmd.inviteCodeConfig.title",
+			"text": "cmd.inviteCodeConfig.text",
+			"keys": {
+				"title": "cmd.inviteCodeConfig.keys.title"
 			}
 		},
 		"permissions": {
@@ -667,7 +677,9 @@
 					"role": "The role which should be granted or denied access to the command."
 				},
 				"description": "Configure permissions to use commands."
-			}
+			},
+			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
+			"added": "cmd.permissions.added"
 		},
 		"graph": {
 			"joins": {
@@ -691,10 +703,63 @@
 			}
 		},
 		"unban": {
-			"canNotUnban": "cmd.unban.canNotUnban"
+			"canNotUnban": "cmd.unban.canNotUnban",
+			"self": {
+				"args": {
+					"user": "cmd.unban.self.args.user",
+					"reason": "cmd.unban.self.args.reason"
+				}
+			}
 		},
 		"mute": {
-			"error": "cmd.mute.error"
+			"error": "cmd.mute.error",
+			"self": {
+				"args": {
+					"user": "cmd.mute.self.args.user",
+					"muteDuration": "cmd.mute.self.args.muteDuration",
+					"reason": "cmd.mute.self.args.reason"
+				}
+			},
+			"done": "cmd.mute.done",
+			"canNotMute": "cmd.mute.canNotMute"
+		},
+		"unmute": {
+			"self": {
+				"args": {
+					"user": "cmd.unmute.self.args.user"
+				}
+			}
+		},
+		"caseDelete": {
+			"self": {
+				"args": {
+					"caseNumber": "cmd.caseDelete.self.args.caseNumber",
+					"reason": "cmd.caseDelete.self.args.reason"
+				}
+			}
+		},
+		"caseView": {
+			"self": {
+				"args": {
+					"caseNumber": "cmd.caseView.self.args.caseNumber"
+				}
+			}
+		},
+		"cleanShort": {
+			"self": {
+				"args": {
+					"maxTextLength": "cmd.cleanShort.self.args.maxTextLength",
+					"numberOfMessages": "cmd.cleanShort.self.args.numberOfMessages"
+				}
+			}
+		},
+		"cleanText": {
+			"self": {
+				"args": {
+					"text": "cmd.cleanText.self.args.text",
+					"numberOfMessages": "cmd.cleanText.self.args.numberOfMessages"
+				}
+			}
 		}
 	},
 	"permissions": {
