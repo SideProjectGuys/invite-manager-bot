@@ -32,6 +32,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -55,15 +56,21 @@ export default class extends Command {
 		};
 		if (typeof punishment === typeof undefined) {
 			let allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			let punishmentConfigList =
-				await punishmentConfigs.findAll({ where: { guildId: guild.id }, order: [['amount', 'DESC']] });
-			let unusedPunishment =
-				allPunishments.filter(p => punishmentConfigList.map(pcl => pcl.punishmentType).indexOf(p) < 0);
-			embed.description =
-				punishmentConfigList.map(pcl => t('cmd.punishmentConfig.text', {
-					punishment: `**${pcl.punishmentType}**`,
-					strikes: `**${pcl.amount}**`
-				})).join('\n');
+			let punishmentConfigList = await punishmentConfigs.findAll({
+				where: { guildId: guild.id },
+				order: [['amount', 'DESC']]
+			});
+			let unusedPunishment = allPunishments.filter(
+				p => punishmentConfigList.map(pcl => pcl.punishmentType).indexOf(p) < 0
+			);
+			embed.description = punishmentConfigList
+				.map(pcl =>
+					t('cmd.punishmentConfig.text', {
+						punishment: `**${pcl.punishmentType}**`,
+						strikes: `**${pcl.amount}**`
+					})
+				)
+				.join('\n');
 			embed.fields.push({
 				name: t('cmd.punishmentConfig.unusedPunishment'),
 				value: `\n${unusedPunishment.map(v => `\`${v}\``).join(', ')}`

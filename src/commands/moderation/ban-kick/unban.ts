@@ -1,10 +1,7 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../resolvers';
+import { MemberResolver, StringResolver } from '../../../resolvers';
 import { PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { getHighestRole, isPunishable, to } from '../../../util';
@@ -28,6 +25,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -41,7 +39,10 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+		const embed = this.client.mod.createPunishmentEmbed(
+			targetMember.username,
+			targetMember.avatarURL
+		);
 
 		if (me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description =
@@ -52,10 +53,14 @@ export default class extends Command {
 				embed.description = t('cmd.unban.error');
 			} else {
 				embed.description = t('cmd.unban.done');
-				const logEmbed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+				const logEmbed = this.client.mod.createPunishmentEmbed(
+					targetMember.username,
+					targetMember.avatarURL
+				);
 				logEmbed.description += `**Target**: ${targetMember}\n`;
-				logEmbed.description +=
-					`**Target**: ${targetMember.username}#${targetMember.discriminator} (ID: ${targetMember.id})\n`;
+				logEmbed.description += `**Target**: ${targetMember.username}#${
+					targetMember.discriminator
+				} (ID: ${targetMember.id})\n`;
 				logEmbed.description += `**Action**: Unban\n`;
 				logEmbed.description += `**Mod**: ${message.author.username}\n`;
 				logEmbed.description += `**Reason**: ${reason}\n`;
@@ -65,7 +70,7 @@ export default class extends Command {
 			embed.description = t('cmd.unban.canNotUnban');
 		}
 
-		let response = await this.client.sendReply(message, embed) as Message;
+		let response = (await this.client.sendReply(message, embed)) as Message;
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

@@ -1,9 +1,7 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import {
-	MemberResolver
-} from '../../../resolvers';
+import { MemberResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { getHighestRole, isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -21,6 +19,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -34,23 +33,29 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+		const embed = this.client.mod.createPunishmentEmbed(
+			targetMember.username,
+			targetMember.avatarURL
+		);
 
 		let mutedRole = settings.mutedRole;
 
 		if (mutedRole && guild.roles.has(mutedRole)) {
-			embed.description =
-				'Muted role not set or does not exist!';
+			embed.description = 'Muted role not set or does not exist!';
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.removeRole(mutedRole));
 			if (error) {
 				embed.description = t('cmd.unmute.error');
 			} else {
 				embed.description = t('cmd.unmute.done');
-				const logEmbed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+				const logEmbed = this.client.mod.createPunishmentEmbed(
+					targetMember.username,
+					targetMember.avatarURL
+				);
 				logEmbed.description += `**Target**: ${targetMember}\n`;
-				logEmbed.description +=
-					`**Target**: ${targetMember.username}#${targetMember.discriminator} (ID: ${targetMember.id})\n`;
+				logEmbed.description += `**Target**: ${targetMember.username}#${
+					targetMember.discriminator
+				} (ID: ${targetMember.id})\n`;
 				logEmbed.description += `**Action**: Unban\n`;
 				logEmbed.description += `**Mod**: ${message.author.username}\n`;
 				this.client.logModAction(guild, logEmbed);

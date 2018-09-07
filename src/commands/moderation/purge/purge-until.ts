@@ -19,6 +19,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}

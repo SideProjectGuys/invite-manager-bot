@@ -20,10 +20,11 @@ export default class extends Command {
 				},
 				{
 					name: 'numberOfMessages',
-					resolver: NumberResolver,
+					resolver: NumberResolver
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -52,14 +53,19 @@ export default class extends Command {
 		);
 
 		let messagesToBeDeleted = messages.filter(msg => {
-			return msg.content.length < maxTextLength
-				&& msg.attachments.length === 0
-				&& msg.embeds.length === 0;
+			return (
+				msg.content.length < maxTextLength &&
+				msg.attachments.length === 0 &&
+				msg.embeds.length === 0
+			);
 		});
 
 		messagesToBeDeleted.push(message);
 		let [error] = await to(
-			this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id))
+			this.client.deleteMessages(
+				message.channel.id,
+				messagesToBeDeleted.map(m => m.id)
+			)
 		);
 
 		if (error) {
@@ -72,7 +78,7 @@ export default class extends Command {
 			});
 		}
 
-		let response = (await this.client.sendReply(message, embed));
+		let response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();

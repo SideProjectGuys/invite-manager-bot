@@ -22,6 +22,7 @@ export default class extends Command {
 					resolver: UserResolver
 				}
 			],
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -67,7 +68,7 @@ export default class extends Command {
 			});
 		}
 
-		let response = (await this.client.sendReply(message, embed));
+		let response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();

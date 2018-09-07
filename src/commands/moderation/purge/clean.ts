@@ -18,7 +18,9 @@ enum CleanType {
 }
 
 export default class extends Command {
-	public cleanFunctions: { [k in CleanType]: (messages: Message[]) => Message[] };
+	public cleanFunctions: {
+		[k in CleanType]: (messages: Message[]) => Message[]
+	};
 
 	public constructor(client: IMClient) {
 		super(client, {
@@ -32,10 +34,11 @@ export default class extends Command {
 				},
 				{
 					name: 'numberOfMessages',
-					resolver: NumberResolver,
+					resolver: NumberResolver
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 
@@ -47,7 +50,7 @@ export default class extends Command {
 			[CleanType.embeds]: this.embeds.bind(this),
 			[CleanType.emojis]: this.emojis.bind(this),
 			[CleanType.reacted]: this.reacted.bind(this),
-			[CleanType.reactions]: this.reacted.bind(this),
+			[CleanType.reactions]: this.reacted.bind(this)
 		};
 	}
 
@@ -85,7 +88,10 @@ export default class extends Command {
 		} else {
 			messagesToBeDeleted.push(message);
 			[error] = await to(
-				this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id))
+				this.client.deleteMessages(
+					message.channel.id,
+					messagesToBeDeleted.map(m => m.id)
+				)
 			);
 		}
 		if (error) {
@@ -105,7 +111,7 @@ export default class extends Command {
 			}
 		}
 
-		let response = (await this.client.sendReply(message, embed));
+		let response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();
@@ -128,7 +134,11 @@ export default class extends Command {
 
 	private mentions(messages: Message[]): Message[] {
 		return messages.filter(message => {
-			return message.mentionEveryone || message.mentions.length > 0 || message.roleMentions.length > 0;
+			return (
+				message.mentionEveryone ||
+				message.mentions.length > 0 ||
+				message.roleMentions.length > 0
+			);
 		});
 	}
 

@@ -25,6 +25,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -38,7 +39,10 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+		const embed = this.client.mod.createPunishmentEmbed(
+			targetMember.username,
+			targetMember.avatarURL
+		);
 
 		if (me.permission.has(Permissions.KICK_MEMBERS)) {
 			embed.description =
@@ -59,11 +63,15 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
-				const logEmbed = this.client.mod.createPunishmentEmbed(targetMember.username, targetMember.avatarURL);
+				const logEmbed = this.client.mod.createPunishmentEmbed(
+					targetMember.username,
+					targetMember.avatarURL
+				);
 				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
 				logEmbed.description += `**Target**: ${targetMember}\n`;
-				logEmbed.description +=
-					`**Target**: ${targetMember.username}#${targetMember.discriminator} (ID: ${targetMember.id})\n`;
+				logEmbed.description += `**Target**: ${targetMember.username}#${
+					targetMember.discriminator
+				} (ID: ${targetMember.id})\n`;
 				logEmbed.description += `**Action**: ${punishment.punishmentType}\n`;
 				logEmbed.description += `**Mod**: ${message.author.username}\n`;
 				logEmbed.description += `**Reason**: ${reason}\n`;

@@ -23,6 +23,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			strict: true,
 			guildOnly: true
 		});
 	}
@@ -47,13 +48,21 @@ export default class extends Command {
 
 		if (typeof violation === typeof undefined) {
 			let allViolations: ViolationType[] = Object.values(ViolationType);
-			let strikeConfigList = await strikeConfigs.findAll({ where: { guildId: guild.id }, order: [['amount', 'DESC']] });
-			let unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.violationType).indexOf(v) < 0);
-			embed.description =
-				strikeConfigList.map(scl => t('cmd.strikeConfig.text', {
-					violation: `**${scl.violationType}**`,
-					strikes: `**${scl.amount}**`
-				})).join('\n');
+			let strikeConfigList = await strikeConfigs.findAll({
+				where: { guildId: guild.id },
+				order: [['amount', 'DESC']]
+			});
+			let unusedViolations = allViolations.filter(
+				v => strikeConfigList.map(scl => scl.violationType).indexOf(v) < 0
+			);
+			embed.description = strikeConfigList
+				.map(scl =>
+					t('cmd.strikeConfig.text', {
+						violation: `**${scl.violationType}**`,
+						strikes: `**${scl.amount}**`
+					})
+				)
+				.join('\n');
 			embed.fields.push({
 				name: t('cmd.strikeConfig.unusedViolations'),
 				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
