@@ -4,8 +4,12 @@ import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { guilds, LogAction, members } from './sequelize';
+import { PermissionsCache } from './cache/PermissionsCache';
+import { PremiumCache } from './cache/PremiumCache';
+import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
+import { StrikesCache } from './cache/StrikesCache';
+import { guilds, LogAction, members } from './sequelize';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
 import {
@@ -18,10 +22,6 @@ import {
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
-import { PermissionsCache } from './cache/PermissionsCache';
-import { PremiumCache } from './cache/PremiumCache';
-import { StrikesCache } from './cache/StrikesCache';
-import { PunishmentCache } from './cache/PunishmentsCache';
 
 const config = require('../config.json');
 
@@ -48,10 +48,10 @@ i18n.configure({
 		console.log('debug', msg);
 	},
 	logWarnFn: function(msg: string) {
-		console.log('warn', msg);
+		console.error('warn', msg);
 	},
 	logErrorFn: function(msg: string) {
-		console.log('error', msg);
+		console.error('error', msg);
 	}
 });
 

@@ -1013,7 +1013,8 @@
 		"manageGuild": "Manage Server",
 		"viewAuditLogs": "View Audit Logs",
 		"manageRoles": "Manage Roles",
-		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}"
+		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
+		"rateLimit": "permissions.rateLimit"
 	},
 	"prompt": {
 		"canceled": "prompt.canceled"

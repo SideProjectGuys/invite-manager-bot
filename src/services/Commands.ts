@@ -10,6 +10,8 @@ import { Permissions, ShardCommand } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
+const rateLimit = 1; // max commands per second
+const cooldown = 5; // in seconds
 
 export class Commands {
 	private client: IMClient;
@@ -17,11 +19,15 @@ export class Commands {
 	public commands: Command[];
 	public disabledGuilds: Set<string>;
 
+	private commandCalls: Map<string, { last: number; warned: boolean }>;
+
 	public constructor(client: IMClient) {
 		this.client = client;
 
 		this.commands = [];
 		this.disabledGuilds = new Set();
+
+		this.commandCalls = new Map();
 
 		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
 
@@ -126,7 +132,6 @@ export class Commands {
 			}
 		}
 
-		console.log(content);
 		const splits = content.split(' ');
 		const cmdStr = splits[0].toLowerCase();
 
@@ -172,6 +177,36 @@ export class Commands {
 		if (cmd.guildOnly && !guild) {
 			return;
 		}
+
+		const now = new Date().getTime();
+		let lastCall = this.commandCalls.get(message.author.id);
+
+		if (!lastCall) {
+			lastCall = {
+				last: now,
+				warned: false
+			};
+			this.commandCalls.set(message.author.id, lastCall);
+		} else if (now - lastCall.last < (1 / rateLimit) * 1000) {
+			// Only warn the first time we hit the rate limit
+			if (!lastCall.warned) {
+				lastCall.warned = true;
+				lastCall.last = now + cooldown * 1000;
+				this.client.sendReply(
+					message,
+					t('permissions.rateLimit', {
+						cooldown: cooldown.toString()
+					})
+				);
+			}
+
+			// but always exit when hitting the limit
+			return;
+		} else if (lastCall.warned) {
+			lastCall.warned = false;
+		}
+		// Update last command execution time
+		lastCall.last = now;
 
 		const isPremium = await this.client.cache.premium.get(guild.id);
 
