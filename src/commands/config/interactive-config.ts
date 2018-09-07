@@ -1,6 +1,7 @@
 import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
+import { settingsDescription } from '../../exportConfigTypes';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -8,6 +9,7 @@ import {
 	RoleResolver,
 	StringResolver
 } from '../../resolvers';
+import { ArrayResolver } from '../../resolvers/ArrayResolver';
 import {
 	InviteCodeSettingsKey,
 	Lang,
@@ -19,11 +21,9 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
-import { ArrayResolver } from '../../resolvers/ArrayResolver';
-import { settingsDescription } from '../../exportConfigTypes';
 
 type ConfigMenu =
-	| { descr?: string; items: { [x: string]: ConfigMenu } }
+	| { items: { [x: string]: ConfigMenu } }
 	| SettingsKey
 	| MemberSettingsKey
 	| InviteCodeSettingsKey;
@@ -75,198 +75,178 @@ export default class extends Command {
 		msg.addReaction(this.back);
 		msg.addReaction(this.cancel);
 
+		const t = context.t;
+
 		while (
-			(await this.showConfigMenu(
-				context,
-				message.author.id,
-				msg,
-				'InviteManager',
-				{
-					items: {
-						Basic: {
-							descr: 'Base bot settings such as prefix, language and logging.',
-							items: {
-								Prefix: SettingsKey.prefix,
-								Language: SettingsKey.lang,
-								'Logging channel': SettingsKey.logChannel,
-								'Get update messages': SettingsKey.getUpdates
-							}
-						},
-						Moderation: {
-							descr: 'Moderation and auto moderation settings.',
-							items: {
-								General: {
-									descr: 'General AutoMod settings',
-									items: {
-										Enabled: SettingsKey.autoModEnabled,
-										'Moderated Channels': SettingsKey.autoModModeratedChannels,
-										'Moderated Roles': SettingsKey.autoModModeratedRoles,
-										'Ignored Channels': SettingsKey.autoModIgnoredChannels,
-										'Ignored Roles': SettingsKey.autoModIgnoredRoles,
-										'Delete Bot Messages': SettingsKey.autoModDeleteBotMessage,
-										'Delete Bot Messages Timeout':
-											SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
-										'Auto Log Enabled': SettingsKey.autoModLogEnabled,
-										'Log Channel': SettingsKey.modLogChannel
-									}
-								},
-								'Invites & Links': {
-									descr: 'Removal of links and discord invites.',
-									items: {
-										'Invites Enabled': SettingsKey.autoModInvitesEnabled,
-										'Links Enabled': SettingsKey.autoModLinksEnabled,
-										'Links whitelist': SettingsKey.autoModLinksWhitelist,
-										'Links Blacklist': SettingsKey.autoModLinksBlacklist,
-										'Follow link redirects':
-											SettingsKey.autoModLinksFollowRedirects
-									}
-								},
-								'Banned words': {
-									descr: 'Blacklist certain words.',
-									items: {
-										Enabled: SettingsKey.autoModWordsEnabled,
-										Blacklist: SettingsKey.autoModWordsBlacklist
-									}
-								},
-								Caps: {
-									descr: 'Remove ALL-CAPS messages.',
-									items: {
-										Enabled: SettingsKey.autoModAllCapsEnabled,
-										'Min Characters': SettingsKey.autoModAllCapsMinCharacters,
-										'Percentage Caps': SettingsKey.autoModAllCapsPercentageCaps
-									}
-								},
-								Duplicate: {
-									descr: 'No more copy-pasta.',
-									items: {
-										Enabled: SettingsKey.autoModDuplicateTextEnabled,
-										Timeframe:
-											SettingsKey.autoModDuplicateTextTimeframeInSeconds
-									}
-								},
-								Spam: {
-									descr: 'Repeated sending of the same message.',
-									items: {
-										Enabled: SettingsKey.autoModQuickMessagesEnabled,
-										'Number of messages':
-											SettingsKey.autoModQuickMessagesNumberOfMessages,
-										Timeframe:
-											SettingsKey.autoModQuickMessagesTimeframeInSeconds
-									}
-								},
-								Mentions: {
-									descr: 'Stop mentions of lots of users or roles.',
-									items: {
-										'Users Enabled': SettingsKey.autoModMentionUsersEnabled,
-										'Users Max':
-											SettingsKey.autoModMentionUsersMaxNumberOfMentions,
-										'Roles Enabled': SettingsKey.autoModMentionRolesEnabled,
-										'Roles Max':
-											SettingsKey.autoModMentionRolesMaxNumberOfMentions
-									}
-								},
-								Emojis: {
-									descr: 'Ban messages with too many emojis.',
-									items: {
-										Enabled: SettingsKey.autoModEmojisEnabled,
-										Max: SettingsKey.autoModEmojisMaxNumberOfEmojis
-									}
+			(await this.showConfigMenu(context, message.author.id, msg, [], {
+				items: {
+					basic: {
+						items: {
+							prefix: SettingsKey.prefix,
+							lang: SettingsKey.lang,
+							logChannel: SettingsKey.logChannel,
+							getUpdates: SettingsKey.getUpdates
+						}
+					},
+					mod: {
+						items: {
+							general: {
+								items: {
+									enabled: SettingsKey.autoModEnabled,
+									moderatedChannels: SettingsKey.autoModModeratedChannels,
+									moderatedRoles: SettingsKey.autoModModeratedRoles,
+									ignoredChannels: SettingsKey.autoModIgnoredChannels,
+									ignoredRoles: SettingsKey.autoModIgnoredRoles,
+									deleteBotMessages: SettingsKey.autoModDeleteBotMessage,
+									deleteBotMessagesTimeout:
+										SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
+									autoLogEnabled: SettingsKey.autoModLogEnabled,
+									logChannel: SettingsKey.modLogChannel
+								}
+							},
+							invitesAndLinks: {
+								items: {
+									invitesEnabled: SettingsKey.autoModInvitesEnabled,
+									linksEnabled: SettingsKey.autoModLinksEnabled,
+									linksWhitelist: SettingsKey.autoModLinksWhitelist,
+									linksBlacklist: SettingsKey.autoModLinksBlacklist,
+									followLinkRedirects: SettingsKey.autoModLinksFollowRedirects
+								}
+							},
+							bannedWords: {
+								items: {
+									enabled: SettingsKey.autoModWordsEnabled,
+									blacklist: SettingsKey.autoModWordsBlacklist
+								}
+							},
+							caps: {
+								items: {
+									enabled: SettingsKey.autoModAllCapsEnabled,
+									minCharacters: SettingsKey.autoModAllCapsMinCharacters,
+									percentageCaps: SettingsKey.autoModAllCapsPercentageCaps
+								}
+							},
+							duplicate: {
+								items: {
+									enabled: SettingsKey.autoModDuplicateTextEnabled,
+									timeframe: SettingsKey.autoModDuplicateTextTimeframeInSeconds
+								}
+							},
+							spam: {
+								items: {
+									enabled: SettingsKey.autoModQuickMessagesEnabled,
+									numberOfMessages:
+										SettingsKey.autoModQuickMessagesNumberOfMessages,
+									timeframe: SettingsKey.autoModQuickMessagesTimeframeInSeconds
+								}
+							},
+							mentions: {
+								items: {
+									usersEnabled: SettingsKey.autoModMentionUsersEnabled,
+									usersMax: SettingsKey.autoModMentionUsersMaxNumberOfMentions,
+									rolesEnabled: SettingsKey.autoModMentionRolesEnabled,
+									rolesMax: SettingsKey.autoModMentionRolesMaxNumberOfMentions
+								}
+							},
+							emojis: {
+								items: {
+									enabled: SettingsKey.autoModEmojisEnabled,
+									max: SettingsKey.autoModEmojisMaxNumberOfEmojis
 								}
 							}
-						},
-						Captcha: {
-							descr:
-								'Settings related to the captcha verification of InviteManager',
-							items: {
-								Enabled: SettingsKey.captchaVerificationOnJoin,
-								Welcome: SettingsKey.captchaVerificationWelcomeMessage,
-								Success: SettingsKey.captchaVerificationSuccessMessage,
-								Failed: SettingsKey.captchaVerificationFailedMessage,
-								Timeout: SettingsKey.captchaVerificationTimeout,
-								Logs: SettingsKey.captchaVerificationLogEnabled
-							}
-						},
-						Leaderboard: {
-							descr: 'Customize the invites leaderboard.',
-							items: {
-								Style: SettingsKey.leaderboardStyle,
-								'Hide left members': SettingsKey.hideLeftMembersFromLeaderboard
-							}
-						},
-						Ranks: {
-							descr: 'Adjust settings related to ranks on your server.',
-							items: {
-								Style: SettingsKey.rankAssignmentStyle,
-								Channel: SettingsKey.rankAnnouncementChannel,
-								Message: SettingsKey.rankAnnouncementMessage
-							}
-						},
-						'Join & Leave Message': {
-							descr:
-								'Change the join and leave messages, and where they are posted.',
-							items: {
-								'Join Channel': SettingsKey.joinMessageChannel,
-								'Join Message': SettingsKey.joinMessage,
-								'Leave Channel': SettingsKey.leaveMessageChannel,
-								'Leave Message': SettingsKey.leaveMessage
-							}
-						},
-						'Member Settings': {
-							desc: 'Settings related to individual members of your server.',
-							items: {
-								HideFromLeaderboard: MemberSettingsKey.hideFromLeaderboard
-							}
-						},
-						'Invite Code Settings': {
-							desc:
-								'Settings related to individual invite codes on your server.',
-							items: {
-								Name: InviteCodeSettingsKey.name,
-								Roles: InviteCodeSettingsKey.roles
-							}
+						}
+					},
+					captcha: {
+						items: {
+							enabled: SettingsKey.captchaVerificationOnJoin,
+							welcome: SettingsKey.captchaVerificationWelcomeMessage,
+							success: SettingsKey.captchaVerificationSuccessMessage,
+							failed: SettingsKey.captchaVerificationFailedMessage,
+							timeout: SettingsKey.captchaVerificationTimeout,
+							logs: SettingsKey.captchaVerificationLogEnabled
+						}
+					},
+					leaderboard: {
+						items: {
+							style: SettingsKey.leaderboardStyle,
+							hideLeftMembers: SettingsKey.hideLeftMembersFromLeaderboard
+						}
+					},
+					ranks: {
+						items: {
+							style: SettingsKey.rankAssignmentStyle,
+							channel: SettingsKey.rankAnnouncementChannel,
+							message: SettingsKey.rankAnnouncementMessage
+						}
+					},
+					joinAndLeaveMessages: {
+						items: {
+							joinChannel: SettingsKey.joinMessageChannel,
+							joinMessage: SettingsKey.joinMessage,
+							leaveChannel: SettingsKey.leaveMessageChannel,
+							leaveMessage: SettingsKey.leaveMessage
+						}
+					},
+					memberSettings: {
+						items: {
+							hideFromLeaderboard: MemberSettingsKey.hideFromLeaderboard
+						}
+					},
+					inviteCodeSettings: {
+						items: {
+							name: InviteCodeSettingsKey.name,
+							roles: InviteCodeSettingsKey.roles
 						}
 					}
 				}
-			)) === -1
+			})) === -1
 		) {
 			// NOP
 		}
+	}
+
+	private getTranslationKey(path: string[]) {
+		return 'cmd.interactiveConfig.items.' + path.map(p => `${p}.`).join('');
 	}
 
 	private async showConfigMenu(
 		context: Context,
 		ownerId: string,
 		msg: Message,
-		title: string,
+		path: string[],
 		menu: ConfigMenu
 	) {
 		if (typeof menu === 'string') {
 			return -1;
 		}
 
+		const t = context.t;
 		const embed = this.client.createEmbed();
 		const keys = Object.keys(menu.items);
+		const basePath = this.getTranslationKey(path);
 
 		let choice: number;
 		do {
-			embed.title = title;
-			embed.description =
-				`Welcome to the InviteManager settings menu.\n` +
-				`Use the reactions to pick one of the available options.\n\n`;
+			embed.title =
+				'InviteManager - ' +
+				path.map(p => `${p} - `).join('') +
+				t(basePath + 'title');
+
+			embed.description = t('cmd.interactiveConfig.welcome') + '\n\n';
 			embed.fields = keys.map((key, i) => {
 				let val: any;
 				if (typeof menu.items[key] === 'string') {
 					const settingsKey = menu.items[key] as SettingsKey;
 					val = this.beautify(settingsKey, context.settings[settingsKey]);
 				} else {
-					val = (menu.items[key] as any).descr;
+					val = t(basePath + key + '.description');
 				}
 
-				if (typeof val === 'undefined') {
-					val = '<None>';
+				if (val === null) {
+					val = t('cmd.interactiveConfig.none');
 				}
 				return {
-					name: `${i + 1}. ${key}`,
+					name: `${i + 1}. ${t(basePath + key + '.title')}`,
 					value: `${val}`
 				};
 			});
@@ -330,7 +310,7 @@ export default class extends Command {
 					context,
 					ownerId,
 					msg,
-					title + ' - ' + keys[choice],
+					path.concat([keys[choice]]),
 					subMenu
 				);
 				if (choice === undefined) {
@@ -349,17 +329,21 @@ export default class extends Command {
 	): Promise<string> {
 		return new Promise<string>(async resolve => {
 			const info = settingsDescription[key];
+			const type = settingsTypes[key];
+
+			const current = this.beautify(key, val);
+			const possible = info.possibleValues
+				? info.possibleValues.map(v => '`' + v + '`').join(', ')
+				: context.t(`cmd.interactiveConfig.values.${type.toLowerCase()}`);
 
 			const description =
 				info.description +
 				'\n\n' +
-				`Current value: ${this.beautify(key, val)}\n` +
-				(info.possibleValues
-					? `Allowed values: ${info.possibleValues
-							.map(v => '`' + v + '`')
-							.join(', ')}\n\n`
-					: '\n') +
-				`Enter a new value:`;
+				context.t('cmd.interactiveConfig.change', {
+					current,
+					possible
+				});
+
 			const embed = this.client.createEmbed({
 				title: `${key}`,
 				description
@@ -376,7 +360,7 @@ export default class extends Command {
 
 					let newVal: any;
 					try {
-						switch (settingsTypes[key]) {
+						switch (type) {
 							case 'Channel':
 								newVal = await new ChannelResolver(this.client).resolve(
 									newRawVal,
@@ -569,7 +553,7 @@ export default class extends Command {
 
 	private beautify(key: SettingsKey, value: any) {
 		if (typeof value === typeof undefined || value === null) {
-			return;
+			return null;
 		}
 
 		const type = settingsTypes[key];

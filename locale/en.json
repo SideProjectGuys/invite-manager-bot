@@ -766,6 +766,244 @@
 					"numberOfMessages": "cmd.cleanText.self.args.numberOfMessages"
 				}
 			}
+		},
+		"interactiveConfig": {
+			"welcome": "Welcome to the InviteManager settings menu.\nUse the reactions to pick one of the available options.",
+			"none": "<None>",
+			"change": "Current value: {{{value}}}\nPossible values: {{{possible}}}\nEnter a new value:",
+			"values": {
+				"boolean": "`Yes` or `No`",
+				"string": "Any text",
+				"channel": "Any channel, for example: #general",
+				"role": "Any role, for example: @Admin",
+				"number": "Any number",
+				"channel[]": "A list of channels, for example: #general #bot-commands",
+				"role[]": "A list of roles, for example: @Admin @Mod",
+				"string[]": "A list of words, for example: word another \"word with space\""
+			},
+			"items": {
+				"basic": {
+					"description": "Base bot settings such as prefix, language and logging.",
+					"title": "cmd.interactiveConfig.items.basic.title",
+					"prefix": {
+						"title": "cmd.interactiveConfig.items.basic.prefix.title"
+					},
+					"lang": {
+						"title": "cmd.interactiveConfig.items.basic.lang.title"
+					},
+					"logChannel": {
+						"title": "cmd.interactiveConfig.items.basic.logChannel.title"
+					},
+					"getUpdates": {
+						"title": "cmd.interactiveConfig.items.basic.getUpdates.title"
+					}
+				},
+				"title": "cmd.interactiveConfig.items.title",
+				"mod": {
+					"description": "cmd.interactiveConfig.items.mod.description",
+					"title": "cmd.interactiveConfig.items.mod.title",
+					"general": {
+						"description": "cmd.interactiveConfig.items.mod.general.description",
+						"title": "cmd.interactiveConfig.items.mod.general.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.general.enabled.title"
+						},
+						"moderatedChannels": {
+							"title": "cmd.interactiveConfig.items.mod.general.moderatedChannels.title"
+						},
+						"moderatedRoles": {
+							"title": "cmd.interactiveConfig.items.mod.general.moderatedRoles.title"
+						},
+						"ignoredChannels": {
+							"title": "cmd.interactiveConfig.items.mod.general.ignoredChannels.title"
+						},
+						"ignoredRoles": {
+							"title": "cmd.interactiveConfig.items.mod.general.ignoredRoles.title"
+						},
+						"deleteBotMessages": {
+							"title": "cmd.interactiveConfig.items.mod.general.deleteBotMessages.title"
+						},
+						"deleteBotMessagesTimeout": {
+							"title": "cmd.interactiveConfig.items.mod.general.deleteBotMessagesTimeout.title"
+						},
+						"autoLogEnabled": {
+							"title": "cmd.interactiveConfig.items.mod.general.autoLogEnabled.title"
+						},
+						"logChannel": {
+							"title": "cmd.interactiveConfig.items.mod.general.logChannel.title"
+						}
+					},
+					"invitesAndLinks": {
+						"description": "cmd.interactiveConfig.items.mod.invitesAndLinks.description",
+						"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.title",
+						"invitesEnabled": {
+							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.invitesEnabled.title"
+						},
+						"linksEnabled": {
+							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksEnabled.title"
+						},
+						"linksWhitelist": {
+							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksWhitelist.title"
+						},
+						"linksBlacklist": {
+							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksBlacklist.title"
+						},
+						"followLinkRedirects": {
+							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.followLinkRedirects.title"
+						}
+					},
+					"bannedWords": {
+						"description": "cmd.interactiveConfig.items.mod.bannedWords.description",
+						"title": "cmd.interactiveConfig.items.mod.bannedWords.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.bannedWords.enabled.title"
+						},
+						"blacklist": {
+							"title": "cmd.interactiveConfig.items.mod.bannedWords.blacklist.title"
+						}
+					},
+					"caps": {
+						"description": "cmd.interactiveConfig.items.mod.caps.description",
+						"title": "cmd.interactiveConfig.items.mod.caps.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.caps.enabled.title"
+						},
+						"minCharacters": {
+							"title": "cmd.interactiveConfig.items.mod.caps.minCharacters.title"
+						},
+						"percentageCaps": {
+							"title": "cmd.interactiveConfig.items.mod.caps.percentageCaps.title"
+						}
+					},
+					"duplicate": {
+						"description": "cmd.interactiveConfig.items.mod.duplicate.description",
+						"title": "cmd.interactiveConfig.items.mod.duplicate.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.duplicate.enabled.title"
+						},
+						"timeframe": {
+							"title": "cmd.interactiveConfig.items.mod.duplicate.timeframe.title"
+						}
+					},
+					"spam": {
+						"description": "cmd.interactiveConfig.items.mod.spam.description",
+						"title": "cmd.interactiveConfig.items.mod.spam.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.spam.enabled.title"
+						},
+						"numberOfMessages": {
+							"title": "cmd.interactiveConfig.items.mod.spam.numberOfMessages.title"
+						},
+						"timeframe": {
+							"title": "cmd.interactiveConfig.items.mod.spam.timeframe.title"
+						}
+					},
+					"mentions": {
+						"description": "cmd.interactiveConfig.items.mod.mentions.description",
+						"title": "cmd.interactiveConfig.items.mod.mentions.title",
+						"usersEnabled": {
+							"title": "cmd.interactiveConfig.items.mod.mentions.usersEnabled.title"
+						},
+						"usersMax": {
+							"title": "cmd.interactiveConfig.items.mod.mentions.usersMax.title"
+						},
+						"rolesEnabled": {
+							"title": "cmd.interactiveConfig.items.mod.mentions.rolesEnabled.title"
+						},
+						"rolesMax": {
+							"title": "cmd.interactiveConfig.items.mod.mentions.rolesMax.title"
+						}
+					},
+					"emojis": {
+						"description": "cmd.interactiveConfig.items.mod.emojis.description",
+						"title": "cmd.interactiveConfig.items.mod.emojis.title",
+						"enabled": {
+							"title": "cmd.interactiveConfig.items.mod.emojis.enabled.title"
+						},
+						"max": {
+							"title": "cmd.interactiveConfig.items.mod.emojis.max.title"
+						}
+					}
+				},
+				"captcha": {
+					"description": "cmd.interactiveConfig.items.captcha.description",
+					"title": "cmd.interactiveConfig.items.captcha.title",
+					"enabled": {
+						"title": "cmd.interactiveConfig.items.captcha.enabled.title"
+					},
+					"welcome": {
+						"title": "cmd.interactiveConfig.items.captcha.welcome.title"
+					},
+					"success": {
+						"title": "cmd.interactiveConfig.items.captcha.success.title"
+					},
+					"failed": {
+						"title": "cmd.interactiveConfig.items.captcha.failed.title"
+					},
+					"timeout": {
+						"title": "cmd.interactiveConfig.items.captcha.timeout.title"
+					},
+					"logs": {
+						"title": "cmd.interactiveConfig.items.captcha.logs.title"
+					}
+				},
+				"leaderboard": {
+					"description": "cmd.interactiveConfig.items.leaderboard.description",
+					"title": "cmd.interactiveConfig.items.leaderboard.title",
+					"style": {
+						"title": "cmd.interactiveConfig.items.leaderboard.style.title"
+					},
+					"hideLeftMembers": {
+						"title": "cmd.interactiveConfig.items.leaderboard.hideLeftMembers.title"
+					}
+				},
+				"ranks": {
+					"description": "cmd.interactiveConfig.items.ranks.description",
+					"title": "cmd.interactiveConfig.items.ranks.title",
+					"style": {
+						"title": "cmd.interactiveConfig.items.ranks.style.title"
+					},
+					"channel": {
+						"title": "cmd.interactiveConfig.items.ranks.channel.title"
+					},
+					"message": {
+						"title": "cmd.interactiveConfig.items.ranks.message.title"
+					}
+				},
+				"joinAndLeaveMessages": {
+					"description": "cmd.interactiveConfig.items.joinAndLeaveMessages.description",
+					"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.title",
+					"joinChannel": {
+						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.joinChannel.title"
+					},
+					"joinMessage": {
+						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.joinMessage.title"
+					},
+					"leaveChannel": {
+						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.leaveChannel.title"
+					},
+					"leaveMessage": {
+						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.leaveMessage.title"
+					}
+				},
+				"memberSettings": {
+					"description": "cmd.interactiveConfig.items.memberSettings.description",
+					"title": "cmd.interactiveConfig.items.memberSettings.title",
+					"hideFromLeaderboard": {
+						"title": "cmd.interactiveConfig.items.memberSettings.hideFromLeaderboard.title"
+					}
+				},
+				"inviteCodeSettings": {
+					"description": "cmd.interactiveConfig.items.inviteCodeSettings.description",
+					"title": "cmd.interactiveConfig.items.inviteCodeSettings.title",
+					"name": {
+						"title": "cmd.interactiveConfig.items.inviteCodeSettings.name.title"
+					},
+					"roles": {
+						"title": "cmd.interactiveConfig.items.inviteCodeSettings.roles.title"
+					}
+				}
+			}
 		}
 	},
 	"permissions": {
