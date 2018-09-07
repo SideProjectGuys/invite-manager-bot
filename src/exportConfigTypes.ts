@@ -6,9 +6,7 @@ import {
 	LeaderboardStyle,
 	RankAssignmentStyle,
 	SettingsKey,
-	SettingsObject,
-	settingsTypes,
-	ViolationType
+	settingsTypes
 } from './sequelize';
 
 enum ConfigGroup {
@@ -45,7 +43,8 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 		...getEmpty(),
 		group: ConfigGroup.Basic,
 		description:
-			'The prefix needed to use bot commands. If you don\'t remember your prefix, you can do @InviteManager config prefix',
+			`The prefix needed to use bot commands. If you don't remember your prefix, ` +
+			'you can do @InviteManager config prefix',
 		exampleValues: ['+', '>']
 	},
 	lang: {
@@ -57,19 +56,22 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	logChannel: {
 		...getEmpty(),
 		group: ConfigGroup.Basic,
-		description: 'The channel where changes to the database are made (add-ranks, clear-invites, etc.)',
+		description:
+			'The channel where changes to the database are made (add-ranks, clear-invites, etc.)',
 		exampleValues: ['#channel']
 	},
 	getUpdates: {
 		...getEmpty(),
 		group: ConfigGroup.Basic,
-		description: 'Whether or not you want to receive updates of our bot in the log or mod channel.'
+		description:
+			'Whether or not you want to receive updates of our bot in the log or mod channel.'
 	},
 
 	joinMessage: {
 		...getEmpty(),
 		group: ConfigGroup.JoinLeaveMessage,
-		description: 'The message that will be posted every time a member joins your server.',
+		description:
+			'The message that will be posted every time a member joins your server.',
 		exampleValues: ['', ''],
 		premiumInfo: 'Premium users can use embeds as join messages.'
 	},
@@ -82,7 +84,8 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	leaveMessage: {
 		...getEmpty(),
 		group: ConfigGroup.JoinLeaveMessage,
-		description: 'The message that will be posted every time a member leaves your server.',
+		description:
+			'The message that will be posted every time a member leaves your server.',
 		exampleValues: ['', ''],
 		premiumInfo: 'Premium users can use embeds as leave messages.'
 	},
@@ -113,12 +116,13 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	autoSubtractLeaves: {
 		...getEmpty(),
 		group: ConfigGroup.Invites,
-		description: 'Should members who leave be subtracted from their inviters?',
+		description: 'Should members who leave be subtracted from their inviters?'
 	},
 	autoSubtractLeaveThreshold: {
 		...getEmpty(),
 		group: ConfigGroup.Invites,
-		description: 'The time (in seconds) within leaves will be subtracted from the inviter.',
+		description:
+			'The time (in seconds) within leaves will be subtracted from the inviter.',
 		exampleValues: ['60', '3600']
 	} /* seconds */,
 
@@ -126,8 +130,8 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 		...getEmpty(),
 		group: ConfigGroup.Ranks,
 		description:
-			'If set to `highest`, only the highest rank will assigned to the member when reaching a new rank.'
-			+ 'If set to `all`, all ranks will be assigned to the member when reaching a new rank.',
+			'If set to `highest`, only the highest rank will assigned to the member when reaching a new rank.' +
+			'If set to `all`, all ranks will be assigned to the member when reaching a new rank.',
 		possibleValues: Object.values(RankAssignmentStyle)
 	},
 	rankAnnouncementChannel: {
@@ -139,7 +143,8 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	rankAnnouncementMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Ranks,
-		description: 'The message that will be posted when a member reaches a new rank.',
+		description:
+			'The message that will be posted when a member reaches a new rank.',
 		exampleValues: ['', ''],
 		premiumInfo: 'Premium users can use embeds as rank announcement messages.'
 	},
@@ -147,16 +152,18 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	mutedRole: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'The role that will be assigned if a member is muted by the bot',
+		description:
+			'The role that will be assigned if a member is muted by the bot',
 		exampleValues: ['@muted']
 	},
 
 	captchaVerificationOnJoin: {
 		...getEmpty(),
 		group: ConfigGroup.Captcha,
-		description: 'If enabled, new members have to verify they are human by entering a captcha '
-			+ 'that is sent to them via DM. If they fail to enter the captcha within the specified time, '
-			+ 'they will be kicked from the server.',
+		description:
+			'If enabled, new members have to verify they are human by entering a captcha ' +
+			'that is sent to them via DM. If they fail to enter the captcha within the specified time, ' +
+			'they will be kicked from the server.',
 		premiumInfo: 'This feature is only available for premium users.'
 	},
 	captchaVerificationWelcomeMessage: {
@@ -169,22 +176,27 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	captchaVerificationSuccessMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Captcha,
-		description: 'The message users will get after successfully entering the captcha.',
+		description:
+			'The message users will get after successfully entering the captcha.',
 		exampleValues: ['Thanks for entering the captcha, enjoy our server!'],
 		premiumInfo: 'This feature is only available for premium users.'
 	},
 	captchaVerificationFailedMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Captcha,
-		description: 'The message users will get if they fail to enter the right captcha within the specified time. '
-			+ 'After getting this message, they will be kicked from the server.',
-		exampleValues: ['Looks like you are not human :(. You can join again and try again later if this was a mistake!'],
+		description:
+			'The message users will get if they fail to enter the right captcha within the specified time. ' +
+			'After getting this message, they will be kicked from the server.',
+		exampleValues: [
+			'Looks like you are not human :(. You can join again and try again later if this was a mistake!'
+		],
 		premiumInfo: 'This feature is only available for premium users.'
 	},
 	captchaVerificationTimeout: {
 		...getEmpty(),
 		group: ConfigGroup.Captcha,
-		description: 'The time within the member needs to enter the captcha successfully (in seconds).',
+		description:
+			'The time within the member needs to enter the captcha successfully (in seconds).',
 		exampleValues: ['60', '600'],
 		premiumInfo: 'This feature is only available for premium users.'
 	} /* seconds */,
@@ -204,38 +216,44 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	modPunishmentBanDeleteMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not the own and bot message should be deleted when a mod does !ban.',
+		description:
+			'Whether or not the own and bot message should be deleted when a mod does !ban.'
 	},
 	modPunishmentKickDeleteMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not the own and bot message should be deleted when a mod does !kick.',
+		description:
+			'Whether or not the own and bot message should be deleted when a mod does !kick.'
 	},
 	modPunishmentSoftbanDeleteMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not the own and bot message should be deleted when a mod does !softban.',
+		description:
+			'Whether or not the own and bot message should be deleted when a mod does !softban.'
 	},
 	modPunishmentWarnDeleteMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not the own and bot message should be deleted when a mod does !warn.',
+		description:
+			'Whether or not the own and bot message should be deleted when a mod does !warn.'
 	},
 	modPunishmentMuteDeleteMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not the own and bot message should be deleted when a mod does !mute.',
+		description:
+			'Whether or not the own and bot message should be deleted when a mod does !mute.'
 	},
 
 	autoModEnabled: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not auto-moderation is enabled globally.',
+		description: 'Whether or not auto-moderation is enabled globally.'
 	},
 	autoModModeratedChannels: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Set channels that should be auto-moderated. (Comma separated list)',
+		description:
+			'Set channels that should be auto-moderated. (Comma separated list)',
 		exampleValues: ['#general', '#support,#help']
 	},
 	autoModModeratedRoles: {
@@ -247,43 +265,49 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	autoModIgnoredChannels: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Set channels that should not be auto-moderated. (Comma separated list)',
+		description:
+			'Set channels that should not be auto-moderated. (Comma separated list)',
 		exampleValues: ['#general', '#off-topic,#nsfw']
 	},
 	autoModIgnoredRoles: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Roles that will not be auto-moderated. (Comma separated list)',
+		description:
+			'Roles that will not be auto-moderated. (Comma separated list)',
 		exampleValues: ['@TrustedMembers', '@Moderators,@Staff']
 	},
 	autoModDeleteBotMessage: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Whether or not to delete bot messages after auto-moderation.',
+		description: 'Whether or not to delete bot messages after auto-moderation.'
 	},
 	autoModDeleteBotMessageTimeoutInSeconds: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'How long (in seconds) until auto-moderation responses from the bot are deleted. '
-			+ 'If set to 0, the bot will not post a message and only delete the violating message and warn the user.',
+		description:
+			'How long (in seconds) until auto-moderation responses from the bot are deleted. ' +
+			'If set to 0, the bot will not post a message and only delete the violating message and warn the user.',
 		exampleValues: ['5', '10']
 	},
 	autoModLogEnabled: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'If set to yes, all moderation actions will be logged to the `modLogChannel`.'
+		description:
+			'If set to yes, all moderation actions will be logged to the `modLogChannel`.'
 	},
 
 	autoModDisabledForOldMembers: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'If enabled, members that have been on the server for a certain amount of time will not be '
-			+ 'auto-moderated. You can set the threshold for how long that is.'
+		description:
+			'If enabled, members that have been on the server for a certain amount of time will not be ' +
+			'auto-moderated. You can set the threshold for how long that is.'
 	},
 	autoModDisabledForOldMembersThreshold: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'After how long (in seconds) members will no longer be auto-moderated (if enabled).',
+		description:
+			'After how long (in seconds) members will no longer be auto-moderated (if enabled).',
 		exampleValues: ['604800` (1 week)`', '2419200` (1 month)`']
 	} /* seconds, default 1 week */,
 
@@ -301,20 +325,23 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	autoModLinksWhitelist: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'A comma separated list of links that are allowed to be posted.',
+		description:
+			'A comma separated list of links that are allowed to be posted.',
 		exampleValues: ['discordbots.org', 'youtube.com,twitch.com']
 	},
 	autoModLinksBlacklist: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'A comma separated list of links that are not allowed to be posted.',
+		description:
+			'A comma separated list of links that are not allowed to be posted.',
 		exampleValues: ['google.com', 'twitch.com,youtube.com']
 	},
 	autoModLinksFollowRedirects: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'If enabled, our bot will follow redirects to see where a link leads '
-			+ '(to prevent people from using link-shorteners.)',
+		description:
+			'If enabled, our bot will follow redirects to see where a link leads ' +
+			'(to prevent people from using link-shorteners.)',
 		premiumInfo: 'This feature is only available for premium users.'
 	},
 
@@ -333,12 +360,14 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	autoModAllCapsEnabled: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'If enabled, messages written in all/mostly CAPS will be auto-moderated.'
+		description:
+			'If enabled, messages written in all/mostly CAPS will be auto-moderated.'
 	},
 	autoModAllCapsMinCharacters: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'How long a message needs to be until this violation is activated.',
+		description:
+			'How long a message needs to be until this violation is activated.',
 		exampleValues: ['5', '15']
 	},
 	autoModAllCapsPercentageCaps: {
@@ -356,25 +385,29 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 	autoModDuplicateTextTimeframeInSeconds: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'Time (in seconds) within the same text of the same author will be auto-moderated.',
+		description:
+			'Time (in seconds) within the same text of the same author will be auto-moderated.',
 		exampleValues: ['5', '20']
 	},
 
 	autoModQuickMessagesEnabled: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'If enabled, message sent quickly after another will be auto-moderated.'
+		description:
+			'If enabled, message sent quickly after another will be auto-moderated.'
 	},
 	autoModQuickMessagesNumberOfMessages: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'How many messages within the specified amount of time will be considered spam and are auto-moderated.',
+		description:
+			'How many messages within the specified amount of time will be considered spam and are auto-moderated.',
 		exampleValues: ['5', '10']
 	},
 	autoModQuickMessagesTimeframeInSeconds: {
 		...getEmpty(),
 		group: ConfigGroup.Moderation,
-		description: 'During what timeframe (in seconds) quick messages will be counted.',
+		description:
+			'During what timeframe (in seconds) quick messages will be counted.',
 		exampleValues: ['2', '10']
 	},
 
@@ -425,7 +458,10 @@ Object.keys(settingsDescription).forEach((key: SettingsKey) => {
 });
 
 Object.keys(settingsDescription).forEach((key: SettingsKey) => {
-	settingsDescription[key].markdown = generateText(key, settingsDescription[key]);
+	settingsDescription[key].markdown = generateText(
+		key,
+		settingsDescription[key]
+	);
 });
 
 function generateText(key: SettingsKey, obj: DescriptionObject) {
@@ -442,7 +478,9 @@ function generateText(key: SettingsKey, obj: DescriptionObject) {
 		text += `\`!config ${key} false\`\n\n`;
 	} else {
 		if (obj.possibleValues) {
-			text += `Possible values: ${obj.possibleValues.map(v => `\`${v}\``).join(', ')}\n\n`;
+			text += `Possible values: ${obj.possibleValues
+				.map(v => `\`${v}\``)
+				.join(', ')}\n\n`;
 			text += `Example:\n\n`;
 			text += `\`!config ${key} ${obj.possibleValues[0]}\`\n\n`;
 		}
@@ -461,9 +499,10 @@ function generateText(key: SettingsKey, obj: DescriptionObject) {
 }
 
 let out = '# Configs\n\n';
-out += 'There are many config options that can be set. '
-	+ 'You don\'t have to set all of them. If you just added the bot, just run '
-	+ '`!setup`, which will guide you through the most important ones.\n\n';
+out +=
+	'There are many config options that can be set. ' +
+	`You don't have to set all of them. If you just added the bot, just run ` +
+	'`!setup`, which will guide you through the most important ones.\n\n';
 Object.keys(ConfigGroup).forEach(cg => {
 	out += `# ${cg}\n`;
 	out += Object.keys(settingsDescription)
@@ -473,6 +512,8 @@ Object.keys(ConfigGroup).forEach(cg => {
 	out += `\n\n`;
 });
 out += `# Detailed Config Options\n\n`;
-out += Object.keys(settingsDescription).map((key: SettingsKey) => settingsDescription[key].markdown).join('\n\n');
+out += Object.keys(settingsDescription)
+	.map((key: SettingsKey) => settingsDescription[key].markdown)
+	.join('\n\n');
 
 fs.writeFileSync('./Generated.md', out);

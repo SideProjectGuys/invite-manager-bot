@@ -1,6 +1,7 @@
 import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
+import { settingsDescription } from '../../exportConfigTypes';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -10,6 +11,7 @@ import {
 	RoleResolver,
 	StringResolver
 } from '../../resolvers';
+import { ArrayResolver } from '../../resolvers/ArrayResolver';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -23,8 +25,6 @@ import {
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
-import { settingsDescription } from '../../exportConfigTypes';
-import { ArrayResolver } from '../../resolvers/ArrayResolver';
 
 class ValueResolver extends Resolver {
 	public resolve(
@@ -32,11 +32,14 @@ class ValueResolver extends Resolver {
 		context: Context,
 		[key]: [SettingsKey]
 	): Promise<any> {
-		if (typeof value === typeof undefined) {
+		if (typeof value === typeof undefined || value.length === 0) {
 			return;
 		}
 		if (value === 'none' || value === 'empty' || value === 'null') {
-			return value;
+			return null;
+		}
+		if (value === 'default') {
+			return defaultSettings[key] as any;
 		}
 
 		switch (settingsTypes[key]) {
@@ -140,7 +143,7 @@ export default class extends Command {
 		if (typeof value === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
-			if (oldVal) {
+			if (oldVal !== null) {
 				const clear = defaultSettings[key] === null ? 't' : undefined;
 				embed.description =
 					t('cmd.config.current.text', {
@@ -160,18 +163,20 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		if (value === 'none' || value === 'empty' || value === 'null') {
+		// If the value is null we want to clear it. Check if that's allowed.
+		if (value === null) {
 			if (defaultSettings[key] !== null) {
 				return this.client.sendReply(
 					message,
 					t('cmd.config.canNotClear', { prefix, key })
 				);
 			}
-		}
-
-		const error = this.validate(key, value, context);
-		if (error) {
-			return this.client.sendReply(message, error);
+		} else {
+			// Only validate the config setting if we're not resetting or clearing it
+			const error = this.validate(key, value, context);
+			if (error) {
+				return this.client.sendReply(message, error);
+			}
 		}
 
 		// Set new value (we override the local value, because the formatting probably changed)
@@ -196,7 +201,7 @@ export default class extends Command {
 			newValue: value
 		});
 
-		if (oldVal) {
+		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
 				value: this.beautify(key, oldVal)
@@ -205,7 +210,7 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.config.new.title'),
-			value: value ? this.beautify(key, value) : t('cmd.config.none')
+			value: value !== null ? this.beautify(key, value) : t('cmd.config.none')
 		});
 
 		// Do any post processing, such as example messages

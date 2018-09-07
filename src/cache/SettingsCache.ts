@@ -7,6 +7,7 @@ import {
 	SettingsObject,
 	settingsTypes
 } from '../sequelize';
+
 import { Cache } from './Cache';
 
 export class SettingsCache extends Cache<SettingsObject> {
@@ -117,7 +118,7 @@ export class SettingsCache extends Cache<SettingsObject> {
 	}
 	private _fromDbValue(type: string, value: string): any {
 		if (value === undefined || value === null) {
-			return value;
+			return null;
 		}
 
 		if (type === 'Boolean') {
