@@ -27,9 +27,7 @@ export class EnumResolver extends Resolver {
 
 	public getHelp({ t }: Context) {
 		const vals: string[] = [];
-		for (let value in this.values.values()) {
-			vals.push('`' + value + '`');
-		}
+		this.values.forEach(v => vals.push('`' + v + '`'));
 		return t('arguments.enum.validValues', {
 			values: vals.join(', ')
 		});
