@@ -2,9 +2,8 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { MemberResolver, StringResolver } from '../../../resolvers';
-import { PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
-import { getHighestRole, isPunishable, to } from '../../../util';
+import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -45,8 +44,7 @@ export default class extends Command {
 		);
 
 		if (me.permission.has(Permissions.BAN_MEMBERS)) {
-			embed.description =
-				'I need the `Ban Members` permission to use this command';
+			embed.description = t('cmd.unban.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.unban(reason));
 			if (error) {

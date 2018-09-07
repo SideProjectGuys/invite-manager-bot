@@ -3,7 +3,7 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { MemberResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { getHighestRole, isPunishable, to } from '../../../util';
+import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -41,7 +41,7 @@ export default class extends Command {
 		let mutedRole = settings.mutedRole;
 
 		if (mutedRole && guild.roles.has(mutedRole)) {
-			embed.description = 'Muted role not set or does not exist!';
+			embed.description = t('cmd.unmute.missingRole');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.removeRole(mutedRole));
 			if (error) {

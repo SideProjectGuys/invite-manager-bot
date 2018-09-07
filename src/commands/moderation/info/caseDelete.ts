@@ -51,7 +51,7 @@ export default class extends Command {
 		});
 
 		if (strike) {
-			embed.description = t('cmd.check.strikes.entry', {
+			embed.description = t('cmd.caseDelete.strikes.entry', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
 				violation: `**${strike.violationType}**`,

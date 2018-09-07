@@ -7,13 +7,9 @@ import {
 	MemberResolver,
 	StringResolver
 } from '../../../resolvers';
-import {
-	punishments,
-	PunishmentType,
-	ScheduledActionType
-} from '../../../sequelize';
+import { punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { getHighestRole, isPunishable, to } from '../../../util';
+import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -59,14 +55,12 @@ export default class extends Command {
 
 		let mutedRole = settings.mutedRole;
 
-		console.log(mutedRole);
-		console.log(guild.roles.has(mutedRole));
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
-			embed.description = 'Muted role not set or does not exist!';
+			embed.description = t('cmd.mute.missingRole');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.addRole(mutedRole, reason));
 			if (error) {
-				console.log(error);
+				console.error(error);
 				embed.description = t('cmd.mute.error');
 			} else {
 				embed.description = t('cmd.mute.done');

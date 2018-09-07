@@ -72,6 +72,7 @@
 			}
 		},
 		"ban": {
+			"misingPermissions": "I need the `Ban Members` permission to use this command",
 			"error": "There was an error banning this user:\n{{ error }}",
 			"done": "The user was successfully banned.",
 			"canNotBan": "I cannot ban this user.",
@@ -314,6 +315,7 @@
 			}
 		},
 		"kick": {
+			"missingPermissions": "I need the `Kick Members` permission to kick members",
 			"canNotKick": "I cannot kick this user.",
 			"done": "The user was successfully kicked.",
 			"error": "There was an error kicking this user:\n{{ error }}",
@@ -503,6 +505,7 @@
 			}
 		},
 		"softBan": {
+			"missingPermissions": "I need the `Ban Members` permission to use this command",
 			"canNotSoftBan": "I cannot soft-ban this user.",
 			"done": "The user was successfully soft-banned.",
 			"error": "There was an error banning this user:\n{{ error }}",
@@ -703,6 +706,7 @@
 			}
 		},
 		"unban": {
+			"missingPermissions": "I need the `Ban Members` permission to use this command",
 			"canNotUnban": "cmd.unban.canNotUnban",
 			"self": {
 				"args": {
@@ -712,6 +716,7 @@
 			}
 		},
 		"mute": {
+			"missingRole": "Muted role not set or does not exist!",
 			"error": "cmd.mute.error",
 			"self": {
 				"args": {
@@ -724,6 +729,7 @@
 			"canNotMute": "cmd.mute.canNotMute"
 		},
 		"unmute": {
+			"missingRole": "Muted role not set or does not exist!",
 			"self": {
 				"args": {
 					"user": "cmd.unmute.self.args.user"
