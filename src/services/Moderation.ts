@@ -279,15 +279,17 @@ export class Moderation {
 	private logPunishmentModAction(
 		guild: Guild,
 		user: User,
+		amount: number,
 		punishmentType: PunishmentType
 	) {
 		const logEmbed = this.client.createEmbed({
 			author: { name: 'AutoModerator' },
 			color: 16711680 // red
 		});
-		logEmbed.description += `**User**: ${user.username}#${
+		logEmbed.description = `**User**: ${user.username}#${
 			user.discriminator
 		} (ID: ${user.id})\n`;
+		logEmbed.description += `**Strikes**: ${amount}\n`;
 		logEmbed.description += `**Punishment**: ${punishmentType}\n`;
 		this.client.logModAction(guild, logEmbed);
 	}
@@ -357,6 +359,7 @@ export class Moderation {
 				this.logPunishmentModAction(
 					args.guild,
 					message.author,
+					amount,
 					punishmentConfig.punishmentType
 				);
 			}
