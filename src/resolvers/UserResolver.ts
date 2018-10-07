@@ -24,10 +24,21 @@ export class UserResolver extends Resolver {
 			}
 		} else {
 			const name = value.toLowerCase();
-			const users = this.client.users.filter(u => {
+
+			// Trying to find exact match
+			let users = this.client.users.filter(u => {
 				const uName = u.username.toLowerCase() + '#' + u.discriminator;
-				return uName.includes(name) || name.includes(uName);
+				return uName === name;
 			});
+
+			// If no roles found, allow for partial match
+			if (users.length === 0) {
+				users = this.client.users.filter(u => {
+					const uName = u.username.toLowerCase() + '#' + u.discriminator;
+					return uName.includes(name) || name.includes(uName);
+				});
+			}
+
 			if (users.length === 1) {
 				user = users[0];
 			} else {
@@ -37,6 +48,7 @@ export class UserResolver extends Resolver {
 					throw Error(
 						t('arguments.user.multiple', {
 							users: users
+								.slice(0, 10)
 								.map(u => `\`${u.username}#${u.discriminator}\``)
 								.join(', ')
 						})

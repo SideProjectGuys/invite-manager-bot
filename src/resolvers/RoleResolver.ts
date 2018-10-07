@@ -21,10 +21,21 @@ export class RoleResolver extends Resolver {
 			}
 		} else {
 			const name = value.toLowerCase();
-			const roles = guild.roles.filter(r => {
+
+			// Trying to find exact match
+			let roles = guild.roles.filter(r => {
 				const rName = r.name.toLowerCase();
-				return rName.includes(name) || name.includes(rName);
+				return rName === name;
 			});
+
+			// If no roles found, allow for partial match
+			if (roles.length === 0) {
+				roles = guild.roles.filter(r => {
+					const rName = r.name.toLowerCase();
+					return rName.includes(name) || name.includes(rName);
+				});
+			}
+
 			if (roles.length === 1) {
 				role = roles[0];
 			} else {
@@ -32,8 +43,11 @@ export class RoleResolver extends Resolver {
 					throw Error(t('arguments.role.notFound'));
 				} else {
 					throw Error(
-						t('arguments.user.multiple', {
-							roles: roles.map(r => `\`${r.name}\``).join(', ')
+						t('arguments.roles.multiple', {
+							roles: roles
+								.slice(0, 10)
+								.map(r => `\`${r.name}\``)
+								.join(', ')
 						})
 					);
 				}
