@@ -7,7 +7,7 @@
 		},
 		"user": {
 			"notFound": "User was not found.",
-			"multiple": "Multiple matching users found."
+			"multiple": "Multiple matching users found. {{{ users }}}"
 		},
 		"number": {
 			"invalid": "Not a valid number."
@@ -22,10 +22,14 @@
 			"multiple": "arguments.channel.multiple"
 		},
 		"role": {
-			"notFound": "arguments.role.notFound"
+			"notFound": "Role was not found.",
+			"multiple": "Multiple matching roles found. {{{ roles }}}"
 		},
 		"boolean": {
 			"invalid": "arguments.boolean.invalid"
+		},
+		"member": {
+			"notFound": "arguments.member.notFound"
 		}
 	},
 	"bot": {
