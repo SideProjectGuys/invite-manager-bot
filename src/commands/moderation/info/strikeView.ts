@@ -1,31 +1,25 @@
-import { Message } from 'eris';
+import { Member, Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { NumberResolver, StringResolver } from '../../../resolvers';
-import { strikes } from '../../../sequelize';
+import { NumberResolver, UserResolver } from '../../../resolvers';
+import { punishments, strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.caseDelete,
-			aliases: ['case-delete', 'deleteCase', 'delete-case'],
+			name: ModerationCommand.caseView,
+			aliases: ['case-view', 'viewCase', 'view-case'],
 			args: [
 				{
 					name: 'caseNumber',
 					resolver: NumberResolver,
 					required: true
-				},
-				{
-					name: 'reason',
-					resolver: StringResolver,
-					rest: true
 				}
 			],
 			group: CommandGroup.Moderation,
-			strict: true,
 			guildOnly: true
 		});
 	}
@@ -51,7 +45,7 @@ export default class extends Command {
 		});
 
 		if (strike) {
-			embed.description = t('cmd.caseDelete.strikes.entry', {
+			embed.description = t('cmd.check.strikes.entry', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
 				violation: `**${strike.violationType}**`,

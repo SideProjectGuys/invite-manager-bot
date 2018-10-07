@@ -5,13 +5,15 @@ import { IMClient } from '../client';
 import {
 	ScheduledActionInstance,
 	scheduledActions,
-	ScheduledActionType,
+	ScheduledActionType
 } from '../sequelize';
 
 export class Scheduler {
 	private client: IMClient = null;
 	private scheduledActionTimers: Map<string, any>;
-	private scheduledActionFunctions: { [k in ScheduledActionType]: (args: JSON) => void };
+	private scheduledActionFunctions: {
+		[k in ScheduledActionType]: (args: JSON) => void
+	};
 
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -58,29 +60,32 @@ export class Scheduler {
 	private getActionHash(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON,
+		args: JSON
 	) {
 		let actionString = `${guildId}|${actionType}|${args}`;
-		return crypto.createHash('md5').update(actionString).digest('hex');
+		return crypto
+			.createHash('md5')
+			.update(actionString)
+			.digest('hex');
 	}
 
-	private createTimer(
-		action: ScheduledActionInstance
-	) {
+	private createTimer(action: ScheduledActionInstance) {
 		let secondsUntilAction = moment(action.date).diff(moment(), 'milliseconds');
-		let timeout = setTimeout(
-			() => {
-				this.scheduledActionFunctions[action.actionType](action.args);
-			},
-			secondsUntilAction);
-		let hash = this.getActionHash(action.guildId, action.actionType, action.args);
+		let timeout = setTimeout(() => {
+			this.scheduledActionFunctions[action.actionType](action.args);
+		}, secondsUntilAction);
+		let hash = this.getActionHash(
+			action.guildId,
+			action.actionType,
+			action.args
+		);
 		this.scheduledActionTimers.set(hash, timeout);
 	}
 
 	private async removeTimer(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON,
+		args: JSON
 	) {
 		let hash = this.getActionHash(guildId, actionType, args);
 		let timeout = this.scheduledActionTimers.get(hash);

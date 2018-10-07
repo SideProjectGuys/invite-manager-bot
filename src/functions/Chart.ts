@@ -4,7 +4,7 @@ const chartjsNode = require('chartjs-node');
 const chartJs = require('chart.js');
 
 chartJs.plugins.register({
-	beforeDraw: function (chartInstance: any) {
+	beforeDraw: function(chartInstance: any) {
 		var localCtx = chartInstance.chart.ctx;
 		localCtx.fillStyle = 'white';
 		localCtx.fillRect(
@@ -18,7 +18,7 @@ chartJs.plugins.register({
 
 var chartNode = new chartjsNode(1000, 400);
 
-chartNode.on('beforeDraw', function (chartjs: any) {
+chartNode.on('beforeDraw', function(chartjs: any) {
 	chartjs.pluginService.register(chartjsPluginDatalabels);
 });
 
@@ -79,7 +79,7 @@ export class Chart {
 		},
 		plugins: {
 			datalabels: {
-				display: function (context: { dataIndex: number, dataset: any }) {
+				display: function(context: { dataIndex: number; dataset: any }) {
 					// Always show first and last value
 					if (
 						context.dataIndex === 0 ||
@@ -94,7 +94,7 @@ export class Chart {
 						(context.dataset.data[context.dataIndex] !==
 							context.dataset.data[context.dataIndex - 1] ||
 							context.dataset.data[context.dataIndex] !==
-							context.dataset.data[context.dataIndex + 1])
+								context.dataset.data[context.dataIndex + 1])
 					);
 				}
 			}

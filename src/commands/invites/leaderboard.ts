@@ -86,8 +86,9 @@ export default class extends Command {
 			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
 			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
-			let str =
-				`${fromText}\n(${t('cmd.leaderboard.comparedTo', { to: toText })})\n\n`;
+			let str = `${fromText}\n(${t('cmd.leaderboard.comparedTo', {
+				to: toText
+			})})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];

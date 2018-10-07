@@ -28,7 +28,8 @@ function getEmpty() {
 const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	invites: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user posts an invite link to another discord server.',
+		description:
+			'This violation is triggered whenever the user posts an invite link to another discord server.',
 		relatedConfigs: [SettingsKey.autoModInvitesEnabled]
 	},
 	links: {
@@ -38,12 +39,13 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 			SettingsKey.autoModLinksEnabled,
 			SettingsKey.autoModLinksWhitelist,
 			SettingsKey.autoModLinksBlacklist,
-			SettingsKey.autoModLinksFollowRedirects,
+			SettingsKey.autoModLinksFollowRedirects
 		]
 	},
 	words: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user posts blacklisted words.',
+		description:
+			'This violation is triggered whenever the user posts blacklisted words.',
 		relatedConfigs: [
 			SettingsKey.autoModWordsEnabled,
 			SettingsKey.autoModWordsBlacklist
@@ -51,7 +53,8 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	allCaps: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user posts a message that is mostly in CAPS.',
+		description:
+			'This violation is triggered whenever the user posts a message that is mostly in CAPS.',
 		relatedConfigs: [
 			SettingsKey.autoModAllCapsEnabled,
 			SettingsKey.autoModAllCapsMinCharacters,
@@ -60,7 +63,8 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	duplicateText: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user posts the same text multiple times.',
+		description:
+			'This violation is triggered whenever the user posts the same text multiple times.',
 		relatedConfigs: [
 			SettingsKey.autoModDuplicateTextEnabled,
 			SettingsKey.autoModDuplicateTextTimeframeInSeconds
@@ -68,7 +72,8 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	quickMessages: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user quickly posts messages.',
+		description:
+			'This violation is triggered whenever the user quickly posts messages.',
 		relatedConfigs: [
 			SettingsKey.autoModQuickMessagesEnabled,
 			SettingsKey.autoModQuickMessagesNumberOfMessages,
@@ -77,7 +82,8 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	mentionUsers: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user mentions mutliple users.',
+		description:
+			'This violation is triggered whenever the user mentions mutliple users.',
 		relatedConfigs: [
 			SettingsKey.autoModMentionUsersEnabled,
 			SettingsKey.autoModMentionUsersMaxNumberOfMentions
@@ -85,7 +91,8 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	mentionRoles: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user mentions mutliple roles.',
+		description:
+			'This violation is triggered whenever the user mentions mutliple roles.',
 		relatedConfigs: [
 			SettingsKey.autoModMentionRolesEnabled,
 			SettingsKey.autoModMentionRolesMaxNumberOfMentions
@@ -93,12 +100,13 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	emojis: {
 		...getEmpty(),
-		description: 'This violation is triggered whenever the user posts multiple emojis.',
+		description:
+			'This violation is triggered whenever the user posts multiple emojis.',
 		relatedConfigs: [
 			SettingsKey.autoModEmojisEnabled,
 			SettingsKey.autoModEmojisMaxNumberOfEmojis
 		]
-	},
+	}
 };
 
 Object.keys(violationDescription).forEach((key: ViolationType) => {
@@ -121,6 +129,8 @@ Object.keys(violationDescription).forEach((key: ViolationType) => {
 });
 
 let out = '';
-out += Object.keys(violationDescription).map((key: ViolationType) => violationDescription[key].markdown).join('\n\n');
+out += Object.keys(violationDescription)
+	.map((key: ViolationType) => violationDescription[key].markdown)
+	.join('\n\n');
 
 fs.writeFileSync('./Generated1.md', out);
