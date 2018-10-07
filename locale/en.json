@@ -615,7 +615,8 @@
 			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
-			}
+			},
+			"alreadyUsed": "cmd.tryPremium.alreadyUsed"
 		},
 		"export": {
 			"title": "InviteManager - Export",
