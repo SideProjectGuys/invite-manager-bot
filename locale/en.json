@@ -29,7 +29,8 @@
 			"invalid": "arguments.boolean.invalid"
 		},
 		"member": {
-			"notFound": "arguments.member.notFound"
+			"notFound": "arguments.member.notFound",
+			"multiple": "arguments.member.multiple"
 		}
 	},
 	"bot": {
@@ -306,11 +307,17 @@
 		},
 		"invites": {
 			"amount": {
-				"self": "cmd.invites.amount.self",
-				"other": "cmd.invites.amount.other"
+				"self": "You have {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
+				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)"
 			},
-			"nextRank": "{{! args.target === args.self ? 'You need' : `<@${args.target}> needs` !}} **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
-			"highestRank": "{{! args.target === args.self ? 'Congratulations, you currently have the highest rank!'\n: `<@${args.target}> currently has the highest rank!` !}}",
+			"nextRank": {
+				"self": "You need **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
+				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
+			},
+			"highestRank": {
+				"self": "Congratulations, you currently have the highest rank!",
+				"other": "{{{ target }}} currently has the highest rank!"
+			},
 			"self": {
 				"args": {
 					"user": "The user for whom you want to show invites."

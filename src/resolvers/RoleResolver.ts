@@ -43,7 +43,7 @@ export class RoleResolver extends Resolver {
 					throw Error(t('arguments.role.notFound'));
 				} else {
 					throw Error(
-						t('arguments.roles.multiple', {
+						t('arguments.role.multiple', {
 							roles: roles
 								.slice(0, 10)
 								.map(r => `\`${r.name}\``)
