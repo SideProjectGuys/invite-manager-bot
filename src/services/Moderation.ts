@@ -1,4 +1,4 @@
-import { Embed, Guild, Member, Message, TextChannel } from 'eris';
+import { Embed, Guild, Member, Message, TextChannel, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../client';
@@ -201,7 +201,7 @@ export class Moderation {
 			}
 			message.delete();
 
-			this.createLogModAction(
+			this.logViolationModAction(
 				guild,
 				channel,
 				message,
@@ -240,7 +240,7 @@ export class Moderation {
 			}
 			message.delete();
 
-			this.createLogModAction(guild, channel, message, violation);
+			this.logViolationModAction(guild, channel, message, violation);
 
 			const embed = this.createPunishmentEmbed('AutoModerator');
 			embed.description = `Message by <@${
@@ -251,7 +251,7 @@ export class Moderation {
 		}
 	}
 
-	private createLogModAction(
+	private logViolationModAction(
 		guild: Guild,
 		channel: TextChannel,
 		message: Message,
@@ -273,6 +273,22 @@ export class Moderation {
 			name: 'Message content',
 			value: message.content
 		});
+		this.client.logModAction(guild, logEmbed);
+	}
+
+	private logPunishmentModAction(
+		guild: Guild,
+		user: User,
+		punishmentType: PunishmentType
+	) {
+		const logEmbed = this.client.createEmbed({
+			author: { name: 'AutoModerator' },
+			color: 16711680 // red
+		});
+		logEmbed.description += `**User**: ${user.username}#${
+			user.discriminator
+		} (ID: ${user.id})\n`;
+		logEmbed.description += `**Punishment**: ${punishmentType}\n`;
 		this.client.logModAction(guild, logEmbed);
 	}
 
@@ -338,6 +354,11 @@ export class Moderation {
 					reason: 'automod',
 					creatorId: null
 				});
+				this.logPunishmentModAction(
+					args.guild,
+					message.author,
+					punishmentConfig.punishmentType
+				);
 			}
 		}
 	}
