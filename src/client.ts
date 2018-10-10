@@ -178,9 +178,9 @@ export class IMClient extends Client {
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		// Send welcome message to owner with setup instructions
 		const owner = await guild.getRESTMember(guild.ownerID);
-		// TODO: I don't think we have to translate this, right?
-		// The default lang is en_us, so at this point it will always be that
-		const channel = await owner.user.getDMChannel();
+
+		const channel = await this.getDMChannel(owner.user.id);
+
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
 				guild.name +
