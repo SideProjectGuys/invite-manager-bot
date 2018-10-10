@@ -694,7 +694,9 @@
 				"description": "Configure permissions to use commands."
 			},
 			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added"
+			"added": "cmd.permissions.added",
+			"adminOnly": "cmd.permissions.adminOnly",
+			"removed": "cmd.permissions.removed"
 		},
 		"graph": {
 			"joins": {
@@ -768,7 +770,8 @@
 				"args": {
 					"maxTextLength": "cmd.cleanShort.self.args.maxTextLength",
 					"numberOfMessages": "cmd.cleanShort.self.args.numberOfMessages"
-				}
+				},
+				"description": "cmd.cleanShort.self.description"
 			}
 		},
 		"cleanText": {
