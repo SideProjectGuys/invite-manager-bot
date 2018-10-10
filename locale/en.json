@@ -604,7 +604,7 @@
 			"feature": {
 				"embeds": {
 					"title": "Premium Feature: Embeds in join messages",
-					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{ link }})"
+					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{{ link }}})"
 				},
 				"export": {
 					"title": "Premium Feature: History export",
@@ -613,7 +613,7 @@
 			},
 			"premium": {
 				"title": "InviteManager Premium",
-				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?]({{ link }})"
+				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?]({{{ link }}})"
 			},
 			"self": {
 				"description": "Info about premium version of InviteManager."

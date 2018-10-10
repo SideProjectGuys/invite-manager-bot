@@ -63,7 +63,7 @@ export default class extends Command {
 					.fromNow(true);
 				description = t('cmd.premium.premium.text', {
 					date,
-					link: 'https://docs.invitemanager.co/bot/premium/extra-features'
+					link: 'https://docs.invitemanager.co/bot/premium/features'
 				});
 			} else {
 				description += t('cmd.premium.premium.notFound');
