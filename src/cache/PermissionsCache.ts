@@ -13,6 +13,9 @@ export class PermissionsCache extends Cache<PermissionsObject> {
 		// Create permissions map
 		const obj: PermissionsObject = {} as any;
 		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+		Object.values(ModerationCommand).forEach(
+			(k: ModerationCommand) => (obj[k] = [])
+		);
 		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
 			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 		}
@@ -53,6 +56,9 @@ export class PermissionsCache extends Cache<PermissionsObject> {
 
 		const obj: PermissionsObject = {} as any;
 		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
+		Object.values(ModerationCommand).forEach(
+			(k: ModerationCommand) => (obj[k] = [])
+		);
 		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
 			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
 		}

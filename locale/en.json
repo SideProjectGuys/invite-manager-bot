@@ -756,7 +756,8 @@
 				"args": {
 					"maxTextLength": "All messages shorter than this will be deleted.",
 					"numberOfMessages": "Number of messages that will be searched."
-				}
+				},
+				"description": "Clear short messages"
 			}
 		},
 		"cleanText": {

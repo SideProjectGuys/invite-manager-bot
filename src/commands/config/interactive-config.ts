@@ -1,7 +1,10 @@
 import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { settingsDescription } from '../../exportConfigTypes';
+import {
+	settingsDescription,
+	memberSettingsDescription
+} from '../../exportConfigTypes';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -15,6 +18,7 @@ import {
 	Lang,
 	LeaderboardStyle,
 	MemberSettingsKey,
+	memberSettingsTypes,
 	RankAssignmentStyle,
 	SettingsKey,
 	settingsTypes
@@ -27,6 +31,16 @@ type ConfigMenu =
 	| SettingsKey
 	| MemberSettingsKey
 	| InviteCodeSettingsKey;
+
+const allSettingsDescription = {
+	...settingsDescription,
+	...memberSettingsDescription
+};
+
+const allSettingsTypes = {
+	...settingsTypes,
+	...memberSettingsTypes
+};
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -328,8 +342,8 @@ export default class extends Command {
 		val: any
 	): Promise<string> {
 		return new Promise<string>(async resolve => {
-			const info = settingsDescription[key];
-			const type = settingsTypes[key];
+			const info = allSettingsDescription[key];
+			const type = allSettingsTypes[key];
 
 			const current = this.beautify(key, val);
 			const possible = info.possibleValues

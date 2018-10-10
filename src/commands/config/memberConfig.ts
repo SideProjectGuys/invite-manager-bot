@@ -9,12 +9,12 @@ import {
 } from '../../resolvers';
 import {
 	defaultMemberSettings,
-	getMemberSettingsType,
 	LogAction,
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize
+	sequelize,
+	memberSettingsTypes
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -25,7 +25,7 @@ class ValueResolver extends Resolver {
 		context: Context,
 		[key]: [MemberSettingsKey]
 	): Promise<any> {
-		switch (getMemberSettingsType(key)) {
+		switch (memberSettingsTypes[key]) {
 			case 'Boolean':
 				return new BooleanResolver(this.client).resolve(value, context);
 
@@ -241,7 +241,7 @@ export default class extends Command {
 			return { value: null };
 		}
 
-		const type = getMemberSettingsType(key);
+		const type = memberSettingsTypes[key];
 		if (type === 'Boolean') {
 			return { value: value ? 'true' : 'false' };
 		}

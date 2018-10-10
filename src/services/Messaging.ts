@@ -8,6 +8,7 @@ import {
 	TextableChannel,
 	User
 } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';
@@ -142,8 +143,8 @@ export class Messaging {
 		template: string,
 		strings?: { [x: string]: string },
 		dates?: { [x: string]: moment.Moment | string }
-	): Promise<Embed | string> {
-		let msg: any = template;
+	): Promise<string | { embed: Embed }> {
+		let msg = template;
 
 		if (strings) {
 			Object.keys(strings).forEach(
@@ -160,7 +161,7 @@ export class Messaging {
 		try {
 			const temp = JSON.parse(msg);
 			if (await this.client.cache.premium.get(guild.id)) {
-				msg = this.createEmbed(temp);
+				return { embed: this.createEmbed(temp) };
 			} else {
 				const lang = (await this.client.cache.settings.get(guild.id)).lang;
 				msg +=
@@ -211,7 +212,7 @@ export class Messaging {
 			fake: 0,
 			leave: 0
 		}
-	): Promise<string | Embed> {
+	): Promise<string | { embed: Embed }> {
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}

@@ -50,13 +50,12 @@ export default class extends Command {
 			embed.description = t('cmd.purgeUntil.msgNotFound');
 			return this.client.sendReply(message, embed);
 		} else {
-			messages.push(message);
 			let [error] = await to(
 				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 			);
 			if (error) {
 				embed.title = t('cmd.purgeUntil.error');
-				embed.description = error;
+				embed.description = JSON.stringify(error);
 			} else {
 				embed.description = t('cmd.purgeUntil.text', {
 					amount: `**${messages.length}**`
