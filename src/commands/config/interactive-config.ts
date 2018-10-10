@@ -332,13 +332,12 @@ export default class extends Command {
 			const type = settingsTypes[key];
 
 			const current = this.beautify(key, val);
-			const possible = info.possibleValues
+			const possible = info && info.possibleValues
 				? info.possibleValues.map(v => '`' + v + '`').join(', ')
 				: context.t(`cmd.interactiveConfig.values.${type.toLowerCase()}`);
 
 			const description =
-				info.description +
-				'\n\n' +
+				(info ? (info.description + '\n\n') : '') +
 				context.t('cmd.interactiveConfig.change', {
 					current,
 					possible
