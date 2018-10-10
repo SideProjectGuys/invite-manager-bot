@@ -1,5 +1,6 @@
 import * as amqplib from 'amqplib';
 import { Message, TextChannel } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';

@@ -8,6 +8,7 @@ import {
 	TextableChannel,
 	User
 } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';
