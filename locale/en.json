@@ -801,7 +801,7 @@
 					}
 				},
 				"mod": {
-					"description": "Configs that are related to moderation.",
+					"description": "Settings related to moderation.",
 					"title": "Moderation",
 					"general": {
 						"description": "General settings related to moderation.",
