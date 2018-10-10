@@ -37,6 +37,7 @@ export class MemberResolver extends Resolver {
 					throw Error(
 						t('arguments.member.multiple', {
 							members: members
+								.slice(0, 10)
 								.map(m => `\`${m.username}#${m.discriminator}\``)
 								.join(', ')
 						})

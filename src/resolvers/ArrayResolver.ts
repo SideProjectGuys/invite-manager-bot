@@ -1,7 +1,7 @@
+import { IMClient } from '../client';
 import { Context } from '../commands/Command';
 
 import { Resolver, ResolverConstructor } from './Resolver';
-import { IMClient } from '../client';
 
 export class ArrayResolver extends Resolver {
 	private resolver: Resolver;

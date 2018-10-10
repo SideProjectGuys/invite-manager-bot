@@ -149,7 +149,14 @@ export default class extends Command {
 					t('cmd.config.current.text', {
 						prefix,
 						key
-					}) + (clear ? '\n' + t('cmd.config.current.clear') : '');
+					}) +
+					(clear
+						? '\n' +
+						  t('cmd.config.current.clear', {
+								prefix,
+								key
+						  })
+						: '');
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
 					value: this.beautify(key, oldVal)

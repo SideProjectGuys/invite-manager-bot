@@ -22,7 +22,10 @@ export class CommandResolver extends Resolver {
 			if (!cmd) {
 				throw Error(
 					t('arguments.command.multiple', {
-						commands: cmds.map(c => `\`${c.name}\``).join(', ')
+						commands: cmds
+							.slice(0, 10)
+							.map(c => `\`${c.name}\``)
+							.join(', ')
 					})
 				);
 			}

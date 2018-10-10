@@ -14,23 +14,23 @@
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "arguments.command.notFound",
-			"multiple": "arguments.command.multiple"
+			"notFound": "Command not found.",
+			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "arguments.channel.notFound",
-			"multiple": "arguments.channel.multiple"
+			"notFound": "Channel not found.",
+			"multiple": "Multiple matching channels found. {{{ channels }}}"
 		},
 		"role": {
 			"notFound": "Role was not found.",
 			"multiple": "Multiple matching roles found. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "arguments.boolean.invalid"
+			"invalid": "Not a valid yes/no value."
 		},
 		"member": {
-			"notFound": "arguments.member.notFound",
-			"multiple": "arguments.member.multiple"
+			"notFound": "Member was not found.",
+			"multiple": "Multiple matching members found. {{{ members }}}"
 		}
 	},
 	"bot": {
@@ -130,8 +130,8 @@
 				"args": {
 					"quantity": "How many messages should be deleted.",
 					"member": "User whose messages get deleted.",
-					"type": "cmd.clean.self.args.type",
-					"numberOfMessages": "cmd.clean.self.args.numberOfMessages"
+					"type": "The type of messages that will be deleted.",
+					"numberOfMessages": "Number of messages that will be searched."
 				}
 			}
 		},
@@ -154,7 +154,7 @@
 				"title": "Current Value",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"clear": "cmd.config.current.clear"
+				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
 			},
 			"previous": {
 				"title": "Previous Value"
@@ -221,7 +221,7 @@
 				"title": "Aliases"
 			},
 			"links": "Links",
-			"missingPermissions": "cmd.help.missingPermissions",
+			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
 			"self": {
 				"args": {
 					"command": "The command to get detailed information for."
@@ -269,7 +269,7 @@
 				"entry": "**{{ amount }}** from {{{ creator }}} - **{{ date }}**, reason: {{ reason }}",
 				"more": "Plus another **{{ amount }}** more bonus invites",
 				"none": "This member has received no bonuses so far",
-				"noReason": "cmd.info.bonusInvites.noReason"
+				"noReason": "No reason"
 			},
 			"invitedMembers": {
 				"title": "Invited members",
@@ -533,7 +533,7 @@
 		"subtractFakes": {
 			"noInvites": "There have been no invites so far!",
 			"done": "Removed {{ total }} fake invites!",
-			"none": "cmd.subtractFakes.none",
+			"none": "No fake invites found.",
 			"self": {
 				"description": "Remove fake invites from all users."
 			}
@@ -554,7 +554,7 @@
 		"subtractLeaves": {
 			"noLeaves": "There have been no leaves so far!",
 			"done": "Removed {{ total }} leaves!",
-			"none": "cmd.subtractLeaves.none",
+			"none": "No leaves found.",
 			"self": {
 				"description": "Remove leaves from all users"
 			}
@@ -627,7 +627,7 @@
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
 			},
-			"alreadyUsed": "cmd.tryPremium.alreadyUsed"
+			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium."
 		},
 		"export": {
 			"title": "InviteManager - Export",
@@ -640,7 +640,7 @@
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "cmd.makeMentionable.alreadyDone",
+			"alreadyDone": "{{{ role }}} is already mentionable.",
 			"self": {
 				"args": {
 					"role": "The role that you want to mention."
@@ -649,7 +649,7 @@
 			}
 		},
 		"mentionRole": {
-			"alreadyDone": "cmd.mentionRole.alreadyDone",
+			"alreadyDone": "{{{ role }}} is already mentionable.",
 			"self": {
 				"args": {
 					"role": "The role that you want to mention."
@@ -679,10 +679,10 @@
 				},
 				"description": "Show and change the config of invite codes of the server."
 			},
-			"title": "cmd.inviteCodeConfig.title",
-			"text": "cmd.inviteCodeConfig.text",
+			"title": "Invite Code Config",
+			"text": "Set configs for individual invite codes.",
 			"keys": {
-				"title": "cmd.inviteCodeConfig.keys.title"
+				"title": "Fields"
 			}
 		},
 		"permissions": {
@@ -693,8 +693,11 @@
 				},
 				"description": "Configure permissions to use commands."
 			},
-			"adminsCanUseAll": "cmd.permissions.adminsCanUseAll",
-			"added": "cmd.permissions.added"
+			"adminsCanUseAll": "Keep in mind that *Server Administrators* can *always* use *all* commands",
+			"added": "{{{ role }}} can now use {{{ cmds }}}",
+			"adminOnly": "This command can only be used by admins",
+			"everyone": "This command can be used by everyone",
+			"removed": "{{{ role }}} can not use {{{ cmds }}} anymore"
 		},
 		"graph": {
 			"joins": {
@@ -719,63 +722,48 @@
 		},
 		"unban": {
 			"missingPermissions": "I need the `Ban Members` permission to use this command",
-			"canNotUnban": "cmd.unban.canNotUnban",
+			"canNotUnban": "I cannot unban this member.",
 			"self": {
 				"args": {
-					"user": "cmd.unban.self.args.user",
-					"reason": "cmd.unban.self.args.reason"
+					"user": "The user that should be unbanned.",
+					"reason": "The reason why this user is unbanned."
 				}
 			}
 		},
 		"mute": {
 			"missingRole": "Muted role not set or does not exist!",
-			"error": "cmd.mute.error",
+			"error": "There was an error muting this person.",
 			"self": {
 				"args": {
-					"user": "cmd.mute.self.args.user",
-					"muteDuration": "cmd.mute.self.args.muteDuration",
-					"reason": "cmd.mute.self.args.reason"
+					"user": "The user that should be muted.",
+					"muteDuration": "The duration for which the user should be muted.",
+					"reason": "The reason why this user is muted."
 				}
 			},
-			"done": "cmd.mute.done",
-			"canNotMute": "cmd.mute.canNotMute"
+			"done": "User muted!",
+			"canNotMute": "Cannot mute user!"
 		},
 		"unmute": {
 			"missingRole": "Muted role not set or does not exist!",
 			"self": {
 				"args": {
-					"user": "cmd.unmute.self.args.user"
-				}
-			}
-		},
-		"caseDelete": {
-			"self": {
-				"args": {
-					"caseNumber": "cmd.caseDelete.self.args.caseNumber",
-					"reason": "cmd.caseDelete.self.args.reason"
-				}
-			}
-		},
-		"caseView": {
-			"self": {
-				"args": {
-					"caseNumber": "cmd.caseView.self.args.caseNumber"
+					"user": "The user that should be unmuted."
 				}
 			}
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "cmd.cleanShort.self.args.maxTextLength",
-					"numberOfMessages": "cmd.cleanShort.self.args.numberOfMessages"
+					"maxTextLength": "All messages shorter than this will be deleted.",
+					"numberOfMessages": "Number of messages that will be searched."
 				}
 			}
 		},
 		"cleanText": {
 			"self": {
 				"args": {
-					"text": "cmd.cleanText.self.args.text",
-					"numberOfMessages": "cmd.cleanText.self.args.numberOfMessages"
+					"text": "All messages containing this word will be deleted.",
+					"numberOfMessages": "Number of messages that will be searched."
 				}
 			}
 		},
@@ -794,225 +782,225 @@
 				"string[]": "A list of words, for example: word another \"word with space\""
 			},
 			"items": {
+				"title": "Interactive Config",
 				"basic": {
 					"description": "Base bot settings such as prefix, language and logging.",
-					"title": "cmd.interactiveConfig.items.basic.title",
+					"title": "Basic Settings",
 					"prefix": {
-						"title": "cmd.interactiveConfig.items.basic.prefix.title"
+						"title": "Prefix"
 					},
 					"lang": {
-						"title": "cmd.interactiveConfig.items.basic.lang.title"
+						"title": "Language"
 					},
 					"logChannel": {
-						"title": "cmd.interactiveConfig.items.basic.logChannel.title"
+						"title": "Log Channel"
 					},
 					"getUpdates": {
-						"title": "cmd.interactiveConfig.items.basic.getUpdates.title"
+						"title": "Get Updates"
 					}
 				},
-				"title": "cmd.interactiveConfig.items.title",
 				"mod": {
-					"description": "cmd.interactiveConfig.items.mod.description",
-					"title": "cmd.interactiveConfig.items.mod.title",
+					"description": "Configs that are related to moderation.",
+					"title": "Moderation",
 					"general": {
-						"description": "cmd.interactiveConfig.items.mod.general.description",
-						"title": "cmd.interactiveConfig.items.mod.general.title",
+						"description": "General settings related to moderation.",
+						"title": "General",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.general.enabled.title"
+							"title": "Enabled"
 						},
 						"moderatedChannels": {
-							"title": "cmd.interactiveConfig.items.mod.general.moderatedChannels.title"
+							"title": "Moderated Channels"
 						},
 						"moderatedRoles": {
-							"title": "cmd.interactiveConfig.items.mod.general.moderatedRoles.title"
+							"title": "Moderated Roles"
 						},
 						"ignoredChannels": {
-							"title": "cmd.interactiveConfig.items.mod.general.ignoredChannels.title"
+							"title": "Ignored Channels"
 						},
 						"ignoredRoles": {
-							"title": "cmd.interactiveConfig.items.mod.general.ignoredRoles.title"
+							"title": "Ignored Roles"
 						},
 						"deleteBotMessages": {
-							"title": "cmd.interactiveConfig.items.mod.general.deleteBotMessages.title"
+							"title": "Delete Bot messages"
 						},
 						"deleteBotMessagesTimeout": {
-							"title": "cmd.interactiveConfig.items.mod.general.deleteBotMessagesTimeout.title"
+							"title": "Bot message deletion delay"
 						},
 						"autoLogEnabled": {
-							"title": "cmd.interactiveConfig.items.mod.general.autoLogEnabled.title"
+							"title": "Log Automoderation"
 						},
 						"logChannel": {
-							"title": "cmd.interactiveConfig.items.mod.general.logChannel.title"
+							"title": "Mod Log Channel"
 						}
 					},
 					"invitesAndLinks": {
-						"description": "cmd.interactiveConfig.items.mod.invitesAndLinks.description",
-						"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.title",
+						"description": "Settings related to invites and links.",
+						"title": "Invites and Links",
 						"invitesEnabled": {
-							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.invitesEnabled.title"
+							"title": "Invite moderation enabled"
 						},
 						"linksEnabled": {
-							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksEnabled.title"
+							"title": "Link moderation enabled"
 						},
 						"linksWhitelist": {
-							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksWhitelist.title"
+							"title": "Whitelist"
 						},
 						"linksBlacklist": {
-							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.linksBlacklist.title"
+							"title": "Blacklist"
 						},
 						"followLinkRedirects": {
-							"title": "cmd.interactiveConfig.items.mod.invitesAndLinks.followLinkRedirects.title"
+							"title": "Follow redirects"
 						}
 					},
 					"bannedWords": {
-						"description": "cmd.interactiveConfig.items.mod.bannedWords.description",
-						"title": "cmd.interactiveConfig.items.mod.bannedWords.title",
+						"description": "Settings related to banned words.",
+						"title": "Banned words",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.bannedWords.enabled.title"
+							"title": "Enabled"
 						},
 						"blacklist": {
-							"title": "cmd.interactiveConfig.items.mod.bannedWords.blacklist.title"
+							"title": "Blacklist"
 						}
 					},
 					"caps": {
-						"description": "cmd.interactiveConfig.items.mod.caps.description",
-						"title": "cmd.interactiveConfig.items.mod.caps.title",
+						"description": "Settings related to ALL CAPS messages",
+						"title": "Caps-Lock",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.caps.enabled.title"
+							"title": "Enabled"
 						},
 						"minCharacters": {
-							"title": "cmd.interactiveConfig.items.mod.caps.minCharacters.title"
+							"title": "Minimum Characters"
 						},
 						"percentageCaps": {
-							"title": "cmd.interactiveConfig.items.mod.caps.percentageCaps.title"
+							"title": "Percentage Caps"
 						}
 					},
 					"duplicate": {
-						"description": "cmd.interactiveConfig.items.mod.duplicate.description",
-						"title": "cmd.interactiveConfig.items.mod.duplicate.title",
+						"description": "Settings related to duplicate messages.",
+						"title": "Duplicate Text",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.duplicate.enabled.title"
+							"title": "Enabled"
 						},
 						"timeframe": {
-							"title": "cmd.interactiveConfig.items.mod.duplicate.timeframe.title"
+							"title": "Timeframe"
 						}
 					},
 					"spam": {
-						"description": "cmd.interactiveConfig.items.mod.spam.description",
-						"title": "cmd.interactiveConfig.items.mod.spam.title",
+						"description": "Settings related to spam (quick sending of messages).",
+						"title": "Spam",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.spam.enabled.title"
+							"title": "Enabled"
 						},
 						"numberOfMessages": {
-							"title": "cmd.interactiveConfig.items.mod.spam.numberOfMessages.title"
+							"title": "Number of messages"
 						},
 						"timeframe": {
-							"title": "cmd.interactiveConfig.items.mod.spam.timeframe.title"
+							"title": "Timeframe"
 						}
 					},
 					"mentions": {
-						"description": "cmd.interactiveConfig.items.mod.mentions.description",
-						"title": "cmd.interactiveConfig.items.mod.mentions.title",
+						"description": "Settings related to mention-spam.",
+						"title": "Mention-Spam",
 						"usersEnabled": {
-							"title": "cmd.interactiveConfig.items.mod.mentions.usersEnabled.title"
+							"title": "User Mention Detection Enabled"
 						},
 						"usersMax": {
-							"title": "cmd.interactiveConfig.items.mod.mentions.usersMax.title"
+							"title": "Maximum User Mentions per Message"
 						},
 						"rolesEnabled": {
-							"title": "cmd.interactiveConfig.items.mod.mentions.rolesEnabled.title"
+							"title": "Role Mention Detection Enabled"
 						},
 						"rolesMax": {
-							"title": "cmd.interactiveConfig.items.mod.mentions.rolesMax.title"
+							"title": "Maximum Role Mentions per Message"
 						}
 					},
 					"emojis": {
-						"description": "cmd.interactiveConfig.items.mod.emojis.description",
-						"title": "cmd.interactiveConfig.items.mod.emojis.title",
+						"description": "Settings related to emoji-spam.",
+						"title": "Emojis",
 						"enabled": {
-							"title": "cmd.interactiveConfig.items.mod.emojis.enabled.title"
+							"title": "Enabled"
 						},
 						"max": {
-							"title": "cmd.interactiveConfig.items.mod.emojis.max.title"
+							"title": "Maximum emojis"
 						}
 					}
 				},
 				"captcha": {
-					"description": "cmd.interactiveConfig.items.captcha.description",
-					"title": "cmd.interactiveConfig.items.captcha.title",
+					"description": "Settings related to captchas on join.",
+					"title": "Captcha",
 					"enabled": {
-						"title": "cmd.interactiveConfig.items.captcha.enabled.title"
+						"title": "Enabled"
 					},
 					"welcome": {
-						"title": "cmd.interactiveConfig.items.captcha.welcome.title"
+						"title": "Welcome Message"
 					},
 					"success": {
-						"title": "cmd.interactiveConfig.items.captcha.success.title"
+						"title": "Success Message"
 					},
 					"failed": {
-						"title": "cmd.interactiveConfig.items.captcha.failed.title"
+						"title": "Failed Message"
 					},
 					"timeout": {
-						"title": "cmd.interactiveConfig.items.captcha.timeout.title"
+						"title": "Timeout Message"
 					},
 					"logs": {
-						"title": "cmd.interactiveConfig.items.captcha.logs.title"
+						"title": "Logs"
 					}
 				},
 				"leaderboard": {
-					"description": "cmd.interactiveConfig.items.leaderboard.description",
-					"title": "cmd.interactiveConfig.items.leaderboard.title",
+					"description": "Settings related to the leaderboard",
+					"title": "Leaderboard",
 					"style": {
-						"title": "cmd.interactiveConfig.items.leaderboard.style.title"
+						"title": "Style"
 					},
 					"hideLeftMembers": {
-						"title": "cmd.interactiveConfig.items.leaderboard.hideLeftMembers.title"
+						"title": "Hide Left Members"
 					}
 				},
 				"ranks": {
-					"description": "cmd.interactiveConfig.items.ranks.description",
-					"title": "cmd.interactiveConfig.items.ranks.title",
+					"description": "Settings related to Ranks",
+					"title": "Ranks",
 					"style": {
-						"title": "cmd.interactiveConfig.items.ranks.style.title"
+						"title": "Style"
 					},
 					"channel": {
-						"title": "cmd.interactiveConfig.items.ranks.channel.title"
+						"title": "Channel"
 					},
 					"message": {
-						"title": "cmd.interactiveConfig.items.ranks.message.title"
+						"title": "Message"
 					}
 				},
 				"joinAndLeaveMessages": {
-					"description": "cmd.interactiveConfig.items.joinAndLeaveMessages.description",
-					"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.title",
+					"description": "Settings related to Join and Leave Messages",
+					"title": "Join and Leave Messages",
 					"joinChannel": {
-						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.joinChannel.title"
+						"title": "Join Channel"
 					},
 					"joinMessage": {
-						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.joinMessage.title"
+						"title": "Join Message"
 					},
 					"leaveChannel": {
-						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.leaveChannel.title"
+						"title": "Leave Channel"
 					},
 					"leaveMessage": {
-						"title": "cmd.interactiveConfig.items.joinAndLeaveMessages.leaveMessage.title"
+						"title": "Leave Message"
 					}
 				},
 				"memberSettings": {
-					"description": "cmd.interactiveConfig.items.memberSettings.description",
-					"title": "cmd.interactiveConfig.items.memberSettings.title",
+					"description": "Settings related to specific members.",
+					"title": "Member Settings",
 					"hideFromLeaderboard": {
-						"title": "cmd.interactiveConfig.items.memberSettings.hideFromLeaderboard.title"
+						"title": "Hide from Leaderboard"
 					}
 				},
 				"inviteCodeSettings": {
-					"description": "cmd.interactiveConfig.items.inviteCodeSettings.description",
-					"title": "cmd.interactiveConfig.items.inviteCodeSettings.title",
+					"description": "Settings related to specific invite codes.",
+					"title": "Invite Code Settings",
 					"name": {
-						"title": "cmd.interactiveConfig.items.inviteCodeSettings.name.title"
+						"title": "Name"
 					},
 					"roles": {
-						"title": "cmd.interactiveConfig.items.inviteCodeSettings.roles.title"
+						"title": "Role"
 					}
 				}
 			}
@@ -1026,10 +1014,10 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageRoles": "Manage Roles",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"rateLimit": "permissions.rateLimit"
+		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again."
 	},
 	"prompt": {
-		"canceled": "prompt.canceled"
+		"canceled": "Canceled"
 	},
 	"command": {
 		"error": "There was an error executing the command."

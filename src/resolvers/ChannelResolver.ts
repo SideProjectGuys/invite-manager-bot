@@ -34,7 +34,10 @@ export class ChannelResolver extends Resolver {
 				} else {
 					throw Error(
 						t('arguments.channel.multiple', {
-							channels: channels.map(c => `\`${c.name}\``).join(', ')
+							channels: channels
+								.slice(0, 10)
+								.map(c => `\`${c.name}\``)
+								.join(', ')
 						})
 					);
 				}
