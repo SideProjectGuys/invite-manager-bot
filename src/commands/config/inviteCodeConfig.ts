@@ -12,11 +12,11 @@ import {
 import {
 	channels,
 	defaultInviteCodeSettings,
-	getInviteCodeSettingsType,
 	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey,
-	LogAction
+	LogAction,
+	inviteCodeSettingsTypes
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -27,7 +27,7 @@ class ValueResolver extends Resolver {
 		context: Context,
 		[key]: [InviteCodeSettingsKey]
 	): Promise<any> {
-		switch (getInviteCodeSettingsType(key)) {
+		switch (inviteCodeSettingsTypes[key]) {
 			case 'Channel':
 				return new ChannelResolver(this.client).resolve(value, context);
 
@@ -273,7 +273,7 @@ export default class extends Command {
 			return { value: roles.join(',') };
 		}
 
-		const type = getInviteCodeSettingsType(key);
+		const type = inviteCodeSettingsTypes[key];
 		if (type === 'Boolean') {
 			return { value: value ? 'true' : 'false' };
 		}
