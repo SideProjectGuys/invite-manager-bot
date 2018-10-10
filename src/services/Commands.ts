@@ -255,10 +255,8 @@ export class Commands {
 						);
 						return;
 					}
-				}
-
-				// Allow commands that require no roles, if strict is not true
-				if (cmd.strict) {
+				} else if (cmd.strict) {
+					// Allow commands that require no roles, if strict is not true
 					this.client.sendReply(message, t('permissions.adminOnly'));
 					return;
 				}
