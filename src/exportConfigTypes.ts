@@ -6,7 +6,8 @@ import {
 	LeaderboardStyle,
 	RankAssignmentStyle,
 	SettingsKey,
-	settingsTypes
+	settingsTypes,
+	MemberSettingsKey
 } from './sequelize';
 
 enum ConfigGroup {
@@ -456,6 +457,16 @@ Object.keys(settingsDescription).forEach((key: SettingsKey) => {
 	}
 	settingsDescription[key].type = type;
 });
+
+
+export const memberSettingsDescription: { [k in MemberSettingsKey]: DescriptionObject } = {
+	hideFromLeaderboard: {
+		...getEmpty(),
+		group: ConfigGroup.Basic,
+		description:
+			`Used to hide a specific member from the leaderboard`
+	}
+}
 
 Object.keys(settingsDescription).forEach((key: SettingsKey) => {
 	settingsDescription[key].markdown = generateText(

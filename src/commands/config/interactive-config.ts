@@ -1,7 +1,7 @@
 import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { settingsDescription } from '../../exportConfigTypes';
+import { settingsDescription, memberSettingsDescription } from '../../exportConfigTypes';
 import {
 	BooleanResolver,
 	ChannelResolver,
@@ -15,6 +15,7 @@ import {
 	Lang,
 	LeaderboardStyle,
 	MemberSettingsKey,
+	memberSettingsTypes,
 	RankAssignmentStyle,
 	SettingsKey,
 	settingsTypes
@@ -27,6 +28,16 @@ type ConfigMenu =
 	| SettingsKey
 	| MemberSettingsKey
 	| InviteCodeSettingsKey;
+
+const allSettingsDescription = {
+	...settingsDescription,
+	...memberSettingsDescription
+};
+
+const allSettingsTypes = {
+	...settingsTypes,
+	...memberSettingsTypes
+};
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -328,16 +339,16 @@ export default class extends Command {
 		val: any
 	): Promise<string> {
 		return new Promise<string>(async resolve => {
-			const info = settingsDescription[key];
-			const type = settingsTypes[key];
+			const info = allSettingsDescription[key];
+			const type = allSettingsTypes[key];
 
 			const current = this.beautify(key, val);
-			const possible = info && info.possibleValues
+			const possible = info.possibleValues
 				? info.possibleValues.map(v => '`' + v + '`').join(', ')
 				: context.t(`cmd.interactiveConfig.values.${type.toLowerCase()}`);
 
-			const description =
-				(info ? (info.description + '\n\n') : '') +
+			const description = info.description +
+				'\n\n' +
 				context.t('cmd.interactiveConfig.change', {
 					current,
 					possible

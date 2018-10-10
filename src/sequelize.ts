@@ -564,11 +564,10 @@ export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
 
-export function getMemberSettingsType(key: MemberSettingsKey) {
-	if (key === MemberSettingsKey.hideFromLeaderboard) {
-		return 'Boolean';
-	}
-	return 'String';
+export type MemberSettingsTypesObject = { [k in MemberSettingsKey]: InternalSettingsTypes };
+
+export const memberSettingsTypes: MemberSettingsTypesObject = {
+	hideFromLeaderboard: 'Boolean',
 }
 
 export const defaultMemberSettings: { [k in MemberSettingsKey]: string } = {
@@ -680,8 +679,11 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
-export function getInviteCodeSettingsType(key: InviteCodeSettingsKey) {
-	return 'String';
+export type InviteCodeSettingsTypesObject = { [k in InviteCodeSettingsKey]: InternalSettingsTypes };
+
+export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
+	name: 'String',
+	roles: 'Role[]'
 }
 
 export const defaultInviteCodeSettings: {
