@@ -340,7 +340,7 @@ export class RabbitMq {
 			);
 
 			// Send the message now so it doesn't take too long
-			await joinChannel.createMessage(msg);
+			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg });
 		}
 	}
 
@@ -451,7 +451,7 @@ export class RabbitMq {
 				inviterDiscriminator
 			);
 
-			leaveChannel.createMessage(msg);
+			leaveChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg });
 		}
 	}
 

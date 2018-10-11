@@ -143,7 +143,7 @@ export class Messaging {
 		template: string,
 		strings?: { [x: string]: string },
 		dates?: { [x: string]: moment.Moment | string }
-	): Promise<string | { embed: Embed }> {
+	): Promise<string | Embed> {
 		let msg = template;
 
 		if (strings) {
@@ -161,7 +161,7 @@ export class Messaging {
 		try {
 			const temp = JSON.parse(msg);
 			if (await this.client.cache.premium.get(guild.id)) {
-				return { embed: this.createEmbed(temp) };
+				return this.createEmbed(temp);
 			} else {
 				const lang = (await this.client.cache.settings.get(guild.id)).lang;
 				msg +=
@@ -212,7 +212,7 @@ export class Messaging {
 			fake: 0,
 			leave: 0
 		}
-	): Promise<string | { embed: Embed }> {
+	): Promise<string | Embed> {
 		if (!inviter && template.indexOf('{inviterName}') >= 0) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
