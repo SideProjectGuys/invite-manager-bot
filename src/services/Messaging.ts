@@ -2,6 +2,7 @@ import {
 	Embed,
 	EmbedBase,
 	EmbedOptions,
+	Emoji,
 	Guild,
 	Member,
 	Message,
@@ -366,7 +367,8 @@ export class Messaging {
 		prevMsg: Message,
 		page: number,
 		maxPage: number,
-		render: (page: number, maxPage: number) => Embed
+		render: (page: number, maxPage: number) => Embed,
+		author?: User
 	) {
 		// Create embed for this page
 		const embed = render(page, maxPage);
@@ -378,7 +380,13 @@ export class Messaging {
 
 		if (prevMsg.author.id === this.client.user.id) {
 			prevMsg.edit({ embed });
+			if (!author) {
+				throw new Error(
+					'Either the message of the original author must be passed, or you must explicitly specify the original author'
+				);
+			}
 		} else {
+			author = prevMsg.author;
 			prevMsg = await this.client.sendEmbed(
 				prevMsg.channel,
 				embed,
@@ -389,46 +397,55 @@ export class Messaging {
 		if (page > 0) {
 			await prevMsg.addReaction(upSymbol);
 		} else {
-			const react = prevMsg.reactions.get(upSymbol);
-			if (react) {
-				react.users.remove(this.client.user);
+			const users = await prevMsg.getReaction(upSymbol, 10);
+			if (users.find(u => u.id === author.id)) {
+				prevMsg.removeReaction(upSymbol, this.client.user.id);
 			}
 		}
 
 		if (page < maxPage - 1) {
 			await prevMsg.addReaction(downSymbol);
 		} else {
-			const react = prevMsg.reactions.get(downSymbol);
-			if (react) {
-				react.users.remove(this.client.user);
+			const users = await prevMsg.getReaction(downSymbol, 10);
+			if (users.find(u => u.id === author.id)) {
+				prevMsg.removeReaction(downSymbol, this.client.user.id);
 			}
 		}
 
-		/*if (page > 0 || page < maxPage - 1) {
-			const filter = (reaction: MessageReaction, user: GuildMember) =>
-				user.id !== client.user.id &&
-				(reaction.emoji.name === upSymbol || reaction.emoji.name === downSymbol);
+		if (page > 0 || page < maxPage - 1) {
+			let timer: NodeJS.Timer;
 
-			prevMsg.awaitReactions(filter, { max: 1, time: 15000 }).then(collected => {
-				const upReaction = collected.get(upSymbol);
-				const ups = upReaction ? upReaction.count : 0;
-				const downReaciton = collected.get(downSymbol);
-				const downs = downReaciton ? downReaciton.count : 0;
-				if (ups > downs) {
-					showPaginated(client, prevMsg, page - 1, maxPage, render);
-				} else if (downs > ups) {
-					showPaginated(client, prevMsg, page + 1, maxPage, render);
-				} else {
-					const reactUp = prevMsg.reactions.get(upSymbol);
-					if (reactUp) {
-						reactUp.users.remove(client.user);
-					}
-					const reactDown = prevMsg.reactions.get(downSymbol);
-					if (reactDown) {
-						reactDown.users.remove(client.user);
-					}
+			const func = async (msg: Message, emoji: Emoji, userId: string) => {
+				if (userId !== author.id) {
+					return;
 				}
-			});
-		}*/
+				if (emoji.name !== downSymbol && emoji.name !== upSymbol) {
+					return;
+				}
+
+				clearInterval(timer);
+				this.client.removeListener('messageReactionAdd', func);
+				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+
+				const isUp = emoji.name === upSymbol;
+				if (isUp && page > 0) {
+					this.showPaginated(prevMsg, page - 1, maxPage, render, author);
+				} else if (!isUp && page < maxPage) {
+					this.showPaginated(prevMsg, page + 1, maxPage, render, author);
+				}
+			};
+
+			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+			this.client.on('messageReactionAdd', func);
+
+			const timeOut = () => {
+				this.client.removeListener('messageReactionAdd', func);
+				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+				prevMsg.removeReaction(upSymbol, this.client.user.id);
+				prevMsg.removeReaction(downSymbol, this.client.user.id);
+			};
+
+			timer = setTimeout(timeOut, 15000);
+		}
 	}
 }
