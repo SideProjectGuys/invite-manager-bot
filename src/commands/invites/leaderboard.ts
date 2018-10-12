@@ -11,6 +11,9 @@ import { Command, Context } from '../Command';
 const chrono = require('chrono-node');
 
 const usersPerPage = 10;
+const upSymbol = '🔺';
+const downSymbol = '🔻';
+const neutralSymbol = '🔹';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -122,16 +125,23 @@ export default class extends Command {
 							? `<@${k}>`
 							: inv.name.substring(0, 10);
 
+					const symbol =
+						posChange > 0
+							? upSymbol
+							: posChange < 0
+								? downSymbol
+								: neutralSymbol;
+
 					const posText =
 						posChange > 0
 							? `+${posChange}`
 							: posChange === 0
-								? `*0`
+								? `±0`
 								: posChange;
 
 					const line = [
-						`${posText}`,
 						`${pos}.`,
+						`${symbol} (${posText})`,
 						name,
 						`${inv.total} `,
 						`${inv.regular} `,
@@ -161,8 +171,8 @@ export default class extends Command {
 					style === LeaderboardStyle.mentions
 				) {
 					str += t('cmd.leaderboard.entry', {
-						change: line[0],
-						pos: line[1],
+						pos: line[0],
+						change: line[1],
 						name: line[2],
 						total: line[3],
 						regular: line[4],

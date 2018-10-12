@@ -343,7 +343,7 @@
 			"invalidDate": "Invalid date: {{ date }}",
 			"noInvites": "No invites!",
 			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** {{ change }} **{{ name }}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"col": {
 				"change": "Change",
 				"name": "Name",
@@ -1022,5 +1022,7 @@
 	},
 	"command": {
 		"error": "There was an error executing the command."
-	}
+	},
+	"TEMPLATE_UNKNOWN": "TEMPLATE_UNKNOWN",
+	"LEAVE_INVITED_BY_UNKNOWN": "LEAVE_INVITED_BY_UNKNOWN"
 }
