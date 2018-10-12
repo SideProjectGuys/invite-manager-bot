@@ -416,7 +416,7 @@ export class Messaging {
 			let timer: NodeJS.Timer;
 
 			const func = async (msg: Message, emoji: Emoji, userId: string) => {
-				if (userId !== author.id) {
+				if (msg.id !== prevMsg.id || userId !== author.id) {
 					return;
 				}
 				if (emoji.name !== downSymbol && emoji.name !== upSymbol) {
