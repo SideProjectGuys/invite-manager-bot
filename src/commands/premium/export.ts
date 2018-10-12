@@ -44,12 +44,13 @@ export default class extends Command {
 			case ExportType.leaderboard:
 				this.client.sendReply(message, embed).then(async (msg: Message) => {
 					if (type === 'leaderboard') {
-						let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
+						let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
 						const { keys, invs } = await generateLeaderboard(guild);
 						keys.forEach(id => {
 							const i = invs[id];
 							csv +=
+								`${i.id}` +
 								`"${i.name.replace(/"/g, '\\"')}",` +
 								`${i.total},` +
 								`${i.regular},` +
