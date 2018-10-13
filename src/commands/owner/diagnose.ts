@@ -123,7 +123,7 @@ export default class extends Command {
 					value: lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
 				});
 
-				msg.edit(embed).catch(e => msg.edit(e));
+				msg.edit({ embed }).catch(e => msg.edit(e));
 
 				// Send second message with permissions info
 				const permsEmbed = this.client.createEmbed();
@@ -163,7 +163,7 @@ export default class extends Command {
 				});
 
 				message.channel
-					.createMessage(permsEmbed)
+					.createMessage({ embed: permsEmbed })
 					.catch(e => message.channel.createMessage(e));
 			}
 		);
