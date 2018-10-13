@@ -33,11 +33,11 @@ export default class extends Command {
 		if (role.mentionable) {
 			return this.client.sendReply(
 				message,
-				t('cmd.mentionRole.alreadyDone', { role })
+				t('cmd.mentionRole.alreadyDone', { role: `<@&${role.id}>` })
 			);
 		} else {
 			await role.edit({ mentionable: true }, 'Pinging role');
-			await message.channel.createMessage(`${role}`);
+			await message.channel.createMessage(`<@&${role.id}>`);
 			await role.edit({ mentionable: false }, 'Done pinging role');
 		}
 	}
