@@ -33,7 +33,7 @@ export default class extends Command {
 		if (role.mentionable) {
 			return this.client.sendReply(
 				message,
-				t('cmd.makeMentionable.alreadyDone', { role })
+				t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` })
 			);
 		} else {
 			await role.edit({ mentionable: true }, 'Pinging role');
