@@ -84,7 +84,7 @@ export default class extends Command {
 			message,
 			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,
-				channel: channel.toString(),
+				channel: `<#${channel.id}>`,
 				name
 			})
 		);
