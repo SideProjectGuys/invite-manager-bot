@@ -50,7 +50,7 @@ export default class extends Command {
 						keys.forEach(id => {
 							const i = invs[id];
 							csv +=
-								`${i.id}` +
+								`${i.id},` +
 								`"${i.name.replace(/"/g, '\\"')}",` +
 								`${i.total},` +
 								`${i.regular},` +
