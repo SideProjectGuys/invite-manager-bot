@@ -273,7 +273,7 @@ export default class extends Command {
 				more =
 					'\n' +
 					t('cmd.info.joins.more', {
-						amount: joinTimesKeys.length - 10
+						amount: `**${joinTimesKeys.length - 10}**`
 					});
 			}
 
@@ -295,11 +295,14 @@ export default class extends Command {
 
 				invText +=
 					t('cmd.info.regularInvites.entry', {
-						uses: inv.uses,
+						uses: `**${inv.uses}**`,
 						code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
-						createdAt: moment(inv.createdAt)
-							.locale(lang)
-							.fromNow()
+						createdAt:
+							'**' +
+							moment(inv.createdAt)
+								.locale(lang)
+								.fromNow() +
+							'**'
 					}) + '\n';
 			});
 
@@ -308,7 +311,7 @@ export default class extends Command {
 				more =
 					'\n' +
 					t('cmd.info.regularInvites.more', {
-						amount: invs.length - 10
+						amount: `**${invs.length - 10}**`
 					});
 			}
 
@@ -331,14 +334,17 @@ export default class extends Command {
 			bonusInvs.slice(0, 10).forEach(inv => {
 				customInvText +=
 					t('cmd.info.bonusInvites.entry', {
-						amount: inv.amount,
+						amount: `**${inv.amount}**`,
 						creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
-						date: moment(inv.createdAt)
-							.locale(lang)
-							.fromNow(),
+						date:
+							'**' +
+							moment(inv.createdAt)
+								.locale(lang)
+								.fromNow() +
+							'**',
 						reason: inv.reason
-							? inv.reason
-							: t('cmd.info.bonusInvites.noReason')
+							? `**${inv.reason}**`
+							: '**' + t('cmd.info.bonusInvites.noReason') + '**'
 					}) + '\n';
 			});
 
@@ -347,7 +353,7 @@ export default class extends Command {
 				more =
 					'\n' +
 					t('cmd.info.bonusInvites.more', {
-						amount: bonusInvs.length - 10
+						amount: `**${bonusInvs.length - 10}**`
 					});
 			}
 
@@ -417,7 +423,7 @@ export default class extends Command {
 				more =
 					'\n' +
 					t('cmd.info.invitedMembers.more', {
-						amount: js2.length - 10
+						amount: `**${js2.length - 10}**`
 					});
 			}
 
