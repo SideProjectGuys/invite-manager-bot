@@ -364,17 +364,17 @@
 			}
 		},
 		"memberConfig": {
-			"title": "Your config settings",
-			"text": "Below are all the available config settings.\n\nUse `{{ prefix }}config <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}config <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}config <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"title": "Your memberConfig settings",
+			"text": "Below are all the available memberConfig settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "The memberConfig setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valid config keys"
+				"title": "Valid memberConfig keys"
 			},
-			"notSet": "This config settings is currently not set for any members",
+			"notSet": "This memberConfig settings is currently not set for any members",
 			"current": {
 				"title": "Current Value",
-				"text": "This config is currently set.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it.\nUse `{{ prefix }}config ${key} @{{ username }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} @${args.username} none\\` to clear it.` : '' !}}",
-				"notSet": "This config is currently **not** set.\n\nUse `{{ prefix }}config {{ key }} @{{ username }} <value>` to set it."
+				"text": "This memberConfig is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"notSet": "This memberConfig is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
 			},
 			"previous": {
 				"title": "Previous Value"
@@ -382,14 +382,14 @@
 			"new": {
 				"title": "New Value"
 			},
-			"sameValue": "This config is already set to that value",
+			"sameValue": "This memberConfig is already set to that value",
 			"changed": {
-				"text": "This config has been changed.\n\nUse `{{ prefix }}config ${key} @{{ username }} <value>` to change it again.\nUse `{{ prefix }}config ${key} @{{ username }} none` to reset it to the default."
+				"text": "This memberConfig has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
 			"none": "None",
 			"self": {
 				"args": {
-					"key": "The config setting which you want to show/change.",
+					"key": "The memberConfig setting which you want to show/change.",
 					"user": "The member that the setting is shown/changed for.",
 					"value": "The new value of the setting."
 				},
@@ -685,7 +685,21 @@
 			"keys": {
 				"title": "Fields"
 			},
-			"noneSet": "cmd.inviteCodeConfig.noneSet"
+			"noneSet": "cmd.inviteCodeConfig.noneSet",
+			"current": {
+				"text": "cmd.inviteCodeConfig.current.text",
+				"title": "cmd.inviteCodeConfig.current.title",
+				"notSet": "cmd.inviteCodeConfig.current.notSet"
+			},
+			"changed": {
+				"text": "cmd.inviteCodeConfig.changed.text"
+			},
+			"previous": {
+				"text": "cmd.inviteCodeConfig.previous.text"
+			},
+			"new": {
+				"title": "cmd.inviteCodeConfig.new.title"
+			}
 		},
 		"permissions": {
 			"self": {

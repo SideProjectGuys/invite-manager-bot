@@ -378,6 +378,8 @@ export class Messaging {
 			embed.description = embed.description + `\n\nPage ${page + 1}/${maxPage}`;
 		}
 
+		const sudo: boolean = (prevMsg as any).__sudo;
+
 		if (prevMsg.author.id === this.client.user.id) {
 			prevMsg.edit({ embed });
 			if (!author) {
@@ -392,6 +394,11 @@ export class Messaging {
 				embed,
 				prevMsg.author
 			);
+		}
+
+		// Don't paginate for sudo messages
+		if (sudo) {
+			return;
 		}
 
 		if (page > 0) {

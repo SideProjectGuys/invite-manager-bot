@@ -178,35 +178,38 @@ export class Commands {
 			return;
 		}
 
-		const now = new Date().getTime();
-		let lastCall = this.commandCalls.get(message.author.id);
+		// Ignore rate limiting on sudo messages
+		if (!(message as any).__sudo) {
+			const now = new Date().getTime();
+			let lastCall = this.commandCalls.get(message.author.id);
 
-		if (!lastCall) {
-			lastCall = {
-				last: now,
-				warned: false
-			};
-			this.commandCalls.set(message.author.id, lastCall);
-		} else if (now - lastCall.last < (1 / rateLimit) * 1000) {
-			// Only warn the first time we hit the rate limit
-			if (!lastCall.warned) {
-				lastCall.warned = true;
-				lastCall.last = now + cooldown * 1000;
-				this.client.sendReply(
-					message,
-					t('permissions.rateLimit', {
-						cooldown: cooldown.toString()
-					})
-				);
+			if (!lastCall) {
+				lastCall = {
+					last: now,
+					warned: false
+				};
+				this.commandCalls.set(message.author.id, lastCall);
+			} else if (now - lastCall.last < (1 / rateLimit) * 1000) {
+				// Only warn the first time we hit the rate limit
+				if (!lastCall.warned) {
+					lastCall.warned = true;
+					lastCall.last = now + cooldown * 1000;
+					this.client.sendReply(
+						message,
+						t('permissions.rateLimit', {
+							cooldown: cooldown.toString()
+						})
+					);
+				}
+
+				// but always exit when hitting the limit
+				return;
+			} else if (lastCall.warned) {
+				lastCall.warned = false;
 			}
-
-			// but always exit when hitting the limit
-			return;
-		} else if (lastCall.warned) {
-			lastCall.warned = false;
+			// Update last command execution time
+			lastCall.last = now;
 		}
-		// Update last command execution time
-		lastCall.last = now;
 
 		const isPremium = await this.client.cache.premium.get(guild.id);
 
@@ -316,6 +319,9 @@ export class Commands {
 					.slice(i)
 					.map(a => (a.indexOf(' ') > 0 ? `"${a}"` : a))
 					.join(' ');
+				if (rawVal.length === 0) {
+					rawVal = undefined;
+				}
 			}
 
 			try {

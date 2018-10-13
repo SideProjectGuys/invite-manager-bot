@@ -131,34 +131,38 @@ export default class extends Command {
 				permsEmbed.fields.push({
 					name: 'Bot permissions',
 					value:
-						'```\n' +
-						(response.perms.join('\n').substr(0, 1000) as string) +
+						'```json\n' +
+						JSON.stringify(response.perms, null, 2).substr(0, 1000) +
 						'```'
 				});
 
 				permsEmbed.fields.push({
 					name: 'Join channel permissions',
 					value:
-						'```\n' +
-						(response.joinChannelPerms.join('\n').substr(0, 1000) as string) +
+						'```json\n' +
+						JSON.stringify(response.joinChannelPerms, null, 2).substr(0, 1000) +
 						'```'
 				});
 
 				permsEmbed.fields.push({
 					name: 'Leave channel permissions',
 					value:
-						'```\n' +
-						(response.leaveChannelPerms.join('\n').substr(0, 1000) as string) +
+						'```json\n' +
+						JSON.stringify(response.leaveChannelPerms, null, 2).substr(
+							0,
+							1000
+						) +
 						'```'
 				});
 
 				permsEmbed.fields.push({
 					name: 'Rank announcement channel permissions',
 					value:
-						'```\n' +
-						(response.announceChannelPerms
-							.join('\n')
-							.substr(0, 1000) as string) +
+						'```json\n' +
+						JSON.stringify(response.announceChannelPerms, null, 2).substr(
+							0,
+							1000
+						) +
 						'```'
 				});
 

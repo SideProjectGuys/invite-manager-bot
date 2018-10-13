@@ -44,7 +44,7 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		if (me.permission.has(Permissions.KICK_MEMBERS)) {
+		if (!me.permission.has(Permissions.KICK_MEMBERS)) {
 			embed.description = t('cmd.kick.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.kick(reason));

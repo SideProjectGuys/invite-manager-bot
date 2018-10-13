@@ -1,6 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
+import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -19,6 +20,19 @@ export default class extends Command {
 			name: OwnerCommand.sudo,
 			aliases: ['owner-sudo', 'osu'],
 			// desc: 'Run commands for another guild',
+			args: [
+				{
+					name: 'guildId',
+					resolver: StringResolver,
+					required: true
+				},
+				{
+					name: 'command',
+					resolver: StringResolver,
+					required: true,
+					rest: true
+				}
+			],
 			guildOnly: true,
 			hidden: true
 		});
@@ -73,7 +87,7 @@ export default class extends Command {
 				if (response.error) {
 					this.client.sendReply(message, response.error);
 				} else {
-					this.client.sendReply(message, response.data);
+					this.client.sendReply(message, response.data.embed);
 				}
 			}
 		);

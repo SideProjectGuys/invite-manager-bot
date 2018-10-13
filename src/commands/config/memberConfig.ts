@@ -1,10 +1,9 @@
-import { Guild, Message, User } from 'eris';
+import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import {
-	BooleanResolver,
 	EnumResolver,
-	Resolver,
+	SettingsValueResolver,
 	UserResolver
 } from '../../resolvers';
 import {
@@ -13,30 +12,11 @@ import {
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	sequelize,
-	memberSettingsTypes
+	memberSettingsTypes,
+	sequelize
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-
-class ValueResolver extends Resolver {
-	public resolve(
-		value: any,
-		context: Context,
-		[key]: [MemberSettingsKey]
-	): Promise<any> {
-		switch (memberSettingsTypes[key]) {
-			case 'Boolean':
-				return new BooleanResolver(this.client).resolve(value, context);
-
-			case 'String':
-				return value;
-
-			default:
-				return;
-		}
-	}
-}
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -54,7 +34,11 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: ValueResolver,
+					resolver: new SettingsValueResolver(
+						client,
+						memberSettingsTypes,
+						defaultMemberSettings
+					),
 					rest: true
 				}
 			],
@@ -202,7 +186,11 @@ export default class extends Command {
 			value
 		});
 
-		embed.description = t('cmd.memberConfig.changed.text', { prefix });
+		embed.description = t('cmd.memberConfig.changed.text', {
+			prefix,
+			key,
+			username
+		});
 
 		// Log the settings change
 		this.client.logAction(guild, message, LogAction.memberConfig, {
@@ -226,41 +214,6 @@ export default class extends Command {
 		oldVal = value; // Update value for future use
 
 		return this.client.sendReply(message, embed);
-	}
-
-	// Convert a raw value into something we can save in the database
-	private toDbValue(
-		guild: Guild,
-		key: MemberSettingsKey,
-		value: any
-	): { value?: string; error?: string } {
-		if (value === 'default') {
-			return { value: defaultMemberSettings[key] };
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return { value: null };
-		}
-
-		const type = memberSettingsTypes[key];
-		if (type === 'Boolean') {
-			return { value: value ? 'true' : 'false' };
-		}
-
-		return { value };
-	}
-
-	// Convert a DB value into a human readable value
-	private fromDbValue(key: MemberSettingsKey, value: string): string {
-		if (value === undefined || value === null) {
-			return value;
-		}
-
-		/*const type = getMemberSettingsType(key);
-		if (type === 'Channel') {
-			return `<#${ value }> `;
-		}*/
-
-		return value;
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)

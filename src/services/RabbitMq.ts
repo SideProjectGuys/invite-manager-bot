@@ -131,7 +131,9 @@ export class RabbitMq {
 		}
 
 		console.log(
-			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${message}`
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${JSON.stringify(
+				message
+			)}`
 		);
 
 		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
@@ -340,7 +342,9 @@ export class RabbitMq {
 			);
 
 			// Send the message now so it doesn't take too long
-			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg });
+			await joinChannel.createMessage(
+				typeof msg === 'string' ? msg : { embed: msg }
+			);
 		}
 	}
 
@@ -451,7 +455,9 @@ export class RabbitMq {
 				inviterDiscriminator
 			);
 
-			leaveChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg });
+			leaveChannel.createMessage(
+				typeof msg === 'string' ? msg : { embed: msg }
+			);
 		}
 	}
 
@@ -495,6 +501,8 @@ export class RabbitMq {
 					} else {
 						joinChannelPerms = { 'Invalid channel': true };
 					}
+				} else {
+					joinChannelPerms = { 'Not set': true };
 				}
 
 				let leaveChannelPerms: { [key: string]: boolean } = {};
@@ -506,6 +514,8 @@ export class RabbitMq {
 					} else {
 						leaveChannelPerms = { 'Invalid channel': true };
 					}
+				} else {
+					leaveChannelPerms = { 'Not set': true };
 				}
 
 				let annChannelPerms: { [key: string]: boolean } = {};
@@ -517,9 +527,16 @@ export class RabbitMq {
 					} else {
 						annChannelPerms = { 'Invalid channel': true };
 					}
+				} else {
+					annChannelPerms = { 'Not set': true };
 				}
 
+				const owner = await this.client
+					.getRESTUser(guild.ownerID)
+					.catch(() => undefined);
+
 				sendResponse({
+					owner,
 					settings: sets,
 					perms,
 					joinChannelPerms,
@@ -540,10 +557,18 @@ export class RabbitMq {
 					});
 				}
 
-				const channel = new FakeChannel({ id: 'fake' }, guild, 100);
+				const channel = new FakeChannel(
+					{ id: 'fake', name: 'fake' },
+					guild,
+					100
+				);
+				this.client.channelGuildMap[channel.id] = guild.id;
+				guild.channels.add(channel);
 
 				channel.listener = data => {
 					console.log(data);
+					delete this.client.channelGuildMap[channel.id];
+					guild.channels.remove(channel);
 					sendResponse({ data });
 				};
 
@@ -553,9 +578,11 @@ export class RabbitMq {
 						content: `<@!${this.client.user.id}>${
 							content.sudoCmd
 						} ${content.args.join(' ')}`,
+						channel_id: channel.id,
 						author: this.client.users.get(content.authorId),
 						embeds: [],
-						attachments: []
+						attachments: [],
+						mentions: []
 					},
 					this.client
 				);

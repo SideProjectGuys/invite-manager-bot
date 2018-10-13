@@ -2,17 +2,17 @@ import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import {
-	settingsDescription,
-	memberSettingsDescription
+	memberSettingsDescription,
+	settingsDescription
 } from '../../exportConfigTypes';
 import {
+	ArrayResolver,
 	BooleanResolver,
 	ChannelResolver,
 	NumberResolver,
 	RoleResolver,
 	StringResolver
 } from '../../resolvers';
-import { ArrayResolver } from '../../resolvers/ArrayResolver';
 import {
 	InviteCodeSettingsKey,
 	Lang,

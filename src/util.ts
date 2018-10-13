@@ -187,7 +187,7 @@ export async function promoteIfQualified(
 						totalInvites: totalInvites.toString()
 					});
 					rankChannel
-						.createMessage(msg)
+						.createMessage(typeof msg === 'string' ? msg : { embed: msg })
 						.then((m: Message) => m.addReaction('🎉'));
 				}
 			} else {

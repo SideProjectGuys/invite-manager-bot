@@ -309,7 +309,7 @@ export class IMClient extends Client {
 		const numGuilds = await this.getGuildsCount();
 		this.editStatus('online', {
 			name: `invitemanager.co - ${numGuilds} servers!`,
-			type: 2
+			type: 1
 		});
 	}
 

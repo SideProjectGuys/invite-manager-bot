@@ -1,13 +1,10 @@
-import { Guild, Invite, Message } from 'eris';
+import { Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import {
-	BooleanResolver,
-	ChannelResolver,
 	EnumResolver,
 	InviteCodeResolver,
-	NumberResolver,
-	Resolver
+	SettingsValueResolver
 } from '../../resolvers';
 import {
 	channels,
@@ -15,36 +12,11 @@ import {
 	inviteCodes,
 	inviteCodeSettings,
 	InviteCodeSettingsKey,
-	LogAction,
-	inviteCodeSettingsTypes
+	inviteCodeSettingsTypes,
+	LogAction
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-
-class ValueResolver extends Resolver {
-	public resolve(
-		value: any,
-		context: Context,
-		[key]: [InviteCodeSettingsKey]
-	): Promise<any> {
-		switch (inviteCodeSettingsTypes[key]) {
-			case 'Channel':
-				return new ChannelResolver(this.client).resolve(value, context);
-
-			case 'Boolean':
-				return new BooleanResolver(this.client).resolve(value, context);
-
-			case 'Number':
-				return new NumberResolver(this.client).resolve(value, context);
-
-			case 'String':
-				return value;
-
-			default:
-				return;
-		}
-	}
-}
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -65,7 +37,11 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: ValueResolver,
+					resolver: new SettingsValueResolver(
+						client,
+						inviteCodeSettingsTypes,
+						defaultInviteCodeSettings
+					),
 					rest: true
 				}
 			],
@@ -177,7 +153,7 @@ export default class extends Command {
 			}
 		}
 
-		const parsedValue = this.toDbValue(guild, key, rawValue);
+		const parsedValue = this.toDbValue(key, rawValue);
 		if (parsedValue.error) {
 			return this.client.sendReply(message, parsedValue.error);
 		}
@@ -196,7 +172,7 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		const error = this.validate(message, key, value, context);
+		const error = this.validate(value);
 		if (error) {
 			return this.client.sendReply(message, error);
 		}
@@ -253,71 +229,10 @@ export default class extends Command {
 		return this.client.sendReply(message, embed);
 	}
 
-	// Convert a raw value into something we can save in the database
-	private toDbValue(
-		guild: Guild,
-		key: InviteCodeSettingsKey,
-		value: any
-	): { value?: string; error?: string } {
-		if (value === 'default') {
-			return { value: defaultInviteCodeSettings[key] };
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return { value: null };
-		}
-
-		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value
-				.split(' ')
-				.map((r: string) => r.substring(3, r.length - 1));
-			return { value: roles.join(',') };
-		}
-
-		const type = inviteCodeSettingsTypes[key];
-		if (type === 'Boolean') {
-			return { value: value ? 'true' : 'false' };
-		}
-
-		return { value };
-	}
-
-	// Convert a DB value into a human readable value
-	private fromDbValue(key: InviteCodeSettingsKey, value: string): string {
-		if (value === undefined || value === null) {
-			return value;
-		}
-
-		if (key === InviteCodeSettingsKey.roles) {
-			return value
-				.split(',')
-				.map(r => `<@&${r}>`)
-				.join(' ');
-		}
-
-		/*const type = getMemberSettingsType(key);
-		if (type === 'Channel') {
-			return `<#${value}>`;
-		}*/
-
-		return value;
-	}
-
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(
-		message: Message,
-		key: InviteCodeSettingsKey,
-		value: any,
-		{ guild, t }: Context
-	): string | null {
+	private validate(value: any): string | null {
 		if (value === null || value === undefined) {
 			return null;
-		}
-
-		if (key === InviteCodeSettingsKey.roles) {
-			const roles: string[] = value.split(/[ ,]/g);
-			if (!roles.every(r => !!guild.roles.get(r))) {
-				return t('cmd.inviteCodeConfig.invalidRole');
-			}
 		}
 
 		/*const type = getMemberSettingsType(key);*/

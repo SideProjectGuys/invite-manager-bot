@@ -52,7 +52,7 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		if (me.permission.has(Permissions.BAN_MEMBERS)) {
+		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.ban.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.ban(deleteMessageDays, reason));

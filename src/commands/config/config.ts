@@ -2,16 +2,7 @@ import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import { settingsDescription } from '../../exportConfigTypes';
-import {
-	BooleanResolver,
-	ChannelResolver,
-	EnumResolver,
-	NumberResolver,
-	Resolver,
-	RoleResolver,
-	StringResolver
-} from '../../resolvers';
-import { ArrayResolver } from '../../resolvers/ArrayResolver';
+import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -26,65 +17,6 @@ import {
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
-class ValueResolver extends Resolver {
-	public resolve(
-		value: any,
-		context: Context,
-		[key]: [SettingsKey]
-	): Promise<any> {
-		if (typeof value === typeof undefined || value.length === 0) {
-			return;
-		}
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return null;
-		}
-		if (value === 'default') {
-			return defaultSettings[key] as any;
-		}
-
-		switch (settingsTypes[key]) {
-			case 'Channel':
-				return new ChannelResolver(this.client).resolve(value, context);
-
-			case 'Channel[]':
-				return new ArrayResolver(this.client, ChannelResolver).resolve(
-					value,
-					context,
-					[key]
-				);
-
-			case 'Boolean':
-				return new BooleanResolver(this.client).resolve(value, context);
-
-			case 'Number':
-				return new NumberResolver(this.client).resolve(value, context);
-
-			case 'Role':
-				return new RoleResolver(this.client).resolve(value, context);
-
-			case 'Role[]':
-				return new ArrayResolver(this.client, RoleResolver).resolve(
-					value,
-					context,
-					[key]
-				);
-
-			case 'String':
-				return value;
-
-			case 'String[]':
-				return new ArrayResolver(this.client, StringResolver).resolve(
-					value,
-					context,
-					[key]
-				);
-
-			default:
-				return;
-		}
-	}
-}
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -97,7 +29,11 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: ValueResolver,
+					resolver: new SettingsValueResolver(
+						client,
+						settingsTypes,
+						defaultSettings
+					),
 					rest: true
 				}
 			],
@@ -144,19 +80,20 @@ export default class extends Command {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
 			if (oldVal !== null) {
-				const clear = defaultSettings[key] === null ? 't' : undefined;
-				embed.description =
-					t('cmd.config.current.text', {
-						prefix,
-						key
-					}) +
-					(clear
-						? '\n' +
-						  t('cmd.config.current.clear', {
-								prefix,
-								key
-						  })
-						: '');
+				embed.description = t('cmd.config.current.text', {
+					prefix,
+					key
+				});
+
+				if (defaultSettings[key] === null ? 't' : undefined) {
+					embed.description +=
+						'\n' +
+						t('cmd.config.current.clear', {
+							prefix,
+							key
+						});
+				}
+
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
 					value: this.beautify(key, oldVal)
@@ -252,30 +189,6 @@ export default class extends Command {
 			}
 			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
 				return t('cmd.config.channel.canNotSendEmbeds');
-			}
-		}
-		if (key === SettingsKey.lang) {
-			if (!Lang[value]) {
-				const langs = Object.keys(Lang)
-					.map(k => `** ${k}** `)
-					.join(', ');
-				return t('cmd.config.invalid.lang', { value, langs });
-			}
-		}
-		if (key === SettingsKey.leaderboardStyle) {
-			if (!LeaderboardStyle[value]) {
-				const styles = Object.keys(LeaderboardStyle)
-					.map(k => `** ${k}** `)
-					.join(', ');
-				return t('cmd.config.invalid.leaderboardStyle', { value, styles });
-			}
-		}
-		if (key === SettingsKey.rankAssignmentStyle) {
-			if (!RankAssignmentStyle[value]) {
-				const styles = Object.keys(RankAssignmentStyle)
-					.map(k => `** ${k}** `)
-					.join(', ');
-				return t('cmd.config.invalid.rankAssignmentStyle', { value, styles });
 			}
 		}
 

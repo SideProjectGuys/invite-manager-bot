@@ -48,7 +48,11 @@ export class SettingsCache extends Cache<SettingsObject> {
 		return obj;
 	}
 
-	public async setOne(guildId: string, key: SettingsKey, value: any) {
+	public async setOne<K extends SettingsKey>(
+		guildId: string,
+		key: K,
+		value: SettingsObject[K]
+	) {
 		const cfg = await this.get(guildId);
 		const dbVal = this.toDbValue(key, value);
 		const val = this.fromDbValue(key, dbVal);

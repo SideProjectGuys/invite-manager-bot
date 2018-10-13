@@ -330,7 +330,10 @@ export type InternalSettingsTypes =
 	| 'Role'
 	| 'String[]'
 	| 'Channel[]'
-	| 'Role[]';
+	| 'Role[]'
+	| 'Enum<LeaderboardStyle>'
+	| 'Enum<RankAssignmentStyle>'
+	| 'Enum<Lang>';
 
 export type SettingsTypesObject = { [k in SettingsKey]: InternalSettingsTypes };
 
@@ -359,7 +362,7 @@ export enum RankAssignmentStyle {
 
 export const settingsTypes: SettingsTypesObject = {
 	prefix: 'String',
-	lang: 'String',
+	lang: 'Enum<Lang>',
 	logChannel: 'Channel',
 	getUpdates: 'Boolean',
 
@@ -368,14 +371,14 @@ export const settingsTypes: SettingsTypesObject = {
 	leaveMessage: 'String',
 	leaveMessageChannel: 'Channel',
 
-	leaderboardStyle: 'String',
+	leaderboardStyle: 'Enum<LeaderboardStyle>',
 	hideLeftMembersFromLeaderboard: 'Boolean',
 
 	autoSubtractFakes: 'Boolean',
 	autoSubtractLeaves: 'Boolean',
 	autoSubtractLeaveThreshold: 'Number' /* seconds */,
 
-	rankAssignmentStyle: 'String',
+	rankAssignmentStyle: 'Enum<RankAssignmentStyle>',
 	rankAnnouncementChannel: 'Channel',
 	rankAnnouncementMessage: 'String',
 
@@ -564,6 +567,10 @@ export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
 
+export type MemberSettingsObject = {
+	hideFromLeaderboard: boolean;
+};
+
 export type MemberSettingsTypesObject = {
 	[k in MemberSettingsKey]: InternalSettingsTypes
 };
@@ -572,8 +579,8 @@ export const memberSettingsTypes: MemberSettingsTypesObject = {
 	hideFromLeaderboard: 'Boolean'
 };
 
-export const defaultMemberSettings: { [k in MemberSettingsKey]: string } = {
-	hideFromLeaderboard: 'false'
+export const defaultMemberSettings: MemberSettingsObject = {
+	hideFromLeaderboard: false
 };
 
 export interface MemberSettingsAttributes extends BaseAttributes {
@@ -681,6 +688,11 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
+export type InviteCodeSettingsObject = {
+	name: string;
+	roles: string[];
+};
+
 export type InviteCodeSettingsTypesObject = {
 	[k in InviteCodeSettingsKey]: InternalSettingsTypes
 };
@@ -690,9 +702,7 @@ export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
 	roles: 'Role[]'
 };
 
-export const defaultInviteCodeSettings: {
-	[k in InviteCodeSettingsKey]: string
-} = {
+export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
 	name: null,
 	roles: null
 };

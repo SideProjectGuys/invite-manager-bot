@@ -1,3 +1,4 @@
+export * from './ArrayResolver';
 export * from './BooleanResolver';
 export * from './ChannelResolver';
 export * from './CommandResolver';
@@ -7,6 +8,7 @@ export * from './NumberResolver';
 export * from './Resolver';
 export * from './RoleResolver';
 export * from './StringResolver';
+export * from './SettingsValueResolver';
 export * from './UserResolver';
 export * from './MemberResolver';
 export * from './DurationResolver';

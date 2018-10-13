@@ -1,6 +1,7 @@
-import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
-import { Cache } from './Cache';
 import { rolePermissions, roles } from '../sequelize';
+import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
+
+import { Cache } from './Cache';
 
 const config = require('../../config.json');
 

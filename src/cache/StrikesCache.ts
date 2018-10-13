@@ -1,5 +1,6 @@
-import { Cache } from './Cache';
 import { StrikeConfigInstance, strikeConfigs } from '../sequelize';
+
+import { Cache } from './Cache';
 
 export class StrikesCache extends Cache<StrikeConfigInstance[]> {
 	protected initOne(guildId: string): StrikeConfigInstance[] {
