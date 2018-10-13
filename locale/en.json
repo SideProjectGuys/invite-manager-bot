@@ -64,8 +64,8 @@
 			}
 		},
 		"addRank": {
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} and has the following description: {{ description }}",
-			"created": "Added rank {{{ role }}} which needs {{ invites }} and has the following description: {{ description }}",
+			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
+			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
 			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
 			"self": {
 				"args": {
@@ -88,7 +88,8 @@
 					"reason": "Why was the user banned."
 				},
 				"description": "Ban a member from the server."
-			}
+			},
+			"missingPermissions": "cmd.ban.missingPermissions"
 		},
 		"botInfo": {
 			"version": "Version",
@@ -252,28 +253,28 @@
 			"joins": {
 				"title": "Joins",
 				"entry": {
-					"text": "**${{ total }}** times **{{ time }}**, invited by:",
-					"invite": "{{{ member }}} (**{{ times }}** times)"
+					"text": "${{ total }} times {{ time }}, invited by:",
+					"invite": "{{{ member }}} ({{ times }} times)"
 				},
-				"more": "Plus another **{{ amount }}** more joins",
+				"more": "Plus another {{ amount }} more joins",
 				"unknown": "unknown (this only works for new members)"
 			},
 			"regularInvites": {
 				"title": "Regular invites",
-				"entry": "**{{ uses }}** from {{ code }} - created **{{ createdAt }}",
-				"more": "Plus another **{{ amount }}** more invite codes",
+				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
+				"more": "Plus another {{ amount }} more invite codes",
 				"none": "This member has not invited anyone so far"
 			},
 			"bonusInvites": {
 				"title": "Bonus invites",
-				"entry": "**{{ amount }}** from {{{ creator }}} - **{{ date }}**, reason: {{ reason }}",
-				"more": "Plus another **{{ amount }}** more bonus invites",
+				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
+				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "This member has received no bonuses so far",
 				"noReason": "No reason"
 			},
 			"invitedMembers": {
 				"title": "Invited members",
-				"more": "Plus another **{{ amount }}** more bonus invites",
+				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "This member has not invited anyone else so far"
 			},
 			"self": {
@@ -560,7 +561,7 @@
 			}
 		},
 		"createInvite": {
-			"done": "Created invite code **{{ code }}** named **{{ name }}** for {{ channel }}.",
+			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
 			"self": {
 				"args": {
 					"name": "The name of the invite code.",
@@ -683,7 +684,8 @@
 			"text": "Set configs for individual invite codes.",
 			"keys": {
 				"title": "Fields"
-			}
+			},
+			"noneSet": "cmd.inviteCodeConfig.noneSet"
 		},
 		"permissions": {
 			"self": {
