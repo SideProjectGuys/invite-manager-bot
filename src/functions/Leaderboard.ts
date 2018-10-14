@@ -45,6 +45,7 @@ const attrs: FindOptionsAttributesArray = [
 
 type InvCacheType = {
 	[x: string]: {
+		id: string;
 		name: string;
 		total: number;
 		regular: number;
@@ -118,6 +119,7 @@ export async function generateLeaderboard(
 	codeInvs.forEach((inv: any) => {
 		const id = inv.inviterId;
 		invs[id] = {
+			id,
 			name: inv['inviter.name'],
 			total: parseInt(inv.totalJoins, 10),
 			regular: parseInt(inv.totalJoins, 10),
@@ -145,6 +147,7 @@ export async function generateLeaderboard(
 			invs[id].leaves = lvs;
 		} else {
 			invs[id] = {
+				id,
 				name: inv['member.name'],
 				total: custom + clearReg + fake + lvs,
 				regular: clearReg,
@@ -214,6 +217,7 @@ export async function generateLeaderboard(
 				invs[id].oldRegular = parseInt(inv.totalJoins, 10);
 			} else {
 				invs[id] = {
+					id,
 					name: inv['inviter.name'],
 					total: 0,
 					regular: 0,
@@ -242,6 +246,7 @@ export async function generateLeaderboard(
 				invs[id].oldLeaves = lvs;
 			} else {
 				invs[id] = {
+					id,
 					name: inv['member.name'],
 					total: 0,
 					regular: 0,
