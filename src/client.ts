@@ -115,7 +115,6 @@ export class IMClient extends Client {
 				unknownCommandError: false
 			},
 			{
-				apiRequestMethod: 'burst',
 				disableEveryone: true,
 				shardId: shardId - 1,
 				shardCount,

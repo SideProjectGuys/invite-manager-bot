@@ -69,12 +69,13 @@ export default class extends Command<IMClient> {
 
 		sendReply(message, embed).then(async (msg: Message) => {
 			if (type === 'leaderboard') {
-				let csv = 'Name,Total Invites,Regular,Custom,Fake,Leaves\n';
+				let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
 				const { keys, invs } = await generateLeaderboard(message.guild);
 				keys.forEach(id => {
 					const i = invs[id];
 					csv +=
+						`${i.id},` +
 						`"${i.name.replace(/"/g, '\\"')}",` +
 						`${i.total},` +
 						`${i.regular},` +
