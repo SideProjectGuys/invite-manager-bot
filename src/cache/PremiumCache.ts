@@ -1,8 +1,8 @@
 import { premiumSubscriptions, sequelize } from '../sequelize';
 
-import { Cache } from './Cache';
+import { GuildCache } from './GuildCache';
 
-export class PremiumCache extends Cache<boolean> {
+export class PremiumCache extends GuildCache<boolean> {
 	protected initOne(guildId: string): boolean {
 		return false;
 	}

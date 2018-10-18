@@ -119,7 +119,8 @@ export enum OwnerCommand {
 	flushPremium = 'ownerFlushPremium',
 	givePremium = 'ownerGivePremium',
 	help = 'ownerHelp',
-	sudo = 'sudo'
+	sudo = 'sudo',
+	cache = 'cache'
 }
 
 export interface RabbitMqMember {

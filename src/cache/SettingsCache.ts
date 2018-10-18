@@ -1,16 +1,13 @@
-import { Channel, Role } from 'eris';
-
 import {
 	defaultSettings,
 	settings,
 	SettingsKey,
-	SettingsObject,
-	settingsTypes
+	SettingsObject
 } from '../sequelize';
 
-import { Cache } from './Cache';
+import { GuildCache } from './GuildCache';
 
-export class SettingsCache extends Cache<SettingsObject> {
+export class SettingsCache extends GuildCache<SettingsObject> {
 	protected initOne(guildId: string): SettingsObject {
 		return { ...defaultSettings };
 	}
@@ -78,66 +75,5 @@ export class SettingsCache extends Cache<SettingsObject> {
 		}
 
 		return val;
-	}
-
-	private toDbValue(key: SettingsKey, value: any): string {
-		const type = settingsTypes[key];
-
-		if (value === 'default') {
-			return this._toDbValue(type, defaultSettings[key]);
-		}
-
-		return this._toDbValue(type, value);
-	}
-	private _toDbValue(type: string, value: any): string {
-		if (value === 'none' || value === 'empty' || value === 'null') {
-			return null;
-		}
-
-		if (type === 'Channel') {
-			if (typeof value === 'string') {
-				return value;
-			} else {
-				return (value as Channel).id;
-			}
-		} else if (type === 'Role') {
-			if (typeof value === 'string') {
-				return value;
-			} else {
-				return (value as Role).id;
-			}
-		} else if (type === 'Boolean') {
-			return value ? 'true' : 'false';
-		} else if (type.endsWith('[]')) {
-			const subType = type.substring(0, type.length - 2);
-			return value.map((v: any) => this._toDbValue(subType, v)).join(',');
-		}
-
-		return value;
-	}
-
-	private fromDbValue(key: SettingsKey, value: string): any {
-		const type = settingsTypes[key];
-		return this._fromDbValue(type, value);
-	}
-	private _fromDbValue(type: string, value: string): any {
-		if (value === undefined || value === null) {
-			return null;
-		}
-
-		if (type === 'Boolean') {
-			return value === 'true';
-		} else if (type === 'Number') {
-			return parseInt(value, 10);
-		} else if (type.endsWith('[]')) {
-			const subType = type.substring(0, type.length - 2);
-			const splits = value.split(',');
-			return splits.map(s => this._fromDbValue(subType, s)) as
-				| string[]
-				| number[]
-				| boolean[];
-		}
-
-		return value;
 	}
 }

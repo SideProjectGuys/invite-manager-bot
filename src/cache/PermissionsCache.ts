@@ -1,7 +1,7 @@
 import { rolePermissions, roles } from '../sequelize';
 import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
 
-import { Cache } from './Cache';
+import { GuildCache } from './GuildCache';
 
 const config = require('../../config.json');
 
@@ -9,7 +9,7 @@ type PermissionsObject = {
 	[key in BotCommand | OwnerCommand | ModerationCommand]: string[]
 };
 
-export class PermissionsCache extends Cache<PermissionsObject> {
+export class PermissionsCache extends GuildCache<PermissionsObject> {
 	protected initOne(guildId: string) {
 		// Create permissions map
 		const obj: PermissionsObject = {} as any;

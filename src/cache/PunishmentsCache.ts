@@ -1,8 +1,8 @@
 import { PunishmentConfigInstance, punishmentConfigs } from '../sequelize';
 
-import { Cache } from './Cache';
+import { GuildCache } from './GuildCache';
 
-export class PunishmentCache extends Cache<PunishmentConfigInstance[]> {
+export class PunishmentCache extends GuildCache<PunishmentConfigInstance[]> {
 	protected initOne(guildId: string): PunishmentConfigInstance[] {
 		return [];
 	}
