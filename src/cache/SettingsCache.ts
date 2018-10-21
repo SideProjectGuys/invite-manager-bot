@@ -4,6 +4,7 @@ import {
 	SettingsKey,
 	SettingsObject
 } from '../sequelize';
+import { fromDbValue, toDbValue } from '../settings';
 
 import { GuildCache } from './GuildCache';
 
@@ -29,10 +30,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 			if (set.value === null && defaultSettings[set.key] !== null) {
 				return;
 			}
-			this.cache.get(set.guildId)[set.key] = this.fromDbValue(
-				set.key,
-				set.value
-			);
+			this.cache.get(set.guildId)[set.key] = fromDbValue(set.key, set.value);
 		});
 	}
 
@@ -40,7 +38,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		const sets = await settings.findAll({ where: { guildId } });
 
 		const obj: SettingsObject = { ...defaultSettings };
-		sets.forEach(set => (obj[set.key] = this.fromDbValue(set.key, set.value)));
+		sets.forEach(set => (obj[set.key] = fromDbValue(set.key, set.value)));
 
 		return obj;
 	}
@@ -51,8 +49,8 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		value: SettingsObject[K]
 	) {
 		const cfg = await this.get(guildId);
-		const dbVal = this.toDbValue(key, value);
-		const val = this.fromDbValue(key, dbVal);
+		const dbVal = toDbValue(key, value);
+		const val = fromDbValue(key, dbVal);
 
 		// Check if the value changed
 		if (cfg[key] !== val) {

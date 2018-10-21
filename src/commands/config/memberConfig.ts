@@ -15,6 +15,7 @@ import {
 	memberSettingsTypes,
 	sequelize
 } from '../../sequelize';
+import { fromDbValue, toDbValue } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -94,7 +95,7 @@ export default class extends Command {
 				allSets.forEach((set: any) =>
 					embed.fields.push({
 						name: set.memberName,
-						value: this.fromDbValue(set.key, set.value)
+						value: fromDbValue(set.key, set.value)
 					})
 				);
 			} else {
@@ -114,7 +115,7 @@ export default class extends Command {
 		});
 
 		let oldVal = oldSet ? oldSet.value : undefined;
-		let oldRawVal = this.fromDbValue(key, oldVal);
+		let oldRawVal = fromDbValue(key, oldVal);
 		if (oldRawVal && oldRawVal.length > 1000) {
 			oldRawVal = oldRawVal.substr(0, 1000) + '...';
 		}
@@ -154,12 +155,7 @@ export default class extends Command {
 			}
 		}
 
-		const parsedValue = this.toDbValue(guild, key, rawValue);
-		if (parsedValue.error) {
-			return this.client.sendReply(message, parsedValue.error);
-		}
-
-		const value = parsedValue.value;
+		const value = toDbValue(key, rawValue);
 		if (rawValue.length > 1000) {
 			rawValue = `${rawValue.substr(0, 1000)}...`;
 		}

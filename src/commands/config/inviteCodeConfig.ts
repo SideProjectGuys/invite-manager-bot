@@ -1,4 +1,4 @@
-import { Invite, Message } from 'eris';
+import { Embed, Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import {
@@ -7,14 +7,12 @@ import {
 	SettingsValueResolver
 } from '../../resolvers';
 import {
-	channels,
 	defaultInviteCodeSettings,
-	inviteCodes,
-	inviteCodeSettings,
 	InviteCodeSettingsKey,
 	inviteCodeSettingsTypes,
 	LogAction
 } from '../../sequelize';
+import { beautify } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -22,7 +20,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.inviteCodeConfig,
-			aliases: ['invite-code-config', 'invcodeconf', 'icc'],
+			aliases: ['invite-code-config', 'icc'],
 			args: [
 				{
 					name: 'key',
@@ -32,7 +30,7 @@ export default class extends Command {
 					)
 				},
 				{
-					name: 'code',
+					name: 'inviteCode',
 					resolver: InviteCodeResolver
 				},
 				{
@@ -53,10 +51,10 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, inv, rawValue]: [InviteCodeSettingsKey, Invite, any],
+		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
 		context: Context
 	): Promise<any> {
-		const { guild, t, settings } = context;
+		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
 		const embed = this.client.createEmbed();
 
@@ -74,19 +72,12 @@ export default class extends Command {
 		}
 
 		if (!inv) {
-			const allSets = await inviteCodeSettings.findAll({
-				attributes: ['id', 'key', 'value', 'inviteCode'],
-				where: {
-					guildId: guild.id,
-					key
-				},
-				raw: true
-			});
-			if (allSets.length > 0) {
-				allSets.forEach((set: any) =>
+			const allSets = await this.client.cache.inviteCodes.getByGuild(guild.id);
+			if (allSets.size > 0) {
+				allSets.forEach((set, invCode) =>
 					embed.fields.push({
-						name: set.inviteCode,
-						value: this.fromDbValue(set.key, set.value)
+						name: invCode,
+						value: beautify(key, set[key])
 					})
 				);
 			} else {
@@ -103,140 +94,119 @@ export default class extends Command {
 			);
 		}
 
-		const oldSet = await inviteCodeSettings.find({
-			where: {
-				guildId: guild.id,
-				inviteCode: inv.code,
-				key
-			},
-			raw: true
-		});
+		let codeSettings = await this.client.cache.inviteCodes.get(inv.code);
+		let oldVal = codeSettings[key];
+		embed.title = `${inv.code} - ${key}`;
 
-		let oldVal = oldSet ? oldSet.value : undefined;
-		let oldRawVal = this.fromDbValue(key, oldVal);
-		if (oldRawVal && oldRawVal.length > 1000) {
-			oldRawVal = oldRawVal.substr(0, 1000) + '...';
-		}
-
-		embed.title = key;
-
-		if (typeof rawValue === typeof undefined) {
+		if (typeof value === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
-			if (oldVal) {
-				const clear = defaultInviteCodeSettings[key] === null ? 't' : undefined;
+			if (oldVal !== null) {
 				embed.description = t('cmd.inviteCodeConfig.current.text', {
 					prefix,
-					key,
-					code: inv.code,
-					clear
+					key
 				});
+
+				if (defaultInviteCodeSettings[key] === null ? 't' : undefined) {
+					embed.description +=
+						'\n' +
+						t('cmd.inviteCodeConfig.current.clear', {
+							prefix,
+							key
+						});
+				}
+
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: oldRawVal
+					value: beautify(key, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
-					prefix
+					prefix,
+					key
 				});
 			}
 			return this.client.sendReply(message, embed);
 		}
 
-		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+		// If the value is null we want to clear it. Check if that's allowed.
+		if (value === null) {
 			if (defaultInviteCodeSettings[key] !== null) {
-				this.client.sendReply(
+				return this.client.sendReply(
 					message,
 					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })
 				);
-				return;
+			}
+		} else {
+			// Only validate the config setting if we're not resetting or clearing it
+			const error = this.validate(key, value, context);
+			if (error) {
+				return this.client.sendReply(message, error);
 			}
 		}
 
-		const parsedValue = this.toDbValue(key, rawValue);
-		if (parsedValue.error) {
-			return this.client.sendReply(message, parsedValue.error);
-		}
-
-		const value = parsedValue.value;
-		if (rawValue.length > 1000) {
-			rawValue = rawValue.substr(0, 1000) + '...';
-		}
+		// Set new value (we override the local value, because the formatting probably changed)
+		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
+		value = await this.client.cache.inviteCodes.setOne(inv.code, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.current.title'),
-				value: rawValue
+				value: beautify(key, oldVal)
 			});
 			return this.client.sendReply(message, embed);
 		}
 
-		const error = this.validate(value);
-		if (error) {
-			return this.client.sendReply(message, error);
-		}
-
-		await channels.insertOrUpdate({
-			id: inv.channel.id,
-			guildId: inv.guild.id,
-			name: inv.channel.name
-		});
-
-		await inviteCodes.insertOrUpdate({
-			code: inv.code,
-			guildId: inv.guild.id,
-			inviterId: inv.inviter.id,
-			channelId: inv.channel.id,
-			uses: inv.uses,
-			maxAge: inv.maxAge,
-			maxUses: inv.maxUses,
-			temporary: inv.temporary,
-			createdAt: inv.createdAt
-		});
-
-		await inviteCodeSettings.insertOrUpdate({
-			id: null,
-			guildId: guild.id,
-			inviteCode: inv.code,
-			key,
-			value
-		});
-
-		embed.description = t('cmd.inviteCodeConfig.changed.text', { prefix });
+		embed.description = t('cmd.inviteCodeConfig.changed.text', { prefix, key });
 
 		// Log the settings change
-		this.client.logAction(guild, message, LogAction.memberConfig, {
+		this.client.logAction(guild, message, LogAction.config, {
 			key,
-			inviteCode: inv.code,
 			oldValue: oldVal,
 			newValue: value
 		});
 
-		if (oldVal) {
+		if (oldVal !== null) {
 			embed.fields.push({
-				name: t('cmd.inviteCodeConfig.previous.text'),
-				value: oldRawVal
+				name: t('cmd.inviteCodeConfig.previous.title'),
+				value: beautify(key, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.inviteCodeConfig.new.title'),
-			value: value ? rawValue : t('cmd.inviteCodeConfig.none')
+			value:
+				value !== null ? beautify(key, value) : t('cmd.inviteCodeConfig.none')
 		});
-		oldVal = value; // Update value for future use
 
-		return this.client.sendReply(message, embed);
+		// Do any post processing, such as example messages
+		const cb = await this.after(message, embed, key, value, context);
+
+		await this.client.sendReply(message, embed);
+
+		if (typeof cb === typeof Function) {
+			await cb();
+		}
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(value: any): string | null {
-		if (value === null || value === undefined) {
-			return null;
-		}
+	private validate(
+		key: InviteCodeSettingsKey,
+		value: any,
+		{ t, me }: Context
+	): string | null {
+		return null;
+	}
 
-		/*const type = getMemberSettingsType(key);*/
-
+	// Attach additional information for a config value, such as examples
+	private async after(
+		message: Message,
+		embed: Embed,
+		key: InviteCodeSettingsKey,
+		value: any,
+		context: Context
+	): Promise<Function> {
 		return null;
 	}
 }

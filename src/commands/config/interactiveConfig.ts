@@ -4,7 +4,7 @@ import { IMClient } from '../../client';
 import {
 	memberSettingsDescription,
 	settingsDescription
-} from '../../exportConfigTypes';
+} from '../../descriptions/settings';
 import {
 	ArrayResolver,
 	BooleanResolver,

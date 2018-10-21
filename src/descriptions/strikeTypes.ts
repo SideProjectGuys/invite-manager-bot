@@ -1,16 +1,6 @@
 import fs from 'fs';
 
-import { settingsDescription } from './exportConfigTypes';
-import {
-	defaultSettings,
-	Lang,
-	LeaderboardStyle,
-	RankAssignmentStyle,
-	SettingsKey,
-	SettingsObject,
-	settingsTypes,
-	ViolationType
-} from './sequelize';
+import { SettingsKey, ViolationType } from '../sequelize';
 
 interface DescriptionObject {
 	description: string;

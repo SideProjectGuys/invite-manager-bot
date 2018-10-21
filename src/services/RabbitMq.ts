@@ -9,8 +9,6 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey,
 	JoinAttributes,
 	joins,
 	LeaveAttributes,
@@ -296,17 +294,11 @@ export class RabbitMq {
 			mem = await guild.getRESTMember(member.id);
 		}
 		if (mem) {
-			const roleSet = await inviteCodeSettings.find({
-				where: {
-					guildId: guild.id,
-					inviteCode: join.exactMatchCode,
-					key: InviteCodeSettingsKey.roles
-				},
-				raw: true
-			});
-			if (roleSet && roleSet.value) {
-				const roles = roleSet.value.split(',');
-				roles.forEach(r => mem.addRole(r));
+			const invCodeSettings = await this.client.cache.inviteCodes.get(
+				join.exactMatchCode
+			);
+			if (invCodeSettings && invCodeSettings.roles) {
+				invCodeSettings.roles.forEach(r => mem.addRole(r));
 			}
 		}
 

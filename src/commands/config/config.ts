@@ -1,16 +1,13 @@
 import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { settingsDescription } from '../../exportConfigTypes';
+import { settingsDescription } from '../../descriptions/settings';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	defaultSettings,
-	Lang,
-	LeaderboardStyle,
 	LogAction,
-	RankAssignmentStyle,
 	SettingsKey,
 	settingsTypes
 } from '../../sequelize';

@@ -4,6 +4,7 @@ import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
+import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { PermissionsCache } from './cache/PermissionsCache';
 import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
@@ -65,6 +66,7 @@ export class IMClient extends Client {
 		permissions: PermissionsCache;
 		strikes: StrikesCache;
 		punishments: PunishmentCache;
+		inviteCodes: InviteCodeSettingsCache;
 	};
 	public dbQueue: DBQueue;
 
@@ -127,7 +129,8 @@ export class IMClient extends Client {
 			premium: new PremiumCache(this),
 			permissions: new PermissionsCache(this),
 			strikes: new StrikesCache(this),
-			punishments: new PunishmentCache(this)
+			punishments: new PunishmentCache(this),
+			inviteCodes: new InviteCodeSettingsCache(this)
 		};
 		this.dbQueue = new DBQueue(this);
 

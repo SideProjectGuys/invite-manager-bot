@@ -689,17 +689,20 @@
 			"current": {
 				"text": "cmd.inviteCodeConfig.current.text",
 				"title": "cmd.inviteCodeConfig.current.title",
-				"notSet": "cmd.inviteCodeConfig.current.notSet"
+				"notSet": "cmd.inviteCodeConfig.current.notSet",
+				"clear": "cmd.inviteCodeConfig.current.clear"
 			},
 			"changed": {
 				"text": "cmd.inviteCodeConfig.changed.text"
 			},
 			"previous": {
-				"text": "cmd.inviteCodeConfig.previous.text"
+				"text": "cmd.inviteCodeConfig.previous.text",
+				"title": "cmd.inviteCodeConfig.previous.title"
 			},
 			"new": {
 				"title": "cmd.inviteCodeConfig.new.title"
-			}
+			},
+			"sameValue": "cmd.inviteCodeConfig.sameValue"
 		},
 		"permissions": {
 			"self": {

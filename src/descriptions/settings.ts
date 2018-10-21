@@ -4,11 +4,11 @@ import {
 	defaultSettings,
 	Lang,
 	LeaderboardStyle,
+	MemberSettingsKey,
 	RankAssignmentStyle,
 	SettingsKey,
-	settingsTypes,
-	MemberSettingsKey
-} from './sequelize';
+	settingsTypes
+} from '../sequelize';
 
 enum ConfigGroup {
 	Basic = 'Basic',

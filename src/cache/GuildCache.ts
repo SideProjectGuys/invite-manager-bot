@@ -1,5 +1,6 @@
-import { Cache } from './Cache';
 import moment from 'moment';
+
+import { Cache } from './Cache';
 
 export abstract class GuildCache<CachedObject> extends Cache<CachedObject> {
 	public async init() {
