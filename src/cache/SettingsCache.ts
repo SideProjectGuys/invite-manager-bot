@@ -47,7 +47,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		guildId: string,
 		key: K,
 		value: SettingsObject[K]
-	) {
+	): Promise<SettingsObject[K]> {
 		const cfg = await this.get(guildId);
 		const dbVal = toDbValue(key, value);
 		const val = fromDbValue(key, dbVal);
