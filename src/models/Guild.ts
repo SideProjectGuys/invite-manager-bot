@@ -11,11 +11,16 @@ import { Channel } from './Channel';
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
 import { InviteCode } from './InviteCode';
+import { InviteCodeSetting } from './InviteCodeSetting';
 import { Join } from './Join';
+import { Log } from './Log';
+import { MemberSetting } from './MemberSetting';
+import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { PunishmentConfig } from './PunishmentConfig';
 import { Rank } from './Rank';
 import { ScheduledAction } from './ScheduledAction';
+import { Setting } from './Setting';
 import { Strike } from './Strike';
 import { StrikeConfig } from './StrikeConfig';
 
@@ -54,8 +59,20 @@ export class Guild extends BaseEntity {
 	@OneToMany(type => InviteCode, i => i.guild)
 	public inviteCodes: InviteCode[];
 
+	@OneToMany(type => InviteCodeSetting, i => i.guild)
+	public inviteCodeSettings: InviteCodeSetting[];
+
 	@OneToMany(type => Join, j => j.guild)
 	public joins: Join[];
+
+	@OneToMany(type => Log, l => l.guild)
+	public logs: Log[];
+
+	@OneToMany(type => MemberSetting, m => m.guild)
+	public memberSettings: MemberSetting[];
+
+	@OneToMany(type => PremiumSubscription, p => p.guild)
+	public premiumSubscriptions: PremiumSubscription[];
 
 	@OneToMany(type => Punishment, p => p.guild)
 	public punishments: Punishment[];
@@ -68,6 +85,9 @@ export class Guild extends BaseEntity {
 
 	@OneToMany(type => ScheduledAction, s => s.guild)
 	public scheduledActions: ScheduledAction[];
+
+	@OneToMany(type => Setting, s => s.guild)
+	public settings: Setting[];
 
 	@OneToMany(type => Strike, s => s.guild)
 	public strikes: Strike[];

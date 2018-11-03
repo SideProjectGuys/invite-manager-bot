@@ -10,6 +10,7 @@ import {
 
 import { Channel } from './Channel';
 import { Guild } from './Guild';
+import { InviteCodeSetting } from './InviteCodeSetting';
 import { Join } from './Join';
 import { Member } from './Member';
 
@@ -44,14 +45,17 @@ export class InviteCode extends BaseEntity {
 	@Column()
 	public temporary: boolean;
 
-	@ManyToOne(type => Guild, g => g.inviteCodes)
-	public guild: Guild;
-
 	@ManyToOne(type => Channel, c => c.inviteCodes)
 	public channel: Channel;
 
+	@ManyToOne(type => Guild, g => g.inviteCodes)
+	public guild: Guild;
+
 	@ManyToOne(type => Member, m => m.inviteCodes)
 	public inviter: Member;
+
+	@OneToMany(type => InviteCodeSetting, i => i.invite)
+	public inviteCodeSettings: InviteCodeSetting[];
 
 	@OneToMany(type => Join, j => j.exactMatch)
 	public joins: Join[];

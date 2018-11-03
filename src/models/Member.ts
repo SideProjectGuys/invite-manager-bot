@@ -11,6 +11,9 @@ import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
 import { InviteCode } from './InviteCode';
 import { Join } from './Join';
+import { Log } from './Log';
+import { MemberSetting } from './MemberSetting';
+import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { Strike } from './Strike';
 
@@ -45,6 +48,15 @@ export class Member extends BaseEntity {
 
 	@OneToMany(type => Join, j => j.member)
 	public joins: Join[];
+
+	@OneToMany(type => Log, l => l.member)
+	public logs: Log[];
+
+	@OneToMany(type => MemberSetting, m => m.member)
+	public memberSettings: MemberSetting[];
+
+	@OneToMany(type => PremiumSubscription, p => p.member)
+	public premiumSubscriptions: PremiumSubscription[];
 
 	@OneToMany(type => Punishment, p => p.member)
 	public punishments: Punishment[];
