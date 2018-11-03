@@ -200,17 +200,6 @@ export default class extends Command {
 							leaveChannel: SettingsKey.leaveMessageChannel,
 							leaveMessage: SettingsKey.leaveMessage
 						}
-					},
-					memberSettings: {
-						items: {
-							hideFromLeaderboard: MemberSettingsKey.hideFromLeaderboard
-						}
-					},
-					inviteCodeSettings: {
-						items: {
-							name: InviteCodeSettingsKey.name,
-							roles: InviteCodeSettingsKey.roles
-						}
 					}
 				}
 			})) === -1
@@ -311,7 +300,7 @@ export default class extends Command {
 						}
 					}
 				}
-				if (newVal) {
+				if (newVal !== undefined) {
 					await this.client.cache.settings.setOne(
 						context.guild.id,
 						key,
@@ -506,6 +495,8 @@ export default class extends Command {
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
 				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+
+				msg.delete();
 
 				resolve(undefined);
 			};
