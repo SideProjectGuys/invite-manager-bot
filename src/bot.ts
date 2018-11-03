@@ -1,4 +1,5 @@
 import * as amqplib from 'amqplib';
+import 'reflect-metadata';
 
 import { IMClient } from './client';
 import { sequelize } from './sequelize';

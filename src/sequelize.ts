@@ -1232,7 +1232,9 @@ export const strikeConfigs = sequelize.define<
 				unique: true,
 				fields: ['guildId', 'violationType']
 			}
-		]
+		],
+		timestamps: true,
+		paranoid: true
 	}
 );
 
@@ -1261,6 +1263,10 @@ export const strikes = sequelize.define<StrikeInstance, StrikeAttributes>(
 	{
 		amount: Sequelize.INTEGER,
 		violationType: Sequelize.ENUM(Object.values(ViolationType))
+	},
+	{
+		timestamps: true,
+		paranoid: true
 	}
 );
 
@@ -1310,7 +1316,9 @@ export const punishmentConfigs = sequelize.define<
 				unique: true,
 				fields: ['guildId', 'punishmentType']
 			}
-		]
+		],
+		timestamps: true,
+		paranoid: true
 	}
 );
 
@@ -1340,11 +1348,18 @@ export interface PunishmentInstance
 export const punishments = sequelize.define<
 	PunishmentInstance,
 	PunishmentAttributes
->('punishment', {
-	punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
-	amount: Sequelize.INTEGER,
-	args: Sequelize.STRING
-});
+>(
+	'punishment',
+	{
+		punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+		amount: Sequelize.INTEGER,
+		args: Sequelize.STRING
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 punishments.belongsTo(guilds);
 guilds.hasMany(punishments);
@@ -1380,12 +1395,19 @@ export interface ScheduledActionInstance
 export const scheduledActions = sequelize.define<
 	ScheduledActionInstance,
 	ScheduledActionAttributes
->('scheduledAction', {
-	actionType: Sequelize.ENUM(Object.values(ScheduledActionType)),
-	args: Sequelize.JSON,
-	date: Sequelize.DATE,
-	reason: Sequelize.STRING
-});
+>(
+	'scheduledAction',
+	{
+		actionType: Sequelize.ENUM(Object.values(ScheduledActionType)),
+		args: Sequelize.JSON,
+		date: Sequelize.DATE,
+		reason: Sequelize.STRING
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 scheduledActions.belongsTo(guilds);
 guilds.hasMany(scheduledActions);
