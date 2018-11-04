@@ -1,4 +1,7 @@
-import { Guild, Member } from 'eris';
+import crypto from 'crypto';
+import { Guild, Member, Message } from 'eris';
+import i18n from 'i18n';
+import moment from 'moment';
 
 import { IMClient } from '../client';
 
@@ -27,13 +30,23 @@ export interface CaptchaConfig {
 	nofLines?: number;
 }
 
+const captchaOptions: CaptchaConfig = {
+	size: 6,
+	fileMode: FileMode.BUFFER,
+	height: 50,
+	noiseColor: 'rgb(10,40,100)',
+	color: 'rgb(50,40,50)',
+	spacing: 2,
+	nofLines: 4
+};
+
 export class CaptchaService {
 	private client: IMClient;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
-		client.on('guildMemberAdd', this.onGuildMemberAdd);
+		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
@@ -41,9 +54,67 @@ export class CaptchaService {
 		if (!sets.captchaVerificationOnJoin) {
 			return;
 		}
+
+		const [text, buffer] = await this.createCaptcha(captchaOptions);
+
+		const embed = this.client.createEmbed({
+			title: 'Captcha',
+			description: sets.captchaVerificationWelcomeMessage.replace(
+				/\{serverName\}/g,
+				member.guild.name
+			),
+			image: {
+				url: 'attachment://captcha.png'
+			}
+		});
+
+		const dmChannel = await member.user.getDMChannel();
+		await dmChannel.createMessage(
+			{ embed },
+			{
+				name: 'captcha.png',
+				file: buffer
+			}
+		);
+
+		const endTime = moment().add(sets.captchaVerificationTimeout, 's');
+
+		while (true) {
+			const response = await this.awaitMessage(
+				member,
+				endTime.diff(moment(), 'ms')
+			);
+
+			if (!response) {
+				await dmChannel.createMessage(
+					sets.captchaVerificationFailedMessage.replace(
+						/\{serverName\}/g,
+						member.guild.name
+					)
+				);
+				member.kick();
+				return;
+			}
+
+			if (response === text) {
+				dmChannel.createMessage(
+					sets.captchaVerificationSuccessMessage.replace(
+						/\{serverName\}/g,
+						member.guild.name
+					)
+				);
+				return;
+			}
+
+			dmChannel.createMessage(
+				i18n.__({ locale: sets.lang, phrase: 'CAPTCHA_INVALID' })
+			);
+		}
 	}
 
-	public async createCaptcha(config: CaptchaConfig) {
+	public async createCaptcha(_config: CaptchaConfig) {
+		const config = { ..._config };
+
 		config.fileMode = config.fileMode || FileMode.BASE64;
 		config.size = config.size || 4;
 		config.height = config.height || 24;
@@ -137,6 +208,35 @@ export class CaptchaService {
 					resolve([config.text, data]);
 				});
 			}
+		});
+	}
+
+	private async awaitMessage(member: Member, timeLeft: number) {
+		return new Promise<string>(resolve => {
+			let timeOut: NodeJS.Timer;
+			const func = async (resp: Message) => {
+				if (member.id !== resp.author.id) {
+					return;
+				}
+
+				clearTimeout(timeOut);
+				this.client.removeListener('messageCreate', func);
+				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+
+				resolve(resp.content);
+			};
+
+			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+			this.client.on('messageCreate', func);
+
+			const timeOutFunc = () => {
+				this.client.removeListener('messageCreate', func);
+				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+
+				resolve();
+			};
+
+			timeOut = setTimeout(timeOutFunc, timeLeft);
 		});
 	}
 }
