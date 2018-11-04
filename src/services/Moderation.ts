@@ -77,14 +77,15 @@ export class Moderation {
 			[PunishmentType.mute]: this.mute.bind(this)
 		};
 
-		setInterval(() => {
+		const func = () => {
 			this.messageCache.forEach((value, key) => {
 				this.messageCache.set(
 					key,
 					value.filter(m => moment().diff(m.createdAt, 'second') < 60)
 				);
 			});
-		}, 60 * 1000);
+		};
+		setInterval(func, 60 * 1000);
 
 		client.on('messageCreate', this.onMessage.bind(this));
 	}
@@ -763,9 +764,10 @@ export class Moderation {
 		}
 		let reply = await this.client.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
-			setTimeout(() => {
-				reply.delete();
-			}, settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
+			setTimeout(
+				() => reply.delete(),
+				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
+			);
 		}
 	}
 
