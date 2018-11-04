@@ -12,7 +12,7 @@ import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
-import { premiumSubscriptions } from '../../sequelize';
+import { LogAction, premiumSubscriptions } from '../../sequelize';
 
 const { resolve, expect } = Middleware;
 const { using } = CommandDecorators;
@@ -26,7 +26,8 @@ export default class extends Command<IMClient> {
 			name: 'owner-give-premium',
 			aliases: ['ownerGivePremium', 'ogp'],
 			desc: 'Give premium',
-			usage: '<prefix>owner-give-premium <amount> <user> <guild> <duration> <reason>',
+			usage:
+				'<prefix>owner-give-premium <amount> <user> <guild> <duration> <reason>',
 			ownerOnly: true,
 			hidden: true
 		});
@@ -75,6 +76,14 @@ export default class extends Command<IMClient> {
 			amount: amount,
 			validUntil: validUntil.toDate(),
 			guildId,
+			memberId: user.id
+		});
+
+		this.client.logAction(message, LogAction.owner, {
+			type: 'give-premium',
+			guildId,
+			amount,
+			validUntil: validUntil.calendar(),
 			memberId: user.id
 		});
 

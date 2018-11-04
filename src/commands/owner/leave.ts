@@ -10,6 +10,7 @@ import {
 import { IMClient } from '../../client';
 import { checkProBot } from '../../middleware';
 import { checkRoles } from '../../middleware/CheckRoles';
+import { LogAction } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 
 const config = require('../../../config.json');
@@ -46,6 +47,11 @@ export default class extends Command<IMClient> {
 			message.reply('Invalid guild id ' + guildId);
 			return;
 		}
+
+		this.client.logAction(message, LogAction.owner, {
+			type: 'leave-guild',
+			guildId
+		});
 
 		const msg = (await message.reply(
 			`Sending command to leave guild ${guildId}...`
