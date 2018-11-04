@@ -11,6 +11,7 @@ import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
 import { guilds, LogAction, members } from './sequelize';
+import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
 import {
@@ -86,6 +87,8 @@ export class IMClient extends Client {
 
 	public cmds: Commands;
 
+	public captcha: CaptchaService;
+
 	public startedAt: moment.Moment;
 	public activityInterval: NodeJS.Timer;
 
@@ -149,6 +152,8 @@ export class IMClient extends Client {
 		this.scheduler = new Scheduler(this);
 
 		this.cmds = new Commands(this);
+
+		this.captcha = new CaptchaService(this);
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
