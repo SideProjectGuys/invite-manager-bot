@@ -116,7 +116,7 @@ export class IMClient extends Client {
 			},
 			{
 				disableEveryone: true,
-				shardId: shardId - 1,
+				shards: shardId - 1,
 				shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
@@ -1065,7 +1065,7 @@ export class IMClient extends Client {
 		if (this.dbl) {
 			this.dbl.postStats(
 				this.guilds.size,
-				this.options.shardId,
+				this.options.shards as number,
 				this.options.shardCount
 			);
 		}
