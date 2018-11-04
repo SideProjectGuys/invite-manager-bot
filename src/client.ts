@@ -694,6 +694,14 @@ export class IMClient extends Client {
 				});
 				break;
 
+			case ShardCommand.LEAVE_GUILD:
+				console.log(`LEAVING GUILD ${guildId}`);
+				await guild.leave();
+				return this.sendCommandToGuild(originGuildId, {
+					cmd: ShardCommand.RESPONSE,
+					id
+				});
+
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
 				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
 				SettingsCache.flushPremium(guildId);
