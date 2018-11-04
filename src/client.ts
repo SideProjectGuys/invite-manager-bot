@@ -116,7 +116,7 @@ export class IMClient extends Client {
 			},
 			{
 				disableEveryone: true,
-				shardId: shardId - 1,
+				shards: shardId - 1,
 				shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
@@ -694,6 +694,14 @@ export class IMClient extends Client {
 				});
 				break;
 
+			case ShardCommand.LEAVE_GUILD:
+				console.log(`LEAVING GUILD ${guildId}`);
+				await guild.leave();
+				return this.sendCommandToGuild(originGuildId, {
+					cmd: ShardCommand.RESPONSE,
+					id
+				});
+
 			case ShardCommand.FLUSH_PREMIUM_CACHE:
 				console.log(`FLUSHING PREMIUM FOR ${guildId}`);
 				SettingsCache.flushPremium(guildId);
@@ -1057,7 +1065,7 @@ export class IMClient extends Client {
 		if (this.dbl) {
 			this.dbl.postStats(
 				this.guilds.size,
-				this.options.shardId,
+				this.options.shards as number,
 				this.options.shardCount
 			);
 		}

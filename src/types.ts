@@ -15,6 +15,7 @@ export enum CommandGroup {
 
 export enum ShardCommand {
 	'DIAGNOSE' = 'DIAGNOSE',
+	'LEAVE_GUILD' = 'LEAVE_GUILD',
 	'FLUSH_PREMIUM_CACHE' = 'FLUSH_PREMIUM_CACHE',
 	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE',
 	'SUDO' = 'SUDO',
@@ -66,6 +67,7 @@ export enum BotCommand {
 export enum OwnerCommand {
 	'diagnose' = 'ownerDiagnose',
 	'dm' = 'ownerDm',
+	'leave' = 'ownerLeave',
 	'flushPremium' = 'ownerFlushPremium',
 	'givePremium' = 'ownerGivePremium',
 	'help' = 'ownerHelp',

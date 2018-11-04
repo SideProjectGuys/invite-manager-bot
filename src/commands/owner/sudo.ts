@@ -10,12 +10,7 @@ import {
 import { IMClient } from '../../client';
 import { sendReply } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
-import {
-	commandUsage,
-	guilds,
-	premiumSubscriptions,
-	sequelize
-} from '../../sequelize';
+import { LogAction } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 
 const config = require('../../../config.json');
@@ -81,6 +76,13 @@ export default class extends Command<IMClient> {
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
+
+		this.client.logAction(message, LogAction.owner, {
+			type: 'sudo',
+			guildId,
+			cmd: sudoCmd.name,
+			args: args.slice(1)
+		});
 
 		this.client.pendingRabbitMqRequests[message.id] = response => {
 			if (response.error) {

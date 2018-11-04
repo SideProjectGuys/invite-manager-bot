@@ -69,7 +69,7 @@ export default class extends Command<IMClient> {
 		// Shard info
 		embed.addField(
 			rp.CMD_BOTINFO_SHARD_CURRENT(),
-			this.client.options.shardId + 1,
+			(this.client.options.shards as number) + 1,
 			true
 		);
 		embed.addField(
