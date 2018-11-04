@@ -116,7 +116,8 @@ export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
-		color: Sequelize.STRING({ length: 7 })
+		color: Sequelize.STRING({ length: 7 }),
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -146,7 +147,8 @@ export const channels = sequelize.define<ChannelInstance, ChannelAttributes>(
 	'channel',
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
-		name: Sequelize.STRING
+		name: Sequelize.STRING,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -255,9 +257,13 @@ export const defaultSettings: { [k in SettingsKey]: string } = {
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 	hideLeftMembersFromLeaderboard: 'false',
 	captchaVerificationOnJoin: 'false',
-	captchaVerificationWelcomeMessage: 'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
-	captchaVerificationSuccessMessage: 'You have successfully entered the captcha. Welcome to the server!',
-	captchaVerificationFailedMessage: 'You did not enter the captha right within the specified time. We\'re sorry, but we have to kick you from the server. Feel free to join again.',
+	captchaVerificationWelcomeMessage:
+		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
+	captchaVerificationSuccessMessage:
+		'You have successfully entered the captcha. Welcome to the server!',
+	captchaVerificationFailedMessage:
+		`You did not enter the captha right within the specified time. ` +
+		`We're sorry, but we have to kick you from the server. Feel free to join again.`,
 	captchaVerificationTimeout: '180' /* seconds */
 };
 
@@ -276,32 +282,10 @@ export interface SettingInstance
 export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
-		key: Sequelize.ENUM(
-			SettingsKey.prefix,
-			SettingsKey.joinMessage,
-			SettingsKey.joinMessageChannel,
-			SettingsKey.leaveMessage,
-			SettingsKey.leaveMessageChannel,
-			SettingsKey.lang,
-			SettingsKey.modRole,
-			SettingsKey.modChannel,
-			SettingsKey.logChannel,
-			SettingsKey.getUpdates,
-			SettingsKey.leaderboardStyle,
-			SettingsKey.autoSubtractFakes,
-			SettingsKey.autoSubtractLeaves,
-			SettingsKey.autoSubtractLeaveThreshold,
-			SettingsKey.rankAssignmentStyle,
-			SettingsKey.rankAnnouncementChannel,
-			SettingsKey.rankAnnouncementMessage,
-			SettingsKey.hideLeftMembersFromLeaderboard,
-			SettingsKey.captchaVerificationOnJoin,
-			SettingsKey.captchaVerificationWelcomeMessage,
-			SettingsKey.captchaVerificationSuccessMessage,
-			SettingsKey.captchaVerificationFailedMessage,
-			SettingsKey.captchaVerificationTimeout
-		),
-		value: Sequelize.TEXT
+		id: { type: Sequelize.INTEGER, primaryKey: true },
+		key: Sequelize.ENUM(Object.values(SettingsKey)),
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -355,8 +339,11 @@ export const memberSettings = sequelize.define<
 >(
 	'memberSettings',
 	{
-		key: Sequelize.ENUM(MemberSettingsKey.hideFromLeaderboard),
-		value: Sequelize.TEXT
+		id: { type: Sequelize.INTEGER, primaryKey: true },
+		key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -414,7 +401,10 @@ export const inviteCodes = sequelize.define<
 		maxAge: Sequelize.INTEGER,
 		maxUses: Sequelize.INTEGER,
 		uses: Sequelize.INTEGER,
-		temporary: Sequelize.BOOLEAN
+		temporary: Sequelize.BOOLEAN,
+		channelId: Sequelize.STRING(32),
+		guildId: Sequelize.STRING(32),
+		inviterId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -470,11 +460,11 @@ export const inviteCodeSettings = sequelize.define<
 >(
 	'inviteCodeSettings',
 	{
-		key: Sequelize.ENUM(
-			InviteCodeSettingsKey.name,
-			InviteCodeSettingsKey.roles
-		),
-		value: Sequelize.TEXT
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		key: Sequelize.ENUM(Object.values(InviteCodeSettingsKey)),
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32),
+		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
 	},
 	{
 		timestamps: true,
@@ -520,7 +510,13 @@ export interface JoinInstance
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 	'join',
 	{
-		possibleMatches: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		possibleMatches:
+			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		leaveId: Sequelize.INTEGER
 	},
 	{
 		timestamps: true,
@@ -565,7 +561,12 @@ export interface LeaveInstance
 
 export const leaves = sequelize.define<LeaveInstance, LeaveAttributes>(
 	'leave',
-	{},
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		joinId: Sequelize.INTEGER
+	},
 	{
 		timestamps: true,
 		paranoid: true,
@@ -621,16 +622,15 @@ export const customInvites = sequelize.define<
 >(
 	'customInvite',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
 		generatedReason: Sequelize.ENUM(
-			CustomInvitesGeneratedReason.clear_regular,
-			CustomInvitesGeneratedReason.clear_custom,
-			CustomInvitesGeneratedReason.clear_fake,
-			CustomInvitesGeneratedReason.clear_leave,
-			CustomInvitesGeneratedReason.fake,
-			CustomInvitesGeneratedReason.leave
-		)
+			Object.values(CustomInvitesGeneratedReason)
+		),
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		creatorId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -667,8 +667,11 @@ export interface RankInstance
 export const ranks = sequelize.define<RankInstance, RankAttributes>(
 	'rank',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		numInvites: Sequelize.INTEGER,
-		description: Sequelize.STRING
+		description: Sequelize.STRING,
+		guildId: Sequelize.STRING(32),
+		roleId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -721,14 +724,11 @@ export interface PresenceInstance
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
-		status: Sequelize.ENUM(
-			PresenceStatus.online,
-			PresenceStatus.offline,
-			PresenceStatus.idle,
-			PresenceStatus.dnd
-		),
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		status: Sequelize.ENUM(Object.values(PresenceStatus)),
 		type: Sequelize.TINYINT,
-		game: Sequelize.STRING
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -767,8 +767,12 @@ export const messageActivities = sequelize.define<
 >(
 	'messageActivity',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
-		timestamp: Sequelize.DATE
+		timestamp: Sequelize.DATE,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		channelId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -823,18 +827,12 @@ export interface LogInstance
 export const logs = sequelize.define<LogInstance, LogAttributes>(
 	'log',
 	{
-		action: Sequelize.ENUM(
-			LogAction.addInvites,
-			LogAction.addRank,
-			LogAction.clearInvites,
-			LogAction.config,
-			LogAction.memberConfig,
-			LogAction.removeRank,
-			LogAction.updateRank,
-			LogAction.restoreInvites
-		),
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		action: Sequelize.ENUM(Object.values(LogAction)),
 		message: Sequelize.TEXT,
-		data: Sequelize.JSON
+		data: Sequelize.JSON,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -872,9 +870,12 @@ export const commandUsage = sequelize.define<
 >(
 	'commandUsage',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		command: Sequelize.STRING,
 		args: Sequelize.TEXT,
-		time: Sequelize.FLOAT
+		time: Sequelize.FLOAT,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -911,8 +912,11 @@ export const premiumSubscriptions = sequelize.define<
 >(
 	'premiumSubscriptions',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
-		validUntil: Sequelize.DATE
+		validUntil: Sequelize.DATE,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -946,7 +950,9 @@ export const rolePermissions = sequelize.define<
 >(
 	'rolePermissions',
 	{
-		command: Sequelize.STRING(32)
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		command: Sequelize.STRING(32),
+		roleId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
