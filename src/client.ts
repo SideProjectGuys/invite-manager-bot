@@ -1066,7 +1066,7 @@ export class IMClient extends Client {
 			this.dbl.postStats(
 				this.guilds.size,
 				this.options.shards as number,
-				this.options.shardCount
+				this.options.totalShardCount
 			);
 		}
 
