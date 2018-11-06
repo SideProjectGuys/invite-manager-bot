@@ -117,7 +117,7 @@ export class IMClient extends Client {
 			{
 				disableEveryone: true,
 				shards: shardId - 1,
-				shardCount,
+				totalShardCount: shardCount,
 				disabledEvents: ['TYPING_START', 'USER_UPDATE', 'PRESENCE_UPDATE'],
 				messageCacheMaxSize: 2,
 				messageCacheLifetime: 10,
