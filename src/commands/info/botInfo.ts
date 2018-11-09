@@ -74,7 +74,7 @@ export default class extends Command<IMClient> {
 		);
 		embed.addField(
 			rp.CMD_BOTINFO_SHARD_TOTAL(),
-			this.client.options.shardCount,
+			this.client.options.totalShardCount,
 			true
 		);
 
