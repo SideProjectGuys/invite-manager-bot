@@ -9,10 +9,10 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { LogAction, ranks, roles } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
-import { sendReply } from '../../functions/Messaging';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
@@ -78,13 +78,15 @@ export default class extends Command<IMClient> {
 			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
 		});
 
+		const descr = description ? description : '';
+
 		let isNew = false;
 		if (rank) {
 			if (rank.deletedAt !== null) {
 				isNew = true;
 			}
 			rank.numInvites = invites;
-			rank.description = description;
+			rank.description = descr;
 			rank.setDataValue('deletedAt', null);
 			rank.save();
 		} else {
@@ -93,7 +95,7 @@ export default class extends Command<IMClient> {
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
-				description,
+				description: descr,
 				deletedAt: null
 			});
 			isNew = true;
