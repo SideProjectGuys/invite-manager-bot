@@ -8,6 +8,7 @@ import {
 } from '@yamdbf/core';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
@@ -19,7 +20,6 @@ import {
 } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
-import { sendReply } from '../../functions/Messaging';
 
 const { localize } = Middleware;
 const { using } = CommandDecorators;

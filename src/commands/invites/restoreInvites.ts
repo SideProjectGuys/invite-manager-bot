@@ -9,6 +9,7 @@ import {
 import { User } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
@@ -16,7 +17,6 @@ import {
 	LogAction
 } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
-import { sendReply } from '../../functions/Messaging';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;

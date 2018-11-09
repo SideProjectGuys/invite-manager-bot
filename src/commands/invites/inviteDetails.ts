@@ -19,7 +19,6 @@ import {
 } from '../../sequelize';
 import { SettingsCache } from '../../storage/SettingsCache';
 import { BotCommand, CommandGroup, RP } from '../../types';
-import { getInviteCounts } from '../../util';
 
 const { resolve, localize } = Middleware;
 const { using } = CommandDecorators;

@@ -11,12 +11,7 @@ import moment from 'moment';
 import { IMClient } from '../../client';
 import { createEmbed, sendReply } from '../../functions/Messaging';
 import { checkRoles } from '../../middleware/CheckRoles';
-import {
-	commandUsage,
-	guilds,
-	premiumSubscriptions,
-	sequelize
-} from '../../sequelize';
+import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 
 const config = require('../../../config.json');

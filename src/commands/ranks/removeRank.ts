@@ -9,10 +9,10 @@ import {
 import { Role } from 'discord.js';
 
 import { IMClient } from '../../client';
+import { sendReply } from '../../functions/Messaging';
 import { checkProBot, checkRoles } from '../../middleware';
 import { LogAction, ranks } from '../../sequelize';
 import { BotCommand, CommandGroup, RP } from '../../types';
-import { sendReply } from '../../functions/Messaging';
 
 const { resolve, expect, localize } = Middleware;
 const { using } = CommandDecorators;
