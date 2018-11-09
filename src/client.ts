@@ -186,7 +186,7 @@ export class IMClient extends Client {
 		shardId: number,
 		payload: { id: string; [x: string]: any }
 	) {
-		const shardCount = this.options.shardCount;
+		const shardCount = this.options.totalShardCount;
 
 		const rabbitMqPrefix = this.config.rabbitmq.prefix
 			? `${this.config.rabbitmq.prefix}-`
