@@ -8,12 +8,9 @@ import {
 	PunishmentType,
 	sequelize,
 	SettingsObject,
-	StrikeConfigInstance,
-	strikeConfigs,
 	strikes,
 	ViolationType
 } from '../sequelize';
-import { Permissions } from '../types';
 import { to } from '../util';
 
 interface Arguments {
@@ -78,10 +75,11 @@ export class Moderation {
 		};
 
 		const func = () => {
+			const now = moment();
 			this.messageCache.forEach((value, key) => {
 				this.messageCache.set(
 					key,
-					value.filter(m => moment().diff(m.createdAt, 'second') < 60)
+					value.filter(m => now.diff(m.createdAt, 'second') < 60)
 				);
 			});
 		};
@@ -91,12 +89,14 @@ export class Moderation {
 	}
 
 	private async onMessage(message: Message) {
+		// Ignore bots
 		if (message.author.bot) {
 			return;
 		}
 		const channel = message.channel as TextChannel;
 		const guild = channel.guild;
 
+		// Ignore DMs
 		if (!guild) {
 			return;
 		}
@@ -170,15 +170,13 @@ export class Moderation {
 			}
 		}
 
-		{
-			const cacheKey = `${guild.id}-${message.author.id}`;
-			let msgs = this.messageCache.get(cacheKey);
-			if (msgs) {
-				msgs.push(this.getMiniMessage(message));
-				this.messageCache.set(cacheKey, msgs);
-			} else {
-				this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
-			}
+		const cacheKey = `${guild.id}-${message.author.id}`;
+		let msgs = this.messageCache.get(cacheKey);
+		if (msgs) {
+			msgs.push(this.getMiniMessage(message));
+			this.messageCache.set(cacheKey, msgs);
+		} else {
+			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
 
 		console.log('SCANNING MESSAGE', message.content);
