@@ -179,7 +179,7 @@ export class IMClient extends Client {
 	public getShardIdForGuild(guildId: any) {
 		const bin = Util.idToBinary(guildId);
 		const num = parseInt(bin.substring(0, bin.length - 22), 2);
-		return (num % this.options.shardCount) + 1;
+		return (num % this.options.totalShardCount) + 1;
 	}
 
 	public sendCommandToShard(
