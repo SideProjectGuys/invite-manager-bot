@@ -240,6 +240,22 @@ export class RabbitMq {
 			raw: true
 		});
 
+		// Exit if we can't find the join
+		if (!jn) {
+			console.error(
+				`Could not fetch join ${join.id}: ` + JSON.stringify(content)
+			);
+			if (joinChannel) {
+				joinChannel.createMessage(
+					i18n.__(
+						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ id: member.id }
+					)
+				);
+			}
+			return;
+		}
+
 		const inviterId = jn['exactMatch.inviterId'];
 
 		// Auto remove fakes if enabled
