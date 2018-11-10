@@ -772,7 +772,6 @@ export interface JoinAttributes extends BaseAttributes {
 	possibleMatches: string;
 	guildId: string;
 	memberId: string;
-	leaveId: number;
 }
 export interface JoinInstance
 	extends Sequelize.Instance<JoinAttributes>,
@@ -791,8 +790,7 @@ export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32),
-		leaveId: Sequelize.INTEGER
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
