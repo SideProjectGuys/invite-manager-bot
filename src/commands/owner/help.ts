@@ -4,8 +4,6 @@ import { IMClient } from '../../client';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -22,7 +20,7 @@ export default class extends Command {
 		args: any[],
 		{ guild, settings }: Context
 	): Promise<any> {
-		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 

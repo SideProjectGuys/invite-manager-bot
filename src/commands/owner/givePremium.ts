@@ -39,7 +39,6 @@ export default class extends Command {
 					required: true
 				}
 			],
-			ownerOnly: true,
 			guildOnly: false,
 			hidden: true
 		});
@@ -50,6 +49,10 @@ export default class extends Command {
 		[amount, user, guildId, duration]: [number, User, string, string],
 		context: Context
 	): Promise<any> {
+		if (this.client.config.ownerGuildIds.indexOf(context.guild.id) === -1) {
+			return;
+		}
+
 		let days = 1;
 		if (duration) {
 			const d = parseInt(duration, 10);

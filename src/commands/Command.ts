@@ -25,7 +25,6 @@ export interface CommandOptions {
 	group?: CommandGroup;
 	strict?: boolean;
 	guildOnly: boolean;
-	ownerOnly?: boolean;
 	hidden?: boolean;
 	premiumOnly?: boolean;
 }
@@ -55,7 +54,6 @@ export abstract class Command {
 	public group: CommandGroup;
 	public strict?: boolean;
 	public guildOnly: boolean;
-	public ownerOnly?: boolean;
 	public hidden?: boolean;
 	public premiumOnly?: boolean;
 
@@ -67,7 +65,6 @@ export abstract class Command {
 		this.group = props.group;
 		this.strict = props.strict;
 		this.guildOnly = props.guildOnly;
-		this.ownerOnly = props.ownerOnly;
 		this.hidden = props.hidden;
 		this.premiumOnly = props.premiumOnly;
 

@@ -7,8 +7,6 @@ import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -32,7 +30,7 @@ export default class extends Command {
 		[guildId]: [any],
 		{ guild }: Context
 	): Promise<any> {
-		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
