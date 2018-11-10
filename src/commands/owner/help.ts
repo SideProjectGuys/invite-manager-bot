@@ -27,7 +27,7 @@ export default class extends Command {
 		const prefix = settings ? settings.prefix : '!';
 
 		const commands = this.client.cmds.commands
-			.filter(c => c.ownerOnly || c.hidden)
+			.filter(c => c.hidden)
 			.map(c => c.usage.replace('{prefix}', prefix));
 
 		const embed = this.client.createEmbed({
