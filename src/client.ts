@@ -119,7 +119,10 @@ export class IMClient extends Client {
 				PRESENCE_UPDATE: true
 			},
 			restMode: true,
-			messageLimit: 2
+			messageLimit: 2,
+			getAllUsers: false,
+			compress: true,
+			guildCreateTimeout: 30000
 		});
 
 		this.startedAt = moment();
