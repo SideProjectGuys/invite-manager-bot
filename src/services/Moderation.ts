@@ -101,10 +101,14 @@ export class Moderation {
 			return;
 		}
 
+		// TODO Enable for all guilds when ready
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
+			return;
+		}
+
 		const settings = await this.client.cache.settings.get(guild.id);
 
 		if (!settings.autoModEnabled) {
-			console.log('AUTOMOD STOPPED: autoModEnabled false');
 			return;
 		}
 
@@ -115,7 +119,6 @@ export class Moderation {
 
 		/*
 		if (member.permission.has(Permissions.ADMINISTRATOR)) {
-			console.log('AUTOMOD STOPPED: administrator');
 			return;
 		}
 */
@@ -123,11 +126,9 @@ export class Moderation {
 			settings.autoModModeratedRoles &&
 			settings.autoModModeratedRoles.length > 0
 		) {
-			console.log(settings.autoModModeratedRoles, member.roles);
 			if (
 				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
 			) {
-				console.log('AUTOMOD STOPPED: autoModeratedRoles');
 				return;
 			}
 		}
@@ -139,7 +140,6 @@ export class Moderation {
 			if (
 				!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)
 			) {
-				console.log('AUTOMOD STOPPED: autoModeratedChannels');
 				return;
 			}
 		}
@@ -148,7 +148,6 @@ export class Moderation {
 			settings.autoModIgnoredChannels &&
 			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
 		) {
-			console.log('AUTOMOD STOPPED: ignoredChannels');
 			return;
 		}
 
@@ -156,7 +155,6 @@ export class Moderation {
 			settings.autoModIgnoredRoles &&
 			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
 		) {
-			console.log('AUTOMOD STOPPED: ignoredRoles');
 			return;
 		}
 
@@ -165,7 +163,6 @@ export class Moderation {
 			let memberAge = moment().diff(member.joinedAt, 'second');
 			if (memberAge > settings.autoModDisabledForOldMembersThreshold) {
 				// This is an old member
-				console.log('AUTOMOD STOPPED: oldMember');
 				return;
 			}
 		}
@@ -179,12 +176,8 @@ export class Moderation {
 			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
 
-		console.log('SCANNING MESSAGE', message.content);
-
 		let strikesCache = await this.client.cache.strikes.get(guild.id);
 		let allViolations: ViolationType[] = Object.values(ViolationType);
-
-		console.log(strikesCache);
 
 		for (let strike of strikesCache) {
 			allViolations = allViolations.filter(av => av !== strike.violationType);
@@ -194,7 +187,6 @@ export class Moderation {
 				settings: settings,
 				guild: guild
 			});
-			console.log(strike.violationType, foundViolation);
 			if (!foundViolation) {
 				continue;
 			}
@@ -324,9 +316,6 @@ export class Moderation {
 		});
 
 		let strikesAfter = strikesBefore + amount;
-
-		console.log('strikesBefore', strikesBefore);
-		console.log('strikesAfter', strikesAfter);
 
 		let punishmentConfig = await punishmentConfigs.find({
 			where: {
@@ -472,7 +461,6 @@ export class Moderation {
 		if (!args.settings.autoModDuplicateTextEnabled) {
 			return false;
 		}
-		console.log('CHECKING duplicateText VIOLATIONS');
 
 		let timeframe = args.settings.autoModDuplicateTextTimeframeInSeconds;
 
@@ -503,7 +491,7 @@ export class Moderation {
 		if (!args.settings.autoModQuickMessagesEnabled) {
 			return false;
 		}
-		console.log('CHECKING quickMessage VIOLATIONS');
+
 		let numberOfMessages = args.settings.autoModQuickMessagesNumberOfMessages;
 		let timeframe = args.settings.autoModQuickMessagesTimeframeInSeconds;
 
