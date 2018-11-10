@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { Guild, Member, Message } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
