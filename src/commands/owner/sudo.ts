@@ -75,7 +75,6 @@ export default class extends Command {
 			{
 				id: message.id,
 				cmd: ShardCommand.SUDO,
-				originGuildId: guild.id,
 				guildId,
 				sudoCmd: sudoCmd.name,
 				args: args.slice(1),

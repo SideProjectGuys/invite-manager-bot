@@ -42,7 +42,6 @@ export default class extends Command {
 			{
 				id: message.id,
 				cmd: ShardCommand.OWNER_DM,
-				shardId: this.client.shardId,
 				userId,
 				message: msg
 			},

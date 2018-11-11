@@ -42,7 +42,7 @@ export default class extends Command {
 		}
 
 		const msg = await message.channel.createMessage(
-			'Requesting diagnose info...'
+			`Requesting diagnose info for ${guildId}...`
 		);
 
 		const lastCmd = await commandUsage.find({
@@ -69,8 +69,7 @@ export default class extends Command {
 			{
 				cmd: ShardCommand.DIAGNOSE,
 				id: message.id,
-				guildId,
-				originGuildId: guild.id
+				guildId
 			},
 			response => {
 				if (response.error) {
