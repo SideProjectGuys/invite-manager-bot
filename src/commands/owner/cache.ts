@@ -26,7 +26,12 @@ export default class extends Command {
 
 		let channels =
 			this.client.groupChannels.size + this.client.privateChannels.size;
-		this.client.guilds.forEach(g => (channels += g.channels.size));
+		let roles = 0;
+
+		this.client.guilds.forEach(g => {
+			channels += g.channels.size;
+			roles += g.roles.size;
+		});
 
 		const embed = this.client.createEmbed();
 		embed.fields.push({
@@ -40,6 +45,10 @@ export default class extends Command {
 		embed.fields.push({
 			name: 'Channels',
 			value: channels + ' entries'
+		});
+		embed.fields.push({
+			name: 'Roles',
+			value: roles + ' entries'
 		});
 		embed.fields.push({
 			name: 'Settings',
