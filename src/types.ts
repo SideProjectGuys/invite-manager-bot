@@ -33,7 +33,8 @@ export enum ShardCommand {
 	SUDO = 'SUDO',
 	RESPONSE = 'RESPONSE',
 	OWNER_DM = 'OWNER_DM',
-	USER_DM = 'USER_DM'
+	USER_DM = 'USER_DM',
+	LEAVE_GUILD = 'LEAVE_GUILD'
 }
 
 export enum ChartType {
@@ -114,13 +115,14 @@ export enum ModerationCommand {
 }
 
 export enum OwnerCommand {
+	cache = 'ownerCache',
 	diagnose = 'ownerDiagnose',
 	dm = 'ownerDm',
-	flushPremium = 'ownerFlushPremium',
+	flush = 'ownerFlush',
 	givePremium = 'ownerGivePremium',
 	help = 'ownerHelp',
-	sudo = 'sudo',
-	cache = 'cache'
+	leave = 'ownerLeave',
+	sudo = 'ownerSudo'
 }
 
 export interface RabbitMqMember {

@@ -129,9 +129,8 @@ export class RabbitMq {
 		}
 
 		console.log(
-			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${JSON.stringify(
-				message
-			)}`
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ` +
+				JSON.stringify(message)
 		);
 
 		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
@@ -489,8 +488,6 @@ export class RabbitMq {
 
 		switch (cmd) {
 			case ShardCommand.DIAGNOSE:
-				console.log(`DIAGNOSING ${guildId}`);
-
 				if (!guild) {
 					return sendResponse({
 						error: 'Guild not found'
@@ -554,8 +551,18 @@ export class RabbitMq {
 				break;
 
 			case ShardCommand.FLUSH_CACHE:
-				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
 				Object.values(this.client.cache).forEach(c => c.flush(guildId));
+				break;
+
+			case ShardCommand.LEAVE_GUILD:
+				if (!guild) {
+					return sendResponse({
+						error: 'Guild not found'
+					});
+				}
+
+				await guild.leave();
+				sendResponse({});
 				break;
 
 			case ShardCommand.SUDO:

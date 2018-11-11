@@ -1080,7 +1080,8 @@ export enum LogAction {
 	memberConfig = 'memberConfig',
 	addRank = 'addRank',
 	updateRank = 'updateRank',
-	removeRank = 'removeRank'
+	removeRank = 'removeRank',
+	owner = 'owner'
 }
 
 export interface LogAttributes extends BaseAttributes {
