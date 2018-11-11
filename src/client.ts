@@ -325,22 +325,22 @@ export class IMClient extends Client {
 	}
 
 	private async onConnect() {
-		console.log('DISCORD CONNECT');
+		console.error('DISCORD CONNECT');
 	}
 
 	private async onDisconnect() {
-		console.log('DISCORD DISCONNECT');
+		console.error('DISCORD DISCONNECT');
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
-		console.log('DISCORD GUILD_UNAVAILABLE:', guild.id);
+		console.error('DISCORD GUILD_UNAVAILABLE:', guild.id);
 	}
 
 	private async onWarn(info: string) {
-		console.log('DISCORD WARNING:', info);
+		console.error('DISCORD WARNING:', info);
 	}
 
 	private async onError(error: Error) {
-		console.log('DISCORD ERROR:', error);
+		console.error('DISCORD ERROR:', error);
 	}
 }

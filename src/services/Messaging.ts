@@ -88,7 +88,7 @@ export class Messaging {
 				text: this.client.user.username,
 				icon_url: this.client.user.avatarURL
 			},
-			fields: [],
+			fields: options.fields ? options.fields : [],
 			timestamp: new Date().toISOString()
 		};
 	}
