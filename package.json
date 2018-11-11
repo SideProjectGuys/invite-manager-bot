@@ -29,6 +29,7 @@
 	"dependencies": {
 		"amqplib": "0.5.2",
 		"ava": "0.25.0",
+		"bufferutil": "4.0.0",
 		"chart.js": "2.7.3",
 		"chartjs-node": "1.7.1",
 		"chartjs-plugin-datalabels": "0.4.0",
@@ -36,6 +37,7 @@
 		"dblapi.js": "2.3.0",
 		"eris": "github:abalabahaha/eris#dev",
 		"erlpack": "github:discordapp/erlpack",
+		"eventemitter3": "3.1.0",
 		"i18n": "0.8.3",
 		"moment": "2.22.2",
 		"mysql2": "1.6.1",

@@ -122,7 +122,7 @@ export class IMClient extends Client {
 			messageLimit: 2,
 			getAllUsers: false,
 			compress: true,
-			guildCreateTimeout: 30000
+			guildCreateTimeout: 60000
 		});
 
 		this.startedAt = moment();
