@@ -314,7 +314,7 @@ export class IMClient extends Client {
 
 	private async setActivity() {
 		if (this.dbl) {
-			this.dbl.postStats(this.guilds.size, this.shardId, this.shardCount);
+			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
 		const numGuilds = await this.getGuildsCount();
