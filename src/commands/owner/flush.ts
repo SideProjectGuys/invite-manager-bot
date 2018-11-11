@@ -8,7 +8,7 @@ import { Command, Context } from '../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: OwnerCommand.flushPremium,
+			name: OwnerCommand.flush,
 			aliases: ['owner-flush', 'of'],
 			args: [
 				{

@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
-import { premiumSubscriptions } from '../../sequelize';
+import { LogAction, premiumSubscriptions } from '../../sequelize';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -79,6 +79,14 @@ export default class extends Command {
 			memberId: user.id
 		});
 
+		this.client.logAction(context.guild, message, LogAction.owner, {
+			type: 'give-premium',
+			amount: amount,
+			validUntil: validUntil.toDate(),
+			guildId,
+			memberId: user.id
+		});
+
 		const embed = this.client.createEmbed({
 			description: `Activated premium for ${premiumDuration.humanize()}`,
 			author: {
@@ -91,7 +99,7 @@ export default class extends Command {
 		await this.client.sendReply(message, embed);
 
 		let cmd = this.client.cmds.commands.find(
-			c => c.name === OwnerCommand.flushPremium
+			c => c.name === OwnerCommand.flush
 		);
 		cmd.action(message, [guildId], context);
 	}
