@@ -430,14 +430,12 @@ export default class extends Command {
 					clearTimeout(timeOut);
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
-					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 					resolve(newVal);
 				} else if (emoji && userId === ownerId) {
 					clearTimeout(timeOut);
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
-					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 					await msg.removeReaction(emoji.name, userId);
 
@@ -445,14 +443,12 @@ export default class extends Command {
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 2);
 			this.client.on('messageCreate', func);
 			this.client.on('messageReactionAdd', func);
 
 			const timeOutFunc = () => {
 				this.client.removeListener('messageCreate', func);
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 2);
 
 				resolve();
 			};
@@ -471,7 +467,6 @@ export default class extends Command {
 
 				clearTimeout(timeOut);
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				if (emoji.name === this.cancel) {
 					await msg.delete();
@@ -489,12 +484,10 @@ export default class extends Command {
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageReactionAdd', func);
 
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				msg.delete();
 

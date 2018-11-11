@@ -358,17 +358,14 @@ export class Messaging {
 				if (msg.author.id === message.author.id) {
 					confirmation = msg;
 					this.client.removeListener('messageCreate', func);
-					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 					resolve(done());
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageCreate', func);
 
 			const timeOut = () => {
 				this.client.removeListener('messageCreate', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 				resolve(done());
 			};
 
@@ -445,7 +442,6 @@ export class Messaging {
 
 				clearInterval(timer);
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				const isUp = emoji.name === upSymbol;
 				if (isUp && page > 0) {
@@ -455,12 +451,10 @@ export class Messaging {
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageReactionAdd', func);
 
 			const timeOut = () => {
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 				prevMsg.removeReaction(upSymbol, this.client.user.id);
 				prevMsg.removeReaction(downSymbol, this.client.user.id);
 			};

@@ -220,17 +220,14 @@ export class CaptchaService {
 
 				clearTimeout(timeOut);
 				this.client.removeListener('messageCreate', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				resolve(resp.content);
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageCreate', func);
 
 			const timeOutFunc = () => {
 				this.client.removeListener('messageCreate', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				resolve();
 			};
