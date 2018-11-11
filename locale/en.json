@@ -253,7 +253,7 @@
 			"joins": {
 				"title": "Joins",
 				"entry": {
-					"text": "${{ total }} times {{ time }}, invited by:",
+					"text": "{{ total }} times {{ time }}, invited by:",
 					"invite": "{{{ member }}} ({{ times }} times)"
 				},
 				"more": "Plus another {{ amount }} more joins",
