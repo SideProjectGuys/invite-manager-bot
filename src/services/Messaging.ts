@@ -70,7 +70,15 @@ export class Messaging {
 	}
 
 	public createEmbed(options: EmbedOptions = {}): Embed {
-		const color = options.color ? options.color : parseInt('00AE86', 16);
+		let color = options.color
+			? (options.color as number | string)
+			: parseInt('00AE86', 16);
+		// Parse colors in hashtag/hex format
+		if (typeof color === 'string') {
+			const code = color.startsWith('#') ? color.substr(1) : color;
+			color = parseInt(code, 16);
+		}
+
 		delete options.color;
 		return {
 			...options,
