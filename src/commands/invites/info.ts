@@ -252,7 +252,7 @@ export default class extends Command {
 				);
 
 				const mainText = t('cmd.info.joins.entry.text', {
-					total: total > 1 ? total : undefined,
+					total: total >= 1 ? total : undefined,
 					time
 				});
 
