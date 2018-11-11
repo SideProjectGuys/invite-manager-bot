@@ -222,7 +222,12 @@ export class Messaging {
 			leave: 0
 		}
 	): Promise<string | Embed> {
-		if (!inviter && template.indexOf('{inviterName}') >= 0) {
+		// Only fetch the inviter if needed and they're undefined.
+		// If the inviter is null it means we tried before and couldn't fetch them.
+		if (
+			typeof inviter === 'undefined' &&
+			template.indexOf('{inviterName}') >= 0
+		) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
 		// Override the inviter name with the display name, if the member is still here

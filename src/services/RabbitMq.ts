@@ -200,7 +200,7 @@ export class RabbitMq {
 
 		// Exit if we can't find the join
 		if (!join) {
-			console.error(
+			console.log(
 				`Could not find join for ${member.id} in ${guild.id}: ` +
 					JSON.stringify(content)
 			);
@@ -241,7 +241,7 @@ export class RabbitMq {
 
 		// Exit if we can't find the join
 		if (!jn) {
-			console.error(
+			console.log(
 				`Could not fetch join ${join.id}: ` + JSON.stringify(content)
 			);
 			if (joinChannel) {
@@ -299,7 +299,7 @@ export class RabbitMq {
 
 		let inviter = guild.members.get(inviterId);
 		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId);
+			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
 		const invites = await getInviteCounts(guild.id, inviterId);
 
@@ -389,11 +389,11 @@ export class RabbitMq {
 
 		// Exit if we can't find the join
 		if (!join) {
-			console.error(
+			console.log(
 				`Could not find join for ${member.id} in ` +
 					`${guild.id} leaveId: ${leave.id}`
 			);
-			console.error(
+			console.log(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
 					JSON.stringify(content)
 			);
