@@ -106,7 +106,7 @@ export class CaptchaService {
 			}
 
 			dmChannel.createMessage(
-				i18n.__({ locale: sets.lang, phrase: 'CAPTCHA_INVALID' })
+				i18n.__({ locale: sets.lang, phrase: 'captcha.invalid' })
 			);
 		}
 	}

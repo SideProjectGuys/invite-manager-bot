@@ -284,7 +284,10 @@ export class Messaging {
 		}
 
 		const lang = (await this.client.cache.settings.get(guild.id)).lang;
-		const unknown = i18n.__({ locale: lang, phrase: 'TEMPLATE_UNKNOWN' });
+		const unknown = i18n.__({
+			locale: lang,
+			phrase: 'messages.unknownInviter'
+		});
 
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;

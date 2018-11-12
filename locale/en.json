@@ -1044,7 +1044,12 @@
 	"command": {
 		"error": "There was an error executing the command."
 	},
-	"TEMPLATE_UNKNOWN": "TEMPLATE_UNKNOWN",
-	"LEAVE_INVITED_BY_UNKNOWN": "LEAVE_INVITED_BY_UNKNOWN",
-	"CAPTCHA_INVALID": "CAPTCHA_INVALID"
+	"messages": {
+		"unknownInviter": "Unknown",
+		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
+		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them."
+	},
+	"captcha": {
+		"invalid": "Captcha didn't match, please try again."
+	}
 }

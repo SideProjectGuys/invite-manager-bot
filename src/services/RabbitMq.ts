@@ -207,7 +207,7 @@ export class RabbitMq {
 			if (joinChannel) {
 				joinChannel.createMessage(
 					i18n.__(
-						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ locale: lang, phrase: 'messages.joinUnknownInviter' },
 						{ id: member.id }
 					)
 				);
@@ -247,7 +247,7 @@ export class RabbitMq {
 			if (joinChannel) {
 				joinChannel.createMessage(
 					i18n.__(
-						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ locale: lang, phrase: 'messages.joinUnknownInviter' },
 						{ id: member.id }
 					)
 				);
@@ -400,7 +400,7 @@ export class RabbitMq {
 			if (leaveChannel) {
 				leaveChannel.createMessage(
 					i18n.__(
-						{ locale: lang, phrase: 'LEAVE_INVITED_BY_UNKNOWN' },
+						{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
 						{
 							tag: member.user.username + '#' + member.user.discriminator
 						}
