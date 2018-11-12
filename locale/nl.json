@@ -153,7 +153,7 @@
 			"notSet": "Deze instellingen zijn niet gezet.",
 			"current": {
 				"title": "Huidige Waarde",
-				"text": "Deze configuratie is al ingestelt.\nGebruik `{{ prefix }}config {{ key }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}config {{ key }} default` om dit te resetten.\n{{! args.clear ? `Gebruik \\`${args.prefix}config ${args.key} none\\` om dit te verwijderen.` : '' !}}",
+				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
 				"notSet": "Deze configuratie is op dit moment nog **niet** gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen",
 				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
 			},
@@ -490,7 +490,7 @@
 			},
 			"faq": {
 				"title": "Vraag en antwoorden en meer",
-				"text": "Gebruik `!faq` voor meer informatie, zoals hoe je de bot prefix veranderd of hoe je de join en leave bericht veranderd. \n\nVoor complete hulp om de bot aan te zetten en te laten werken kan hier worden gevonden: https://github.com/Andreasgassmann/discord-invite-manager/"
+				"text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Help",
@@ -1044,7 +1044,12 @@
 	"command": {
 		"error": "There was an error executing the command."
 	},
-	"TEMPLATE_UNKNOWN": "TEMPLATE_UNKNOWN",
-	"LEAVE_INVITED_BY_UNKNOWN": "LEAVE_INVITED_BY_UNKNOWN",
-	"CAPTCHA_INVALID": "CAPTCHA_INVALID"
+	"messages": {
+		"unknownInviter": "Unknown",
+		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
+		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them."
+	},
+	"captcha": {
+		"invalid": "Captcha didn't match, please try again."
+	}
 }
