@@ -5,3 +5,4 @@ bin
 config_*.json
 test.sqlite
 sessions/
+config.*.json

@@ -1,59 +1,42 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { User } from 'discord.js';
+import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	LogAction
 } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'restore-invites',
-			aliases: ['restoreInvites', 'unclear-invites', 'unclearInvites'],
-			desc: 'Restore all previously cleared invites',
-			usage: '<prefix>restore-invites (@user)',
-			info:
-				'`@user`:\n' +
-				'The user to restore all invites to. ' +
-				'If omitted restores invites for all users.\n\n',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.restoreInvites,
+			aliases: ['restore-invites', 'unclear-invites', 'unclearInvites'],
+			args: [
+				{
+					name: 'user',
+					resolver: UserResolver
+				}
+			],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.restoreInvites))
-	@using(resolve('user: User'))
-	@using(localize)
-	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
+	public async action(
+		message: Message,
+		[user]: [User],
+		{ guild, t }: Context
+	): Promise<any> {
 		const memberId = user ? user.id : null;
 
 		const num = await customInvites.destroy({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				generatedReason: [
 					CustomInvitesGeneratedReason.clear_regular,
 					CustomInvitesGeneratedReason.clear_custom,
@@ -64,14 +47,14 @@ export default class extends Command<IMClient> {
 			}
 		});
 
-		this.client.logAction(message, LogAction.restoreInvites, {
+		this.client.logAction(guild, message, LogAction.restoreInvites, {
 			...(memberId && { targetId: memberId }),
 			num
 		});
 
-		return sendReply(
+		return this.client.sendReply(
 			message,
-			rp.CMD_RESTOREINVITES_DONE({ user: user ? user.id : undefined })
+			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
 		);
 	}
 }

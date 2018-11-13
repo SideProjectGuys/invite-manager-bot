@@ -1,54 +1,42 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Role } from 'discord.js';
+import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles, isStrict } from '../../middleware';
+import { CommandResolver, RoleResolver } from '../../resolvers';
 import {
 	rolePermissions,
 	RolePermissionsInstance,
 	roles,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, OwnerCommand, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'permissions',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.permissions,
 			aliases: ['perms', 'p'],
-			desc: 'Configure permissions to use commands',
-			usage: '<prefix>permissions cmd (@role)',
-			group: CommandGroup.Config
+			args: [
+				{
+					name: 'cmd',
+					resolver: CommandResolver
+				},
+				{
+					name: 'role',
+					resolver: RoleResolver
+				}
+			],
+			group: CommandGroup.Config,
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.permissions))
-	@using(resolve('cmd: string, role: Role'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, rawCmd, role]: [RP, string, Role]
+		[rawCmd, role]: [Command, Role],
+		{ guild, t }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		if (!rawCmd) {
 			const perms = await rolePermissions.findAll({
 				attributes: ['command'],
@@ -57,46 +45,54 @@ export default class extends Command<IMClient> {
 						attributes: ['name'],
 						model: roles,
 						where: {
-							guildId: message.guild.id
+							guildId: guild.id
 						}
 					}
 				],
 				raw: true
 			});
 
-			const embed = createEmbed(this.client);
-
-			embed.setDescription(rp.CMD_PERMISSIONS_ADMINS_ALL_COMMANDS());
+			const embed = this.client.createEmbed({
+				description: t('cmd.permissions.adminsCanUseAll')
+			});
 
 			const rs: { [x: string]: string[] } = {
 				Everyone: [],
 				Administrators: []
 			};
 
-			Object.values(BotCommand).forEach(command => {
-				const ps = perms.filter(p => p.command === command);
+			this.client.cmds.commands.forEach(command => {
+				const ps = perms.filter(p => p.command === command.name);
 				if (!ps.length) {
-					if (isStrict(command as BotCommand)) {
-						rs.Administrators.push(command);
+					if (command.strict) {
+						rs.Administrators.push(command.name);
 					} else {
-						rs.Everyone.push(command);
+						rs.Everyone.push(command.name);
 					}
 				} else {
 					ps.forEach((p: RolePermissionsInstance & { 'role.name': string }) => {
 						if (!rs['@' + p['role.name']]) {
 							rs['@' + p['role.name']] = [];
 						}
-						rs['@' + p['role.name']].push(command);
+						rs['@' + p['role.name']].push(command.name);
 					});
 				}
 			});
 
 			Object.keys(rs).forEach(r => {
-				embed.addField(r, rs[r].map(c => `\`${c}\``).join(', '));
+				embed.fields.push({
+					name: r,
+					value: rs[r].map(c => `\`${c}\``).join(', ')
+				});
 			});
 
-			return sendReply(message, embed);
+			return this.client.sendReply(message, embed);
 		}
+
+		const cmds = [rawCmd];
+
+		/*
+		TODO: This should be moved to the setup command
 
 		const cmds = [];
 		const cmd = rawCmd.toLowerCase();
@@ -123,11 +119,12 @@ export default class extends Command<IMClient> {
 		if (cmOwner) {
 			cmds.push(cmOwner);
 		}
+		*/
 
 		if (!cmds.length) {
-			return sendReply(
+			return this.client.sendReply(
 				message,
-				rp.CMD_PERMISSIONS_INVALID_COMMAND({
+				t('cmd.permissions.invalidCommand', {
 					cmd: rawCmd,
 					cmds: Object.keys(BotCommand)
 						.map(k => '`' + k + '`')
@@ -149,7 +146,7 @@ export default class extends Command<IMClient> {
 					]
 				],
 				where: {
-					command: cmds
+					command: cmds.map(c => c.name)
 				},
 				group: ['command'],
 				include: [
@@ -157,54 +154,54 @@ export default class extends Command<IMClient> {
 						attributes: [],
 						model: roles,
 						where: {
-							guildId: message.guild.id
+							guildId: guild.id
 						}
 					}
 				],
 				raw: true
 			});
 
-			const embed = createEmbed(this.client);
-
-			embed.setDescription(rp.CMD_PERMISSIONS_ADMINS_ALL_COMMANDS());
+			const embed = this.client.createEmbed({
+				description: t('cmd.permissions.adminsCanUseAll')
+			});
 
 			if (perms.length === 0) {
 				cmds.forEach(c => {
-					embed.addField(
-						c,
-						isStrict(c)
-							? rp.CMD_PERMISSIONS_ADMIN_ONLY()
-							: rp.CMD_PERMISSIONS_EVERYONE()
-					);
+					embed.fields.push({
+						name: c.name,
+						value: c.strict
+							? t('cmd.permissions.adminOnly')
+							: t('cmd.permissions.everyone')
+					});
 				});
 			} else {
 				perms.forEach((p: RolePermissionsInstance & { roles: string }) => {
-					embed.addField(
-						p.command,
-						p.roles
+					embed.fields.push({
+						name: p.command,
+						value: p.roles
 							.split(',')
 							.map(r => `<@&${r}>`)
 							.join(', ')
-					);
+					});
 				});
 			}
 
-			return sendReply(message, embed);
+			return this.client.sendReply(message, embed);
 		}
 
 		if (
-			cmds.indexOf(BotCommand.config) >= 0 ||
-			cmds.indexOf(BotCommand.inviteCodeConfig) >= 0 ||
-			cmds.indexOf(BotCommand.memberConfig) >= 0 ||
-			cmds.indexOf(BotCommand.permissions) >= 0 ||
-			cmds.indexOf(BotCommand.addRank) >= 0
+			cmds.find(c => c.name === BotCommand.config) ||
+			cmds.find(c => c.name === BotCommand.inviteCodeConfig) ||
+			cmds.find(c => c.name === BotCommand.memberConfig) ||
+			cmds.find(c => c.name === BotCommand.permissions) ||
+			cmds.find(c => c.name === BotCommand.addRank)
 		) {
-			return sendReply(message, rp.CMD_PERMISSIONS_CANNOT_CHANGE());
+			return this.client.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
 		const oldPerms = await rolePermissions.findAll({
 			where: {
-				command: cmds,
+				command: cmds.map(c => c.name),
 				roleId: role.id
 			}
 		});
@@ -212,38 +209,38 @@ export default class extends Command<IMClient> {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			sendReply(
+			this.client.sendReply(
 				message,
-				rp.CMD_PERMISSIONS_REMOVED({
+				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
-					cmds: cmds.join(', ')
+					cmds: cmds.map(c => '`' + c.name + '`').join(', ')
 				})
 			);
 		} else {
 			await roles.insertOrUpdate({
 				id: role.id,
 				name: role.name,
-				color: role.hexColor,
+				color: role.color.toString(16),
 				guildId: role.guild.id
 			});
 
 			await rolePermissions.bulkCreate(
 				cmds.map(c => ({
 					id: null,
-					command: c,
+					command: c.name,
 					roleId: role.id
 				}))
 			);
 
-			sendReply(
+			this.client.sendReply(
 				message,
-				rp.CMD_PERMISSIONS_ADDED({
+				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,
-					cmds: cmds.join(', ')
+					cmds: cmds.map(c => '`' + c.name + '`').join(', ')
 				})
 			);
 		}
 
-		SettingsCache.flushPermissions(message.guild.id);
+		this.client.cache.permissions.flush(guild.id);
 	}
 }

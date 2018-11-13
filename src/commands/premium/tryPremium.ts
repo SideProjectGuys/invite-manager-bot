@@ -1,110 +1,78 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import {
-	createEmbed,
-	prompt,
-	PromptResult,
-	sendReply
-} from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import { premiumSubscriptions } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup, PromptResult } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'try-premium',
-			aliases: ['try', 'trypremium'],
-			desc: 'Try premium version.',
-			usage: '<prefix>try-premium',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.tryPremium,
+			aliases: ['try', 'try-premium'],
 			group: CommandGroup.Premium,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.tryPremium))
-	@using(localize)
-	public async action(message: Message, [rp]: [RP]): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, settings, t, isPremium }: Context
+	): Promise<any> {
+		const prefix = settings.prefix;
 
-		const prefix = (await SettingsCache.get(message.guild.id)).prefix;
-
-		const embed = createEmbed(this.client);
-
-		const isPremium = await SettingsCache.isPremium(message.guild.id);
+		const embed = this.client.createEmbed();
 
 		const trialDuration = moment.duration(1, 'week');
 		const validUntil = moment().add(trialDuration);
 
-		embed.setTitle('InviteManager Premium');
+		console.log(isPremium);
+
+		embed.title = t('cmd.tryPremium.title');
 		if (isPremium) {
-			embed.setDescription(rp.CMD_TRYPREMIUM_CURRENTLY_ACTIVE());
-		} else if (await this.guildHadTrial(message.guild.id)) {
-			embed.setDescription(
-				rp.CMD_TRYPREMIUM_ALREADY_USED({
-					prefix
-				})
-			);
+			embed.description = t('cmd.tryPremium.currentlyActive');
+		} else if (await this.guildHadTrial(guild.id)) {
+			embed.description = t('cmd.tryPremium.alreadyUsed', {
+				prefix
+			});
 		} else {
-			const promptEmbed = createEmbed(this.client);
+			const promptEmbed = this.client.createEmbed();
 
-			promptEmbed.setDescription(
-				rp.CMD_TRYPREMIUM_DESCRIPTION({
-					duration: trialDuration.humanize()
-				})
-			);
+			promptEmbed.description = t('cmd.tryPremium.text', {
+				duration: trialDuration.humanize()
+			});
 
-			await sendReply(message, promptEmbed);
+			await this.client.sendReply(message, promptEmbed);
 
-			const [keyResult, keyValue] = await prompt(
+			const [keyResult, keyValue] = await this.client.msg.prompt(
 				message,
-				rp.CMD_TRYPREMIUM_PROMPT()
+				t('cmd.tryPremium.prompt')
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return sendReply(message, rp.PROMPT_TIMED_OUT());
+				return this.client.sendReply(message, t('prompt.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return sendReply(message, rp.PROMPT_CANCELED());
+				return this.client.sendReply(message, t('prompt.canceled'));
 			}
 
 			await premiumSubscriptions.create({
 				id: null,
 				amount: 0.0,
 				validUntil: validUntil.toDate(),
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: message.author.id
 			});
-			SettingsCache.flushPremium(message.guild.id);
+			this.client.cache.premium.flush(guild.id);
 
-			embed.setDescription(
-				rp.CMD_TRYPREMIUM_STARTED({
-					prefix
-				})
-			);
+			embed.description = t('cmd.tryPremium.started', {
+				prefix
+			});
 		}
 
-		return sendReply(message, embed);
+		return this.client.sendReply(message, embed);
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {

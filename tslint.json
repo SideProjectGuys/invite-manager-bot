@@ -1,5 +1,6 @@
 {
 	"extends": "typestrict",
+	"rulesDirectory": ["tslint-config-prettier"],
 	"rules": {
 		"align": [true, "parameters", "arguments", "statements"],
 		"ban": false,
@@ -33,7 +34,7 @@
 		"no-duplicate-variable": true,
 		"no-empty": true,
 		"no-eval": true,
-		"no-floating-promises": true,
+		"no-floating-promises": false,
 		"no-inferrable-types": [false],
 		"no-parameter-properties": true,
 		"no-shadowed-variable": true,

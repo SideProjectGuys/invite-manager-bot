@@ -1,27 +1,11 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
-import { LogAction } from '../../sequelize';
+import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
+import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
-const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
+export default class extends Command {
 	private readonly allowedCommands: string[] = [
 		'leaderboard',
 		'invites',
@@ -29,33 +13,41 @@ export default class extends Command<IMClient> {
 		'prefix'
 	];
 
-	public constructor() {
-		super({
-			name: 'owner-sudo',
-			aliases: ['osu'],
-			desc: 'Run commands for another guild',
-			usage: '<prefix>owner-sudo command',
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.sudo,
+			aliases: ['owner-sudo', 'osu'],
+			// desc: 'Run commands for another guild',
+			args: [
+				{
+					name: 'guildId',
+					resolver: StringResolver,
+					required: true
+				},
+				{
+					name: 'command',
+					resolver: StringResolver,
+					required: true,
+					rest: true
+				}
+			],
+			strict: true,
+			guildOnly: true,
 			hidden: true
 		});
 	}
 
-	@using(checkRoles(OwnerCommand.sudo))
-	@using(resolve('guild: String, ...command: string'))
-	@using(expect('guild: String, ...command: string'))
 	public async action(
 		message: Message,
-		[guildId, command]: [any, string]
+		[guildId, command]: [any, string],
+		{ guild }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		if (guildId.length < 8 || guildId.indexOf('http') === 0) {
-			const inv = await this.client.fetchInvite(
+			const inv = await this.client.getInvite(
 				guildId.replace('https://', '').replace('http://', '')
 			);
 			guildId = inv.guild.id;
@@ -63,43 +55,39 @@ export default class extends Command<IMClient> {
 
 		const args = command.split(' ');
 		const cmdName = args[0].toLowerCase();
-		const sudoCmd = this.client.commands.resolve(cmdName);
+		const sudoCmd = this.client.cmds.commands.find(c => c.name === cmdName);
 		if (!sudoCmd) {
-			return message.channel.send(
+			return this.client.sendReply(
+				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 		if (this.allowedCommands.indexOf(sudoCmd.name.toLowerCase()) === -1) {
-			return message.channel.send(
+			return this.client.sendReply(
+				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 
-		this.client.logAction(message, LogAction.owner, {
-			type: 'sudo',
+		this.client.rabbitmq.sendCommandToGuild(
 			guildId,
-			cmd: sudoCmd.name,
-			args: args.slice(1)
-		});
-
-		this.client.pendingRabbitMqRequests[message.id] = response => {
-			if (response.error) {
-				sendReply(message, response.error);
-			} else {
-				message.channel.send(response.data);
+			{
+				id: message.id,
+				cmd: ShardCommand.SUDO,
+				guildId,
+				sudoCmd: sudoCmd.name,
+				args: args.slice(1),
+				authorId: message.author.id
+			},
+			response => {
+				if (response.error) {
+					this.client.sendReply(message, response.error);
+				} else {
+					this.client.sendReply(message, response.data.embed);
+				}
 			}
-		};
-
-		this.client.sendCommandToGuild(guildId, {
-			id: message.id,
-			cmd: ShardCommand.SUDO,
-			originGuildId: message.guild.id,
-			guildId,
-			sudoCmd: sudoCmd.name,
-			args: args.slice(1),
-			authorId: message.author.id
-		});
+		);
 	}
 }

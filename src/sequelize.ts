@@ -164,29 +164,180 @@ guilds.hasMany(channels);
 // ------------------------------------
 export enum SettingsKey {
 	prefix = 'prefix',
+	lang = 'lang',
+	getUpdates = 'getUpdates',
+	logChannel = 'logChannel',
+
 	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',
 	leaveMessage = 'leaveMessage',
 	leaveMessageChannel = 'leaveMessageChannel',
-	lang = 'lang',
-	modRole = 'modRole',
-	modChannel = 'modChannel',
-	logChannel = 'logChannel',
-	getUpdates = 'getUpdates',
+
 	leaderboardStyle = 'leaderboardStyle',
+	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard',
+
 	autoSubtractFakes = 'autoSubtractFakes',
 	autoSubtractLeaves = 'autoSubtractLeaves',
 	autoSubtractLeaveThreshold = 'autoSubtractLeaveThreshold',
+
 	rankAssignmentStyle = 'rankAssignmentStyle',
 	rankAnnouncementChannel = 'rankAnnouncementChannel',
 	rankAnnouncementMessage = 'rankAnnouncementMessage',
-	hideLeftMembersFromLeaderboard = 'hideLeftMembersFromLeaderboard',
+
+	mutedRole = 'mutedRole',
+
 	captchaVerificationOnJoin = 'captchaVerificationOnJoin',
 	captchaVerificationWelcomeMessage = 'captchaVerificationWelcomeMessage',
 	captchaVerificationSuccessMessage = 'captchaVerificationSuccessMessage',
 	captchaVerificationFailedMessage = 'captchaVerificationFailedMessage',
-	captchaVerificationTimeout = 'captchaVerificationTimeout'
+	captchaVerificationTimeout = 'captchaVerificationTimeout',
+	captchaVerificationLogEnabled = 'captchaVerificationLogEnabled',
+
+	modLogChannel = 'modLogChannel',
+	modPunishmentBanDeleteMessage = 'modPunishmentBanDeleteMessage',
+	modPunishmentKickDeleteMessage = 'modPunishmentKickDeleteMessage',
+	modPunishmentSoftbanDeleteMessage = 'modPunishmentSoftbanDeleteMessage',
+	modPunishmentWarnDeleteMessage = 'modPunishmentWarnDeleteMessage',
+	modPunishmentMuteDeleteMessage = 'modPunishmentMuteDeleteMessage',
+
+	autoModEnabled = 'autoModEnabled',
+	autoModModeratedChannels = 'autoModModeratedChannels',
+	autoModModeratedRoles = 'autoModModeratedRoles',
+	autoModIgnoredChannels = 'autoModIgnoredChannels',
+	autoModIgnoredRoles = 'autoModIgnoredRoles',
+	autoModDeleteBotMessage = 'autoModDeleteBotMessage',
+	autoModDeleteBotMessageTimeoutInSeconds = 'autoModDeleteBotMessageTimeoutInSeconds',
+	autoModLogEnabled = 'autoModLogEnabled',
+
+	autoModDisabledForOldMembers = 'autoModDisabledForOldMembers',
+	autoModDisabledForOldMembersThreshold = 'autoModDisabledForOldMembersThreshold',
+
+	autoModInvitesEnabled = 'autoModInvitesEnabled',
+
+	autoModLinksEnabled = 'autoModLinksEnabled',
+	autoModLinksWhitelist = 'autoModLinksWhitelist',
+	autoModLinksBlacklist = 'autoModLinksBlacklist',
+	autoModLinksFollowRedirects = 'autoModLinksFollowRedirects',
+
+	autoModWordsEnabled = 'autoModWordsEnabled',
+	autoModWordsBlacklist = 'autoModWordsBlacklist',
+
+	autoModAllCapsEnabled = 'autoModAllCapsEnabled',
+	autoModAllCapsMinCharacters = 'autoModAllCapsMinCharacters',
+	autoModAllCapsPercentageCaps = 'autoModAllCapsPercentageCaps',
+
+	autoModDuplicateTextEnabled = 'autoModDuplicateTextEnabled',
+	autoModDuplicateTextTimeframeInSeconds = 'autoModDuplicateTextTimeframeInSeconds',
+
+	autoModQuickMessagesEnabled = 'autoModQuickMessagesEnabled',
+	autoModQuickMessagesNumberOfMessages = 'autoModQuickMessagesNumberOfMessages',
+	autoModQuickMessagesTimeframeInSeconds = 'autoModQuickMessagesTimeframeInSeconds',
+
+	autoModMentionUsersEnabled = 'autoModMentionUsersEnabled',
+	autoModMentionUsersMaxNumberOfMentions = 'autoModMentionUsersMaxNumberOfMentions',
+
+	autoModMentionRolesEnabled = 'autoModMentionRolesEnabled',
+	autoModMentionRolesMaxNumberOfMentions = 'autoModMentionRolesMaxNumberOfMentions',
+
+	autoModEmojisEnabled = 'autoModEmojisEnabled',
+	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis'
 }
+
+export type SettingsObject = {
+	prefix: string;
+	lang: Lang;
+	logChannel: string;
+	getUpdates: boolean;
+
+	joinMessage: string;
+	joinMessageChannel: string;
+	leaveMessage: string;
+	leaveMessageChannel: string;
+
+	leaderboardStyle: LeaderboardStyle;
+	hideLeftMembersFromLeaderboard: boolean;
+
+	autoSubtractFakes: boolean;
+	autoSubtractLeaves: boolean;
+	autoSubtractLeaveThreshold: number /* seconds */;
+
+	rankAssignmentStyle: RankAssignmentStyle;
+	rankAnnouncementChannel: string;
+	rankAnnouncementMessage: string;
+
+	mutedRole: string;
+
+	captchaVerificationOnJoin: boolean;
+	captchaVerificationWelcomeMessage: string;
+	captchaVerificationSuccessMessage: string;
+	captchaVerificationFailedMessage: string;
+	captchaVerificationTimeout: number /* seconds */;
+	captchaVerificationLogEnabled: boolean;
+
+	modLogChannel: string;
+	modPunishmentBanDeleteMessage: boolean;
+	modPunishmentKickDeleteMessage: boolean;
+	modPunishmentSoftbanDeleteMessage: boolean;
+	modPunishmentWarnDeleteMessage: boolean;
+	modPunishmentMuteDeleteMessage: boolean;
+
+	autoModEnabled: boolean;
+	autoModModeratedChannels: string[];
+	autoModModeratedRoles: string[];
+	autoModIgnoredChannels: string[];
+	autoModIgnoredRoles: string[];
+	autoModDeleteBotMessage: boolean;
+	autoModDeleteBotMessageTimeoutInSeconds: number;
+	autoModLogEnabled: boolean;
+
+	autoModDisabledForOldMembers: boolean;
+	autoModDisabledForOldMembersThreshold: number /* seconds, default 1 week */;
+
+	autoModInvitesEnabled: boolean;
+
+	autoModLinksEnabled: boolean;
+	autoModLinksWhitelist: string[];
+	autoModLinksBlacklist: string[];
+	autoModLinksFollowRedirects: boolean;
+
+	autoModWordsEnabled: boolean;
+	autoModWordsBlacklist: string[];
+
+	autoModAllCapsEnabled: boolean;
+	autoModAllCapsMinCharacters: number;
+	autoModAllCapsPercentageCaps: number;
+
+	autoModDuplicateTextEnabled: boolean;
+	autoModDuplicateTextTimeframeInSeconds: number;
+
+	autoModQuickMessagesEnabled: boolean;
+	autoModQuickMessagesNumberOfMessages: number;
+	autoModQuickMessagesTimeframeInSeconds: number;
+
+	autoModMentionUsersEnabled: boolean;
+	autoModMentionUsersMaxNumberOfMentions: number;
+
+	autoModMentionRolesEnabled: boolean;
+	autoModMentionRolesMaxNumberOfMentions: number;
+
+	autoModEmojisEnabled: boolean;
+	autoModEmojisMaxNumberOfEmojis: number;
+};
+
+export type InternalSettingsTypes =
+	| 'String'
+	| 'Number'
+	| 'Boolean'
+	| 'Channel'
+	| 'Role'
+	| 'String[]'
+	| 'Channel[]'
+	| 'Role[]'
+	| 'Enum<LeaderboardStyle>'
+	| 'Enum<RankAssignmentStyle>'
+	| 'Enum<Lang>';
+
+export type SettingsTypesObject = { [k in SettingsKey]: InternalSettingsTypes };
 
 export enum Lang {
 	de = 'de',
@@ -211,60 +362,172 @@ export enum RankAssignmentStyle {
 	highest = 'highest'
 }
 
-export function getSettingsType(key: SettingsKey) {
-	if (
-		key === SettingsKey.joinMessageChannel ||
-		key === SettingsKey.leaveMessageChannel ||
-		key === SettingsKey.modChannel ||
-		key === SettingsKey.logChannel ||
-		key === SettingsKey.rankAnnouncementChannel
-	) {
-		return 'Channel';
-	}
-	if (
-		key === SettingsKey.getUpdates ||
-		key === SettingsKey.autoSubtractFakes ||
-		key === SettingsKey.autoSubtractLeaves ||
-		key === SettingsKey.hideLeftMembersFromLeaderboard
-	) {
-		return 'Boolean';
-	}
-	if (key === SettingsKey.autoSubtractLeaveThreshold) {
-		return 'Number';
-	}
-	return 'String';
-}
+export const settingsTypes: SettingsTypesObject = {
+	prefix: 'String',
+	lang: 'Enum<Lang>',
+	logChannel: 'Channel',
+	getUpdates: 'Boolean',
 
-export const defaultSettings: { [k in SettingsKey]: string } = {
+	joinMessage: 'String',
+	joinMessageChannel: 'Channel',
+	leaveMessage: 'String',
+	leaveMessageChannel: 'Channel',
+
+	leaderboardStyle: 'Enum<LeaderboardStyle>',
+	hideLeftMembersFromLeaderboard: 'Boolean',
+
+	autoSubtractFakes: 'Boolean',
+	autoSubtractLeaves: 'Boolean',
+	autoSubtractLeaveThreshold: 'Number' /* seconds */,
+
+	rankAssignmentStyle: 'Enum<RankAssignmentStyle>',
+	rankAnnouncementChannel: 'Channel',
+	rankAnnouncementMessage: 'String',
+
+	mutedRole: 'Role',
+
+	captchaVerificationOnJoin: 'Boolean',
+	captchaVerificationWelcomeMessage: 'String',
+	captchaVerificationSuccessMessage: 'String',
+	captchaVerificationFailedMessage: 'String',
+	captchaVerificationTimeout: 'Number' /* seconds */,
+	captchaVerificationLogEnabled: 'Boolean',
+
+	modLogChannel: 'Channel',
+	modPunishmentBanDeleteMessage: 'Boolean',
+	modPunishmentKickDeleteMessage: 'Boolean',
+	modPunishmentSoftbanDeleteMessage: 'Boolean',
+	modPunishmentWarnDeleteMessage: 'Boolean',
+	modPunishmentMuteDeleteMessage: 'Boolean',
+
+	autoModEnabled: 'Boolean',
+	autoModModeratedChannels: 'Channel[]',
+	autoModModeratedRoles: 'Role[]',
+	autoModIgnoredChannels: 'Channel[]',
+	autoModIgnoredRoles: 'Role[]',
+	autoModDeleteBotMessage: 'Boolean',
+	autoModDeleteBotMessageTimeoutInSeconds: 'Number',
+	autoModLogEnabled: 'Boolean',
+
+	autoModDisabledForOldMembers: 'Boolean',
+	autoModDisabledForOldMembersThreshold: 'Number' /* seconds, default 1 week */,
+
+	autoModInvitesEnabled: 'Boolean',
+
+	autoModLinksEnabled: 'Boolean',
+	autoModLinksWhitelist: 'String[]',
+	autoModLinksBlacklist: 'String[]',
+	autoModLinksFollowRedirects: 'Boolean',
+
+	autoModWordsEnabled: 'Boolean',
+	autoModWordsBlacklist: 'String[]',
+
+	autoModAllCapsEnabled: 'Boolean',
+	autoModAllCapsMinCharacters: 'Number',
+	autoModAllCapsPercentageCaps: 'Number',
+
+	autoModDuplicateTextEnabled: 'Boolean',
+	autoModDuplicateTextTimeframeInSeconds: 'Number',
+
+	autoModQuickMessagesEnabled: 'Boolean',
+	autoModQuickMessagesNumberOfMessages: 'Number',
+	autoModQuickMessagesTimeframeInSeconds: 'Number',
+
+	autoModMentionUsersEnabled: 'Boolean',
+	autoModMentionUsersMaxNumberOfMentions: 'Number',
+
+	autoModMentionRolesEnabled: 'Boolean',
+	autoModMentionRolesMaxNumberOfMentions: 'Number',
+
+	autoModEmojisEnabled: 'Boolean',
+	autoModEmojisMaxNumberOfEmojis: 'Number'
+};
+
+export const defaultSettings: SettingsObject = {
 	prefix: '!',
 	lang: Lang.en,
+	logChannel: null,
+	getUpdates: true,
+
 	joinMessage:
 		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
 	leaveMessage: '{memberName} **left**; Invited by **{inviterName}**',
 	leaveMessageChannel: null,
-	modRole: null,
-	modChannel: null,
-	logChannel: null,
-	getUpdates: 'true',
+
 	leaderboardStyle: LeaderboardStyle.normal,
-	autoSubtractFakes: 'true',
-	autoSubtractLeaves: 'true',
-	autoSubtractLeaveThreshold: '600' /* seconds */,
+	hideLeftMembersFromLeaderboard: true,
+
+	autoSubtractFakes: true,
+	autoSubtractLeaves: true,
+	autoSubtractLeaveThreshold: 600 /* seconds */,
+
 	rankAssignmentStyle: RankAssignmentStyle.all,
 	rankAnnouncementChannel: null,
 	rankAnnouncementMessage:
 		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
-	hideLeftMembersFromLeaderboard: 'false',
-	captchaVerificationOnJoin: 'false',
+
+	mutedRole: null,
+
+	captchaVerificationOnJoin: false,
 	captchaVerificationWelcomeMessage:
 		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
 	captchaVerificationSuccessMessage:
 		'You have successfully entered the captcha. Welcome to the server!',
 	captchaVerificationFailedMessage:
-		`You did not enter the captha right within the specified time. ` +
+		'You did not enter the captha right within the specified time.' +
 		`We're sorry, but we have to kick you from the server. Feel free to join again.`,
-	captchaVerificationTimeout: '180' /* seconds */
+	captchaVerificationTimeout: 180 /* seconds */,
+	captchaVerificationLogEnabled: true,
+
+	modLogChannel: null,
+	modPunishmentBanDeleteMessage: true,
+	modPunishmentKickDeleteMessage: true,
+	modPunishmentSoftbanDeleteMessage: true,
+	modPunishmentWarnDeleteMessage: true,
+	modPunishmentMuteDeleteMessage: true,
+
+	autoModEnabled: false,
+	autoModModeratedChannels: null,
+	autoModModeratedRoles: null,
+	autoModIgnoredChannels: null,
+	autoModIgnoredRoles: null,
+	autoModDeleteBotMessage: true,
+	autoModDeleteBotMessageTimeoutInSeconds: 5,
+	autoModLogEnabled: true,
+
+	autoModDisabledForOldMembers: false,
+	autoModDisabledForOldMembersThreshold: 604800 /* seconds, default 1 week */,
+
+	autoModInvitesEnabled: true,
+
+	autoModLinksEnabled: true,
+	autoModLinksWhitelist: null,
+	autoModLinksBlacklist: null,
+	autoModLinksFollowRedirects: true,
+
+	autoModWordsEnabled: true,
+	autoModWordsBlacklist: null,
+
+	autoModAllCapsEnabled: true,
+	autoModAllCapsMinCharacters: 10,
+	autoModAllCapsPercentageCaps: 70,
+
+	autoModDuplicateTextEnabled: true,
+	autoModDuplicateTextTimeframeInSeconds: 60,
+
+	autoModQuickMessagesEnabled: true,
+	autoModQuickMessagesNumberOfMessages: 5,
+	autoModQuickMessagesTimeframeInSeconds: 3,
+
+	autoModMentionUsersEnabled: true,
+	autoModMentionUsersMaxNumberOfMentions: 5,
+
+	autoModMentionRolesEnabled: true,
+	autoModMentionRolesMaxNumberOfMentions: 3,
+
+	autoModEmojisEnabled: true,
+	autoModEmojisMaxNumberOfEmojis: 5
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -308,15 +571,20 @@ export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
 
-export function getMemberSettingsType(key: MemberSettingsKey) {
-	if (key === MemberSettingsKey.hideFromLeaderboard) {
-		return 'Boolean';
-	}
-	return 'String';
-}
+export type MemberSettingsObject = {
+	hideFromLeaderboard: boolean;
+};
 
-export const defaultMemberSettings: { [k in MemberSettingsKey]: string } = {
-	hideFromLeaderboard: 'false'
+export type MemberSettingsTypesObject = {
+	[k in MemberSettingsKey]: InternalSettingsTypes
+};
+
+export const memberSettingsTypes: MemberSettingsTypesObject = {
+	hideFromLeaderboard: 'Boolean'
+};
+
+export const defaultMemberSettings: MemberSettingsObject = {
+	hideFromLeaderboard: false
 };
 
 export interface MemberSettingsAttributes extends BaseAttributes {
@@ -429,13 +697,21 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
-export function getInviteCodeSettingsType(key: InviteCodeSettingsKey) {
-	return 'String';
-}
+export type InviteCodeSettingsObject = {
+	name: string;
+	roles: string[];
+};
 
-export const defaultInviteCodeSettings: {
-	[k in InviteCodeSettingsKey]: string
-} = {
+export type InviteCodeSettingsTypesObject = {
+	[k in InviteCodeSettingsKey]: InternalSettingsTypes
+};
+
+export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
+	name: 'String',
+	roles: 'Role[]'
+};
+
+export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
 	name: null,
 	roles: null
 };
@@ -961,3 +1237,217 @@ export const rolePermissions = sequelize.define<
 
 rolePermissions.belongsTo(roles);
 roles.hasMany(rolePermissions);
+
+// ------------------------------------
+// StrikesConfig
+// ------------------------------------
+export enum ViolationType {
+	invites = 'invites',
+	links = 'links',
+	words = 'words',
+	allCaps = 'allCaps',
+	duplicateText = 'duplicateText',
+	quickMessages = 'quickMessages',
+	mentionUsers = 'mentionUsers',
+	mentionRoles = 'mentionRoles',
+	emojis = 'emojis'
+}
+
+export interface StrikeConfigAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	violationType: ViolationType;
+	amount: number;
+}
+export interface StrikeConfigInstance
+	extends Sequelize.Instance<StrikeConfigAttributes>,
+		StrikeConfigAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+}
+
+export const strikeConfigs = sequelize.define<
+	StrikeConfigInstance,
+	StrikeConfigAttributes
+>(
+	'strikeConfig',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		amount: Sequelize.INTEGER,
+		guildId: Sequelize.STRING(32)
+	},
+	{
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'violationType']
+			}
+		]
+	}
+);
+
+strikeConfigs.belongsTo(guilds);
+guilds.hasMany(strikeConfigs);
+
+// ------------------------------------
+// Strikes
+// ------------------------------------
+export interface StrikeAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	amount: number;
+	violationType: ViolationType;
+}
+export interface StrikeInstance
+	extends Sequelize.Instance<StrikeAttributes>,
+		StrikeAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const strikes = sequelize.define<StrikeInstance, StrikeAttributes>(
+	'strike',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		amount: Sequelize.INTEGER,
+		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
+	}
+);
+
+strikes.belongsTo(guilds);
+guilds.hasMany(strikes);
+
+strikes.belongsTo(members);
+members.hasMany(strikes);
+
+// ------------------------------------
+// PunishmentConfigs
+// ------------------------------------
+export enum PunishmentType {
+	ban = 'ban',
+	kick = 'kick',
+	softban = 'softban',
+	warn = 'warn',
+	mute = 'mute'
+}
+
+export interface PunishmentConfigAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	punishmentType: PunishmentType;
+	amount: number;
+	args: string;
+}
+export interface PunishmentConfigInstance
+	extends Sequelize.Instance<PunishmentConfigAttributes>,
+		PunishmentConfigAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+}
+
+export const punishmentConfigs = sequelize.define<
+	PunishmentConfigInstance,
+	PunishmentConfigAttributes
+>(
+	'punishmentConfig',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+		amount: Sequelize.INTEGER,
+		args: Sequelize.STRING,
+		guildId: Sequelize.STRING(32)
+	},
+	{
+		indexes: [
+			{
+				unique: true,
+				fields: ['guildId', 'punishmentType']
+			}
+		]
+	}
+);
+
+punishmentConfigs.belongsTo(guilds);
+guilds.hasMany(punishmentConfigs);
+
+// ------------------------------------
+// Punishments
+// ------------------------------------
+export interface PunishmentAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	punishmentType: PunishmentType;
+	amount: number;
+	args: string;
+	reason: string;
+	creatorId: string;
+}
+export interface PunishmentInstance
+	extends Sequelize.Instance<PunishmentAttributes>,
+		PunishmentAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
+}
+
+export const punishments = sequelize.define<
+	PunishmentInstance,
+	PunishmentAttributes
+>('punishment', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+	amount: Sequelize.INTEGER,
+	args: Sequelize.STRING,
+	guildId: Sequelize.STRING(32),
+	memberId: Sequelize.STRING(32),
+	creatorId: Sequelize.STRING(32),
+	reason: Sequelize.STRING
+});
+
+punishments.belongsTo(guilds);
+guilds.hasMany(punishments);
+
+punishments.belongsTo(members);
+members.hasMany(punishments);
+
+punishments.belongsTo(members, { as: 'creator', foreignKey: 'creatorId' });
+members.hasMany(punishments, { foreignKey: 'creatorId' });
+
+// ------------------------------------
+// Scheduled Actions
+// ------------------------------------
+
+export enum ScheduledActionType {
+	unmute = 'unmute'
+}
+
+export interface ScheduledActionAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	actionType: ScheduledActionType;
+	args: JSON;
+	reason: string;
+	date: Date;
+}
+export interface ScheduledActionInstance
+	extends Sequelize.Instance<ScheduledActionAttributes>,
+		ScheduledActionAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+}
+
+export const scheduledActions = sequelize.define<
+	ScheduledActionInstance,
+	ScheduledActionAttributes
+>('scheduledAction', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	actionType: Sequelize.ENUM(Object.values(ScheduledActionType)),
+	args: Sequelize.JSON,
+	date: Sequelize.DATE,
+	reason: Sequelize.STRING,
+	guildId: Sequelize.STRING(32)
+});
+
+scheduledActions.belongsTo(guilds);
+guilds.hasMany(scheduledActions);

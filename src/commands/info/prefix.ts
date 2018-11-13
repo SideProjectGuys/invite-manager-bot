@@ -1,47 +1,29 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot } from '../../middleware';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { CommandGroup } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'prefix',
-			desc: 'Shows the current prefix of the bot',
-			usage: '<prefix>prefix',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.prefix,
+			aliases: [],
 			group: CommandGroup.Info,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
-
-		const sets = await SettingsCache.get(message.guild.id);
-
-		sendReply(
+	public async action(
+		message: Message,
+		args: any[],
+		{ settings, t }: Context
+	): Promise<any> {
+		this.client.sendReply(
 			message,
-			`The current prefix is ${sets.prefix}\n` +
-				`Change it using \`${sets.prefix}config prefix +\``
+			t('cmd.prefix.title', {
+				prefix: settings.prefix
+			})
 		);
 	}
 }

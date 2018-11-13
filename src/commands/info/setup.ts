@@ -1,92 +1,80 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { User } from 'discord.js';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
+import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'setup',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.setup,
 			aliases: ['guide', 'test', 'testBot', 'test-bot'],
-			desc:
-				'Help with setting up the bot and ' +
-				'checking for problems (e.g. missing permissions)',
-			usage: '<prefix>setup',
 			group: CommandGroup.Info,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.setup))
-	@using(localize)
-	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-		const botMember = message.guild.me;
-
-		const embed = createEmbed(this.client);
-
-		embed.setTitle(rp.CMD_SETUP_TITLE());
-
-		embed.setDescription(rp.CMD_SETUP_TEXT());
+	public async action(
+		message: Message,
+		args: any[],
+		{ t, me }: Context
+	): Promise<any> {
+		const embed = this.client.createEmbed({
+			title: t('cmd.setup.title'),
+			description: t('cmd.setup.text')
+		});
 
 		// TODO: Adapt to what the server already has set
 
-		embed.addField(
-			rp.CMD_SETUP_JOINLEAVE_TITLE(),
-			rp.CMD_SETUP_JOINLEAVE_TEXT()
-		);
+		embed.fields.push({
+			name: t('cmd.setup.joinLeave.title'),
+			value: t('cmd.setup.joinLeave.text')
+		});
 
-		embed.addField(rp.CMD_SETUP_PREFIX_TITLE(), rp.CMD_SETUP_PREFIX_TEXT());
+		embed.fields.push({
+			name: t('cmd.setup.prefix.title'),
+			value: t('cmd.setup.prefix.text')
+		});
 
-		embed.addField(rp.CMD_SETUP_FAQ_TITLE(), rp.CMD_SETUP_FAQ_TEXT());
+		embed.fields.push({
+			name: t('cmd.setup.faq.title'),
+			value: t('cmd.setup.faq.text')
+		});
 
-		embed.addField(
-			rp.CMD_SETUP_HELP_TITLE(),
-			rp.CMD_SETUP_HELP_TEXT({ link: config.botSupport })
-		);
+		embed.fields.push({
+			name: t('cmd.setup.help.title'),
+			value: t('cmd.setup.help.text', { link: config.botSupport })
+		});
 
-		embed.addField(
-			rp.CMD_SETUP_PREMIUM_TITLE(),
-			rp.CMD_SETUP_PREMIUM_TEXT({ link: config.botPatreon })
-		);
+		embed.fields.push({
+			name: t('cmd.setup.premium.title'),
+			value: t('cmd.setup.premium.text', { link: config.botPatreon })
+		});
 
-		embed.addBlankField();
-
-		if (!botMember.hasPermission('MANAGE_GUILD')) {
-			embed.addField(
-				rp.CMD_SETUP_MANAGE_GUILD_TITLE(),
-				rp.CMD_SETUP_MANAGE_GUILD_TEXT()
-			);
+		if (!me.permission.has(Permissions.MANAGE_GUILD)) {
+			embed.fields.push({
+				name: t('cmd.setup.manageGuild.title'),
+				value: t('cmd.setup.manageGuild.text')
+			});
 		}
 
-		if (!botMember.hasPermission('MANAGE_ROLES')) {
-			embed.addField(
-				rp.CMD_SETUP_MANAGE_ROLES_TITLE(),
-				rp.CMD_SETUP_MANAGE_ROLES_TEXT()
-			);
+		if (!me.permission.has(Permissions.MANAGE_ROLES)) {
+			embed.fields.push({
+				name: t('cmd.setup.manageRoles.title'),
+				value: t('cmd.setup.manageRoles.text')
+			});
 		}
 
-		return sendReply(message, embed);
+		if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
+			embed.fields.push({
+				name: t('cmd.setup.viewAuditLogs.title'),
+				value: t('cmd.setup.viewAuditLogs.text')
+			});
+		}
+
+		return this.client.sendReply(message, embed);
 	}
 }

@@ -79,7 +79,7 @@ export class Chart {
 		},
 		plugins: {
 			datalabels: {
-				display: function(context: any) {
+				display: function(context: { dataIndex: number; dataset: any }) {
 					// Always show first and last value
 					if (
 						context.dataIndex === 0 ||

@@ -1,9 +1,0 @@
-[CMD_ADDRANK_ROLE_TOO_HIGH]
-El rol **{{ role }}** es más alto que mi propio rol (**{{ myRole }}**), así que no podré otorgarlo a los miembros que lo obtengan.
-
-[CMD_ADDRANK_UPDATED]
-Rango **{{ role }}** actualizado: Ahora necesita {{ invites }} y tiene la siguiente descripción: "{{ description ?}}"
-
-[CMD_ADDRANK_CREATED]
-Se agregó el rango **{{ role }}** que necesita {{ invites }} y tiene la siguiente descripción: "{{ description ?}}"
-

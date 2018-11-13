@@ -1,9 +1,0 @@
-[CMD_RANKS_NONE]
-Er zijn geen ranken gecreëerd.
-
-[CMD_RANKS_ENTRY]
-<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}
-
-[CMD_RANKS_TITLE]
-Ranken
-

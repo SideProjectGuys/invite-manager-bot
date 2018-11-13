@@ -1,4 +1,4 @@
-import { Guild } from '@yamdbf/core';
+import { Guild } from 'eris';
 import moment from 'moment';
 import { FindOptionsAttributesArray, Op } from 'sequelize';
 

@@ -1,100 +1,103 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot } from '../../middleware';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { CommandGroup, RP } from '../../types';
-
-const { localize } = Middleware;
-const { using } = CommandDecorators;
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
 
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'bot-info',
-			aliases: ['botInfo'],
-			desc: 'Show info about the bot',
-			usage: '<prefix>botInfo',
-			group: CommandGroup.Info
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.botInfo,
+			aliases: ['bot-info'],
+			group: CommandGroup.Info,
+			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(localize)
-	public async action(message: Message, [rp]: [RP]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		const lang = (await SettingsCache.get(message.guild.id)).lang;
+	public async action(
+		message: Message,
+		args: any[],
+		{ t, settings }: Context
+	): Promise<any> {
+		const lang = settings.lang;
 
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed();
 
 		// Version
-		embed.addField(rp.CMD_BOTINFO_VERSION(), this.client.version, true);
+		embed.fields.push({
+			name: t('cmd.botInfo.version'),
+			value: this.client.version,
+			inline: true
+		});
 
 		// Uptime
-		embed.addField(
-			rp.CMD_BOTINFO_UPTIME(),
-			moment
+		embed.fields.push({
+			name: t('cmd.botInfo.uptime'),
+			value: moment
 				.duration(moment().diff(this.client.startedAt))
 				.locale(lang)
 				.humanize(),
-			true
-		);
+			inline: true
+		});
 
 		// Guild count
-		embed.addField(rp.CMD_BOTINFO_GUILDS(), numGuilds, true);
+		embed.fields.push({
+			name: t('cmd.botInfo.guilds'),
+			value: numGuilds.toString(),
+			inline: true
+		});
 
 		// Member count
-		embed.addField(rp.CMD_BOTINFO_MEMBERS(), numMembers, true);
+		embed.fields.push({
+			name: t('cmd.botInfo.members'),
+			value: numMembers.toString(),
+			inline: true
+		});
 
 		// Shard info
-		embed.addField(
-			rp.CMD_BOTINFO_SHARD_CURRENT(),
-			(this.client.options.shards as number) + 1,
-			true
-		);
-		embed.addField(
-			rp.CMD_BOTINFO_SHARD_TOTAL(),
-			this.client.options.totalShardCount,
-			true
-		);
+		embed.fields.push({
+			name: t('cmd.botInfo.shards.current'),
+			value: this.client.shardId.toString(),
+			inline: true
+		});
+		embed.fields.push({
+			name: t('cmd.botInfo.shards.total'),
+			value: this.client.shardCount.toString(),
+			inline: true
+		});
 
 		// Support discord
 		if (config.botSupport) {
-			embed.addField(rp.BOT_SUPPORT_DISCORD_TITLE(), config.botSupport);
+			embed.fields.push({
+				name: t('bot.supportDiscord.title'),
+				value: config.botSupport
+			});
 		}
 		// Add bot
 		if (config.botAdd) {
-			embed.addField(rp.BOT_INVITE_TITLE(), config.botAdd);
+			embed.fields.push({ name: t('bot.invite.title'), value: config.botAdd });
 		}
 		// Bot website
 		if (config.botWebsite) {
-			embed.addField(rp.BOT_WEBSITE_TITLE(), config.botWebsite);
+			embed.fields.push({
+				name: t('bot.website.title'),
+				value: config.botWebsite
+			});
 		}
 		// Patreon
 		if (config.botPatreon) {
-			embed.addField(rp.BOT_PATREON_TITLE(), config.botPatreon);
+			embed.fields.push({
+				name: t('bot.patreon.title'),
+				value: config.botPatreon
+			});
 		}
 
-		return sendReply(message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

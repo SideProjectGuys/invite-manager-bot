@@ -1,60 +1,50 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
+import { StringResolver } from '../../resolvers';
 import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
+import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
-const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'owner-diagnose',
-			aliases: ['ownerDiagnose', 'odiag'],
-			desc: 'Remotely diagnose servers',
-			usage: '<prefix>owner-diagnose',
-			hidden: true
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.diagnose,
+			aliases: ['owner-diagnose', 'odiag'],
+			// desc: 'Remotely diagnose servers',
+			args: [
+				{
+					name: 'guildId',
+					resolver: StringResolver
+					// description: 'The id of the guild to diagnose.'
+				}
+			],
+			strict: true,
+			hidden: true,
+			guildOnly: true
 		});
 	}
 
-	@using(checkRoles(OwnerCommand.diagnose))
-	@using(resolve('guild: String'))
-	@using(expect('guild: String'))
-	public async action(message: Message, [guildId]: [any]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+	public async action(
+		message: Message,
+		[guildId]: [any],
+		{ guild }: Context
+	): Promise<any> {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		if (guildId.length < 8 || guildId.indexOf('http') === 0) {
-			const inv = await this.client.fetchInvite(
+			const inv = await this.client.getInvite(
 				guildId.replace('https://', '').replace('http://', '')
 			);
 			guildId = inv.guild.id;
 		}
 
-		const msg = (await message.channel.send(
-			'Requesting diagnose info...'
-		)) as Message;
+		const msg = await message.channel.createMessage(
+			`Requesting diagnose info for ${guildId}...`
+		);
 
 		const lastCmd = await commandUsage.find({
 			where: {
@@ -75,85 +65,109 @@ export default class extends Command<IMClient> {
 			raw: true
 		});
 
-		this.client.pendingRabbitMqRequests[message.id] = response => {
-			if (response.error) {
-				sendReply(message, response.error);
-				return;
-			}
-
-			const embed = createEmbed(this.client);
-			embed.setDescription('');
-
-			embed.addField('Guild', `Id: ${guildId}\n` + `Shard: ${shard}\n`);
-
-			const sets: { [x: string]: string } = {};
-			Object.keys(response.settings).forEach(key => {
-				if (typeof response.settings[key] === 'string') {
-					sets[key] = response.settings[key].substr(0, 200);
-				} else {
-					sets[key] = response.settings[key];
-				}
-			});
-
-			embed.addField(
-				'Owner',
-				'```json\n' +
-					JSON.stringify(response.owner, null, 2).substr(0, 1000) +
-					'```'
-			);
-
-			embed.addField(
-				'Settings',
-				'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
-			);
-
-			embed.addField(
-				'Premium',
-				'```json\n' +
-					(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
-					'```'
-			);
-
-			embed.addField(
-				'Last command usage',
-				lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
-			);
-
-			msg.edit(embed).catch(e => msg.edit(e));
-
-			// Send second message with permissions info
-			let permsEmbed = createEmbed(this.client);
-
-			permsEmbed.addField(
-				'Bot permissions',
-				'```\n' + response.perms.join('\n').substr(0, 1000) + '```'
-			);
-
-			permsEmbed.addField(
-				'Join channel permissions',
-				'```\n' + response.joinChannelPerms.join('\n').substr(0, 1000) + '```'
-			);
-
-			permsEmbed.addField(
-				'Leave channel permissions',
-				'```\n' + response.leaveChannelPerms.join('\n').substr(0, 1000) + '```'
-			);
-
-			permsEmbed.addField(
-				'Rank announcement channel permissions',
-				'```\n' +
-					response.announceChannelPerms.join('\n').substr(0, 1000) +
-					'```'
-			);
-
-			message.channel.send(permsEmbed).catch(e => message.channel.send(e));
-		};
-
-		const { shard } = this.client.sendCommandToGuild(guildId, {
-			cmd: ShardCommand.DIAGNOSE,
-			id: message.id,
+		const { shard } = this.client.rabbitmq.sendCommandToGuild(
 			guildId,
-			originGuildId: message.guild.id
-		});
+			{
+				cmd: ShardCommand.DIAGNOSE,
+				id: message.id,
+				guildId
+			},
+			response => {
+				if (response.error) {
+					this.client.sendReply(message, response.error);
+					return;
+				}
+
+				const embed = this.client.createEmbed({
+					description: ''
+				});
+
+				embed.fields.push({
+					name: 'Guild',
+					value: `Id: ${guildId}\n` + `Shard: ${shard}\n`
+				});
+
+				const sets: { [x: string]: string } = {};
+				Object.keys(response.settings).forEach(key => {
+					if (typeof response.settings[key] === 'string') {
+						sets[key] = response.settings[key].substr(0, 200);
+					} else {
+						sets[key] = response.settings[key];
+					}
+				});
+				embed.fields.push({
+					name: 'Owner',
+					value:
+						'```json\n' +
+						JSON.stringify(response.owner, null, 2).substr(0, 1000) +
+						'```'
+				});
+				embed.fields.push({
+					name: 'Settings',
+					value:
+						'```json\n' + JSON.stringify(sets, null, 2).substr(0, 1000) + '```'
+				});
+
+				embed.fields.push({
+					name: 'Premium',
+					value:
+						'```json\n' +
+						(sub ? JSON.stringify(sub, null, 2).substr(0, 1000) : 'none') +
+						'```'
+				});
+
+				embed.fields.push({
+					name: 'Last command usage',
+					value: lastCmd ? moment(lastCmd.createdAt).fromNow() : 'never'
+				});
+
+				msg.edit({ embed }).catch(e => msg.edit(e));
+
+				// Send second message with permissions info
+				const permsEmbed = this.client.createEmbed();
+
+				permsEmbed.fields.push({
+					name: 'Bot permissions',
+					value:
+						'```json\n' +
+						JSON.stringify(response.perms, null, 2).substr(0, 1000) +
+						'```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Join channel permissions',
+					value:
+						'```json\n' +
+						JSON.stringify(response.joinChannelPerms, null, 2).substr(0, 1000) +
+						'```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Leave channel permissions',
+					value:
+						'```json\n' +
+						JSON.stringify(response.leaveChannelPerms, null, 2).substr(
+							0,
+							1000
+						) +
+						'```'
+				});
+
+				permsEmbed.fields.push({
+					name: 'Rank announcement channel permissions',
+					value:
+						'```json\n' +
+						JSON.stringify(response.announceChannelPerms, null, 2).substr(
+							0,
+							1000
+						) +
+						'```'
+				});
+
+				message.channel
+					.createMessage({ embed: permsEmbed })
+					.catch(e => message.channel.createMessage(e));
+			}
+		);
 	}
 }
