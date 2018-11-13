@@ -1,57 +1,58 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message, User } from 'eris';
 import moment from 'moment';
 
-import { User } from 'discord.js';
-
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
+import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { LogAction, premiumSubscriptions } from '../../sequelize';
+import { OwnerCommand } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'owner-give-premium',
-			aliases: ['ownerGivePremium', 'ogp'],
-			desc: 'Give premium',
-			usage:
-				'<prefix>owner-give-premium <amount> <user> <guild> <duration> <reason>',
-			ownerOnly: true,
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.givePremium,
+			aliases: ['owner-give-premium', 'ogp'],
+			// desc: 'Give premium',
+			args: [
+				{
+					name: 'amount',
+					resolver: NumberResolver,
+					// description: 'The amount paid for premium.',
+					required: true
+				},
+				{
+					name: 'user',
+					resolver: UserResolver,
+					// description: 'The user that paid for premium.',
+					required: true
+				},
+				{
+					name: 'guildId',
+					resolver: StringResolver,
+					// description: 'The id of the guild that receives premium.',
+					required: true
+				},
+				{
+					name: 'duration',
+					resolver: StringResolver,
+					// description: 'The duration of the premium activation.',
+					required: true
+				}
+			],
+			strict: true,
+			guildOnly: false,
 			hidden: true
 		});
 	}
 
-	@using(
-		resolve(
-			'amount: Number, user: User, guildId: String, duration: String, reason: String'
-		)
-	)
-	@using(
-		expect('amount: Number, user: User, guildId: String, duration: String')
-	)
 	public async action(
 		message: Message,
-		[amount, user, guildId, duration, reason]: [
-			number,
-			User,
-			string,
-			string,
-			string
-		]
+		[amount, user, guildId, duration]: [number, User, string, string],
+		context: Context
 	): Promise<any> {
-		this._logger.log(`(${message.author.username}): ${message.content}`);
+		if (this.client.config.ownerGuildIds.indexOf(context.guild.id) === -1) {
+			return;
+		}
 
 		let days = 1;
 		if (duration) {
@@ -79,22 +80,28 @@ export default class extends Command<IMClient> {
 			memberId: user.id
 		});
 
-		this.client.logAction(message, LogAction.owner, {
+		this.client.logAction(context.guild, message, LogAction.owner, {
 			type: 'give-premium',
+			amount: amount,
+			validUntil: validUntil.toDate(),
 			guildId,
-			amount,
-			validUntil: validUntil.calendar(),
 			memberId: user.id
 		});
 
-		const embed = createEmbed(this.client);
-		embed.setDescription(`Activated premium for ${premiumDuration.humanize()}`);
-		embed.setAuthor(user.username, user.avatarURL());
-		embed.addField('User', user.username);
+		const embed = this.client.createEmbed({
+			description: `Activated premium for ${premiumDuration.humanize()}`,
+			author: {
+				name: user.username,
+				icon_url: user.avatarURL
+			}
+		});
+		embed.fields.push({ name: 'User', value: user.username });
 
-		await sendReply(message, embed);
+		await this.client.sendReply(message, embed);
 
-		let cmd = this.client.commands.resolve('ownerFlushPremium');
-		cmd.action(message, [guildId]);
+		let cmd = this.client.cmds.commands.find(
+			c => c.name === OwnerCommand.flush
+		);
+		cmd.action(message, [guildId], context);
 	}
 }

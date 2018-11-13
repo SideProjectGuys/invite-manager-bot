@@ -1,15 +1,6 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -18,39 +9,25 @@ import {
 	leaves,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'subtract-leaves',
-			aliases: ['subtractleaves', 'subleaves', 'sl'],
-			desc: 'Remove leaves from all users',
-			usage: '<prefix>subtract-leaves',
-			clientPermissions: ['MANAGE_GUILD'],
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.subtractLeaves,
+			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.subtractLeaves))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, _page]: [RP, number]
+		args: any[],
+		{ guild, t, settings }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		const ls = await leaves.findAll({
 			attributes: [
 				'memberId',
@@ -65,7 +42,7 @@ export default class extends Command<IMClient> {
 				]
 			],
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			group: [
 				sequelize.col('leave.memberId'),
@@ -90,26 +67,25 @@ export default class extends Command<IMClient> {
 		});
 
 		if (ls.length === 0) {
-			return sendReply(message, rp.CMD_SUBTRACTLEAVES_NO_LEAVES());
+			return this.client.sendReply(message, t('cmd.subtractLeaves.none'));
 		}
 
 		// Delete old duplicate removals
 		await customInvites.destroy({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				generatedReason: CustomInvitesGeneratedReason.leave
 			}
 		});
 
-		const threshold = (await SettingsCache.get(message.guild.id))
-			.autoSubtractLeaveThreshold;
+		const threshold = settings.autoSubtractLeaveThreshold;
 
 		// Add subtracts for leaves
 		const customInvs = ls
 			.filter((l: any) => parseInt(l.timeDiff, 10) < threshold)
 			.map((l: any) => ({
 				id: null,
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: l['join.exactMatch.inviterId'],
 				creatorId: null,
 				amount: -1,
@@ -120,9 +96,9 @@ export default class extends Command<IMClient> {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		return sendReply(
+		return this.client.sendReply(
 			message,
-			rp.CMD_SUBTRACTLEAVES_DONE({ total: customInvs.length })
+			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);
 	}
 }

@@ -1,55 +1,37 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot } from '../../middleware';
-import { CommandGroup } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'getbot',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.getBot,
 			aliases: ['get-bot', 'invite-bot', 'inviteBot'],
-			desc: 'Get an invite Link for the bot',
-			usage: '<prefix>getbot',
 			group: CommandGroup.Info,
 			guildOnly: false
 		});
 	}
 
-	@using(checkProBot)
-	public async action(message: Message, args: string[]): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
-
-		const embed = createEmbed(this.client);
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, t }: Context
+	): Promise<any> {
+		const embed = this.client.createEmbed();
 
 		let params = [];
 		params.push(`origin=getbot`);
 		params.push(`user=${message.author.id}`);
-		if (message.guild) {
-			params.push(`guild=${message.guild.id}`);
+		if (guild) {
+			params.push(`guild=${guild.id}`);
 		}
 
-		embed.setDescription(
-			`[Add InviteManager to your server]` +
-				`(https://invitemanager.co/add-bot?${params.join('&')})`
-		);
+		embed.description =
+			`[${t('cmd.getBot.title')}]` +
+			`(https://invitemanager.co/add-bot?${params.join('&')})`;
 
-		return sendReply(message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

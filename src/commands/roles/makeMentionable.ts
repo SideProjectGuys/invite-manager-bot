@@ -1,67 +1,75 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Role } from 'discord.js';
+import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
-import { BotCommand } from '../../types';
+import { RoleResolver } from '../../resolvers';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'make-mentionable',
-			aliases: ['makeMentionable', 'mm'],
-			desc: 'Make a role mentionable for 60 seconds or until it was used.',
-			usage: '<prefix>make-mentionable Role',
-			info: '',
-			clientPermissions: ['MANAGE_ROLES'],
-			guildOnly: true
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.makeMentionable,
+			aliases: ['make-mentionable', 'mm'],
+			args: [
+				{
+					name: 'role',
+					resolver: RoleResolver,
+					required: true
+				}
+			],
+			group: CommandGroup.Other,
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.makeMentionable))
-	@using(resolve('role: Role'))
-	public async action(message: Message, [role]: [Role]): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
-
-		await message.delete();
-
-		if (!role.editable) {
-			return sendReply(
+	public async action(
+		message: Message,
+		[role]: [Role],
+		{ t, me, guild }: Context
+	): Promise<any> {
+		if (role.mentionable) {
+			return this.client.sendReply(
 				message,
-				`Cannot edit ${role}. Make sure the role is lower than the bots role.`
+				t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` })
 			);
-		} else if (role.mentionable) {
-			return sendReply(message, `${role} is already mentionable.`);
 		} else {
-			await role.setMentionable(true, 'Pinging role');
+			let myRole: Role;
+			me.roles.forEach(r => {
+				const gRole = guild.roles.get(r);
+				if (!myRole || gRole.position > myRole.position) {
+					myRole = gRole;
+				}
+			});
+			// Check if we are higher then the role we want to edit
+			if (myRole.position < role.position) {
+				return this.client.sendReply(
+					message,
+					t('cmd.mentionRole.roleTooHigh', {
+						role: role.name,
+						myRole: myRole.name
+					})
+				);
+			}
 
-			(await message.channel.awaitMessages(
-				(m: Message) => {
-					return m.mentions.roles.has(role.id);
-				},
-				{ max: 1, time: 60000 }
-			)).first();
+			await role.edit({ mentionable: true }, 'Pinging role');
 
-			await role.setMentionable(false, 'Done pinging role');
+			const func = async (msg: Message) => {
+				if (msg.roleMentions.includes(role.id)) {
+					await role.edit({ mentionable: false }, 'Done pinging role');
+					this.client.removeListener('messageCreate', func);
+				}
+			};
+
+			this.client.on('messageCreate', func);
+
+			const timeOut = () => {
+				this.client.removeListener('messageCreate', func);
+			};
+
+			setTimeout(timeOut, 60000);
+
+			await message.delete();
 		}
 	}
 }

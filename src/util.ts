@@ -1,18 +1,14 @@
-import { Guild, Lang, Message } from '@yamdbf/core';
 import {
-	GuildMember,
-	MessageAttachment,
-	MessageEmbed,
-	MessageOptions,
+	Guild,
+	Member,
+	Message,
+	MessageContent,
+	MessageFile,
 	Role,
 	TextChannel
-} from 'discord.js';
-import moment from 'moment';
-
-import { createCaptcha, FileMode } from './functions/Captcha';
+} from 'eris';
 
 import { IMClient } from './client';
-import { createEmbed } from './functions/Messaging';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -22,7 +18,7 @@ import {
 	ranks,
 	sequelize
 } from './sequelize';
-import { SettingsCache } from './storage/SettingsCache';
+import { Permissions } from './types';
 
 export interface InviteCounts {
 	regular: number;
@@ -98,15 +94,17 @@ export async function getInviteCounts(
 }
 
 export async function promoteIfQualified(
+	client: IMClient,
 	guild: Guild,
-	member: GuildMember,
+	member: Member,
+	me: Member,
 	totalInvites: number
 ) {
 	let nextRankName = '';
 	let nextRank: RankInstance = null;
 
-	const settings = await SettingsCache.get(guild.id);
-	const style: RankAssignmentStyle = settings.rankAssignmentStyle;
+	const settings = await client.cache.settings.get(guild.id);
+	const style = settings.rankAssignmentStyle;
 
 	const allRanks = await ranks.findAll({
 		where: {
@@ -131,7 +129,7 @@ export async function promoteIfQualified(
 		if (role) {
 			if (r.numInvites <= totalInvites) {
 				reached.push(role);
-				if (!highest || highest.comparePositionTo(role) < 0) {
+				if (!highest || highest.position < role.position) {
 					highest = role;
 				}
 			} else {
@@ -148,88 +146,96 @@ export async function promoteIfQualified(
 		}
 	});
 
-	const myRole = guild.me.roles.highest;
-	const tooHighRoles = guild.roles.filter(r => r.comparePositionTo(myRole) > 0);
+	let myRole: Role;
+	me.roles.forEach(r => {
+		const role = guild.roles.get(r);
+		if (!myRole || myRole.position < role.position) {
+			myRole = role;
+		}
+	});
+
+	const tooHighRoles = guild.roles.filter(r => r.position > myRole.position);
 
 	let shouldHave: Role[] = [];
 	let shouldNotHave = notReached.filter(
-		r => tooHighRoles.has(r.id) && member.roles.has(r.id)
+		r => tooHighRoles.includes(r) && member.roles.includes(r.id)
 	);
 
 	// No matter what the rank assignment style is
 	// we always want to remove any roles that we don't have
-	await member.roles.remove(
-		notReached.filter(r => !tooHighRoles.has(r.id) && member.roles.has(r.id))
-	);
+	notReached
+		.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
+		.forEach(r => member.removeRole(r.id));
 
-	if (highest && !member.roles.has(highest.id)) {
+	if (highest && !member.roles.includes(highest.id)) {
 		const rankChannelId = settings.rankAnnouncementChannel;
 		if (rankChannelId) {
-			const rankChannel = rankChannelId
-				? (guild.channels.get(rankChannelId) as TextChannel)
-				: undefined;
+			const rankChannel = guild.channels.get(rankChannelId) as TextChannel;
 
 			// Check if it's a valid channel
 			if (rankChannel) {
 				const rankMessageFormat = settings.rankAnnouncementMessage;
 				if (rankMessageFormat) {
-					const msg = await (guild.client as IMClient).fillTemplate(
-						guild,
-						rankMessageFormat,
-						{
-							memberId: member.id,
-							memberName: member.user.username,
-							memberFullName:
-								member.user.username + '#' + member.user.discriminator,
-							memberMention: `<@${member.id}>`,
-							memberImage: member.user.avatarURL(),
-							rankMention: `<@&${highest.id}>`,
-							rankName: highest.name,
-							totalInvites: totalInvites.toString()
-						}
-					);
-					rankChannel.send(msg).then((m: Message) => m.react('tada'));
+					const msg = await client.msg.fillTemplate(guild, rankMessageFormat, {
+						memberId: member.id,
+						memberName: member.user.username,
+						memberFullName:
+							member.user.username + '#' + member.user.discriminator,
+						memberMention: `<@${member.id}>`,
+						memberImage: member.user.avatarURL,
+						rankMention: `<@&${highest.id}>`,
+						rankName: highest.name,
+						totalInvites: totalInvites.toString()
+					});
+					rankChannel
+						.createMessage(typeof msg === 'string' ? msg : { embed: msg })
+						.then((m: Message) => m.addReaction('🎉'));
 				}
 			} else {
 				console.error(
 					`Guild ${guild.id} has invalid ` +
-					`rank announcement channel ${rankChannelId}`
+						`rank announcement channel ${rankChannelId}`
 				);
 			}
 		}
 	}
 
-	if (guild.me.hasPermission('MANAGE_ROLES')) {
+	if (me.permission.has(Permissions.MANAGE_ROLES)) {
 		// Filter dangerous roles
 		dangerous = reached.filter(
 			r =>
-				r.permissions.has('ADMINISTRATOR') || r.permissions.has('MANAGE_GUILD')
+				r.permissions.has(Permissions.ADMINISTRATOR) ||
+				r.permissions.has(Permissions.MANAGE_GUILD)
 		);
 		reached = reached.filter(r => dangerous.indexOf(r) === -1);
 
 		if (style === RankAssignmentStyle.all) {
 			// Add all roles that we've reached to the member
-			let newRoles = reached.filter(r => !member.roles.has(r.id));
+			let newRoles = reached.filter(r => !member.roles.includes(r.id));
 			// Roles that the member should have but we can't assign
-			shouldHave = newRoles.filter(r => tooHighRoles.has(r.id));
+			shouldHave = newRoles.filter(r => tooHighRoles.includes(r));
 			// Assign only the roles that we can assign
-			await member.roles.add(newRoles.filter(r => !tooHighRoles.has(r.id)));
+			newRoles
+				.filter(r => !tooHighRoles.includes(r))
+				.forEach(r => member.addRole(r.id));
 		} else if (style === RankAssignmentStyle.highest) {
 			// Only add the highest role we've reached to the member
 			// Remove roles that we've reached but aren't the highest
 			const oldRoles = reached.filter(
-				r => r !== highest && member.roles.has(r.id)
+				r => r !== highest && member.roles.includes(r.id)
 			);
 			// Add more roles that we shouldn't have
 			shouldNotHave = shouldNotHave.concat(
-				oldRoles.filter(r => tooHighRoles.has(r.id))
+				oldRoles.filter(r => tooHighRoles.includes(r))
 			);
 			// Remove the old ones from the member
-			member.roles.remove(oldRoles.filter(r => !tooHighRoles.has(r.id)));
+			oldRoles
+				.filter(r => !tooHighRoles.includes(r))
+				.forEach(r => member.removeRole(r.id));
 			// Add the highest one if we don't have it yet
-			if (highest && !member.roles.has(highest.id)) {
-				if (!tooHighRoles.has(highest.id)) {
-					member.roles.add(highest);
+			if (highest && !member.roles.includes(highest.id)) {
+				if (!tooHighRoles.includes(highest)) {
+					member.addRole(highest.id);
 				} else {
 					shouldHave = [highest];
 				}
@@ -253,107 +259,76 @@ export async function promoteIfQualified(
 export class FakeChannel extends TextChannel {
 	public listener: (data: any) => void;
 
-	public send(
-		options?: MessageOptions | MessageEmbed | MessageAttachment
-	): Promise<Message | Message[]> {
+	public createMessage(
+		content: MessageContent,
+		file?: MessageFile
+	): Promise<Message> {
 		if (this.listener) {
-			this.listener(options);
+			this.listener(content);
 		}
 		return new Promise(resolve => resolve());
 	}
 }
 
-export enum PromptResult {
-	SUCCESS,
-	FAILURE,
-	TIMEOUT
+export function idToBinary(num: string) {
+	let bin = '';
+	let high = parseInt(num.slice(0, -10), 10) || 0;
+	let low = parseInt(num.slice(-10), 10);
+	while (low > 0 || high > 0) {
+		// tslint:disable-next-line:no-bitwise
+		bin = String(low & 1) + bin;
+		low = Math.floor(low / 2);
+		if (high > 0) {
+			low += 5000000000 * (high % 2);
+			high = Math.floor(high / 2);
+		}
+	}
+	return bin;
 }
 
-const captchaOptions = {
-	size: 6,
-	fileMode: FileMode.BUFFER,
-	height: 100,
-	noiseColor: 'rgb(10,40,100)',
-	color: 'rgb(50,40,50)',
-	spacing: 2,
-	nofLines: 4
-};
+export function getShardIdForGuild(guildId: any, shardCount: number) {
+	const bin = idToBinary(guildId);
+	const num = parseInt(bin.substring(0, bin.length - 22), 2);
+	return (num % shardCount) + 1;
+}
 
-export async function sendCaptchaToUserOnJoin(
-	client: IMClient,
-	member: GuildMember
-) {
-	const settings = await SettingsCache.get(member.guild.id);
-
-	if (settings.captchaVerificationOnJoin !== 'true') {
-		return;
-	}
-
-	createCaptcha(captchaOptions, (text, buffer) => {
-		const embed = createEmbed(client);
-		embed.setTitle('Captcha');
-		embed.setDescription(
-			settings.captchaVerificationWelcomeMessage.replace(
-				/\{serverName\}/g,
-				member.guild.name
-			)
-		);
-		embed.setImage('attachment://captcha.png');
-		embed.attachFiles([
-			{
-				attachment: buffer,
-				name: 'captcha.png'
+export function to<T, U = any>(
+	promise: Promise<T>,
+	errorExt?: object
+): Promise<[U | null, T | undefined]> {
+	return promise
+		.then<[null, T]>((data: T) => [null, data])
+		.catch<[U, undefined]>(err => {
+			if (errorExt) {
+				Object.assign(err, errorExt);
 			}
-		]);
 
-		const startTime = moment();
-
-		let listenToMessage = async (target: GuildMember, message: Message) => {
-			const timeLeft =
-				settings.captchaVerificationTimeout * 1000 -
-				moment().diff(startTime, 'millisecond');
-
-			const confirmation = (await message.channel.awaitMessages(
-				a => a.author.id === target.id,
-				{ max: 1, time: timeLeft }
-			)).first();
-
-			if (!confirmation) {
-				return PromptResult.TIMEOUT;
-			}
-			if (confirmation.content.toLowerCase() === text.toLowerCase()) {
-				return PromptResult.SUCCESS;
-			}
-			return PromptResult.FAILURE;
-		};
-
-		member.send({ embed }).then(async (message: Message) => {
-			while (true) {
-				const result = await listenToMessage(member, message);
-
-				if (result === PromptResult.SUCCESS) {
-					member.send(
-						settings.captchaVerificationSuccessMessage.replace(
-							/\{serverName\}/g,
-							member.guild.name
-						)
-					);
-					return;
-				}
-
-				if (result === PromptResult.TIMEOUT) {
-					await member.send(
-						settings.captchaVerificationFailedMessage.replace(
-							/\{serverName\}/g,
-							member.guild.name
-						)
-					);
-					member.kick();
-					return;
-				}
-
-				member.send(Lang.res(settings.lang, 'CAPTCHA_INVALID'));
-			}
+			return [err, undefined];
 		});
-	});
+}
+
+export function getHighestRole(guild: Guild, roles: string[]): Role {
+	return roles
+		.map(role => guild.roles.get(role))
+		.reduce((prev, role) => (role.position > prev.position ? role : prev), {
+			position: -1
+		} as Role);
+}
+
+export function isPunishable(
+	guild: Guild,
+	targetMember: Member,
+	authorMember: Member,
+	me: Member
+) {
+	let highestBotRole = getHighestRole(guild, me.roles);
+	let highestMemberRole = getHighestRole(guild, targetMember.roles);
+	let highestAuthorRole = getHighestRole(guild, authorMember.roles);
+
+	return (
+		targetMember.id !== guild.ownerID &&
+		targetMember.id !== me.user.id &&
+		highestBotRole.position > highestMemberRole.position &&
+		highestAuthorRole.position > highestMemberRole.position
+	);
 }

@@ -1,73 +1,65 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { Role } from 'discord.js';
+import { Message, Role } from 'eris';
 
 import { IMClient } from '../../client';
-import { sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import { NumberResolver, RoleResolver, StringResolver } from '../../resolvers';
 import { LogAction, ranks, roles } from '../../sequelize';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, expect, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'add-rank',
-			aliases: ['addRank', 'set-rank', 'setRank'],
-			desc: 'Add a new rank',
-			usage: '<prefix>add-rank @role invites (info)',
-			info:
-				'`@role`:\n' +
-				'The role which the user will receive when reaching this rank\n\n' +
-				'`invites`:\n' +
-				'The amount of invites needed to reach the rank\n\n' +
-				'`info`:\n' +
-				'A decription that users will see so they know more about this rank\n\n',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.addRank,
+			aliases: ['add-rank', 'set-rank', 'setRank'],
+			args: [
+				{
+					name: 'role',
+					resolver: RoleResolver,
+					required: true
+				},
+				{
+					name: 'invites',
+					resolver: NumberResolver,
+					required: true
+				},
+				{
+					name: 'info',
+					resolver: StringResolver,
+					rest: true
+				}
+			],
 			group: CommandGroup.Ranks,
-			guildOnly: true
+			guildOnly: true,
+			strict: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.addRank))
-	@using(resolve('role: Role, invites: Number, ...description: String'))
-	@using(expect('role: Role, invites: Number'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, role, invites, description]: [RP, Role, number, string]
+		[role, invites, description]: [Role, number, string],
+		{ guild, t, me }: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
 		await roles.insertOrUpdate({
 			id: role.id,
 			name: role.name,
 			guildId: role.guild.id,
-			color: role.hexColor,
+			color: role.color.toString(16),
 			createdAt: role.createdAt
 		});
 
-		const myRole = message.guild.me.roles.highest;
+		let myRole: Role;
+		me.roles.forEach(r => {
+			const gRole = guild.roles.get(r);
+			if (!myRole || gRole.position > myRole.position) {
+				myRole = gRole;
+			}
+		});
 		// Check if we are higher then the role we want to assign
-		if (myRole.comparePositionTo(role) < 0) {
-			return sendReply(
+		if (myRole.position < role.position) {
+			return this.client.sendReply(
 				message,
-				rp.CMD_ADDRANK_ROLE_TOO_HIGH({ role: role.name, myRole: myRole.name })
+				t('cmd.addRank.roleTooHigh', { role: role.name, myRole: myRole.name })
 			);
-			return;
 		}
 
 		let rank = await ranks.find({
@@ -102,6 +94,7 @@ export default class extends Command<IMClient> {
 		}
 
 		this.client.logAction(
+			guild,
 			message,
 			isNew ? LogAction.addRank : LogAction.updateRank,
 			{
@@ -113,19 +106,19 @@ export default class extends Command<IMClient> {
 		);
 
 		if (!isNew) {
-			return sendReply(
+			return this.client.sendReply(
 				message,
-				rp.CMD_ADDRANK_UPDATED({
-					role: role.name,
+				t('cmd.addRank.updated', {
+					role: `<@&${role.id}>`,
 					invites,
 					description
 				})
 			);
 		} else {
-			return sendReply(
+			return this.client.sendReply(
 				message,
-				rp.CMD_ADDRANK_CREATED({
-					role: role.name,
+				t('cmd.addRank.created', {
+					role: `<@&${role.id}>`,
 					invites,
 					description
 				})

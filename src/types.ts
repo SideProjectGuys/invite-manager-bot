@@ -1,8 +1,21 @@
-import { ResourceProxy } from '@yamdbf/core';
+export enum Permissions {
+	ADMINISTRATOR = 'administrator',
+	READ_MESSAGES = 'readMessages',
+	SEND_MESSAGES = 'sendMessages',
+	EMBED_LINKS = 'embedLinks',
+	MANAGE_GUILD = 'manageGuild',
+	VIEW_AUDIT_LOGS = 'viewAuditLogs',
+	MANAGE_ROLES = 'manageRoles',
+	CREATE_INSTANT_INVITE = 'createInstantInvite',
+	BAN_MEMBERS = 'banMembers',
+	KICK_MEMBERS = 'kickMembers'
+}
 
-import { TranslationKeys } from './locale/Translations';
-
-export type RP = ResourceProxy<TranslationKeys>;
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
 
 export enum CommandGroup {
 	Invites = 'Invites',
@@ -10,16 +23,18 @@ export enum CommandGroup {
 	Config = 'Config',
 	Info = 'Info',
 	Premium = 'Premium',
+	Moderation = 'Moderation',
 	Other = 'Other'
 }
 
 export enum ShardCommand {
-	'DIAGNOSE' = 'DIAGNOSE',
-	'LEAVE_GUILD' = 'LEAVE_GUILD',
-	'FLUSH_PREMIUM_CACHE' = 'FLUSH_PREMIUM_CACHE',
-	'FLUSH_SETTINGS_CACHE' = 'FLUSH_SETTINGS_CACHE',
-	'SUDO' = 'SUDO',
-	'RESPONSE' = 'RESPONSE'
+	DIAGNOSE = 'DIAGNOSE',
+	FLUSH_CACHE = 'FLUSH_CACHE',
+	SUDO = 'SUDO',
+	RESPONSE = 'RESPONSE',
+	OWNER_DM = 'OWNER_DM',
+	USER_DM = 'USER_DM',
+	LEAVE_GUILD = 'LEAVE_GUILD'
 }
 
 export enum ChartType {
@@ -29,47 +44,96 @@ export enum ChartType {
 }
 
 export enum BotCommand {
-	'config' = 'config',
-	'inviteCodeConfig' = 'inviteCodeConfig',
-	'memberConfig' = 'memberConfig',
-	'permissions' = 'permissions',
+	config = 'config',
+	inviteCodeConfig = 'inviteCodeConfig',
+	memberConfig = 'memberConfig',
+	permissions = 'permissions',
+	interactiveConfig = 'interactiveConfig',
 
-	'setup' = 'setup',
+	botInfo = 'botInfo',
+	getBot = 'getBot',
+	help = 'help',
+	members = 'members',
+	ping = 'ping',
+	prefix = 'prefix',
+	setup = 'setup',
+	support = 'support',
 
-	'createInvite' = 'createInvite',
-	'addInvites' = 'addInvites',
-	'clearInvites' = 'clearInvites',
-	'fake' = 'fake',
-	'info' = 'info',
-	'inviteCodes' = 'inviteCodes',
-	'inviteDetails' = 'inviteDetails',
-	'invites' = 'invites',
-	'leaderboard' = 'leaderboard',
-	'members' = 'members',
-	'restoreInvites' = 'restoreInvites',
-	'subtractFakes' = 'subtractFakes',
-	'subtractLeaves' = 'subtractLeaves',
+	createInvite = 'createInvite',
+	addInvites = 'addInvites',
+	clearInvites = 'clearInvites',
+	fake = 'fake',
+	info = 'info',
+	inviteCodes = 'inviteCodes',
+	inviteDetails = 'inviteDetails',
+	invites = 'invites',
+	leaderboard = 'leaderboard',
+	restoreInvites = 'restoreInvites',
+	subtractFakes = 'subtractFakes',
+	subtractLeaves = 'subtractLeaves',
 
-	'export' = 'export',
-	'premium' = 'premium',
-	'tryPremium' = 'tryPremium',
+	export = 'export',
+	premium = 'premium',
+	tryPremium = 'tryPremium',
 
-	'addRank' = 'addRank',
-	'ranks' = 'ranks',
-	'removeRank' = 'removeRank',
+	addRank = 'addRank',
+	ranks = 'ranks',
+	removeRank = 'removeRank',
 
-	'makeMentionable' = 'makeMentionable',
-	'mentionRole' = 'mentionRole',
+	makeMentionable = 'makeMentionable',
+	mentionRole = 'mentionRole',
 
-	'chart' = 'chart'
+	graph = 'graph'
+}
+
+export enum ModerationCommand {
+	autoMod = 'autoMod',
+	punishment = 'punishment',
+	punishmentConfig = 'punishmentConfig',
+	strikeAdd = 'strikeAdd',
+	strikeConfig = 'strikeConfig',
+	strikeRemove = 'strikeRemove',
+
+	ban = 'ban',
+	unban = 'unban',
+	kick = 'kick',
+	softBan = 'softBan',
+	warn = 'warn',
+	mute = 'mute',
+	unmute = 'unmute',
+
+	check = 'check',
+	caseDelete = 'caseDelete',
+	caseView = 'caseView',
+
+	clean = 'clean',
+	cleanText = 'cleanText',
+	cleanShort = 'cleanShort',
+	purgeSafe = 'purgeSafe',
+	purgeUntil = 'purgeUntil',
+	purge = 'purge'
 }
 
 export enum OwnerCommand {
-	'diagnose' = 'ownerDiagnose',
-	'dm' = 'ownerDm',
-	'leave' = 'ownerLeave',
-	'flushPremium' = 'ownerFlushPremium',
-	'givePremium' = 'ownerGivePremium',
-	'help' = 'ownerHelp',
-	'sudo' = 'sudo'
+	cache = 'ownerCache',
+	diagnose = 'ownerDiagnose',
+	dm = 'ownerDm',
+	flush = 'ownerFlush',
+	givePremium = 'ownerGivePremium',
+	help = 'ownerHelp',
+	leave = 'ownerLeave',
+	sudo = 'ownerSudo'
+}
+
+export interface RabbitMqMember {
+	id: string;
+	nick?: string;
+	user: {
+		id: string;
+		avatarUrl: string | null;
+		createdAt: number;
+		bot: boolean;
+		discriminator: string;
+		username: string;
+	};
 }

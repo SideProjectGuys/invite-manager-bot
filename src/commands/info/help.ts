@@ -1,93 +1,79 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot } from '../../middleware';
-import { CommandGroup, RP } from '../../types';
-
-const { resolve, localize } = Middleware;
-const { using } = CommandDecorators;
+import { CommandResolver } from '../../resolvers';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
+import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
 
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'help',
-			desc: 'Display help',
-			usage: '<prefix>help (command)'
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.help,
+			aliases: [],
+			args: [
+				{
+					name: 'command',
+					resolver: CommandResolver
+				}
+			],
+			group: CommandGroup.Info,
+			guildOnly: false
 		});
 	}
 
-	@using(checkProBot)
-	@using(resolve('command: Command'))
-	@using(localize)
 	public async action(
 		message: Message,
-		[rp, command]: [RP, Command]
+		[command]: [Command],
+		context: Context
 	): Promise<any> {
-		this._logger.log(
-			`${message.guild ? message.guild.name : 'DM'} (${
-				message.author.username
-			}): ${message.content}`
-		);
+		const { guild, t, settings, me } = context;
+		const embed = this.client.createEmbed();
 
-		const embed = createEmbed(this.client);
-
-		const prefix = message.guild
-			? await this.client.getPrefix(message.guild)
-			: '!';
+		const prefix = settings ? settings.prefix : '!';
 
 		if (command) {
 			const cmd = {
 				...command,
-				usage: command.usage.replace('<prefix>', prefix)
+				usage: command.usage.replace('{prefix}', prefix),
+				info: command.getInfo(context)
 			};
 
-			embed.addField(rp.CMD_HELP_COMMAND_TITLE(), cmd.name, true);
-			embed.addField(rp.CMD_HELP_DESCRIPTION_TITLE(), cmd.desc, true);
-			embed.addField(
-				rp.CMD_HELP_USAGE_TITLE(),
-				'`' + cmd.usage + '`' + (cmd.info ? '\n\n' + cmd.info : '')
-			);
+			embed.fields.push({
+				name: t('cmd.help.command.title'),
+				value: cmd.name,
+				inline: true
+			});
+			embed.fields.push({
+				name: t('cmd.help.description.title'),
+				value: t(`cmd.${cmd.name}.self.description`),
+				inline: true
+			});
+			embed.fields.push({
+				name: t('cmd.help.usage.title'),
+				value: '`' + cmd.usage + '`\n\n' + cmd.info
+			});
 			if (cmd.aliases.length > 0) {
-				embed.addField(
-					rp.CMD_HELP_ALIASES_TITLE(),
-					cmd.aliases.join(', '),
-					true
-				);
+				embed.fields.push({
+					name: t('cmd.help.aliases.title'),
+					value: cmd.aliases.join(', '),
+					inline: true
+				});
 			}
-			embed.addField(
-				rp.CMD_HELP_BOT_PERMISSIONS_TITLE(),
-				cmd.clientPermissions.length > 0
-					? cmd.clientPermissions.join(', ')
-					: rp.CMD_HELP_COMMAND_NONE(),
-				true
-			);
 		} else {
-			const messageMember = await message.guild.members
-				.fetch(message.author.id)
-				.catch(() => undefined);
+			let member = guild.members.get(message.author.id);
+			if (!member) {
+				member = await guild.getRESTMember(message.author.id);
+			}
 
-			embed.setDescription(rp.CMD_HELP_TEXT({ prefix }) + '\n\n');
+			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
-			const commands = this.client.commands
-				.filter(c => c.name !== 'groups')
-				.filter(c => c.name !== 'shortcuts')
-				.filter(c => !c.ownerOnly && !c.hidden)
+			const commands = this.client.cmds.commands
+				.filter(c => !c.hidden)
 				.map(c => ({
 					...c,
-					usage: c.usage.replace('<prefix>', prefix)
+					usage: c.usage.replace('{prefix}', prefix)
 				}))
 				.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -98,38 +84,27 @@ export default class extends Command<IMClient> {
 				}
 
 				let descr = '';
-				const len = cmds.reduce((acc, c) => Math.max(acc, c.usage.length), 0);
 				descr += cmds.map(c => '`' + c.name + '`').join(', ');
-				embed.addField(group, descr);
+				embed.fields.push({ name: group, value: descr });
 			});
 
-			if (
-				message.guild &&
-				messageMember &&
-				messageMember.hasPermission('ADMINISTRATOR')
-			) {
-				const botMember = message.guild.me;
-				const unavailableCommands = commands.filter(
-					c => !botMember.hasPermission(c.clientPermissions)
-				);
+			if (guild && member && member.permission.has(Permissions.ADMINISTRATOR)) {
+				const missing: string[] = [];
+				if (!me.permission.has(Permissions.MANAGE_GUILD)) {
+					missing.push(t('permissions.manageGuild'));
+				}
+				if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
+					missing.push(t('permissions.viewAuditLogs'));
+				}
+				if (!me.permission.has(Permissions.MANAGE_ROLES)) {
+					missing.push(t('permissions.manageRoles'));
+				}
 
-				if (unavailableCommands.length > 0) {
-					let unavailableDescription = '';
-					unavailableCommands.forEach(c => {
-						const missingPermission = c.clientPermissions.find(cp => {
-							return !botMember.hasPermission(cp);
-						});
-						unavailableDescription +=
-							rp.CMD_HELP_UNAVAILABLE_COMMAND({
-								prefix,
-								name: c.name,
-								missingPermission
-							}) + '\n';
+				if (missing.length > 0) {
+					embed.fields.push({
+						name: t('cmd.help.missingPermissions'),
+						value: missing.map(p => `\`${p}\``).join(', ')
 					});
-					embed.addField(
-						rp.CMD_HELP_UNAVAILABLE_COMMAND_TITLE(),
-						unavailableDescription
-					);
 				}
 			}
 		}
@@ -137,21 +112,24 @@ export default class extends Command<IMClient> {
 		let linksArray = [];
 		if (config.botSupport) {
 			linksArray.push(
-				`[${rp.BOT_SUPPORT_DISCORD_TITLE()}](${config.botSupport})`
+				`[${t('bot.supportDiscord.title')}](${config.botSupport})`
 			);
 		}
 		if (config.botAdd) {
-			linksArray.push(`[${rp.BOT_INVITE_TITLE()}](${config.botAdd})`);
+			linksArray.push(`[${t('bot.invite.title')}](${config.botAdd})`);
 		}
 		if (config.botWebsite) {
-			linksArray.push(`[${rp.BOT_WEBSITE_TITLE()}](${config.botWebsite})`);
+			linksArray.push(`[${t('bot.website.title')}](${config.botWebsite})`);
 		}
 		if (config.botPatreon) {
-			linksArray.push(`[${rp.BOT_PATREON_TITLE()}](${config.botPatreon})`);
+			linksArray.push(`[${t('bot.patreon.title')}](${config.botPatreon})`);
 		}
 
-		embed.addField(rp.CMD_HELP_LINKS(), linksArray.join(` | `));
+		embed.fields.push({
+			name: t('cmd.help.links'),
+			value: linksArray.join(` | `)
+		});
 
-		return sendReply(message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

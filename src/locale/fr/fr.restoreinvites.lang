@@ -1,3 +1,0 @@
-[CMD_RESTOREINVITES_DONE]
-Invitations restaurées {{! args.user ? ` pour <@${args.user}>` : '' !}}
-

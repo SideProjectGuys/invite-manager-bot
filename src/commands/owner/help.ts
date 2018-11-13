@@ -1,54 +1,39 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { createEmbed } from '../../functions/Messaging';
-import { checkRoles } from '../../middleware/CheckRoles';
 import { OwnerCommand } from '../../types';
+import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'owner-help',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.help,
 			aliases: ['owner-help', 'oh'],
-			desc: 'Admin help',
-			usage: '<prefix>owner-help',
-			hidden: true
+			strict: true,
+			hidden: true,
+			guildOnly: false
 		});
 	}
 
-	@using(checkRoles(OwnerCommand.help))
-	public async action(message: Message, [args]: [string]): Promise<any> {
-		this._logger.log(`(${message.author.username}): ${message.content}`);
-
-		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+	public async action(
+		message: Message,
+		args: any[],
+		{ guild, settings }: Context
+	): Promise<any> {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const prefix = message.guild
-			? await this.client.getPrefix(message.guild)
-			: '!';
+		const prefix = settings ? settings.prefix : '!';
 
-		const commands = this.client.commands
-			.filter(c => c.ownerOnly || c.hidden)
-			.map(c => c.usage.replace('<prefix>', prefix));
+		const commands = this.client.cmds.commands
+			.filter(c => c.hidden)
+			.map(c => c.usage.replace('{prefix}', prefix));
 
-		const embed = createEmbed(this.client);
+		const embed = this.client.createEmbed({
+			description: commands.join('\n')
+		});
 
-		embed.setDescription(commands.join('\n'));
-
-		message.channel.send(embed);
+		this.client.sendReply(message, embed);
 	}
 }

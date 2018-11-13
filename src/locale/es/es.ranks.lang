@@ -1,9 +1,0 @@
-[CMD_RANKS_NONE]
-No se ha creado ningun rango hasta el momento.
-
-[CMD_RANKS_ENTRY]
-<@&{{ role }}>: **{{ numInvites }} invitaciones**{{ description ?}}
-
-[CMD_RANKS_TITLE]
-Rangos
-

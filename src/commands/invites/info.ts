@@ -1,17 +1,8 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
-import { GuildMember, User } from 'discord.js';
+import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { createEmbed, sendReply } from '../../functions/Messaging';
-import { checkProBot, checkRoles } from '../../middleware';
+import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -22,49 +13,40 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { SettingsCache } from '../../storage/SettingsCache';
-import { BotCommand, CommandGroup, RP } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
+import { Command, Context } from '../Command';
 
-const { resolve, expect, localize } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'info',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.info,
 			aliases: ['showinfo'],
-			desc: 'Show info about a specific member',
-			usage: '<prefix>info @user',
-			info:
-				'`@user`:\n' + 'The user for whom you want to see additional info.\n\n',
-			clientPermissions: ['MANAGE_GUILD'],
+			args: [
+				{
+					name: 'user',
+					resolver: UserResolver,
+					required: true
+				}
+			],
+			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
 	}
 
-	@using(checkProBot)
-	@using(checkRoles(BotCommand.info))
-	@using(resolve('user: User'))
-	@using(expect('user: User'))
-	@using(localize)
-	public async action(message: Message, [rp, user]: [RP, User]): Promise<any> {
-		this._logger.log(
-			`${message.guild.name} (${message.author.username}): ${message.content}`
-		);
-
-		const sets = await SettingsCache.get(message.guild.id);
-		const lang = sets.lang;
+	public async action(
+		message: Message,
+		[user]: [User],
+		{ guild, t, settings, me }: Context
+	): Promise<any> {
+		const lang = settings.lang;
 
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
 		const invs = await inviteCodes.findAll({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				inviterId: user.id
 			},
 			order: [['uses', 'DESC']],
@@ -72,7 +54,7 @@ export default class extends Command<IMClient> {
 				{
 					model: inviteCodeSettings,
 					where: {
-						guildId: message.guild.id,
+						guildId: guild.id,
 						key: InviteCodeSettingsKey.name
 					},
 					required: false
@@ -83,7 +65,7 @@ export default class extends Command<IMClient> {
 
 		const customInvs = await customInvites.findAll({
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: user.id
 			},
 			order: [['createdAt', 'DESC']],
@@ -138,82 +120,88 @@ export default class extends Command<IMClient> {
 		const numTotal = regular + custom + fake + leave;
 		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
 
-		const embed = createEmbed(this.client);
-		embed.setTitle(user.username);
+		const embed = this.client.createEmbed({
+			title: `${user.username}#${user.discriminator}`
+		});
 
 		// Try and get the member if they are still in the guild
-		const member: GuildMember = await message.guild.members
-			.fetch(user.id)
-			.catch(() => undefined);
+		let member = guild.members.get(user.id);
+		if (!member) {
+			member = await guild.getRESTMember(user.id);
+		}
 
 		if (member) {
 			const joinedAgo = moment(member.joinedAt)
 				.locale(lang)
 				.fromNow();
 
-			embed.addField(rp.CMD_INFO_LASTJOINED_TITLE(), joinedAgo, true);
+			embed.fields.push({
+				name: t('cmd.info.lastJoined.title'),
+				value: joinedAgo,
+				inline: true
+			});
 		} else {
-			embed.addField(
-				rp.CMD_INFO_LASTJOINED_TITLE(),
-				rp.CMD_INFO_LASTJOINED_NOT_IN_GUILD(),
-				true
-			);
+			embed.fields.push({
+				name: t('cmd.info.lastJoined.title'),
+				value: t('cmd.info.lastJoined.notInGuild'),
+				inline: true
+			});
 		}
 
 		const joinCount = Math.max(
 			await joins.count({
 				where: {
-					guildId: message.guild.id,
+					guildId: guild.id,
 					memberId: user.id
 				}
 			}),
 			0
 		);
 
-		embed.addField(
-			rp.CMD_INFO_JOINED_TITLE(),
-			rp.CMD_INFO_JOINED_TEXT({
+		embed.fields.push({
+			name: t('cmd.info.joined.title'),
+			value: t('cmd.info.joined.text', {
 				amount: joinCount
 			}),
-			true
-		);
+			inline: true
+		});
 
-		embed.addField(
-			rp.CMD_INFO_CREATED_TITLE(),
-			moment(user.createdAt)
+		embed.fields.push({
+			name: t('cmd.info.created.title'),
+			value: moment(user.createdAt)
 				.locale(lang)
 				.fromNow(),
-			true
-		);
+			inline: true
+		});
 
-		embed.addField(
-			rp.CMD_INFO_INVITES_TITLE(),
-			rp.CMD_INFO_INVITES_TEXT({
+		embed.fields.push({
+			name: t('cmd.info.invites.title'),
+			value: t('cmd.info.invites.text', {
 				total: numTotal,
 				regular,
 				custom,
 				fake,
 				leave
 			}),
-			true
-		);
+			inline: true
+		});
 
-		embed.addField(
-			rp.CMD_INFO_INVITES_CLEARS_TITLE(),
-			rp.CMD_INFO_INVITES_CLEARS_TEXT({
+		embed.fields.push({
+			name: t('cmd.info.invites.clear.title'),
+			value: t('cmd.info.invites.clear.text', {
 				total: clearTotal,
 				regular: clearRegular,
 				custom: clearCustom,
 				fake: clearFake,
 				leave: clearLeave
 			}),
-			true
-		);
+			inline: true
+		});
 
 		const js = await joins.findAll({
 			attributes: ['createdAt'],
 			where: {
-				guildId: message.guild.id,
+				guildId: guild.id,
 				memberId: user.id
 			},
 			order: [['createdAt', 'DESC']],
@@ -263,16 +251,16 @@ export default class extends Command<IMClient> {
 					0
 				);
 
-				const mainText = rp.CMD_INFO_JOINS_ENTRY({
-					total: total > 1 ? total : undefined,
+				const mainText = t('cmd.info.joins.entry.text', {
+					total: total >= 1 ? total : undefined,
 					time
 				});
 
 				const invText = Object.keys(joinTime)
 					.map(id =>
-						rp.CMD_INFO_JOINS_ENTRY_INV({
-							id,
-							times: joinTime[id] > 1 ? joinTime[id] : undefined
+						t('cmd.info.joins.entry.invite', {
+							member: `<@!${id}>`,
+							times: joinTime[id]
 						})
 					)
 					.join(', ');
@@ -284,14 +272,20 @@ export default class extends Command<IMClient> {
 			if (joinTimesKeys.length > 10) {
 				more =
 					'\n' +
-					rp.CMD_INFO_JOINS_MORE({
-						amount: joinTimesKeys.length - 10
+					t('cmd.info.joins.more', {
+						amount: `**${joinTimesKeys.length - 10}**`
 					});
 			}
 
-			embed.addField(rp.CMD_INFO_JOINS_TITLE(), joinText + more);
+			embed.fields.push({
+				name: t('cmd.info.joins.title'),
+				value: joinText + more
+			});
 		} else {
-			embed.addField(rp.CMD_INFO_JOINS_TITLE(), rp.CMD_INFO_JOINS_UNKNOWN());
+			embed.fields.push({
+				name: t('cmd.info.joins.title'),
+				value: t('cmd.info.joins.unknown')
+			});
 		}
 
 		if (invs.length > 0) {
@@ -300,13 +294,15 @@ export default class extends Command<IMClient> {
 				const name = (inv as any)['inviteCodeSettings.value'];
 
 				invText +=
-					rp.CMD_INFO_REGULARINVITES_ENTRY({
-						uses: inv.uses,
-						code: name ? name : inv.code,
-						name: name ? inv.code : undefined,
-						createdAt: moment(inv.createdAt)
-							.locale(lang)
-							.fromNow()
+					t('cmd.info.regularInvites.entry', {
+						uses: `**${inv.uses}**`,
+						code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
+						createdAt:
+							'**' +
+							moment(inv.createdAt)
+								.locale(lang)
+								.fromNow() +
+							'**'
 					}) + '\n';
 			});
 
@@ -314,17 +310,20 @@ export default class extends Command<IMClient> {
 			if (invs.length > 10) {
 				more =
 					'\n' +
-					rp.CMD_INFO_REGULARINVITES_MORE({
-						amount: invs.length - 10
+					t('cmd.info.regularInvites.more', {
+						amount: `**${invs.length - 10}**`
 					});
 			}
 
-			embed.addField(rp.CMD_INFO_REGULARINVITES_TITLE(), invText + more);
+			embed.fields.push({
+				name: t('cmd.info.regularInvites.title'),
+				value: invText + more
+			});
 		} else {
-			embed.addField(
-				rp.CMD_INFO_REGULARINVITES_TITLE(),
-				rp.CMD_INFO_REGULARINVITES_NONE()
-			);
+			embed.fields.push({
+				name: t('cmd.info.regularInvites.title'),
+				value: t('cmd.info.regularInvites.none')
+			});
 		}
 
 		const bonusInvs = customInvs.filter(inv => inv.generatedReason === null);
@@ -334,13 +333,18 @@ export default class extends Command<IMClient> {
 
 			bonusInvs.slice(0, 10).forEach(inv => {
 				customInvText +=
-					rp.CMD_INFO_BONUSINVITES_ENTRY({
-						amount: inv.amount,
-						creator: inv.creatorId ? inv.creatorId : message.guild.me.id,
-						date: moment(inv.createdAt)
-							.locale(lang)
-							.fromNow(),
+					t('cmd.info.bonusInvites.entry', {
+						amount: `**${inv.amount}**`,
+						creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
+						date:
+							'**' +
+							moment(inv.createdAt)
+								.locale(lang)
+								.fromNow() +
+							'**',
 						reason: inv.reason
+							? `**${inv.reason}**`
+							: '**' + t('cmd.info.bonusInvites.noReason') + '**'
 					}) + '\n';
 			});
 
@@ -348,8 +352,8 @@ export default class extends Command<IMClient> {
 			if (bonusInvs.length > 10) {
 				more =
 					'\n' +
-					rp.CMD_INFO_BONUSINVITES_MORE({
-						amount: bonusInvs.length - 10
+					t('cmd.info.bonusInvites.more', {
+						amount: `**${bonusInvs.length - 10}**`
 					});
 			}
 
@@ -364,12 +368,15 @@ export default class extends Command<IMClient> {
 					more;
 			}
 
-			embed.addField(rp.CMD_INFO_BONUSINVITES_TITLE(), text);
+			embed.fields.push({
+				name: t('cmd.info.bonusInvites.title'),
+				value: text
+			});
 		} else {
-			embed.addField(
-				rp.CMD_INFO_BONUSINVITES_TITLE(),
-				rp.CMD_INFO_BONUSINVITES_NONE()
-			);
+			embed.fields.push({
+				name: t('cmd.info.bonusInvites.title'),
+				value: t('cmd.info.bonusInvites.more')
+			});
 		}
 
 		const js2 = await joins.findAll({
@@ -378,7 +385,7 @@ export default class extends Command<IMClient> {
 				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
 			],
 			where: {
-				guildId: message.guild.id
+				guildId: guild.id
 			},
 			group: [sequelize.col('memberId')],
 			order: [sequelize.literal('MAX(join.createdAt) DESC')],
@@ -415,19 +422,22 @@ export default class extends Command<IMClient> {
 			if (js2.length > 10) {
 				more =
 					'\n' +
-					rp.CMD_INFO_INVITEDMEMBERS_MORE({
-						amount: js2.length - 10
+					t('cmd.info.invitedMembers.more', {
+						amount: `**${js2.length - 10}**`
 					});
 			}
 
-			embed.addField(rp.CMD_INFO_INVITEDMEMBERS_TITLE(), inviteText + more);
+			embed.fields.push({
+				name: t('cmd.info.invitedMembers.title'),
+				value: inviteText + more
+			});
 		} else {
-			embed.addField(
-				rp.CMD_INFO_INVITEDMEMBERS_TITLE(),
-				rp.CMD_INFO_INVITEDMEMBERS_NONE()
-			);
+			embed.fields.push({
+				name: t('cmd.info.invitedMembers.title'),
+				value: t('cmd.info.invitedMembers.none')
+			});
 		}
 
-		return sendReply(message, embed);
+		return this.client.sendReply(message, embed);
 	}
 }

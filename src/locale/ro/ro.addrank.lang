@@ -1,9 +1,0 @@
-[CMD_ADDRANK_ROLE_TOO_HIGH]
-Gradul ***{{ role }}**  este mai sus decat al meu  (**{{ myRole }}**), deci nu il voi putea atribui membrilor care il castiga.
-
-[CMD_ADDRANK_UPDATED]
-Rank **{{ role }}** updated: Now needs {{ invites }} and has the following description: "{{ description ?}}"
-
-[CMD_ADDRANK_CREATED]
-Added rank **{{ role }}** which needs {{ invites }} and has the following description: "{{ description ?}}"
-

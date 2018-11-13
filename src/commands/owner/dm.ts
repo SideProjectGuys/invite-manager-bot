@@ -1,67 +1,52 @@
-import {
-	Command,
-	CommandDecorators,
-	Logger,
-	logger,
-	Message,
-	Middleware
-} from '@yamdbf/core';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { checkRoles } from '../../middleware/CheckRoles';
-import { OwnerCommand } from '../../types';
+import { StringResolver } from '../../resolvers';
+import { OwnerCommand, ShardCommand } from '../../types';
+import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
-const { resolve, expect } = Middleware;
-const { using } = CommandDecorators;
-
-export default class extends Command<IMClient> {
-	@logger('Command')
-	private readonly _logger: Logger;
-
-	public constructor() {
-		super({
-			name: 'owner-dm',
-			aliases: ['odm'],
-			desc: 'Send a DM to a user',
-			usage: '<prefix>owner-dm',
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: OwnerCommand.dm,
+			aliases: ['owner-dm', 'odm'],
+			// desc: 'Send a DM to a user',
+			args: [
+				{
+					name: 'userId',
+					resolver: StringResolver
+					// description: 'The id of the user.'
+				},
+				{
+					name: 'msg',
+					resolver: StringResolver
+					// description: 'The message to send to the user'
+				}
+			],
+			strict: true,
+			guildOnly: false,
 			hidden: true
 		});
 	}
 
-	@using(checkRoles(OwnerCommand.dm))
-	@using(resolve('userId: string, ...msg: String'))
-	@using(expect('userId: string, ...msg: String'))
 	public async action(
 		message: Message,
-		[userId, msg]: [string, string]
+		[userId, msg]: [string, string],
+		{ guild }: Context
 	): Promise<any> {
-		this._logger.log(`(${message.author.username}): ${message.content}`);
-
-		if (config.ownerGuildIds.indexOf(message.guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
-		const user = await this.client.users.fetch(userId);
-		if (!user) {
-			message.reply(`Could not find user with id ${userId}`);
-			return;
-		}
-
-		let channel = user.dmChannel;
-		if (!channel) {
-			channel = await user.createDM();
-		}
-
-		channel
-			.send(msg)
-			.then(() => {
-				message.react('👍');
-			})
-			.catch((err: any) => {
-				message.reply(`ERROR ${err.code}: ${err.message}`);
-				message.react('👎');
-			});
+		this.client.rabbitmq.sendCommandToShard(
+			1,
+			{
+				id: message.id,
+				cmd: ShardCommand.OWNER_DM,
+				userId,
+				message: msg
+			},
+			() => message.addReaction('👍')
+		);
 	}
 }
