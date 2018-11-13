@@ -3,24 +3,13 @@ import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
 
 import { GuildCache } from './GuildCache';
 
-const config = require('../../config.json');
+type AnyCommand = BotCommand | ModerationCommand | OwnerCommand;
 
-type PermissionsObject = {
-	[key in BotCommand | OwnerCommand | ModerationCommand]: string[]
-};
+type PermissionsObject = { [key in AnyCommand]?: string[] };
 
 export class PermissionsCache extends GuildCache<PermissionsObject> {
-	protected initOne(guildId: string) {
-		// Create permissions map
-		const obj: PermissionsObject = {} as any;
-		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
-		Object.values(ModerationCommand).forEach(
-			(k: ModerationCommand) => (obj[k] = [])
-		);
-		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
-			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
-		}
-		return obj;
+	protected initOne() {
+		return {};
 	}
 
 	protected async getAll(guildIds: string[]): Promise<void> {
@@ -39,8 +28,12 @@ export class PermissionsCache extends GuildCache<PermissionsObject> {
 
 		// Then insert the role permissions we got from the db
 		perms.forEach((p: any) => {
-			const cmd = p.command as BotCommand | OwnerCommand;
-			this.cache.get(p['role.guildId'])[cmd].push(p.roleId);
+			const cmd = p.command as AnyCommand;
+			const obj = this.cache.get(p['role.guildId']);
+			if (!obj[cmd]) {
+				obj[cmd] = [];
+			}
+			obj[cmd].push(p.roleId);
 		});
 	}
 
@@ -55,17 +48,13 @@ export class PermissionsCache extends GuildCache<PermissionsObject> {
 			raw: true
 		});
 
-		const obj: PermissionsObject = {} as any;
-		Object.values(BotCommand).forEach((k: BotCommand) => (obj[k] = []));
-		Object.values(ModerationCommand).forEach(
-			(k: ModerationCommand) => (obj[k] = [])
-		);
-		if (config.ownerGuildIds.indexOf(guildId) !== -1) {
-			Object.values(OwnerCommand).forEach((k: OwnerCommand) => (obj[k] = []));
-		}
+		const obj: PermissionsObject = {};
 
 		perms.forEach((p: any) => {
-			const cmd = p.command as BotCommand | OwnerCommand;
+			const cmd = p.command as AnyCommand;
+			if (!obj[cmd]) {
+				obj[cmd] = [];
+			}
 			obj[cmd].push(p.roleId);
 		});
 
