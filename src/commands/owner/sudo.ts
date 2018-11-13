@@ -31,6 +31,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
+			strict: true,
 			guildOnly: true,
 			hidden: true
 		});

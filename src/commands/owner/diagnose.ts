@@ -20,6 +20,7 @@ export default class extends Command {
 					// description: 'The id of the guild to diagnose.'
 				}
 			],
+			strict: true,
 			hidden: true,
 			guildOnly: true
 		});

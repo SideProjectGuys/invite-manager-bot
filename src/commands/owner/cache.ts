@@ -10,6 +10,7 @@ export default class extends Command {
 			name: OwnerCommand.cache,
 			aliases: ['owner-cache', 'oc'],
 			args: [],
+			strict: true,
 			guildOnly: true,
 			hidden: true
 		});

@@ -16,6 +16,7 @@ export default class extends Command {
 					resolver: StringResolver
 				}
 			],
+			strict: true,
 			hidden: true,
 			guildOnly: false
 		});

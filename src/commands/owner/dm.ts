@@ -23,6 +23,7 @@ export default class extends Command {
 					// description: 'The message to send to the user'
 				}
 			],
+			strict: true,
 			guildOnly: false,
 			hidden: true
 		});

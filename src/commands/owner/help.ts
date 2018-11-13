@@ -9,7 +9,7 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.help,
 			aliases: ['owner-help', 'oh'],
-			// desc: 'Admin help',
+			strict: true,
 			hidden: true,
 			guildOnly: false
 		});
