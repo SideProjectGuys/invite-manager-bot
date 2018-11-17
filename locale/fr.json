@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "J'ai besoin de la permission `Ban Members` pour utiliser cette commande.",
 			"error": "Une erreur s’est produite lors du bannissement de cet utilisateur:\n{{ Erreur }}",
 			"done": "L'utilisateur a été banni avec succès.",
 			"canNotBan": "Je ne peux pas bannir cet utilisateur.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Bannir un membre du serveur."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "J'ai besoin de la permission `Ban Members` pour utiliser cette commande."
 		},
 		"botInfo": {
 			"version": "Version",

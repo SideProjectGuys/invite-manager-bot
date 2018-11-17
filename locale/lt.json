@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "I need the `Ban Members` permission to use this command",
 			"error": "There was an error banning this user:\n{{ error }}",
 			"done": "The user was successfully banned.",
 			"canNotBan": "I cannot ban this user.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Ban a member from the server."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
 			"version": "Versija",

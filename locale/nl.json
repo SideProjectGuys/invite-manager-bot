@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "Ik heb de `Leden verbannen` permissies nodig om dit commando te gebruiken.",
 			"error": "Er was een error tijdens het verbannen van deze gebruiker: \n{{ error }}",
 			"done": "De gebruiker is succesvol verbannen.",
 			"canNotBan": "Ik kan deze gebruiker niet verbannen.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Verban een gebruiker van de server."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "Ik heb de `Leden verbannen` permissies nodig om dit commando te gebruiken."
 		},
 		"botInfo": {
 			"version": "Versie",

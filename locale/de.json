@@ -1,8 +1,8 @@
 {
 	"arguments": {
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"missingRequired": "Das benötigte Argument `{{ name }}` fehlt\n{{{ usage }}}\n{{{ help }}}",
 		"enum": {
-			"validValues": "Nutze 1 von den folgenden werten:\n\n\n{{{ werte }}}",
+			"validValues": "Nutze einen der folgenden Werte: {{{ values }}}",
 			"invalid": "Kein gültiger wert."
 		},
 		"user": {
@@ -10,11 +10,11 @@
 			"multiple": "Multiple matching users found. {{{ users }}}"
 		},
 		"number": {
-			"invalid": "Keine gültige Nummer "
+			"invalid": "Keine gültige Zahl "
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
+			"notFound": "Befehl nicht gefunden.",
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
@@ -22,11 +22,11 @@
 			"multiple": "Multiple matching channels found. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
+			"notFound": "Rolle nicht gefunden",
 			"multiple": "Multiple matching roles found. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "Not a valid yes/no value."
+			"invalid": "Kein gültiger ja/nein Wert."
 		},
 		"member": {
 			"notFound": "Member was not found.",
@@ -51,45 +51,44 @@
 		"addInvites": {
 			"zero": "Keine Einladungen hinzuzufügen macht nicht wirklich Sinn...",
 			"amount": {
-				"positive": "**{{ amount }}** Einladungen für <@{{ member }}> hinzugefügt <@{{ member }}> hat jetzt **{{totalInvites }}** Einladungen erhalten",
-				"negative": "**{{ amount }}** Einladungen für <@{{ member }}> entfernt <@{{ member }}> hat jetzt **{{totalInvites }}** Einladungen weniger"
+				"positive": "**{{ amount }}** Einladungen für {{{ member }}} hinzugefügt, er/sie ist jetzt bei **{{ totalInvites }}** Einladungen.",
+				"negative": "**{{ amount }}** Einladungen von {{{ member }}} entfernt, er/sie hat jetzt **{{ totalInvites }}** Einladungen"
 			},
 			"self": {
 				"args": {
-					"user": "Der Benutzer welcher die bonus invites bekommem/verlieren wird.",
-					"amount": "Die Anzahl der Einladungen welche der Benutzer bekommen/verlieren wird.Benutze eine negative (-) zahl um Einladungen zu entfernen.",
-					"reason": "Grund für das hinzufügen/entfernen der Einladungen"
+					"user": "Der Benutzer welcher die zusätzlichen Invites erhalten/verlieren wird.",
+					"amount": "Die Anzahl der Einladungen welche der Benutzer erhalten/verlieren wird. Benutze eine negative (-) Zahl um Einladungen zu entfernen.",
+					"reason": "Grund für das hinzufügen/entfernen der Einladungen."
 				},
-				"description": "Entfernt/Fügt Einladungen hinzu von/zu einem Mitglied."
+				"description": "Entfernt/Fügt Einladungen von/zu einem Mitglied hinzu."
 			}
 		},
 		"addRank": {
 			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
-			"roleTooHigh": "Diese rolle **{{ role }}** ist höher als meine Rolle (**{{ myRole }}**) deshalb kann ich diesem Mitglied diese Rolle nicht zuordnen",
+			"roleTooHigh": "Diese rolle {{{ role }}} ist höher als meine Rolle ({{{ myRole }}}) deshalb kann ich diesem Mitglied diese Rolle nicht zuordnen.",
 			"self": {
 				"args": {
-					"role": "Die Rolle die Benutzer erhalten wenn sie diesen rank erreichen.",
-					"invites": "Die Anzahl der Einladungen um den rank zu erreichen.",
-					"info": "eine beschreibung die nutzer sehen damit sie mehr über den rank wissen."
+					"role": "Die Rolle welche Benutzer erhalten wenn sie diesen Rang erreichen.",
+					"invites": "Die Anzahl der Einladungen um den Rang zu erreichen.",
+					"info": "Eine Beschreibung die Nutzer sehen damit sie mehr über den Rang wissen."
 				},
-				"description": "Füge einen neuen rank hinzu."
+				"description": "Füge einen neuen Rang hinzu."
 			}
 		},
 		"ban": {
-			"misingPermissions": "Ich brauche die `Ban Members` erlaubnis um diesen command zu benutzen.",
-			"error": "Es ist ein fehler aufgetreten beim bannen des Benutzers:\n{{ fehler }}",
-			"done": "Dieser nutzer wurde erfolgreich gebannt.",
-			"canNotBan": "Ich kann diesen nutzer nicht bannen",
+			"error": "Es ist ein Fehler aufgetreten beim Verbannen des Benutzers:\n{{ error }}",
+			"done": "Dieser Nutzer wurde erfolgreich gebannt.",
+			"canNotBan": "Ich kann diesen Nutzer nicht verbannen.",
 			"self": {
 				"args": {
-					"user": "Nutzer zum bannen.",
-					"deleteMessageDays": "Wie alte Nachrichten entfernt werden (in Tagen).",
-					"reason": "Warum der nutzer gebannt wurde,"
+					"user": "Nutzer zum verbannen.",
+					"deleteMessageDays": "Wie weit zurück alte Nachrichten entfernt werden (in Tagen).",
+					"reason": "Warum der Nutzer gebannt wurde."
 				},
 				"description": "Bannt ein Mitglied vom Server."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
 			"version": "Version",
@@ -97,8 +96,8 @@
 			"guilds": "Gilden",
 			"members": "Mitglieder",
 			"shards": {
-				"current": "Aktuelle Scherben",
-				"total": "Total Shards"
+				"current": "Aktueller Shard",
+				"total": "Shards insgesamt"
 			},
 			"self": {
 				"description": "Erhalte die wichtigsten Informationen des Bots"
@@ -106,7 +105,7 @@
 		},
 		"check": {
 			"strikes": {
-				"title": "Streiks",
+				"title": "Strikes",
 				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
 			},
 			"punishments": {

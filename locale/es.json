@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "Necesito el permiso `Banear Miembros` para usar este comando.",
 			"error": "Ha habido un error baneando a este usuario:\n{{ error }}",
 			"done": "El usuario ha sido baneado exitosamente.",
 			"canNotBan": "No puedo banear a este usuario.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Banea a un usuario del servidor."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "Necesito el permiso `Banear Miembros` para usar este comando."
 		},
 		"botInfo": {
 			"version": "Versión",
