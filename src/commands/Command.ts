@@ -1,7 +1,6 @@
 import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../client';
-import { SettingsObject } from '../sequelize';
 import {
 	BotCommand,
 	CommandGroup,
@@ -9,6 +8,7 @@ import {
 	OwnerCommand
 } from '../types';
 
+import { SettingsObject } from '../models/Setting';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 
 export interface Arg {

@@ -3,7 +3,8 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	OneToMany,
+	ManyToOne,
+	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm';
 
@@ -16,8 +17,8 @@ export enum MemberSettingsKey {
 
 @Entity()
 export class MemberSetting extends BaseEntity {
-	@Column({ length: 32, primary: true })
-	public id: string;
+	@PrimaryGeneratedColumn()
+	public id: number;
 
 	@CreateDateColumn()
 	public createdAt: Date;
@@ -34,9 +35,9 @@ export class MemberSetting extends BaseEntity {
 	@Column({ type: 'text' })
 	public value: string;
 
-	@OneToMany(type => Guild, g => g.memberSettings)
+	@ManyToOne(type => Guild, g => g.memberSettings)
 	public guild: Guild;
 
-	@OneToMany(type => Member, m => m.memberSettings)
+	@ManyToOne(type => Member, m => m.memberSettings)
 	public member: Member;
 }

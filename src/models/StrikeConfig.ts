@@ -9,19 +9,9 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { Guild } from './Guild';
+import { ViolationType } from '../types';
 
-export enum ViolationType {
-	invites = 'invites',
-	links = 'links',
-	words = 'words',
-	allCaps = 'allCaps',
-	duplicateText = 'duplicateText',
-	quickMessages = 'quickMessages',
-	mentionUsers = 'mentionUsers',
-	mentionRoles = 'mentionRoles',
-	emojis = 'emojis'
-}
+import { Guild } from './Guild';
 
 @Entity()
 @Index(['guild', 'violationType'], { unique: true })
@@ -43,6 +33,9 @@ export class StrikeConfig extends BaseEntity {
 
 	@Column()
 	public amount: number;
+
+	@Column({ nullable: true })
+	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.strikeConfigs)
 	public guild: Guild;

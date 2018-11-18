@@ -3,6 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { getRepository } from 'typeorm';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { PermissionsCache } from './cache/PermissionsCache';
@@ -10,7 +11,7 @@ import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
-import { guilds, LogAction, members } from './sequelize';
+
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
@@ -24,6 +25,10 @@ import {
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
+
+import { Guild as DBGuild } from './models/Guild';
+import { LogAction } from './models/Log';
+import { Member } from './models/Member';
 
 const config = require('../config.json');
 
@@ -265,7 +270,6 @@ export class IMClient extends Client {
 
 		this.dbQueue.addLogAction(
 			{
-				id: null,
 				guildId: guild.id,
 				memberId: message.author.id,
 				action,
@@ -292,7 +296,9 @@ export class IMClient extends Client {
 		// If cached member count is older than 5 minutes, update it
 		if (Date.now() - this.membersCachedAt > 1000 * 60 * 5) {
 			console.log('Fetching guild & member count from DB...');
-			this.numMembers = await members.count();
+			this.numMembers = await getRepository(Member).count({
+				where: { deletedAt: null }
+			});
 			this.membersCachedAt = Date.now();
 		}
 		return this.numMembers;
@@ -302,10 +308,8 @@ export class IMClient extends Client {
 		// If cached guild count is older than 5 minutes, update it
 		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 5) {
 			console.log('Fetching guild & member count from DB...');
-			this.numGuilds = await guilds.count({
-				where: {
-					deletedAt: null
-				}
+			this.numGuilds = await getRepository(DBGuild).count({
+				where: { deletedAt: null }
 			});
 			this.guildsCachedAt = Date.now();
 		}

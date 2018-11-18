@@ -19,6 +19,7 @@ import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { PunishmentConfig } from './PunishmentConfig';
 import { Rank } from './Rank';
+import { Role } from './Role';
 import { ScheduledAction } from './ScheduledAction';
 import { Setting } from './Setting';
 import { Strike } from './Strike';
@@ -94,4 +95,7 @@ export class Guild extends BaseEntity {
 
 	@OneToMany(type => StrikeConfig, s => s.guild)
 	public strikeConfigs: StrikeConfig[];
+
+	@OneToMany(type => Role, r => r.guild)
+	public roles: Role[];
 }

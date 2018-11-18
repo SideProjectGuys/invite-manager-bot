@@ -25,11 +25,14 @@ export class PremiumSubscription extends BaseEntity {
 	@Column()
 	public deletedAt: Date;
 
-	@Column({ type: 'decimal', length: '10,2' })
+	@Column({ type: 'decimal', precision: 10, scale: 2 })
 	public amount: number;
 
 	@Column()
 	public validUntil: Date;
+
+	@Column({ nullable: true })
+	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.premiumSubscriptions)
 	public guild: Guild;

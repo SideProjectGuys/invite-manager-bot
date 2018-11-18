@@ -1,16 +1,27 @@
+import { getRepository, In, Repository } from 'typeorm';
+
+import { IMClient } from '../client';
 import {
 	defaultInviteCodeSettings,
-	inviteCodeSettings,
+	InviteCodeSetting,
 	InviteCodeSettingsKey,
 	InviteCodeSettingsObject
-} from '../sequelize';
+} from '../models/InviteCodeSetting';
 import { fromDbValue, toDbValue } from '../settings';
 
 import { Cache } from './Cache';
 
 export class InviteCodeSettingsCache extends Cache<InviteCodeSettingsObject> {
+	private inviteSettingsRepo: Repository<InviteCodeSetting>;
+
 	private guildToCodeMap: Map<string, Set<string>> = new Map();
 	private codeToGuildMap: Map<string, string> = new Map();
+
+	public constructor(client: IMClient) {
+		super(client);
+
+		this.inviteSettingsRepo = getRepository(InviteCodeSetting);
+	}
 
 	public async init() {
 		const it = this.client.guilds.keys();
@@ -25,12 +36,8 @@ export class InviteCodeSettingsCache extends Cache<InviteCodeSettingsObject> {
 			result = it.next();
 		}
 
-		const sets = await inviteCodeSettings.findAll({
-			attributes: ['id', 'guildId', 'key', 'value', 'inviteCode'],
-			where: {
-				guildId: guildIds
-			},
-			raw: true
+		const sets = await this.inviteSettingsRepo.find({
+			where: { guildId: In(guildIds) }
 		});
 
 		sets.forEach(set => {
@@ -55,12 +62,8 @@ export class InviteCodeSettingsCache extends Cache<InviteCodeSettingsObject> {
 	protected async getOne(
 		inviteCode: string
 	): Promise<InviteCodeSettingsObject> {
-		const sets = await inviteCodeSettings.findAll({
-			attributes: ['id', 'key', 'value', 'inviteCode'],
-			where: {
-				inviteCode
-			},
-			raw: true
+		const sets = await this.inviteSettingsRepo.find({
+			where: { inviteCode }
 		});
 
 		const obj: InviteCodeSettingsObject = { ...defaultInviteCodeSettings };
@@ -95,20 +98,15 @@ export class InviteCodeSettingsCache extends Cache<InviteCodeSettingsObject> {
 
 		// Check if the value changed
 		if (cfg[key] !== val) {
-			inviteCodeSettings.bulkCreate(
-				[
-					{
-						id: null,
-						inviteCode,
-						guildId: this.codeToGuildMap.get(inviteCode),
-						key,
-						value: dbVal
-					}
-				],
+			// TODO: Use 'ON DUPLICATE KEY UPDATE' statement
+			this.inviteSettingsRepo.save([
 				{
-					updateOnDuplicate: ['value', 'updatedAt']
+					inviteCode,
+					guildId: this.codeToGuildMap.get(inviteCode),
+					key,
+					value: dbVal
 				}
-			);
+			]);
 
 			cfg[key] = val;
 			this.cache.set(inviteCode, cfg);

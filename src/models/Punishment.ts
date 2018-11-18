@@ -8,16 +8,10 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
+import { PunishmentType } from '../types';
+
 import { Guild } from './Guild';
 import { Member } from './Member';
-
-export enum PunishmentType {
-	ban = 'ban',
-	kick = 'kick',
-	softban = 'softban',
-	warn = 'warn',
-	mute = 'mute'
-}
 
 @Entity()
 export class Punishment extends BaseEntity {
@@ -42,8 +36,14 @@ export class Punishment extends BaseEntity {
 	@Column()
 	public args: string;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.punishments)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.punishments)
 	public member: Member;

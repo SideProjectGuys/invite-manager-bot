@@ -4,16 +4,8 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';
-import {
-	channels,
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	JoinAttributes,
-	joins,
-	LeaveAttributes,
-	members
-} from '../sequelize';
+import { Join } from '../models/Join';
+import { Leave } from '../models/Leave';
 import { RabbitMqMember, ShardCommand } from '../types';
 import {
 	FakeChannel,
@@ -160,7 +152,7 @@ export class RabbitMq {
 		const guildId: string = content.guildId;
 		const guild = this.client.guilds.get(guildId);
 		const member: RabbitMqMember = content.member;
-		const join: JoinAttributes = content.join;
+		const join: Join = content.join;
 
 		this.channelJoins.ack(_msg, false);
 
@@ -361,7 +353,7 @@ export class RabbitMq {
 		const guild = this.client.guilds.get(guildId);
 		const member: RabbitMqMember = content.member;
 		const join: any = content.join;
-		const leave: LeaveAttributes = content.leave;
+		const leave: Leave = content.leave;
 
 		this.channelLeaves.ack(_msg, false);
 

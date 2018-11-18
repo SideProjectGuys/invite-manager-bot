@@ -1,16 +1,12 @@
 import { Embed, Guild, Member, Message, TextChannel, User } from 'eris';
 import moment from 'moment';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../client';
-import {
-	punishmentConfigs,
-	punishments,
-	PunishmentType,
-	sequelize,
-	SettingsObject,
-	strikes,
-	ViolationType
-} from '../sequelize';
+import { Punishment } from '../models/Punishment';
+import { SettingsObject } from '../models/Setting';
+import { Strike } from '../models/Strike';
+import { PunishmentType, ViolationType } from '../types';
 import { to } from '../util';
 
 interface Arguments {
@@ -32,6 +28,9 @@ interface MiniMessage {
 
 export class Moderation {
 	private client: IMClient;
+	private strikesRepo: Repository<Strike>;
+	private punishRepo: Repository<Punishment>;
+
 	private messageCache: Map<string, MiniMessage[]>;
 
 	private strikeConfigFunctions: {
@@ -51,6 +50,8 @@ export class Moderation {
 
 	public constructor(client: IMClient) {
 		this.client = client;
+		this.strikesRepo = getRepository(Strike);
+		this.punishRepo = getRepository(Punishment);
 
 		this.messageCache = new Map();
 
@@ -300,47 +301,39 @@ export class Moderation {
 		violationType: ViolationType,
 		args: Arguments
 	) {
-		let strikesBefore = await strikes.sum('amount', {
-			where: {
-				guildId: args.guild.id,
-				memberId: message.author.id
-			}
-		});
+		const strikesBefore = (await this.strikesRepo
+			.createQueryBuilder('s')
+			.select('SUM(s.amount) AS total')
+			.where('guildId = :guildId', { guildId: args.guild.id })
+			.andWhere('memberId = :memberId', { memberId: message.author.id })
+			.getRawOne()).total;
 
-		await strikes.create({
-			id: null,
+		await this.strikesRepo.save({
 			guildId: args.guild.id,
 			memberId: message.author.id,
-			amount: amount,
-			violationType: violationType
+			violationType: violationType,
+			amount: amount
 		});
 
-		let strikesAfter = strikesBefore + amount;
+		const strikesAfter = strikesBefore + amount;
 
-		let punishmentConfig = await punishmentConfigs.find({
-			where: {
-				guildId: args.guild.id,
-				amount: {
-					[sequelize.Op.gt]: strikesBefore,
-					[sequelize.Op.lte]: strikesAfter
-				}
-			},
-			order: [['amount', 'DESC']]
-		});
+		const punishCfgs = await this.client.cache.punishments.get(args.guild.id);
+		const appliedCfg = punishCfgs
+			.filter(pc => pc.amount > strikesBefore && pc.amount <= strikesAfter)
+			.sort((a, b) => a.amount - b.amount)[0];
 
-		if (punishmentConfig) {
-			let punishmentResult = await this.punishmentFunctions[
-				punishmentConfig.punishmentType
-			](message, args.guild, punishmentConfig.amount, args);
+		if (appliedCfg) {
+			const punishmentResult = await this.punishmentFunctions[
+				appliedCfg.punishmentType
+			](message, args.guild, appliedCfg.amount, args);
 
 			if (punishmentResult) {
-				await punishments.create({
-					id: null,
+				await this.punishRepo.save({
 					guildId: args.guild.id,
 					memberId: message.author.id,
-					punishmentType: punishmentConfig.punishmentType,
-					amount: punishmentConfig.amount,
-					args: punishmentConfig.args,
+					punishmentType: appliedCfg.punishmentType,
+					amount: appliedCfg.amount,
+					args: appliedCfg.args,
 					reason: 'automod',
 					creatorId: null
 				});
@@ -348,7 +341,7 @@ export class Moderation {
 					args.guild,
 					message.author,
 					amount,
-					punishmentConfig.punishmentType
+					appliedCfg.punishmentType
 				);
 			}
 		}

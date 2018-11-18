@@ -3,26 +3,15 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	Index,
 	ManyToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm';
 
+import { ViolationType } from '../types';
+
 import { Guild } from './Guild';
 import { Member } from './Member';
-
-export enum ViolationType {
-	invites = 'invites',
-	links = 'links',
-	words = 'words',
-	allCaps = 'allCaps',
-	duplicateText = 'duplicateText',
-	quickMessages = 'quickMessages',
-	mentionUsers = 'mentionUsers',
-	mentionRoles = 'mentionRoles',
-	emojis = 'emojis'
-}
 
 @Entity()
 export class Strike extends BaseEntity {
@@ -44,8 +33,14 @@ export class Strike extends BaseEntity {
 	@Column()
 	public amount: number;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.strikes)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.strikes)
 	public member: Member;

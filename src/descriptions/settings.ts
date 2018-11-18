@@ -1,14 +1,14 @@
 import fs from 'fs';
 
+import { MemberSettingsKey } from '../models/MemberSetting';
 import {
 	defaultSettings,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
 	RankAssignmentStyle,
 	SettingsKey,
 	settingsTypes
-} from '../sequelize';
+} from '../models/Setting';
 
 enum ConfigGroup {
 	Basic = 'Basic',

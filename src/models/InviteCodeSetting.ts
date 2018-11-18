@@ -3,9 +3,12 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	OneToMany,
+	ManyToOne,
+	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm';
+
+import { InternalSettingsTypes } from '../types';
 
 import { Guild } from './Guild';
 import { InviteCode } from './InviteCode';
@@ -15,10 +18,29 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
+export type InviteCodeSettingsObject = {
+	name: string;
+	roles: string[];
+};
+
+export type InviteCodeSettingsTypesObject = {
+	[k in InviteCodeSettingsKey]: InternalSettingsTypes
+};
+
+export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
+	name: 'String',
+	roles: 'Role[]'
+};
+
+export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
+	name: null,
+	roles: null
+};
+
 @Entity()
 export class InviteCodeSetting extends BaseEntity {
-	@Column({ length: 32, primary: true })
-	public id: string;
+	@PrimaryGeneratedColumn()
+	public id: number;
 
 	@CreateDateColumn()
 	public createdAt: Date;
@@ -35,9 +57,20 @@ export class InviteCodeSetting extends BaseEntity {
 	@Column({ type: 'text' })
 	public value: string;
 
-	@OneToMany(type => Guild, g => g.inviteCodeSettings)
+	@Column({ nullable: true })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.inviteCodeSettings)
 	public guild: Guild;
 
-	@OneToMany(type => InviteCode, i => i.inviteCodeSettings)
+	@Column({
+		nullable: true,
+		charset: 'utf8mb4',
+		collation: 'utf8mb4_bin',
+		length: 16
+	})
+	public inviteCode: string;
+
+	@ManyToOne(type => InviteCode, i => i.inviteCodeSettings)
 	public invite: InviteCode;
 }

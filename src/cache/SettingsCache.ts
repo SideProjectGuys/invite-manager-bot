@@ -1,25 +1,33 @@
+import { getRepository, In, Repository } from 'typeorm';
+
+import { IMClient } from '../client';
 import {
 	defaultSettings,
-	settings,
+	Setting,
 	SettingsKey,
 	SettingsObject
-} from '../sequelize';
+} from '../models/Setting';
 import { fromDbValue, toDbValue } from '../settings';
 
 import { GuildCache } from './GuildCache';
 
 export class SettingsCache extends GuildCache<SettingsObject> {
+	private settingsRepo: Repository<Setting>;
+
+	public constructor(client: IMClient) {
+		super(client);
+
+		this.settingsRepo = getRepository(Setting);
+	}
+
 	protected initOne(guildId: string): SettingsObject {
 		return { ...defaultSettings };
 	}
 
 	protected async getAll(guildIds: string[]): Promise<void> {
 		// Load all settings from DB
-		const sets = await settings.findAll({
-			where: {
-				guildId: guildIds
-			},
-			raw: true
+		const sets = await this.settingsRepo.find({
+			where: { guildId: In(guildIds) }
 		});
 
 		// Then insert the settings we got from the DB
@@ -35,7 +43,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 	}
 
 	protected async getOne(guildId: string): Promise<SettingsObject> {
-		const sets = await settings.findAll({ where: { guildId } });
+		const sets = await this.settingsRepo.find({ where: { guildId } });
 
 		const obj: SettingsObject = { ...defaultSettings };
 		sets.forEach(set => (obj[set.key] = fromDbValue(set.key, set.value)));
@@ -54,19 +62,14 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 
 		// Check if the value changed
 		if (cfg[key] !== val) {
-			settings.bulkCreate(
-				[
-					{
-						id: null,
-						guildId,
-						key,
-						value: dbVal
-					}
-				],
+			// TODO: Use 'UPDATE ON DUPLICATE' query
+			this.settingsRepo.save([
 				{
-					updateOnDuplicate: ['value', 'updatedAt']
+					guildId,
+					key,
+					value: dbVal
 				}
-			);
+			]);
 
 			cfg[key] = val;
 			this.cache.set(guildId, cfg);

@@ -5,7 +5,7 @@ import path from 'path';
 
 import { IMClient } from '../client';
 import { Command, Context } from '../commands/Command';
-import { defaultSettings } from '../sequelize';
+import { defaultSettings } from '../models/Setting';
 import { Permissions, ShardCommand } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
@@ -368,7 +368,6 @@ export class Commands {
 			// We have to add the guild and members too, in case our DB does not have them yet
 			this.client.dbQueue.addCommandUsage(
 				{
-					id: null,
 					guildId: guild.id,
 					memberId: message.author.id,
 					command: cmd.name,

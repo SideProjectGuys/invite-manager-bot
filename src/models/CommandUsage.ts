@@ -34,8 +34,14 @@ export class CommandUsage extends BaseEntity {
 	@Column({ type: 'float' })
 	public time: number;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.commandUsages)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.commandUsages)
 	public member: Member;

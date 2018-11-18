@@ -3,10 +3,12 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	ManyToOne,
 	OneToMany,
 	UpdateDateColumn
 } from 'typeorm';
 
+import { Guild } from './Guild';
 import { Rank } from './Rank';
 import { RolePermission } from './RolePermission';
 
@@ -29,6 +31,12 @@ export class Role extends BaseEntity {
 
 	@Column({ length: 7 })
 	public color: string;
+
+	@Column({ nullable: true })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.roles)
+	public guild: Guild;
 
 	@OneToMany(type => Rank, r => r.guild)
 	public ranks: Rank[];

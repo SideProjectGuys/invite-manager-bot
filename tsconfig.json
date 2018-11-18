@@ -3,6 +3,7 @@
 		"noImplicitAny": true,
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
+		"emitDecoratorMetadata": true,
 		"esModuleInterop": true,
 		"module": "commonjs",
 		"target": "es2017",
@@ -12,9 +13,11 @@
 		"experimentalDecorators": true,
 		"typeRoots": [],
 		"types": ["node"],
-		"plugins": [{
-			"name": "tslint-language-service"
-		}]
+		"plugins": [
+			{
+				"name": "tslint-language-service"
+			}
+		]
 	},
 	"exclude": [
 		"node_modules",

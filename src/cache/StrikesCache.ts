@@ -1,18 +1,26 @@
-import { StrikeConfigInstance, strikeConfigs } from '../sequelize';
+import { getRepository, In, Repository } from 'typeorm';
+
+import { IMClient } from '../client';
+import { StrikeConfig } from '../models/StrikeConfig';
 
 import { GuildCache } from './GuildCache';
 
-export class StrikesCache extends GuildCache<StrikeConfigInstance[]> {
-	protected initOne(guildId: string): StrikeConfigInstance[] {
+export class StrikesCache extends GuildCache<StrikeConfig[]> {
+	private strikeConfigRepo: Repository<StrikeConfig>;
+
+	public constructor(client: IMClient) {
+		super(client);
+
+		this.strikeConfigRepo = getRepository(StrikeConfig);
+	}
+
+	protected initOne(guildId: string): StrikeConfig[] {
 		return [];
 	}
 
 	protected async getAll(guildIds: string[]): Promise<void> {
-		const cfgs = await strikeConfigs.findAll({
-			where: {
-				guildId: guildIds
-			},
-			order: [['amount', 'DESC']]
+		const cfgs = await this.strikeConfigRepo.find({
+			where: { guildId: In(guildIds) }
 		});
 
 		cfgs.forEach(cfg => {
@@ -20,12 +28,9 @@ export class StrikesCache extends GuildCache<StrikeConfigInstance[]> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<StrikeConfigInstance[]> {
-		return await strikeConfigs.findAll({
-			where: {
-				guildId
-			},
-			order: [['amount', 'DESC']]
+	protected async getOne(guildId: string): Promise<StrikeConfig[]> {
+		return await this.strikeConfigRepo.find({
+			where: { guildId }
 		});
 	}
 }

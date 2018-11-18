@@ -137,3 +137,36 @@ export interface RabbitMqMember {
 		username: string;
 	};
 }
+
+export type InternalSettingsTypes =
+	| 'String'
+	| 'Number'
+	| 'Boolean'
+	| 'Channel'
+	| 'Role'
+	| 'String[]'
+	| 'Channel[]'
+	| 'Role[]'
+	| 'Enum<LeaderboardStyle>'
+	| 'Enum<RankAssignmentStyle>'
+	| 'Enum<Lang>';
+
+export enum ViolationType {
+	invites = 'invites',
+	links = 'links',
+	words = 'words',
+	allCaps = 'allCaps',
+	duplicateText = 'duplicateText',
+	quickMessages = 'quickMessages',
+	mentionUsers = 'mentionUsers',
+	mentionRoles = 'mentionRoles',
+	emojis = 'emojis'
+}
+
+export enum PunishmentType {
+	ban = 'ban',
+	kick = 'kick',
+	softban = 'softban',
+	warn = 'warn',
+	mute = 'mute'
+}

@@ -1,19 +1,21 @@
 import crypto from 'crypto';
 import moment from 'moment';
+import { getRepository, In, Repository } from 'typeorm';
 
 import { IMClient } from '../client';
 import {
-	ScheduledActionInstance,
-	scheduledActions,
+	ScheduledAction,
 	ScheduledActionType
-} from '../sequelize';
+} from '../models/ScheduledAction';
 
 export class Scheduler {
 	private client: IMClient = null;
 	private scheduledActionTimers: Map<string, any>;
 	private scheduledActionFunctions: {
-		[k in ScheduledActionType]: (args: JSON) => void
+		[k in ScheduledActionType]: (args: any) => void
 	};
+
+	private scheduledActionRepo: Repository<ScheduledAction>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -22,37 +24,37 @@ export class Scheduler {
 			[ScheduledActionType.unmute]: this.unmute.bind(this)
 		};
 		this.scheduleScheduledActions();
+
+		this.scheduledActionRepo = getRepository(ScheduledAction);
 	}
 
 	public async addScheduledAction(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON,
+		args: any,
 		date: Date,
 		reason: string
 	) {
-		let action = await scheduledActions.create({
-			id: null,
+		const action = this.scheduledActionRepo.create({
 			guildId: guildId,
 			actionType: actionType,
 			args: args,
 			date: date,
 			reason: reason
 		});
+		await this.scheduledActionRepo.insert(action);
 		this.createTimer(action);
 	}
 
 	public async cancelScheduledAction(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON
+		args: any
 	) {
-		scheduledActions.destroy({
-			where: {
-				guildId: guildId,
-				actionType: actionType,
-				args: args
-			}
+		this.scheduledActionRepo.delete({
+			guildId: guildId,
+			actionType: actionType,
+			args: args
 		});
 		await this.removeTimer(guildId, actionType, args);
 	}
@@ -60,21 +62,25 @@ export class Scheduler {
 	private getActionHash(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON
+		args: any
 	) {
-		let actionString = `${guildId}|${actionType}|${args}`;
+		const actionString = `${guildId}|${actionType}|${args}`;
 		return crypto
 			.createHash('md5')
 			.update(actionString)
 			.digest('hex');
 	}
 
-	private createTimer(action: ScheduledActionInstance) {
-		let secondsUntilAction = moment(action.date).diff(moment(), 'milliseconds');
-		let timeout = setTimeout(() => {
+	private createTimer(action: ScheduledAction) {
+		const secondsUntilAction = moment(action.date).diff(
+			moment(),
+			'milliseconds'
+		);
+		const func = () => {
 			this.scheduledActionFunctions[action.actionType](action.args);
-		}, secondsUntilAction);
-		let hash = this.getActionHash(
+		};
+		const timeout = setTimeout(func, secondsUntilAction);
+		const hash = this.getActionHash(
 			action.guildId,
 			action.actionType,
 			action.args
@@ -85,19 +91,17 @@ export class Scheduler {
 	private async removeTimer(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON
+		args: any
 	) {
-		let hash = this.getActionHash(guildId, actionType, args);
-		let timeout = this.scheduledActionTimers.get(hash);
+		const hash = this.getActionHash(guildId, actionType, args);
+		const timeout = this.scheduledActionTimers.get(hash);
 		clearTimeout(timeout);
 		this.scheduledActionTimers.delete(hash);
 	}
 
 	private async scheduleScheduledActions() {
-		let actions = await scheduledActions.findAll({
-			where: {
-				guildId: this.client.guilds.map(g => g.id)
-			}
+		const actions = await this.scheduledActionRepo.find({
+			where: { guildId: In(this.client.guilds.map(g => g.id)) }
 		});
 		actions.forEach(action => {
 			this.createTimer(action);

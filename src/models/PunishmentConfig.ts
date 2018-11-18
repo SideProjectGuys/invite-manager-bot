@@ -9,15 +9,9 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { Guild } from './Guild';
+import { PunishmentType } from '../types';
 
-export enum PunishmentType {
-	ban = 'ban',
-	kick = 'kick',
-	softban = 'softban',
-	warn = 'warn',
-	mute = 'mute'
-}
+import { Guild } from './Guild';
 
 @Entity()
 @Index(['guild', 'punishmentType'], { unique: true })
@@ -42,6 +36,9 @@ export class PunishmentConfig extends BaseEntity {
 
 	@Column()
 	public args: string;
+
+	@Column({ nullable: true })
+	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.punishmentConfigs)
 	public guild: Guild;

@@ -1,8 +1,29 @@
 import * as amqplib from 'amqplib';
 import 'reflect-metadata';
+import { createConnection } from 'typeorm';
 
 import { IMClient } from './client';
-import { sequelize } from './sequelize';
+import { Channel } from './models/Channel';
+import { CommandUsage } from './models/CommandUsage';
+import { CustomInvite } from './models/CustomInvite';
+import { Guild } from './models/Guild';
+import { InviteCode } from './models/InviteCode';
+import { InviteCodeSetting } from './models/InviteCodeSetting';
+import { Join } from './models/Join';
+import { Leave } from './models/Leave';
+import { Log } from './models/Log';
+import { Member } from './models/Member';
+import { MemberSetting } from './models/MemberSetting';
+import { PremiumSubscription } from './models/PremiumSubscription';
+import { Punishment } from './models/Punishment';
+import { PunishmentConfig } from './models/PunishmentConfig';
+import { Rank } from './models/Rank';
+import { Role } from './models/Role';
+import { RolePermission } from './models/RolePermission';
+import { ScheduledAction } from './models/ScheduledAction';
+import { Setting } from './models/Setting';
+import { Strike } from './models/Strike';
+import { StrikeConfig } from './models/StrikeConfig';
 
 const pkg = require('../package.json');
 const config = require('../config.json');
@@ -26,17 +47,42 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 console.log('-------------------------------------');
 console.log('Syncing database...');
 console.log('-------------------------------------');
-sequelize.sync().then(() => {
+createConnection({
+	...config.database,
+	entities: [
+		Channel,
+		CommandUsage,
+		CustomInvite,
+		Guild,
+		InviteCode,
+		InviteCodeSetting,
+		Join,
+		Leave,
+		Log,
+		Member,
+		MemberSetting,
+		PremiumSubscription,
+		Punishment,
+		PunishmentConfig,
+		Rank,
+		Role,
+		RolePermission,
+		ScheduledAction,
+		Setting,
+		Strike,
+		StrikeConfig
+	]
+}).then(() => {
 	console.log('-------------------------------------');
 	console.log('Connecting to RabbitMQ...');
 	console.log('-------------------------------------');
-	amqplib.connect(config.rabbitmq).then(async conn => {
+	amqplib.connect(config.rabbitmq).then(async rabbitMqConn => {
 		console.log('-------------------------------------');
 		console.log(`This is shard ${shardId}/${shardCount}`);
 		console.log('-------------------------------------');
 		const client = new IMClient(
 			pkg.version,
-			conn,
+			rabbitMqConn,
 			token,
 			shardId,
 			shardCount,

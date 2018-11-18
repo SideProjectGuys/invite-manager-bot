@@ -1,6 +1,7 @@
 import fs from 'fs';
 
-import { SettingsKey, ViolationType } from '../sequelize';
+import { SettingsKey } from '../models/Setting';
+import { ViolationType } from '../types';
 
 interface DescriptionObject {
 	description: string;

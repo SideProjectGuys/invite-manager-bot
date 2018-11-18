@@ -31,14 +31,17 @@ export class ScheduledAction extends BaseEntity {
 	@Column()
 	public actionType: ScheduledActionType;
 
-	@Column()
-	public args: string;
+	@Column({ type: 'json' })
+	public args: any;
 
 	@Column()
 	public date: Date;
 
 	@Column()
 	public reason: string;
+
+	@Column({ nullable: true })
+	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.scheduledActions)
 	public guild: Guild;

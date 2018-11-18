@@ -1,4 +1,7 @@
-import { rolePermissions, roles } from '../sequelize';
+import { getRepository, In, Repository } from 'typeorm';
+
+import { IMClient } from '../client';
+import { RolePermission } from '../models/RolePermission';
 import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
 
 import { GuildCache } from './GuildCache';
@@ -8,54 +11,50 @@ type AnyCommand = BotCommand | ModerationCommand | OwnerCommand;
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 
 export class PermissionsCache extends GuildCache<PermissionsObject> {
+	private rolePermsRepo: Repository<RolePermission>;
+
+	public constructor(client: IMClient) {
+		super(client);
+
+		this.rolePermsRepo = getRepository(RolePermission);
+	}
+
 	protected initOne() {
 		return {};
 	}
 
 	protected async getAll(guildIds: string[]): Promise<void> {
 		// Load all role permissions
-		const perms = await rolePermissions.findAll({
-			include: [
-				{
-					model: roles,
-					where: {
-						guildId: guildIds
-					}
-				}
-			],
-			raw: true
+		const perms = await this.rolePermsRepo.find({
+			relations: ['role'],
+			where: { guildId: In(guildIds) }
 		});
 
 		// Then insert the role permissions we got from the db
-		perms.forEach((p: any) => {
+		perms.forEach(p => {
 			const cmd = p.command as AnyCommand;
-			const obj = this.cache.get(p['role.guildId']);
+			const obj = this.cache.get(p.role.guildId);
 			if (!obj[cmd]) {
 				obj[cmd] = [];
 			}
-			obj[cmd].push(p.roleId);
+			obj[cmd].push(p.role.id);
 		});
 	}
 
 	protected async getOne(guildId: string): Promise<PermissionsObject> {
-		const perms = await rolePermissions.findAll({
-			include: [
-				{
-					model: roles,
-					where: { guildId }
-				}
-			],
-			raw: true
+		const perms = await this.rolePermsRepo.find({
+			relations: ['role'],
+			where: { guildId }
 		});
 
 		const obj: PermissionsObject = {};
 
-		perms.forEach((p: any) => {
+		perms.forEach(p => {
 			const cmd = p.command as AnyCommand;
 			if (!obj[cmd]) {
 				obj[cmd] = [];
 			}
-			obj[cmd].push(p.roleId);
+			obj[cmd].push(p.role.id);
 		});
 
 		return obj;

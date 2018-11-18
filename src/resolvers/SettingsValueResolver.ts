@@ -1,12 +1,7 @@
 import { IMClient } from '../client';
 import { Context } from '../commands/Command';
-import {
-	defaultSettings,
-	InternalSettingsTypes,
-	Lang,
-	LeaderboardStyle,
-	RankAssignmentStyle
-} from '../sequelize';
+import { Lang, LeaderboardStyle, RankAssignmentStyle } from '../models/Setting';
+import { InternalSettingsTypes } from '../types';
 
 import {
 	ArrayResolver,

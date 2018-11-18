@@ -19,7 +19,8 @@ export enum LogAction {
 	memberConfig = 'memberConfig',
 	addRank = 'addRank',
 	updateRank = 'updateRank',
-	removeRank = 'removeRank'
+	removeRank = 'removeRank',
+	owner = 'owner'
 }
 
 @Entity()
@@ -45,8 +46,14 @@ export class Log extends BaseEntity {
 	@Column({ type: 'json' })
 	public data: any;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.logs)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.logs)
 	public member: Member;

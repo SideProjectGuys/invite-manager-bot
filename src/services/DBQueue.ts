@@ -1,33 +1,37 @@
+import { DeepPartial, getRepository, Repository } from 'typeorm';
+
 import { IMClient } from '../client';
-import {
-	commandUsage,
-	CommandUsageAttributes,
-	GuildAttributes,
-	guilds,
-	LogAttributes,
-	logs,
-	MemberAttributes,
-	members
-} from '../sequelize';
+import { CommandUsage } from '../models/CommandUsage';
+import { Guild } from '../models/Guild';
+import { Log } from '../models/Log';
+import { Member } from '../models/Member';
 
 export class DBQueue {
 	private client: IMClient = null;
+	private guildRepo: Repository<Guild>;
+	private memberRepo: Repository<Member>;
+	private logRepo: Repository<Log>;
+	private cmdUsageRepo: Repository<CommandUsage>;
 
-	private logActions: LogAttributes[] = [];
-	private guilds: GuildAttributes[] = [];
-	private members: MemberAttributes[] = [];
-	private cmdUsages: CommandUsageAttributes[] = [];
+	private guilds: DeepPartial<Guild>[] = [];
+	private members: DeepPartial<Member>[] = [];
+	private logActions: DeepPartial<Log>[] = [];
+	private cmdUsages: DeepPartial<CommandUsage>[] = [];
 
 	public constructor(client: IMClient) {
 		this.client = client;
+		this.guildRepo = getRepository(Guild);
+		this.memberRepo = getRepository(Member);
+		this.logRepo = getRepository(Log);
+		this.cmdUsageRepo = getRepository(CommandUsage);
 
 		setInterval(() => this.syncDB(), 10000);
 	}
 
 	public addLogAction(
-		action: LogAttributes,
-		guild: GuildAttributes,
-		member: MemberAttributes
+		action: DeepPartial<Log>,
+		guild: DeepPartial<Guild>,
+		member: DeepPartial<Member>
 	) {
 		this.guilds.push(guild);
 		this.members.push(member);
@@ -35,9 +39,9 @@ export class DBQueue {
 	}
 
 	public addCommandUsage(
-		cmdUsage: CommandUsageAttributes,
-		guild: GuildAttributes,
-		member: MemberAttributes
+		cmdUsage: DeepPartial<CommandUsage>,
+		guild: DeepPartial<Guild>,
+		member: DeepPartial<Member>
 	) {
 		this.guilds.push(guild);
 		this.members.push(member);
@@ -51,20 +55,18 @@ export class DBQueue {
 
 		console.time('syncDB');
 
-		await guilds.bulkCreate(this.guilds, {
-			updateOnDuplicate: ['name', 'icon', 'memberCount']
-		});
+		// TODO: updateOnDuplicate: ['name', 'icon', 'memberCount']
+		await this.guildRepo.save(this.guilds);
 		this.guilds = [];
 
-		await members.bulkCreate(this.members, {
-			updateOnDuplicate: ['name', 'discriminator']
-		});
+		// TODO: updateOnDuplicate: ['name', 'discriminator']
+		await this.memberRepo.save(this.members);
 		this.members = [];
 
-		await logs.bulkCreate(this.logActions);
+		await this.logRepo.save(this.logActions);
 		this.logActions = [];
 
-		await commandUsage.bulkCreate(this.cmdUsages);
+		await this.cmdUsageRepo.save(this.cmdUsages);
 		this.cmdUsages = [];
 
 		console.timeEnd('syncDB');

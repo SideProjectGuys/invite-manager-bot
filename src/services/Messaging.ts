@@ -11,9 +11,10 @@ import {
 } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { getRepository } from 'typeorm';
 
 import { IMClient } from '../client';
-import { joins } from '../sequelize';
+import { Join } from '../models/Join';
 import { PromptResult, RabbitMqMember } from '../types';
 import { getInviteCounts, InviteCounts } from '../util';
 
@@ -246,7 +247,7 @@ export class Messaging {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await joins.count({
+			numJoins = await getRepository(Join).count({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
@@ -256,30 +257,31 @@ export class Messaging {
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await joins.find({
+			const temp = await getRepository(Join).find({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'ASC']]
+				order: { createdAt: 'ASC' },
+				take: 1
 			});
-			if (temp) {
-				firstJoin = moment(temp.createdAt);
+			if (temp.length) {
+				firstJoin = moment(temp[0].createdAt);
 			}
 		}
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await joins.find({
+			const temp = await getRepository(Join).find({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'DESC']],
-				offset: 1
+				order: { createdAt: 'DESC' },
+				skip: 1
 			});
-			if (temp) {
-				prevJoin = moment(temp.createdAt);
+			if (temp.length) {
+				prevJoin = moment(temp[0].createdAt);
 			}
 		}
 
@@ -294,8 +296,8 @@ export class Messaging {
 		const inviterFullName = inviter
 			? inviter.user.username + '#' + inviter.user.discriminator
 			: inviterName
-				? inviterName + '#' + inviterDiscriminator
-				: unknown;
+			? inviterName + '#' + inviterDiscriminator
+			: unknown;
 
 		let memberName = member.nick ? member.nick : member.user.username;
 		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
