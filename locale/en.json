@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "I need the `Ban Members` permission to use this command",
 			"error": "There was an error banning this user:\n{{ error }}",
 			"done": "The user was successfully banned.",
 			"canNotBan": "I cannot ban this user.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Ban a member from the server."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
 			"version": "Version",
@@ -153,7 +152,7 @@
 			"notSet": "These settings are not set",
 			"current": {
 				"title": "Current Value",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.\n{{! args.clear ? `Use \\`${args.prefix}config ${args.key} none\\` to clear it.` : '' !}}",
+				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
 			},
@@ -253,7 +252,7 @@
 			"joins": {
 				"title": "Joins",
 				"entry": {
-					"text": "${{ total }} times {{ time }}, invited by:",
+					"text": "{{ total }} times {{ time }}, invited by:",
 					"invite": "{{{ member }}} ({{ times }} times)"
 				},
 				"more": "Plus another {{ amount }} more joins",
@@ -490,7 +489,7 @@
 			},
 			"faq": {
 				"title": "FAQs and more",
-				"text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://github.com/AndreasGassmann/discord-invite-manager/"
+				"text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Help",
@@ -1044,6 +1043,12 @@
 	"command": {
 		"error": "There was an error executing the command."
 	},
-	"TEMPLATE_UNKNOWN": "TEMPLATE_UNKNOWN",
-	"LEAVE_INVITED_BY_UNKNOWN": "LEAVE_INVITED_BY_UNKNOWN"
+	"messages": {
+		"unknownInviter": "Unknown",
+		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
+		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them."
+	},
+	"captcha": {
+		"invalid": "Captcha didn't match, please try again."
+	}
 }

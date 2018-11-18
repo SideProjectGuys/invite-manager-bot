@@ -213,7 +213,7 @@ export default class extends Command {
 				message,
 				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
-					cmds: cmds.join(', ')
+					cmds: cmds.map(c => '`' + c.name + '`').join(', ')
 				})
 			);
 		} else {
@@ -236,7 +236,7 @@ export default class extends Command {
 				message,
 				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,
-					cmds: cmds.join(', ')
+					cmds: cmds.map(c => '`' + c.name + '`').join(', ')
 				})
 			);
 		}

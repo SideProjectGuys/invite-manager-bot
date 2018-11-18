@@ -129,9 +129,8 @@ export class RabbitMq {
 		}
 
 		console.log(
-			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ${JSON.stringify(
-				message
-			)}`
+			`SENDING MESSAGE TO SHARD ${shardId}/${shardCount}: ` +
+				JSON.stringify(message)
 		);
 
 		const queueName = `${rabbitMqPrefix}cmds-${shardId}-${shardCount}`;
@@ -201,14 +200,14 @@ export class RabbitMq {
 
 		// Exit if we can't find the join
 		if (!join) {
-			console.error(
+			console.log(
 				`Could not find join for ${member.id} in ${guild.id}: ` +
 					JSON.stringify(content)
 			);
 			if (joinChannel) {
 				joinChannel.createMessage(
 					i18n.__(
-						{ locale: lang, phrase: 'JOIN_INVITED_BY_UNKNOWN' },
+						{ locale: lang, phrase: 'messages.joinUnknownInviter' },
 						{ id: member.id }
 					)
 				);
@@ -239,6 +238,22 @@ export class RabbitMq {
 			],
 			raw: true
 		});
+
+		// Exit if we can't find the join
+		if (!jn) {
+			console.log(
+				`Could not fetch join ${join.id}: ` + JSON.stringify(content)
+			);
+			if (joinChannel) {
+				joinChannel.createMessage(
+					i18n.__(
+						{ locale: lang, phrase: 'messages.joinUnknownInviter' },
+						{ id: member.id }
+					)
+				);
+			}
+			return;
+		}
 
 		const inviterId = jn['exactMatch.inviterId'];
 
@@ -284,7 +299,7 @@ export class RabbitMq {
 
 		let inviter = guild.members.get(inviterId);
 		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId);
+			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
 		const invites = await getInviteCounts(guild.id, inviterId);
 
@@ -374,18 +389,18 @@ export class RabbitMq {
 
 		// Exit if we can't find the join
 		if (!join) {
-			console.error(
+			console.log(
 				`Could not find join for ${member.id} in ` +
 					`${guild.id} leaveId: ${leave.id}`
 			);
-			console.error(
+			console.log(
 				`RabbitMQ message for ${member.id} in ${guild.id} is: ` +
 					JSON.stringify(content)
 			);
 			if (leaveChannel) {
 				leaveChannel.createMessage(
 					i18n.__(
-						{ locale: lang, phrase: 'LEAVE_INVITED_BY_UNKNOWN' },
+						{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
 						{
 							tag: member.user.username + '#' + member.user.discriminator
 						}
@@ -473,8 +488,6 @@ export class RabbitMq {
 
 		switch (cmd) {
 			case ShardCommand.DIAGNOSE:
-				console.log(`DIAGNOSING ${guildId}`);
-
 				if (!guild) {
 					return sendResponse({
 						error: 'Guild not found'
@@ -538,8 +551,18 @@ export class RabbitMq {
 				break;
 
 			case ShardCommand.FLUSH_CACHE:
-				console.log(`FLUSHING SETTINGS FOR ${guildId}`);
 				Object.values(this.client.cache).forEach(c => c.flush(guildId));
+				break;
+
+			case ShardCommand.LEAVE_GUILD:
+				if (!guild) {
+					return sendResponse({
+						error: 'Guild not found'
+					});
+				}
+
+				await guild.leave();
+				sendResponse({});
 				break;
 
 			case ShardCommand.SUDO:

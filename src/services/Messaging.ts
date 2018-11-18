@@ -70,7 +70,15 @@ export class Messaging {
 	}
 
 	public createEmbed(options: EmbedOptions = {}): Embed {
-		const color = options.color ? options.color : parseInt('00AE86', 16);
+		let color = options.color
+			? (options.color as number | string)
+			: parseInt('00AE86', 16);
+		// Parse colors in hashtag/hex format
+		if (typeof color === 'string') {
+			const code = color.startsWith('#') ? color.substr(1) : color;
+			color = parseInt(code, 16);
+		}
+
 		delete options.color;
 		return {
 			...options,
@@ -80,7 +88,7 @@ export class Messaging {
 				text: this.client.user.username,
 				icon_url: this.client.user.avatarURL
 			},
-			fields: [],
+			fields: options.fields ? options.fields : [],
 			timestamp: new Date().toISOString()
 		};
 	}
@@ -214,7 +222,12 @@ export class Messaging {
 			leave: 0
 		}
 	): Promise<string | Embed> {
-		if (!inviter && template.indexOf('{inviterName}') >= 0) {
+		// Only fetch the inviter if needed and they're undefined.
+		// If the inviter is null it means we tried before and couldn't fetch them.
+		if (
+			typeof inviter === 'undefined' &&
+			template.indexOf('{inviterName}') >= 0
+		) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
 		// Override the inviter name with the display name, if the member is still here
@@ -271,7 +284,10 @@ export class Messaging {
 		}
 
 		const lang = (await this.client.cache.settings.get(guild.id)).lang;
-		const unknown = i18n.__({ locale: lang, phrase: 'TEMPLATE_UNKNOWN' });
+		const unknown = i18n.__({
+			locale: lang,
+			phrase: 'messages.unknownInviter'
+		});
 
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;
@@ -345,17 +361,14 @@ export class Messaging {
 				if (msg.author.id === message.author.id) {
 					confirmation = msg;
 					this.client.removeListener('messageCreate', func);
-					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 					resolve(done());
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageCreate', func);
 
 			const timeOut = () => {
 				this.client.removeListener('messageCreate', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 				resolve(done());
 			};
 
@@ -432,7 +445,6 @@ export class Messaging {
 
 				clearInterval(timer);
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 
 				const isUp = emoji.name === upSymbol;
 				if (isUp && page > 0) {
@@ -442,12 +454,10 @@ export class Messaging {
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageReactionAdd', func);
 
 			const timeOut = () => {
 				this.client.removeListener('messageReactionAdd', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 				prevMsg.removeReaction(upSymbol, this.client.user.id);
 				prevMsg.removeReaction(downSymbol, this.client.user.id);
 			};

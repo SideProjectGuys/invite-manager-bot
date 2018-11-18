@@ -2,14 +2,17 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { StringResolver } from '../../resolvers';
+import { LogAction } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
+
+const config = require('../../../config.json');
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: OwnerCommand.flush,
-			aliases: ['owner-flush', 'of'],
+			name: OwnerCommand.leave,
+			aliases: ['owner-leave', 'ol'],
 			args: [
 				{
 					name: 'guildId',
@@ -18,7 +21,7 @@ export default class extends Command {
 			],
 			strict: true,
 			hidden: true,
-			guildOnly: false
+			guildOnly: true
 		});
 	}
 
@@ -27,7 +30,7 @@ export default class extends Command {
 		[guildId]: [string],
 		{ guild }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
+		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
@@ -35,19 +38,25 @@ export default class extends Command {
 			return this.client.sendReply(message, 'Invalid guild id ' + guildId);
 		}
 
-		const { shard, result } = this.client.rabbitmq.sendCommandToGuild(guildId, {
-			cmd: ShardCommand.FLUSH_CACHE,
-			id: message.id,
+		this.client.logAction(guild, message, LogAction.owner, {
+			type: 'leave-guild',
 			guildId
 		});
 
-		if (result) {
-			this.client.sendReply(
-				message,
-				`Sent command to flush all caches of guild ${guildId} to shard ${shard}`
-			);
-		} else {
-			this.client.sendReply(message, `RabbitMQ returned false`);
-		}
+		const msg = await message.channel.createMessage(
+			`Sending command to leave guild ${guildId}...`
+		);
+
+		const { shard } = this.client.rabbitmq.sendCommandToGuild(
+			guildId,
+			{
+				cmd: ShardCommand.LEAVE_GUILD,
+				id: message.id,
+				guildId
+			},
+			() => msg.edit(`Successfully left guild ${guildId}`)
+		);
+
+		msg.edit(`Sent command to leave guild ${guildId} to shard ${shard}`);
 	}
 }

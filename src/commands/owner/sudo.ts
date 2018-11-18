@@ -5,8 +5,6 @@ import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
 export default class extends Command {
 	private readonly allowedCommands: string[] = [
 		'leaderboard',
@@ -33,6 +31,7 @@ export default class extends Command {
 					rest: true
 				}
 			],
+			strict: true,
 			guildOnly: true,
 			hidden: true
 		});
@@ -43,7 +42,7 @@ export default class extends Command {
 		[guildId, command]: [any, string],
 		{ guild }: Context
 	): Promise<any> {
-		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
@@ -77,7 +76,6 @@ export default class extends Command {
 			{
 				id: message.id,
 				cmd: ShardCommand.SUDO,
-				originGuildId: guild.id,
 				guildId,
 				sudoCmd: sudoCmd.name,
 				args: args.slice(1),

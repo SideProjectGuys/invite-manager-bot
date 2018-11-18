@@ -8,12 +8,9 @@ import {
 	PunishmentType,
 	sequelize,
 	SettingsObject,
-	StrikeConfigInstance,
-	strikeConfigs,
 	strikes,
 	ViolationType
 } from '../sequelize';
-import { Permissions } from '../types';
 import { to } from '../util';
 
 interface Arguments {
@@ -77,33 +74,41 @@ export class Moderation {
 			[PunishmentType.mute]: this.mute.bind(this)
 		};
 
-		setInterval(() => {
+		const func = () => {
+			const now = moment();
 			this.messageCache.forEach((value, key) => {
 				this.messageCache.set(
 					key,
-					value.filter(m => moment().diff(m.createdAt, 'second') < 60)
+					value.filter(m => now.diff(m.createdAt, 'second') < 60)
 				);
 			});
-		}, 60 * 1000);
+		};
+		setInterval(func, 60 * 1000);
 
 		client.on('messageCreate', this.onMessage.bind(this));
 	}
 
 	private async onMessage(message: Message) {
+		// Ignore bots
 		if (message.author.bot) {
 			return;
 		}
 		const channel = message.channel as TextChannel;
 		const guild = channel.guild;
 
+		// Ignore DMs
 		if (!guild) {
+			return;
+		}
+
+		// TODO Enable for all guilds when ready
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
 		const settings = await this.client.cache.settings.get(guild.id);
 
 		if (!settings.autoModEnabled) {
-			console.log('AUTOMOD STOPPED: autoModEnabled false');
 			return;
 		}
 
@@ -114,7 +119,6 @@ export class Moderation {
 
 		/*
 		if (member.permission.has(Permissions.ADMINISTRATOR)) {
-			console.log('AUTOMOD STOPPED: administrator');
 			return;
 		}
 */
@@ -122,11 +126,9 @@ export class Moderation {
 			settings.autoModModeratedRoles &&
 			settings.autoModModeratedRoles.length > 0
 		) {
-			console.log(settings.autoModModeratedRoles, member.roles);
 			if (
 				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
 			) {
-				console.log('AUTOMOD STOPPED: autoModeratedRoles');
 				return;
 			}
 		}
@@ -138,7 +140,6 @@ export class Moderation {
 			if (
 				!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)
 			) {
-				console.log('AUTOMOD STOPPED: autoModeratedChannels');
 				return;
 			}
 		}
@@ -147,7 +148,6 @@ export class Moderation {
 			settings.autoModIgnoredChannels &&
 			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
 		) {
-			console.log('AUTOMOD STOPPED: ignoredChannels');
 			return;
 		}
 
@@ -155,7 +155,6 @@ export class Moderation {
 			settings.autoModIgnoredRoles &&
 			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
 		) {
-			console.log('AUTOMOD STOPPED: ignoredRoles');
 			return;
 		}
 
@@ -164,28 +163,21 @@ export class Moderation {
 			let memberAge = moment().diff(member.joinedAt, 'second');
 			if (memberAge > settings.autoModDisabledForOldMembersThreshold) {
 				// This is an old member
-				console.log('AUTOMOD STOPPED: oldMember');
 				return;
 			}
 		}
 
-		{
-			const cacheKey = `${guild.id}-${message.author.id}`;
-			let msgs = this.messageCache.get(cacheKey);
-			if (msgs) {
-				msgs.push(this.getMiniMessage(message));
-				this.messageCache.set(cacheKey, msgs);
-			} else {
-				this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
-			}
+		const cacheKey = `${guild.id}-${message.author.id}`;
+		let msgs = this.messageCache.get(cacheKey);
+		if (msgs) {
+			msgs.push(this.getMiniMessage(message));
+			this.messageCache.set(cacheKey, msgs);
+		} else {
+			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
-
-		console.log('SCANNING MESSAGE', message.content);
 
 		let strikesCache = await this.client.cache.strikes.get(guild.id);
 		let allViolations: ViolationType[] = Object.values(ViolationType);
-
-		console.log(strikesCache);
 
 		for (let strike of strikesCache) {
 			allViolations = allViolations.filter(av => av !== strike.violationType);
@@ -195,7 +187,6 @@ export class Moderation {
 				settings: settings,
 				guild: guild
 			});
-			console.log(strike.violationType, foundViolation);
 			if (!foundViolation) {
 				continue;
 			}
@@ -325,9 +316,6 @@ export class Moderation {
 		});
 
 		let strikesAfter = strikesBefore + amount;
-
-		console.log('strikesBefore', strikesBefore);
-		console.log('strikesAfter', strikesAfter);
 
 		let punishmentConfig = await punishmentConfigs.find({
 			where: {
@@ -473,7 +461,6 @@ export class Moderation {
 		if (!args.settings.autoModDuplicateTextEnabled) {
 			return false;
 		}
-		console.log('CHECKING duplicateText VIOLATIONS');
 
 		let timeframe = args.settings.autoModDuplicateTextTimeframeInSeconds;
 
@@ -504,7 +491,7 @@ export class Moderation {
 		if (!args.settings.autoModQuickMessagesEnabled) {
 			return false;
 		}
-		console.log('CHECKING quickMessage VIOLATIONS');
+
 		let numberOfMessages = args.settings.autoModQuickMessagesNumberOfMessages;
 		let timeframe = args.settings.autoModQuickMessagesTimeframeInSeconds;
 
@@ -763,9 +750,10 @@ export class Moderation {
 		}
 		let reply = await this.client.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
-			setTimeout(() => {
-				reply.delete();
-			}, settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
+			setTimeout(
+				() => reply.delete(),
+				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
+			);
 		}
 	}
 

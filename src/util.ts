@@ -18,6 +18,7 @@ import {
 	ranks,
 	sequelize
 } from './sequelize';
+import { Permissions } from './types';
 
 export interface InviteCounts {
 	regular: number;
@@ -199,11 +200,12 @@ export async function promoteIfQualified(
 		}
 	}
 
-	if (me.permission.has('MANAGE_ROLES')) {
+	if (me.permission.has(Permissions.MANAGE_ROLES)) {
 		// Filter dangerous roles
 		dangerous = reached.filter(
 			r =>
-				r.permissions.has('ADMINISTRATOR') || r.permissions.has('MANAGE_GUILD')
+				r.permissions.has(Permissions.ADMINISTRATOR) ||
+				r.permissions.has(Permissions.MANAGE_GUILD)
 		);
 		reached = reached.filter(r => dangerous.indexOf(r) === -1);
 

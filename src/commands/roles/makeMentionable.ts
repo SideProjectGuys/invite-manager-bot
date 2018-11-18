@@ -58,16 +58,13 @@ export default class extends Command {
 				if (msg.roleMentions.includes(role.id)) {
 					await role.edit({ mentionable: false }, 'Done pinging role');
 					this.client.removeListener('messageCreate', func);
-					this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 				}
 			};
 
-			this.client.setMaxListeners(this.client.getMaxListeners() + 1);
 			this.client.on('messageCreate', func);
 
 			const timeOut = () => {
 				this.client.removeListener('messageCreate', func);
-				this.client.setMaxListeners(this.client.getMaxListeners() - 1);
 			};
 
 			setTimeout(timeOut, 60000);

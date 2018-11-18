@@ -7,8 +7,6 @@ import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -22,6 +20,7 @@ export default class extends Command {
 					// description: 'The id of the guild to diagnose.'
 				}
 			],
+			strict: true,
 			hidden: true,
 			guildOnly: true
 		});
@@ -32,7 +31,7 @@ export default class extends Command {
 		[guildId]: [any],
 		{ guild }: Context
 	): Promise<any> {
-		if (config.ownerGuildIds.indexOf(guild.id) === -1) {
+		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
@@ -44,7 +43,7 @@ export default class extends Command {
 		}
 
 		const msg = await message.channel.createMessage(
-			'Requesting diagnose info...'
+			`Requesting diagnose info for ${guildId}...`
 		);
 
 		const lastCmd = await commandUsage.find({
@@ -71,8 +70,7 @@ export default class extends Command {
 			{
 				cmd: ShardCommand.DIAGNOSE,
 				id: message.id,
-				guildId,
-				originGuildId: guild.id
+				guildId
 			},
 			response => {
 				if (response.error) {

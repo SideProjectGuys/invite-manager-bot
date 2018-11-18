@@ -116,7 +116,8 @@ export const roles = sequelize.define<RoleInstance, RoleAttributes>(
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
-		color: Sequelize.STRING({ length: 7 })
+		color: Sequelize.STRING({ length: 7 }),
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -146,7 +147,8 @@ export const channels = sequelize.define<ChannelInstance, ChannelAttributes>(
 	'channel',
 	{
 		id: { type: Sequelize.STRING(32), primaryKey: true },
-		name: Sequelize.STRING
+		name: Sequelize.STRING,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -543,8 +545,10 @@ export interface SettingInstance
 export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true },
 		key: Sequelize.ENUM(Object.values(SettingsKey)),
-		value: Sequelize.TEXT
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -603,8 +607,11 @@ export const memberSettings = sequelize.define<
 >(
 	'memberSettings',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true },
 		key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
-		value: Sequelize.TEXT
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -663,7 +670,9 @@ export const inviteCodes = sequelize.define<
 		maxUses: Sequelize.INTEGER,
 		uses: Sequelize.INTEGER,
 		temporary: Sequelize.BOOLEAN,
-		reason: Sequelize.STRING
+		channelId: Sequelize.STRING(32),
+		guildId: Sequelize.STRING(32),
+		inviterId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -727,8 +736,11 @@ export const inviteCodeSettings = sequelize.define<
 >(
 	'inviteCodeSettings',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		key: Sequelize.ENUM(Object.values(InviteCodeSettingsKey)),
-		value: Sequelize.TEXT
+		value: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32),
+		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
 	},
 	{
 		timestamps: true,
@@ -760,7 +772,6 @@ export interface JoinAttributes extends BaseAttributes {
 	possibleMatches: string;
 	guildId: string;
 	memberId: string;
-	leaveId: number;
 }
 export interface JoinInstance
 	extends Sequelize.Instance<JoinAttributes>,
@@ -774,7 +785,12 @@ export interface JoinInstance
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 	'join',
 	{
-		possibleMatches: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		possibleMatches:
+			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -819,7 +835,12 @@ export interface LeaveInstance
 
 export const leaves = sequelize.define<LeaveInstance, LeaveAttributes>(
 	'leave',
-	{},
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		joinId: Sequelize.INTEGER
+	},
 	{
 		timestamps: true,
 		paranoid: true,
@@ -875,9 +896,15 @@ export const customInvites = sequelize.define<
 >(
 	'customInvite',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
 		reason: Sequelize.STRING,
-		generatedReason: Sequelize.ENUM(Object.values(CustomInvitesGeneratedReason))
+		generatedReason: Sequelize.ENUM(
+			Object.values(CustomInvitesGeneratedReason)
+		),
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		creatorId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -914,8 +941,11 @@ export interface RankInstance
 export const ranks = sequelize.define<RankInstance, RankAttributes>(
 	'rank',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		numInvites: Sequelize.INTEGER,
-		description: Sequelize.STRING
+		description: Sequelize.STRING,
+		guildId: Sequelize.STRING(32),
+		roleId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -968,9 +998,11 @@ export interface PresenceInstance
 export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
 	'presence',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		status: Sequelize.ENUM(Object.values(PresenceStatus)),
 		type: Sequelize.TINYINT,
-		game: Sequelize.STRING
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1009,8 +1041,12 @@ export const messageActivities = sequelize.define<
 >(
 	'messageActivity',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
-		timestamp: Sequelize.DATE
+		timestamp: Sequelize.DATE,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		channelId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1044,7 +1080,8 @@ export enum LogAction {
 	memberConfig = 'memberConfig',
 	addRank = 'addRank',
 	updateRank = 'updateRank',
-	removeRank = 'removeRank'
+	removeRank = 'removeRank',
+	owner = 'owner'
 }
 
 export interface LogAttributes extends BaseAttributes {
@@ -1065,9 +1102,12 @@ export interface LogInstance
 export const logs = sequelize.define<LogInstance, LogAttributes>(
 	'log',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		action: Sequelize.ENUM(Object.values(LogAction)),
 		message: Sequelize.TEXT,
-		data: Sequelize.JSON
+		data: Sequelize.JSON,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1105,9 +1145,12 @@ export const commandUsage = sequelize.define<
 >(
 	'commandUsage',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		command: Sequelize.STRING,
 		args: Sequelize.TEXT,
-		time: Sequelize.FLOAT
+		time: Sequelize.FLOAT,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1144,8 +1187,11 @@ export const premiumSubscriptions = sequelize.define<
 >(
 	'premiumSubscriptions',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
-		validUntil: Sequelize.DATE
+		validUntil: Sequelize.DATE,
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1179,7 +1225,9 @@ export const rolePermissions = sequelize.define<
 >(
 	'rolePermissions',
 	{
-		command: Sequelize.STRING(32)
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		command: Sequelize.STRING(32),
+		roleId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1223,8 +1271,10 @@ export const strikeConfigs = sequelize.define<
 >(
 	'strikeConfig',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		violationType: Sequelize.ENUM(Object.values(ViolationType)),
-		amount: Sequelize.INTEGER
+		amount: Sequelize.INTEGER,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		indexes: [
@@ -1261,8 +1311,11 @@ export interface StrikeInstance
 export const strikes = sequelize.define<StrikeInstance, StrikeAttributes>(
 	'strike',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
-		violationType: Sequelize.ENUM(Object.values(ViolationType))
+		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32)
 	},
 	{
 		timestamps: true,
@@ -1306,9 +1359,11 @@ export const punishmentConfigs = sequelize.define<
 >(
 	'punishmentConfig',
 	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
 		amount: Sequelize.INTEGER,
-		args: Sequelize.STRING
+		args: Sequelize.STRING,
+		guildId: Sequelize.STRING(32)
 	},
 	{
 		indexes: [
@@ -1348,18 +1403,16 @@ export interface PunishmentInstance
 export const punishments = sequelize.define<
 	PunishmentInstance,
 	PunishmentAttributes
->(
-	'punishment',
-	{
-		punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
-		amount: Sequelize.INTEGER,
-		args: Sequelize.STRING
-	},
-	{
-		timestamps: true,
-		paranoid: true
-	}
-);
+>('punishment', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+	amount: Sequelize.INTEGER,
+	args: Sequelize.STRING,
+	guildId: Sequelize.STRING(32),
+	memberId: Sequelize.STRING(32),
+	creatorId: Sequelize.STRING(32),
+	reason: Sequelize.STRING
+});
 
 punishments.belongsTo(guilds);
 guilds.hasMany(punishments);
@@ -1395,19 +1448,14 @@ export interface ScheduledActionInstance
 export const scheduledActions = sequelize.define<
 	ScheduledActionInstance,
 	ScheduledActionAttributes
->(
-	'scheduledAction',
-	{
-		actionType: Sequelize.ENUM(Object.values(ScheduledActionType)),
-		args: Sequelize.JSON,
-		date: Sequelize.DATE,
-		reason: Sequelize.STRING
-	},
-	{
-		timestamps: true,
-		paranoid: true
-	}
-);
+>('scheduledAction', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	actionType: Sequelize.ENUM(Object.values(ScheduledActionType)),
+	args: Sequelize.JSON,
+	date: Sequelize.DATE,
+	reason: Sequelize.STRING,
+	guildId: Sequelize.STRING(32)
+});
 
 scheduledActions.belongsTo(guilds);
 guilds.hasMany(scheduledActions);

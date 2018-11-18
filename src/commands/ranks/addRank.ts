@@ -70,13 +70,15 @@ export default class extends Command {
 			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
 		});
 
+		const descr = description ? description : '';
+
 		let isNew = false;
 		if (rank) {
 			if (rank.deletedAt !== null) {
 				isNew = true;
 			}
 			rank.numInvites = invites;
-			rank.description = description;
+			rank.description = descr;
 			rank.setDataValue('deletedAt', null);
 			rank.save();
 		} else {
@@ -85,7 +87,7 @@ export default class extends Command {
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
-				description,
+				description: descr,
 				deletedAt: null
 			});
 			isNew = true;

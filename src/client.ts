@@ -11,6 +11,7 @@ import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
 import { guilds, LogAction, members } from './sequelize';
+import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
 import {
@@ -86,6 +87,8 @@ export class IMClient extends Client {
 
 	public cmds: Commands;
 
+	public captcha: CaptchaService;
+
 	public startedAt: moment.Moment;
 	public activityInterval: NodeJS.Timer;
 
@@ -116,7 +119,10 @@ export class IMClient extends Client {
 				PRESENCE_UPDATE: true
 			},
 			restMode: true,
-			messageLimit: 2
+			messageLimit: 2,
+			getAllUsers: false,
+			compress: true,
+			guildCreateTimeout: 60000
 		});
 
 		this.startedAt = moment();
@@ -149,6 +155,8 @@ export class IMClient extends Client {
 		this.scheduler = new Scheduler(this);
 
 		this.cmds = new Commands(this);
+
+		this.captcha = new CaptchaService(this);
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
@@ -306,7 +314,7 @@ export class IMClient extends Client {
 
 	private async setActivity() {
 		if (this.dbl) {
-			this.dbl.postStats(this.guilds.size, this.shardId, this.shardCount);
+			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
 		const numGuilds = await this.getGuildsCount();
@@ -317,22 +325,22 @@ export class IMClient extends Client {
 	}
 
 	private async onConnect() {
-		console.log('DISCORD CONNECT');
+		console.error('DISCORD CONNECT');
 	}
 
 	private async onDisconnect() {
-		console.log('DISCORD DISCONNECT');
+		console.error('DISCORD DISCONNECT');
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
-		console.log('DISCORD GUILD_UNAVAILABLE:', guild.id);
+		console.error('DISCORD GUILD_UNAVAILABLE:', guild.id);
 	}
 
 	private async onWarn(info: string) {
-		console.log('DISCORD WARNING:', info);
+		console.error('DISCORD WARNING:', info);
 	}
 
 	private async onError(error: Error) {
-		console.log('DISCORD ERROR:', error);
+		console.error('DISCORD ERROR:', error);
 	}
 }

@@ -63,7 +63,7 @@ export default class extends Command {
 		// Shard info
 		embed.fields.push({
 			name: t('cmd.botInfo.shards.current'),
-			value: (this.client.shardId + 1).toString(),
+			value: this.client.shardId.toString(),
 			inline: true
 		});
 		embed.fields.push({
