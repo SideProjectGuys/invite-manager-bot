@@ -1,13 +1,17 @@
 import { Message, User } from 'eris';
 import moment from 'moment';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
+import { LogAction } from '../../models/Log';
+import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
-import { LogAction, premiumSubscriptions } from '../../sequelize';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private premiumRepo: Repository<PremiumSubscription>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: OwnerCommand.givePremium,
@@ -43,6 +47,8 @@ export default class extends Command {
 			guildOnly: false,
 			hidden: true
 		});
+
+		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -72,8 +78,7 @@ export default class extends Command {
 		const premiumDuration = moment.duration(days, 'day');
 		const validUntil = moment().add(premiumDuration);
 
-		await premiumSubscriptions.create({
-			id: null,
+		await this.premiumRepo.save({
 			amount: amount,
 			validUntil: validUntil.toDate(),
 			guildId,

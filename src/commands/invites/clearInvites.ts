@@ -1,5 +1,4 @@
 import { Message, User } from 'eris';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { BooleanResolver, UserResolver } from '../../resolvers';

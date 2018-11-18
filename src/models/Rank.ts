@@ -31,8 +31,14 @@ export class Rank extends BaseEntity {
 	@Column({ type: 'text' })
 	public description: string;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.ranks)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public roleId: string;
 
 	@ManyToOne(type => Role, r => r.ranks)
 	public role: Role;

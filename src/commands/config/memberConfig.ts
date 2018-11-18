@@ -1,6 +1,8 @@
 import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
+import { LogAction } from '../../models/Log';
+import { MemberSettingsKey } from '../../models/MemberSetting';
 import {
 	EnumResolver,
 	SettingsValueResolver,
@@ -8,10 +10,8 @@ import {
 } from '../../resolvers';
 import {
 	defaultMemberSettings,
-	LogAction,
 	members,
 	memberSettings,
-	MemberSettingsKey,
 	memberSettingsTypes,
 	sequelize
 } from '../../sequelize';

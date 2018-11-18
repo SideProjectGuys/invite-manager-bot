@@ -1,12 +1,18 @@
 import { Message, Role } from 'eris';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
+import { LogAction } from '../../models/Log';
+import { Rank } from '../../models/Rank';
+import { Role as DBRole } from '../../models/Role';
 import { NumberResolver, RoleResolver, StringResolver } from '../../resolvers';
-import { LogAction, ranks, roles } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private rolesRepo: Repository<DBRole>;
+	private ranksRepo: Repository<Rank>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.addRank,
@@ -32,6 +38,9 @@ export default class extends Command {
 			guildOnly: true,
 			strict: true
 		});
+
+		this.rolesRepo = getRepository(DBRole);
+		this.ranksRepo = getRepository(Rank);
 	}
 
 	public async action(
@@ -39,7 +48,7 @@ export default class extends Command {
 		[role, invites, description]: [Role, number, string],
 		{ guild, t, me }: Context
 	): Promise<any> {
-		await roles.insertOrUpdate({
+		await this.rolesRepo.save({
 			id: role.id,
 			name: role.name,
 			guildId: role.guild.id,
@@ -62,12 +71,11 @@ export default class extends Command {
 			);
 		}
 
-		let rank = await ranks.find({
+		let rank = await this.ranksRepo.findOne({
 			where: {
 				guildId: role.guild.id,
 				roleId: role.id
-			},
-			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
+			}
 		});
 
 		const descr = description ? description : '';
@@ -79,19 +87,18 @@ export default class extends Command {
 			}
 			rank.numInvites = invites;
 			rank.description = descr;
-			rank.setDataValue('deletedAt', null);
-			rank.save();
+			rank.deletedAt = null;
 		} else {
-			rank = await ranks.create({
-				id: null,
+			rank = this.ranksRepo.create({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
-				description: descr,
-				deletedAt: null
+				description: descr
 			});
 			isNew = true;
 		}
+
+		await this.ranksRepo.save(rank);
 
 		this.client.logAction(
 			guild,

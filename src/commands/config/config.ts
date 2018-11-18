@@ -2,13 +2,13 @@ import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import { settingsDescription } from '../../descriptions/settings';
+import { LogAction } from '../../models/Log';
+import { SettingsKey } from '../../models/Setting';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	defaultSettings,
-	LogAction,
-	SettingsKey,
 	settingsTypes
 } from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';

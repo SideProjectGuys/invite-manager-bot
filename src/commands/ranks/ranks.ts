@@ -1,11 +1,14 @@
 import { Message } from 'eris';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { ranks } from '../../sequelize';
+import { Rank } from '../../models/Rank';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private ranksRepo: Repository<Rank>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.ranks,
@@ -13,6 +16,8 @@ export default class extends Command {
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
+
+		this.ranksRepo = getRepository(Rank);
 	}
 
 	public async action(
@@ -20,12 +25,14 @@ export default class extends Command {
 		args: any[],
 		{ guild, t }: Context
 	): Promise<any> {
-		const rs = await ranks.findAll({
+		const rs = await this.ranksRepo.find({
 			where: {
-				guildId: guild.id
+				guildId: guild.id,
+				deletedAt: null
 			},
-			order: ['numInvites'],
-			raw: true
+			order: {
+				numInvites: 'ASC'
+			}
 		});
 
 		let output = '';

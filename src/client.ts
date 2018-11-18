@@ -3,7 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { getRepository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { PermissionsCache } from './cache/PermissionsCache';

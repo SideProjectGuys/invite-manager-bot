@@ -1,6 +1,8 @@
 import { Embed, Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
+import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
+import { LogAction } from '../../models/Log';
 import {
 	EnumResolver,
 	InviteCodeResolver,
@@ -8,9 +10,7 @@ import {
 } from '../../resolvers';
 import {
 	defaultInviteCodeSettings,
-	InviteCodeSettingsKey,
-	inviteCodeSettingsTypes,
-	LogAction
+	inviteCodeSettingsTypes
 } from '../../sequelize';
 import { beautify } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';

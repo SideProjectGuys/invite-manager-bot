@@ -1,8 +1,8 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
+import { LogAction } from '../../models/Log';
 import { StringResolver } from '../../resolvers';
-import { LogAction } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 

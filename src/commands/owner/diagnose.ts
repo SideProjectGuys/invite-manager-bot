@@ -1,13 +1,18 @@
 import { Message } from 'eris';
 import moment from 'moment';
+import { getRepository, MoreThan, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
+import { CommandUsage } from '../../models/CommandUsage';
+import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { StringResolver } from '../../resolvers';
-import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private cmdUsageRepo: Repository<CommandUsage>;
+	private premiumRepo: Repository<PremiumSubscription>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: OwnerCommand.diagnose,
@@ -24,6 +29,9 @@ export default class extends Command {
 			hidden: true,
 			guildOnly: true
 		});
+
+		this.cmdUsageRepo = getRepository(CommandUsage);
+		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -46,23 +54,20 @@ export default class extends Command {
 			`Requesting diagnose info for ${guildId}...`
 		);
 
-		const lastCmd = await commandUsage.find({
+		const lastCmd = await this.cmdUsageRepo.findOne({
 			where: {
 				guildId
 			},
-			order: [sequelize.literal('createdAt DESC')],
-			limit: 1,
-			raw: true
+			order: {
+				createdAt: 'DESC'
+			}
 		});
 
-		const sub = await premiumSubscriptions.findOne({
+		const sub = await this.premiumRepo.findOne({
 			where: {
 				guildId,
-				validUntil: {
-					[sequelize.Op.gte]: new Date()
-				}
-			},
-			raw: true
+				validUntil: MoreThan(new Date())
+			}
 		});
 
 		const { shard } = this.client.rabbitmq.sendCommandToGuild(

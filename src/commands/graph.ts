@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../client';
 import { Chart } from '../functions/Chart';
 import { EnumResolver, NumberResolver } from '../resolvers';
-import { commandUsage, joins, leaves, sequelize } from '../sequelize';
 import { BotCommand, ChartType, CommandGroup } from '../types';
 
 import { Command, Context } from './Command';

@@ -1,12 +1,15 @@
 import { Message } from 'eris';
 import moment from 'moment';
+import { getRepository, MoreThan, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { premiumSubscriptions, sequelize } from '../../sequelize';
+import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private premiumRepo: Repository<PremiumSubscription>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.premium,
@@ -15,6 +18,8 @@ export default class extends Command {
 			guildOnly: true,
 			strict: true
 		});
+
+		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -44,14 +49,11 @@ export default class extends Command {
 				value: t('cmd.premium.feature.export.text')
 			});
 		} else {
-			const sub = await premiumSubscriptions.findOne({
+			const sub = await this.premiumRepo.findOne({
 				where: {
 					guildId: guild.id,
-					validUntil: {
-						[sequelize.Op.gte]: new Date()
-					}
-				},
-				raw: true
+					validUntil: MoreThan(new Date())
+				}
 			});
 
 			embed.title = t('cmd.premium.premium.title');

@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
+import { LeaderboardStyle } from '../../models/Setting';
 import { NumberResolver, StringResolver } from '../../resolvers';
-import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -129,15 +129,15 @@ export default class extends Command {
 						posChange > 0
 							? upSymbol
 							: posChange < 0
-								? downSymbol
-								: neutralSymbol;
+							? downSymbol
+							: neutralSymbol;
 
 					const posText =
 						posChange > 0
 							? `+${posChange}`
 							: posChange === 0
-								? `±0`
-								: posChange;
+							? `±0`
+							: posChange;
 
 					const line = [
 						`${pos}.`,

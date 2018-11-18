@@ -1,12 +1,15 @@
 import { Message } from 'eris';
 import moment from 'moment';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { premiumSubscriptions } from '../../sequelize';
+import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { BotCommand, CommandGroup, PromptResult } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
+	private premiumRepo: Repository<PremiumSubscription>;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.tryPremium,
@@ -15,6 +18,8 @@ export default class extends Command {
 			guildOnly: true,
 			strict: true
 		});
+
+		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -58,8 +63,7 @@ export default class extends Command {
 				return this.client.sendReply(message, t('prompt.canceled'));
 			}
 
-			await premiumSubscriptions.create({
-				id: null,
+			await this.premiumRepo.save({
 				amount: 0.0,
 				validUntil: validUntil.toDate(),
 				guildId: guild.id,
@@ -76,13 +80,12 @@ export default class extends Command {
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {
-		const subs = await premiumSubscriptions.findAll({
+		const subs = await this.premiumRepo.count({
 			where: {
+				amount: 0,
 				guildId: guildID
-			},
-			raw: true
+			}
 		});
-
-		return subs.length > 0;
+		return subs > 0;
 	}
 }
