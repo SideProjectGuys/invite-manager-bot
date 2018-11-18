@@ -19,13 +19,15 @@ export class Scheduler {
 
 	public constructor(client: IMClient) {
 		this.client = client;
+		this.scheduledActionRepo = getRepository(ScheduledAction);
 		this.scheduledActionTimers = new Map();
 		this.scheduledActionFunctions = {
 			[ScheduledActionType.unmute]: this.unmute.bind(this)
 		};
-		this.scheduleScheduledActions();
+	}
 
-		this.scheduledActionRepo = getRepository(ScheduledAction);
+	public init() {
+		this.scheduleScheduledActions();
 	}
 
 	public async addScheduledAction(
