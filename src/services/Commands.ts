@@ -282,7 +282,7 @@ export class Commands {
 		for (let j = 1; j < splits.length; j++) {
 			const split = splits[j];
 
-			if (split.startsWith(`"`)) {
+			if (!quote && split.startsWith(`"`)) {
 				quote = true;
 				acc = '';
 			}
