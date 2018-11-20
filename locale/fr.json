@@ -621,13 +621,14 @@
 		},
 		"tryPremium": {
 			"title": "InviteManager - Essayer l'abonnement Premium",
-			"text": "Vous avez actuellement un abonnement premium actif !",
+			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
 			"prompt": "Veuillez répondre par **oui** ou par **non**.",
 			"started": "Vous avez commencé votre essai avec succès! Utilisez `{{ prefix }}premium` pour vérifier le temps qu'il vous reste.",
+			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
+			"currentlyActive": "You currently have an active premium subscription!",
 			"self": {
 				"description": "Essayez gratuitement la version premium d’InviteManager pour une durée limitée."
-			},
-			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium."
+			}
 		},
 		"export": {
 			"title": "InviteManager - Export",
@@ -1050,5 +1051,6 @@
 	},
 	"captcha": {
 		"invalid": "Captcha didn't match, please try again."
-	}
+	},
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM"
 }
