@@ -1,12 +1,10 @@
 import { Message, User } from 'eris';
+import { In } from 'typeorm';
 
 import { IMClient } from '../../client';
+import { CustomInvitesGeneratedReason } from '../../models/CustomInvite';
+import { LogAction } from '../../models/Log';
 import { UserResolver } from '../../resolvers';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	LogAction
-} from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -34,25 +32,26 @@ export default class extends Command {
 	): Promise<any> {
 		const memberId = user ? user.id : null;
 
-		const num = await customInvites.destroy({
-			where: {
+		const num = await this.repo.customInvs.update(
+			{
 				guildId: guild.id,
-				generatedReason: [
+				generatedReason: In([
 					CustomInvitesGeneratedReason.clear_regular,
 					CustomInvitesGeneratedReason.clear_custom,
 					CustomInvitesGeneratedReason.clear_fake,
 					CustomInvitesGeneratedReason.clear_leave
-				],
+				]),
 				...(memberId && { memberId })
-			}
-		});
+			},
+			{ deletedAt: new Date() }
+		);
 
 		this.client.logAction(guild, message, LogAction.restoreInvites, {
 			...(memberId && { targetId: memberId }),
 			num
 		});
 
-		return this.client.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
 		);

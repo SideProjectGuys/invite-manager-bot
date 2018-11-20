@@ -30,7 +30,7 @@ export class InviteCode extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@Column()
@@ -45,11 +45,20 @@ export class InviteCode extends BaseEntity {
 	@Column()
 	public temporary: boolean;
 
+	@Column({ nullable: true })
+	public channelId: string;
+
 	@ManyToOne(type => Channel, c => c.inviteCodes)
 	public channel: Channel;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.inviteCodes)
 	public guild: Guild;
+
+	@Column({ nullable: true })
+	public inviterId: string;
 
 	@ManyToOne(type => Member, m => m.inviteCodes)
 	public inviter: Member;

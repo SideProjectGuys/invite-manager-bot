@@ -29,7 +29,7 @@ export default class extends Command {
 		context: Context
 	): Promise<any> {
 		const { guild, t, settings, me } = context;
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		const prefix = settings ? settings.prefix : '!';
 
@@ -130,6 +130,6 @@ export default class extends Command {
 			value: linksArray.join(` | `)
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

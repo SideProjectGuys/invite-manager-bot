@@ -2,8 +2,11 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { MemberResolver, StringResolver } from '../../../resolvers';
-import { punishments, PunishmentType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import {
+	CommandGroup,
+	ModerationCommand,
+	PunishmentType
+} from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -57,7 +60,7 @@ export default class extends Command {
 				embed.description = t('cmd.warn.canNotDm');
 			} else {
 				embed.description = t('cmd.warn.done');
-				let punishment = await punishments.create({
+				let punishment = this.repo.punishs.create({
 					id: null,
 					guildId: guild.id,
 					memberId: targetMember.id,
@@ -67,6 +70,7 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
+				await this.repo.punishs.save(punishment);
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
@@ -85,7 +89,7 @@ export default class extends Command {
 			embed.description = t('cmd.warn.canNotWarn');
 		}
 
-		const response = await this.client.sendReply(message, embed);
+		const response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentWarnDeleteMessage) {
 			const func = () => {

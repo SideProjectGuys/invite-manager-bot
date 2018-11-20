@@ -1,15 +1,13 @@
 import { Message, User } from 'eris';
+import { In } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { BooleanResolver, UserResolver } from '../../resolvers';
 import {
-	CustomInviteAttributes,
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	LogAction,
-	sequelize
-} from '../../sequelize';
+	CustomInvite,
+	CustomInvitesGeneratedReason
+} from '../../models/CustomInvite';
+import { LogAction } from '../../models/Log';
+import { BooleanResolver, UserResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -43,18 +41,21 @@ export default class extends Command {
 		const memberId = user ? user.id : undefined;
 
 		// First clear any previous clearinvites we might have
-		await customInvites.destroy({
-			where: {
+		await this.repo.customInvs.update(
+			{
 				guildId: guild.id,
-				generatedReason: [
+				generatedReason: In([
 					CustomInvitesGeneratedReason.clear_regular,
 					CustomInvitesGeneratedReason.clear_custom,
 					CustomInvitesGeneratedReason.clear_fake,
 					CustomInvitesGeneratedReason.clear_leave
-				],
+				]),
 				...(memberId && { memberId })
+			},
+			{
+				deletedAt: new Date()
 			}
-		});
+		);
 
 		const invs = await inviteCodes.findAll({
 			attributes: [
@@ -119,10 +120,9 @@ export default class extends Command {
 			});
 
 		const cleared: { [x: string]: boolean } = {};
-		const newInvs: CustomInviteAttributes[] = [];
+		const newInvs: Partial<CustomInvite>[] = [];
 		Object.keys(regular).forEach(memId => {
 			newInvs.push({
-				id: null,
 				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
@@ -134,7 +134,6 @@ export default class extends Command {
 		});
 		Object.keys(fake).forEach(memId => {
 			newInvs.push({
-				id: null,
 				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
@@ -146,7 +145,6 @@ export default class extends Command {
 		});
 		Object.keys(leave).forEach(memId => {
 			newInvs.push({
-				id: null,
 				guildId: guild.id,
 				memberId: memId,
 				creatorId: null,
@@ -182,14 +180,14 @@ export default class extends Command {
 			});
 		}
 
-		const createdInvs = await customInvites.bulkCreate(newInvs);
+		const createdInvs = await this.repo.customInvs.save(newInvs);
 
 		this.client.logAction(guild, message, LogAction.clearInvites, {
 			customInviteIds: createdInvs.map(inv => inv.id),
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.client.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.clearInvites.done', {
 				amount: Object.keys(cleared).length

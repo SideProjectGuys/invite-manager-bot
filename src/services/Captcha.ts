@@ -56,7 +56,7 @@ export class CaptchaService {
 
 		const [text, buffer] = await this.createCaptcha(captchaOptions);
 
-		const embed = this.client.createEmbed({
+		const embed = this.client.msg.createEmbed({
 			title: 'Captcha',
 			description: sets.captchaVerificationWelcomeMessage.replace(
 				/\{serverName\}/g,

@@ -1,15 +1,11 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { BotCommand, CommandGroup, PromptResult } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
-	private premiumRepo: Repository<PremiumSubscription>;
-
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.tryPremium,
@@ -18,8 +14,6 @@ export default class extends Command {
 			guildOnly: true,
 			strict: true
 		});
-
-		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -29,7 +23,7 @@ export default class extends Command {
 	): Promise<any> {
 		const prefix = settings.prefix;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		const trialDuration = moment.duration(1, 'week');
 		const validUntil = moment().add(trialDuration);
@@ -44,26 +38,26 @@ export default class extends Command {
 				prefix
 			});
 		} else {
-			const promptEmbed = this.client.createEmbed();
+			const promptEmbed = this.createEmbed();
 
 			promptEmbed.description = t('cmd.tryPremium.text', {
 				duration: trialDuration.humanize()
 			});
 
-			await this.client.sendReply(message, promptEmbed);
+			await this.sendReply(message, promptEmbed);
 
 			const [keyResult, keyValue] = await this.client.msg.prompt(
 				message,
 				t('cmd.tryPremium.prompt')
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return this.client.sendReply(message, t('prompt.timedOut'));
+				return this.sendReply(message, t('prompt.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return this.client.sendReply(message, t('prompt.canceled'));
+				return this.sendReply(message, t('prompt.canceled'));
 			}
 
-			await this.premiumRepo.save({
+			await this.repo.premium.save({
 				amount: 0.0,
 				validUntil: validUntil.toDate(),
 				guildId: guild.id,
@@ -76,11 +70,11 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {
-		const subs = await this.premiumRepo.count({
+		const subs = await this.repo.premium.count({
 			where: {
 				amount: 0,
 				guildId: guildID

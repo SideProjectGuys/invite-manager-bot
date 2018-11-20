@@ -28,7 +28,7 @@ export class Leave extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@ManyToOne(type => Guild, g => g.joins)

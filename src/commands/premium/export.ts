@@ -32,9 +32,9 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[type]: [ExportType],
-		{ guild, t, isPremium }: Context
+		{ guild, t }: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.export.title')
 		});
 
@@ -42,7 +42,7 @@ export default class extends Command {
 
 		switch (type) {
 			case ExportType.leaderboard:
-				this.client.sendReply(message, embed).then(async (msg: Message) => {
+				this.sendReply(message, embed).then(async (msg: Message) => {
 					if (type === 'leaderboard') {
 						let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 

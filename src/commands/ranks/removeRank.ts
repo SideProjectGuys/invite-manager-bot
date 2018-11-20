@@ -50,12 +50,12 @@ export default class extends Command {
 				roleId: role.id
 			});
 
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.removeRank.done', { role: `<@&${role.id}>` })
 			);
 		} else {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.removeRank.rankNotFound', { role: `<@&${role.id}>` })
 			);

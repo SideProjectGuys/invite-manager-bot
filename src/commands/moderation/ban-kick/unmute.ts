@@ -64,7 +64,7 @@ export default class extends Command {
 			embed.description = t('cmd.unmute.canNotUnmute');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		let response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentMuteDeleteMessage) {
 			const func = () => {

@@ -7,8 +7,11 @@ import {
 	NumberResolver,
 	StringResolver
 } from '../../../resolvers';
-import { punishmentConfigs, PunishmentType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import {
+	CommandGroup,
+	ModerationCommand,
+	PunishmentType
+} from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -46,7 +49,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.punishmentConfig.title')
 		});
 
@@ -56,9 +59,9 @@ export default class extends Command {
 		};
 		if (typeof punishment === typeof undefined) {
 			let allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			let punishmentConfigList = await punishmentConfigs.findAll({
+			let punishmentConfigList = await this.repo.punishConfigs.find({
 				where: { guildId: guild.id },
-				order: [['amount', 'DESC']]
+				order: { amount: 'DESC' }
 			});
 			let unusedPunishment = allPunishments.filter(
 				p => punishmentConfigList.map(pcl => pcl.punishmentType).indexOf(p) < 0
@@ -76,19 +79,23 @@ export default class extends Command {
 				value: `\n${unusedPunishment.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const pc = await punishmentConfigs.find({ where: punishmentQuery });
+			const pc = await this.repo.punishConfigs.findOne({
+				where: punishmentQuery
+			});
 			embed.description = t('cmd.punishmentConfig.text', {
 				punishment: `**${pc.punishmentType}**`,
 				strikes: `**${pc.amount}**`
 			});
 		} else if (strikes === 0) {
-			await punishmentConfigs.destroy({ where: punishmentQuery });
+			await this.repo.punishConfigs.update(punishmentQuery, {
+				deletedAt: new Date()
+			});
 			embed.description = t('cmd.punishmentConfig.deletedText', {
 				punishment: `**${punishment}**`
 			});
 		} else {
-			punishmentConfigs.insertOrUpdate({
-				id: null,
+			// TODO: This used to be INSERT OR UPDATE
+			await this.repo.punishConfigs.save({
 				amount: strikes,
 				args: args,
 				...punishmentQuery
@@ -100,6 +107,6 @@ export default class extends Command {
 		}
 
 		this.client.cache.punishments.flush(guild.id);
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

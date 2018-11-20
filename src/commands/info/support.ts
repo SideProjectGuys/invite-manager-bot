@@ -19,13 +19,13 @@ export default class extends Command {
 		args: any[],
 		{ t }: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		embed.fields.push({
 			name: t('cmd.support.server'),
 			value: `https://discord.gg/Am6p2Hs`
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

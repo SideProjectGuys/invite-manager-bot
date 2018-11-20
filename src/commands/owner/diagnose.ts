@@ -1,18 +1,13 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { getRepository, MoreThan, Repository } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { CommandUsage } from '../../models/CommandUsage';
-import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { StringResolver } from '../../resolvers';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
-	private cmdUsageRepo: Repository<CommandUsage>;
-	private premiumRepo: Repository<PremiumSubscription>;
-
 	public constructor(client: IMClient) {
 		super(client, {
 			name: OwnerCommand.diagnose,
@@ -29,9 +24,6 @@ export default class extends Command {
 			hidden: true,
 			guildOnly: true
 		});
-
-		this.cmdUsageRepo = getRepository(CommandUsage);
-		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -54,7 +46,7 @@ export default class extends Command {
 			`Requesting diagnose info for ${guildId}...`
 		);
 
-		const lastCmd = await this.cmdUsageRepo.findOne({
+		const lastCmd = await this.repo.cmdUsage.findOne({
 			where: {
 				guildId
 			},
@@ -63,7 +55,7 @@ export default class extends Command {
 			}
 		});
 
-		const sub = await this.premiumRepo.findOne({
+		const sub = await this.repo.premium.findOne({
 			where: {
 				guildId,
 				validUntil: MoreThan(new Date())
@@ -79,11 +71,11 @@ export default class extends Command {
 			},
 			response => {
 				if (response.error) {
-					this.client.sendReply(message, response.error);
+					this.sendReply(message, response.error);
 					return;
 				}
 
-				const embed = this.client.createEmbed({
+				const embed = this.createEmbed({
 					description: ''
 				});
 
@@ -129,7 +121,7 @@ export default class extends Command {
 				msg.edit({ embed }).catch(e => msg.edit(e));
 
 				// Send second message with permissions info
-				const permsEmbed = this.client.createEmbed();
+				const permsEmbed = this.createEmbed();
 
 				permsEmbed.fields.push({
 					name: 'Bot permissions',

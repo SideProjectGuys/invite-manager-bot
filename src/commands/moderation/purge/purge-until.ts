@@ -33,7 +33,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.purgeUntil.title')
 		});
 
@@ -45,10 +45,10 @@ export default class extends Command {
 
 		if (messages.length === 0) {
 			embed.description = t('cmd.purgeUntil.none');
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		} else if (messages.length > 100) {
 			embed.description = t('cmd.purgeUntil.msgNotFound');
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		} else {
 			let [error] = await to(
 				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
@@ -62,7 +62,7 @@ export default class extends Command {
 				});
 			}
 
-			let response = await this.client.sendReply(message, embed);
+			let response = await this.sendReply(message, embed);
 			const func = () => {
 				response.delete();
 			};

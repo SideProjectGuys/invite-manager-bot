@@ -125,6 +125,14 @@ export enum OwnerCommand {
 	sudo = 'ownerSudo'
 }
 
+export interface InviteCounts {
+	regular: number;
+	custom: number;
+	fake: number;
+	leave: number;
+	total: number;
+}
+
 export interface RabbitMqMember {
 	id: string;
 	nick?: string;

@@ -22,7 +22,7 @@ export class PremiumSubscription extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@Column({ type: 'decimal', precision: 10, scale: 2 })

@@ -1,15 +1,12 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { getRepository, MoreThan, Repository } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
 import { IMClient } from '../../client';
-import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
-	private premiumRepo: Repository<PremiumSubscription>;
-
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.premium,
@@ -18,8 +15,6 @@ export default class extends Command {
 			guildOnly: true,
 			strict: true
 		});
-
-		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -30,7 +25,7 @@ export default class extends Command {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		if (!isPremium) {
 			embed.title = t('cmd.premium.noPremium.title');
@@ -49,7 +44,7 @@ export default class extends Command {
 				value: t('cmd.premium.feature.export.text')
 			});
 		} else {
-			const sub = await this.premiumRepo.findOne({
+			const sub = await this.repo.premium.findOne({
 				where: {
 					guildId: guild.id,
 					validUntil: MoreThan(new Date())
@@ -73,6 +68,6 @@ export default class extends Command {
 			embed.description = description;
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

@@ -3,7 +3,6 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { UserResolver } from '../../../resolvers';
-import { punishments, strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
@@ -34,18 +33,18 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: user.username
 		});
 
-		let punishmentList = await punishments.findAll({
+		let punishmentList = await this.repo.punishs.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			}
 		});
 
-		let strikeList = await strikes.findAll({
+		let strikeList = await this.repo.strikes.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
@@ -95,6 +94,6 @@ export default class extends Command {
 			embed.description = t('cmd.check.noHistory');
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

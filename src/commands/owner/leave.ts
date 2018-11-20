@@ -35,7 +35,7 @@ export default class extends Command {
 		}
 
 		if (isNaN(parseInt(guildId, 10))) {
-			return this.client.sendReply(message, 'Invalid guild id ' + guildId);
+			return this.sendReply(message, 'Invalid guild id ' + guildId);
 		}
 
 		this.client.logAction(guild, message, LogAction.owner, {

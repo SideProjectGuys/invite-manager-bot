@@ -34,7 +34,7 @@ export default class extends Command {
 			roles += g.roles.size;
 		});
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 		embed.fields.push({
 			name: 'Guilds',
 			value: this.client.guilds.size + ' entries'
@@ -72,6 +72,6 @@ export default class extends Command {
 			value: this.client.cache.punishments.getSize() + ' entries'
 		});
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

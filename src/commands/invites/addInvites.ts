@@ -1,8 +1,8 @@
 import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
+import { LogAction } from '../../models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
-import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { getInviteCounts, promoteIfQualified } from '../../util';
 import { Command, Context } from '../Command';
@@ -41,20 +41,19 @@ export default class extends Command {
 		{ guild, t, me }: Context
 	): Promise<any> {
 		if (amount === 0) {
-			return this.client.sendReply(message, t('cmd.addInvites.zero'));
+			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
 
 		const invites = await getInviteCounts(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
-		await members.insertOrUpdate({
+		await this.repo.members.save({
 			id: user.id,
 			name: user.username,
 			discriminator: user.discriminator
 		});
 
-		const createdInv = await customInvites.create({
-			id: null,
+		const createdInv = this.repo.customInvs.create({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
@@ -62,6 +61,7 @@ export default class extends Command {
 			reason,
 			generatedReason: null
 		});
+		await this.repo.customInvs.save(createdInv);
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
@@ -70,7 +70,7 @@ export default class extends Command {
 			reason
 		});
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: user.username
 		});
 
@@ -136,6 +136,6 @@ export default class extends Command {
 
 		embed.description = descr;
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

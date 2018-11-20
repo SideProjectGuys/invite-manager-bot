@@ -8,12 +8,30 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
+import { InternalSettingsTypes } from '../types';
+
 import { Guild } from './Guild';
 import { Member } from './Member';
 
 export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
+
+export type MemberSettingsObject = {
+	hideFromLeaderboard: boolean;
+};
+
+export type MemberSettingsTypesObject = {
+	[k in MemberSettingsKey]: InternalSettingsTypes
+};
+
+export const memberSettingsTypes: MemberSettingsTypesObject = {
+	hideFromLeaderboard: 'Boolean'
+};
+
+export const defaultMemberSettings: MemberSettingsObject = {
+	hideFromLeaderboard: false
+};
 
 @Entity()
 export class MemberSetting extends BaseEntity {
@@ -26,7 +44,7 @@ export class MemberSetting extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@Column()

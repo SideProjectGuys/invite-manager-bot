@@ -68,7 +68,7 @@ export default class extends Command {
 			embed.description = t('cmd.unban.canNotUnban');
 		}
 
-		let response = (await this.client.sendReply(message, embed)) as Message;
+		let response = (await this.sendReply(message, embed)) as Message;
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

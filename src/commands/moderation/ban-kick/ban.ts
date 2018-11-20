@@ -6,8 +6,12 @@ import {
 	NumberResolver,
 	StringResolver
 } from '../../../resolvers';
-import { punishments, PunishmentType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
+import {
+	CommandGroup,
+	ModerationCommand,
+	Permissions,
+	PunishmentType
+} from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -60,8 +64,7 @@ export default class extends Command {
 				embed.description = t('cmd.ban.error');
 			} else {
 				embed.description = t('cmd.ban.done');
-				let punishment = await punishments.create({
-					id: null,
+				let punishment = this.repo.punishs.create({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					punishmentType: PunishmentType.ban,
@@ -70,6 +73,7 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
+				await this.repo.punishs.save(punishment);
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
@@ -88,7 +92,7 @@ export default class extends Command {
 			embed.description = t('cmd.ban.canNotBan');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		let response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

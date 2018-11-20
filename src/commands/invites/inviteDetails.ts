@@ -2,12 +2,8 @@ import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
+import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
 import { UserResolver } from '../../resolvers';
-import {
-	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey
-} from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -34,23 +30,17 @@ export default class extends Command {
 	): Promise<any> {
 		let target = user ? user : message.author;
 
-		const invs = await inviteCodes.findAll({
+		const invs = await this.repo.invCodes.find({
 			where: {
 				guildId: guild.id,
-				inviterId: target.id
-			},
-			order: [['uses', 'DESC']],
-			include: [
-				{
-					model: inviteCodeSettings,
-					where: {
-						guildId: guild.id,
-						key: InviteCodeSettingsKey.name
-					},
-					required: false
+				inviterId: target.id,
+				inviteCodeSettings: {
+					guildId: guild.id,
+					key: InviteCodeSettingsKey.name
 				}
-			],
-			raw: true
+			},
+			order: { uses: 'DESC' },
+			relations: ['inviteCodeSettings']
 		});
 
 		const lang = settings.lang;
@@ -69,6 +59,6 @@ export default class extends Command {
 				}) + '\n';
 		});
 
-		this.client.sendReply(message, invText);
+		this.sendReply(message, invText);
 	}
 }

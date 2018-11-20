@@ -3,8 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 
 import { EnumResolver, NumberResolver } from '../../../resolvers';
-import { strikeConfigs, ViolationType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup, ModerationCommand, ViolationType } from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -37,7 +36,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.strikeConfig.title')
 		});
 
@@ -48,9 +47,9 @@ export default class extends Command {
 
 		if (typeof violation === typeof undefined) {
 			let allViolations: ViolationType[] = Object.values(ViolationType);
-			let strikeConfigList = await strikeConfigs.findAll({
+			let strikeConfigList = await this.repo.strikeConfigs.find({
 				where: { guildId: guild.id },
-				order: [['amount', 'DESC']]
+				order: { amount: 'DESC' }
 			});
 			let unusedViolations = allViolations.filter(
 				v => strikeConfigList.map(scl => scl.violationType).indexOf(v) < 0
@@ -68,19 +67,23 @@ export default class extends Command {
 				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			let strike = await strikeConfigs.find({ where: violationQuery });
+			let strike = await this.repo.strikeConfigs.findOne({
+				where: violationQuery
+			});
 			embed.description = t('cmd.strikeConfig.text', {
 				violation: `**${strike.violationType}**`,
 				strikes: `**${strike.amount}**`
 			});
 		} else if (strikes === 0) {
-			await strikeConfigs.destroy({ where: violationQuery });
+			await this.repo.strikeConfigs.update(violationQuery, {
+				deletedAt: new Date()
+			});
 			embed.description = t('cmd.strikeConfig.deletedText', {
 				violation: `**${violation}**`
 			});
 		} else {
-			strikeConfigs.insertOrUpdate({
-				id: null,
+			// TODO: This used to be INSERT OR UPDATE
+			await this.repo.strikeConfigs.save({
 				amount: strikes,
 				...violationQuery
 			});
@@ -92,6 +95,6 @@ export default class extends Command {
 		}
 
 		this.client.cache.strikes.flush(guild.id);
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

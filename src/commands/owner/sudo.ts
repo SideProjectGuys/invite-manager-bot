@@ -57,14 +57,14 @@ export default class extends Command {
 		const cmdName = args[0].toLowerCase();
 		const sudoCmd = this.client.cmds.commands.find(c => c.name === cmdName);
 		if (!sudoCmd) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
 			);
 		}
 		if (this.allowedCommands.indexOf(sudoCmd.name.toLowerCase()) === -1) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				'Use one of the following commands: ' +
 					this.allowedCommands.map(c => `\`${c}\``).join(', ')
@@ -83,9 +83,9 @@ export default class extends Command {
 			},
 			response => {
 				if (response.error) {
-					this.client.sendReply(message, response.error);
+					this.sendReply(message, response.error);
 				} else {
-					this.client.sendReply(message, response.data.embed);
+					this.sendReply(message, response.data.embed);
 				}
 			}
 		);

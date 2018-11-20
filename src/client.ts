@@ -3,7 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository } from 'typeorm';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { PermissionsCache } from './cache/PermissionsCache';
@@ -15,20 +15,16 @@ import { StrikesCache } from './cache/StrikesCache';
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
-import {
-	CreateEmbedFunc,
-	Messaging,
-	SendEmbedFunc,
-	SendReplyFunc,
-	ShowPaginatedFunc
-} from './services/Messaging';
+import { Messaging } from './services/Messaging';
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
 
+import { CustomInvitesGeneratedReason } from './models/CustomInvite';
 import { Guild as DBGuild } from './models/Guild';
 import { LogAction } from './models/Log';
 import { Member } from './models/Member';
+import { InviteCounts } from './types';
 
 const config = require('../config.json');
 
@@ -65,6 +61,8 @@ i18n.configure({
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+	public shardId: number;
+	public shardCount: number;
 
 	public cache: {
 		settings: SettingsCache;
@@ -77,21 +75,10 @@ export class IMClient extends Client {
 	public dbQueue: DBQueue;
 
 	public msg: Messaging;
-	public createEmbed: CreateEmbedFunc;
-	public sendReply: SendReplyFunc;
-	public sendEmbed: SendEmbedFunc;
-	public showPaginated: ShowPaginatedFunc;
-
 	public rabbitmq: RabbitMq;
-	public shardId: number;
-	public shardCount: number;
-
 	public mod: Moderation;
-
 	public scheduler: Scheduler;
-
 	public cmds: Commands;
-
 	public captcha: CaptchaService;
 
 	public startedAt: moment.Moment;
@@ -131,9 +118,10 @@ export class IMClient extends Client {
 		});
 
 		this.startedAt = moment();
-
 		this.version = version;
 		this.config = config;
+		this.shardId = shardId;
+		this.shardCount = shardCount;
 
 		this.cache = {
 			settings: new SettingsCache(this),
@@ -146,21 +134,10 @@ export class IMClient extends Client {
 		this.dbQueue = new DBQueue(this);
 
 		this.msg = new Messaging(this);
-		this.createEmbed = this.msg.createEmbed.bind(this.msg);
-		this.sendReply = this.msg.sendReply.bind(this.msg);
-		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
-		this.showPaginated = this.msg.showPaginated.bind(this.msg);
-
-		this.shardId = shardId;
-		this.shardCount = shardCount;
 		this.rabbitmq = new RabbitMq(this, conn);
-
 		this.mod = new Moderation(this);
-
 		this.scheduler = new Scheduler(this);
-
 		this.cmds = new Commands(this);
-
 		this.captcha = new CaptchaService(this);
 
 		this.on('ready', this.onClientReady);
@@ -217,7 +194,7 @@ export class IMClient extends Client {
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
 			if (logChannel) {
-				this.sendEmbed(logChannel, embed);
+				this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 	}
@@ -242,7 +219,7 @@ export class IMClient extends Client {
 					json = json.substr(0, 1000) + '...';
 				}
 
-				const embed = this.createEmbed({
+				const embed = this.msg.createEmbed({
 					title: 'Log Action',
 					fields: [
 						{
@@ -265,7 +242,7 @@ export class IMClient extends Client {
 						}
 					]
 				});
-				this.sendEmbed(logChannel, embed);
+				this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 
@@ -291,6 +268,71 @@ export class IMClient extends Client {
 				name: message.author.username
 			}
 		);
+	}
+
+	public async getInviteCounts(
+		guildId: string,
+		memberId: string
+	): Promise<InviteCounts> {
+		const regularPromise = inviteCodes.sum('uses', {
+			where: {
+				guildId: guildId,
+				inviterId: memberId
+			}
+		});
+		const customPromise = customInvites.findAll({
+			attributes: [
+				'generatedReason',
+				[sequelize.fn('SUM', sequelize.col('amount')), 'total']
+			],
+			where: {
+				guildId: guildId,
+				memberId: memberId
+			},
+			group: ['generatedReason'],
+			raw: true
+		});
+		const values = await Promise.all([regularPromise, customPromise]);
+
+		const reg = values[0] || 0;
+
+		const customUser = values[1].find(ci => ci.generatedReason === null) as any;
+		const ctm = customUser ? parseInt(customUser.total, 10) : 0;
+
+		const generated: { [x in CustomInvitesGeneratedReason]: number } = {
+			[CustomInvitesGeneratedReason.clear_regular]: 0,
+			[CustomInvitesGeneratedReason.clear_custom]: 0,
+			[CustomInvitesGeneratedReason.clear_fake]: 0,
+			[CustomInvitesGeneratedReason.clear_leave]: 0,
+			[CustomInvitesGeneratedReason.fake]: 0,
+			[CustomInvitesGeneratedReason.leave]: 0
+		};
+
+		values[1].forEach((ci: any) => {
+			if (ci.generatedReason === null) {
+				return;
+			}
+			const reason = ci.generatedReason as CustomInvitesGeneratedReason;
+			const amount = parseInt(ci.total, 10);
+			generated[reason] = amount;
+		});
+
+		const regular = reg + generated[CustomInvitesGeneratedReason.clear_regular];
+		const custom = ctm + generated[CustomInvitesGeneratedReason.clear_custom];
+		const fake =
+			generated[CustomInvitesGeneratedReason.fake] +
+			generated[CustomInvitesGeneratedReason.clear_fake];
+		const leave =
+			generated[CustomInvitesGeneratedReason.leave] +
+			generated[CustomInvitesGeneratedReason.clear_leave];
+
+		return {
+			regular,
+			custom,
+			fake,
+			leave,
+			total: regular + custom + fake + leave
+		};
 	}
 
 	public async getMembersCount() {

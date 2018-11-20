@@ -2,8 +2,12 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { MemberResolver, StringResolver } from '../../../resolvers';
-import { punishments, PunishmentType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
+import {
+	CommandGroup,
+	ModerationCommand,
+	Permissions,
+	PunishmentType
+} from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -52,7 +56,7 @@ export default class extends Command {
 				embed.description = t('cmd.kick.error');
 			} else {
 				embed.description = t('cmd.kick.done');
-				let punishment = await punishments.create({
+				let punishment = this.repo.punishs.create({
 					id: null,
 					guildId: guild.id,
 					memberId: targetMember.id,
@@ -62,6 +66,7 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
+				await this.repo.punishs.save(punishment);
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
@@ -80,7 +85,7 @@ export default class extends Command {
 			embed.description = t('cmd.kick.canNotKick');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		let response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentKickDeleteMessage) {
 			const func = () => {

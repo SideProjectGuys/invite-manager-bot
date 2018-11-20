@@ -37,10 +37,10 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		if (numberOfMessages < 1) {
-			return this.client.sendReply(message, t('cmd.clean.invalidQuantity'));
+			return this.sendReply(message, t('cmd.clean.invalidQuantity'));
 		}
 		if (numberOfMessages === undefined) {
 			numberOfMessages = 5;
@@ -74,7 +74,7 @@ export default class extends Command {
 			});
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		let response = await this.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();

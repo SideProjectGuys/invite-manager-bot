@@ -274,7 +274,7 @@ export class Moderation {
 		amount: number,
 		punishmentType: PunishmentType
 	) {
-		const logEmbed = this.client.createEmbed({
+		const logEmbed = this.client.msg.createEmbed({
 			author: { name: 'AutoModerator' },
 			color: 16711680 // red
 		});
@@ -741,7 +741,7 @@ export class Moderation {
 		) {
 			return;
 		}
-		let reply = await this.client.sendReply(message, embed);
+		let reply = await this.client.msg.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(
 				() => reply.delete(),
@@ -752,7 +752,7 @@ export class Moderation {
 
 	public createPunishmentEmbed(name: string, icon?: string) {
 		let object = icon ? { name: name, icon_url: icon } : { name: name };
-		const embed = this.client.createEmbed({
+		const embed = this.client.msg.createEmbed({
 			author: object
 		});
 		return embed;
@@ -788,6 +788,6 @@ export class Moderation {
 	}
 
 	private async logToModChannel(message: Message, embed: Embed) {
-		await this.client.sendReply(message, embed);
+		await this.client.msg.sendReply(message, embed);
 	}
 }

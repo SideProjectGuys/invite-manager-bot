@@ -3,18 +3,10 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { UserResolver } from '../../resolvers';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey,
-	joins,
-	members,
-	sequelize
-} from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
+import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
+import { CustomInvitesGeneratedReason } from '../../models/CustomInvite';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -44,32 +36,26 @@ export default class extends Command {
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invs = await inviteCodes.findAll({
+		// TODO: InviteCodeSettings relation used to be left join
+		const invs = await this.repo.invCodes.find({
 			where: {
 				guildId: guild.id,
-				inviterId: user.id
-			},
-			order: [['uses', 'DESC']],
-			include: [
-				{
-					model: inviteCodeSettings,
-					where: {
-						guildId: guild.id,
-						key: InviteCodeSettingsKey.name
-					},
-					required: false
+				inviterId: user.id,
+				inviteCodeSettings: {
+					guildId: guild.id,
+					key: InviteCodeSettingsKey.name
 				}
-			],
-			raw: true
+			},
+			order: { uses: 'DESC' },
+			relations: ['inviteCodeSettings']
 		});
 
-		const customInvs = await customInvites.findAll({
+		const customInvs = await this.repo.customInvs.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			},
-			order: [['createdAt', 'DESC']],
-			raw: true
+			order: { createdAt: 'DESC' }
 		});
 
 		let regular = invs.reduce((acc, inv) => acc + inv.uses, 0);
@@ -120,7 +106,7 @@ export default class extends Command {
 		const numTotal = regular + custom + fake + leave;
 		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: `${user.username}#${user.discriminator}`
 		});
 
@@ -149,7 +135,7 @@ export default class extends Command {
 		}
 
 		const joinCount = Math.max(
-			await joins.count({
+			await this.repo.joins.count({
 				where: {
 					guildId: guild.id,
 					memberId: user.id
@@ -198,34 +184,19 @@ export default class extends Command {
 			inline: true
 		});
 
-		const js = await joins.findAll({
-			attributes: ['createdAt'],
+		const js = await this.repo.joins.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			},
-			order: [['createdAt', 'DESC']],
-			include: [
-				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					include: [
-						{
-							attributes: [],
-							model: members,
-							as: 'inviter'
-						}
-					]
-				}
-			],
-			raw: true
+			order: { createdAt: 'DESC' },
+			relations: ['exactMatch', 'exactMatch.inviter']
 		});
 
 		if (js.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-			js.forEach((join: any) => {
+			js.forEach(join => {
 				const text = moment(join.createdAt)
 					.locale(lang)
 					.fromNow();
@@ -233,7 +204,7 @@ export default class extends Command {
 					joinTimes[text] = {};
 				}
 
-				const id = join['exactMatch.inviterId'];
+				const id = join.exactMatch.inviterId;
 				if (joinTimes[text][id]) {
 					joinTimes[text][id]++;
 				} else {
@@ -438,6 +409,6 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

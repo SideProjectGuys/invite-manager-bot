@@ -1,17 +1,5 @@
 import { Guild } from 'eris';
 import moment from 'moment';
-import { FindOptionsAttributesArray, Op } from 'sequelize';
-
-import {
-	customInvites,
-	inviteCodes,
-	joins,
-	leaves,
-	members,
-	memberSettings,
-	MemberSettingsKey,
-	sequelize
-} from '../sequelize';
 
 // Extra query stuff we need in multiple places
 const sumClearRegular =
@@ -280,8 +268,8 @@ export async function generateLeaderboard(
 			return diff !== 0
 				? diff
 				: invs[a].name
-					? invs[a].name.localeCompare(invs[b].name)
-					: 0;
+				? invs[a].name.localeCompare(invs[b].name)
+				: 0;
 		});
 
 	const lastJoinAndLeave = await members.findAll({
@@ -333,8 +321,8 @@ export async function generateLeaderboard(
 		return diff !== 0
 			? diff
 			: invs[a].name
-				? invs[a].name.localeCompare(invs[b].name)
-				: 0;
+			? invs[a].name.localeCompare(invs[b].name)
+			: 0;
 	});
 
 	return { keys, oldKeys, invs, stillInServer };

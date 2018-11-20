@@ -1,17 +1,13 @@
 import { Message, User } from 'eris';
 import moment from 'moment';
-import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../../client';
 import { LogAction } from '../../models/Log';
-import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { OwnerCommand } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
-	private premiumRepo: Repository<PremiumSubscription>;
-
 	public constructor(client: IMClient) {
 		super(client, {
 			name: OwnerCommand.givePremium,
@@ -47,8 +43,6 @@ export default class extends Command {
 			guildOnly: false,
 			hidden: true
 		});
-
-		this.premiumRepo = getRepository(PremiumSubscription);
 	}
 
 	public async action(
@@ -78,7 +72,7 @@ export default class extends Command {
 		const premiumDuration = moment.duration(days, 'day');
 		const validUntil = moment().add(premiumDuration);
 
-		await this.premiumRepo.save({
+		await this.repo.premium.save({
 			amount: amount,
 			validUntil: validUntil.toDate(),
 			guildId,
@@ -93,7 +87,7 @@ export default class extends Command {
 			memberId: user.id
 		});
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			description: `Activated premium for ${premiumDuration.humanize()}`,
 			author: {
 				name: user.username,
@@ -102,7 +96,7 @@ export default class extends Command {
 		});
 		embed.fields.push({ name: 'User', value: user.username });
 
-		await this.client.sendReply(message, embed);
+		await this.sendReply(message, embed);
 
 		let cmd = this.client.cmds.commands.find(
 			c => c.name === OwnerCommand.flush

@@ -24,7 +24,7 @@ export class Punishment extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@Column()
@@ -37,6 +37,9 @@ export class Punishment extends BaseEntity {
 	public args: string;
 
 	@Column({ nullable: true })
+	public reason: string;
+
+	@Column({ nullable: true })
 	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.punishments)
@@ -47,6 +50,9 @@ export class Punishment extends BaseEntity {
 
 	@ManyToOne(type => Member, m => m.punishments)
 	public member: Member;
+
+	@Column({ nullable: true })
+	public creatorId: string;
 
 	@ManyToOne(type => Member, m => m.createdPunishments)
 	public creator: Member;

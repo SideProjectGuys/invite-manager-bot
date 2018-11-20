@@ -1,13 +1,9 @@
 import { Message, Role } from 'eris';
+import { In } from 'typeorm';
 
 import { IMClient } from '../../client';
+import { RolePermission } from '../../models/RolePermission';
 import { CommandResolver, RoleResolver } from '../../resolvers';
-import {
-	rolePermissions,
-	RolePermissionsInstance,
-	roles,
-	sequelize
-} from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -38,21 +34,16 @@ export default class extends Command {
 		{ guild, t }: Context
 	): Promise<any> {
 		if (!rawCmd) {
-			const perms = await rolePermissions.findAll({
-				attributes: ['command'],
-				include: [
-					{
-						attributes: ['name'],
-						model: roles,
-						where: {
-							guildId: guild.id
-						}
+			const perms = await this.repo.rolePerms.find({
+				where: {
+					role: {
+						guildId: guild.id
 					}
-				],
-				raw: true
+				},
+				relations: ['role']
 			});
 
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
@@ -70,11 +61,11 @@ export default class extends Command {
 						rs.Everyone.push(command.name);
 					}
 				} else {
-					ps.forEach((p: RolePermissionsInstance & { 'role.name': string }) => {
-						if (!rs['@' + p['role.name']]) {
-							rs['@' + p['role.name']] = [];
+					ps.forEach(p => {
+						if (!rs['@' + p.role.name]) {
+							rs['@' + p.role.name] = [];
 						}
-						rs['@' + p['role.name']].push(command.name);
+						rs['@' + p.role.name].push(command.name);
 					});
 				}
 			});
@@ -86,7 +77,7 @@ export default class extends Command {
 				});
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const cmds = [rawCmd];
@@ -122,7 +113,7 @@ export default class extends Command {
 		*/
 
 		if (!cmds.length) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.permissions.invalidCommand', {
 					cmd: rawCmd,
@@ -134,38 +125,30 @@ export default class extends Command {
 		}
 
 		if (!role) {
-			const perms = await rolePermissions.findAll({
-				attributes: [
-					'command',
-					[
-						sequelize.fn(
-							'GROUP_CONCAT',
-							sequelize.literal(`roleId SEPARATOR ','`)
-						),
-						'roles'
-					]
-				],
+			const rawPerms = await this.repo.rolePerms.find({
 				where: {
-					command: cmds.map(c => c.name)
-				},
-				group: ['command'],
-				include: [
-					{
-						attributes: [],
-						model: roles,
-						where: {
-							guildId: guild.id
-						}
+					command: In(cmds.map(c => c.name)),
+					role: {
+						guildId: guild.id
 					}
-				],
-				raw: true
+				},
+				relations: ['role']
+			});
+			const perms = new Map<string, RolePermission[]>();
+			rawPerms.forEach(p => {
+				let ps = perms.get(p.command);
+				if (!ps) {
+					ps = [];
+					perms.set(p.command, ps);
+				}
+				ps.push(p);
 			});
 
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
-			if (perms.length === 0) {
+			if (perms.size === 0) {
 				cmds.forEach(c => {
 					embed.fields.push({
 						name: c.name,
@@ -175,18 +158,15 @@ export default class extends Command {
 					});
 				});
 			} else {
-				perms.forEach((p: RolePermissionsInstance & { roles: string }) => {
+				perms.forEach((ps, cmd) => {
 					embed.fields.push({
-						name: p.command,
-						value: p.roles
-							.split(',')
-							.map(r => `<@&${r}>`)
-							.join(', ')
+						name: cmd,
+						value: ps.map(p => `<@&${p}>`).join(', ')
 					});
 				});
 			}
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (
@@ -196,10 +176,10 @@ export default class extends Command {
 			cmds.find(c => c.name === BotCommand.permissions) ||
 			cmds.find(c => c.name === BotCommand.addRank)
 		) {
-			return this.client.sendReply(message, t('cmd.permissions.canNotChange'));
+			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
-		const oldPerms = await rolePermissions.findAll({
+		const oldPerms = await this.repo.rolePerms.find({
 			where: {
 				command: cmds.map(c => c.name),
 				roleId: role.id
@@ -207,9 +187,16 @@ export default class extends Command {
 		});
 
 		if (oldPerms.length > 0) {
-			oldPerms.forEach(op => op.destroy());
+			await this.repo.rolePerms.update(
+				{
+					id: In(oldPerms.map(p => p.id))
+				},
+				{
+					deletedAt: new Date()
+				}
+			);
 
-			this.client.sendReply(
+			this.sendReply(
 				message,
 				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
@@ -217,22 +204,21 @@ export default class extends Command {
 				})
 			);
 		} else {
-			await roles.insertOrUpdate({
+			await this.repo.roles.save({
 				id: role.id,
 				name: role.name,
 				color: role.color.toString(16),
 				guildId: role.guild.id
 			});
 
-			await rolePermissions.bulkCreate(
+			await this.repo.rolePerms.save(
 				cmds.map(c => ({
-					id: null,
 					command: c.name,
 					roleId: role.id
 				}))
 			);
 
-			this.client.sendReply(
+			this.sendReply(
 				message,
 				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,

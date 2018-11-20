@@ -32,7 +32,7 @@ export default class extends Command {
 		}
 
 		if (isNaN(parseInt(guildId, 10))) {
-			return this.client.sendReply(message, 'Invalid guild id ' + guildId);
+			return this.sendReply(message, 'Invalid guild id ' + guildId);
 		}
 
 		const { shard, result } = this.client.rabbitmq.sendCommandToGuild(guildId, {
@@ -42,12 +42,12 @@ export default class extends Command {
 		});
 
 		if (result) {
-			this.client.sendReply(
+			this.sendReply(
 				message,
 				`Sent command to flush all caches of guild ${guildId} to shard ${shard}`
 			);
 		} else {
-			this.client.sendReply(message, `RabbitMQ returned false`);
+			this.sendReply(message, `RabbitMQ returned false`);
 		}
 	}
 }

@@ -1,13 +1,8 @@
 import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
+import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
 import { ChannelResolver, StringResolver } from '../../resolvers';
-import {
-	channels,
-	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey
-} from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -41,7 +36,7 @@ export default class extends Command {
 		let channel = _channel ? _channel : (message.channel as TextChannel);
 
 		if (!channel.permissionsOf(me.id).has(Permissions.CREATE_INSTANT_INVITE)) {
-			return this.client.sendReply(message, t('permissions.createInviteCode'));
+			return this.sendReply(message, t('permissions.createInviteCode'));
 		}
 
 		// TODO: Eris typescript is missing the 'unique' parameter
@@ -55,13 +50,13 @@ export default class extends Command {
 			name
 		);
 
-		await channels.insertOrUpdate({
+		await this.repo.channels.save({
 			id: inv.channel.id,
 			name: inv.channel.name,
 			guildId: guild.id
 		});
 
-		await inviteCodes.insertOrUpdate({
+		this.repo.invCodes.save({
 			code: inv.code,
 			maxAge: 0,
 			maxUses: 0,
@@ -72,15 +67,14 @@ export default class extends Command {
 			inviterId: message.author.id
 		});
 
-		await inviteCodeSettings.insertOrUpdate({
-			id: null,
+		this.repo.invCodeSettings.save({
 			guildId: guild.id,
 			inviteCode: inv.code,
 			key: InviteCodeSettingsKey.name,
 			value: name
 		});
 
-		this.client.sendReply(
+		this.sendReply(
 			message,
 			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,

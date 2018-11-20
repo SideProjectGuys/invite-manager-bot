@@ -27,7 +27,7 @@ export default class extends Command {
 		const numGuilds = await this.client.getGuildsCount();
 		const numMembers = await this.client.getMembersCount();
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		// Version
 		embed.fields.push({
@@ -98,6 +98,6 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

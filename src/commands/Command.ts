@@ -1,15 +1,37 @@
 import { Guild, Member, Message } from 'eris';
+import { getRepository, Repository } from 'typeorm';
 
 import { IMClient } from '../client';
+import { Channel } from '../models/Channel';
+import { CommandUsage } from '../models/CommandUsage';
+import { CustomInvite } from '../models/CustomInvite';
+import { Guild as DBGuild } from '../models/Guild';
+import { InviteCode } from '../models/InviteCode';
+import { InviteCodeSetting } from '../models/InviteCodeSetting';
+import { Join } from '../models/Join';
+import { Member as DBMember } from '../models/Member';
+import { MemberSetting } from '../models/MemberSetting';
+import { PremiumSubscription } from '../models/PremiumSubscription';
+import { Punishment } from '../models/Punishment';
+import { PunishmentConfig } from '../models/PunishmentConfig';
+import { Role } from '../models/Role';
+import { RolePermission } from '../models/RolePermission';
+import { SettingsObject } from '../models/Setting';
+import { Strike } from '../models/Strike';
+import { StrikeConfig } from '../models/StrikeConfig';
+import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
+import {
+	CreateEmbedFunc,
+	SendEmbedFunc,
+	SendReplyFunc,
+	ShowPaginatedFunc
+} from '../services/Messaging';
 import {
 	BotCommand,
 	CommandGroup,
 	ModerationCommand,
 	OwnerCommand
 } from '../types';
-
-import { SettingsObject } from '../models/Setting';
-import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 
 export interface Arg {
 	name: string;
@@ -57,6 +79,30 @@ export abstract class Command {
 	public hidden?: boolean;
 	public premiumOnly?: boolean;
 
+	protected repo: {
+		cmdUsage: Repository<CommandUsage>;
+		guilds: Repository<DBGuild>;
+		channels: Repository<Channel>;
+		members: Repository<DBMember>;
+		memberSettings: Repository<MemberSetting>;
+		customInvs: Repository<CustomInvite>;
+		invCodes: Repository<InviteCode>;
+		invCodeSettings: Repository<InviteCodeSetting>;
+		joins: Repository<Join>;
+		premium: Repository<PremiumSubscription>;
+		punishs: Repository<Punishment>;
+		punishConfigs: Repository<PunishmentConfig>;
+		roles: Repository<Role>;
+		rolePerms: Repository<RolePermission>;
+		strikes: Repository<Strike>;
+		strikeConfigs: Repository<StrikeConfig>;
+	};
+
+	protected createEmbed: CreateEmbedFunc;
+	protected sendReply: SendReplyFunc;
+	protected sendEmbed: SendEmbedFunc;
+	protected showPaginated: ShowPaginatedFunc;
+
 	public constructor(client: IMClient, props: CommandOptions) {
 		this.client = client;
 		this.name = props.name;
@@ -81,6 +127,30 @@ export abstract class Command {
 
 			this.usage += arg.required ? `<${arg.name}> ` : `[${arg.name}] `;
 		});
+
+		this.repo = {
+			channels: getRepository(Channel),
+			cmdUsage: getRepository(CommandUsage),
+			customInvs: getRepository(CustomInvite),
+			guilds: getRepository(DBGuild),
+			invCodes: getRepository(InviteCode),
+			invCodeSettings: getRepository(InviteCodeSetting),
+			joins: getRepository(Join),
+			members: getRepository(DBMember),
+			memberSettings: getRepository(MemberSetting),
+			premium: getRepository(PremiumSubscription),
+			punishs: getRepository(Punishment),
+			punishConfigs: getRepository(PunishmentConfig),
+			roles: getRepository(Role),
+			rolePerms: getRepository(RolePermission),
+			strikes: getRepository(Strike),
+			strikeConfigs: getRepository(StrikeConfig)
+		};
+
+		this.createEmbed = client.msg.createEmbed.bind(client.msg);
+		this.sendReply = client.msg.sendReply.bind(client.msg);
+		this.sendEmbed = client.msg.sendEmbed.bind(client.msg);
+		this.showPaginated = client.msg.showPaginated.bind(client.msg);
 	}
 
 	public getInfo(context: Context) {

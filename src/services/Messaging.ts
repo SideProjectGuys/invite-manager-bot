@@ -108,7 +108,7 @@ export class Messaging {
 				? this.createEmbed({ description: embed })
 				: embed;
 
-		return new Promise<Message | Message[]>((resolve, reject) => {
+		return new Promise<Message>((resolve, reject) => {
 			target
 				.createMessage({ embed: e })
 				.then(resolve)
@@ -404,11 +404,7 @@ export class Messaging {
 			}
 		} else {
 			author = prevMsg.author;
-			prevMsg = await this.client.sendEmbed(
-				prevMsg.channel,
-				embed,
-				prevMsg.author
-			);
+			prevMsg = await this.sendEmbed(prevMsg.channel, embed, prevMsg.author);
 		}
 
 		// Don't paginate for sudo messages

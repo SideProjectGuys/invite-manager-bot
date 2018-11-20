@@ -5,6 +5,18 @@ import {
 	memberSettingsDescription,
 	settingsDescription
 } from '../../descriptions/settings';
+import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
+import {
+	MemberSettingsKey,
+	memberSettingsTypes
+} from '../../models/MemberSetting';
+import {
+	Lang,
+	LeaderboardStyle,
+	RankAssignmentStyle,
+	SettingsKey,
+	settingsTypes
+} from '../../models/Setting';
 import {
 	ArrayResolver,
 	BooleanResolver,
@@ -13,16 +25,6 @@ import {
 	RoleResolver,
 	StringResolver
 } from '../../resolvers';
-import {
-	InviteCodeSettingsKey,
-	Lang,
-	LeaderboardStyle,
-	MemberSettingsKey,
-	memberSettingsTypes,
-	RankAssignmentStyle,
-	SettingsKey,
-	settingsTypes
-} from '../../sequelize';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -73,14 +75,14 @@ export default class extends Command {
 		args: any[],
 		context: Context
 	): Promise<any> {
-		let embed = this.client.createEmbed({
+		let embed = this.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
 
 		message.delete();
 
-		const msg = await this.client.sendReply(message, embed);
+		const msg = await this.sendReply(message, embed);
 
 		for (let i = 0; i < 9; i++) {
 			msg.addReaction(this.choices[i]);
@@ -224,7 +226,7 @@ export default class extends Command {
 		}
 
 		const t = context.t;
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 		const keys = Object.keys(menu.items);
 		const basePath = this.getTranslationKey(path);
 
@@ -347,7 +349,7 @@ export default class extends Command {
 					possible
 				});
 
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				title: `${key}`,
 				description
 			});

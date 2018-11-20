@@ -1,27 +1,3 @@
-import { MemberSettingsKey } from './models/MemberSetting';
-import { SettingsKey } from './models/Setting';
-
-import { InternalSettingsTypes } from './types';
-
-// ------------------------------------
-// MemberSettings
-// ------------------------------------
-export type MemberSettingsObject = {
-	hideFromLeaderboard: boolean;
-};
-
-export type MemberSettingsTypesObject = {
-	[k in MemberSettingsKey]: InternalSettingsTypes
-};
-
-export const memberSettingsTypes: MemberSettingsTypesObject = {
-	hideFromLeaderboard: 'Boolean'
-};
-
-export const defaultMemberSettings: MemberSettingsObject = {
-	hideFromLeaderboard: false
-};
-
 // ------------------------------------
 // Presences
 // ------------------------------------

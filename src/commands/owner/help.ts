@@ -30,10 +30,10 @@ export default class extends Command {
 			.filter(c => c.hidden)
 			.map(c => c.usage.replace('{prefix}', prefix));
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			description: commands.join('\n')
 		});
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

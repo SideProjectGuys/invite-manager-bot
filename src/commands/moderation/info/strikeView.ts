@@ -1,9 +1,8 @@
-import { Member, Message } from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { NumberResolver, UserResolver } from '../../../resolvers';
-import { punishments, strikes } from '../../../sequelize';
+import { NumberResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
@@ -33,11 +32,11 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: `Case: ${caseNumber}`
 		});
 
-		let strike = await strikes.find({
+		let strike = await this.repo.strikes.findOne({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
@@ -57,6 +56,6 @@ export default class extends Command {
 			embed.description = `Could not find a case`;
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

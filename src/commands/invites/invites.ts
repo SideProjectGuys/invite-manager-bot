@@ -130,11 +130,11 @@ export default class extends Command {
 			}
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: target.username,
 			description: textMessage
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

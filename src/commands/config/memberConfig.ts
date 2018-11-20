@@ -2,19 +2,16 @@ import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
 import { LogAction } from '../../models/Log';
-import { MemberSettingsKey } from '../../models/MemberSetting';
+import {
+	defaultMemberSettings,
+	MemberSettingsKey,
+	memberSettingsTypes
+} from '../../models/MemberSetting';
 import {
 	EnumResolver,
 	SettingsValueResolver,
 	UserResolver
 } from '../../resolvers';
-import {
-	defaultMemberSettings,
-	members,
-	memberSettings,
-	memberSettingsTypes,
-	sequelize
-} from '../../sequelize';
 import { fromDbValue, toDbValue } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -56,7 +53,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.memberConfig.title');
@@ -68,50 +65,37 @@ export default class extends Command {
 				value: keys.join('\n')
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (!user) {
-			const allSets = await memberSettings.findAll({
-				attributes: [
-					'id',
-					'key',
-					'value',
-					[sequelize.literal('`member`.`name`'), 'memberName']
-				],
+			const allSets = await this.repo.memberSettings.find({
 				where: {
 					guildId: guild.id,
 					key
 				},
-				include: [
-					{
-						attributes: [],
-						model: members
-					}
-				],
-				raw: true
+				relations: ['member']
 			});
 			if (allSets.length > 0) {
-				allSets.forEach((set: any) =>
+				allSets.forEach(set =>
 					embed.fields.push({
-						name: set.memberName,
+						name: set.member.name,
 						value: fromDbValue(set.key, set.value)
 					})
 				);
 			} else {
 				embed.description = t('cmd.memberConfig.notSet');
 			}
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const username = user.username;
-		const oldSet = await memberSettings.find({
+		const oldSet = await this.repo.memberSettings.findOne({
 			where: {
 				guildId: guild.id,
 				memberId: user.id,
 				key
-			},
-			raw: true
+			}
 		});
 
 		let oldVal = oldSet ? oldSet.value : undefined;
@@ -142,12 +126,12 @@ export default class extends Command {
 					prefix
 				});
 			}
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
 			if (defaultMemberSettings[key] !== null) {
-				this.client.sendReply(
+				this.sendReply(
 					message,
 					t('cmd.memberConfig.canNotClear', { prefix, key })
 				);
@@ -166,16 +150,16 @@ export default class extends Command {
 				name: t('cmd.memberConfig.current.title'),
 				value: rawValue
 			});
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const error = this.validate(message, key, value);
 		if (error) {
-			return this.client.sendReply(message, error);
+			return this.sendReply(message, error);
 		}
 
-		await memberSettings.insertOrUpdate({
-			id: null,
+		// TODO: Use insert or update
+		await this.repo.memberSettings.save({
 			guildId: guild.id,
 			memberId: user.id,
 			key,
@@ -209,7 +193,7 @@ export default class extends Command {
 		});
 		oldVal = value; // Update value for future use
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)

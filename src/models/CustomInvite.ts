@@ -31,7 +31,7 @@ export class CustomInvite extends BaseEntity {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column()
+	@Column({ nullable: true })
 	public deletedAt: Date;
 
 	@Column()
@@ -43,11 +43,20 @@ export class CustomInvite extends BaseEntity {
 	@Column()
 	public generatedReason: CustomInvitesGeneratedReason;
 
+	@Column({ nullable: true })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.customInvites)
 	public guild: Guild;
 
+	@Column({ nullable: true })
+	public memberId: string;
+
 	@ManyToOne(type => Member, m => m.customInvites)
 	public member: Member;
+
+	@Column({ nullable: true })
+	public creatorId: string;
 
 	@ManyToOne(type => Member, m => m.createdCustomInvites)
 	public creator: Member;

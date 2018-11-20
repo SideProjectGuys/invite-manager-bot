@@ -2,12 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import {
-	channels,
-	InviteCodeAttributes,
-	inviteCodes,
-	members
-} from '../../sequelize';
+import { InviteCode } from '../../models/InviteCode';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -38,22 +33,14 @@ export default class extends Command {
 	): Promise<any> {
 		const lang = settings.lang;
 
-		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
+		let codes: Partial<InviteCode>[] = await this.repo.invCodes.find({
 			where: {
-				guildId: guild.id
-			},
-			include: [
-				{
-					attributes: [],
-					model: members,
-					as: 'inviter',
-					where: {
-						id: message.author.id
-					},
-					required: true
+				guildId: guild.id,
+				inviter: {
+					id: message.author.id
 				}
-			],
-			raw: true
+			},
+			relations: ['inviter']
 		});
 
 		const activeCodes = (await guild.getInvites())
@@ -77,17 +64,15 @@ export default class extends Command {
 
 		// Insert any new codes that haven't been used yet
 		if (newCodes.length > 0) {
-			await channels.bulkCreate(
+			// TODO: updateOnDuplicate: ['name']
+			await this.repo.channels.save(
 				newCodes.map(c => ({
 					id: c.channel.id,
 					guildId: c.guild.id,
 					name: c.channel.name
-				})),
-				{
-					updateOnDuplicate: ['name']
-				}
+				}))
 			);
-			await inviteCodes.bulkCreate(newDbCodes);
+			await this.repo.invCodes.save(newDbCodes);
 		}
 
 		codes = codes.concat(newDbCodes);
@@ -106,7 +91,7 @@ export default class extends Command {
 			permanentInvites[0]
 		);
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.inviteCodes.title', { guild: guild.name })
 		});
 
@@ -173,7 +158,7 @@ export default class extends Command {
 			});
 		}
 
-		this.client.sendEmbed(await message.author.getDMChannel(), embed);
+		this.sendEmbed(await message.author.getDMChannel(), embed);
 		message.channel.createMessage(
 			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
 		);
