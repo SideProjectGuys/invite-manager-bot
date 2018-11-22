@@ -51,6 +51,7 @@ export enum BotCommand {
 	interactiveConfig = 'interactiveConfig',
 
 	botInfo = 'botInfo',
+	credits = 'credits',
 	getBot = 'getBot',
 	help = 'help',
 	members = 'members',
