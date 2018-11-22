@@ -8,7 +8,7 @@ import { Command, Context } from '../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.addInvites,
+			name: BotCommand.removeInvites,
 			aliases: ['remove-invites'],
 			args: [
 				{

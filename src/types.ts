@@ -68,6 +68,7 @@ export enum BotCommand {
 	inviteDetails = 'inviteDetails',
 	invites = 'invites',
 	leaderboard = 'leaderboard',
+	removeInvites = 'removeInvites',
 	restoreInvites = 'restoreInvites',
 	subtractFakes = 'subtractFakes',
 	subtractLeaves = 'subtractLeaves',

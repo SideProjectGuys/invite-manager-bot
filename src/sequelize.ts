@@ -545,7 +545,7 @@ export interface SettingInstance
 export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
-		id: { type: Sequelize.INTEGER, primaryKey: true },
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		key: Sequelize.ENUM(Object.values(SettingsKey)),
 		value: Sequelize.TEXT,
 		guildId: Sequelize.STRING(32)
@@ -607,7 +607,7 @@ export const memberSettings = sequelize.define<
 >(
 	'memberSettings',
 	{
-		id: { type: Sequelize.INTEGER, primaryKey: true },
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
 		value: Sequelize.TEXT,
 		guildId: Sequelize.STRING(32),

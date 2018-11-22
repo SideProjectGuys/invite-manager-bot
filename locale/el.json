@@ -77,7 +77,6 @@
 			}
 		},
 		"ban": {
-			"misingPermissions": "I need the `Ban Members` permission to use this command",
 			"error": "There was an error banning this user:\n{{ error }}",
 			"done": "The user was successfully banned.",
 			"canNotBan": "I cannot ban this user.",
@@ -89,7 +88,7 @@
 				},
 				"description": "Ban a member from the server."
 			},
-			"missingPermissions": "cmd.ban.missingPermissions"
+			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
 			"version": "Version",
@@ -622,13 +621,14 @@
 		},
 		"tryPremium": {
 			"title": "InviteManager - Try Premium",
-			"text": "You currently have an active premium subscription!",
+			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
 			"prompt": "Please reply with **yes** or **no**.",
 			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
+			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
+			"currentlyActive": "You currently have an active premium subscription!",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
-			},
-			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium."
+			}
 		},
 		"export": {
 			"title": "InviteManager - Export",
@@ -1051,5 +1051,6 @@
 	},
 	"captcha": {
 		"invalid": "Captcha didn't match, please try again."
-	}
+	},
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM"
 }
