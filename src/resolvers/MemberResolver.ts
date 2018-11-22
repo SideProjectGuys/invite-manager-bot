@@ -17,7 +17,7 @@ export class MemberResolver extends Resolver {
 			const id = value.match(idRegex)[1];
 			member = guild.members.get(id);
 			if (!member) {
-				member = await guild.getRESTMember(id);
+				member = await guild.getRESTMember(id).then(() => undefined);
 			}
 			if (!member) {
 				throw Error(t('arguments.member.notFound'));
