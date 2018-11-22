@@ -108,7 +108,10 @@ export class Commands {
 		const t = (key: string, replacements?: { [key: string]: string }) =>
 			i18n.__({ locale: lang, phrase: key }, replacements);
 
-		if (idRegex.test(content)) {
+		// Process prefix first so we can use any possible prefixes
+		if (content.startsWith(sets.prefix)) {
+			content = content.substring(sets.prefix.length);
+		} else if (idRegex.test(content)) {
 			const matches = content.match(idRegex);
 
 			if (matches[1] !== this.client.user.id) {
@@ -116,15 +119,9 @@ export class Commands {
 			}
 
 			content = matches[2];
-		} else {
-			// Check for prefix if this is in a guild
-			if (guild) {
-				if (!content.startsWith(sets.prefix)) {
-					return;
-				}
-
-				content = content.substring(sets.prefix.length);
-			}
+		} else if (guild) {
+			// Exit if we're in guild chat and we can't recognize a command
+			return;
 		}
 
 		const splits = content.split(' ');
