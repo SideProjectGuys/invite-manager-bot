@@ -139,26 +139,22 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.credits.developers'),
-			value: this.getList(developers),
-			inline: true
+			value: this.getList(developers)
 		});
 
 		embed.fields.push({
 			name: t('cmd.credits.moderators'),
-			value: this.getList(moderators),
-			inline: true
+			value: this.getList(moderators)
 		});
 
 		embed.fields.push({
 			name: t('cmd.credits.staff'),
-			value: this.getList(staff),
-			inline: true
+			value: this.getList(staff)
 		});
 
 		embed.fields.push({
 			name: t('cmd.credits.translators'),
-			value: this.getList(translators),
-			inline: true
+			value: this.getList(translators)
 		});
 
 		return this.client.sendReply(message, embed);

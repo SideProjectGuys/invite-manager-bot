@@ -1026,6 +1026,12 @@
 					}
 				}
 			}
+		},
+		"credits": {
+			"developers": "Developers",
+			"moderators": "Moderators",
+			"staff": "Staff",
+			"translators": "Translators"
 		}
 	},
 	"permissions": {
