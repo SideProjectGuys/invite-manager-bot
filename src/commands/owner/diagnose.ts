@@ -6,6 +6,7 @@ import { StringResolver } from '../../resolvers';
 import {
 	commandUsage,
 	guilds,
+	premiumSubscriptionGuilds,
 	premiumSubscriptions,
 	sequelize
 } from '../../sequelize';
@@ -62,13 +63,22 @@ export default class extends Command {
 			raw: true
 		});
 
-		const sub = await premiumSubscriptions.findOne({
+		const sub = await premiumSubscriptionGuilds.findOne({
 			where: {
-				guildId,
-				validUntil: {
-					[sequelize.Op.gte]: new Date()
-				}
+				guildId
 			},
+			include: [
+				{
+					attributes: [],
+					model: premiumSubscriptions,
+					required: true,
+					where: {
+						validUntil: {
+							[sequelize.Op.gte]: new Date()
+						}
+					}
+				}
+			],
 			raw: true
 		});
 

@@ -613,10 +613,22 @@
 			},
 			"premium": {
 				"title": "InviteManager Premium",
-				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?]({{{ link }}})"
+				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})"
 			},
 			"self": {
-				"description": "Info about premium version of InviteManager."
+				"description": "Info about premium version of InviteManager.",
+				"args": {
+					"action": "cmd.premium.self.args.action"
+				}
+			},
+			"activate": {
+				"title": "cmd.premium.activate.title",
+				"currentlyActive": "cmd.premium.activate.currentlyActive",
+				"done": "cmd.premium.activate.done"
+			},
+			"deactivate": {
+				"title": "cmd.premium.deactivate.title",
+				"done": "cmd.premium.deactivate.done"
 			}
 		},
 		"tryPremium": {

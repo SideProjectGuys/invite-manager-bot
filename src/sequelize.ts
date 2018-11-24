@@ -1170,14 +1170,13 @@ members.hasMany(commandUsage);
 export interface PremiumSubscriptionAttributes extends BaseAttributes {
 	id: number;
 	amount: number;
+	maxGuilds: number;
 	validUntil: Date | number | string;
-	guildId: string;
 	memberId: string;
 }
 export interface PremiumSubscriptionInstance
 	extends Sequelize.Instance<PremiumSubscriptionAttributes>,
 		PremiumSubscriptionAttributes {
-	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 }
 
@@ -1189,8 +1188,8 @@ export const premiumSubscriptions = sequelize.define<
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
+		maxGuilds: Sequelize.INTEGER,
 		validUntil: Sequelize.DATE,
-		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32)
 	},
 	{
@@ -1199,11 +1198,47 @@ export const premiumSubscriptions = sequelize.define<
 	}
 );
 
-premiumSubscriptions.belongsTo(guilds);
-guilds.hasMany(premiumSubscriptions);
-
 premiumSubscriptions.belongsTo(members);
 members.hasMany(premiumSubscriptions);
+
+// ------------------------------------
+// PremiumSubscriptionGuilds
+// ------------------------------------
+export interface PremiumSubscriptionGuildAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	premiumSubscriptionId: number;
+}
+export interface PremiumSubscriptionGuildInstance
+	extends Sequelize.Instance<PremiumSubscriptionGuildAttributes>,
+		PremiumSubscriptionGuildAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+	getPremiumSubscription: Sequelize.BelongsToGetAssociationMixin<
+		PremiumSubscriptionInstance
+	>;
+}
+
+export const premiumSubscriptionGuilds = sequelize.define<
+	PremiumSubscriptionGuildAttributes,
+	PremiumSubscriptionGuildAttributes
+>(
+	'premiumSubscriptionGuilds',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		guildId: Sequelize.STRING(32),
+		premiumSubscriptionId: Sequelize.INTEGER
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
+
+premiumSubscriptionGuilds.belongsTo(guilds);
+guilds.hasMany(premiumSubscriptionGuilds);
+
+premiumSubscriptionGuilds.belongsTo(premiumSubscriptions);
+premiumSubscriptions.hasMany(premiumSubscriptionGuilds);
 
 // ------------------------------------
 // RolePermssions

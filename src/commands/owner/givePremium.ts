@@ -12,31 +12,25 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.givePremium,
 			aliases: ['owner-give-premium', 'ogp'],
-			// desc: 'Give premium',
 			args: [
 				{
 					name: 'amount',
 					resolver: NumberResolver,
-					// description: 'The amount paid for premium.',
 					required: true
 				},
 				{
 					name: 'user',
 					resolver: UserResolver,
-					// description: 'The user that paid for premium.',
-					required: true
-				},
-				{
-					name: 'guildId',
-					resolver: StringResolver,
-					// description: 'The id of the guild that receives premium.',
 					required: true
 				},
 				{
 					name: 'duration',
 					resolver: StringResolver,
-					// description: 'The duration of the premium activation.',
 					required: true
+				},
+				{
+					name: 'maxGuilds',
+					resolver: NumberResolver
 				}
 			],
 			strict: true,
@@ -47,7 +41,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[amount, user, guildId, duration]: [number, User, string, string],
+		[amount, user, duration, numGuilds]: [number, User, string, number],
 		context: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(context.guild.id) === -1) {
@@ -71,20 +65,21 @@ export default class extends Command {
 
 		const premiumDuration = moment.duration(days, 'day');
 		const validUntil = moment().add(premiumDuration);
+		const maxGuilds = numGuilds ? numGuilds : 5;
 
-		await premiumSubscriptions.create({
+		const sub = await premiumSubscriptions.create({
 			id: null,
-			amount: amount,
+			amount,
+			maxGuilds,
 			validUntil: validUntil.toDate(),
-			guildId,
 			memberId: user.id
 		});
 
 		this.client.logAction(context.guild, message, LogAction.owner, {
 			type: 'give-premium',
-			amount: amount,
+			amount,
+			maxGuilds,
 			validUntil: validUntil.toDate(),
-			guildId,
 			memberId: user.id
 		});
 
@@ -98,10 +93,5 @@ export default class extends Command {
 		embed.fields.push({ name: 'User', value: user.username });
 
 		await this.client.sendReply(message, embed);
-
-		let cmd = this.client.cmds.commands.find(
-			c => c.name === OwnerCommand.flush
-		);
-		cmd.action(message, [guildId], context);
 	}
 }
