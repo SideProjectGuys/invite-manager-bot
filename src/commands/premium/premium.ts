@@ -148,7 +148,9 @@ export default class extends Command {
 						embed.description = t('cmd.premium.activate.currentlyActive');
 					} else {
 						if (!sub) {
-							embed.description = t('cmd.premium.activate.noSubscription');
+							embed.description = t('cmd.premium.activate.noSubscription', {
+								cmd: '`' + settings.prefix + 'premium`'
+							});
 						} else {
 							const subs = await premiumSubscriptionGuilds.count({
 								where: {
