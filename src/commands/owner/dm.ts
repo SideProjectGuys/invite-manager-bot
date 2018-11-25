@@ -10,17 +10,15 @@ export default class extends Command {
 		super(client, {
 			name: OwnerCommand.dm,
 			aliases: ['owner-dm', 'odm'],
-			// desc: 'Send a DM to a user',
 			args: [
 				{
 					name: 'userId',
 					resolver: StringResolver
-					// description: 'The id of the user.'
 				},
 				{
 					name: 'msg',
-					resolver: StringResolver
-					// description: 'The message to send to the user'
+					resolver: StringResolver,
+					rest: true
 				}
 			],
 			strict: true,
