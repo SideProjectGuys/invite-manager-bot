@@ -4,8 +4,7 @@ import moment from 'moment';
 import { IMClient } from '../../client';
 import {
 	premiumSubscriptionGuilds,
-	premiumSubscriptions,
-	sequelize
+	premiumSubscriptions
 } from '../../sequelize';
 import { BotCommand, CommandGroup, PromptResult } from '../../types';
 import { Command, Context } from '../Command';
@@ -96,11 +95,7 @@ export default class extends Command {
 					model: premiumSubscriptions,
 					required: true,
 					where: {
-						amount: 0,
-						maxGuilds: 1,
-						validUntil: {
-							[sequelize.Op.gte]: new Date()
-						}
+						isFreeTier: true
 					}
 				}
 			]
