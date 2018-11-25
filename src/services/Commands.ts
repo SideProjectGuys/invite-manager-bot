@@ -203,7 +203,9 @@ export class Commands {
 			lastCall.last = now;
 		}
 
-		const isPremium = await this.client.cache.premium.get(guild.id);
+		const isPremium = guild
+			? await this.client.cache.premium.get(guild.id)
+			: false;
 
 		if (!isPremium && cmd.premiumOnly) {
 			this.client.sendReply(message, t('permissions.premiumOnly'));

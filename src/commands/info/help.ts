@@ -62,11 +62,6 @@ export default class extends Command {
 				});
 			}
 		} else {
-			let member = guild.members.get(message.author.id);
-			if (!member) {
-				member = await guild.getRESTMember(message.author.id);
-			}
-
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
 			const commands = this.client.cmds.commands
@@ -88,23 +83,30 @@ export default class extends Command {
 				embed.fields.push({ name: group, value: descr });
 			});
 
-			if (guild && member && member.permission.has(Permissions.ADMINISTRATOR)) {
-				const missing: string[] = [];
-				if (!me.permission.has(Permissions.MANAGE_GUILD)) {
-					missing.push(t('permissions.manageGuild'));
-				}
-				if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
-					missing.push(t('permissions.viewAuditLogs'));
-				}
-				if (!me.permission.has(Permissions.MANAGE_ROLES)) {
-					missing.push(t('permissions.manageRoles'));
+			if (guild) {
+				let member = guild.members.get(message.author.id);
+				if (!member) {
+					member = await guild.getRESTMember(message.author.id);
 				}
 
-				if (missing.length > 0) {
-					embed.fields.push({
-						name: t('cmd.help.missingPermissions'),
-						value: missing.map(p => `\`${p}\``).join(', ')
-					});
+				if (member && member.permission.has(Permissions.ADMINISTRATOR)) {
+					const missing: string[] = [];
+					if (!me.permission.has(Permissions.MANAGE_GUILD)) {
+						missing.push(t('permissions.manageGuild'));
+					}
+					if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
+						missing.push(t('permissions.viewAuditLogs'));
+					}
+					if (!me.permission.has(Permissions.MANAGE_ROLES)) {
+						missing.push(t('permissions.manageRoles'));
+					}
+
+					if (missing.length > 0) {
+						embed.fields.push({
+							name: t('cmd.help.missingPermissions'),
+							value: missing.map(p => `\`${p}\``).join(', ')
+						});
+					}
 				}
 			}
 		}
