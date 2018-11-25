@@ -31,7 +31,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Premium,
-			guildOnly: true,
+			guildOnly: false,
 			strict: true
 		});
 	}
@@ -43,6 +43,7 @@ export default class extends Command {
 	): Promise<any> {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
+		const guildId = guild ? guild.id : undefined;
 
 		const embed = this.client.createEmbed();
 
@@ -110,21 +111,23 @@ export default class extends Command {
 					const guildName = guildSub['guild.name'];
 					guildList +=
 						`- **${guildName}**` +
-						(guildSub.guildId === guild.id ? ' *(This server)*' : '') +
+						(guildSub.guildId === guildId ? ' *(This server)*' : '') +
 						'\n';
 				});
-				if (allGuildSubs.some(s => s.guildId === guild.id)) {
-					guildList +=
-						'\n`' +
-						t('cmd.premium.premium.deactivate', {
-							cmd: settings.prefix + 'premium deactivate`'
-						});
-				} else {
-					guildList +=
-						'\n`' +
-						t('cmd.premium.premium.activate', {
-							cmd: settings.prefix + 'premium activate`'
-						});
+				if (guildId) {
+					if (allGuildSubs.some(s => s.guildId === guildId)) {
+						guildList +=
+							'\n`' +
+							t('cmd.premium.premium.deactivate', {
+								cmd: settings.prefix + 'premium deactivate`'
+							});
+					} else {
+						guildList +=
+							'\n`' +
+							t('cmd.premium.premium.activate', {
+								cmd: settings.prefix + 'premium activate`'
+							});
+					}
 				}
 
 				const limit = `**${allGuildSubs.length}/${sub.maxGuilds}**`;
@@ -141,51 +144,51 @@ export default class extends Command {
 			if (action === Action.Activate) {
 				embed.title = t('cmd.premium.activate.title');
 
-				if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
+				if (!guildId) {
+					embed.description = t('cmd.premium.activate.noGuild');
+				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
 					embed.description = t('cmd.premium.premium.adminOnly');
+				} else if (isPremium) {
+					embed.description = t('cmd.premium.activate.currentlyActive');
+				} else if (!sub) {
+					embed.description = t('cmd.premium.activate.noSubscription', {
+						cmd: '`' + settings.prefix + 'premium`'
+					});
 				} else {
-					if (isPremium) {
-						embed.description = t('cmd.premium.activate.currentlyActive');
-					} else {
-						if (!sub) {
-							embed.description = t('cmd.premium.activate.noSubscription', {
-								cmd: '`' + settings.prefix + 'premium`'
-							});
-						} else {
-							const subs = await premiumSubscriptionGuilds.count({
-								where: {
-									premiumSubscriptionId: sub.id
-								}
-							});
-
-							if (subs > sub.maxGuilds) {
-								embed.description = t('cmd.premium.activate.maxGuilds');
-							} else {
-								await premiumSubscriptionGuilds.create({
-									id: null,
-									premiumSubscriptionId: sub.id,
-									guildId: guild.id
-								});
-
-								this.client.cache.premium.flush(guild.id);
-
-								embed.description = t('cmd.premium.activate.done');
-							}
+					const subs = await premiumSubscriptionGuilds.count({
+						where: {
+							premiumSubscriptionId: sub.id
 						}
+					});
+
+					if (subs > sub.maxGuilds) {
+						embed.description = t('cmd.premium.activate.maxGuilds');
+					} else {
+						await premiumSubscriptionGuilds.create({
+							id: null,
+							premiumSubscriptionId: sub.id,
+							guildId
+						});
+
+						this.client.cache.premium.flush(guildId);
+
+						embed.description = t('cmd.premium.activate.done');
 					}
 				}
 			} else if (action === Action.Deactivate) {
 				embed.title = t('cmd.premium.deactivate.title');
 
-				if (isPremium) {
+				if (!guildId) {
+					embed.description = t('cmd.premium.deactivate.noGuild');
+				} else if (isPremium) {
 					await premiumSubscriptionGuilds.destroy({
 						where: {
 							premiumSubscriptionId: sub.id,
-							guildId: guild.id
+							guildId: guildId
 						}
 					});
 
-					this.client.cache.premium.flush(guild.id);
+					this.client.cache.premium.flush(guildId);
 
 					embed.description = t('cmd.premium.deactivate.done');
 				} else {
@@ -232,7 +235,7 @@ export default class extends Command {
 					}
 
 					embed.description = t('cmd.premium.check.done', {
-						valid: validUntil.locale('en_GB').calendar(),
+						valid: validUntil.locale(lang).calendar(),
 						cmd: '`' + settings.prefix + 'premium`'
 					});
 				}
