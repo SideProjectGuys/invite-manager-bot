@@ -17,7 +17,7 @@ export class UserResolver extends Resolver {
 			const id = value.match(idRegex)[1];
 			user = this.client.users.get(id);
 			if (!user) {
-				user = await this.client.getRESTUser(id);
+				user = await this.client.getRESTUser(id).then(() => undefined);
 			}
 			if (!user) {
 				throw Error(t('arguments.user.notFound'));

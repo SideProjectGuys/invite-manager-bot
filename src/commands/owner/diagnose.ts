@@ -3,7 +3,12 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { StringResolver } from '../../resolvers';
-import { commandUsage, premiumSubscriptions, sequelize } from '../../sequelize';
+import {
+	commandUsage,
+	guilds,
+	premiumSubscriptions,
+	sequelize
+} from '../../sequelize';
 import { OwnerCommand, ShardCommand } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -46,6 +51,8 @@ export default class extends Command {
 			`Requesting diagnose info for ${guildId}...`
 		);
 
+		const guildInfo = await guilds.findById(guildId);
+
 		const lastCmd = await commandUsage.find({
 			where: {
 				guildId
@@ -84,7 +91,12 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: 'Guild',
-					value: `Id: ${guildId}\n` + `Shard: ${shard}\n`
+					value:
+						`Id: ${guildId}\n` +
+						`Name: ${guildInfo.name}\n` +
+						`Members: ${guildInfo.memberCount}` +
+						`Inserted: ${moment(guildInfo.createdAt).fromNow()}` +
+						`Shard: ${shard}\n`
 				});
 
 				const sets: { [x: string]: string } = {};
