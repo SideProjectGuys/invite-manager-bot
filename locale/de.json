@@ -598,10 +598,14 @@
 		},
 		"premium": {
 			"noPremium": {
-				"title": "This server currently does not have a premium subscription",
+				"title": "You currently do not have a premium subscription",
 				"text": "By subscribing to a premium tier you help the development of the bot and also get some additional features."
 			},
 			"feature": {
+				"servers": {
+					"title": "Premium Feature: Up to 5 servers",
+					"text": "Once you have premium you may activate it on up to 5 servers of your choosing, and you can change these 5 servers anytime."
+				},
 				"embeds": {
 					"title": "Premium Feature: Embeds in join messages",
 					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{{ link }}})"
@@ -609,14 +613,38 @@
 				"export": {
 					"title": "Premium Feature: History export",
 					"text": "You can export all the joins and leaves that happened on your server since you invited our bot."
+				},
+				"patreon": {
+					"title": "If you purchsed premium on Patreon",
+					"text": "Run {{{ cmd }}} to validate and activate your Patreon plegde."
 				}
 			},
 			"premium": {
 				"title": "InviteManager Premium",
-				"text": "This servers subscription is valid for another {{ date }}.\n\n[What can I do with premium?]({{{ link }}})"
+				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
+				"activate": "Use {{{ cmd }}} to activate it on this server"
 			},
 			"self": {
-				"description": "Info about premium version of InviteManager."
+				"description": "Info about premium version of InviteManager.",
+				"args": {
+					"action": "cmd.premium.self.args.action"
+				}
+			},
+			"activate": {
+				"title": "Activate premium on this server",
+				"currentlyActive": "There is already a premium subscription active on this server.",
+				"done": "Premium has been successfully activated for this server."
+			},
+			"deactivate": {
+				"title": "Deactivate premium on this server",
+				"done": "Premium has been successfully deactivated for this server."
+			},
+			"check": {
+				"title": "Check for a Premium Subscription",
+				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
+				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
+				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info."
 			}
 		},
 		"tryPremium": {
@@ -1026,6 +1054,12 @@
 					}
 				}
 			}
+		},
+		"credits": {
+			"developers": "Developers",
+			"moderators": "Moderators",
+			"staff": "Staff",
+			"translators": "Translators"
 		}
 	},
 	"permissions": {
