@@ -31,8 +31,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Premium,
-			guildOnly: false,
-			strict: true
+			guildOnly: false
 		});
 	}
 
