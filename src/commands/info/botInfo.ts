@@ -20,7 +20,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
-		{ t, settings }: Context
+		{ t, settings, isPremium }: Context
 	): Promise<any> {
 		const lang = settings.lang;
 
@@ -70,6 +70,14 @@ export default class extends Command {
 			name: t('cmd.botInfo.shards.total'),
 			value: this.client.shardCount.toString(),
 			inline: true
+		});
+
+		// Premium
+		embed.fields.push({
+			name: t('cmd.botInfo.premium.title'),
+			value: isPremium
+				? t('cmd.botInfo.premium.active')
+				: t('cmd.botInfo.premium.none')
 		});
 
 		// Support discord
