@@ -1173,6 +1173,7 @@ export interface PremiumSubscriptionAttributes extends BaseAttributes {
 	maxGuilds: number;
 	validUntil: Date | number | string;
 	memberId: string;
+	reason: string;
 }
 export interface PremiumSubscriptionInstance
 	extends Sequelize.Instance<PremiumSubscriptionAttributes>,
@@ -1190,7 +1191,8 @@ export const premiumSubscriptions = sequelize.define<
 		amount: Sequelize.DECIMAL(10, 2),
 		maxGuilds: Sequelize.INTEGER,
 		validUntil: Sequelize.DATE,
-		memberId: Sequelize.STRING(32)
+		memberId: Sequelize.STRING(32),
+		reason: Sequelize.TEXT
 	},
 	{
 		timestamps: true,

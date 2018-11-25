@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Message } from 'eris';
 import moment from 'moment';
 
@@ -13,6 +14,7 @@ import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 enum Action {
+	Check = 'Check',
 	Activate = 'Activate',
 	Deactivate = 'Deactivate'
 }
@@ -59,6 +61,11 @@ export default class extends Command {
 				embed.description = t('cmd.premium.noPremium.text');
 
 				embed.fields.push({
+					name: t('cmd.premium.feature.servers.title'),
+					value: t('cmd.premium.feature.servers.text')
+				});
+
+				embed.fields.push({
 					name: t('cmd.premium.feature.embeds.title'),
 					value: t('cmd.premium.feature.embeds.text', {
 						link:
@@ -70,78 +77,98 @@ export default class extends Command {
 					name: t('cmd.premium.feature.export.title'),
 					value: t('cmd.premium.feature.export.text')
 				});
+
+				embed.fields.push({
+					name: t('cmd.premium.feature.patreon.title'),
+					value: t('cmd.premium.feature.patreon.text', {
+						cmd: '`' + settings.prefix + 'premium check`'
+					})
+				});
 			} else {
 				embed.title = t('cmd.premium.premium.title');
 
-				if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
-					embed.description = t('cmd.premium.premium.adminOnly');
+				const date = moment(sub.validUntil)
+					.locale(lang)
+					.fromNow(true);
+
+				const allGuildSubs = await premiumSubscriptionGuilds.findAll({
+					where: {
+						premiumSubscriptionId: sub.id
+					},
+					include: [
+						{
+							attributes: ['name'],
+							model: guilds,
+							required: true
+						}
+					],
+					raw: true
+				});
+
+				let guildList = '';
+				allGuildSubs.forEach((guildSub: any) => {
+					const guildName = guildSub['guild.name'];
+					guildList +=
+						`- **${guildName}**` +
+						(guildSub.guildId === guild.id ? ' *(This server)*' : '') +
+						'\n';
+				});
+				if (allGuildSubs.some(s => s.guildId === guild.id)) {
+					guildList +=
+						'\n`' +
+						t('cmd.premium.premium.deactivate', {
+							cmd: settings.prefix + 'premium deactivate`'
+						});
 				} else {
-					const date = moment(sub.validUntil)
-						.locale(lang)
-						.fromNow(true);
-
-					const allGuildSubs = await premiumSubscriptionGuilds.findAll({
-						where: {
-							premiumSubscriptionId: sub.id
-						},
-						include: [
-							{
-								attributes: ['name'],
-								model: guilds,
-								required: true
-							}
-						],
-						raw: true
-					});
-
-					let guildList = '';
-					allGuildSubs.forEach((guildSub: any) => {
-						const guildName = guildSub['guild.name'];
-						guildList +=
-							`- **${guildName}**` +
-							(guildSub.guildId === guild.id ? ' *(This server)*' : '') +
-							'\n';
-					});
-
-					const limit = `**${allGuildSubs.length}/${sub.maxGuilds}**`;
-
-					embed.description =
-						t('cmd.premium.premium.text', {
-							date,
-							limit,
-							guildList,
-							link: 'https://docs.invitemanager.co/bot/premium/features'
-						}) + '\n';
+					guildList +=
+						'\n`' +
+						t('cmd.premium.premium.activate', {
+							cmd: settings.prefix + 'premium activate`'
+						});
 				}
+
+				const limit = `**${allGuildSubs.length}/${sub.maxGuilds}**`;
+
+				embed.description =
+					t('cmd.premium.premium.text', {
+						date,
+						limit,
+						guildList,
+						link: 'https://docs.invitemanager.co/bot/premium/features'
+					}) + '\n';
 			}
 		} else {
 			if (action === Action.Activate) {
 				embed.title = t('cmd.premium.activate.title');
 
-				if (isPremium) {
-					embed.description = t('cmd.premium.activate.currentlyActive');
+				if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
+					embed.description = t('cmd.premium.premium.adminOnly');
 				} else {
-					if (!sub) {
-						embed.description = t('cmd.premium.activate.noSubscription');
+					if (isPremium) {
+						embed.description = t('cmd.premium.activate.currentlyActive');
 					} else {
-						const subs = await premiumSubscriptionGuilds.count({
-							where: {
-								premiumSubscriptionId: sub.id
-							}
-						});
-
-						if (subs > sub.maxGuilds) {
-							embed.description = t('cmd.premium.activate.maxGuilds');
+						if (!sub) {
+							embed.description = t('cmd.premium.activate.noSubscription');
 						} else {
-							await premiumSubscriptionGuilds.create({
-								id: null,
-								premiumSubscriptionId: sub.id,
-								guildId: guild.id
+							const subs = await premiumSubscriptionGuilds.count({
+								where: {
+									premiumSubscriptionId: sub.id
+								}
 							});
 
-							this.client.cache.premium.flush(guild.id);
+							if (subs > sub.maxGuilds) {
+								embed.description = t('cmd.premium.activate.maxGuilds');
+							} else {
+								await premiumSubscriptionGuilds.create({
+									id: null,
+									premiumSubscriptionId: sub.id,
+									guildId: guild.id
+								});
 
-							embed.description = t('cmd.premium.activate.done');
+								this.client.cache.premium.flush(guild.id);
+
+								embed.description = t('cmd.premium.activate.done');
+							}
 						}
 					}
 				}
@@ -156,9 +183,54 @@ export default class extends Command {
 						}
 					});
 
+					this.client.cache.premium.flush(guild.id);
+
 					embed.description = t('cmd.premium.deactivate.done');
 				} else {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
+				}
+			} else if (action === Action.Check) {
+				embed.title = t('cmd.premium.check.title');
+
+				const apiKey = this.client.config.apiKey;
+				const userId = message.author.id;
+				const res = await axios
+					.get(
+						`http://invitemanager.co/check/patreon/?apiKey=${apiKey}&userId=${userId}`
+					)
+					.catch(() => undefined);
+
+				if (!res) {
+					embed.description = t('cmd.premium.check.notFound');
+				} else if (res.data.declined_since) {
+					embed.description = t('cmd.premium.check.declined', {
+						since: res.data.declined_since
+					});
+				} else if (res.data.is_paused) {
+					embed.description = t('cmd.premium.check.paused');
+				} else {
+					const day = moment(res.data.created_at).date();
+					const validUntil = moment()
+						.add(1, 'month')
+						.date(day);
+
+					if (sub) {
+						sub.validUntil = validUntil.toDate();
+						await sub.save();
+					} else {
+						await premiumSubscriptions.create({
+							id: null,
+							amount: null,
+							maxGuilds: 5,
+							memberId: userId,
+							validUntil: validUntil.toDate()
+						});
+					}
+
+					embed.description = t('cmd.premium.check.done', {
+						valid: validUntil.locale('en_GB').calendar(),
+						cmd: '`' + settings.prefix + 'premium`'
+					});
 				}
 			}
 		}

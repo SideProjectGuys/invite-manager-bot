@@ -31,6 +31,11 @@ export default class extends Command {
 				{
 					name: 'maxGuilds',
 					resolver: NumberResolver
+				},
+				{
+					name: 'reason',
+					resolver: StringResolver,
+					rest: true
 				}
 			],
 			strict: true,
@@ -41,7 +46,13 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[amount, user, duration, numGuilds]: [number, User, string, number],
+		[amount, user, duration, numGuilds, reason]: [
+			number,
+			User,
+			string,
+			number,
+			string
+		],
 		context: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(context.guild.id) === -1) {
@@ -72,15 +83,18 @@ export default class extends Command {
 			amount,
 			maxGuilds,
 			validUntil: validUntil.toDate(),
-			memberId: user.id
+			memberId: user.id,
+			reason: reason || ''
 		});
 
 		this.client.logAction(context.guild, message, LogAction.owner, {
 			type: 'give-premium',
+			id: sub.id,
 			amount,
 			maxGuilds,
 			validUntil: validUntil.toDate(),
-			memberId: user.id
+			memberId: user.id,
+			reason
 		});
 
 		const embed = this.client.createEmbed({
