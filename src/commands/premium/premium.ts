@@ -9,7 +9,7 @@ import {
 	premiumSubscriptions,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 enum Action {
@@ -73,42 +73,46 @@ export default class extends Command {
 			} else {
 				embed.title = t('cmd.premium.premium.title');
 
-				const date = moment(sub.validUntil)
-					.locale(lang)
-					.fromNow(true);
+				if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
+					embed.description = t('cmd.premium.premium.adminOnly');
+				} else {
+					const date = moment(sub.validUntil)
+						.locale(lang)
+						.fromNow(true);
 
-				const allGuildSubs = await premiumSubscriptionGuilds.findAll({
-					where: {
-						premiumSubscriptionId: sub.id
-					},
-					include: [
-						{
-							attributes: ['name'],
-							model: guilds,
-							required: true
-						}
-					],
-					raw: true
-				});
+					const allGuildSubs = await premiumSubscriptionGuilds.findAll({
+						where: {
+							premiumSubscriptionId: sub.id
+						},
+						include: [
+							{
+								attributes: ['name'],
+								model: guilds,
+								required: true
+							}
+						],
+						raw: true
+					});
 
-				let guildList = '';
-				allGuildSubs.forEach((guildSub: any) => {
-					const guildName = guildSub['guild.name'];
-					guildList +=
-						`- **${guildName}**` +
-						(guildSub.guildId === guild.id ? ' *(This server)*' : '') +
-						'\n';
-				});
+					let guildList = '';
+					allGuildSubs.forEach((guildSub: any) => {
+						const guildName = guildSub['guild.name'];
+						guildList +=
+							`- **${guildName}**` +
+							(guildSub.guildId === guild.id ? ' *(This server)*' : '') +
+							'\n';
+					});
 
-				const limit = `**${allGuildSubs.length}/${sub.maxGuilds}**`;
+					const limit = `**${allGuildSubs.length}/${sub.maxGuilds}**`;
 
-				embed.description =
-					t('cmd.premium.premium.text', {
-						date,
-						limit,
-						guildList,
-						link: 'https://docs.invitemanager.co/bot/premium/features'
-					}) + '\n';
+					embed.description =
+						t('cmd.premium.premium.text', {
+							date,
+							limit,
+							guildList,
+							link: 'https://docs.invitemanager.co/bot/premium/features'
+						}) + '\n';
+				}
 			}
 		} else {
 			if (action === Action.Activate) {
