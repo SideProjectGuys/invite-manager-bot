@@ -101,6 +101,11 @@
 			},
 			"self": {
 				"description": "Krijg algemene informatie over deze bot."
+			},
+			"premium": {
+				"title": "Premium",
+				"active": "This server has an **active premium** subscription.",
+				"none": "This server currently **does not** have premium."
 			}
 		},
 		"check": {
@@ -634,11 +639,13 @@
 			"activate": {
 				"title": "Activate premium on this server",
 				"currentlyActive": "There is already a premium subscription active on this server.",
-				"done": "Premium has been successfully activated for this server."
+				"done": "Premium has been successfully activated for this server.",
+				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info."
 			},
 			"deactivate": {
 				"title": "Deactivate premium on this server",
-				"done": "Premium has been successfully deactivated for this server."
+				"done": "Premium has been successfully deactivated for this server.",
+				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info."
 			},
 			"check": {
 				"title": "Check for a Premium Subscription",
