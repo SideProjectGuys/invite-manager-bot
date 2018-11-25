@@ -64,8 +64,10 @@ export default class extends Command {
 				id: null,
 				amount: 0,
 				maxGuilds: 1,
+				isFreeTier: true,
 				validUntil: validUntil.toDate(),
-				memberId: message.author.id
+				memberId: message.author.id,
+				reason: null
 			});
 			await premiumSubscriptionGuilds.create({
 				id: null,

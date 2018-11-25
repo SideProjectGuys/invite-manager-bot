@@ -222,9 +222,10 @@ export default class extends Command {
 							id: null,
 							amount: null,
 							maxGuilds: 5,
+							isFreeTier: false,
 							memberId: userId,
 							validUntil: validUntil.toDate(),
-							reason: ''
+							reason: null
 						});
 					}
 

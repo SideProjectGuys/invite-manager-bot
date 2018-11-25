@@ -1171,6 +1171,7 @@ export interface PremiumSubscriptionAttributes extends BaseAttributes {
 	id: number;
 	amount: number;
 	maxGuilds: number;
+	isFreeTier: boolean;
 	validUntil: Date | number | string;
 	memberId: string;
 	reason: string;
@@ -1190,6 +1191,7 @@ export const premiumSubscriptions = sequelize.define<
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
 		maxGuilds: Sequelize.INTEGER,
+		isFreeTier: Sequelize.BOOLEAN,
 		validUntil: Sequelize.DATE,
 		memberId: Sequelize.STRING(32),
 		reason: Sequelize.TEXT

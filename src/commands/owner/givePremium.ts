@@ -82,9 +82,10 @@ export default class extends Command {
 			id: null,
 			amount,
 			maxGuilds,
+			isFreeTier: false,
 			validUntil: validUntil.toDate(),
 			memberId: user.id,
-			reason: reason || ''
+			reason
 		});
 
 		this.client.logAction(context.guild, message, LogAction.owner, {
