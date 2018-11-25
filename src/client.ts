@@ -129,6 +129,9 @@ export class IMClient extends Client {
 
 		this.version = version;
 		this.config = config;
+		if (_prefix) {
+			this.config.rabbitmq.prefix = _prefix;
+		}
 
 		this.cache = {
 			settings: new SettingsCache(this),
