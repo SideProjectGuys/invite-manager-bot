@@ -2,6 +2,7 @@
 	"devToken": "",
 	"owners": [],
 	"ownerGuildIds": [],
+	"apiKey": "",
 	"proBotId": "",
 	"botAdd": "https://invitemanager.co/add-bot/",
 	"botSupport": "https://discord.gg/Am6p2Hs",

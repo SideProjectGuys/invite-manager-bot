@@ -2,7 +2,10 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { premiumSubscriptions } from '../../sequelize';
+import {
+	premiumSubscriptionGuilds,
+	premiumSubscriptions
+} from '../../sequelize';
 import { BotCommand, CommandGroup, PromptResult } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -56,13 +59,21 @@ export default class extends Command {
 				return this.client.sendReply(message, t('prompt.canceled'));
 			}
 
-			await premiumSubscriptions.create({
+			const sub = await premiumSubscriptions.create({
 				id: null,
-				amount: 0.0,
+				amount: 0,
+				maxGuilds: 1,
+				isFreeTier: true,
 				validUntil: validUntil.toDate(),
-				guildId: guild.id,
-				memberId: message.author.id
+				memberId: message.author.id,
+				reason: null
 			});
+			await premiumSubscriptionGuilds.create({
+				id: null,
+				guildId: guild.id,
+				premiumSubscriptionId: sub.id
+			});
+
 			this.client.cache.premium.flush(guild.id);
 
 			embed.description = t('cmd.tryPremium.started', {
@@ -74,13 +85,22 @@ export default class extends Command {
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {
-		const subs = await premiumSubscriptions.findAll({
+		const subs = await premiumSubscriptionGuilds.count({
 			where: {
 				guildId: guildID
 			},
-			raw: true
+			include: [
+				{
+					attributes: [],
+					model: premiumSubscriptions,
+					required: true,
+					where: {
+						isFreeTier: true
+					}
+				}
+			]
 		});
 
-		return subs.length > 0;
+		return subs > 0;
 	}
 }

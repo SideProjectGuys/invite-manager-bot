@@ -1,4 +1,8 @@
-import { premiumSubscriptions, sequelize } from '../sequelize';
+import {
+	premiumSubscriptionGuilds,
+	premiumSubscriptions,
+	sequelize
+} from '../sequelize';
 
 import { GuildCache } from './GuildCache';
 
@@ -9,13 +13,22 @@ export class PremiumCache extends GuildCache<boolean> {
 
 	protected async getAll(guildIds: string[]): Promise<void> {
 		// Load valid premium subs
-		const subs = await premiumSubscriptions.findAll({
+		const subs = await premiumSubscriptionGuilds.findAll({
 			where: {
-				guildId: guildIds,
-				validUntil: {
-					[sequelize.Op.gte]: new Date()
-				}
+				guildId: guildIds
 			},
+			include: [
+				{
+					attributes: [],
+					model: premiumSubscriptions,
+					where: {
+						validUntil: {
+							[sequelize.Op.gte]: new Date()
+						}
+					},
+					required: true
+				}
+			],
 			raw: true
 		});
 
@@ -25,15 +38,24 @@ export class PremiumCache extends GuildCache<boolean> {
 	}
 
 	protected async getOne(guildId: string): Promise<boolean> {
-		const sub = await premiumSubscriptions.count({
+		const sub = await premiumSubscriptionGuilds.findOne({
 			where: {
-				guildId,
-				validUntil: {
-					[sequelize.Op.gte]: new Date()
+				guildId
+			},
+			include: [
+				{
+					attributes: [],
+					model: premiumSubscriptions,
+					where: {
+						validUntil: {
+							[sequelize.Op.gte]: new Date()
+						}
+					},
+					required: true
 				}
-			}
+			]
 		});
 
-		return sub > 0;
+		return !!sub;
 	}
 }
