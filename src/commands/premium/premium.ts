@@ -223,7 +223,8 @@ export default class extends Command {
 							amount: null,
 							maxGuilds: 5,
 							memberId: userId,
-							validUntil: validUntil.toDate()
+							validUntil: validUntil.toDate(),
+							reason: ''
 						});
 					}
 
