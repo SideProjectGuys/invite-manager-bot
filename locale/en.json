@@ -581,7 +581,8 @@
 					"user": "The user for whom you want to show detailed invites."
 				},
 				"description": "Shows details about where your invites are from."
-			}
+			},
+			"noInviteCodes": "You don't have any invite codes yet."
 		},
 		"getBot": {
 			"title": "Add InviteManager to your server",

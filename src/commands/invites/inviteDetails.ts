@@ -53,6 +53,11 @@ export default class extends Command {
 			raw: true
 		});
 
+		if (invs.length === 0) {
+			this.client.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
+			return;
+		}
+
 		const lang = settings.lang;
 
 		let invText = '';
