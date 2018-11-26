@@ -7,7 +7,6 @@ const maxCacheDuration = moment.duration(4, 'h');
 export abstract class Cache<CachedObject> {
 	protected client: IMClient;
 
-	// Role permissions
 	protected cache: Map<string, CachedObject> = new Map();
 	protected cacheTime: Map<string, moment.Moment> = new Map();
 
@@ -34,7 +33,7 @@ export abstract class Cache<CachedObject> {
 			}
 		}
 
-		const obj = await this.getOne(key);
+		const obj = await this._get(key);
 
 		this.cache.set(key, obj);
 		this.cacheTime.set(key, moment());
@@ -42,7 +41,7 @@ export abstract class Cache<CachedObject> {
 		return obj;
 	}
 
-	protected abstract async getOne(key: string): Promise<CachedObject>;
+	protected abstract async _get(key: string): Promise<CachedObject>;
 
 	public async set(key: string, value: CachedObject): Promise<CachedObject> {
 		this.cache.set(key, value);

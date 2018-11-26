@@ -1,10 +1,7 @@
 import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	memberSettingsDescription,
-	settingsDescription
-} from '../../descriptions/settings';
+import { settingsDescription } from '../../descriptions/settings';
 import {
 	ArrayResolver,
 	BooleanResolver,
@@ -14,11 +11,8 @@ import {
 	StringResolver
 } from '../../resolvers';
 import {
-	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
-	memberSettingsTypes,
 	RankAssignmentStyle,
 	SettingsKey,
 	settingsTypes
@@ -26,20 +20,14 @@ import {
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
-type ConfigMenu =
-	| { items: { [x: string]: ConfigMenu } }
-	| SettingsKey
-	| MemberSettingsKey
-	| InviteCodeSettingsKey;
+type ConfigMenu = { items: { [x: string]: ConfigMenu } } | SettingsKey;
 
 const allSettingsDescription = {
-	...settingsDescription,
-	...memberSettingsDescription
+	...settingsDescription
 };
 
 const allSettingsTypes = {
-	...settingsTypes,
-	...memberSettingsTypes
+	...settingsTypes
 };
 
 export default class extends Command {

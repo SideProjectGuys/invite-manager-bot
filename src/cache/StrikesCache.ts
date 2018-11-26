@@ -20,7 +20,7 @@ export class StrikesCache extends GuildCache<StrikeConfigInstance[]> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<StrikeConfigInstance[]> {
+	protected async _get(guildId: string): Promise<StrikeConfigInstance[]> {
 		return await strikeConfigs.findAll({
 			where: {
 				guildId

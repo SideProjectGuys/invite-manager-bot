@@ -278,7 +278,7 @@
 			},
 			"invitedMembers": {
 				"title": "Invited members",
-				"more": "Plus another {{ amount }} more bonus invites",
+				"more": "Plus another {{ amount }} more members",
 				"none": "This member has not invited anyone else so far"
 			},
 			"self": {

@@ -37,7 +37,7 @@ export class PermissionsCache extends GuildCache<PermissionsObject> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<PermissionsObject> {
+	protected async _get(guildId: string): Promise<PermissionsObject> {
 		const perms = await rolePermissions.findAll({
 			include: [
 				{

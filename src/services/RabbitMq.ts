@@ -309,7 +309,8 @@ export class RabbitMq {
 			mem = await guild.getRESTMember(member.id);
 		}
 		if (mem) {
-			const invCodeSettings = await this.client.cache.inviteCodes.get(
+			const invCodeSettings = await this.client.cache.inviteCodes.getOne(
+				guild.id,
 				join.exactMatchCode
 			);
 			if (invCodeSettings && invCodeSettings.roles) {

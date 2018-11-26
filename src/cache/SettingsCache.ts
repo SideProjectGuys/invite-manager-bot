@@ -34,7 +34,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<SettingsObject> {
+	protected async _get(guildId: string): Promise<SettingsObject> {
 		const sets = await settings.findAll({ where: { guildId } });
 
 		const obj: SettingsObject = { ...defaultSettings };
