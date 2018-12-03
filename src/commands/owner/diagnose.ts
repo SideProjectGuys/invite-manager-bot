@@ -104,8 +104,8 @@ export default class extends Command {
 					value:
 						`Id: ${guildId}\n` +
 						`Name: ${guildInfo.name}\n` +
-						`Members: ${guildInfo.memberCount}` +
-						`Inserted: ${moment(guildInfo.createdAt).fromNow()}` +
+						`Members: ${guildInfo.memberCount}\n` +
+						`Inserted: ${moment(guildInfo.createdAt).fromNow()}\n` +
 						`Shard: ${shard}\n`
 				});
 
