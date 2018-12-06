@@ -110,7 +110,7 @@ export class Commands {
 
 		// Process prefix first so we can use any possible prefixes
 		if (content.startsWith(sets.prefix)) {
-			content = content.substring(sets.prefix.length);
+			content = content.substring(sets.prefix.length).trim();
 		} else if (idRegex.test(content)) {
 			const matches = content.match(idRegex);
 

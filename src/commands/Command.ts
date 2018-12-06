@@ -89,7 +89,7 @@ export abstract class Command {
 			const arg = this.args[i];
 			const help = this.resolvers[i].getHelp(context);
 			const descr = context.t(`cmd.${this.name}.self.args.${arg.name}`);
-			info += `**<${arg.name}>**:\n${descr}\n` + (help ? `${help}\n\n` : '');
+			info += `**<${arg.name}>**\n${descr}\n` + (help ? `${help}\n\n` : '');
 		}
 		return info;
 	}

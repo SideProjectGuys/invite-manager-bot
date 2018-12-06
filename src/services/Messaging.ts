@@ -112,7 +112,7 @@ export class Messaging {
 				.createMessage({ embed: e })
 				.then(resolve)
 				.catch(error => {
-					console.log(error);
+					console.error(error);
 
 					const content = convertEmbedToPlain(e);
 					target
@@ -127,20 +127,28 @@ export class Messaging {
 							fallbackUser
 								.getDMChannel()
 								.then(channel => {
-									channel
-										.createMessage(
+									let msg =
+										'I encountered an error when trying to send a message. ' +
+										'Please report this to a developer:\n```' +
+										`${error.message}\n\n${err.message}\`\`\``;
+
+									if (err.code === 50013) {
+										msg =
 											'**I do not have permissions to post to that channel.\n' +
-												`Please tell an admin to allow me to send messages in the channel.**\n\n`
-										)
+											`Please tell an admin to allow me to send messages in the channel.**\n\n`;
+									}
+
+									channel
+										.createMessage(msg)
 										.then(resolve)
 										.catch(err2 => {
 											console.error(err2);
-											reject(err2);
+											return reject(err2);
 										});
 								})
 								.catch(err2 => {
 									console.log(err2);
-									reject(err2);
+									return reject(err2);
 								});
 						});
 				});
