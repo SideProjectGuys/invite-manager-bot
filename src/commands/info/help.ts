@@ -132,6 +132,6 @@ export default class extends Command {
 			value: linksArray.join(` | `)
 		});
 
-		return this.client.sendReply(message, embed);
+		this.client.sendReply(message, embed);
 	}
 }
