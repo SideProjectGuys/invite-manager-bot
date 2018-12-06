@@ -5,8 +5,6 @@ import { CommandResolver } from '../../resolvers';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
-const config = require('../../../config.json');
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -112,19 +110,25 @@ export default class extends Command {
 		}
 
 		let linksArray = [];
-		if (config.botSupport) {
+		if (this.client.config.botSupport) {
 			linksArray.push(
-				`[${t('bot.supportDiscord.title')}](${config.botSupport})`
+				`[${t('bot.supportDiscord.title')}](${this.client.config.botSupport})`
 			);
 		}
-		if (config.botAdd) {
-			linksArray.push(`[${t('bot.invite.title')}](${config.botAdd})`);
+		if (this.client.config.botAdd) {
+			linksArray.push(
+				`[${t('bot.invite.title')}](${this.client.config.botAdd})`
+			);
 		}
-		if (config.botWebsite) {
-			linksArray.push(`[${t('bot.website.title')}](${config.botWebsite})`);
+		if (this.client.config.botWebsite) {
+			linksArray.push(
+				`[${t('bot.website.title')}](${this.client.config.botWebsite})`
+			);
 		}
-		if (config.botPatreon) {
-			linksArray.push(`[${t('bot.patreon.title')}](${config.botPatreon})`);
+		if (this.client.config.botPatreon) {
+			linksArray.push(
+				`[${t('bot.patreon.title')}](${this.client.config.botPatreon})`
+			);
 		}
 
 		embed.fields.push({

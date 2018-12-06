@@ -26,10 +26,23 @@ export class EnumResolver extends Resolver {
 	}
 
 	public getHelp({ t }: Context) {
-		const vals: string[] = [];
-		this.values.forEach(v => vals.push('`' + v + '`'));
+		const rawVals = [...this.values.values()];
+
+		let i = 0;
+		let valText = '';
+		while (i < rawVals.length) {
+			valText += '`' + rawVals[i] + '`';
+			i++;
+			if (valText.length > 800) {
+				valText += ', ...';
+				break;
+			} else if (i < rawVals.length) {
+				valText += ', ';
+			}
+		}
+
 		return t('arguments.enum.validValues', {
-			values: vals.join(', ')
+			values: valText
 		});
 	}
 }
