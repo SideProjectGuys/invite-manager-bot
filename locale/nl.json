@@ -581,7 +581,8 @@
 					"user": "The user for whom you want to show detailed invites."
 				},
 				"description": "Shows details about where your invites are from."
-			}
+			},
+			"noInviteCodes": "You don't have any invite codes yet."
 		},
 		"getBot": {
 			"title": "Add InviteManager to your server",
@@ -714,7 +715,8 @@
 				"args": {
 					"key": "The config setting which you want to show/change.",
 					"code": "The invite code that the setting is changed for.",
-					"value": "The new value of the setting."
+					"value": "The new value of the setting.",
+					"inviteCode": "The invite code for which you want to change the settings."
 				},
 				"description": "Show and change the config of invite codes of the server."
 			},
