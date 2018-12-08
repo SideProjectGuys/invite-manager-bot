@@ -116,17 +116,6 @@ export enum ModerationCommand {
 	purge = 'purge'
 }
 
-export enum OwnerCommand {
-	cache = 'ownerCache',
-	diagnose = 'ownerDiagnose',
-	dm = 'ownerDm',
-	flush = 'ownerFlush',
-	givePremium = 'ownerGivePremium',
-	help = 'ownerHelp',
-	leave = 'ownerLeave',
-	sudo = 'ownerSudo'
-}
-
 export interface RabbitMqMember {
 	id: string;
 	nick?: string;
