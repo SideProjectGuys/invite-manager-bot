@@ -1,6 +1,6 @@
 import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
-import { Client, Embed, Guild, Message, TextChannel } from 'eris';
+import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -82,11 +82,8 @@ export class IMClient extends Client {
 	public shardCount: number;
 
 	public mod: Moderation;
-
 	public scheduler: Scheduler;
-
 	public cmds: Commands;
-
 	public captcha: CaptchaService;
 
 	public startedAt: moment.Moment;
@@ -94,6 +91,7 @@ export class IMClient extends Client {
 
 	public numGuilds: number = 0;
 	public guildsCachedAt: number = 0;
+	public disabledGuilds: Set<string>;
 
 	public numMembers: number = 0;
 	public membersCachedAt: number = 0;
@@ -154,16 +152,17 @@ export class IMClient extends Client {
 		this.rabbitmq = new RabbitMq(this, conn);
 
 		this.mod = new Moderation(this);
-
 		this.scheduler = new Scheduler(this);
-
 		this.cmds = new Commands(this);
-
 		this.captcha = new CaptchaService(this);
+
+		this.disabledGuilds = new Set();
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
 		this.on('guildUnavailable', this.onGuildUnavailable);
+		this.on('guildMemberAdd', this.onGuildMemberAdd);
+		this.on('guildMemberRemove', this.onGuildMemberRemove);
 		this.on('disconnect', this.onDisconnect);
 		this.on('connect', this.onConnect);
 		this.on('warn', this.onWarn);
@@ -179,6 +178,13 @@ export class IMClient extends Client {
 		// Other services
 		await this.rabbitmq.init();
 		await this.cmds.init();
+
+		// Disable guilds of pro bot
+		this.guilds.forEach(g => {
+			if (g.members.has(this.config.proBotId)) {
+				this.disabledGuilds.add(g.id);
+			}
+		});
 
 		// Setup discord bots api
 		if (this.config.discordBotsToken) {
@@ -205,6 +211,34 @@ export class IMClient extends Client {
 				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
 				'https://discord.gg/2eTnsVM'
 		);
+	}
+
+	private async onGuildMemberAdd(guild: Guild, member: Member) {
+		const guildId = guild.id;
+
+		// Ignore disabled guilds
+		if (this.disabledGuilds.has(guildId)) {
+			return;
+		}
+
+		if (member.user.bot) {
+			// Check if it's our premium bot
+			if (member.user.id === this.config.proBotId) {
+				console.log(
+					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
+				);
+				this.disabledGuilds.add(guildId);
+			}
+			return;
+		}
+	}
+
+	private async onGuildMemberRemove(guild: Guild, member: Member) {
+		// If the pro version of our bot left, re-enable this version
+		if (member.user.bot && member.user.id === this.config.proBotId) {
+			this.disabledGuilds.delete(guild.id);
+			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
+		}
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {
@@ -293,7 +327,7 @@ export class IMClient extends Client {
 
 	public async getMembersCount() {
 		// If cached member count is older than 5 minutes, update it
-		if (Date.now() - this.membersCachedAt > 1000 * 60 * 5) {
+		if (Date.now() - this.membersCachedAt > 1000 * 60 * 60) {
 			console.log('Fetching guild & member count from DB...');
 			this.numMembers = await members.count();
 			this.membersCachedAt = Date.now();
@@ -303,7 +337,7 @@ export class IMClient extends Client {
 
 	public async getGuildsCount() {
 		// If cached guild count is older than 5 minutes, update it
-		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 5) {
+		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 60) {
 			console.log('Fetching guild & member count from DB...');
 			this.numGuilds = await guilds.count({
 				where: {

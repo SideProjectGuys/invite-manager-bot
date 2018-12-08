@@ -8,7 +8,7 @@ import {
 	roles,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, OwnerCommand } from '../../types';
+import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -61,13 +61,7 @@ export default class extends Command {
 				Administrators: []
 			};
 
-			const vals = Object.values(OwnerCommand);
 			this.client.cmds.commands.forEach(command => {
-				// Skip owner commands
-				if (vals.includes(command.name)) {
-					return;
-				}
-
 				const ps = perms.filter(p => p.command === command.name);
 				if (!ps.length) {
 					if (command.strict) {

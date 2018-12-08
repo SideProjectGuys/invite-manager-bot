@@ -28,10 +28,10 @@ export enum CommandGroup {
 }
 
 export enum ShardCommand {
+	CUSTOM = 'CUSTOM',
 	DIAGNOSE = 'DIAGNOSE',
 	FLUSH_CACHE = 'FLUSH_CACHE',
 	SUDO = 'SUDO',
-	RESPONSE = 'RESPONSE',
 	OWNER_DM = 'OWNER_DM',
 	USER_DM = 'USER_DM',
 	LEAVE_GUILD = 'LEAVE_GUILD'
@@ -114,17 +114,6 @@ export enum ModerationCommand {
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
 	purge = 'purge'
-}
-
-export enum OwnerCommand {
-	cache = 'ownerCache',
-	diagnose = 'ownerDiagnose',
-	dm = 'ownerDm',
-	flush = 'ownerFlush',
-	givePremium = 'ownerGivePremium',
-	help = 'ownerHelp',
-	leave = 'ownerLeave',
-	sudo = 'ownerSudo'
 }
 
 export interface RabbitMqMember {

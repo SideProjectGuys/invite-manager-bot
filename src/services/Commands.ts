@@ -17,16 +17,12 @@ export class Commands {
 	private client: IMClient;
 
 	public commands: Command[];
-	public disabledGuilds: Set<string>;
-
 	private commandCalls: Map<string, { last: number; warned: boolean }>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
 		this.commands = [];
-		this.disabledGuilds = new Set();
-
 		this.commandCalls = new Map();
 
 		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
@@ -59,17 +55,10 @@ export class Commands {
 
 		// Attach events
 		this.client.on('messageCreate', this.onMessage.bind(this));
-		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
-		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
 	public async init() {
-		// Disable guilds of pro bot
-		this.client.guilds.forEach(g => {
-			if (g.members.has(this.client.config.proBotId)) {
-				this.disabledGuilds.add(g.id);
-			}
-		});
+		// NOP
 	}
 
 	public async onMessage(message: Message) {
@@ -90,7 +79,7 @@ export class Commands {
 		if (guild) {
 			// Check if this guild is disabled due to the pro bot
 			if (
-				this.disabledGuilds.has(guild.id) &&
+				this.client.disabledGuilds.has(guild.id) &&
 				!message.content.startsWith(`<@${this.client.user.id}>`) &&
 				!message.content.startsWith(`<@!${this.client.user.id}>`)
 			) {
@@ -152,6 +141,7 @@ export class Commands {
 					await this.client.sendEmbed(await user.getDMChannel(), embed);
 				}
 
+				/* TODO: Send DMs
 				this.client.rabbitmq.sendCommandToGuild(this.client.config.dmGuild, {
 					id: message.id,
 					cmd: ShardCommand.USER_DM,
@@ -161,6 +151,7 @@ export class Commands {
 					isInitial: isInitialMessage,
 					message: message.content
 				});
+				*/
 			}
 			return;
 		}
@@ -363,7 +354,7 @@ export class Commands {
 		const execTime: number = Date.now() - start;
 
 		// Ignore messages that are not in guild chat or from disabled guilds
-		if (guild && !this.disabledGuilds.has(guild.id)) {
+		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
 			this.client.dbQueue.addCommandUsage(
 				{
@@ -388,34 +379,6 @@ export class Commands {
 					discriminator: message.author.discriminator
 				}
 			);
-		}
-	}
-
-	private async onGuildMemberAdd(guild: Guild, member: Member) {
-		const guildId = guild.id;
-
-		// Ignore disabled guilds
-		if (this.disabledGuilds.has(guildId)) {
-			return;
-		}
-
-		if (member.user.bot) {
-			// Check if it's our premium bot
-			if (member.user.id === this.client.config.proBotId) {
-				console.log(
-					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
-				);
-				this.disabledGuilds.add(guildId);
-			}
-			return;
-		}
-	}
-
-	private async onGuildMemberRemove(guild: Guild, member: Member) {
-		// If the pro version of our bot left, re-enable this version
-		if (member.user.bot && member.user.id === this.client.config.proBotId) {
-			this.disabledGuilds.delete(guild.id);
-			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
 	}
 }

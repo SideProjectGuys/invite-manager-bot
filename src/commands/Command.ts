@@ -2,12 +2,7 @@ import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../client';
 import { SettingsObject } from '../sequelize';
-import {
-	BotCommand,
-	CommandGroup,
-	ModerationCommand,
-	OwnerCommand
-} from '../types';
+import { BotCommand, CommandGroup, ModerationCommand } from '../types';
 
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 
@@ -19,7 +14,7 @@ export interface Arg {
 }
 
 export interface CommandOptions {
-	name: BotCommand | OwnerCommand | ModerationCommand;
+	name: BotCommand | ModerationCommand;
 	aliases: string[];
 	args?: Arg[];
 	group?: CommandGroup;
@@ -46,7 +41,7 @@ export abstract class Command {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | OwnerCommand | ModerationCommand;
+	public name: BotCommand | ModerationCommand;
 	public aliases: string[];
 	public args: Arg[];
 	// public description: string;
