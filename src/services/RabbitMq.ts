@@ -45,12 +45,11 @@ export class RabbitMq {
 
 		// Setup RabbitMQ channels
 		const prefix = client.config.rabbitmq.prefix
-			? `${client.config.rabbitmq.prefix}-`
+			? `${client.config.rabbitmq.prefix}`
 			: '';
+		const suffix = `${this.client.shardId}-${this.client.shardCount}`;
 
-		this.qJoinsName = `${prefix}joins-${this.client.shardId}-${
-			this.client.shardCount
-		}`;
+		this.qJoinsName = `${prefix}-joins-${suffix}`;
 		conn.createChannel().then(async channel => {
 			this.channelJoins = channel;
 
@@ -59,9 +58,7 @@ export class RabbitMq {
 			});
 		});
 
-		this.qLeavesName = `${prefix}leaves-${this.client.shardId}-${
-			this.client.shardCount
-		}`;
+		this.qLeavesName = `${prefix}-leaves-${suffix}`;
 		conn.createChannel().then(async channel => {
 			this.channelLeaves = channel;
 
