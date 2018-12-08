@@ -16,6 +16,7 @@ export interface CaptchaConfig {
 	fileMode?: FileMode;
 	size?: number;
 	height?: number;
+	canvasHeight?: number;
 	width?: number;
 	color?: string;
 	background?: string;
@@ -117,6 +118,8 @@ export class CaptchaService {
 		config.fileMode = config.fileMode || FileMode.BASE64;
 		config.size = config.size || 4;
 		config.height = config.height || 24;
+		// Height times 3 because of the weird bug on linux servers where the letters are not positioned within the captcha
+		config.canvasHeight = config.height * 3;
 		config.width = config.width || config.height * config.size;
 		config.color = config.color || 'rgb(0,0,0)';
 		config.background = config.background || 'rgb(255,255,255)';
@@ -140,25 +143,27 @@ export class CaptchaService {
 		const fontSize = Math.round(
 			config.height * 0.5 + (15 - config.complexity * 3)
 		);
-		const canvas = new canvasClass(config.width, config.height);
+		const canvas = new canvasClass(config.width, config.canvasHeight);
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = config.background;
-		ctx.fillRect(0, 0, config.width, config.height);
+		ctx.fillRect(0, 0, config.width, config.canvasHeight);
 		ctx.fillStyle = config.color;
 		ctx.lineWidth = config.lineWidth;
 		ctx.font = fontSize.toString() + 'px sans';
 
 		if (config.noise) {
 			ctx.strokeStyle = config.noiseColor;
-			const noiseHeight = config.height;
+			const noiseHeight = config.canvasHeight;
+			const noiseWidthDiff = config.width / 3;
+			const paddingFromBorder = 20;
 			for (let i = 0; i < config.nofLines; i++) {
-				ctx.moveTo(20, Math.random() * noiseHeight);
+				ctx.moveTo(paddingFromBorder, Math.random() * noiseHeight);
 				ctx.bezierCurveTo(
-					80,
+					noiseWidthDiff,
 					Math.random() * noiseHeight,
-					160,
+					noiseWidthDiff * 2,
 					Math.random() * noiseHeight,
-					230,
+					noiseWidthDiff * 3 - paddingFromBorder,
 					Math.random() * noiseHeight
 				);
 				ctx.stroke();
@@ -173,10 +178,11 @@ export class CaptchaService {
 				Math.random() * modifier + modifier / 3,
 				Math.random() * modifier + modifier / 3,
 				Math.random() * modifier + 1 + modifier / 3,
-				(config.height * i) / (4 - config.spacing) +
+				config.width / 4 +
+					(config.height * i) / (4 - config.spacing) +
 					(config.height - fontSize) / 3 +
 					10,
-				config.height - (config.height - fontSize) / 2
+				config.canvasHeight - (config.canvasHeight - fontSize) / 2
 			);
 			ctx.fillText(config.text.charAt(i), 0, 0);
 		}
