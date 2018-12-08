@@ -152,6 +152,7 @@ export class Commands {
 					await this.client.sendEmbed(await user.getDMChannel(), embed);
 				}
 
+				/* TODO: Send DMs
 				this.client.rabbitmq.sendCommandToGuild(this.client.config.dmGuild, {
 					id: message.id,
 					cmd: ShardCommand.USER_DM,
@@ -161,6 +162,7 @@ export class Commands {
 					isInitial: isInitialMessage,
 					message: message.content
 				});
+				*/
 			}
 			return;
 		}
