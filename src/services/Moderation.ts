@@ -101,6 +101,11 @@ export class Moderation {
 			return;
 		}
 
+		// Ignore when pro bot is active
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
 		// TODO Enable for all guilds when ready
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
