@@ -50,6 +50,11 @@ export class CaptchaService {
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
+		// Ignore when pro bot is active
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
 		const sets = await this.client.cache.settings.get(guild.id);
 		if (!sets.captchaVerificationOnJoin) {
 			return;
