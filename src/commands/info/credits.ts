@@ -124,7 +124,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.credits,
-			aliases: ['credits'],
+			aliases: [],
 			group: CommandGroup.Info,
 			guildOnly: true
 		});

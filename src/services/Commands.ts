@@ -17,12 +17,14 @@ export class Commands {
 	private client: IMClient;
 
 	public commands: Command[];
+	private cmdMap: Map<string, Command>;
 	private commandCalls: Map<string, { last: number; warned: boolean }>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
 		this.commands = [];
+		this.cmdMap = new Map();
 		this.commandCalls = new Map();
 
 		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
@@ -40,8 +42,24 @@ export class Commands {
 				const clazz = require(file);
 				if (clazz.default) {
 					const constr = clazz.default;
-					const inst = new constr(this.client);
+					const inst: Command = new constr(this.client);
 					this.commands.push(inst);
+
+					// Register main commnad name
+					if (this.cmdMap.has(inst.name.toLowerCase())) {
+						console.error(`Duplicate command name ${inst.name}`);
+						process.exit(1);
+					}
+					this.cmdMap.set(inst.name.toLowerCase(), inst);
+
+					// Register aliases
+					inst.aliases.forEach(a => {
+						if (this.cmdMap.has(a.toLowerCase())) {
+							console.error(`Duplicate command alias ${a}`);
+							process.exit(1);
+						}
+						this.cmdMap.set(a.toLowerCase(), inst);
+					});
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
@@ -114,12 +132,9 @@ export class Commands {
 		}
 
 		const splits = content.split(' ');
-		const cmdStr = splits[0].toLowerCase();
 
 		// Find the command
-		let cmd: Command = this.commands.find(
-			c => c.name.toLowerCase() === cmdStr || c.aliases.indexOf(cmdStr) >= 0
-		);
+		const cmd = this.cmdMap.get(splits[0].toLowerCase());
 
 		// Command not found
 		if (!cmd) {
