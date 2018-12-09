@@ -24,6 +24,7 @@ export enum CommandGroup {
 	Info = 'Info',
 	Premium = 'Premium',
 	Moderation = 'Moderation',
+	Report = 'Report',
 	Other = 'Other'
 }
 
@@ -84,6 +85,8 @@ export enum BotCommand {
 
 	makeMentionable = 'makeMentionable',
 	mentionRole = 'mentionRole',
+
+	report = 'report',
 
 	graph = 'graph'
 }

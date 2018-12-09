@@ -1490,3 +1490,36 @@ export const scheduledActions = sequelize.define<
 
 scheduledActions.belongsTo(guilds);
 guilds.hasMany(scheduledActions);
+
+// ------------------------------------
+// Reports
+// ------------------------------------
+
+export enum ReportType {
+	fraud = 'fraud'
+}
+
+export interface ReportAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	reportType: ReportType;
+	description: string;
+}
+export interface ReportInstance
+	extends Sequelize.Instance<ReportAttributes>,
+		ReportAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+}
+
+export const reports = sequelize.define<ReportInstance, ReportAttributes>(
+	'report',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		reportType: Sequelize.ENUM(Object.values(ReportType)),
+		description: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32)
+	}
+);
+
+reports.belongsTo(guilds);
+guilds.hasMany(reports);
