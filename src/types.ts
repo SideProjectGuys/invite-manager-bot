@@ -29,6 +29,7 @@ export enum CommandGroup {
 }
 
 export enum ShardCommand {
+	CACHE = 'CACHE',
 	CUSTOM = 'CUSTOM',
 	DIAGNOSE = 'DIAGNOSE',
 	FLUSH_CACHE = 'FLUSH_CACHE',
