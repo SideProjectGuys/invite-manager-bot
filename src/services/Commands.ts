@@ -1,12 +1,13 @@
-import { Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
+import { Member, Message, PrivateChannel, TextChannel } from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
 import path from 'path';
 
 import { IMClient } from '../client';
 import { Command, Context } from '../commands/Command';
+import { BooleanResolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
-import { Permissions, ShardCommand } from '../types';
+import { Permissions } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
@@ -306,6 +307,63 @@ export class Commands {
 			}
 		}
 
+		// Resolve flags
+		const flags: { [x: string]: any } = {};
+		while (rawArgs.length > 0) {
+			const rawArg = rawArgs[0];
+
+			// Exit once we reach the first non-flag
+			if (!rawArg.startsWith('-')) {
+				break;
+			}
+
+			const flagSplits = rawArg.split('=');
+			const isShort = !flagSplits[0].startsWith('--');
+			const name = flagSplits[0].replace(/-/gi, '');
+			const flag = cmd.flags.find(
+				f => (isShort ? f.short === name : f.name === name)
+			);
+
+			// Exit if this is not a flag
+			if (!flag) {
+				break;
+			}
+
+			const resolver = cmd.flagResolvers.get(flag.name);
+			const rawVal = isShort ? rawArgs[1] : flagSplits[1];
+			const hasVal = typeof rawVal !== 'undefined';
+
+			if (flag.valueRequired && !hasVal) {
+				this.client.sendReply(
+					message,
+					`Missing required value for flag \`${flag.name}\`.\n` +
+						`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
+						resolver.getHelp(context)
+				);
+				return;
+			}
+
+			const skipVal = resolver instanceof BooleanResolver;
+
+			let val: any = true;
+			if (hasVal && !skipVal) {
+				try {
+					val = await resolver.resolve(rawVal, context, []);
+				} catch (e) {
+					this.client.sendReply(
+						message,
+						`Invalid value for \`${flag.name}\`: ${e.message}\n` +
+							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
+							resolver.getHelp(context)
+					);
+					return;
+				}
+			}
+
+			flags[flag.name] = val;
+			rawArgs.splice(0, isShort && !skipVal ? 2 : 1);
+		}
+
 		// Resolve arguments
 		const args: any[] = [];
 		let i = 0;
@@ -359,7 +417,7 @@ export class Commands {
 
 		// Run command
 		try {
-			await cmd.action(message, args, context);
+			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
 			this.client.sendReply(message, t('command.error'));

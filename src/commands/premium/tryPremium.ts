@@ -23,6 +23,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
+		flags: {},
 		{ guild, settings, t, isPremium }: Context
 	): Promise<any> {
 		const prefix = settings.prefix;

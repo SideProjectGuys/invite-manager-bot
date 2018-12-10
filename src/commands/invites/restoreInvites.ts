@@ -30,6 +30,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user]: [User],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		const memberId = user ? user.id : null;

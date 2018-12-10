@@ -52,6 +52,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const { guild, settings, t } = context;

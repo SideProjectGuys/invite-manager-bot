@@ -33,6 +33,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[type, duration]: [ChartType, string],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		let days = 60;

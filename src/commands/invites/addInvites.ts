@@ -38,6 +38,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user, amount, reason]: [User, number, string],
+		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
 		if (amount === 0) {

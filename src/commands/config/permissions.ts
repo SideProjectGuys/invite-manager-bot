@@ -35,6 +35,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[rawCmd, role]: [Command, Role],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		if (!rawCmd) {

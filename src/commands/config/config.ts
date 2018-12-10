@@ -43,6 +43,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[key, value]: [SettingsKey, any],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const { guild, settings, t } = context;
@@ -285,7 +286,7 @@ export default class extends Command {
 				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractFakes
 				);
-				return async () => await cmd.action(message, [], context);
+				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete old duplicate removals
 				return async () =>
@@ -304,7 +305,7 @@ export default class extends Command {
 				let cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractLeaves
 				);
-				return async () => await cmd.action(message, [], context);
+				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete old leave removals
 				return async () =>
@@ -322,7 +323,7 @@ export default class extends Command {
 			let cmd = this.client.cmds.commands.find(
 				c => c.name === BotCommand.subtractLeaves
 			);
-			return async () => await cmd.action(message, [], context);
+			return async () => await cmd.action(message, [], {}, context);
 		}
 	}
 

@@ -34,6 +34,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[_page]: [number],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		type ExtendedJoin = JoinAttributes & {

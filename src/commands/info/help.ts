@@ -24,6 +24,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[command]: [Command],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const { guild, t, settings, me } = context;

@@ -37,6 +37,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user]: [User],
+		flags: {},
 		{ guild, t, settings, me }: Context
 	): Promise<any> {
 		const lang = settings.lang;

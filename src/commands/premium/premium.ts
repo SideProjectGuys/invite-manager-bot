@@ -38,6 +38,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[action]: [Action],
+		flags: {},
 		{ guild, t, settings, isPremium }: Context
 	): Promise<any> {
 		// TODO: Create list of premium features (also useful for FAQ)
