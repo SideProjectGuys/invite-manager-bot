@@ -1,7 +1,12 @@
 import { Member, Message } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { MemberResolver, StringResolver } from '../../../resolvers';
+import {
+	MemberResolver,
+	NumberResolver,
+	StringResolver
+} from '../../../resolvers';
 import { punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { isPunishable, to } from '../../../util';
@@ -24,6 +29,14 @@ export default class extends Command {
 					rest: true
 				}
 			],
+			flags: [
+				{
+					name: 'deleteMessageDays',
+					resolver: NumberResolver,
+					short: 'd',
+					valueRequired: true
+				}
+			],
 			group: CommandGroup.Moderation,
 			strict: true,
 			guildOnly: true
@@ -33,7 +46,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[targetMember, reason]: [Member, string],
-		flags: {},
+		{ deleteMessageDays }: { deleteMessageDays: number },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -48,7 +61,8 @@ export default class extends Command {
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.ban.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.ban(0, reason));
+			const days = deleteMessageDays ? deleteMessageDays : 0;
+			let [error] = await to(targetMember.ban(days, reason));
 			if (error) {
 				embed.description = t('cmd.ban.error');
 			} else {
