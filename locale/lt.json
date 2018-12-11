@@ -111,7 +111,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Punishments",
@@ -274,16 +274,20 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "This member has received no bonuses so far",
-				"noReason": "No reason"
+				"noReason": "No reason",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
 				"title": "Invited members",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "This member has not invited anyone else so far"
+				"more": "Plus another {{ amount }} more invited members",
+				"none": "This member has not invited anyone else so far",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
 				"args": {
-					"user": "The user for whom you want to see additional info."
+					"user": "The user for whom you want to see additional info.",
+					"details": "Request only specific details about a member.",
+					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
 				"description": "Show info about a specific member."
 			}
@@ -498,11 +502,11 @@
 			},
 			"help": {
 				"title": "Help",
-				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{ link }}"
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Premium",
-				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{ link }}\n\nDepending on the tier, you will get some additional features."
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
 				"title": "Missing permission: Manage Server",
@@ -1071,6 +1075,9 @@
 			"moderators": "Moderators",
 			"staff": "Staff",
 			"translators": "Translators"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {

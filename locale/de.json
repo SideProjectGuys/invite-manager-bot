@@ -111,7 +111,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Bestrafungen",
@@ -274,16 +274,20 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "Dieses Mitglied hat bisher keine Boni erhalten",
-				"noReason": "No reason"
+				"noReason": "No reason",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
 				"title": "Geladenen Mitgliedern",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "Dieses Mitglied hatte bisher noch niemanden eingeladen"
+				"more": "Plus another {{ amount }} more invited members",
+				"none": "Dieses Mitglied hatte bisher noch niemanden eingeladen",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
 				"args": {
-					"user": "Der Benutzer wessen information du sehen willst."
+					"user": "Der Benutzer wessen information du sehen willst.",
+					"details": "Request only specific details about a member.",
+					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
 				"description": "Zeigt Informationen über einen bestimmten Benutzer."
 			}
@@ -498,11 +502,11 @@
 			},
 			"help": {
 				"title": "Hilfe",
-				"text": "\nWenn du Hilfe brauchst oder eine Bewerung an die Entwickler/Inhaber senden willst dann benutze den !feedback Befehl oder Betrete unseren discord Hilfe Server: {{ link }}"
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Premium",
-				"text": "Wenn Sie die Entwicklung dieses bot unterstützen möchten, können Sie dies tun, indem Sie uns auf patreon unterstützen: {{ link }} je nach Tier werden Sie einige zusätzliche Funktionen erhalten"
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
 				"title": "Fehlende Berechtigung: Server verwalten",
@@ -1071,6 +1075,9 @@
 			"moderators": "Moderators",
 			"staff": "Staff",
 			"translators": "Translators"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {
