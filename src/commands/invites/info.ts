@@ -2,7 +2,7 @@ import { Message, User } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { UserResolver } from '../../resolvers';
+import { EnumResolver, NumberResolver, UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -16,6 +16,13 @@ import {
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
+const ENTRIES_PER_PAGE = 20;
+
+enum InfoDetails {
+	bonus = 'bonus',
+	members = 'members'
+}
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -26,9 +33,16 @@ export default class extends Command {
 					name: 'user',
 					resolver: UserResolver,
 					required: true
+				},
+				{
+					name: 'details',
+					resolver: new EnumResolver(client, Object.values(InfoDetails))
+				},
+				{
+					name: 'page',
+					resolver: NumberResolver
 				}
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
 			guildOnly: true
 		});
@@ -36,16 +50,121 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user]: [User],
+		[user, details, _page]: [User, InfoDetails, number],
 		flags: {},
 		{ guild, t, settings, me }: Context
 	): Promise<any> {
 		const lang = settings.lang;
 
+		const embed = this.client.createEmbed({
+			title: `${user.username}#${user.discriminator}`
+		});
+
+		const invitedMembers = await joins.findAll({
+			attributes: [
+				'memberId',
+				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
+			],
+			where: {
+				guildId: guild.id
+			},
+			group: [sequelize.col('memberId')],
+			order: [sequelize.literal('MAX(join.createdAt) DESC')],
+			include: [
+				{
+					attributes: [],
+					model: inviteCodes,
+					as: 'exactMatch',
+					where: {
+						inviterId: user.id
+					}
+				}
+			],
+			raw: true
+		});
+
+		const customInvs = await customInvites.findAll({
+			where: {
+				guildId: guild.id,
+				memberId: user.id
+			},
+			order: [['createdAt', 'DESC']],
+			raw: true
+		});
+
+		const bonusInvs = customInvs.filter(inv => inv.generatedReason === null);
+
+		if (details === InfoDetails.bonus) {
+			// Exit if we have no bonus invites
+			if (bonusInvs.length <= 0) {
+				embed.fields.push({
+					name: t('cmd.info.bonusInvites.title'),
+					value: t('cmd.info.bonusInvites.more')
+				});
+			}
+			const maxPage = Math.ceil(invitedMembers.length / ENTRIES_PER_PAGE);
+			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
+
+			return this.client.showPaginated(message, p, maxPage, page => {
+				let customInvText = '';
+
+				bonusInvs
+					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
+					.forEach(inv => {
+						customInvText +=
+							t('cmd.info.bonusInvites.entry', {
+								amount: `**${inv.amount}**`,
+								creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
+								date:
+									'**' +
+									moment(inv.createdAt)
+										.locale(lang)
+										.fromNow() +
+									'**',
+								reason: inv.reason
+									? `**${inv.reason}**`
+									: '**' + t('cmd.info.bonusInvites.noReason') + '**'
+							}) + '\n';
+					});
+
+				embed.description = customInvText;
+
+				return embed;
+			});
+		} else if (details === InfoDetails.members) {
+			// Exit if we have no invited members
+			if (invitedMembers.length <= 0) {
+				embed.fields.push({
+					name: t('cmd.info.invitedMembers.title'),
+					value: t('cmd.info.invitedMembers.none')
+				});
+				return this.client.sendReply(message, embed);
+			}
+
+			const maxPage = Math.ceil(invitedMembers.length / ENTRIES_PER_PAGE);
+			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
+
+			return this.client.showPaginated(message, p, maxPage, page => {
+				let inviteText = '';
+				invitedMembers
+					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
+					.forEach((join: any) => {
+						const time = moment(join.createdAt)
+							.locale(lang)
+							.fromNow();
+						inviteText += `<@${join.memberId}> - ${time}\n`;
+					});
+
+				embed.description = inviteText;
+
+				return embed;
+			});
+		}
+
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invs = await inviteCodes.findAll({
+		const invCodes = await inviteCodes.findAll({
 			where: {
 				guildId: guild.id,
 				inviterId: user.id
@@ -64,16 +183,7 @@ export default class extends Command {
 			raw: true
 		});
 
-		const customInvs = await customInvites.findAll({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			},
-			order: [['createdAt', 'DESC']],
-			raw: true
-		});
-
-		let regular = invs.reduce((acc, inv) => acc + inv.uses, 0);
+		let regular = invCodes.reduce((acc, inv) => acc + inv.uses, 0);
 		let custom = 0;
 		let fake = 0;
 		let leave = 0;
@@ -120,10 +230,6 @@ export default class extends Command {
 
 		const numTotal = regular + custom + fake + leave;
 		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
-
-		const embed = this.client.createEmbed({
-			title: `${user.username}#${user.discriminator}`
-		});
 
 		// Try and get the member if they are still in the guild
 		let member = guild.members.get(user.id);
@@ -199,7 +305,7 @@ export default class extends Command {
 			inline: true
 		});
 
-		const js = await joins.findAll({
+		const ownJoins = await joins.findAll({
 			attributes: ['createdAt'],
 			where: {
 				guildId: guild.id,
@@ -223,10 +329,10 @@ export default class extends Command {
 			raw: true
 		});
 
-		if (js.length > 0) {
+		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-			js.forEach((join: any) => {
+			ownJoins.forEach((join: any) => {
 				const text = moment(join.createdAt)
 					.locale(lang)
 					.fromNow();
@@ -289,9 +395,9 @@ export default class extends Command {
 			});
 		}
 
-		if (invs.length > 0) {
+		if (invCodes.length > 0) {
 			let invText = '';
-			invs.slice(0, 10).forEach(inv => {
+			invCodes.slice(0, 10).forEach(inv => {
 				const name = (inv as any)['inviteCodeSettings.value'];
 
 				invText +=
@@ -308,11 +414,11 @@ export default class extends Command {
 			});
 
 			let more = '';
-			if (invs.length > 10) {
+			if (invCodes.length > 10) {
 				more =
 					'\n' +
 					t('cmd.info.regularInvites.more', {
-						amount: `**${invs.length - 10}**`
+						amount: `**${invCodes.length - 10}**`
 					});
 			}
 
@@ -326,8 +432,6 @@ export default class extends Command {
 				value: t('cmd.info.regularInvites.none')
 			});
 		}
-
-		const bonusInvs = customInvs.filter(inv => inv.generatedReason === null);
 
 		if (bonusInvs.length > 0) {
 			let customInvText = '';
@@ -358,9 +462,15 @@ export default class extends Command {
 					});
 			}
 
+			const detailMsg =
+				'\n' +
+				t('cmd.info.bonusInvites.details', {
+					cmd: `\`${settings.prefix}info @${user.username} bonus\``
+				});
+
 			// Crop the text because we don't know how long the 'reasons' are that
 			// people added to custom invites, so we have to make sure the text fits.
-			let text = customInvText + more;
+			let text = customInvText + more + detailMsg;
 			const diff = text.length - 1024;
 			if (diff > 0) {
 				text =
@@ -376,43 +486,13 @@ export default class extends Command {
 		} else {
 			embed.fields.push({
 				name: t('cmd.info.bonusInvites.title'),
-				value: t('cmd.info.bonusInvites.more')
+				value: t('cmd.info.bonusInvites.none')
 			});
 		}
 
-		const js2 = await joins.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
-			],
-			where: {
-				guildId: guild.id
-			},
-			group: [sequelize.col('memberId')],
-			order: [sequelize.literal('MAX(join.createdAt) DESC')],
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					where: {
-						inviterId: user.id
-					},
-					include: [
-						{
-							attributes: [],
-							model: members,
-							as: 'inviter'
-						}
-					]
-				}
-			],
-			raw: true
-		});
-
-		if (js2.length > 0) {
+		if (invitedMembers.length > 0) {
 			let inviteText = '';
-			js2.slice(0, 10).forEach((join: any) => {
+			invitedMembers.slice(0, 10).forEach((join: any) => {
 				const time = moment(join.createdAt)
 					.locale(lang)
 					.fromNow();
@@ -420,17 +500,23 @@ export default class extends Command {
 			});
 
 			let more = '';
-			if (js2.length > 10) {
+			if (invitedMembers.length > 10) {
 				more =
 					'\n' +
 					t('cmd.info.invitedMembers.more', {
-						amount: `**${js2.length - 10}**`
+						amount: `**${invitedMembers.length - 10}**`
 					});
 			}
 
+			const detailMsg =
+				'\n' +
+				t('cmd.info.invitedMembers.details', {
+					cmd: `\`${settings.prefix}info @${user.username} members\``
+				});
+
 			embed.fields.push({
 				name: t('cmd.info.invitedMembers.title'),
-				value: inviteText + more
+				value: inviteText + more + detailMsg
 			});
 		} else {
 			embed.fields.push({
@@ -439,6 +525,6 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		this.client.sendReply(message, embed);
 	}
 }
