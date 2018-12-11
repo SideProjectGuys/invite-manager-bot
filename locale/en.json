@@ -111,7 +111,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Punishments",
@@ -1075,6 +1075,9 @@
 			"moderators": "Moderators",
 			"staff": "Staff",
 			"translators": "Translators"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {

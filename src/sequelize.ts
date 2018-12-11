@@ -240,7 +240,9 @@ export enum SettingsKey {
 	autoModMentionRolesMaxNumberOfMentions = 'autoModMentionRolesMaxNumberOfMentions',
 
 	autoModEmojisEnabled = 'autoModEmojisEnabled',
-	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis'
+	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis',
+
+	autoModHoistEnabled = 'autoModHoistEnabled'
 }
 
 export type SettingsObject = {
@@ -322,6 +324,8 @@ export type SettingsObject = {
 
 	autoModEmojisEnabled: boolean;
 	autoModEmojisMaxNumberOfEmojis: number;
+
+	autoModHoistEnabled: boolean;
 };
 
 export type InternalSettingsTypes =
@@ -440,7 +444,9 @@ export const settingsTypes: SettingsTypesObject = {
 	autoModMentionRolesMaxNumberOfMentions: 'Number',
 
 	autoModEmojisEnabled: 'Boolean',
-	autoModEmojisMaxNumberOfEmojis: 'Number'
+	autoModEmojisMaxNumberOfEmojis: 'Number',
+
+	autoModHoistEnabled: 'Boolean'
 };
 
 export const defaultSettings: SettingsObject = {
@@ -527,7 +533,9 @@ export const defaultSettings: SettingsObject = {
 	autoModMentionRolesMaxNumberOfMentions: 3,
 
 	autoModEmojisEnabled: true,
-	autoModEmojisMaxNumberOfEmojis: 5
+	autoModEmojisMaxNumberOfEmojis: 5,
+
+	autoModHoistEnabled: true
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -1289,7 +1297,8 @@ export enum ViolationType {
 	quickMessages = 'quickMessages',
 	mentionUsers = 'mentionUsers',
 	mentionRoles = 'mentionRoles',
-	emojis = 'emojis'
+	emojis = 'emojis',
+	hoist = 'hoist'
 }
 
 export interface StrikeConfigAttributes extends BaseAttributes {

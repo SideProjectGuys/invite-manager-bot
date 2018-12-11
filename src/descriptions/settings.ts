@@ -446,6 +446,11 @@ export const settingsDescription: { [k in SettingsKey]: DescriptionObject } = {
 		group: ConfigGroup.Moderation,
 		description: 'Maximum amount of emojis per message.',
 		exampleValues: ['5', '10']
+	},
+
+	autoModHoistEnabled: {
+		...getEmpty(),
+		group: ConfigGroup.Moderation
 	}
 };
 

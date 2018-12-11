@@ -117,7 +117,9 @@ export enum ModerationCommand {
 	cleanShort = 'cleanShort',
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
-	purge = 'purge'
+	purge = 'purge',
+
+	unhoist = 'unhoist'
 }
 
 export interface RabbitMqMember {
