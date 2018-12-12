@@ -87,7 +87,7 @@ export enum BotCommand {
 	makeMentionable = 'makeMentionable',
 	mentionRole = 'mentionRole',
 
-	report = 'report',
+	/*report = 'report',*/
 
 	graph = 'graph'
 }

@@ -1,3 +1,4 @@
+/*
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
@@ -18,3 +19,4 @@ export default class extends Command {
 		this.client.sendReply(message, 'Not implemented');
 	}
 }
+*/
