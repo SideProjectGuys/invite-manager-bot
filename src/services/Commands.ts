@@ -1,12 +1,13 @@
-import { Guild, Member, Message, PrivateChannel, TextChannel } from 'eris';
+import { Member, Message, PrivateChannel, TextChannel } from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
 import path from 'path';
 
 import { IMClient } from '../client';
 import { Command, Context } from '../commands/Command';
+import { BooleanResolver } from '../resolvers';
 import { defaultSettings } from '../sequelize';
-import { Permissions, ShardCommand } from '../types';
+import { Permissions } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
@@ -17,16 +18,14 @@ export class Commands {
 	private client: IMClient;
 
 	public commands: Command[];
-	public disabledGuilds: Set<string>;
-
+	private cmdMap: Map<string, Command>;
 	private commandCalls: Map<string, { last: number; warned: boolean }>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
 		this.commands = [];
-		this.disabledGuilds = new Set();
-
+		this.cmdMap = new Map();
 		this.commandCalls = new Map();
 
 		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
@@ -44,8 +43,24 @@ export class Commands {
 				const clazz = require(file);
 				if (clazz.default) {
 					const constr = clazz.default;
-					const inst = new constr(this.client);
+					const inst: Command = new constr(this.client);
 					this.commands.push(inst);
+
+					// Register main commnad name
+					if (this.cmdMap.has(inst.name.toLowerCase())) {
+						console.error(`Duplicate command name ${inst.name}`);
+						process.exit(1);
+					}
+					this.cmdMap.set(inst.name.toLowerCase(), inst);
+
+					// Register aliases
+					inst.aliases.forEach(a => {
+						if (this.cmdMap.has(a.toLowerCase())) {
+							console.error(`Duplicate command alias ${a}`);
+							process.exit(1);
+						}
+						this.cmdMap.set(a.toLowerCase(), inst);
+					});
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
@@ -59,17 +74,10 @@ export class Commands {
 
 		// Attach events
 		this.client.on('messageCreate', this.onMessage.bind(this));
-		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
-		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
 	public async init() {
-		// Disable guilds of pro bot
-		this.client.guilds.forEach(g => {
-			if (g.members.has(this.client.config.proBotId)) {
-				this.disabledGuilds.add(g.id);
-			}
-		});
+		// NOP
 	}
 
 	public async onMessage(message: Message) {
@@ -90,7 +98,7 @@ export class Commands {
 		if (guild) {
 			// Check if this guild is disabled due to the pro bot
 			if (
-				this.disabledGuilds.has(guild.id) &&
+				this.client.disabledGuilds.has(guild.id) &&
 				!message.content.startsWith(`<@${this.client.user.id}>`) &&
 				!message.content.startsWith(`<@!${this.client.user.id}>`)
 			) {
@@ -110,7 +118,7 @@ export class Commands {
 
 		// Process prefix first so we can use any possible prefixes
 		if (content.startsWith(sets.prefix)) {
-			content = content.substring(sets.prefix.length);
+			content = content.substring(sets.prefix.length).trim();
 		} else if (idRegex.test(content)) {
 			const matches = content.match(idRegex);
 
@@ -125,12 +133,9 @@ export class Commands {
 		}
 
 		const splits = content.split(' ');
-		const cmdStr = splits[0].toLowerCase();
 
 		// Find the command
-		let cmd: Command = this.commands.find(
-			c => c.name.toLowerCase() === cmdStr || c.aliases.indexOf(cmdStr) >= 0
-		);
+		const cmd = this.cmdMap.get(splits[0].toLowerCase());
 
 		// Command not found
 		if (!cmd) {
@@ -152,6 +157,7 @@ export class Commands {
 					await this.client.sendEmbed(await user.getDMChannel(), embed);
 				}
 
+				/* TODO: Send DMs
 				this.client.rabbitmq.sendCommandToGuild(this.client.config.dmGuild, {
 					id: message.id,
 					cmd: ShardCommand.USER_DM,
@@ -161,6 +167,7 @@ export class Commands {
 					isInitial: isInitialMessage,
 					message: message.content
 				});
+				*/
 			}
 			return;
 		}
@@ -300,6 +307,63 @@ export class Commands {
 			}
 		}
 
+		// Resolve flags
+		const flags: { [x: string]: any } = {};
+		while (rawArgs.length > 0) {
+			const rawArg = rawArgs[0];
+
+			// Exit once we reach the first non-flag
+			if (!rawArg.startsWith('-')) {
+				break;
+			}
+
+			const flagSplits = rawArg.split('=');
+			const isShort = !flagSplits[0].startsWith('--');
+			const name = flagSplits[0].replace(/-/gi, '');
+			const flag = cmd.flags.find(
+				f => (isShort ? f.short === name : f.name === name)
+			);
+
+			// Exit if this is not a flag
+			if (!flag) {
+				break;
+			}
+
+			const resolver = cmd.flagResolvers.get(flag.name);
+			const rawVal = isShort ? rawArgs[1] : flagSplits[1];
+			const hasVal = typeof rawVal !== 'undefined';
+
+			if (flag.valueRequired && !hasVal) {
+				this.client.sendReply(
+					message,
+					`Missing required value for flag \`${flag.name}\`.\n` +
+						`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
+						resolver.getHelp(context)
+				);
+				return;
+			}
+
+			const skipVal = resolver instanceof BooleanResolver;
+
+			let val: any = true;
+			if (hasVal && !skipVal) {
+				try {
+					val = await resolver.resolve(rawVal, context, []);
+				} catch (e) {
+					this.client.sendReply(
+						message,
+						`Invalid value for \`${flag.name}\`: ${e.message}\n` +
+							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
+							resolver.getHelp(context)
+					);
+					return;
+				}
+			}
+
+			flags[flag.name] = val;
+			rawArgs.splice(0, isShort && !skipVal ? 2 : 1);
+		}
+
 		// Resolve arguments
 		const args: any[] = [];
 		let i = 0;
@@ -353,7 +417,7 @@ export class Commands {
 
 		// Run command
 		try {
-			await cmd.action(message, args, context);
+			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
 			this.client.sendReply(message, t('command.error'));
@@ -363,7 +427,7 @@ export class Commands {
 		const execTime: number = Date.now() - start;
 
 		// Ignore messages that are not in guild chat or from disabled guilds
-		if (guild && !this.disabledGuilds.has(guild.id)) {
+		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
 			this.client.dbQueue.addCommandUsage(
 				{
@@ -388,34 +452,6 @@ export class Commands {
 					discriminator: message.author.discriminator
 				}
 			);
-		}
-	}
-
-	private async onGuildMemberAdd(guild: Guild, member: Member) {
-		const guildId = guild.id;
-
-		// Ignore disabled guilds
-		if (this.disabledGuilds.has(guildId)) {
-			return;
-		}
-
-		if (member.user.bot) {
-			// Check if it's our premium bot
-			if (member.user.id === this.client.config.proBotId) {
-				console.log(
-					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
-				);
-				this.disabledGuilds.add(guildId);
-			}
-			return;
-		}
-	}
-
-	private async onGuildMemberRemove(guild: Guild, member: Member) {
-		// If the pro version of our bot left, re-enable this version
-		if (member.user.bot && member.user.id === this.client.config.proBotId) {
-			this.disabledGuilds.delete(guild.id);
-			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
 	}
 }

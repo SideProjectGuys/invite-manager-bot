@@ -7,30 +7,30 @@
 		},
 		"user": {
 			"notFound": "El usuario no fue encontrado.",
-			"multiple": "Multiple matching users found. {{{ users }}}"
+			"multiple": "Múltiples usuarios encontrados {{{ users }}}"
 		},
 		"number": {
 			"invalid": "No es un número valido."
 		},
 		"invalid": "Valor inválido para `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
-			"multiple": "Multiple matching commands found. {{{ commands }}}"
+			"notFound": "Comando no encontrado.",
+			"multiple": "Múltiples comandos encontrados {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
-			"multiple": "Multiple matching channels found. {{{ channels }}}"
+			"notFound": "Canal no encontrado.",
+			"multiple": "Múltiples canales encontrados. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
-			"multiple": "Multiple matching roles found. {{{ roles }}}"
+			"notFound": "Rol no encontrado.",
+			"multiple": "Múltiples roles encontrados. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "Not a valid yes/no value."
+			"invalid": "No es un valor válido de yes/no."
 		},
 		"member": {
-			"notFound": "Member was not found.",
-			"multiple": "Multiple matching members found. {{{ members }}}"
+			"notFound": "El miembro no fue encontrado.",
+			"multiple": "Múltiples miembros encontrados. {{{ members }}}"
 		}
 	},
 	"bot": {
@@ -64,8 +64,8 @@
 			}
 		},
 		"addRank": {
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
+			"updated": "Rango {{{ role }}} actualizado: Ahora necesita {{ invites }} invitaciones y tiene la siguiente descripción: {{ description }}",
+			"created": "Añadido {{{ role }}} que necesita {{ invites }} invitaciones y tiene la siguiente descripción: {{ description }}",
 			"roleTooHigh": "El rol **{{ role }}** es más alto que mi propio rol (**{{ myRole }}**), así que no podré otorgarlo a los miembros que lo obtengan.",
 			"self": {
 				"args": {
@@ -104,14 +104,14 @@
 			},
 			"premium": {
 				"title": "Premium",
-				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium."
+				"active": "Este servidor tiene una suscripción **premium activa**",
+				"none": "Este servidor actualmente **no tiene** premium."
 			}
 		},
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Castigos",
@@ -135,8 +135,8 @@
 				"args": {
 					"quantity": "Cuantos mensajes deberían ser eliminados.",
 					"member": "Usuarios que sus mensajes serán eliminados.",
-					"type": "The type of messages that will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"type": "El tipo de mensaje que será eliminado.",
+					"numberOfMessages": "El número de mensajes que será buscado."
 				}
 			}
 		},
@@ -157,9 +157,9 @@
 			"notSet": "Estos ajustes no están configurados",
 			"current": {
 				"title": "Valor actual",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
+				"text": "Esta configuración está actualmente establecida.\nUsa`{{ prefix }}config {{ key }} <value>` para cambiarla.\nUse `{{ prefix }}config {{ key }} default` para cambiarla por defecto.",
 				"notSet": "Estos ajustes **no** estan actualmente configurados.\nUsa `{{ prefix }}config {{ key }} <value> para ajustarlo.\n",
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
+				"clear": "Usa `{{ prefix }}config {{ key }} none` para limpiarlo."
 			},
 			"previous": {
 				"title": "Valor previo"
@@ -226,7 +226,7 @@
 				"title": "Alias"
 			},
 			"links": "Enlaces",
-			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
+			"missingPermissions": "El bot no cuenta actualmente con los siguientes permisos: {{{ value }}}",
 			"self": {
 				"args": {
 					"command": "El comando a obtener más información detallada."
@@ -257,15 +257,15 @@
 			"joins": {
 				"title": "Entradas",
 				"entry": {
-					"text": "{{ total }} times {{ time }}, invited by:",
-					"invite": "{{{ member }}} ({{ times }} times)"
+					"text": "{{ total }} veces {{ time }}, invitado por:",
+					"invite": "{{{ member }}} ({{ times }} veces)"
 				},
-				"more": "Plus another {{ amount }} more joins",
+				"more": "Más {{ amount }} entradas",
 				"unknown": "desconocido (esto solo funciona con nuevos miembros)"
 			},
 			"regularInvites": {
 				"title": "Invitaciones regulares",
-				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
+				"entry": "{{ uses }} de {{ code }} - creado {{ createdAt }}",
 				"more": "Plus another {{ amount }} more invite codes",
 				"none": "Más otras **{{ amount }}** más invitaciones bonus"
 			},
@@ -274,16 +274,20 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "Este miembro no ha recibido invitaciones bonus hasta el momento",
-				"noReason": "No reason"
+				"noReason": "Sin razón",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
 				"title": "Miembros invitados",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "Este miembro no ha invitado a nadie hasta el momento"
+				"more": "Plus another {{ amount }} more invited members",
+				"none": "Este miembro no ha invitado a nadie hasta el momento",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
 				"args": {
-					"user": "El usuario del que quieres ver más información."
+					"user": "El usuario del que quieres ver más información.",
+					"details": "Request only specific details about a member.",
+					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
 				"description": "Muestra información de un miembro en especifico."
 			}
@@ -498,11 +502,11 @@
 			},
 			"help": {
 				"title": "Ayuda",
-				"text": "Si necesitas ayuda o sugerencias, puedes usar el comando `!feedback` o entrar a nuestro discord de soporte: {{ link }}"
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Premium",
-				"text": "Si quieres apoyar el desarrollo del bot, puedes hacerlo a traves de nuestro patreon: {{ link }}\n\nDependiendo del nivel, conseguiras caracteristicas adicionales.\n"
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
 				"title": "Permiso faltante: Administrar el Servidor",
@@ -581,7 +585,8 @@
 					"user": "El usuario del que quieres mostrar invitaciones detalladas."
 				},
 				"description": "Muestra detalles sobre donde son tus invitaciones."
-			}
+			},
+			"noInviteCodes": "You don't have any invite codes yet."
 		},
 		"getBot": {
 			"title": "Añade InviteManager a tu servidor",
@@ -714,7 +719,8 @@
 				"args": {
 					"key": "El ajuste de configuración que quieres mostrar/cambiar.",
 					"code": "El código de invitación para el que se cambia la configuración.",
-					"value": "El nuevo valor del ajuste."
+					"value": "El nuevo valor del ajuste.",
+					"inviteCode": "The invite code for which you want to change the settings."
 				},
 				"description": "Muestra y cambia la configuración de los códigos de invitación del servidor."
 			},
@@ -795,11 +801,11 @@
 				"args": {
 					"user": "The user that should be muted.",
 					"muteDuration": "The duration for which the user should be muted.",
-					"reason": "The reason why this user is muted."
+					"reason": "La razón por la cual este usuario está silenciado."
 				}
 			},
-			"done": "User muted!",
-			"canNotMute": "Cannot mute user!"
+			"done": "Usuario silenciado!",
+			"canNotMute": "No puedo silenciar al usuario!"
 		},
 		"unmute": {
 			"missingRole": "Muted role not set or does not exist!",
@@ -829,13 +835,13 @@
 		"interactiveConfig": {
 			"welcome": "Welcome to the InviteManager settings menu.\nUse the reactions to pick one of the available options.",
 			"none": "<None>",
-			"change": "Current value: {{{value}}}\nPossible values: {{{possible}}}\nEnter a new value:",
+			"change": "Valor actual: {{{value}}}\nValores posibles: {{{possible}}}\nIngresa un nuevo valor:",
 			"values": {
-				"boolean": "`Yes` or `No`",
+				"boolean": "`Yes` o `No`",
 				"string": "Any text",
 				"channel": "Any channel, for example: #general",
 				"role": "Any role, for example: @Admin",
-				"number": "Any number",
+				"number": "Cualquier numero",
 				"channel[]": "A list of channels, for example: #general #bot-commands",
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string[]": "A list of words, for example: word another \"word with space\""
@@ -844,12 +850,12 @@
 				"title": "Interactive Config",
 				"basic": {
 					"description": "Base bot settings such as prefix, language and logging.",
-					"title": "Basic Settings",
+					"title": "Ajustes Básicos",
 					"prefix": {
-						"title": "Prefix"
+						"title": "Prefijo"
 					},
 					"lang": {
-						"title": "Language"
+						"title": "Lenguaje"
 					},
 					"logChannel": {
 						"title": "Log Channel"
@@ -860,7 +866,7 @@
 				},
 				"mod": {
 					"description": "Settings related to moderation.",
-					"title": "Moderation",
+					"title": "Moderación",
 					"general": {
 						"description": "General settings related to moderation.",
 						"title": "General",
@@ -868,16 +874,16 @@
 							"title": "Enabled"
 						},
 						"moderatedChannels": {
-							"title": "Moderated Channels"
+							"title": "Canales Moderados"
 						},
 						"moderatedRoles": {
-							"title": "Moderated Roles"
+							"title": "Roles Moderados"
 						},
 						"ignoredChannels": {
-							"title": "Ignored Channels"
+							"title": "Canales Ignorados"
 						},
 						"ignoredRoles": {
-							"title": "Ignored Roles"
+							"title": "Roles Ignorados"
 						},
 						"deleteBotMessages": {
 							"title": "Delete Bot messages"
@@ -894,7 +900,7 @@
 					},
 					"invitesAndLinks": {
 						"description": "Settings related to invites and links.",
-						"title": "Invites and Links",
+						"title": "Invitaciones y Links",
 						"invitesEnabled": {
 							"title": "Invite moderation enabled"
 						},
@@ -902,10 +908,10 @@
 							"title": "Link moderation enabled"
 						},
 						"linksWhitelist": {
-							"title": "Whitelist"
+							"title": "Lista blanca"
 						},
 						"linksBlacklist": {
-							"title": "Blacklist"
+							"title": "Lista negra"
 						},
 						"followLinkRedirects": {
 							"title": "Follow redirects"
@@ -918,12 +924,12 @@
 							"title": "Enabled"
 						},
 						"blacklist": {
-							"title": "Blacklist"
+							"title": "Lista negra"
 						}
 					},
 					"caps": {
 						"description": "Settings related to ALL CAPS messages",
-						"title": "Caps-Lock",
+						"title": "Mayúsculas",
 						"enabled": {
 							"title": "Enabled"
 						},
@@ -936,7 +942,7 @@
 					},
 					"duplicate": {
 						"description": "Settings related to duplicate messages.",
-						"title": "Duplicate Text",
+						"title": "Texto duplicado",
 						"enabled": {
 							"title": "Enabled"
 						},
@@ -951,7 +957,7 @@
 							"title": "Enabled"
 						},
 						"numberOfMessages": {
-							"title": "Number of messages"
+							"title": "Numero de mensajes"
 						},
 						"timeframe": {
 							"title": "Timeframe"
@@ -1008,9 +1014,9 @@
 				},
 				"leaderboard": {
 					"description": "Settings related to the leaderboard",
-					"title": "Leaderboard",
+					"title": "Tabla de puntaje",
 					"style": {
-						"title": "Style"
+						"title": "Estilo"
 					},
 					"hideLeftMembers": {
 						"title": "Hide Left Members"
@@ -1018,15 +1024,15 @@
 				},
 				"ranks": {
 					"description": "Settings related to Ranks",
-					"title": "Ranks",
+					"title": "Rangos",
 					"style": {
-						"title": "Style"
+						"title": "Estilo"
 					},
 					"channel": {
-						"title": "Channel"
+						"title": "Canal"
 					},
 					"message": {
-						"title": "Message"
+						"title": "Mensaje"
 					}
 				},
 				"joinAndLeaveMessages": {
@@ -1047,28 +1053,31 @@
 				},
 				"memberSettings": {
 					"description": "Settings related to specific members.",
-					"title": "Member Settings",
+					"title": "Ajustes de Miembro",
 					"hideFromLeaderboard": {
 						"title": "Hide from Leaderboard"
 					}
 				},
 				"inviteCodeSettings": {
 					"description": "Settings related to specific invite codes.",
-					"title": "Invite Code Settings",
+					"title": "Ajustes de Código de Invitación",
 					"name": {
-						"title": "Name"
+						"title": "Nombre"
 					},
 					"roles": {
-						"title": "Role"
+						"title": "Rol"
 					}
 				}
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "Desarroladores",
+			"moderators": "Moderadores",
 			"staff": "Staff",
-			"translators": "Translators"
+			"translators": "Traductores"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {
@@ -1079,21 +1088,21 @@
 		"viewAuditLogs": "Ver el registro de auditoría",
 		"manageRoles": "Administrar Roles",
 		"role": "No tienes permiso para usar este comando.\nNecesitas uno de los siguientes roles: {{{ roles }}}",
-		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again."
+		"rateLimit": "Cálmate! Por favor espera {{ cooldown }} segundos e intenta de nuevo."
 	},
 	"prompt": {
-		"canceled": "Canceled"
+		"canceled": "Cancelado"
 	},
 	"command": {
 		"error": "Ha habido un error ejecutando el comando."
 	},
 	"messages": {
-		"unknownInviter": "Unknown",
-		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
-		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them."
+		"unknownInviter": "Desconocido",
+		"joinUnknownInviter": "<@{{ id }}> ha entrado utilizando una invitación temporal o vanity, no puedo averiguar quien lo ha invitado.",
+		"leaveUnknownInviter": "{{ tag }} ha salido del servidor, pero no pude averiguar quien lo ha invitado."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captcha incorrecto, por favor intenta de nuevo."
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM"
 }

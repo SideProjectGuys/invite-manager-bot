@@ -111,7 +111,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes ",
-				"entry": "{{ id }}: {{ amount }} pour {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Les sanctions",
@@ -274,16 +274,20 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "Ce membre n'a reçu aucun bonus jusqu'à présent",
-				"noReason": "No reason"
+				"noReason": "No reason",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
 				"title": "Membres invités",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "Ce membre n'a invité personne d'autre jusqu'à présent"
+				"more": "Plus another {{ amount }} more invited members",
+				"none": "Ce membre n'a invité personne d'autre jusqu'à présent",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
 				"args": {
-					"user": "L'utilisateur pour lequel vous souhaitez voir des informations supplémentaires."
+					"user": "L'utilisateur pour lequel vous souhaitez voir des informations supplémentaires.",
+					"details": "Request only specific details about a member.",
+					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
 				"description": "Afficher des informations sur un membre spécifique."
 			}
@@ -498,11 +502,11 @@
 			},
 			"help": {
 				"title": "Aide",
-				"text": "Si vous avez besoin d'aide ou si vous avez des commentaires, vous pouvez nous contactez soit utiliser la commande `!feedback` ou rejoindre notre serveur de support discord: {{ link }}"
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Premium",
-				"text": "Si vous souhaitez soutenir le développement de ce bot, vous pouvez le faire en nous aidant sur Patreon: {{ link }}\n\nSelon le montant de votre don, vous obtiendrez des fonctionnalités supplémentaires."
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
 				"title": "Autorisation manquante: Gérer le serveur",
@@ -581,7 +585,8 @@
 					"user": "L'utilisateur ou vous souhaitez afficher des invitations détaillées."
 				},
 				"description": "Affiche des détails sur l'origine de vos invitations."
-			}
+			},
+			"noInviteCodes": "You don't have any invite codes yet."
 		},
 		"getBot": {
 			"title": "Ajouter InviteManager à votre serveur.",
@@ -714,7 +719,8 @@
 				"args": {
 					"key": "Les paramètres de configurations que vous souhaitez afficher / modifier.",
 					"code": "The invite code that the setting is changed for.",
-					"value": "La nouvelle valeur du paramètre."
+					"value": "La nouvelle valeur du paramètre.",
+					"inviteCode": "The invite code for which you want to change the settings."
 				},
 				"description": "Affiche et modifie la configuration des codes d'invitation du serveur."
 			},
@@ -1069,6 +1075,9 @@
 			"moderators": "Moderators",
 			"staff": "Staff",
 			"translators": "Translators"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {

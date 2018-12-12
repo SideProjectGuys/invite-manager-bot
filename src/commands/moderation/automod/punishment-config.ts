@@ -40,6 +40,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[punishment, strikes, args]: [PunishmentType, number, string],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -78,8 +79,8 @@ export default class extends Command {
 		} else if (typeof strikes === typeof undefined) {
 			const pc = await punishmentConfigs.find({ where: punishmentQuery });
 			embed.description = t('cmd.punishmentConfig.text', {
-				punishment: `**${pc.punishmentType}**`,
-				strikes: `**${pc.amount}**`
+				punishment: `**${pc ? pc.punishmentType : punishment}**`,
+				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {
 			await punishmentConfigs.destroy({ where: punishmentQuery });

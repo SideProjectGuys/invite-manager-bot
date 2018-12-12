@@ -12,7 +12,7 @@ import {
 	MemberSettingsKey,
 	memberSettingsTypes
 } from '../../sequelize';
-import { beautify, fromDbValue } from '../../settings';
+import { beautify, canClear, fromDbValue, toDbValue } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -48,7 +48,8 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, user, value]: [MemberSettingsKey, User, any],
+		[key, user, rawValue]: [MemberSettingsKey, User, any],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const { guild, t, settings } = context;
@@ -90,23 +91,23 @@ export default class extends Command {
 		if (typeof value === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
-			if (oldVal !== null) {
-				embed.description = t('cmd.memberConfig.current.text', {
+			if (oldVal) {
+				embed.description = t('cmd.inviteCodeConfig.current.text', {
 					prefix,
 					key
 				});
 
-				if (defaultMemberSettings[key] === null ? 't' : undefined) {
+				if (canClear(key)) {
 					embed.description +=
 						'\n' +
-						t('cmd.memberConfig.current.clear', {
+						t('cmd.inviteCodeConfig.current.clear', {
 							prefix,
 							key
 						});
 				}
 
 				embed.fields.push({
-					name: t('cmd.memberConfig.current.title'),
+					name: t('cmd.inviteCodeConfig.current.title'),
 					value: beautify(key, oldVal)
 				});
 			} else {
@@ -118,10 +119,9 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		// If the value is null we want to clear it. Check if that's allowed.
-		if (value === null) {
-			if (defaultMemberSettings[key] !== null) {
-				return this.client.sendReply(
+		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+			if (!canClear(key)) {
+				this.client.sendReply(
 					message,
 					t('cmd.memberConfig.canNotClear', { prefix, key })
 				);

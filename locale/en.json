@@ -111,7 +111,7 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "{{ id }}: {{ amount }} for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Punishments",
@@ -274,16 +274,20 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "This member has received no bonuses so far",
-				"noReason": "No reason"
+				"noReason": "No reason",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
 				"title": "Invited members",
-				"more": "Plus another {{ amount }} more members",
-				"none": "This member has not invited anyone else so far"
+				"more": "Plus another {{ amount }} more invited members",
+				"none": "This member has not invited anyone else so far",
+				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
 				"args": {
-					"user": "The user for whom you want to see additional info."
+					"user": "The user for whom you want to see additional info.",
+					"details": "Request only specific details about a member.",
+					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
 				"description": "Show info about a specific member."
 			}
@@ -498,11 +502,11 @@
 			},
 			"help": {
 				"title": "Help",
-				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{ link }}"
+				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Premium",
-				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{ link }}\n\nDepending on the tier, you will get some additional features."
+				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
 				"title": "Missing permission: Manage Server",
@@ -715,7 +719,8 @@
 				"args": {
 					"key": "The config setting which you want to show/change.",
 					"code": "The invite code that the setting is changed for.",
-					"value": "The new value of the setting."
+					"value": "The new value of the setting.",
+					"inviteCode": "The invite code for which you want to change the settings."
 				},
 				"description": "Show and change the config of invite codes of the server."
 			},
@@ -828,9 +833,10 @@
 			}
 		},
 		"interactiveConfig": {
-			"welcome": "Welcome to the InviteManager settings menu.\nUse the reactions to pick one of the available options.",
+			"welcome": "Use the reactions to pick one of the available options.",
 			"none": "<None>",
-			"change": "Current value: {{{value}}}\nPossible values: {{{possible}}}\nEnter a new value:",
+			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"new": "Enter a new value:",
 			"values": {
 				"boolean": "`Yes` or `No`",
 				"string": "Any text",
@@ -1063,13 +1069,44 @@
 						"title": "Role"
 					}
 				}
-			}
+			},
+			"list": {
+				"add": {
+					"title": "Add",
+					"text": "Add a new value to the list."
+				},
+				"remove": {
+					"title": "Remove",
+					"text": "Remove an existing value from the list."
+				},
+				"set": {
+					"title": "Set",
+					"text": "Set the whole list using space separated values."
+				},
+				"clear": {
+					"title": "Clear",
+					"text": "Clear the whole list of all values."
+				}
+			},
+			"current": {
+				"title": "Current value"
+			},
+			"possible": {
+				"title": "Possible values"
+			},
+			"remove": "Enter a value or a list of values to remove.",
+			"add": "Enter a value or list of values to add.",
+			"set": "Enter the new values for the list.",
+			"removeEmpty": "The list is already empty."
 		},
 		"credits": {
 			"developers": "Developers",
 			"moderators": "Moderators",
 			"staff": "Staff",
 			"translators": "Translators"
+		},
+		"unhoist": {
+			"title": "Unhoisted users"
 		}
 	},
 	"permissions": {

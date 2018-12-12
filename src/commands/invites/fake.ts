@@ -12,7 +12,7 @@ import {
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
-const usersPerPage = 20;
+const USERS_PER_PAGE = 20;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -34,6 +34,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[_page]: [number],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		type ExtendedJoin = JoinAttributes & {
@@ -100,14 +101,14 @@ export default class extends Command {
 			return this.client.sendReply(message, t('cmd.fake.noneSinceJoin'));
 		}
 
-		const maxPage = Math.ceil(suspiciousJoins.length / usersPerPage);
+		const maxPage = Math.ceil(suspiciousJoins.length / USERS_PER_PAGE);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
 		this.client.showPaginated(message, p, maxPage, page => {
 			let description = '';
 
 			suspiciousJoins
-				.slice(page * usersPerPage, (page + 1) * usersPerPage)
+				.slice(page * USERS_PER_PAGE, (page + 1) * USERS_PER_PAGE)
 				.forEach((join: ExtendedJoin) => {
 					if (!join.inviterIds) {
 						return;

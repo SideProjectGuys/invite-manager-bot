@@ -31,6 +31,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[violation, strikes]: [ViolationType, number],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -70,8 +71,8 @@ export default class extends Command {
 		} else if (typeof strikes === typeof undefined) {
 			let strike = await strikeConfigs.find({ where: violationQuery });
 			embed.description = t('cmd.strikeConfig.text', {
-				violation: `**${strike.violationType}**`,
-				strikes: `**${strike.amount}**`
+				violation: `**${strike ? strike.violationType : violation}**`,
+				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {
 			await strikeConfigs.destroy({ where: violationQuery });

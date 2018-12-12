@@ -1,9 +1,9 @@
 import { rolePermissions, roles } from '../sequelize';
-import { BotCommand, ModerationCommand, OwnerCommand } from '../types';
+import { BotCommand, ModerationCommand } from '../types';
 
 import { GuildCache } from './GuildCache';
 
-type AnyCommand = BotCommand | ModerationCommand | OwnerCommand;
+type AnyCommand = BotCommand | ModerationCommand;
 
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 

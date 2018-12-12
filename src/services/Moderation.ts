@@ -14,8 +14,8 @@ import {
 import { to } from '../util';
 
 interface Arguments {
-	settings: SettingsObject;
 	guild: Guild;
+	settings: SettingsObject;
 }
 
 interface PunishmentDetails {
@@ -30,6 +30,9 @@ interface MiniMessage {
 	roleMentions: number;
 }
 
+export const NAME_DEHOIST_PREFIX = '▼';
+export const NAME_HOIST_REGEX = new RegExp(`^[^\\w${NAME_DEHOIST_PREFIX}]+`);
+
 export class Moderation {
 	private client: IMClient;
 	private messageCache: Map<string, MiniMessage[]>;
@@ -42,8 +45,7 @@ export class Moderation {
 	};
 	private punishmentFunctions: {
 		[key in PunishmentType]: (
-			message: Message,
-			guild: Guild,
+			member: Member,
 			amount: number,
 			args: Arguments
 		) => Promise<boolean>
@@ -63,7 +65,8 @@ export class Moderation {
 			[ViolationType.quickMessages]: this.quickMessages.bind(this),
 			[ViolationType.mentionUsers]: this.mentionUsers.bind(this),
 			[ViolationType.mentionRoles]: this.mentionRoles.bind(this),
-			[ViolationType.emojis]: this.emojis.bind(this)
+			[ViolationType.emojis]: this.emojis.bind(this),
+			[ViolationType.hoist]: null
 		};
 
 		this.punishmentFunctions = {
@@ -86,6 +89,75 @@ export class Moderation {
 		setInterval(func, 60 * 1000);
 
 		client.on('messageCreate', this.onMessage.bind(this));
+		client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
+	}
+
+	private async onGuildMemberUpdate(guild: Guild, member: Member) {
+		// Ignore when pro bot is active
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		// Ignore bots
+		if (member.bot) {
+			return;
+		}
+
+		const settings = await this.client.cache.settings.get(guild.id);
+
+		// Ignore if automod is disabled
+		if (!settings.autoModEnabled) {
+			return;
+		}
+
+		// Ignore if hoist rule is disabled
+		if (!settings.autoModHoistEnabled) {
+			return;
+		}
+
+		// If moderated roles are set then only moderate those roles
+		if (
+			settings.autoModModeratedRoles &&
+			settings.autoModModeratedRoles.length > 0
+		) {
+			if (
+				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
+			) {
+				return;
+			}
+		}
+
+		// Don't moderate ignored roles
+		if (
+			settings.autoModIgnoredRoles &&
+			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
+		) {
+			return;
+		}
+
+		const type = ViolationType.hoist;
+		const strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strike = strikesCache.find(s => s.violationType === type);
+		const amount = strike ? strike.amount : 0;
+
+		const name = member.nick ? member.nick : member.username;
+
+		if (!NAME_HOIST_REGEX.test(name)) {
+			return;
+		}
+
+		const newName = '▼ ' + name;
+		member.edit({ nick: newName }, 'Auto dehoist');
+
+		this.logViolationModAction(guild, member.user, type, amount, [
+			{ name: 'New name', value: newName },
+			{ name: 'Previous name', value: name }
+		]);
+
+		this.addStrikesAndCheckIfPunishable(member, type, amount, {
+			guild,
+			settings
+		});
 	}
 
 	private async onMessage(message: Message) {
@@ -101,6 +173,11 @@ export class Moderation {
 			return;
 		}
 
+		// Ignore when pro bot is active
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
 		// TODO Enable for all guilds when ready
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -108,6 +185,7 @@ export class Moderation {
 
 		const settings = await this.client.cache.settings.get(guild.id);
 
+		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
 			return;
 		}
@@ -121,7 +199,9 @@ export class Moderation {
 		if (member.permission.has(Permissions.ADMINISTRATOR)) {
 			return;
 		}
-*/
+		*/
+
+		// If moderated roles are set then only moderate those roles
 		if (
 			settings.autoModModeratedRoles &&
 			settings.autoModModeratedRoles.length > 0
@@ -133,6 +213,15 @@ export class Moderation {
 			}
 		}
 
+		// Don't moderate ignored roles
+		if (
+			settings.autoModIgnoredRoles &&
+			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
+		) {
+			return;
+		}
+
+		// If moderated channels are set only moderate those channels
 		if (
 			settings.autoModModeratedChannels &&
 			settings.autoModModeratedChannels.length > 0
@@ -144,6 +233,7 @@ export class Moderation {
 			}
 		}
 
+		// Don't moderate ignored channels
 		if (
 			settings.autoModIgnoredChannels &&
 			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
@@ -151,16 +241,9 @@ export class Moderation {
 			return;
 		}
 
-		if (
-			settings.autoModIgnoredRoles &&
-			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-		) {
-			return;
-		}
-
 		if (settings.autoModDisabledForOldMembers) {
 			// Check if member is "oldMember"
-			let memberAge = moment().diff(member.joinedAt, 'second');
+			const memberAge = moment().diff(member.joinedAt, 'second');
 			if (memberAge > settings.autoModDisabledForOldMembersThreshold) {
 				// This is an old member
 				return;
@@ -168,7 +251,7 @@ export class Moderation {
 		}
 
 		const cacheKey = `${guild.id}-${message.author.id}`;
-		let msgs = this.messageCache.get(cacheKey);
+		const msgs = this.messageCache.get(cacheKey);
 		if (msgs) {
 			msgs.push(this.getMiniMessage(message));
 			this.messageCache.set(cacheKey, msgs);
@@ -176,67 +259,73 @@ export class Moderation {
 			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
 
-		let strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strikesCache = await this.client.cache.strikes.get(guild.id);
 		let allViolations: ViolationType[] = Object.values(ViolationType);
 
-		for (let strike of strikesCache) {
+		for (const strike of strikesCache) {
 			allViolations = allViolations.filter(av => av !== strike.violationType);
-			let foundViolation = await this.strikeConfigFunctions[
-				strike.violationType
-			](message, {
-				settings: settings,
-				guild: guild
-			});
+
+			const func = this.strikeConfigFunctions[strike.violationType];
+			if (!func) {
+				continue;
+			}
+
+			const foundViolation = await func(message, { guild, settings });
 			if (!foundViolation) {
 				continue;
 			}
+
 			message.delete();
 
 			this.logViolationModAction(
 				guild,
-				channel,
-				message,
+				message.author,
 				strike.violationType,
-				strike.amount
+				strike.amount,
+				[
+					{ name: 'Channel', value: channel.name },
+					{ name: 'Message', value: message.content }
+				]
 			);
 
 			const embed = this.createPunishmentEmbed('AutoModerator');
-			embed.description = `Message by <@${
-				message.author.id
-			}> was removed because it violated the \`${
-				strike.violationType
-			}\` rule.\n`;
+			const usr = `<@${message.author.id}>`;
+			const viol = `\`${strike.violationType}\``;
+			embed.description = `Message by ${usr} was removed because it violated the ${viol} rule.\n`;
 			embed.description += `\n\nUser got ${strike.amount} strikes.`;
 
 			this.sendAndDelete(message, embed, settings);
 			this.addStrikesAndCheckIfPunishable(
-				message,
-				strike.amount,
+				member,
 				strike.violationType,
-				{ settings: settings, guild: guild }
+				strike.amount,
+				{ guild, settings }
 			);
 			return;
 		}
 
-		for (let violation of allViolations) {
-			let foundViolation = await this.strikeConfigFunctions[violation](
-				message,
-				{
-					settings: settings,
-					guild: guild
-				}
-			);
+		for (const violation of allViolations) {
+			const func = this.strikeConfigFunctions[violation];
+			if (!func) {
+				continue;
+			}
+
+			const foundViolation = await func(message, { guild, settings });
 			if (!foundViolation) {
 				continue;
 			}
+
 			message.delete();
 
-			this.logViolationModAction(guild, channel, message, violation);
+			this.logViolationModAction(guild, message.author, violation, 0, [
+				{ name: 'Channel', value: channel.name },
+				{ name: 'Message', value: message.content }
+			]);
 
 			const embed = this.createPunishmentEmbed('AutoModerator');
-			embed.description = `Message by <@${
-				message.author.id
-			}> was removed because it violated the \`${violation}\` rule.\n`;
+			const usr = `<@${message.author.id}>`;
+			embed.description = `Message by ${usr} was removed because it violated the \`${violation}\` rule.\n`;
+
 			this.sendAndDelete(message, embed, settings);
 			return;
 		}
@@ -244,26 +333,23 @@ export class Moderation {
 
 	private logViolationModAction(
 		guild: Guild,
-		channel: TextChannel,
-		message: Message,
+		user: User,
 		violationType: ViolationType,
-		amount?: number
+		amount: number,
+		extra: { name: string; value: string }[]
 	) {
 		const logEmbed = this.createPunishmentEmbed('AutoModerator');
-		logEmbed.description = `**Channel** <#${channel.id}>\n`;
-		logEmbed.description += `**User**: ${message.author.username}#${
-			message.author.discriminator
-		} (ID: ${message.author.id})\n`;
+		const usr = `${user.username}#${user.discriminator}`;
+		logEmbed.description += `**User**: ${usr} (ID: ${user.id})\n`;
+
 		logEmbed.description += `**Violation**: ${violationType}\n`;
-		if (amount) {
+		if (amount > 0) {
 			logEmbed.description += `**Strikes given**: ${amount}\n`;
 		} else {
 			logEmbed.description += `No strikes given.\n`;
 		}
-		logEmbed.fields.push({
-			name: 'Message content',
-			value: message.content
-		});
+
+		extra.forEach(e => logEmbed.fields.push(e));
 		this.client.logModAction(guild, logEmbed);
 	}
 
@@ -277,9 +363,8 @@ export class Moderation {
 			author: { name: 'AutoModerator' },
 			color: 16711680 // red
 		});
-		logEmbed.description = `**User**: ${user.username}#${
-			user.discriminator
-		} (ID: ${user.id})\n`;
+		const usr = `${user.username}#${user.discriminator}`;
+		logEmbed.description = `**User**: ${usr} (ID: ${user.id})\n`;
 		logEmbed.description += `**Strikes**: ${amount}\n`;
 		logEmbed.description += `**Punishment**: ${punishmentType}\n`;
 		this.client.logModAction(guild, logEmbed);
@@ -295,22 +380,22 @@ export class Moderation {
 	}
 
 	private async addStrikesAndCheckIfPunishable(
-		message: Message,
-		amount: number,
+		member: Member,
 		violationType: ViolationType,
+		amount: number,
 		args: Arguments
 	) {
 		let strikesBefore = await strikes.sum('amount', {
 			where: {
 				guildId: args.guild.id,
-				memberId: message.author.id
+				memberId: member.id
 			}
 		});
 
 		await strikes.create({
 			id: null,
 			guildId: args.guild.id,
-			memberId: message.author.id,
+			memberId: member.id,
 			amount: amount,
 			violationType: violationType
 		});
@@ -329,28 +414,33 @@ export class Moderation {
 		});
 
 		if (punishmentConfig) {
-			let punishmentResult = await this.punishmentFunctions[
-				punishmentConfig.punishmentType
-			](message, args.guild, punishmentConfig.amount, args);
-
-			if (punishmentResult) {
-				await punishments.create({
-					id: null,
-					guildId: args.guild.id,
-					memberId: message.author.id,
-					punishmentType: punishmentConfig.punishmentType,
-					amount: punishmentConfig.amount,
-					args: punishmentConfig.args,
-					reason: 'automod',
-					creatorId: null
-				});
-				this.logPunishmentModAction(
-					args.guild,
-					message.author,
-					amount,
-					punishmentConfig.punishmentType
-				);
+			const func = this.punishmentFunctions[punishmentConfig.punishmentType];
+			if (!func) {
+				return;
 			}
+
+			let punishmentResult = await func(member, punishmentConfig.amount, args);
+			if (!punishmentResult) {
+				return;
+			}
+
+			await punishments.create({
+				id: null,
+				guildId: args.guild.id,
+				memberId: member.id,
+				punishmentType: punishmentConfig.punishmentType,
+				amount: punishmentConfig.amount,
+				args: punishmentConfig.args,
+				reason: 'automod',
+				creatorId: null
+			});
+
+			this.logPunishmentModAction(
+				args.guild,
+				member.user,
+				amount,
+				punishmentConfig.punishmentType
+			);
 		}
 	}
 
@@ -760,7 +850,8 @@ export class Moderation {
 	public createPunishmentEmbed(name: string, icon?: string) {
 		let object = icon ? { name: name, icon_url: icon } : { name: name };
 		const embed = this.client.createEmbed({
-			author: object
+			author: object,
+			description: ''
 		});
 		return embed;
 	}

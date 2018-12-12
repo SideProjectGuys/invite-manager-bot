@@ -96,6 +96,9 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 			SettingsKey.autoModEmojisEnabled,
 			SettingsKey.autoModEmojisMaxNumberOfEmojis
 		]
+	},
+	hoist: {
+		...getEmpty()
 	}
 };
 

@@ -39,6 +39,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[clearBonus, user]: [boolean, User],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;

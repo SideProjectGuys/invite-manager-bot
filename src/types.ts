@@ -24,14 +24,16 @@ export enum CommandGroup {
 	Info = 'Info',
 	Premium = 'Premium',
 	Moderation = 'Moderation',
+	Report = 'Report',
 	Other = 'Other'
 }
 
 export enum ShardCommand {
+	CACHE = 'CACHE',
+	CUSTOM = 'CUSTOM',
 	DIAGNOSE = 'DIAGNOSE',
 	FLUSH_CACHE = 'FLUSH_CACHE',
 	SUDO = 'SUDO',
-	RESPONSE = 'RESPONSE',
 	OWNER_DM = 'OWNER_DM',
 	USER_DM = 'USER_DM',
 	LEAVE_GUILD = 'LEAVE_GUILD'
@@ -85,6 +87,8 @@ export enum BotCommand {
 	makeMentionable = 'makeMentionable',
 	mentionRole = 'mentionRole',
 
+	/*report = 'report',*/
+
 	graph = 'graph'
 }
 
@@ -113,18 +117,9 @@ export enum ModerationCommand {
 	cleanShort = 'cleanShort',
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
-	purge = 'purge'
-}
+	purge = 'purge',
 
-export enum OwnerCommand {
-	cache = 'ownerCache',
-	diagnose = 'ownerDiagnose',
-	dm = 'ownerDm',
-	flush = 'ownerFlush',
-	givePremium = 'ownerGivePremium',
-	help = 'ownerHelp',
-	leave = 'ownerLeave',
-	sudo = 'ownerSudo'
+	unhoist = 'unhoist'
 }
 
 export interface RabbitMqMember {

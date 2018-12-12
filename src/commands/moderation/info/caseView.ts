@@ -27,6 +27,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[caseNumber]: [number],
+		flags: {},
 		{ guild, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {

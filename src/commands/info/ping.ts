@@ -17,6 +17,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		let msg = await message.channel.createMessage('Pong!');

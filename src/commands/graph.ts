@@ -26,14 +26,14 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Other,
-			guildOnly: true,
-			hidden: false
+			guildOnly: true
 		});
 	}
 
 	public async action(
 		message: Message,
 		[type, duration]: [ChartType, string],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		let days = 60;
