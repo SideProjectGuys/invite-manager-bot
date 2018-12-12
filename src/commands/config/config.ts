@@ -11,6 +11,7 @@ import {
 	SettingsKey,
 	settingsTypes
 } from '../../sequelize';
+import { beautify, canClear } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -83,7 +84,7 @@ export default class extends Command {
 					key
 				});
 
-				if (defaultSettings[key] === null ? 't' : undefined) {
+				if (canClear(key)) {
 					embed.description +=
 						'\n' +
 						t('cmd.config.current.clear', {
@@ -94,7 +95,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
-					value: this.beautify(key, oldVal)
+					value: beautify(key, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.config.current.notSet', {
@@ -107,7 +108,7 @@ export default class extends Command {
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
-			if (defaultSettings[key] !== null) {
+			if (!canClear(key)) {
 				return this.client.sendReply(
 					message,
 					t('cmd.config.canNotClear', { prefix, key })
@@ -129,7 +130,7 @@ export default class extends Command {
 			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
 				name: t('cmd.config.current.title'),
-				value: this.beautify(key, oldVal)
+				value: beautify(key, oldVal)
 			});
 			return this.client.sendReply(message, embed);
 		}
@@ -146,13 +147,13 @@ export default class extends Command {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
-				value: this.beautify(key, oldVal)
+				value: beautify(key, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.config.new.title'),
-			value: value !== null ? this.beautify(key, value) : t('cmd.config.none')
+			value: value !== null ? beautify(key, value) : t('cmd.config.none')
 		});
 
 		// Do any post processing, such as example messages
@@ -325,26 +326,5 @@ export default class extends Command {
 			);
 			return async () => await cmd.action(message, [], {}, context);
 		}
-	}
-
-	private beautify(key: SettingsKey, value: any) {
-		const type = settingsTypes[key];
-		if (type === 'Channel') {
-			return `<#${value}>`;
-		} else if (type === 'Boolean') {
-			return value ? 'True' : 'False';
-		} else if (type === 'Role') {
-			return `<@&${value}>`;
-		} else if (type === 'Role[]') {
-			return value.map((v: any) => `<@&${v}>`).join(' ');
-		} else if (type === 'Channel[]') {
-			return value.map((v: any) => `<#${v}>`).join(' ');
-		} else if (type === 'String[]') {
-			return value.map((v: any) => '`' + v + '`').join(', ');
-		}
-		if (typeof value === 'string' && value.length > 1000) {
-			return value.substr(0, 1000) + '...';
-		}
-		return value;
 	}
 }

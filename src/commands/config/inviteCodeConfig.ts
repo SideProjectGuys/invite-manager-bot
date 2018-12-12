@@ -12,7 +12,7 @@ import {
 	inviteCodeSettingsTypes,
 	LogAction
 } from '../../sequelize';
-import { beautify } from '../../settings';
+import { beautify, canClear } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -108,7 +108,7 @@ export default class extends Command {
 					key
 				});
 
-				if (defaultInviteCodeSettings[key] === null ? 't' : undefined) {
+				if (canClear(key)) {
 					embed.description +=
 						'\n' +
 						t('cmd.inviteCodeConfig.current.clear', {
@@ -132,7 +132,7 @@ export default class extends Command {
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
-			if (defaultInviteCodeSettings[key] !== null) {
+			if (!canClear(key)) {
 				return this.client.sendReply(
 					message,
 					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })

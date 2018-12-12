@@ -54,6 +54,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 
 		// Check if the value changed
 		if (cfg[key] !== val) {
+			// Save into DB
 			settings.bulkCreate(
 				[
 					{

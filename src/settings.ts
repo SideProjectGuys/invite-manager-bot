@@ -24,6 +24,11 @@ const allDefaultSettings = {
 	...defaultInviteCodeSettings
 };
 
+export function canClear<K extends AllKeys>(key: K) {
+	const type = allSettingsTypes[key];
+	return type.endsWith('[]') || allDefaultSettings[key] === null;
+}
+
 export function toDbValue<K extends AllKeys>(key: K, value: any): string {
 	const type = allSettingsTypes[key];
 
@@ -59,7 +64,9 @@ function _toDbValue(type: string, value: any): string {
 		return value ? 'true' : 'false';
 	} else if (type.endsWith('[]')) {
 		const subType = type.substring(0, type.length - 2);
-		return value.map((v: any) => _toDbValue(subType, v)).join(',');
+		return value && value.length > 0
+			? value.map((v: any) => _toDbValue(subType, v)).join(',')
+			: null;
 	}
 
 	return value;
@@ -70,6 +77,14 @@ export function fromDbValue<K extends AllKeys>(key: K, value: string): any {
 	return _fromDbValue(type, value);
 }
 function _fromDbValue(type: string, value: string): any {
+	// Handle lists first because we don't want to return null for those
+	if (type.endsWith('[]')) {
+		const subType = type.substring(0, type.length - 2);
+		return value && value.length > 0
+			? value.split(',').map(s => _fromDbValue(subType, s))
+			: [];
+	}
+
 	if (value === undefined || value === null) {
 		return null;
 	}
@@ -78,21 +93,14 @@ function _fromDbValue(type: string, value: string): any {
 		return value === 'true';
 	} else if (type === 'Number') {
 		return parseInt(value, 10);
-	} else if (type.endsWith('[]')) {
-		const subType = type.substring(0, type.length - 2);
-		const splits = value.split(',');
-		return splits.map(s => _fromDbValue(subType, s)) as
-			| string[]
-			| number[]
-			| boolean[];
 	}
 
 	return value;
 }
 
 export function beautify<K extends AllKeys>(key: K, value: any) {
-	if (typeof value === typeof undefined || value === null) {
-		return '<None>';
+	if (typeof value === 'undefined' || value === null) {
+		return null;
 	}
 
 	const type = allSettingsTypes[key];

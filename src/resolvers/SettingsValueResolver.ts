@@ -1,7 +1,6 @@
 import { IMClient } from '../client';
 import { Context } from '../commands/Command';
 import {
-	defaultSettings,
 	InternalSettingsTypes,
 	Lang,
 	LeaderboardStyle,

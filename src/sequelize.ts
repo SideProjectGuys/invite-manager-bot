@@ -494,10 +494,10 @@ export const defaultSettings: SettingsObject = {
 	modPunishmentMuteDeleteMessage: true,
 
 	autoModEnabled: false,
-	autoModModeratedChannels: null,
-	autoModModeratedRoles: null,
-	autoModIgnoredChannels: null,
-	autoModIgnoredRoles: null,
+	autoModModeratedChannels: [],
+	autoModModeratedRoles: [],
+	autoModIgnoredChannels: [],
+	autoModIgnoredRoles: [],
 	autoModDeleteBotMessage: true,
 	autoModDeleteBotMessageTimeoutInSeconds: 5,
 	autoModLogEnabled: true,
@@ -508,12 +508,12 @@ export const defaultSettings: SettingsObject = {
 	autoModInvitesEnabled: true,
 
 	autoModLinksEnabled: true,
-	autoModLinksWhitelist: null,
-	autoModLinksBlacklist: null,
+	autoModLinksWhitelist: [],
+	autoModLinksBlacklist: [],
 	autoModLinksFollowRedirects: true,
 
 	autoModWordsEnabled: true,
-	autoModWordsBlacklist: null,
+	autoModWordsBlacklist: [],
 
 	autoModAllCapsEnabled: true,
 	autoModAllCapsMinCharacters: 10,
@@ -721,7 +721,7 @@ export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
 
 export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
 	name: null,
-	roles: null
+	roles: []
 };
 
 export interface InviteCodeSettingsAttributes extends BaseAttributes {
@@ -916,7 +916,7 @@ export const customInvites = sequelize.define<
 	},
 	{
 		timestamps: true,
-		paranoid: true
+		paranoid: false
 	}
 );
 
