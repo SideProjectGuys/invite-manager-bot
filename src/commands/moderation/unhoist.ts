@@ -1,6 +1,7 @@
-import { Message } from 'eris';
+import { Message, User } from 'eris';
 
 import { IMClient } from '../../client';
+import { UserResolver } from '../../resolvers';
 import { NAME_HOIST_REGEX } from '../../services/Moderation';
 import { CommandGroup, ModerationCommand } from '../../types';
 import { Command, Context } from '../Command';
@@ -10,7 +11,12 @@ export default class extends Command {
 		super(client, {
 			name: ModerationCommand.unhoist,
 			aliases: ['dehoist'],
-			args: [],
+			args: [
+				{
+					name: 'startAfter',
+					resolver: UserResolver
+				}
+			],
 			group: CommandGroup.Moderation,
 			strict: true,
 			guildOnly: true
@@ -19,7 +25,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: [],
+		[startAfter]: [User],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
@@ -32,7 +38,10 @@ export default class extends Command {
 			description: ''
 		});
 
-		const members = await guild.getRESTMembers(1000);
+		const members = await guild.getRESTMembers(
+			1000,
+			startAfter ? startAfter.id : undefined
+		);
 		members.forEach(member => {
 			if (!member || member.bot) {
 				return;
@@ -49,7 +58,7 @@ export default class extends Command {
 				.editMember(member.user.id, { nick: newName }, 'Dehoist command')
 				.catch(() => undefined);
 
-			embed.description += name + '\n';
+			embed.description += member.user.id + ': ' + name + '\n';
 		});
 
 		this.client.sendReply(message, embed);
