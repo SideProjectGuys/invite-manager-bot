@@ -26,6 +26,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[role]: [Role],
+		flags: {},
 		{ t, me, guild }: Context
 	): Promise<any> {
 		if (role.mentionable) {

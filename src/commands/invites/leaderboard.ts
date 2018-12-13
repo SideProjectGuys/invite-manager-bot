@@ -38,6 +38,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[_page, _date]: [number, string],
+		flags: {},
 		{ guild, t, settings }: Context
 	): Promise<any> {
 		let from = moment();

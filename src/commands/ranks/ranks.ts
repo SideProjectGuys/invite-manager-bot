@@ -18,6 +18,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		args: any[],
+		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		const rs = await ranks.findAll({

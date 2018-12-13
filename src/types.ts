@@ -24,10 +24,12 @@ export enum CommandGroup {
 	Info = 'Info',
 	Premium = 'Premium',
 	Moderation = 'Moderation',
+	Report = 'Report',
 	Other = 'Other'
 }
 
 export enum ShardCommand {
+	CACHE = 'CACHE',
 	CUSTOM = 'CUSTOM',
 	DIAGNOSE = 'DIAGNOSE',
 	FLUSH_CACHE = 'FLUSH_CACHE',
@@ -85,6 +87,8 @@ export enum BotCommand {
 	makeMentionable = 'makeMentionable',
 	mentionRole = 'mentionRole',
 
+	/*report = 'report',*/
+
 	graph = 'graph'
 }
 
@@ -113,7 +117,9 @@ export enum ModerationCommand {
 	cleanShort = 'cleanShort',
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
-	purge = 'purge'
+	purge = 'purge',
+
+	unhoist = 'unhoist'
 }
 
 export interface RabbitMqMember {

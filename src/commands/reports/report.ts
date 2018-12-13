@@ -1,3 +1,4 @@
+/*
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
@@ -7,24 +8,15 @@ import { Command, Context } from '../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.prefix,
+			name: BotCommand.report,
 			aliases: [],
-			group: CommandGroup.Info,
-			guildOnly: true
+			group: CommandGroup.Report,
+			guildOnly: false
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ settings, t }: Context
-	): Promise<any> {
-		this.client.sendReply(
-			message,
-			t('cmd.prefix.title', {
-				prefix: settings.prefix
-			})
-		);
+	public async action(message: Message): Promise<any> {
+		this.client.sendReply(message, 'Not implemented');
 	}
 }
+*/

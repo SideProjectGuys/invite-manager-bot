@@ -240,7 +240,9 @@ export enum SettingsKey {
 	autoModMentionRolesMaxNumberOfMentions = 'autoModMentionRolesMaxNumberOfMentions',
 
 	autoModEmojisEnabled = 'autoModEmojisEnabled',
-	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis'
+	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis',
+
+	autoModHoistEnabled = 'autoModHoistEnabled'
 }
 
 export type SettingsObject = {
@@ -322,6 +324,8 @@ export type SettingsObject = {
 
 	autoModEmojisEnabled: boolean;
 	autoModEmojisMaxNumberOfEmojis: number;
+
+	autoModHoistEnabled: boolean;
 };
 
 export type InternalSettingsTypes =
@@ -440,7 +444,9 @@ export const settingsTypes: SettingsTypesObject = {
 	autoModMentionRolesMaxNumberOfMentions: 'Number',
 
 	autoModEmojisEnabled: 'Boolean',
-	autoModEmojisMaxNumberOfEmojis: 'Number'
+	autoModEmojisMaxNumberOfEmojis: 'Number',
+
+	autoModHoistEnabled: 'Boolean'
 };
 
 export const defaultSettings: SettingsObject = {
@@ -488,10 +494,10 @@ export const defaultSettings: SettingsObject = {
 	modPunishmentMuteDeleteMessage: true,
 
 	autoModEnabled: false,
-	autoModModeratedChannels: null,
-	autoModModeratedRoles: null,
-	autoModIgnoredChannels: null,
-	autoModIgnoredRoles: null,
+	autoModModeratedChannels: [],
+	autoModModeratedRoles: [],
+	autoModIgnoredChannels: [],
+	autoModIgnoredRoles: [],
 	autoModDeleteBotMessage: true,
 	autoModDeleteBotMessageTimeoutInSeconds: 5,
 	autoModLogEnabled: true,
@@ -502,12 +508,12 @@ export const defaultSettings: SettingsObject = {
 	autoModInvitesEnabled: true,
 
 	autoModLinksEnabled: true,
-	autoModLinksWhitelist: null,
-	autoModLinksBlacklist: null,
+	autoModLinksWhitelist: [],
+	autoModLinksBlacklist: [],
 	autoModLinksFollowRedirects: true,
 
 	autoModWordsEnabled: true,
-	autoModWordsBlacklist: null,
+	autoModWordsBlacklist: [],
 
 	autoModAllCapsEnabled: true,
 	autoModAllCapsMinCharacters: 10,
@@ -527,7 +533,9 @@ export const defaultSettings: SettingsObject = {
 	autoModMentionRolesMaxNumberOfMentions: 3,
 
 	autoModEmojisEnabled: true,
-	autoModEmojisMaxNumberOfEmojis: 5
+	autoModEmojisMaxNumberOfEmojis: 5,
+
+	autoModHoistEnabled: true
 };
 
 export interface SettingAttributes extends BaseAttributes {
@@ -713,7 +721,7 @@ export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
 
 export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
 	name: null,
-	roles: null
+	roles: []
 };
 
 export interface InviteCodeSettingsAttributes extends BaseAttributes {
@@ -908,7 +916,7 @@ export const customInvites = sequelize.define<
 	},
 	{
 		timestamps: true,
-		paranoid: true
+		paranoid: false
 	}
 );
 
@@ -1289,7 +1297,8 @@ export enum ViolationType {
 	quickMessages = 'quickMessages',
 	mentionUsers = 'mentionUsers',
 	mentionRoles = 'mentionRoles',
-	emojis = 'emojis'
+	emojis = 'emojis',
+	hoist = 'hoist'
 }
 
 export interface StrikeConfigAttributes extends BaseAttributes {
@@ -1490,3 +1499,36 @@ export const scheduledActions = sequelize.define<
 
 scheduledActions.belongsTo(guilds);
 guilds.hasMany(scheduledActions);
+
+// ------------------------------------
+// Reports
+// ------------------------------------
+
+export enum ReportType {
+	fraud = 'fraud'
+}
+
+export interface ReportAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	reportType: ReportType;
+	description: string;
+}
+export interface ReportInstance
+	extends Sequelize.Instance<ReportAttributes>,
+		ReportAttributes {
+	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
+}
+
+export const reports = sequelize.define<ReportInstance, ReportAttributes>(
+	'report',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		reportType: Sequelize.ENUM(Object.values(ReportType)),
+		description: Sequelize.TEXT,
+		guildId: Sequelize.STRING(32)
+	}
+);
+
+reports.belongsTo(guilds);
+guilds.hasMany(reports);

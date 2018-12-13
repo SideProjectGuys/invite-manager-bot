@@ -45,12 +45,11 @@ export class RabbitMq {
 
 		// Setup RabbitMQ channels
 		const prefix = client.config.rabbitmq.prefix
-			? `${client.config.rabbitmq.prefix}-`
+			? `${client.config.rabbitmq.prefix}`
 			: '';
+		const suffix = `${this.client.shardId}-${this.client.shardCount}`;
 
-		this.qJoinsName = `${prefix}joins-${this.client.shardId}-${
-			this.client.shardCount
-		}`;
+		this.qJoinsName = `${prefix}-joins-${suffix}`;
 		conn.createChannel().then(async channel => {
 			this.channelJoins = channel;
 
@@ -59,9 +58,7 @@ export class RabbitMq {
 			});
 		});
 
-		this.qLeavesName = `${prefix}leaves-${this.client.shardId}-${
-			this.client.shardCount
-		}`;
+		this.qLeavesName = `${prefix}-leaves-${suffix}`;
 		conn.createChannel().then(async channel => {
 			this.channelLeaves = channel;
 
@@ -457,6 +454,29 @@ export class RabbitMq {
 				});
 				break;
 
+			case ShardCommand.CACHE:
+				let channelCount =
+					this.client.groupChannels.size + this.client.privateChannels.size;
+				let roleCount = 0;
+
+				this.client.guilds.forEach(g => {
+					channelCount += g.channels.size;
+					roleCount += g.roles.size;
+				});
+
+				sendResponse({
+					guilds: this.client.guilds.size,
+					users: this.client.users.size,
+					channels: channelCount,
+					roles: roleCount,
+					settings: this.client.cache.settings.getSize(),
+					premium: this.client.cache.premium.getSize(),
+					permissions: this.client.cache.permissions.getSize(),
+					strikes: this.client.cache.strikes.getSize(),
+					punishments: this.client.cache.punishments.getSize()
+				});
+				break;
+
 			case ShardCommand.DIAGNOSE:
 				if (!guild) {
 					return sendResponse({
@@ -576,10 +596,14 @@ export class RabbitMq {
 				break;
 
 			case ShardCommand.OWNER_DM:
-				const user = await this.client.getRESTUser(content.userId);
-				const userChannel = await user.getDMChannel();
-				await userChannel.createMessage(content.message);
-				sendResponse({ ok: true });
+				try {
+					const user = await this.client.getRESTUser(content.userId);
+					const userChannel = await user.getDMChannel();
+					await userChannel.createMessage(content.message);
+					sendResponse({ ok: true });
+				} catch (e) {
+					sendResponse({ ok: false, error: e });
+				}
 				break;
 
 			case ShardCommand.USER_DM:

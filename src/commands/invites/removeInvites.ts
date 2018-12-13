@@ -36,11 +36,12 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[user, amount, reason]: [User, number, string],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const cmd = this.client.cmds.commands.find(
 			c => c.name === BotCommand.addInvites
 		);
-		return cmd.action(message, [user, -amount, reason], context);
+		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

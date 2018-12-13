@@ -24,6 +24,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[command]: [Command],
+		flags: {},
 		context: Context
 	): Promise<any> {
 		const { guild, t, settings, me } = context;
@@ -63,7 +64,6 @@ export default class extends Command {
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
 			const commands = this.client.cmds.commands
-				.filter(c => !c.hidden)
 				.map(c => ({
 					...c,
 					usage: c.usage.replace('{prefix}', prefix)

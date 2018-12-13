@@ -36,6 +36,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[name, _channel]: [string, TextChannel],
+		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
 		let channel = _channel ? _channel : (message.channel as TextChannel);
