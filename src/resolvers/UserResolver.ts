@@ -32,7 +32,7 @@ export class UserResolver extends Resolver {
 			});
 
 			// Trying to find exact match in guild
-			if (users.length === 0) {
+			if (guild && users.length === 0) {
 				users = guild.members
 					.filter(m => {
 						const mName = m.username.toLowerCase() + '#' + m.discriminator;
