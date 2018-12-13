@@ -438,7 +438,7 @@ export class Moderation {
 			this.logPunishmentModAction(
 				args.guild,
 				member.user,
-				amount,
+				strikesAfter,
 				punishmentConfig.punishmentType
 			);
 		}
