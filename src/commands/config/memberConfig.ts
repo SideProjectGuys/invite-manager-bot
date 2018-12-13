@@ -48,7 +48,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, user, rawValue]: [MemberSettingsKey, User, any],
+		[key, user, value]: [MemberSettingsKey, User, any],
 		flags: {},
 		context: Context
 	): Promise<any> {
@@ -119,7 +119,7 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		if (rawValue === 'none' || rawValue === 'empty' || rawValue === 'null') {
+		if (value === null) {
 			if (!canClear(key)) {
 				this.client.sendReply(
 					message,
