@@ -7,7 +7,7 @@ import { Resolver } from './Resolver';
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class UserResolver extends Resolver {
-	public async resolve(value: string, { t }: Context): Promise<User> {
+	public async resolve(value: string, { guild, t }: Context): Promise<User> {
 		if (!value) {
 			return;
 		}
@@ -31,7 +31,17 @@ export class UserResolver extends Resolver {
 				return uName === name;
 			});
 
-			// If no roles found, allow for partial match
+			// Trying to find exact match in guild
+			if (users.length === 0) {
+				users = guild.members
+					.filter(m => {
+						const mName = m.username.toLowerCase() + '#' + m.discriminator;
+						return mName.includes(name) || name.includes(mName);
+					})
+					.map(m => m.user);
+			}
+
+			// If no user found, allow for partial match
 			if (users.length === 0) {
 				users = this.client.users.filter(u => {
 					const uName = u.username.toLowerCase() + '#' + u.discriminator;
