@@ -1106,7 +1106,10 @@
 			"translators": "Translators"
 		},
 		"unhoist": {
-			"title": "Unhoisted users"
+			"title": "Unhoist users",
+			"starting": "Starting unhoist process...",
+			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
 		}
 	},
 	"permissions": {

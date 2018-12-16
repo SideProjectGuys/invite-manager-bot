@@ -21,37 +21,86 @@ export default class extends Command {
 		message: Message,
 		args: [],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t, settings }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
 		}
 
+		let lastId: string = undefined;
+		const batches = Math.ceil(guild.memberCount / 1000);
+
 		const embed = this.client.createEmbed({
 			title: t('cmd.unhoist.title'),
-			description: ''
+			description: t('cmd.unhoist.starting')
 		});
 
-		const members = await guild.getRESTMembers(1000);
-		members.forEach(member => {
-			if (!member || member.bot) {
-				return;
-			}
+		const msg = await this.client.sendReply(message, embed);
 
-			const name = member.nick ? member.nick : member.username;
+		let changed = 0;
+		let ignored = 0;
+		for (let i = 0; i < batches; i++) {
+			embed.description = t('cmd.unhoist.processing', {
+				current: i + 1,
+				total: batches
+			});
+			await msg.edit({ embed });
 
-			if (!NAME_HOIST_REGEX.test(name)) {
-				return;
-			}
+			const members = await guild.getRESTMembers(1000, lastId);
+			lastId = members[members.length - 1].id;
 
-			const newName = '▼ ' + name;
-			guild
-				.editMember(member.user.id, { nick: newName }, 'Dehoist command')
-				.catch(() => undefined);
+			members.forEach(member => {
+				// Ignore missing members?
+				if (!member) {
+					return;
+				}
 
-			embed.description += name + '\n';
-		});
+				// Ignore bots
+				if (member.bot) {
+					ignored++;
+					return;
+				}
 
-		this.client.sendReply(message, embed);
+				// If moderated roles are set then only moderate those roles
+				if (
+					settings.autoModModeratedRoles &&
+					settings.autoModModeratedRoles.length > 0
+				) {
+					if (
+						!settings.autoModModeratedRoles.some(
+							r => member.roles.indexOf(r) >= 0
+						)
+					) {
+						ignored++;
+						return;
+					}
+				}
+
+				// Don't moderate ignored roles
+				if (
+					settings.autoModIgnoredRoles &&
+					settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
+				) {
+					ignored++;
+					return;
+				}
+
+				const name = member.nick ? member.nick : member.username;
+
+				if (!NAME_HOIST_REGEX.test(name)) {
+					return;
+				}
+
+				const newName = '▼ ' + name;
+				guild
+					.editMember(member.user.id, { nick: newName }, 'Dehoist command')
+					.catch(() => undefined);
+
+				changed++;
+			});
+		}
+
+		embed.description = t('cmd.unhoist.done', { changed, ignored });
+		await msg.edit({ embed });
 	}
 }
