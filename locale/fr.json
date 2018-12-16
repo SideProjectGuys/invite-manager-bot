@@ -833,9 +833,10 @@
 			}
 		},
 		"interactiveConfig": {
-			"welcome": "Bienvenue dans le menu des paramètres de InviteManager.\nUtilisez les réactions pour choisir l'une des options disponibles.",
+			"welcome": "Use the reactions to pick one of the available options.",
 			"none": "<None>",
-			"change": "Current value: {{{value}}}\nPossible values: {{{possible}}}\nEnter a new value:",
+			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"new": "Enter a new value:",
 			"values": {
 				"boolean": "`Oui` ou `Non`",
 				"string": "N'importe quel texte",
@@ -1068,7 +1069,35 @@
 						"title": "Role"
 					}
 				}
-			}
+			},
+			"list": {
+				"add": {
+					"title": "Add",
+					"text": "Add a new value to the list."
+				},
+				"remove": {
+					"title": "Remove",
+					"text": "Remove an existing value from the list."
+				},
+				"set": {
+					"title": "Set",
+					"text": "Set the whole list using space separated values."
+				},
+				"clear": {
+					"title": "Clear",
+					"text": "Clear the whole list of all values."
+				}
+			},
+			"current": {
+				"title": "Current value"
+			},
+			"possible": {
+				"title": "Possible values"
+			},
+			"remove": "Enter a value or a list of values to remove.",
+			"add": "Enter a value or list of values to add.",
+			"set": "Enter the new values for the list.",
+			"removeEmpty": "The list is already empty."
 		},
 		"credits": {
 			"developers": "Developers",
@@ -1077,7 +1106,10 @@
 			"translators": "Translators"
 		},
 		"unhoist": {
-			"title": "Unhoisted users"
+			"title": "Unhoist users",
+			"starting": "Starting unhoist process...",
+			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
 		}
 	},
 	"permissions": {
