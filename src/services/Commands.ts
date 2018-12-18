@@ -420,7 +420,7 @@ export class Commands {
 			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
-			this.client.sendReply(message, t('command.error'));
+			this.client.sendReply(message, t('cmd.error'));
 			return;
 		}
 

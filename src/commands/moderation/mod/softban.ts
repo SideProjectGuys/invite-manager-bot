@@ -53,7 +53,7 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		if (me.permission.has(Permissions.BAN_MEMBERS)) {
+		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('ban.softBan.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
 			let [error] = await to(targetMember.ban(deleteMessageDays, reason));
@@ -69,7 +69,7 @@ export default class extends Command {
 						id: null,
 						guildId: guild.id,
 						memberId: targetMember.id,
-						punishmentType: PunishmentType.softban,
+						type: PunishmentType.softban,
 						amount: 0,
 						args: '',
 						reason: reason,
@@ -80,11 +80,10 @@ export default class extends Command {
 						targetMember.avatarURL
 					);
 					logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-					logEmbed.description += `**Target**: ${targetMember}\n`;
 					logEmbed.description += `**Target**: ${targetMember.username}#${
 						targetMember.discriminator
 					} (ID: ${targetMember.id})\n`;
-					logEmbed.description += `**Action**: ${punishment.punishmentType}\n`;
+					logEmbed.description += `**Action**: ${punishment.type}\n`;
 					logEmbed.description += `**Mod**: ${message.author.username}\n`;
 					logEmbed.description += `**Reason**: ${reason}\n`;
 					this.client.logModAction(guild, logEmbed);

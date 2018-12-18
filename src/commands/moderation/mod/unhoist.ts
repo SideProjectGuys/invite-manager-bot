@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../client';
-import { NAME_HOIST_REGEX } from '../../services/Moderation';
-import { CommandGroup, ModerationCommand } from '../../types';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../../client';
+import { NAME_HOIST_REGEX } from '../../../services/Moderation';
+import { CommandGroup, ModerationCommand } from '../../../types';
+import { Command, Context } from '../../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

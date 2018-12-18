@@ -1,13 +1,7 @@
 import { Member, Message } from 'eris';
-import { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
-import {
-	DurationResolver,
-	MemberResolver,
-	StringResolver
-} from '../../../resolvers';
-import { punishments, PunishmentType } from '../../../sequelize';
+import { MemberResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -15,22 +9,13 @@ import { Command, Context } from '../../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.mute,
+			name: ModerationCommand.unmute,
 			aliases: [],
 			args: [
 				{
 					name: 'user',
 					resolver: MemberResolver,
 					required: true
-				},
-				{
-					name: 'muteDuration',
-					resolver: DurationResolver
-				},
-				{
-					name: 'reason',
-					resolver: StringResolver,
-					rest: true
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -41,7 +26,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetMember, muteDuration, reason]: [Member, Duration, string],
+		[targetMember]: [Member],
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
@@ -54,51 +39,29 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		let mutedRole = settings.mutedRole;
+		const mutedRole = settings.mutedRole;
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
-			embed.description = t('cmd.mute.missingRole');
+			embed.description = t('cmd.unmute.missingRole');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.addRole(mutedRole, reason));
+			let [error] = await to(targetMember.removeRole(mutedRole));
 			if (error) {
-				console.error(error);
-				embed.description = t('cmd.mute.error');
+				embed.description = t('cmd.unmute.error');
 			} else {
-				embed.description = t('cmd.mute.done');
-				let punishment = await punishments.create({
-					id: null,
-					guildId: guild.id,
-					memberId: targetMember.id,
-					punishmentType: PunishmentType.mute,
-					amount: 0,
-					args: '',
-					reason: reason,
-					creatorId: message.author.id
-				});
+				embed.description = t('cmd.unmute.done');
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
 				);
-				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-				logEmbed.description += `**Target**: ${targetMember}\n`;
 				logEmbed.description += `**Target**: ${targetMember.username}#${
 					targetMember.discriminator
 				} (ID: ${targetMember.id})\n`;
-				logEmbed.description += `**Action**: ${punishment.punishmentType}\n`;
+				logEmbed.description += `**Action**: Unmute\n`;
 				logEmbed.description += `**Mod**: ${message.author.username}\n`;
-				logEmbed.description += `**Reason**: ${reason}\n`;
 				this.client.logModAction(guild, logEmbed);
-				/* TODO: Unmute after some time
-				await this.client.scheduler.addScheduledAction(
-					guild.id,
-					ScheduledActionType.unmute,
-					{ memberId: member.id },
-					muteDuration,
-					'');
-					*/
 			}
 		} else {
-			embed.description = t('cmd.mute.canNotMute');
+			embed.description = t('cmd.unmute.canNotUnmute');
 		}
 
 		let response = await this.client.sendReply(message, embed);

@@ -2,6 +2,7 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { MemberResolver, StringResolver } from '../../../resolvers';
+import { punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -9,11 +10,11 @@ import { Command, Context } from '../../Command';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.unban,
+			name: ModerationCommand.kick,
 			aliases: [],
 			args: [
 				{
-					name: 'user',
+					name: 'member',
 					resolver: MemberResolver,
 					required: true
 				},
@@ -44,34 +45,44 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		if (me.permission.has(Permissions.BAN_MEMBERS)) {
-			embed.description = t('cmd.unban.missingPermissions');
+		if (!me.permission.has(Permissions.KICK_MEMBERS)) {
+			embed.description = t('cmd.kick.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.unban(reason));
+			let [error] = await to(targetMember.kick(reason));
 			if (error) {
-				embed.description = t('cmd.unban.error');
+				embed.description = t('cmd.kick.error');
 			} else {
-				embed.description = t('cmd.unban.done');
+				embed.description = t('cmd.kick.done');
+				let punishment = await punishments.create({
+					id: null,
+					guildId: guild.id,
+					memberId: targetMember.id,
+					type: PunishmentType.kick,
+					amount: 0,
+					args: '',
+					reason: reason,
+					creatorId: message.author.id
+				});
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
 				);
-				logEmbed.description += `**Target**: ${targetMember}\n`;
+				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
 				logEmbed.description += `**Target**: ${targetMember.username}#${
 					targetMember.discriminator
 				} (ID: ${targetMember.id})\n`;
-				logEmbed.description += `**Action**: Unban\n`;
+				logEmbed.description += `**Action**: ${punishment.type}\n`;
 				logEmbed.description += `**Mod**: ${message.author.username}\n`;
 				logEmbed.description += `**Reason**: ${reason}\n`;
 				this.client.logModAction(guild, logEmbed);
 			}
 		} else {
-			embed.description = t('cmd.unban.canNotUnban');
+			embed.description = t('cmd.kick.canNotKick');
 		}
 
-		let response = (await this.client.sendReply(message, embed)) as Message;
+		let response = await this.client.sendReply(message, embed);
 
-		if (settings.modPunishmentBanDeleteMessage) {
+		if (settings.modPunishmentKickDeleteMessage) {
 			const func = () => {
 				message.delete();
 				response.delete();

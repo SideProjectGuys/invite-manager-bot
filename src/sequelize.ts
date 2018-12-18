@@ -1304,7 +1304,7 @@ export enum ViolationType {
 export interface StrikeConfigAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
-	violationType: ViolationType;
+	type: ViolationType;
 	amount: number;
 }
 export interface StrikeConfigInstance
@@ -1320,7 +1320,7 @@ export const strikeConfigs = sequelize.define<
 	'strikeConfig',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		type: Sequelize.ENUM(Object.values(ViolationType)),
 		amount: Sequelize.INTEGER,
 		guildId: Sequelize.STRING(32)
 	},
@@ -1328,7 +1328,7 @@ export const strikeConfigs = sequelize.define<
 		indexes: [
 			{
 				unique: true,
-				fields: ['guildId', 'violationType']
+				fields: ['guildId', 'type']
 			}
 		]
 	}
@@ -1345,7 +1345,7 @@ export interface StrikeAttributes extends BaseAttributes {
 	guildId: string;
 	memberId: string;
 	amount: number;
-	violationType: ViolationType;
+	type: ViolationType;
 }
 export interface StrikeInstance
 	extends Sequelize.Instance<StrikeAttributes>,
@@ -1359,7 +1359,7 @@ export const strikes = sequelize.define<StrikeInstance, StrikeAttributes>(
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.INTEGER,
-		violationType: Sequelize.ENUM(Object.values(ViolationType)),
+		type: Sequelize.ENUM(Object.values(ViolationType)),
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32)
 	}
@@ -1385,7 +1385,7 @@ export enum PunishmentType {
 export interface PunishmentConfigAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
-	punishmentType: PunishmentType;
+	type: PunishmentType;
 	amount: number;
 	args: string;
 }
@@ -1402,7 +1402,7 @@ export const punishmentConfigs = sequelize.define<
 	'punishmentConfig',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+		type: Sequelize.ENUM(Object.values(PunishmentType)),
 		amount: Sequelize.INTEGER,
 		args: Sequelize.STRING,
 		guildId: Sequelize.STRING(32)
@@ -1411,7 +1411,7 @@ export const punishmentConfigs = sequelize.define<
 		indexes: [
 			{
 				unique: true,
-				fields: ['guildId', 'punishmentType']
+				fields: ['guildId', 'type']
 			}
 		]
 	}
@@ -1427,7 +1427,7 @@ export interface PunishmentAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
 	memberId: string;
-	punishmentType: PunishmentType;
+	type: PunishmentType;
 	amount: number;
 	args: string;
 	reason: string;
@@ -1445,7 +1445,7 @@ export const punishments = sequelize.define<
 	PunishmentAttributes
 >('punishment', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	punishmentType: Sequelize.ENUM(Object.values(PunishmentType)),
+	type: Sequelize.ENUM(Object.values(PunishmentType)),
 	amount: Sequelize.INTEGER,
 	args: Sequelize.STRING,
 	guildId: Sequelize.STRING(32),

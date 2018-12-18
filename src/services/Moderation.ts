@@ -1,4 +1,5 @@
 import { Embed, Guild, Member, Message, TextChannel, User } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';
@@ -20,7 +21,7 @@ interface Arguments {
 
 interface PunishmentDetails {
 	reason?: string;
-	strikeAmount?: number;
+	amount?: number;
 }
 
 interface MiniMessage {
@@ -37,7 +38,7 @@ export class Moderation {
 	private client: IMClient;
 	private messageCache: Map<string, MiniMessage[]>;
 
-	private strikeConfigFunctions: {
+	private strikeFunctions: {
 		[key in ViolationType]: (
 			message: Message,
 			args: Arguments
@@ -56,7 +57,7 @@ export class Moderation {
 
 		this.messageCache = new Map();
 
-		this.strikeConfigFunctions = {
+		this.strikeFunctions = {
 			[ViolationType.invites]: this.invites.bind(this),
 			[ViolationType.links]: this.links.bind(this),
 			[ViolationType.words]: this.words.bind(this),
@@ -137,7 +138,7 @@ export class Moderation {
 
 		const type = ViolationType.hoist;
 		const strikesCache = await this.client.cache.strikes.get(guild.id);
-		const strike = strikesCache.find(s => s.violationType === type);
+		const strike = strikesCache.find(s => s.type === type);
 		const amount = strike ? strike.amount : 0;
 
 		const name = member.nick ? member.nick : member.username;
@@ -154,7 +155,7 @@ export class Moderation {
 			{ name: 'Previous name', value: name }
 		]);
 
-		this.addStrikesAndCheckIfPunishable(member, type, amount, {
+		this.addStrikesAndPunish(member, strike.type, strike.amount, {
 			guild,
 			settings
 		});
@@ -263,9 +264,9 @@ export class Moderation {
 		let allViolations: ViolationType[] = Object.values(ViolationType);
 
 		for (const strike of strikesCache) {
-			allViolations = allViolations.filter(av => av !== strike.violationType);
+			allViolations = allViolations.filter(av => av !== strike.type);
 
-			const func = this.strikeConfigFunctions[strike.violationType];
+			const func = this.strikeFunctions[strike.type];
 			if (!func) {
 				continue;
 			}
@@ -280,7 +281,7 @@ export class Moderation {
 			this.logViolationModAction(
 				guild,
 				message.author,
-				strike.violationType,
+				strike.type,
 				strike.amount,
 				[
 					{ name: 'Channel', value: channel.name },
@@ -290,22 +291,20 @@ export class Moderation {
 
 			const embed = this.createPunishmentEmbed('AutoModerator');
 			const usr = `<@${message.author.id}>`;
-			const viol = `\`${strike.violationType}\``;
+			const viol = `\`${strike.type}\``;
 			embed.description = `Message by ${usr} was removed because it violated the ${viol} rule.\n`;
 			embed.description += `\n\nUser got ${strike.amount} strikes.`;
 
-			this.sendAndDelete(message, embed, settings);
-			this.addStrikesAndCheckIfPunishable(
-				member,
-				strike.violationType,
-				strike.amount,
-				{ guild, settings }
-			);
+			this.sendReplyAndDelete(message, embed, settings);
+			this.addStrikesAndPunish(member, strike.type, strike.amount, {
+				guild,
+				settings
+			});
 			return;
 		}
 
 		for (const violation of allViolations) {
-			const func = this.strikeConfigFunctions[violation];
+			const func = this.strikeFunctions[violation];
 			if (!func) {
 				continue;
 			}
@@ -326,38 +325,41 @@ export class Moderation {
 			const usr = `<@${message.author.id}>`;
 			embed.description = `Message by ${usr} was removed because it violated the \`${violation}\` rule.\n`;
 
-			this.sendAndDelete(message, embed, settings);
+			this.sendReplyAndDelete(message, embed, settings);
 			return;
 		}
 	}
 
-	private logViolationModAction(
+	public logViolationModAction(
 		guild: Guild,
 		user: User,
-		violationType: ViolationType,
+		type: ViolationType,
 		amount: number,
-		extra: { name: string; value: string }[]
+		extra?: { name: string; value: string }[]
 	) {
 		const logEmbed = this.createPunishmentEmbed('AutoModerator');
 		const usr = `${user.username}#${user.discriminator}`;
 		logEmbed.description += `**User**: ${usr} (ID: ${user.id})\n`;
 
-		logEmbed.description += `**Violation**: ${violationType}\n`;
+		logEmbed.description += `**Violation**: ${type}\n`;
 		if (amount > 0) {
 			logEmbed.description += `**Strikes given**: ${amount}\n`;
 		} else {
 			logEmbed.description += `No strikes given.\n`;
 		}
 
-		extra.forEach(e => logEmbed.fields.push(e));
+		if (extra) {
+			extra.forEach(e => logEmbed.fields.push(e));
+		}
 		this.client.logModAction(guild, logEmbed);
 	}
 
 	private logPunishmentModAction(
 		guild: Guild,
 		user: User,
+		type: PunishmentType,
 		amount: number,
-		punishmentType: PunishmentType
+		extra?: { name: string; value: string }[]
 	) {
 		const logEmbed = this.client.createEmbed({
 			author: { name: 'AutoModerator' },
@@ -366,7 +368,11 @@ export class Moderation {
 		const usr = `${user.username}#${user.discriminator}`;
 		logEmbed.description = `**User**: ${usr} (ID: ${user.id})\n`;
 		logEmbed.description += `**Strikes**: ${amount}\n`;
-		logEmbed.description += `**Punishment**: ${punishmentType}\n`;
+		logEmbed.description += `**Punishment**: ${type}\n`;
+
+		if (extra) {
+			extra.forEach(e => logEmbed.fields.push(e));
+		}
 		this.client.logModAction(guild, logEmbed);
 	}
 
@@ -379,30 +385,33 @@ export class Moderation {
 		};
 	}
 
-	private async addStrikesAndCheckIfPunishable(
+	public async addStrikesAndPunish(
 		member: Member,
-		violationType: ViolationType,
+		type: ViolationType,
 		amount: number,
 		args: Arguments
 	) {
-		let strikesBefore = await strikes.sum('amount', {
-			where: {
-				guildId: args.guild.id,
-				memberId: member.id
-			}
-		});
+		await this.informAboutStrike(member, type, amount, args.settings);
+
+		const strikesBefore =
+			(await strikes.sum('amount', {
+				where: {
+					guildId: args.guild.id,
+					memberId: member.id
+				}
+			})) || 0;
 
 		await strikes.create({
 			id: null,
 			guildId: args.guild.id,
 			memberId: member.id,
-			amount: amount,
-			violationType: violationType
+			amount,
+			type
 		});
 
-		let strikesAfter = strikesBefore + amount;
+		const strikesAfter = strikesBefore + amount;
 
-		let punishmentConfig = await punishmentConfigs.find({
+		const punishmentConfig = await punishmentConfigs.find({
 			where: {
 				guildId: args.guild.id,
 				amount: {
@@ -414,12 +423,24 @@ export class Moderation {
 		});
 
 		if (punishmentConfig) {
-			const func = this.punishmentFunctions[punishmentConfig.punishmentType];
+			const func = this.punishmentFunctions[punishmentConfig.type];
 			if (!func) {
 				return;
 			}
 
-			let punishmentResult = await func(member, punishmentConfig.amount, args);
+			// Inform beforehand because we might be kicking/banning the user
+			await this.informAboutPunishment(
+				member,
+				punishmentConfig.type,
+				args.settings,
+				{ amount }
+			);
+
+			const punishmentResult = await func(
+				member,
+				punishmentConfig.amount,
+				args
+			);
 			if (!punishmentResult) {
 				return;
 			}
@@ -428,7 +449,7 @@ export class Moderation {
 				id: null,
 				guildId: args.guild.id,
 				memberId: member.id,
-				punishmentType: punishmentConfig.punishmentType,
+				type: punishmentConfig.type,
 				amount: punishmentConfig.amount,
 				args: punishmentConfig.args,
 				reason: 'automod',
@@ -438,8 +459,8 @@ export class Moderation {
 			this.logPunishmentModAction(
 				args.guild,
 				member.user,
-				strikesAfter,
-				punishmentConfig.punishmentType
+				punishmentConfig.type,
+				strikesAfter
 			);
 		}
 	}
@@ -668,166 +689,59 @@ export class Moderation {
 	//////////////////////////////
 
 	private async ban(
-		message: Message,
-		guild: Guild,
+		member: Member,
 		amount: number,
-		args: Arguments
+		{ guild, settings }: Arguments
 	) {
-		let success = false;
-		const embed = this.createPunishmentEmbed('AutoModerator');
-		embed.thumbnail = { url: message.member.avatarURL };
-
-		let [error] = await to(
-			this.dmMember(guild, message.member, PunishmentType.ban, {
-				strikeAmount: amount
-			})
-		);
-
-		if (error) {
-			embed.description = `Tried to auto-mod ${
-				message.member
-			}, but couldn't send them a DM.`;
-			this.logToModChannel(message, embed);
-		}
-
-		[error] = await to(message.member.ban(7, 'automod'));
-
-		if (error) {
-			embed.description = `${
-				message.member.username
-			} could not be banned.\n${error}`;
-		} else {
-			embed.description = `${
-				message.member.username
-			} has been banned because he surpassed ${amount} strikes.`;
-			success = true;
-		}
-		this.sendAndDelete(message, embed, args.settings);
-		return success;
+		const [error] = await to(member.ban(7, 'automod'));
+		return !error;
 	}
 
 	private async kick(
-		message: Message,
-		guild: Guild,
+		member: Member,
 		amount: number,
-		args: Arguments
+		{ guild, settings }: Arguments
 	) {
-		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.kick, {
-			strikeAmount: amount
-		});
-
-		const embed = this.createPunishmentEmbed('AutoModerator');
-		embed.thumbnail = { url: message.member.avatarURL };
-
-		let [error] = await to(message.member.kick('automod'));
-
-		if (error) {
-			embed.description = `${
-				message.member.username
-			} could not be kicked.\n${error}`;
-		} else {
-			embed.description = `${
-				message.member.username
-			} has been kicked because he surpassed ${amount} strikes.`;
-			success = true;
-		}
-
-		this.sendAndDelete(message, embed, args.settings);
-		return success;
+		const [error] = await to(member.kick('automod'));
+		return !error;
 	}
 
 	private async softban(
-		message: Message,
-		guild: Guild,
+		member: Member,
 		amount: number,
-		args: Arguments
+		{ guild, settings }: Arguments
 	) {
-		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.softban, {
-			strikeAmount: amount
-		});
-
-		const embed = this.createPunishmentEmbed('AutoModerator');
-		embed.thumbnail = { url: message.member.avatarURL };
-
-		let [error] = await to(message.member.ban(7, 'automod'));
+		let [error] = await to(member.ban(7, 'automod'));
 		if (!error) {
-			[error] = await to(message.member.unban('softban'));
+			[error] = await to(member.unban('softban'));
 		}
 
-		if (error) {
-			embed.description = `${
-				message.member.username
-			} could not be softbanned.\n${error}`;
-		} else {
-			embed.description = `${
-				message.member.username
-			} has been softbanned because he surpassed ${amount} strikes.`;
-			success = true;
-		}
-
-		this.sendAndDelete(message, embed, args.settings);
-		return success;
+		return !error;
 	}
 
 	private async warn(
-		message: Message,
-		guild: Guild,
+		member: Member,
 		amount: number,
-		args: Arguments
+		{ guild, settings }: Arguments
 	) {
-		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.warn, {
-			strikeAmount: amount
-		});
-
-		const embed = this.createPunishmentEmbed('AutoModerator');
-		embed.thumbnail = { url: message.member.avatarURL };
-		embed.description = `${
-			message.member.username
-		} has been warned because he surpassed ${amount} strikes.`;
-
-		this.sendAndDelete(message, embed, args.settings);
-		return success;
+		return true;
 	}
 
 	private async mute(
-		message: Message,
-		guild: Guild,
+		member: Member,
 		amount: number,
-		args: Arguments
+		{ guild, settings }: Arguments
 	) {
-		let success = false;
-		await this.dmMember(guild, message.member, PunishmentType.mute, {
-			strikeAmount: amount
-		});
-
-		let mutedRole = args.settings.mutedRole;
-
-		const embed = this.createPunishmentEmbed('AutoModerator');
-		embed.thumbnail = { url: message.member.avatarURL };
-
+		const mutedRole = settings.mutedRole;
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
-			embed.description = `Muted role is not set.`;
-		} else {
-			let [error] = await to(
-				message.member.addRole(mutedRole, 'AutoMod muted')
-			);
-			if (error) {
-				embed.description = `Could not mute member. ${error}`;
-			} else {
-				embed.description = `${
-					message.member.username
-				} has been muted because he surpassed ${amount} strikes.`;
-			}
+			return false;
 		}
 
-		this.sendAndDelete(message, embed, args.settings);
-		return success;
+		const [error] = await to(member.addRole(mutedRole, 'AutoMod muted'));
+		return !error;
 	}
 
-	private async sendAndDelete(
+	private async sendReplyAndDelete(
 		message: Message,
 		embed: Embed,
 		settings: SettingsObject
@@ -856,36 +770,95 @@ export class Moderation {
 		return embed;
 	}
 
-	public async dmMember(
-		guild: Guild,
+	public async informAboutStrike(
 		member: Member,
-		action: PunishmentType,
-		args: PunishmentDetails
+		type: ViolationType,
+		amount: number,
+		settings: SettingsObject
 	) {
-		let dmChannel = await member.user.getDMChannel();
-		let message = '';
-		if (action === PunishmentType.ban) {
-			message = `You have been banned from the server ${guild.name}`;
-		} else if (action === PunishmentType.kick) {
-			message = `You have been kicked from the server ${guild.name}`;
-		} else if (action === PunishmentType.softban) {
-			message = `You have been softbanned on the server ${guild.name}`;
-		} else if (action === PunishmentType.mute) {
-			message = `You have been muted on the server ${guild.name}`;
-		} else if (action === PunishmentType.warn) {
-			message = `You have been warned on the server ${guild.name}`;
-		}
-		if (args.reason) {
-			message += `\n\n**Reason**: ${args.reason}`;
-		} else if (args.strikeAmount) {
-			message += `\n\n**Reason**: You reached **${
-				args.strikeAmount
-			}** strikes.`;
-		}
-		return await dmChannel.createMessage(message);
+		const dmChannel = await member.user.getDMChannel();
+
+		const message = i18n.__(
+			{ locale: settings.lang, phrase: 'moderation.strikes.dm' },
+			{
+				amount: `${amount}`,
+				type,
+				guild: member.guild.name
+			}
+		);
+
+		return dmChannel.createMessage(message).catch(() => {
+			if (settings.modLogChannel) {
+				const channel = member.guild.channels.get(settings.modLogChannel);
+				if (channel && channel instanceof TextChannel) {
+					const embed = this.client.createEmbed({
+						title: `Couldn't send DM to user`,
+						fields: [
+							{
+								name: 'User',
+								value:
+									`${member.username}#${member.discriminator} ` +
+									`(ID: ${member.id})`
+							},
+							{
+								name: 'Message',
+								value: message
+							}
+						]
+					});
+					channel.createMessage({ embed });
+				}
+			}
+		});
 	}
 
-	private async logToModChannel(message: Message, embed: Embed) {
-		await this.client.sendReply(message, embed);
+	public async informAboutPunishment(
+		member: Member,
+		type: PunishmentType,
+		settings: SettingsObject,
+		{ reason, amount }: PunishmentDetails
+	) {
+		let dmChannel = await member.user.getDMChannel();
+
+		let message =
+			i18n.__(
+				{ locale: settings.lang, phrase: `moderation.punishments.dm.${type}` },
+				{ type, guild: member.guild.name }
+			) + '\n';
+		if (reason) {
+			message += i18n.__(
+				{ locale: settings.lang, phrase: 'moderation.punishments.dm.reason' },
+				{ reason }
+			);
+		} else {
+			message += i18n.__(
+				{ locale: settings.lang, phrase: 'moderation.punishments.dm.amount' },
+				{ amount: `${amount}` }
+			);
+		}
+
+		return dmChannel.createMessage(message).catch(() => {
+			if (settings.modLogChannel) {
+				const channel = member.guild.channels.get(settings.modLogChannel);
+				if (channel && channel instanceof TextChannel) {
+					const embed = this.client.createEmbed({
+						title: `Couldn't send DM to user`,
+						fields: [
+							{
+								name: 'User',
+								value:
+									`${member.username}#${member.discriminator} ` +
+									`(ID: ${member.id})`
+							},
+							{
+								name: 'Message',
+								value: message
+							}
+						]
+					});
+					channel.createMessage({ embed });
+				}
+			}
+		});
 	}
 }
