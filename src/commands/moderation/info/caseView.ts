@@ -49,7 +49,7 @@ export default class extends Command {
 			embed.description = t('cmd.check.strikes.entry', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
-				violation: `**${strike.violationType}**`,
+				violation: `**${strike.type}**`,
 				date: moment(strike.createdAt)
 					.locale(settings.lang)
 					.fromNow()

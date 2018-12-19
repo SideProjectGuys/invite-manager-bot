@@ -7,30 +7,30 @@
 		},
 		"user": {
 			"notFound": "Gebruiker niet gevonden",
-			"multiple": "Multiple matching users found. {{{ users }}}"
+			"multiple": "Meerdere overeenkomende gebruikers gevonden. {{{ users }}}"
 		},
 		"number": {
 			"invalid": "Ongeldige nummer."
 		},
 		"invalid": "Ongeldige waarde voor `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
-			"multiple": "Multiple matching commands found. {{{ commands }}}"
+			"notFound": "Commando niet gevonden.",
+			"multiple": "Meerdere commando's gevonden die overeenkomen. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
-			"multiple": "Multiple matching channels found. {{{ channels }}}"
+			"notFound": "Kanaal niet gevonden.",
+			"multiple": "Meerdere kanalen gevonden die overeenkomen. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
-			"multiple": "Multiple matching roles found. {{{ roles }}}"
+			"notFound": "Role niet gevonden.",
+			"multiple": "Meerdere rollen gevonden die overeenkwamen. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "Not a valid yes/no value."
+			"invalid": "Geen geldige yes/no waarde."
 		},
 		"member": {
-			"notFound": "Member was not found.",
-			"multiple": "Multiple matching members found. {{{ members }}}"
+			"notFound": "Gebruiker niet gevonden.",
+			"multiple": "Meerdere gebruikers gevonden die overeenkwamen. {{{ members }}}"
 		}
 	},
 	"bot": {
@@ -64,8 +64,8 @@
 			}
 		},
 		"addRank": {
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
+			"updated": "Rank {{{ role }}} geüpdatet: Heeft nu {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}",
+			"created": "Rank {{{ role }}} toegevoegd  en heeft {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}",
 			"roleTooHigh": "De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven aan mensen die het aantal invites bereiken.",
 			"self": {
 				"args": {
@@ -103,15 +103,15 @@
 				"description": "Krijg algemene informatie over deze bot."
 			},
 			"premium": {
-				"title": "Premium",
-				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium."
+				"title": "Betaalde versie",
+				"active": "Op deze server staat de betaalde bot **actief**.",
+				"none": "Op deze server staat de betaalde bot **niet actief**."
 			}
 		},
 		"check": {
 			"strikes": {
 				"title": "Waarschuwingen",
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}"
 			},
 			"punishments": {
 				"title": "Straffen",
@@ -135,8 +135,8 @@
 				"args": {
 					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
 					"member": "Gebruiker van wie de berichten worden verwijdert.",
-					"type": "The type of messages that will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"type": "Het type bericht dat wordt verwijdert.",
+					"numberOfMessages": "Hoeveelheid berichten dat wordt gezocht."
 				}
 			}
 		},
@@ -145,9 +145,9 @@
 			"self": {
 				"args": {
 					"clearBonus": "Voer `true` in om bonus invites te verwijderen, anders `false` (standaard).",
-					"user": "The user to clear all invites from. If omitted clears all users."
+					"user": "De gebruiker waar alle invites worden verwijdert. Wanneer dit wordt weggelaten, worden alle gebruikers verwijdert."
 				},
-				"description": "Clear invites of the server/a user."
+				"description": "Verwijder alle invites van de server/een gebruiker"
 			}
 		},
 		"config": {
@@ -157,9 +157,9 @@
 			"notSet": "Deze instellingen zijn niet gezet.",
 			"current": {
 				"title": "Huidige Waarde",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
+				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nUse `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
 				"notSet": "Deze configuratie is op dit moment nog **niet** gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen",
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
+				"clear": "Gebruik `{{ prefix }}config {{ key }} none` om dit te verwijderen."
 			},
 			"previous": {
 				"title": "Vorige Waarde"
@@ -188,10 +188,10 @@
 			},
 			"self": {
 				"args": {
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "De configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de instelling."
 				},
-				"description": "Show and change the config of the server."
+				"description": "Zie en verander de configuratie van de server."
 			}
 		},
 		"fake": {
@@ -206,9 +206,9 @@
 			},
 			"self": {
 				"args": {
-					"page": "Which page of the fake list to get."
+					"page": "Welke pagina van de fake  te verkrijgen."
 				},
-				"description": "Help find users trying to cheat."
+				"description": "Help om gebruikers te vinden die proberen vals te spelen."
 			}
 		},
 		"help": {
@@ -226,12 +226,12 @@
 				"title": "Aliases"
 			},
 			"links": "Links",
-			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
+			"missingPermissions": "De bot mist momenteel de volgende permissie: {{{ value }}}",
 			"self": {
 				"args": {
-					"command": "The command to get detailed information for."
+					"command": "De commando om gedetailleerde informatie te krijgen."
 				},
-				"description": "Display help."
+				"description": "Zie help."
 			}
 		},
 		"info": {
@@ -243,8 +243,8 @@
 				"title": "Invites",
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
-					"title": "Cleared invites",
-					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+					"title": "Verwijderde invites.",
+					"text": "**{{ total }}** (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake}}** fake, **{{ leave }}** leaves)"
 				}
 			},
 			"joined": {
@@ -257,10 +257,10 @@
 			"joins": {
 				"title": "Aantal keer gejoint",
 				"entry": {
-					"text": "{{ total }} times {{ time }}, invited by:",
-					"invite": "{{{ member }}} ({{ times }} times)"
+					"text": "{{ total }} keren {{ time }}, geïnvite door:",
+					"invite": "{{{ member }}} ({{ times }} keren)"
 				},
-				"more": "Plus another {{ amount }} more joins",
+				"more": "Plus {{ amount }} meer joins.",
 				"unknown": "Onbekend (Dit werkt alleen voor nieuwe leden)"
 			},
 			"regularInvites": {
@@ -833,9 +833,10 @@
 			}
 		},
 		"interactiveConfig": {
-			"welcome": "Welcome to the InviteManager settings menu.\nUse the reactions to pick one of the available options.",
+			"welcome": "Use the reactions to pick one of the available options.",
 			"none": "<None>",
-			"change": "Current value: {{{value}}}\nPossible values: {{{possible}}}\nEnter a new value:",
+			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"new": "Enter a new value:",
 			"values": {
 				"boolean": "`Yes` or `No`",
 				"string": "Any text",
@@ -1068,7 +1069,35 @@
 						"title": "Role"
 					}
 				}
-			}
+			},
+			"list": {
+				"add": {
+					"title": "Add",
+					"text": "Add a new value to the list."
+				},
+				"remove": {
+					"title": "Remove",
+					"text": "Remove an existing value from the list."
+				},
+				"set": {
+					"title": "Set",
+					"text": "Set the whole list using space separated values."
+				},
+				"clear": {
+					"title": "Clear",
+					"text": "Clear the whole list of all values."
+				}
+			},
+			"current": {
+				"title": "Current value"
+			},
+			"possible": {
+				"title": "Possible values"
+			},
+			"remove": "Enter a value or a list of values to remove.",
+			"add": "Enter a value or list of values to add.",
+			"set": "Enter the new values for the list.",
+			"removeEmpty": "The list is already empty."
 		},
 		"credits": {
 			"developers": "Developers",
@@ -1077,7 +1106,10 @@
 			"translators": "Translators"
 		},
 		"unhoist": {
-			"title": "Unhoisted users"
+			"title": "Unhoist users",
+			"starting": "Starting unhoist process...",
+			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
 		}
 	},
 	"permissions": {

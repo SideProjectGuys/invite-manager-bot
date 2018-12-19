@@ -321,9 +321,9 @@ export function isPunishable(
 	authorMember: Member,
 	me: Member
 ) {
-	let highestBotRole = getHighestRole(guild, me.roles);
-	let highestMemberRole = getHighestRole(guild, targetMember.roles);
-	let highestAuthorRole = getHighestRole(guild, authorMember.roles);
+	const highestBotRole = getHighestRole(guild, me.roles);
+	const highestMemberRole = getHighestRole(guild, targetMember.roles);
+	const highestAuthorRole = getHighestRole(guild, authorMember.roles);
 
 	return (
 		targetMember.id !== guild.ownerID &&

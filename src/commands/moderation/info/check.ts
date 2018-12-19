@@ -39,26 +39,40 @@ export default class extends Command {
 			title: user.username
 		});
 
-		let punishmentList = await punishments.findAll({
+		const strikeList = await strikes.findAll({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			}
 		});
 
-		let strikeList = await strikes.findAll({
+		const strikeTotal = strikeList.reduce((acc, s) => acc + s.amount, 0);
+
+		embed.fields.push({
+			name: t('cmd.check.strikes.total'),
+			value: `${strikeList.length} violations worth ${strikeTotal} strikes`,
+			inline: true
+		});
+
+		const punishmentList = await punishments.findAll({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			}
 		});
 
-		let strikeText = strikeList
+		embed.fields.push({
+			name: t('cmd.check.punishments.total'),
+			value: `${punishmentList.length} punishments`,
+			inline: true
+		});
+
+		const strikeText = strikeList
 			.map(s =>
 				t('cmd.check.strikes.entry', {
 					id: `**${s.id}**`,
 					amount: `**${s.amount}**`,
-					violation: `**${s.violationType}**`,
+					violation: `**${s.type}**`,
 					date: moment(s.createdAt)
 						.locale(settings.lang)
 						.fromNow()
@@ -69,14 +83,14 @@ export default class extends Command {
 		if (strikeText) {
 			embed.fields.push({
 				name: t('cmd.check.strikes.title'),
-				value: strikeText
+				value: strikeText.substr(0, 1020)
 			});
 		}
 
-		let punishmentText = punishmentList
+		const punishmentText = punishmentList
 			.map(p =>
 				t('cmd.check.punishments.entry', {
-					punishment: `**${p.punishmentType}**`,
+					punishment: `**${p.type}**`,
 					amount: `**${p.amount}**`,
 					date: moment(p.createdAt)
 						.locale(settings.lang)
@@ -88,7 +102,7 @@ export default class extends Command {
 		if (punishmentText) {
 			embed.fields.push({
 				name: t('cmd.check.punishments.title'),
-				value: punishmentText
+				value: punishmentText.substr(0, 1020)
 			});
 		}
 

@@ -53,7 +53,7 @@ export default class extends Command {
 
 		let punishmentQuery = {
 			guildId: guild.id,
-			punishmentType: punishment
+			type: punishment
 		};
 		if (typeof punishment === typeof undefined) {
 			let allPunishments: PunishmentType[] = Object.values(PunishmentType);
@@ -62,12 +62,12 @@ export default class extends Command {
 				order: [['amount', 'DESC']]
 			});
 			let unusedPunishment = allPunishments.filter(
-				p => punishmentConfigList.map(pcl => pcl.punishmentType).indexOf(p) < 0
+				p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0
 			);
 			embed.description = punishmentConfigList
 				.map(pcl =>
 					t('cmd.punishmentConfig.text', {
-						punishment: `**${pcl.punishmentType}**`,
+						punishment: `**${pcl.type}**`,
 						strikes: `**${pcl.amount}**`
 					})
 				)
@@ -79,7 +79,7 @@ export default class extends Command {
 		} else if (typeof strikes === typeof undefined) {
 			const pc = await punishmentConfigs.find({ where: punishmentQuery });
 			embed.description = t('cmd.punishmentConfig.text', {
-				punishment: `**${pc ? pc.punishmentType : punishment}**`,
+				punishment: `**${pc ? pc.type : punishment}**`,
 				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {

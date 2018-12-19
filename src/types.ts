@@ -36,7 +36,8 @@ export enum ShardCommand {
 	SUDO = 'SUDO',
 	OWNER_DM = 'OWNER_DM',
 	USER_DM = 'USER_DM',
-	LEAVE_GUILD = 'LEAVE_GUILD'
+	LEAVE_GUILD = 'LEAVE_GUILD',
+	STATUS = 'STATUS'
 }
 
 export enum ChartType {
@@ -93,33 +94,29 @@ export enum BotCommand {
 }
 
 export enum ModerationCommand {
-	autoMod = 'autoMod',
-	punishment = 'punishment',
 	punishmentConfig = 'punishmentConfig',
-	strikeAdd = 'strikeAdd',
 	strikeConfig = 'strikeConfig',
-	strikeRemove = 'strikeRemove',
-
-	ban = 'ban',
-	unban = 'unban',
-	kick = 'kick',
-	softBan = 'softBan',
-	warn = 'warn',
-	mute = 'mute',
-	unmute = 'unmute',
 
 	check = 'check',
 	caseDelete = 'caseDelete',
 	caseView = 'caseView',
+
+	ban = 'ban',
+	mute = 'mute',
+	kick = 'kick',
+	softBan = 'softBan',
+	strike = 'strike',
+	unban = 'unban',
+	unhoist = 'unhoist',
+	unmute = 'unmute',
+	warn = 'warn',
 
 	clean = 'clean',
 	cleanText = 'cleanText',
 	cleanShort = 'cleanShort',
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
-	purge = 'purge',
-
-	unhoist = 'unhoist'
+	purge = 'purge'
 }
 
 export interface RabbitMqMember {

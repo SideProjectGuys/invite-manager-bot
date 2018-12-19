@@ -44,7 +44,7 @@ export default class extends Command {
 
 		let violationQuery = {
 			guildId: guild.id,
-			violationType: violation
+			type: violation
 		};
 
 		if (typeof violation === typeof undefined) {
@@ -54,12 +54,12 @@ export default class extends Command {
 				order: [['amount', 'DESC']]
 			});
 			let unusedViolations = allViolations.filter(
-				v => strikeConfigList.map(scl => scl.violationType).indexOf(v) < 0
+				v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0
 			);
 			embed.description = strikeConfigList
 				.map(scl =>
 					t('cmd.strikeConfig.text', {
-						violation: `**${scl.violationType}**`,
+						violation: `**${scl.type}**`,
 						strikes: `**${scl.amount}**`
 					})
 				)
@@ -71,7 +71,7 @@ export default class extends Command {
 		} else if (typeof strikes === typeof undefined) {
 			let strike = await strikeConfigs.find({ where: violationQuery });
 			embed.description = t('cmd.strikeConfig.text', {
-				violation: `**${strike ? strike.violationType : violation}**`,
+				violation: `**${strike ? strike.type : violation}**`,
 				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {

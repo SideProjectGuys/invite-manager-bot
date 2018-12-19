@@ -12,7 +12,7 @@ export class Scheduler {
 	private client: IMClient = null;
 	private scheduledActionTimers: Map<string, any>;
 	private scheduledActionFunctions: {
-		[k in ScheduledActionType]: (args: JSON) => void
+		[k in ScheduledActionType]: (args: any) => void
 	};
 
 	public constructor(client: IMClient) {
@@ -27,7 +27,7 @@ export class Scheduler {
 	public async addScheduledAction(
 		guildId: string,
 		actionType: ScheduledActionType,
-		args: JSON,
+		args: any,
 		date: Date,
 		reason: string
 	) {
@@ -70,11 +70,15 @@ export class Scheduler {
 	}
 
 	private createTimer(action: ScheduledActionInstance) {
-		let secondsUntilAction = moment(action.date).diff(moment(), 'milliseconds');
-		let timeout = setTimeout(() => {
+		const secondsUntilAction = moment(action.date).diff(
+			moment(),
+			'milliseconds'
+		);
+		const func = () => {
 			this.scheduledActionFunctions[action.actionType](action.args);
-		}, secondsUntilAction);
-		let hash = this.getActionHash(
+		};
+		const timeout = setTimeout(func, secondsUntilAction);
+		const hash = this.getActionHash(
 			action.guildId,
 			action.actionType,
 			action.args

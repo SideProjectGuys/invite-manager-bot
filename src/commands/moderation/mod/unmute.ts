@@ -39,33 +39,40 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		let mutedRole = settings.mutedRole;
+		const mutedRole = settings.mutedRole;
 
-		if (mutedRole && guild.roles.has(mutedRole)) {
+		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.unmute.missingRole');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.removeRole(mutedRole));
+			const [error] = await to(targetMember.removeRole(mutedRole));
+
 			if (error) {
-				embed.description = t('cmd.unmute.error');
+				embed.description = t('cmd.unmute.error', { error });
 			} else {
-				embed.description = t('cmd.unmute.done');
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetMember.username,
 					targetMember.avatarURL
 				);
-				logEmbed.description += `**Target**: ${targetMember}\n`;
-				logEmbed.description += `**Target**: ${targetMember.username}#${
-					targetMember.discriminator
-				} (ID: ${targetMember.id})\n`;
-				logEmbed.description += `**Action**: Unban\n`;
-				logEmbed.description += `**Mod**: ${message.author.username}\n`;
+
+				const usr =
+					`${targetMember.username}#${targetMember.discriminator} ` +
+					`(ID: ${targetMember.id})`;
+				logEmbed.description += `**User**: ${usr}\n`;
+				logEmbed.description += `**Action**: unmute\n`;
+
+				logEmbed.fields.push({
+					name: 'Mod',
+					value: `<@${message.author.id}>`
+				});
 				this.client.logModAction(guild, logEmbed);
+
+				embed.description = t('cmd.unmute.done');
 			}
 		} else {
 			embed.description = t('cmd.unmute.canNotUnmute');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentMuteDeleteMessage) {
 			const func = () => {

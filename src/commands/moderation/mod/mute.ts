@@ -1,5 +1,5 @@
 import { Member, Message } from 'eris';
-import { Duration } from 'moment';
+import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
 import {
@@ -7,7 +7,11 @@ import {
 	MemberResolver,
 	StringResolver
 } from '../../../resolvers';
-import { punishments, PunishmentType } from '../../../sequelize';
+import {
+	punishments,
+	PunishmentType,
+	ScheduledActionType
+} from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -24,13 +28,16 @@ export default class extends Command {
 					required: true
 				},
 				{
-					name: 'muteDuration',
-					resolver: DurationResolver
-				},
-				{
 					name: 'reason',
 					resolver: StringResolver,
 					rest: true
+				}
+			],
+			flags: [
+				{
+					name: 'duration',
+					resolver: DurationResolver,
+					short: 'd'
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -41,8 +48,8 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetMember, muteDuration, reason]: [Member, Duration, string],
-		flags: {},
+		[targetMember, reason]: [Member, string],
+		{ duration }: { duration: Duration },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -59,43 +66,53 @@ export default class extends Command {
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.addRole(mutedRole, reason));
+			await this.client.mod.informAboutPunishment(
+				targetMember,
+				PunishmentType.mute,
+				settings,
+				{ reason }
+			);
+
+			const [error] = await to(targetMember.addRole(mutedRole, reason));
+
 			if (error) {
-				console.error(error);
-				embed.description = t('cmd.mute.error');
+				embed.description = t('cmd.mute.error', { error });
 			} else {
-				embed.description = t('cmd.mute.done');
-				let punishment = await punishments.create({
+				const punishment = await punishments.create({
 					id: null,
 					guildId: guild.id,
 					memberId: targetMember.id,
-					punishmentType: PunishmentType.mute,
+					type: PunishmentType.mute,
 					amount: 0,
 					args: '',
 					reason: reason,
 					creatorId: message.author.id
 				});
-				const logEmbed = this.client.mod.createPunishmentEmbed(
-					targetMember.username,
-					targetMember.avatarURL
+
+				this.client.mod.logPunishmentModAction(
+					guild,
+					targetMember.user,
+					punishment.type,
+					punishment.amount,
+					[
+						{ name: 'Mod', value: `<@${message.author.id}>` },
+						{ name: 'Reason', value: reason }
+					]
 				);
-				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-				logEmbed.description += `**Target**: ${targetMember}\n`;
-				logEmbed.description += `**Target**: ${targetMember.username}#${
-					targetMember.discriminator
-				} (ID: ${targetMember.id})\n`;
-				logEmbed.description += `**Action**: ${punishment.punishmentType}\n`;
-				logEmbed.description += `**Mod**: ${message.author.username}\n`;
-				logEmbed.description += `**Reason**: ${reason}\n`;
-				this.client.logModAction(guild, logEmbed);
-				/* TODO: Unmute after some time
-				await this.client.scheduler.addScheduledAction(
-					guild.id,
-					ScheduledActionType.unmute,
-					{ memberId: member.id },
-					muteDuration,
-					'');
-					*/
+
+				if (duration) {
+					this.client.scheduler.addScheduledAction(
+						guild.id,
+						ScheduledActionType.unmute,
+						{ memberId: targetMember.id },
+						moment()
+							.add(duration)
+							.toDate(),
+						'Unmute from timed mute command'
+					);
+				}
+
+				embed.description = t('cmd.mute.done');
 			}
 		} else {
 			embed.description = t('cmd.mute.canNotMute');

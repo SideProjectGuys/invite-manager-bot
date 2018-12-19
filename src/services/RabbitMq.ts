@@ -67,13 +67,26 @@ export class RabbitMq {
 			});
 		});
 
-		this.qCmdsName = `shard-${this.shard}`;
+		this.qCmdsName = `shard-${this.shard}-bot`;
 		conn.createChannel().then(async channel => {
 			this.channelCmds = channel;
 
 			await channel.assertQueue(this.qCmdsName, {
+				durable: false,
+				autoDelete: true
+			});
+
+			await channel.assertExchange('shards', 'fanout', {
 				durable: true
 			});
+
+			await channel.bindQueue(this.qCmdsName, 'shards', '');
+
+			await channel.assertExchange(`shard-${this.shard}`, 'fanout', {
+				durable: true
+			});
+
+			await channel.bindQueue(this.qCmdsName, `shard-${this.shard}`, '');
 		});
 	}
 
@@ -415,6 +428,18 @@ export class RabbitMq {
 		}
 	}
 
+	public async sendToManager(message: { id: string; [x: string]: any }) {
+		this.channelCmds.sendToQueue(
+			'manager',
+			Buffer.from(
+				JSON.stringify({
+					shard: this.shard,
+					...message
+				})
+			)
+		);
+	}
+
 	private async onShardCommand(msg: amqplib.Message) {
 		const content = JSON.parse(msg.content.toString()) as ShardMessage;
 		const cmd = content.cmd;
@@ -427,19 +452,19 @@ export class RabbitMq {
 		this.channelCmds.ack(msg, false);
 
 		const sendResponse = (message: { [x: string]: any }) =>
-			this.channelCmds.sendToQueue(
-				'shards-master',
-				Buffer.from(
-					JSON.stringify({
-						id: content.id,
-						cmd: content.cmd,
-						shard: this.shard,
-						...message
-					})
-				)
-			);
+			this.sendToManager({
+				id: content.id,
+				cmd: content.cmd,
+				...message
+			});
 
 		switch (cmd) {
+			case ShardCommand.STATUS:
+				sendResponse({
+					connected: this.client.gatewayConnected
+				});
+				break;
+
 			case ShardCommand.CUSTOM:
 				const self = await this.client.getSelf();
 
