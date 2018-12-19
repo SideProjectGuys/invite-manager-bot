@@ -24,6 +24,7 @@ import {
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
+import { ShardCommand } from './types';
 
 const config = require('../config.json');
 
@@ -87,6 +88,7 @@ export class IMClient extends Client {
 	public captcha: CaptchaService;
 
 	public startedAt: moment.Moment;
+	public gatewayConnected: boolean;
 	public activityInterval: NodeJS.Timer;
 
 	public numGuilds: number = 0;
@@ -163,8 +165,8 @@ export class IMClient extends Client {
 		this.on('guildUnavailable', this.onGuildUnavailable);
 		this.on('guildMemberAdd', this.onGuildMemberAdd);
 		this.on('guildMemberRemove', this.onGuildMemberRemove);
-		this.on('disconnect', this.onDisconnect);
 		this.on('connect', this.onConnect);
+		this.on('disconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
 	}
@@ -363,18 +365,30 @@ export class IMClient extends Client {
 
 	private async onConnect() {
 		console.error('DISCORD CONNECT');
+		this.rabbitmq.sendToManager({
+			id: 'status',
+			cmd: ShardCommand.STATUS,
+			connected: true
+		});
+		this.gatewayConnected = true;
 	}
 
 	private async onDisconnect() {
 		console.error('DISCORD DISCONNECT');
+		this.rabbitmq.sendToManager({
+			id: 'status',
+			cmd: ShardCommand.STATUS,
+			connected: false
+		});
+		this.gatewayConnected = false;
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
 		console.error('DISCORD GUILD_UNAVAILABLE:', guild.id);
 	}
 
-	private async onWarn(info: string) {
-		console.error('DISCORD WARNING:', info);
+	private async onWarn(warn: string) {
+		console.error('DISCORD WARNING:', warn);
 	}
 
 	private async onError(error: Error) {

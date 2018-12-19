@@ -36,7 +36,8 @@ export enum ShardCommand {
 	SUDO = 'SUDO',
 	OWNER_DM = 'OWNER_DM',
 	USER_DM = 'USER_DM',
-	LEAVE_GUILD = 'LEAVE_GUILD'
+	LEAVE_GUILD = 'LEAVE_GUILD',
+	STATUS = 'STATUS'
 }
 
 export enum ChartType {
