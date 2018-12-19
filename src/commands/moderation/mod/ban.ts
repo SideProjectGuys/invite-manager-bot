@@ -65,15 +65,24 @@ export default class extends Command {
 			!targetMember ||
 			isPunishable(guild, targetMember, message.member, me)
 		) {
+			if (targetMember) {
+				await this.client.mod.informAboutPunishment(
+					targetMember,
+					PunishmentType.ban,
+					settings,
+					{ reason }
+				);
+			}
+
 			const days = deleteMessageDays ? deleteMessageDays : 0;
-			let [error] = await to(
+			const [error] = await to(
 				this.client.banGuildMember(guild.id, targetUser.id, days, reason)
 			);
+
 			if (error) {
-				embed.description = t('cmd.ban.error');
+				embed.description = t('cmd.ban.error', { error });
 			} else {
-				embed.description = t('cmd.ban.done');
-				let punishment = await punishments.create({
+				const punishment = await punishments.create({
 					id: null,
 					guildId: guild.id,
 					memberId: targetUser.id,
@@ -83,24 +92,25 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
-				const logEmbed = this.client.mod.createPunishmentEmbed(
-					targetUser.username,
-					targetUser.avatarURL
+
+				this.client.mod.logPunishmentModAction(
+					guild,
+					targetUser,
+					punishment.type,
+					punishment.amount,
+					[
+						{ name: 'Mod', value: `<@${message.author.id}>` },
+						{ name: 'Reason', value: reason }
+					]
 				);
-				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-				logEmbed.description += `**Target**: ${targetUser.username}#${
-					targetUser.discriminator
-				} (ID: ${targetUser.id})\n`;
-				logEmbed.description += `**Action**: ${punishment.type}\n`;
-				logEmbed.description += `**Mod**: ${message.author.username}\n`;
-				logEmbed.description += `**Reason**: ${reason}\n`;
-				this.client.logModAction(guild, logEmbed);
+
+				embed.description = t('cmd.ban.done');
 			}
 		} else {
 			embed.description = t('cmd.ban.canNotBan');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

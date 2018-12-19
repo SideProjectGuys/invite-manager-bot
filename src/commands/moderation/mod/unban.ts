@@ -47,22 +47,35 @@ export default class extends Command {
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.unban.missingPermissions');
 		} else {
-			let [error] = await to(guild.unbanMember(targetUser.id, reason));
+			const [error] = await to(guild.unbanMember(targetUser.id, reason));
+
 			if (error) {
-				embed.description = t('cmd.unban.error');
+				embed.description = t('cmd.unban.error', { error });
 			} else {
-				embed.description = t('cmd.unban.done');
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetUser.username,
 					targetUser.avatarURL
 				);
-				logEmbed.description += `**Target**: ${targetUser.username}#${
-					targetUser.discriminator
-				} (ID: ${targetUser.id})\n`;
-				logEmbed.description += `**Action**: Unban\n`;
-				logEmbed.description += `**Mod**: ${message.author.username}\n`;
-				logEmbed.description += `**Reason**: ${reason}\n`;
+
+				const usr =
+					`${targetUser.username}#${targetUser.discriminator} ` +
+					`(ID: ${targetUser.id})`;
+				logEmbed.description += `**User**: ${usr}\n`;
+				logEmbed.description += `**Action**: unban\n`;
+
+				logEmbed.fields.push(
+					{
+						name: 'Mod',
+						value: `<@${message.author.id}>`
+					},
+					{
+						name: 'Reason',
+						value: reason
+					}
+				);
 				this.client.logModAction(guild, logEmbed);
+
+				embed.description = t('cmd.unban.done');
 			}
 		}
 

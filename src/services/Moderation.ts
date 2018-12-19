@@ -78,7 +78,7 @@ export class Moderation {
 			[PunishmentType.mute]: this.mute.bind(this)
 		};
 
-		const func = () => {
+		const scanMessageCache = () => {
 			const now = moment();
 			this.messageCache.forEach((value, key) => {
 				this.messageCache.set(
@@ -87,7 +87,7 @@ export class Moderation {
 				);
 			});
 		};
-		setInterval(func, 60 * 1000);
+		setInterval(scanMessageCache, 60 * 1000);
 
 		client.on('messageCreate', this.onMessage.bind(this));
 		client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
@@ -242,8 +242,8 @@ export class Moderation {
 			return;
 		}
 
+		// Check if member is "oldMember"
 		if (settings.autoModDisabledForOldMembers) {
-			// Check if member is "oldMember"
 			const memberAge = moment().diff(member.joinedAt, 'second');
 			if (memberAge > settings.autoModDisabledForOldMembersThreshold) {
 				// This is an old member
@@ -354,7 +354,7 @@ export class Moderation {
 		this.client.logModAction(guild, logEmbed);
 	}
 
-	private logPunishmentModAction(
+	public logPunishmentModAction(
 		guild: Guild,
 		user: User,
 		type: PunishmentType,

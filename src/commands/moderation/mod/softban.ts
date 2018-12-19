@@ -23,13 +23,17 @@ export default class extends Command {
 					required: true
 				},
 				{
-					name: 'deleteMessageDays',
-					resolver: NumberResolver
-				},
-				{
 					name: 'reason',
 					resolver: StringResolver,
 					rest: true
+				}
+			],
+			flags: [
+				{
+					name: 'deleteMessageDays',
+					resolver: NumberResolver,
+					short: 'd',
+					valueRequired: true
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -40,8 +44,8 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetMember, deleteMessageDays, reason]: [Member, number, string],
-		flags: {},
+		[targetMember, reason]: [Member, string],
+		{ deleteMessageDays }: { deleteMessageDays: number },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
@@ -56,16 +60,25 @@ export default class extends Command {
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('ban.softBan.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.ban(deleteMessageDays, reason));
+			await this.client.mod.informAboutPunishment(
+				targetMember,
+				PunishmentType.softban,
+				settings,
+				{ reason }
+			);
+
+			const days = deleteMessageDays ? deleteMessageDays : 0;
+			let [error] = await to(targetMember.ban(days, reason));
+
 			if (error) {
-				embed.description = t('cmd.softBan.error');
+				embed.description = t('cmd.softBan.error', { error });
 			} else {
 				[error] = await to(targetMember.unban('softban'));
+
 				if (error) {
-					embed.description = t('cmd.softBan.unBanError');
+					embed.description = t('cmd.softBan.unBanError', { error });
 				} else {
-					embed.description = t('cmd.softBan.done');
-					let punishment = await punishments.create({
+					const punishment = await punishments.create({
 						id: null,
 						guildId: guild.id,
 						memberId: targetMember.id,
@@ -75,18 +88,19 @@ export default class extends Command {
 						reason: reason,
 						creatorId: message.author.id
 					});
-					const logEmbed = this.client.mod.createPunishmentEmbed(
-						targetMember.username,
-						targetMember.avatarURL
+
+					this.client.mod.logPunishmentModAction(
+						guild,
+						targetMember.user,
+						punishment.type,
+						punishment.amount,
+						[
+							{ name: 'Mod', value: `<@${message.author.id}>` },
+							{ name: 'Reason', value: reason }
+						]
 					);
-					logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-					logEmbed.description += `**Target**: ${targetMember.username}#${
-						targetMember.discriminator
-					} (ID: ${targetMember.id})\n`;
-					logEmbed.description += `**Action**: ${punishment.type}\n`;
-					logEmbed.description += `**Mod**: ${message.author.username}\n`;
-					logEmbed.description += `**Reason**: ${reason}\n`;
-					this.client.logModAction(guild, logEmbed);
+
+					embed.description = t('cmd.softBan.done');
 				}
 			}
 		} else {

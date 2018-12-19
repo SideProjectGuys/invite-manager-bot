@@ -48,12 +48,19 @@ export default class extends Command {
 		if (!me.permission.has(Permissions.KICK_MEMBERS)) {
 			embed.description = t('cmd.kick.missingPermissions');
 		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			let [error] = await to(targetMember.kick(reason));
+			await this.client.mod.informAboutPunishment(
+				targetMember,
+				PunishmentType.kick,
+				settings,
+				{ reason }
+			);
+
+			const [error] = await to(targetMember.kick(reason));
+
 			if (error) {
-				embed.description = t('cmd.kick.error');
+				embed.description = t('cmd.kick.error', { error });
 			} else {
-				embed.description = t('cmd.kick.done');
-				let punishment = await punishments.create({
+				const punishment = await punishments.create({
 					id: null,
 					guildId: guild.id,
 					memberId: targetMember.id,
@@ -63,24 +70,25 @@ export default class extends Command {
 					reason: reason,
 					creatorId: message.author.id
 				});
-				const logEmbed = this.client.mod.createPunishmentEmbed(
-					targetMember.username,
-					targetMember.avatarURL
+
+				this.client.mod.logPunishmentModAction(
+					guild,
+					targetMember.user,
+					punishment.type,
+					punishment.amount,
+					[
+						{ name: 'Mod', value: `<@${message.author.id}>` },
+						{ name: 'Reason', value: reason }
+					]
 				);
-				logEmbed.description = `**Punishment ID**: ${punishment.id}\n`;
-				logEmbed.description += `**Target**: ${targetMember.username}#${
-					targetMember.discriminator
-				} (ID: ${targetMember.id})\n`;
-				logEmbed.description += `**Action**: ${punishment.type}\n`;
-				logEmbed.description += `**Mod**: ${message.author.username}\n`;
-				logEmbed.description += `**Reason**: ${reason}\n`;
-				this.client.logModAction(guild, logEmbed);
+
+				embed.description = t('cmd.kick.done');
 			}
 		} else {
 			embed.description = t('cmd.kick.canNotKick');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentKickDeleteMessage) {
 			const func = () => {
