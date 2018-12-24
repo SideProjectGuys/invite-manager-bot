@@ -787,7 +787,6 @@ export interface JoinInstance
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getExactMatch: Sequelize.BelongsToGetAssociationMixin<InviteCodeInstance>;
-	getLeave: Sequelize.HasOneGetAssociationMixin<LeaveInstance>;
 }
 
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(
