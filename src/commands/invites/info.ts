@@ -372,7 +372,7 @@ export default class extends Command {
 					)
 					.join(', ');
 
-				joinText += mainText + ' ' + invText;
+				joinText += mainText + ' ' + invText + '\n';
 			});
 
 			let more = '';
