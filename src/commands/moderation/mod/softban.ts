@@ -107,7 +107,7 @@ export default class extends Command {
 			embed.description = t('cmd.ban.canNotSoftBan');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentSoftbanDeleteMessage) {
 			const func = () => {

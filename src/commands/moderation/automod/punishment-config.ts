@@ -51,17 +51,17 @@ export default class extends Command {
 			title: t('cmd.punishmentConfig.title')
 		});
 
-		let punishmentQuery = {
+		const punishmentQuery = {
 			guildId: guild.id,
 			type: punishment
 		};
 		if (typeof punishment === typeof undefined) {
-			let allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			let punishmentConfigList = await punishmentConfigs.findAll({
+			const allPunishments: PunishmentType[] = Object.values(PunishmentType);
+			const punishmentConfigList = await punishmentConfigs.findAll({
 				where: { guildId: guild.id },
 				order: [['amount', 'DESC']]
 			});
-			let unusedPunishment = allPunishments.filter(
+			const unusedPunishment = allPunishments.filter(
 				p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0
 			);
 			embed.description = punishmentConfigList

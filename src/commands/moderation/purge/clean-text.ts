@@ -47,18 +47,18 @@ export default class extends Command {
 			numberOfMessages = 5;
 		}
 
-		let messages = await message.channel.getMessages(
+		const messages = await message.channel.getMessages(
 			Math.min(numberOfMessages, 100),
 			message.id
 		);
 
-		let searchStrings = text.split('+');
-		let messagesToBeDeleted = messages.filter(msg => {
+		const searchStrings = text.split('+');
+		const messagesToBeDeleted = messages.filter(msg => {
 			return searchStrings.some(s => msg.content.includes(s));
 		});
 
 		messagesToBeDeleted.push(message);
-		let [error] = await to(
+		const [error] = await to(
 			this.client.deleteMessages(
 				message.channel.id,
 				messagesToBeDeleted.map(m => m.id)
@@ -75,7 +75,7 @@ export default class extends Command {
 			});
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();

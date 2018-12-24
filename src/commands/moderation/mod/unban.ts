@@ -79,7 +79,7 @@ export default class extends Command {
 			}
 		}
 
-		let response = (await this.client.sendReply(message, embed)) as Message;
+		const response = (await this.client.sendReply(message, embed)) as Message;
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

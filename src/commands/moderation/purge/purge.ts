@@ -56,7 +56,7 @@ export default class extends Command {
 			);
 		}
 		messages.push(message);
-		let [error] = await to(
+		const [error] = await to(
 			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
 		);
 		if (error) {
@@ -69,7 +69,7 @@ export default class extends Command {
 			});
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();
