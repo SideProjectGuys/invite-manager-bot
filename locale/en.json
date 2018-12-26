@@ -637,7 +637,7 @@
 				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
 				"activate": "Use {{{ cmd }}} to activate it on this server",
-                		"adminOrManageGuildOnly": "You do not have permission to use this command.\nOnly users with **Administator** or **Manage Server** may use this command."
+				"adminOrManageGuildOnly": "You do not have permission to use this command.\nOnly users with **Administator** or **Manage Server** may use this command."
 			},
 			"self": {
 				"description": "Info about premium version of InviteManager.",
