@@ -1,10 +1,10 @@
+import { settings, SettingsKey } from '../sequelize';
 import {
 	defaultSettings,
-	settings,
-	SettingsKey,
-	SettingsObject
-} from '../sequelize';
-import { fromDbValue, toDbValue } from '../settings';
+	fromDbValue,
+	SettingsObject,
+	toDbValue
+} from '../settings';
 
 import { GuildCache } from './GuildCache';
 

@@ -2,29 +2,23 @@ import { Emoji, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import {
-	memberSettingsDescription,
-	settingsDescription
-} from '../../descriptions/settings';
-import {
 	ArrayResolver,
 	BooleanResolver,
 	ChannelResolver,
 	NumberResolver,
 	RoleResolver,
+	SettingsValueResolver,
 	StringResolver
 } from '../../resolvers';
 import {
-	InternalSettingsTypes,
 	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
 	MemberSettingsKey,
-	memberSettingsTypes,
 	RankAssignmentStyle,
-	SettingsKey,
-	settingsTypes
+	SettingsKey
 } from '../../sequelize';
-import { beautify, fromDbValue, toDbValue } from '../../settings';
+import { beautify, fromDbValue, settingsInfo, toDbValue } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -33,16 +27,6 @@ type ConfigMenu =
 	| SettingsKey
 	| MemberSettingsKey
 	| InviteCodeSettingsKey;
-
-const allSettingsDescription = {
-	...settingsDescription,
-	...memberSettingsDescription
-};
-
-const allSettingsTypes = {
-	...settingsTypes,
-	...memberSettingsTypes
-};
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -76,7 +60,7 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		let embed = this.client.createEmbed({
+		const embed = this.client.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
@@ -272,7 +256,7 @@ export default class extends Command {
 			if (typeof subMenu === 'string') {
 				const key = subMenu as SettingsKey;
 
-				if (settingsTypes[key] === 'Boolean') {
+				if (settingsInfo[key].type === 'Boolean') {
 					await this.client.cache.settings.setOne(
 						context.guild.id,
 						key,
@@ -312,14 +296,13 @@ export default class extends Command {
 		msg: Message,
 		key: SettingsKey
 	) {
-		const info = allSettingsDescription[key];
-		const type = allSettingsTypes[key];
-		const isList = type.endsWith('[]');
+		const info = settingsInfo[key];
+		const isList = info.type.endsWith('[]');
 
 		const title = key;
 		const possible = info.possibleValues
 			? info.possibleValues.map(v => '`' + v + '`').join(', ')
-			: context.t(`cmd.interactiveConfig.values.${type.toLowerCase()}`);
+			: context.t(`cmd.interactiveConfig.values.${info.type.toLowerCase()}`);
 
 		let error = '';
 		do {
@@ -330,7 +313,9 @@ export default class extends Command {
 				possible
 			});
 
-			const description = info.description + `\n\n${text}\n\n**${error}**`;
+			const description =
+				context.t(`settings.${key}.description`) +
+				`\n\n${text}\n\n**${error}**`;
 
 			if (isList) {
 				const choice = await this.showMenu(
@@ -475,7 +460,7 @@ export default class extends Command {
 		msg: Message,
 		key: SettingsKey
 	) {
-		const type = allSettingsTypes[key];
+		const info = settingsInfo[key];
 
 		return new Promise<any>(async (resolve, reject) => {
 			let timeOut: NodeJS.Timer;
@@ -487,64 +472,12 @@ export default class extends Command {
 					await userMsg.delete();
 
 					let newVal: any;
+
 					try {
-						switch (type) {
-							case 'Channel':
-								newVal = await new ChannelResolver(this.client).resolve(
-									newRawVal,
-									context
-								);
-								break;
-
-							case 'Channel[]':
-								newVal = await new ArrayResolver(
-									this.client,
-									ChannelResolver
-								).resolve(newRawVal, context, []);
-								break;
-
-							case 'Role':
-								newVal = await new RoleResolver(this.client).resolve(
-									newRawVal,
-									context
-								);
-								break;
-
-							case 'Role[]':
-								newVal = await new ArrayResolver(
-									this.client,
-									RoleResolver
-								).resolve(newRawVal, context, []);
-								break;
-
-							case 'Boolean':
-								newVal = await new BooleanResolver(this.client).resolve(
-									newRawVal,
-									context
-								);
-								break;
-
-							case 'Number':
-								newVal = await new NumberResolver(this.client).resolve(
-									newRawVal,
-									context
-								);
-								break;
-
-							case 'String':
-								newVal = newRawVal;
-								break;
-
-							case 'String[]':
-								newVal = await new ArrayResolver(
-									this.client,
-									StringResolver
-								).resolve(newRawVal, context, []);
-								break;
-
-							default:
-								break;
-						}
+						newVal = await new SettingsValueResolver(
+							this.client,
+							settingsInfo
+						).resolve(newRawVal, context, [key]);
 					} catch (err) {
 						reject(err.message);
 						return;
@@ -670,9 +603,9 @@ export default class extends Command {
 			return null;
 		}
 
-		const type = settingsTypes[key];
+		const info = settingsInfo[key];
 
-		if (type === 'Channel') {
+		if (info.type === 'Channel') {
 			const channel = value as TextChannel;
 			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
 				return t('cmd.config.channel.canNotReadMessages');

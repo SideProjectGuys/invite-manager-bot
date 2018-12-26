@@ -8,10 +8,10 @@ import {
 	punishments,
 	PunishmentType,
 	sequelize,
-	SettingsObject,
 	strikes,
 	ViolationType
 } from '../sequelize';
+import { SettingsObject } from '../settings';
 import { to } from '../util';
 
 interface Arguments {

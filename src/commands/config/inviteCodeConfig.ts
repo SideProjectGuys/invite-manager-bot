@@ -6,13 +6,8 @@ import {
 	InviteCodeResolver,
 	SettingsValueResolver
 } from '../../resolvers';
-import {
-	defaultInviteCodeSettings,
-	InviteCodeSettingsKey,
-	inviteCodeSettingsTypes,
-	LogAction
-} from '../../sequelize';
-import { beautify, canClear } from '../../settings';
+import { InviteCodeSettingsKey, LogAction } from '../../sequelize';
+import { beautify, canClear, inviteCodeSettingsInfo } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -35,11 +30,7 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(
-						client,
-						inviteCodeSettingsTypes,
-						defaultInviteCodeSettings
-					),
+					resolver: new SettingsValueResolver(client, inviteCodeSettingsInfo),
 					rest: true
 				}
 			],
@@ -95,8 +86,8 @@ export default class extends Command {
 			);
 		}
 
-		let codeSettings = await this.client.cache.inviteCodes.get(inv.code);
-		let oldVal = codeSettings[key];
+		const codeSettings = await this.client.cache.inviteCodes.get(inv.code);
+		const oldVal = codeSettings[key];
 		embed.title = `${inv.code} - ${key}`;
 
 		if (typeof value === typeof undefined) {

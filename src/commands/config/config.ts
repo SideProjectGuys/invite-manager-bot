@@ -1,17 +1,14 @@
 import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { settingsDescription } from '../../descriptions/settings';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
-	defaultSettings,
 	LogAction,
-	SettingsKey,
-	settingsTypes
+	SettingsKey
 } from '../../sequelize';
-import { beautify, canClear } from '../../settings';
+import { beautify, canClear, settingsInfo } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -27,11 +24,7 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(
-						client,
-						settingsTypes,
-						defaultSettings
-					),
+					resolver: new SettingsValueResolver(client, settingsInfo),
 					rest: true
 				}
 			],
@@ -56,12 +49,12 @@ export default class extends Command {
 			embed.description = t('cmd.config.text', { prefix }) + '\n\n';
 
 			const configs: { [x: string]: string[] } = {};
-			Object.keys(settingsDescription).forEach((k: SettingsKey) => {
-				const descr = settingsDescription[k];
-				if (!configs[descr.group]) {
-					configs[descr.group] = [];
+			Object.keys(settingsInfo).forEach((k: SettingsKey) => {
+				const info = settingsInfo[k];
+				if (!configs[info.group]) {
+					configs[info.group] = [];
 				}
-				configs[descr.group].push('`' + k + '`');
+				configs[info.group].push('`' + k + '`');
 			});
 
 			Object.keys(configs).forEach(group => {
@@ -72,7 +65,7 @@ export default class extends Command {
 			return this.client.sendReply(message, embed);
 		}
 
-		let oldVal = settings[key];
+		const oldVal = settings[key];
 		embed.title = key;
 
 		if (typeof value === typeof undefined) {
@@ -176,9 +169,9 @@ export default class extends Command {
 			return null;
 		}
 
-		const type = settingsTypes[key];
+		const info = settingsInfo[key];
 
-		if (type === 'Channel') {
+		if (info.type === 'Channel') {
 			const channel = value as TextChannel;
 			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
 				return t('cmd.config.channel.canNotReadMessages');
@@ -284,7 +277,7 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractFakes) {
 			if (value) {
 				// Subtract fake invites from all members
-				let cmd = this.client.cmds.commands.find(
+				const cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractFakes
 				);
 				return async () => await cmd.action(message, [], {}, context);
@@ -303,7 +296,7 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractLeaves) {
 			if (value) {
 				// Subtract leaves from all members
-				let cmd = this.client.cmds.commands.find(
+				const cmd = this.client.cmds.commands.find(
 					c => c.name === BotCommand.subtractLeaves
 				);
 				return async () => await cmd.action(message, [], {}, context);
@@ -321,7 +314,7 @@ export default class extends Command {
 
 		if (key === SettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			let cmd = this.client.cmds.commands.find(
+			const cmd = this.client.cmds.commands.find(
 				c => c.name === BotCommand.subtractLeaves
 			);
 			return async () => await cmd.action(message, [], {}, context);

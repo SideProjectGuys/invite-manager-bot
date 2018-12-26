@@ -7,15 +7,19 @@ import {
 	UserResolver
 } from '../../resolvers';
 import {
-	defaultMemberSettings,
 	LogAction,
 	members,
 	memberSettings,
 	MemberSettingsKey,
-	memberSettingsTypes,
 	sequelize
 } from '../../sequelize';
-import { beautify, canClear, fromDbValue, toDbValue } from '../../settings';
+import {
+	beautify,
+	canClear,
+	fromDbValue,
+	memberSettingsInfo,
+	toDbValue
+} from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -35,11 +39,7 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(
-						client,
-						memberSettingsTypes,
-						defaultMemberSettings
-					),
+					resolver: new SettingsValueResolver(client, memberSettingsInfo),
 					rest: true
 				}
 			],

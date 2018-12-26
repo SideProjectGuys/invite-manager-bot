@@ -1,10 +1,10 @@
+import { inviteCodeSettings, InviteCodeSettingsKey } from '../sequelize';
 import {
-	defaultInviteCodeSettings,
-	inviteCodeSettings,
-	InviteCodeSettingsKey,
-	InviteCodeSettingsObject
-} from '../sequelize';
-import { fromDbValue, toDbValue } from '../settings';
+	fromDbValue,
+	inviteCodeDefaultSettings,
+	InviteCodeSettingsObject,
+	toDbValue
+} from '../settings';
 
 import { Cache } from './Cache';
 
@@ -63,7 +63,7 @@ export class InviteCodeSettingsCache extends Cache<InviteCodeSettingsObject> {
 			raw: true
 		});
 
-		const obj: InviteCodeSettingsObject = { ...defaultInviteCodeSettings };
+		const obj: InviteCodeSettingsObject = { ...inviteCodeDefaultSettings };
 		sets.forEach(set => (obj[set.key] = fromDbValue(set.key, set.value)));
 
 		return obj;
