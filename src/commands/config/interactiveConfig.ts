@@ -99,8 +99,24 @@ export default class extends Command {
 									deleteBotMessages: SettingsKey.autoModDeleteBotMessage,
 									deleteBotMessagesTimeout:
 										SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
+									mutedRole: SettingsKey.mutedRole
+								}
+							},
+							logging: {
+								items: {
+									logChannel: SettingsKey.modLogChannel,
 									autoLogEnabled: SettingsKey.autoModLogEnabled,
-									logChannel: SettingsKey.modLogChannel
+									deleteBotMessage: SettingsKey.autoModDeleteBotMessage,
+									deleteMessageTimeout:
+										SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
+									deleteBanMessages: SettingsKey.modPunishmentBanDeleteMessage,
+									deleteKickMessages:
+										SettingsKey.modPunishmentKickDeleteMessage,
+									deleteSoftBanMessages:
+										SettingsKey.modPunishmentSoftbanDeleteMessage,
+									deleteWarnMessages:
+										SettingsKey.modPunishmentWarnDeleteMessage,
+									deleteMuteMessages: SettingsKey.modPunishmentMuteDeleteMessage
 								}
 							},
 							invitesAndLinks: {

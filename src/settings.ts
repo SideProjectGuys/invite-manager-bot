@@ -10,32 +10,25 @@ import {
 } from './sequelize';
 
 export type InternalSettingsTypes =
-	| 'String'
-	| 'Number'
 	| 'Boolean'
-	| 'Channel'
-	| 'Role'
+	| 'Number'
+	| 'String'
 	| 'String[]'
+	| 'Channel'
 	| 'Channel[]'
+	| 'Role'
 	| 'Role[]'
 	| 'Enum<LeaderboardStyle>'
 	| 'Enum<RankAssignmentStyle>'
 	| 'Enum<Lang>';
 
-enum ConfigGroup {
-	General = 'General',
-	Invites = 'Invites',
-	Moderation = 'Moderation'
-}
-
 export interface SettingsInfo {
 	type: InternalSettingsTypes;
-	group: ConfigGroup;
+	grouping: string[];
 	defaultValue: any;
 	exampleValues?: string[];
 	possibleValues?: string[];
 	hasPremiumInfo?: boolean;
-	markdown?: string;
 }
 
 // ------------------------------------
@@ -56,6 +49,7 @@ export type SettingsObject = {
 	hideLeftMembersFromLeaderboard: boolean;
 
 	autoSubtractFakes: boolean;
+
 	autoSubtractLeaves: boolean;
 	autoSubtractLeaveThreshold: number /* seconds */;
 
@@ -127,121 +121,115 @@ export type SettingsObject = {
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	prefix: {
 		type: 'String',
-		group: ConfigGroup.General,
+		grouping: ['general'],
 		defaultValue: '!',
 		exampleValues: ['+', '>']
 	},
 	lang: {
 		type: 'Enum<Lang>',
-		group: ConfigGroup.General,
+		grouping: ['general'],
 		defaultValue: Lang.en,
 		possibleValues: Object.values(Lang)
 	},
 	logChannel: {
 		type: 'Channel',
-		group: ConfigGroup.General,
+		grouping: ['general'],
 		defaultValue: null,
 		exampleValues: ['#channel']
 	},
 	getUpdates: {
 		type: 'Boolean',
-		group: ConfigGroup.General,
+		grouping: ['general'],
 		defaultValue: true
 	},
 
 	joinMessage: {
 		type: 'String',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'joins'],
 		defaultValue:
 			'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 		hasPremiumInfo: true
 	},
 	joinMessageChannel: {
 		type: 'Channel',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'joins'],
 		defaultValue: null,
 		exampleValues: ['#general', '#joins']
 	},
 	leaveMessage: {
 		type: 'String',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaves'],
 		defaultValue: '{memberName} **left**; Invited by **{inviterName}**',
 		exampleValues: ['', ''],
 		hasPremiumInfo: true
 	},
 	leaveMessageChannel: {
 		type: 'Channel',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaves'],
 		defaultValue: null,
 		exampleValues: ['#general', '#leaves']
 	},
 
 	leaderboardStyle: {
 		type: 'Enum<LeaderboardStyle>',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaderboard'],
 		defaultValue: LeaderboardStyle.normal,
 		possibleValues: Object.values(LeaderboardStyle)
 	},
 	hideLeftMembersFromLeaderboard: {
 		type: 'Boolean',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaderboard'],
 		defaultValue: true
 	},
 
 	autoSubtractFakes: {
 		type: 'Boolean',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'fakes'],
 		defaultValue: true
 	},
 	autoSubtractLeaves: {
 		type: 'Boolean',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaves'],
 		defaultValue: true
 	},
+
 	autoSubtractLeaveThreshold: {
 		type: 'Number' /* seconds */,
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'leaves'],
 		defaultValue: 600,
 		exampleValues: ['60', '3600']
 	},
 
 	rankAssignmentStyle: {
 		type: 'Enum<RankAssignmentStyle>',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'ranks'],
 		defaultValue: RankAssignmentStyle.all,
 		possibleValues: Object.values(RankAssignmentStyle)
 	},
 	rankAnnouncementChannel: {
 		type: 'Channel',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'ranks'],
 		defaultValue: null,
 		exampleValues: ['', '']
 	},
 	rankAnnouncementMessage: {
 		type: 'String',
-		group: ConfigGroup.Invites,
+		grouping: ['invites', 'ranks'],
 		defaultValue:
 			'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 		exampleValues: ['', ''],
 		hasPremiumInfo: true
 	},
 
-	mutedRole: {
-		type: 'Role',
-		group: ConfigGroup.Moderation,
-		defaultValue: null,
-		exampleValues: ['@muted']
-	},
-
 	captchaVerificationOnJoin: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue: false,
 		hasPremiumInfo: true
 	},
 	captchaVerificationWelcomeMessage: {
 		type: 'String',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue:
 			'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
 		exampleValues: ['Welcome, please enter the captcha below!'],
@@ -249,7 +237,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationSuccessMessage: {
 		type: 'String',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue:
 			'You have successfully entered the captcha. Welcome to the server!',
 		exampleValues: ['Thanks for entering the captcha, enjoy our server!'],
@@ -257,7 +245,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationFailedMessage: {
 		type: 'String',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue:
 			'You did not enter the captha right within the specified time.' +
 			`We're sorry, but we have to kick you from the server. Feel free to join again.`,
@@ -268,237 +256,241 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationTimeout: {
 		type: 'Number' /* seconds */,
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue: 180,
 		exampleValues: ['60', '600'],
 		hasPremiumInfo: true
 	},
 	captchaVerificationLogEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'captcha'],
 		defaultValue: true,
 		hasPremiumInfo: true
 	},
 
-	modLogChannel: {
-		type: 'Channel',
-		group: ConfigGroup.Moderation,
-		defaultValue: null,
-		exampleValues: ['#channel', '#logs']
-	},
-	modPunishmentBanDeleteMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-	modPunishmentKickDeleteMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-	modPunishmentSoftbanDeleteMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-	modPunishmentWarnDeleteMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-	modPunishmentMuteDeleteMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-
 	autoModEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: false
 	},
 	autoModModeratedChannels: {
 		type: 'Channel[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: [],
 		exampleValues: ['#general', '#support,#help']
 	},
 	autoModModeratedRoles: {
 		type: 'Role[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: [],
 		exampleValues: ['@NewMembers', '@Newbies,@Starters']
 	},
 	autoModIgnoredChannels: {
 		type: 'Channel[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: [],
 		exampleValues: ['#general', '#off-topic,#nsfw']
 	},
 	autoModIgnoredRoles: {
 		type: 'Role[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: [],
 		exampleValues: ['@TrustedMembers', '@Moderators,@Staff']
 	},
-	autoModDeleteBotMessage: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
+	mutedRole: {
+		type: 'Role',
+		grouping: ['moderation', 'general'],
+		defaultValue: null,
+		exampleValues: ['@muted']
 	},
-	autoModDeleteBotMessageTimeoutInSeconds: {
-		type: 'Number',
-		group: ConfigGroup.Moderation,
-		defaultValue: 5,
-		exampleValues: ['5', '10']
-	},
-	autoModLogEnabled: {
-		type: 'Boolean',
-		group: ConfigGroup.Moderation,
-		defaultValue: true
-	},
-
 	autoModDisabledForOldMembers: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: false
 	},
 	autoModDisabledForOldMembersThreshold: {
 		type: 'Number' /* seconds */,
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'general'],
 		defaultValue: 604800 /* 1 week */,
 		exampleValues: ['604800` (1 week)`', '2419200` (1 month)`']
 	},
 
+	autoModLogEnabled: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	modLogChannel: {
+		type: 'Channel',
+		grouping: ['moderation', 'logging'],
+		defaultValue: null,
+		exampleValues: ['#channel', '#logs']
+	},
+	autoModDeleteBotMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	autoModDeleteBotMessageTimeoutInSeconds: {
+		type: 'Number',
+		grouping: ['moderation', 'logging'],
+		defaultValue: 5,
+		exampleValues: ['5', '10']
+	},
+	modPunishmentBanDeleteMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	modPunishmentKickDeleteMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	modPunishmentSoftbanDeleteMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	modPunishmentWarnDeleteMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+	modPunishmentMuteDeleteMessage: {
+		type: 'Boolean',
+		grouping: ['moderation', 'logging'],
+		defaultValue: true
+	},
+
 	autoModInvitesEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'invites'],
 		defaultValue: true
 	},
 
 	autoModLinksEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'links'],
 		defaultValue: true
 	},
 	autoModLinksWhitelist: {
 		type: 'String[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'links'],
 		defaultValue: [],
 		exampleValues: ['discordbots.org', 'youtube.com,twitch.com']
 	},
 	autoModLinksBlacklist: {
 		type: 'String[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'links'],
 		defaultValue: [],
 		exampleValues: ['google.com', 'twitch.com,youtube.com']
 	},
 	autoModLinksFollowRedirects: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'links'],
 		defaultValue: true,
 		hasPremiumInfo: true
 	},
 
 	autoModWordsEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'bannedWords'],
 		defaultValue: true
 	},
 	autoModWordsBlacklist: {
 		type: 'String[]',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'bannedWords'],
 		defaultValue: [],
 		exampleValues: ['gay', 'stupid,fuck']
 	},
 
 	autoModAllCapsEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'caps'],
 		defaultValue: true
 	},
 	autoModAllCapsMinCharacters: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'caps'],
 		defaultValue: 10,
 		exampleValues: ['5', '15']
 	},
 	autoModAllCapsPercentageCaps: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'caps'],
 		defaultValue: 70,
 		exampleValues: ['50', '90']
 	},
 
 	autoModDuplicateTextEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'duplicate'],
 		defaultValue: true
 	},
 	autoModDuplicateTextTimeframeInSeconds: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'duplicate'],
 		defaultValue: 60,
 		exampleValues: ['5', '20']
 	},
 
 	autoModQuickMessagesEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'spam'],
 		defaultValue: true
 	},
 	autoModQuickMessagesNumberOfMessages: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'spam'],
 		defaultValue: 5,
 		exampleValues: ['5', '10']
 	},
 	autoModQuickMessagesTimeframeInSeconds: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'spam'],
 		defaultValue: 3,
 		exampleValues: ['2', '10']
 	},
 
 	autoModMentionUsersEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'mentions'],
 		defaultValue: true
 	},
 	autoModMentionUsersMaxNumberOfMentions: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'mentions'],
 		defaultValue: 5,
 		exampleValues: ['2', '5']
 	},
-
 	autoModMentionRolesEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'mentions'],
 		defaultValue: true
 	},
 	autoModMentionRolesMaxNumberOfMentions: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'mentions'],
 		defaultValue: 3,
 		exampleValues: ['2', '5']
 	},
 
 	autoModEmojisEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'emojis'],
 		defaultValue: true
 	},
 	autoModEmojisMaxNumberOfEmojis: {
 		type: 'Number',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'emojis'],
 		defaultValue: 5,
 		exampleValues: ['5', '10']
 	},
 
 	autoModHoistEnabled: {
 		type: 'Boolean',
-		group: ConfigGroup.Moderation,
+		grouping: ['moderation', 'emojis'],
 		defaultValue: true
 	}
 };
@@ -518,7 +510,7 @@ export type MemberSettingsObject = {
 export const memberSettingsInfo: { [k in MemberSettingsKey]: SettingsInfo } = {
 	hideFromLeaderboard: {
 		type: 'Boolean',
-		group: ConfigGroup.Invites,
+		grouping: ['invites'],
 		defaultValue: false
 	}
 };
@@ -542,12 +534,12 @@ export const inviteCodeSettingsInfo: {
 } = {
 	name: {
 		type: 'String',
-		group: ConfigGroup.Invites,
+		grouping: ['invites'],
 		defaultValue: null
 	},
 	roles: {
 		type: 'Role[]',
-		group: ConfigGroup.Invites,
+		grouping: ['invites'],
 		defaultValue: []
 	}
 };

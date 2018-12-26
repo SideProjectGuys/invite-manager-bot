@@ -51,10 +51,10 @@ export default class extends Command {
 			const configs: { [x: string]: string[] } = {};
 			Object.keys(settingsInfo).forEach((k: SettingsKey) => {
 				const info = settingsInfo[k];
-				if (!configs[info.group]) {
-					configs[info.group] = [];
+				if (!configs[info.grouping[0]]) {
+					configs[info.grouping[0]] = [];
 				}
-				configs[info.group].push('`' + k + '`');
+				configs[info.grouping[0]].push('`' + k + '`');
 			});
 
 			Object.keys(configs).forEach(group => {
