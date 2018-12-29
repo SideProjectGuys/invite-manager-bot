@@ -5,6 +5,7 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
+import { MemberSettingsCache } from './cache/MemberSettingsCache';
 import { PermissionsCache } from './cache/PermissionsCache';
 import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
@@ -63,12 +64,13 @@ export class IMClient extends Client {
 	public config: any;
 
 	public cache: {
-		settings: SettingsCache;
-		premium: PremiumCache;
-		permissions: PermissionsCache;
-		strikes: StrikesCache;
-		punishments: PunishmentCache;
 		inviteCodes: InviteCodeSettingsCache;
+		members: MemberSettingsCache;
+		permissions: PermissionsCache;
+		premium: PremiumCache;
+		punishments: PunishmentCache;
+		settings: SettingsCache;
+		strikes: StrikesCache;
 	};
 	public dbQueue: DBQueue;
 
@@ -134,12 +136,13 @@ export class IMClient extends Client {
 		}
 
 		this.cache = {
-			settings: new SettingsCache(this),
-			premium: new PremiumCache(this),
+			inviteCodes: new InviteCodeSettingsCache(this),
+			members: new MemberSettingsCache(this),
 			permissions: new PermissionsCache(this),
-			strikes: new StrikesCache(this),
+			premium: new PremiumCache(this),
 			punishments: new PunishmentCache(this),
-			inviteCodes: new InviteCodeSettingsCache(this)
+			settings: new SettingsCache(this),
+			strikes: new StrikesCache(this)
 		};
 		this.dbQueue = new DBQueue(this);
 

@@ -14,11 +14,7 @@ import { beautify, fromDbValue, settingsInfo, toDbValue } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
-type ConfigMenu =
-	| { items: { [x: string]: ConfigMenu } }
-	| SettingsKey
-	| MemberSettingsKey
-	| InviteCodeSettingsKey;
+type ConfigMenu = { items: { [x: string]: ConfigMenu } } | SettingsKey;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
