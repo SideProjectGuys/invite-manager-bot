@@ -1,10 +1,10 @@
+import { settings, SettingsKey } from '../sequelize';
 import {
 	defaultSettings,
-	settings,
-	SettingsKey,
-	SettingsObject
-} from '../sequelize';
-import { fromDbValue, toDbValue } from '../settings';
+	fromDbValue,
+	SettingsObject,
+	toDbValue
+} from '../settings';
 
 import { GuildCache } from './GuildCache';
 
@@ -34,7 +34,7 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<SettingsObject> {
+	protected async _get(guildId: string): Promise<SettingsObject> {
 		const sets = await settings.findAll({ where: { guildId } });
 
 		const obj: SettingsObject = { ...defaultSettings };

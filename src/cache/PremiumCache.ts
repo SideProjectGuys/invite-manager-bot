@@ -37,7 +37,7 @@ export class PremiumCache extends GuildCache<boolean> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<boolean> {
+	protected async _get(guildId: string): Promise<boolean> {
 		const sub = await premiumSubscriptionGuilds.findOne({
 			where: {
 				guildId

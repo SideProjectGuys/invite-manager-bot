@@ -103,7 +103,7 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 };
 
 Object.keys(violationDescription).forEach((key: ViolationType) => {
-	let violation = violationDescription[key];
+	const violation = violationDescription[key];
 	let markdown = `## ${key}\n\n`;
 	markdown += `${violation.description}\n\n`;
 	markdown += `Example:\n\n`;

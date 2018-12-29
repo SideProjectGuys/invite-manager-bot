@@ -109,7 +109,7 @@ export default class extends Command {
 			}
 		}
 
-		let linksArray = [];
+		const linksArray = [];
 		if (this.client.config.botSupport) {
 			linksArray.push(
 				`[${t('bot.supportDiscord.title')}](${this.client.config.botSupport})`

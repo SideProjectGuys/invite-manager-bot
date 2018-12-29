@@ -1,5 +1,4 @@
 import { Message } from 'eris';
-import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { NumberResolver, StringResolver } from '../../../resolvers';
@@ -33,7 +32,7 @@ export default class extends Command {
 		message: Message,
 		[caseNumber]: [number],
 		flags: {},
-		{ guild, settings, t }: Context
+		{ guild, t }: Context
 	): Promise<any> {
 		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
 			return;
@@ -43,7 +42,7 @@ export default class extends Command {
 			title: `Case: ${caseNumber}`
 		});
 
-		let strike = await strikes.find({
+		const strike = await strikes.find({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
@@ -51,16 +50,12 @@ export default class extends Command {
 		});
 
 		if (strike) {
-			embed.description = t('cmd.check.strikes.entry', {
-				id: `${strike.id}`,
-				amount: `**${strike.amount}**`,
-				violation: `**${strike.type}**`,
-				date: moment(strike.createdAt)
-					.locale(settings.lang)
-					.fromNow()
+			await strike.destroy();
+			embed.description = t('cmd.caseDelete.done', {
+				id: `${strike.id}`
 			});
 		} else {
-			embed.description = `Could not find a case`;
+			embed.description = t('cmd.caseDelete.notFound');
 		}
 
 		this.client.sendReply(message, embed);

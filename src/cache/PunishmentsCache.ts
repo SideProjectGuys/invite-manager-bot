@@ -19,7 +19,7 @@ export class PunishmentCache extends GuildCache<PunishmentConfigInstance[]> {
 		});
 	}
 
-	protected async getOne(guildId: string): Promise<PunishmentConfigInstance[]> {
+	protected async _get(guildId: string): Promise<PunishmentConfigInstance[]> {
 		return await punishmentConfigs.findAll({
 			where: {
 				guildId

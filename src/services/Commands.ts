@@ -6,7 +6,7 @@ import path from 'path';
 import { IMClient } from '../client';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
-import { defaultSettings } from '../sequelize';
+import { defaultSettings } from '../settings';
 import { Permissions } from '../types';
 
 const cmdDir = path.resolve(__dirname, '../commands/');
@@ -110,7 +110,7 @@ export class Commands {
 		let content = message.content.trim();
 		const sets = guild
 			? await this.client.cache.settings.get(guild.id)
-			: defaultSettings;
+			: { ...defaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
@@ -143,7 +143,7 @@ export class Commands {
 			if (message.channel instanceof PrivateChannel) {
 				const user = message.author;
 
-				let oldMessages = await message.channel.getMessages(2);
+				const oldMessages = await message.channel.getMessages(2);
 				const isInitialMessage = oldMessages.length <= 1;
 				if (isInitialMessage) {
 					const initialMessage =
@@ -320,8 +320,8 @@ export class Commands {
 			const flagSplits = rawArg.split('=');
 			const isShort = !flagSplits[0].startsWith('--');
 			const name = flagSplits[0].replace(/-/gi, '');
-			const flag = cmd.flags.find(
-				f => (isShort ? f.short === name : f.name === name)
+			const flag = cmd.flags.find(f =>
+				isShort ? f.short === name : f.name === name
 			);
 
 			// Exit if this is not a flag

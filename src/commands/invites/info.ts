@@ -7,8 +7,6 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey,
 	joins,
 	members,
 	sequelize
@@ -170,16 +168,6 @@ export default class extends Command {
 				inviterId: user.id
 			},
 			order: [['uses', 'DESC']],
-			include: [
-				{
-					model: inviteCodeSettings,
-					where: {
-						guildId: guild.id,
-						key: InviteCodeSettingsKey.name
-					},
-					required: false
-				}
-			],
 			raw: true
 		});
 
@@ -372,7 +360,7 @@ export default class extends Command {
 					)
 					.join(', ');
 
-				joinText += mainText + ' ' + invText;
+				joinText += mainText + ' ' + invText + '\n';
 			});
 
 			let more = '';
@@ -397,13 +385,19 @@ export default class extends Command {
 
 		if (invCodes.length > 0) {
 			let invText = '';
-			invCodes.slice(0, 10).forEach(inv => {
-				const name = (inv as any)['inviteCodeSettings.value'];
+			const allSets = await this.client.cache.inviteCodes.get(guild.id);
+
+			for (const inv of invCodes.slice(0, 10)) {
+				const sets = allSets.get(inv.code);
+				const name =
+					sets && sets.name
+						? `**${sets.name}** (${inv.code})`
+						: `**${inv.code}**`;
 
 				invText +=
 					t('cmd.info.regularInvites.entry', {
 						uses: `**${inv.uses}**`,
-						code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
+						code: name,
 						createdAt:
 							'**' +
 							moment(inv.createdAt)
@@ -411,7 +405,7 @@ export default class extends Command {
 								.fromNow() +
 							'**'
 					}) + '\n';
-			});
+			}
 
 			let more = '';
 			if (invCodes.length > 10) {

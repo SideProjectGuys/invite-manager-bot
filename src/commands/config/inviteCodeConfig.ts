@@ -6,13 +6,8 @@ import {
 	InviteCodeResolver,
 	SettingsValueResolver
 } from '../../resolvers';
-import {
-	defaultInviteCodeSettings,
-	InviteCodeSettingsKey,
-	inviteCodeSettingsTypes,
-	LogAction
-} from '../../sequelize';
-import { beautify, canClear } from '../../settings';
+import { InviteCodeSettingsKey, LogAction } from '../../sequelize';
+import { beautify, canClear, inviteCodeSettingsInfo } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -35,11 +30,7 @@ export default class extends Command {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(
-						client,
-						inviteCodeSettingsTypes,
-						defaultInviteCodeSettings
-					),
+					resolver: new SettingsValueResolver(client, inviteCodeSettingsInfo),
 					rest: true
 				}
 			],
@@ -73,7 +64,7 @@ export default class extends Command {
 		}
 
 		if (!inv) {
-			const allSets = await this.client.cache.inviteCodes.getByGuild(guild.id);
+			const allSets = await this.client.cache.inviteCodes.get(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, invCode) =>
 					embed.fields.push({
@@ -95,8 +86,11 @@ export default class extends Command {
 			);
 		}
 
-		let codeSettings = await this.client.cache.inviteCodes.get(inv.code);
-		let oldVal = codeSettings[key];
+		const codeSettings = await this.client.cache.inviteCodes.getOne(
+			guild.id,
+			inv.code
+		);
+		const oldVal = codeSettings[key];
 		embed.title = `${inv.code} - ${key}`;
 
 		if (typeof value === typeof undefined) {
@@ -148,7 +142,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.inviteCodes.setOne(inv.code, key, value);
+		value = await this.client.cache.inviteCodes.setOne(inv, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');

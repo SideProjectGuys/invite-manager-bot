@@ -245,104 +245,6 @@ export enum SettingsKey {
 	autoModHoistEnabled = 'autoModHoistEnabled'
 }
 
-export type SettingsObject = {
-	prefix: string;
-	lang: Lang;
-	logChannel: string;
-	getUpdates: boolean;
-
-	joinMessage: string;
-	joinMessageChannel: string;
-	leaveMessage: string;
-	leaveMessageChannel: string;
-
-	leaderboardStyle: LeaderboardStyle;
-	hideLeftMembersFromLeaderboard: boolean;
-
-	autoSubtractFakes: boolean;
-	autoSubtractLeaves: boolean;
-	autoSubtractLeaveThreshold: number /* seconds */;
-
-	rankAssignmentStyle: RankAssignmentStyle;
-	rankAnnouncementChannel: string;
-	rankAnnouncementMessage: string;
-
-	mutedRole: string;
-
-	captchaVerificationOnJoin: boolean;
-	captchaVerificationWelcomeMessage: string;
-	captchaVerificationSuccessMessage: string;
-	captchaVerificationFailedMessage: string;
-	captchaVerificationTimeout: number /* seconds */;
-	captchaVerificationLogEnabled: boolean;
-
-	modLogChannel: string;
-	modPunishmentBanDeleteMessage: boolean;
-	modPunishmentKickDeleteMessage: boolean;
-	modPunishmentSoftbanDeleteMessage: boolean;
-	modPunishmentWarnDeleteMessage: boolean;
-	modPunishmentMuteDeleteMessage: boolean;
-
-	autoModEnabled: boolean;
-	autoModModeratedChannels: string[];
-	autoModModeratedRoles: string[];
-	autoModIgnoredChannels: string[];
-	autoModIgnoredRoles: string[];
-	autoModDeleteBotMessage: boolean;
-	autoModDeleteBotMessageTimeoutInSeconds: number;
-	autoModLogEnabled: boolean;
-
-	autoModDisabledForOldMembers: boolean;
-	autoModDisabledForOldMembersThreshold: number /* seconds, default 1 week */;
-
-	autoModInvitesEnabled: boolean;
-
-	autoModLinksEnabled: boolean;
-	autoModLinksWhitelist: string[];
-	autoModLinksBlacklist: string[];
-	autoModLinksFollowRedirects: boolean;
-
-	autoModWordsEnabled: boolean;
-	autoModWordsBlacklist: string[];
-
-	autoModAllCapsEnabled: boolean;
-	autoModAllCapsMinCharacters: number;
-	autoModAllCapsPercentageCaps: number;
-
-	autoModDuplicateTextEnabled: boolean;
-	autoModDuplicateTextTimeframeInSeconds: number;
-
-	autoModQuickMessagesEnabled: boolean;
-	autoModQuickMessagesNumberOfMessages: number;
-	autoModQuickMessagesTimeframeInSeconds: number;
-
-	autoModMentionUsersEnabled: boolean;
-	autoModMentionUsersMaxNumberOfMentions: number;
-
-	autoModMentionRolesEnabled: boolean;
-	autoModMentionRolesMaxNumberOfMentions: number;
-
-	autoModEmojisEnabled: boolean;
-	autoModEmojisMaxNumberOfEmojis: number;
-
-	autoModHoistEnabled: boolean;
-};
-
-export type InternalSettingsTypes =
-	| 'String'
-	| 'Number'
-	| 'Boolean'
-	| 'Channel'
-	| 'Role'
-	| 'String[]'
-	| 'Channel[]'
-	| 'Role[]'
-	| 'Enum<LeaderboardStyle>'
-	| 'Enum<RankAssignmentStyle>'
-	| 'Enum<Lang>';
-
-export type SettingsTypesObject = { [k in SettingsKey]: InternalSettingsTypes };
-
 export enum Lang {
 	de = 'de',
 	en = 'en',
@@ -365,178 +267,6 @@ export enum RankAssignmentStyle {
 	all = 'all',
 	highest = 'highest'
 }
-
-export const settingsTypes: SettingsTypesObject = {
-	prefix: 'String',
-	lang: 'Enum<Lang>',
-	logChannel: 'Channel',
-	getUpdates: 'Boolean',
-
-	joinMessage: 'String',
-	joinMessageChannel: 'Channel',
-	leaveMessage: 'String',
-	leaveMessageChannel: 'Channel',
-
-	leaderboardStyle: 'Enum<LeaderboardStyle>',
-	hideLeftMembersFromLeaderboard: 'Boolean',
-
-	autoSubtractFakes: 'Boolean',
-	autoSubtractLeaves: 'Boolean',
-	autoSubtractLeaveThreshold: 'Number' /* seconds */,
-
-	rankAssignmentStyle: 'Enum<RankAssignmentStyle>',
-	rankAnnouncementChannel: 'Channel',
-	rankAnnouncementMessage: 'String',
-
-	mutedRole: 'Role',
-
-	captchaVerificationOnJoin: 'Boolean',
-	captchaVerificationWelcomeMessage: 'String',
-	captchaVerificationSuccessMessage: 'String',
-	captchaVerificationFailedMessage: 'String',
-	captchaVerificationTimeout: 'Number' /* seconds */,
-	captchaVerificationLogEnabled: 'Boolean',
-
-	modLogChannel: 'Channel',
-	modPunishmentBanDeleteMessage: 'Boolean',
-	modPunishmentKickDeleteMessage: 'Boolean',
-	modPunishmentSoftbanDeleteMessage: 'Boolean',
-	modPunishmentWarnDeleteMessage: 'Boolean',
-	modPunishmentMuteDeleteMessage: 'Boolean',
-
-	autoModEnabled: 'Boolean',
-	autoModModeratedChannels: 'Channel[]',
-	autoModModeratedRoles: 'Role[]',
-	autoModIgnoredChannels: 'Channel[]',
-	autoModIgnoredRoles: 'Role[]',
-	autoModDeleteBotMessage: 'Boolean',
-	autoModDeleteBotMessageTimeoutInSeconds: 'Number',
-	autoModLogEnabled: 'Boolean',
-
-	autoModDisabledForOldMembers: 'Boolean',
-	autoModDisabledForOldMembersThreshold: 'Number' /* seconds, default 1 week */,
-
-	autoModInvitesEnabled: 'Boolean',
-
-	autoModLinksEnabled: 'Boolean',
-	autoModLinksWhitelist: 'String[]',
-	autoModLinksBlacklist: 'String[]',
-	autoModLinksFollowRedirects: 'Boolean',
-
-	autoModWordsEnabled: 'Boolean',
-	autoModWordsBlacklist: 'String[]',
-
-	autoModAllCapsEnabled: 'Boolean',
-	autoModAllCapsMinCharacters: 'Number',
-	autoModAllCapsPercentageCaps: 'Number',
-
-	autoModDuplicateTextEnabled: 'Boolean',
-	autoModDuplicateTextTimeframeInSeconds: 'Number',
-
-	autoModQuickMessagesEnabled: 'Boolean',
-	autoModQuickMessagesNumberOfMessages: 'Number',
-	autoModQuickMessagesTimeframeInSeconds: 'Number',
-
-	autoModMentionUsersEnabled: 'Boolean',
-	autoModMentionUsersMaxNumberOfMentions: 'Number',
-
-	autoModMentionRolesEnabled: 'Boolean',
-	autoModMentionRolesMaxNumberOfMentions: 'Number',
-
-	autoModEmojisEnabled: 'Boolean',
-	autoModEmojisMaxNumberOfEmojis: 'Number',
-
-	autoModHoistEnabled: 'Boolean'
-};
-
-export const defaultSettings: SettingsObject = {
-	prefix: '!',
-	lang: Lang.en,
-	logChannel: null,
-	getUpdates: true,
-
-	joinMessage:
-		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
-	joinMessageChannel: null,
-	leaveMessage: '{memberName} **left**; Invited by **{inviterName}**',
-	leaveMessageChannel: null,
-
-	leaderboardStyle: LeaderboardStyle.normal,
-	hideLeftMembersFromLeaderboard: true,
-
-	autoSubtractFakes: true,
-	autoSubtractLeaves: true,
-	autoSubtractLeaveThreshold: 600 /* seconds */,
-
-	rankAssignmentStyle: RankAssignmentStyle.all,
-	rankAnnouncementChannel: null,
-	rankAnnouncementMessage:
-		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
-
-	mutedRole: null,
-
-	captchaVerificationOnJoin: false,
-	captchaVerificationWelcomeMessage:
-		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
-	captchaVerificationSuccessMessage:
-		'You have successfully entered the captcha. Welcome to the server!',
-	captchaVerificationFailedMessage:
-		'You did not enter the captha right within the specified time.' +
-		`We're sorry, but we have to kick you from the server. Feel free to join again.`,
-	captchaVerificationTimeout: 180 /* seconds */,
-	captchaVerificationLogEnabled: true,
-
-	modLogChannel: null,
-	modPunishmentBanDeleteMessage: true,
-	modPunishmentKickDeleteMessage: true,
-	modPunishmentSoftbanDeleteMessage: true,
-	modPunishmentWarnDeleteMessage: true,
-	modPunishmentMuteDeleteMessage: true,
-
-	autoModEnabled: false,
-	autoModModeratedChannels: [],
-	autoModModeratedRoles: [],
-	autoModIgnoredChannels: [],
-	autoModIgnoredRoles: [],
-	autoModDeleteBotMessage: true,
-	autoModDeleteBotMessageTimeoutInSeconds: 5,
-	autoModLogEnabled: true,
-
-	autoModDisabledForOldMembers: false,
-	autoModDisabledForOldMembersThreshold: 604800 /* seconds, default 1 week */,
-
-	autoModInvitesEnabled: true,
-
-	autoModLinksEnabled: true,
-	autoModLinksWhitelist: [],
-	autoModLinksBlacklist: [],
-	autoModLinksFollowRedirects: true,
-
-	autoModWordsEnabled: true,
-	autoModWordsBlacklist: [],
-
-	autoModAllCapsEnabled: true,
-	autoModAllCapsMinCharacters: 10,
-	autoModAllCapsPercentageCaps: 70,
-
-	autoModDuplicateTextEnabled: true,
-	autoModDuplicateTextTimeframeInSeconds: 60,
-
-	autoModQuickMessagesEnabled: true,
-	autoModQuickMessagesNumberOfMessages: 5,
-	autoModQuickMessagesTimeframeInSeconds: 3,
-
-	autoModMentionUsersEnabled: true,
-	autoModMentionUsersMaxNumberOfMentions: 5,
-
-	autoModMentionRolesEnabled: true,
-	autoModMentionRolesMaxNumberOfMentions: 3,
-
-	autoModEmojisEnabled: true,
-	autoModEmojisMaxNumberOfEmojis: 5,
-
-	autoModHoistEnabled: true
-};
 
 export interface SettingAttributes extends BaseAttributes {
 	id: number;
@@ -578,22 +308,6 @@ guilds.hasMany(settings);
 export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
-
-export type MemberSettingsObject = {
-	hideFromLeaderboard: boolean;
-};
-
-export type MemberSettingsTypesObject = {
-	[k in MemberSettingsKey]: InternalSettingsTypes
-};
-
-export const memberSettingsTypes: MemberSettingsTypesObject = {
-	hideFromLeaderboard: 'Boolean'
-};
-
-export const defaultMemberSettings: MemberSettingsObject = {
-	hideFromLeaderboard: false
-};
 
 export interface MemberSettingsAttributes extends BaseAttributes {
 	id: number;
@@ -705,25 +419,6 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
-export type InviteCodeSettingsObject = {
-	name: string;
-	roles: string[];
-};
-
-export type InviteCodeSettingsTypesObject = {
-	[k in InviteCodeSettingsKey]: InternalSettingsTypes
-};
-
-export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {
-	name: 'String',
-	roles: 'Role[]'
-};
-
-export const defaultInviteCodeSettings: InviteCodeSettingsObject = {
-	name: null,
-	roles: []
-};
-
 export interface InviteCodeSettingsAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
@@ -787,7 +482,6 @@ export interface JoinInstance
 	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
 	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
 	getExactMatch: Sequelize.BelongsToGetAssociationMixin<InviteCodeInstance>;
-	getLeave: Sequelize.HasOneGetAssociationMixin<LeaveInstance>;
 }
 
 export const joins = sequelize.define<JoinInstance, JoinAttributes>(

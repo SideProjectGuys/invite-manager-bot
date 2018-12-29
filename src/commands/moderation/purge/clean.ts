@@ -73,16 +73,16 @@ export default class extends Command {
 			numberOfMessages = 5;
 		}
 
-		let messages = await message.channel.getMessages(
+		const messages = await message.channel.getMessages(
 			Math.min(numberOfMessages, 100),
 			message.id
 		);
 
-		let messagesToBeDeleted = this.cleanFunctions[type](messages);
+		const messagesToBeDeleted = this.cleanFunctions[type](messages);
 
 		let error: any;
 		if (type === CleanType.reactions) {
-			for (let messageToBeDeleted of messagesToBeDeleted) {
+			for (const messageToBeDeleted of messagesToBeDeleted) {
 				await messageToBeDeleted.removeReactions();
 			}
 			message.delete();
@@ -112,7 +112,7 @@ export default class extends Command {
 			}
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		const func = () => {
 			response.delete();
@@ -128,7 +128,7 @@ export default class extends Command {
 
 	private links(messages: Message[]): Message[] {
 		return messages.filter(message => {
-			let matches = this.client.mod.getLinks(message);
+			const matches = this.client.mod.getLinks(message);
 			return matches && matches.length > 0;
 		});
 	}
@@ -163,7 +163,7 @@ export default class extends Command {
 
 	private reacted(messages: Message[]): Message[] {
 		return messages.filter(message => {
-			let reactionsKeys = Object.keys(message.reactions);
+			const reactionsKeys = Object.keys(message.reactions);
 			return reactionsKeys.length > 0;
 		});
 	}

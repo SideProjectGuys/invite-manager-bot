@@ -61,7 +61,7 @@ export default class extends Command {
 			targetMember.avatarURL
 		);
 
-		let mutedRole = settings.mutedRole;
+		const mutedRole = settings.mutedRole;
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
@@ -118,7 +118,7 @@ export default class extends Command {
 			embed.description = t('cmd.mute.canNotMute');
 		}
 
-		let response = await this.client.sendReply(message, embed);
+		const response = await this.client.sendReply(message, embed);
 
 		if (settings.modPunishmentMuteDeleteMessage) {
 			const func = () => {

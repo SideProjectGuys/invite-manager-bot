@@ -1,11 +1,10 @@
 import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../client';
-import { SettingsObject } from '../sequelize';
-import { BotCommand, CommandGroup, ModerationCommand } from '../types';
-
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
+import { SettingsObject } from '../settings';
+import { BotCommand, CommandGroup, ModerationCommand } from '../types';
 
 export interface Arg {
 	name: string;
@@ -89,8 +88,8 @@ export abstract class Command {
 				res instanceof BooleanResolver
 					? ''
 					: flag.valueRequired
-						? '=value'
-						: '[=value]';
+					? '=value'
+					: '[=value]';
 			const short = flag.short ? `-${flag.short}${val.replace('=', ' ')}|` : '';
 			this.usage += `[${short}--${flag.name}${val}] `;
 		});

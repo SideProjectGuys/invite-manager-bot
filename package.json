@@ -1,12 +1,11 @@
 {
 	"name": "discord-invite-manager",
-	"version": "4.2.3",
+	"version": "4.2.4",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
 		"start": "node scripts/dev-run.js",
 		"build": "gulp",
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"test/**/*.js\"",
 		"nxv": "node ./scripts/npm-exact-versions.js"

@@ -3,11 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { UserResolver } from '../../resolvers';
-import {
-	inviteCodes,
-	inviteCodeSettings,
-	InviteCodeSettingsKey
-} from '../../sequelize';
+import { inviteCodes } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -33,7 +29,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		let target = user ? user : message.author;
+		const target = user ? user : message.author;
 
 		const invs = await inviteCodes.findAll({
 			where: {
@@ -41,16 +37,6 @@ export default class extends Command {
 				inviterId: target.id
 			},
 			order: [['uses', 'DESC']],
-			include: [
-				{
-					model: inviteCodeSettings,
-					where: {
-						guildId: guild.id,
-						key: InviteCodeSettingsKey.name
-					},
-					required: false
-				}
-			],
 			raw: true
 		});
 
@@ -60,20 +46,25 @@ export default class extends Command {
 		}
 
 		const lang = settings.lang;
+		const allSets = await this.client.cache.inviteCodes.get(guild.id);
 
 		let invText = '';
-		invs.slice(0, 100).forEach(inv => {
-			const name = (inv as any)['inviteCodeSettings.value'];
+		for (const inv of invs.slice(0, 25)) {
+			const sets = allSets.get(inv.code);
+			const name =
+				sets && sets.name
+					? `**${sets.name}** (${inv.code})`
+					: `**${inv.code}**`;
 
 			invText +=
 				t('cmd.inviteDetails.entry', {
 					uses: inv.uses,
-					code: name ? `**${name}** (${inv.code})` : `**${inv.code}**`,
+					code: name,
 					createdAt: moment(inv.createdAt)
 						.locale(lang)
 						.fromNow()
 				}) + '\n';
-		});
+		}
 
 		this.client.sendReply(message, invText);
 	}

@@ -1,9 +1,9 @@
-import { Member, Message } from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { NumberResolver, UserResolver } from '../../../resolvers';
-import { punishments, strikes } from '../../../sequelize';
+import { NumberResolver } from '../../../resolvers';
+import { strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
@@ -38,7 +38,7 @@ export default class extends Command {
 			title: `Case: ${caseNumber}`
 		});
 
-		let strike = await strikes.find({
+		const strike = await strikes.find({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
@@ -46,7 +46,7 @@ export default class extends Command {
 		});
 
 		if (strike) {
-			embed.description = t('cmd.check.strikes.entry', {
+			embed.description = t('cmd.caseView.strike', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
 				violation: `**${strike.type}**`,
@@ -55,7 +55,7 @@ export default class extends Command {
 					.fromNow()
 			});
 		} else {
-			embed.description = `Could not find a case`;
+			embed.description = t('cmd.caseView.notFound');
 		}
 
 		this.client.sendReply(message, embed);

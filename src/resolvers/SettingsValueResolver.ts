@@ -1,11 +1,7 @@
 import { IMClient } from '../client';
 import { Context } from '../commands/Command';
-import {
-	InternalSettingsTypes,
-	Lang,
-	LeaderboardStyle,
-	RankAssignmentStyle
-} from '../sequelize';
+import { Lang, LeaderboardStyle, RankAssignmentStyle } from '../sequelize';
+import { SettingsInfo } from '../settings';
 
 import {
 	ArrayResolver,
@@ -19,18 +15,12 @@ import {
 } from '.';
 
 export class SettingsValueResolver extends Resolver {
-	private types: { [x: string]: InternalSettingsTypes };
-	private defaults: { [x: string]: any };
+	private infos: { [x: string]: SettingsInfo };
 
-	public constructor(
-		client: IMClient,
-		types: { [x: string]: InternalSettingsTypes },
-		defaults: { [x: string]: any }
-	) {
+	public constructor(client: IMClient, infos: { [x: string]: SettingsInfo }) {
 		super(client);
 
-		this.types = types;
-		this.defaults = defaults;
+		this.infos = infos;
 	}
 
 	public resolve(value: any, context: Context, [key]: [string]): Promise<any> {
@@ -41,10 +31,10 @@ export class SettingsValueResolver extends Resolver {
 			return null;
 		}
 		if (value === 'default') {
-			return this.defaults[key];
+			return this.infos[key].defaultValue;
 		}
 
-		switch (this.types[key]) {
+		switch (this.infos[key].type) {
 			case 'Channel':
 				return new ChannelResolver(this.client).resolve(value, context);
 
