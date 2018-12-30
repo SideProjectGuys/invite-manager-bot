@@ -500,7 +500,9 @@ export class RabbitMq {
 					premium: this.client.cache.premium.getSize(),
 					permissions: this.client.cache.permissions.getSize(),
 					strikes: this.client.cache.strikes.getSize(),
-					punishments: this.client.cache.punishments.getSize()
+					punishments: this.client.cache.punishments.getSize(),
+					inviteCodes: this.client.cache.inviteCodes.getSize(),
+					members: this.client.cache.members.getSize()
 				});
 				break;
 

@@ -41,11 +41,11 @@ export class InviteCodeSettingsCache extends GuildCache<
 	}
 
 	protected async _get(
-		inviteCode: string
+		guildId: string
 	): Promise<Map<string, InviteCodeSettingsObject>> {
 		const sets = await inviteCodeSettings.findAll({
 			where: {
-				inviteCode
+				guildId
 			},
 			raw: true
 		});
@@ -56,16 +56,10 @@ export class InviteCodeSettingsCache extends GuildCache<
 				return;
 			}
 
-			let guildSets = map.get(set.guildId);
-			if (!guildSets) {
-				guildSets = new Map();
-				map.set(set.guildId, guildSets);
-			}
-
-			let invSets = guildSets.get(set.inviteCode);
+			let invSets = map.get(set.inviteCode);
 			if (!invSets) {
 				invSets = { ...inviteCodeDefaultSettings };
-				guildSets.set(set.inviteCode, invSets);
+				map.set(set.inviteCode, invSets);
 			}
 			invSets[set.key] = fromDbValue(set.key, set.value);
 		});

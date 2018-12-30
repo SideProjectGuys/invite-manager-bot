@@ -62,6 +62,7 @@ i18n.configure({
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+	public isPro: boolean;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -175,18 +176,42 @@ export class IMClient extends Client {
 	}
 
 	private async onClientReady(): Promise<void> {
+		this.isPro = this.user.id === this.config.proBotId;
+
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
+		console.log(
+			`This is the ${this.isPro ? 'PRO' : 'PUBLIC'} version of the bot.`
+		);
 
 		// Init all caches
-		Promise.all(Object.values(this.cache).map(c => c.init()));
+		await Promise.all(Object.values(this.cache).map(c => c.init()));
 
 		// Other services
 		await this.rabbitmq.init();
 		await this.cmds.init();
 
 		// Disable guilds of pro bot
-		this.guilds.forEach(g => {
-			if (g.members.has(this.config.proBotId)) {
+		this.guilds.forEach(async g => {
+			if (this.isPro) {
+				// If this is the pro bot then leave any guilds that aren't pro
+				const premium = await this.cache.premium.get(g.id);
+				if (!premium) {
+					const dmChannel = await this.getDMChannel(g.ownerID);
+					await dmChannel
+						.createMessage(
+							'Hi! Thanks for inviting me to your server `' +
+								g.name +
+								'`!\n\n' +
+								'I am the pro version of InviteManager, and only available to people ' +
+								'that support me on Patreon with the pro tier.\n\n' +
+								'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+								'I will be leaving your server now, thanks for having me!'
+						)
+						.catch(() => undefined);
+					await g.leave();
+				}
+			} else if (g.members.has(this.config.proBotId)) {
+				// Otherwise disable the guild if the pro bot is in it
 				this.disabledGuilds.add(g.id);
 			}
 		});
@@ -201,10 +226,27 @@ export class IMClient extends Client {
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
-		// Send welcome message to owner with setup instructions
-		const owner = await guild.getRESTMember(guild.ownerID);
+		const premium = await this.cache.premium.get(guild.id);
 
-		const channel = await this.getDMChannel(owner.user.id);
+		const channel = await this.getDMChannel(guild.ownerID);
+
+		if (this.isPro && !premium) {
+			await channel
+				.createMessage(
+					'Hi! Thanks for inviting me to your server `' +
+						guild.name +
+						'`!\n\n' +
+						'I am the pro version of InviteManager, and only available to people ' +
+						'that support me on Patreon with the pro tier.\n\n' +
+						'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+						'I will be leaving your server now, thanks for having me!'
+				)
+				.catch(() => undefined);
+			await guild.leave();
+			return;
+		}
+
+		// Send welcome message to owner with setup instructions
 
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +

@@ -2,7 +2,7 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 
-const maxCacheDuration = moment.duration(4, 'h');
+const maxCacheDuration = moment.duration(6, 'h');
 
 export abstract class Cache<CachedObject> {
 	protected client: IMClient;
