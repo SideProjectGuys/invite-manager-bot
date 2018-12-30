@@ -8,24 +8,16 @@ import {
 	toDbValue
 } from '../settings';
 
-import { Cache } from './Cache';
+import { GuildCache } from './GuildCache';
 
-export class MemberSettingsCache extends Cache<
+export class MemberSettingsCache extends GuildCache<
 	Map<string, MemberSettingsObject>
 > {
-	public async init() {
-		const it = this.client.guilds.keys();
+	public initOne(guilId: string) {
+		return new Map();
+	}
 
-		const guildIds: string[] = [];
-		let result = it.next();
-
-		while (!result.done) {
-			const guildId = result.value as string;
-			guildIds.push(guildId);
-			this.cache.set(guildId, new Map());
-			result = it.next();
-		}
-
+	public async getAll(guildIds: string[]) {
 		const sets = await memberSettings.findAll({
 			where: {
 				guildId: guildIds
@@ -64,16 +56,10 @@ export class MemberSettingsCache extends Cache<
 				return;
 			}
 
-			let guildSets = map.get(set.guildId);
-			if (!guildSets) {
-				guildSets = new Map();
-				map.set(set.guildId, guildSets);
-			}
-
-			let memberSets = guildSets.get(set.memberId);
+			let memberSets = map.get(set.memberId);
 			if (!memberSets) {
 				memberSets = { ...memberDefaultSettings };
-				guildSets.set(set.memberId, memberSets);
+				map.set(set.memberId, memberSets);
 			}
 			memberSets[set.key] = fromDbValue(set.key, set.value);
 		});
