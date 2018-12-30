@@ -48,6 +48,7 @@
 		}
 	},
 	"cmd": {
+		"error": "There was an error executing the command.",
 		"addInvites": {
 			"zero": "Pridėjimas nulių kvietimų tikrai nėra prasmės...",
 			"amount": {
@@ -111,11 +112,13 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
+				"total": "Strikes Total"
 			},
 			"punishments": {
 				"title": "Punishments",
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}"
+				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
+				"total": "Punishments Total"
 			},
 			"noHistory": "User does not have any history.",
 			"self": {
@@ -792,7 +795,8 @@
 					"user": "The user that should be unbanned.",
 					"reason": "The reason why this user is unbanned."
 				}
-			}
+			},
+			"done": "cmd.unban.done"
 		},
 		"mute": {
 			"missingRole": "Muted role not set or does not exist!",
@@ -813,7 +817,9 @@
 				"args": {
 					"user": "The user that should be unmuted."
 				}
-			}
+			},
+			"canNotUnmute": "cmd.unmute.canNotUnmute",
+			"done": "cmd.unmute.done"
 		},
 		"cleanShort": {
 			"self": {
@@ -1125,9 +1131,6 @@
 	"prompt": {
 		"canceled": "Canceled"
 	},
-	"command": {
-		"error": "There was an error executing the command."
-	},
 	"messages": {
 		"unknownInviter": "Unknown",
 		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
@@ -1136,5 +1139,19 @@
 	"captcha": {
 		"invalid": "Captcha didn't match, please try again."
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM"
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM",
+	"moderation": {
+		"strikes": {
+			"dm": "You have received **{{ amount }}** strikes for violating the **{{ type }}** rule in **{{ guild }}**"
+		},
+		"punishments": {
+			"dm": {
+				"warn": "moderation.punishments.dm.warn",
+				"amount": "moderation.punishments.dm.amount",
+				"mute": "moderation.punishments.dm.mute",
+				"kick": "moderation.punishments.dm.kick",
+				"ban": "moderation.punishments.dm.ban"
+			}
+		}
+	}
 }

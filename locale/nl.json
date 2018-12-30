@@ -48,6 +48,7 @@
 		}
 	},
 	"cmd": {
+		"error": "There was an error executing the command.",
 		"addInvites": {
 			"zero": "0 invites geven heeft niet veel zin...",
 			"amount": {
@@ -111,11 +112,13 @@
 		"check": {
 			"strikes": {
 				"title": "Waarschuwingen",
-				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}"
+				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}",
+				"total": "Strikes Total"
 			},
 			"punishments": {
 				"title": "Straffen",
-				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}"
+				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}",
+				"total": "Punishments Total"
 			},
 			"noHistory": "Die gebruiker heeft geen straffen.",
 			"self": {
@@ -265,31 +268,31 @@
 			},
 			"regularInvites": {
 				"title": "Regular invites",
-				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
-				"more": "Plus another {{ amount }} more invite codes",
+				"entry": "{{ uses }} van {{ code }} - aangemaakt op {{ createdAt }}",
+				"more": "Plus {{ amount }} meer invite codes",
 				"none": "Deze gebruiker heeft niemand geinvite tot nu toe"
 			},
 			"bonusInvites": {
 				"title": "Bonus invites",
-				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
-				"more": "Plus another {{ amount }} more bonus invites",
+				"entry": "{{ amount }} van {{{ creator }}} - {{ date }}, reden: {{ reason }}",
+				"more": "Plus {{ amount }} meer bonus invites",
 				"none": "Deze gebruiker heeft geen meer bonussen tot nu toe",
-				"noReason": "No reason",
-				"details": "Use {{{ cmd }}} for details."
+				"noReason": "Geen reden",
+				"details": "Gebruik {{{ cmd }}} door details."
 			},
 			"invitedMembers": {
 				"title": "Geinvite gebruikers",
-				"more": "Plus another {{ amount }} more invited members",
+				"more": "Plus {{ amount }} meer mensen geïnvite.",
 				"none": "Deze gebruiker heeft niemand geinvite tot nu toe",
-				"details": "Use {{{ cmd }}} for details."
+				"details": "Gebruik {{{ cmd }}} door details."
 			},
 			"self": {
 				"args": {
-					"user": "The user for whom you want to see additional info.",
-					"details": "Request only specific details about a member.",
-					"page": "What page of the details to show. You can also use the reactions to navigate."
+					"user": "De gebruiker van wie je de toegevoegde informatie wilt zien.",
+					"details": "Vraag alleen specifieke details aan van een gebruiker.",
+					"page": "Welke pagina van de detail om te laten zien. Je kan ook de reactions gebruiken om te navigeren."
 				},
-				"description": "Show info about a specific member."
+				"description": "Zie informatie over een specifieke gebruiker."
 			}
 		},
 		"inviteCodes": {
@@ -302,49 +305,49 @@
 			"permanent": {
 				"title": "Permanent",
 				"text": "Deze invites verlopen niet.",
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}"
+				"entry": "**Keren gebruikt**: {{ uses }}\n**Maximale leeftijd**: {{ maxSage }}\r\n**Maximaal aantal keer te gebruiken**: {{ maxUses }}\r\n**Kanaal**: {{{ channel }}}"
 			},
 			"temporary": {
 				"title": "Tijdelijke",
 				"text": "Deze invites verlopen na een bepaalde tijd.",
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}\r\n**Expires**: {{ expires }}"
+				"entry": "**Keren gebruikt**: {{ uses }}\n**Maximale leeftijd**: {{ maxSage }}\n**Maximaal aantal keer te gebruiken**: {{ maxUses }}\n**Kanaal**: {{{ channel }}}\r\n**Verloopt op**: {{ expires }}"
 			},
 			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
 			"self": {
-				"description": "Get a list of all your invite codes"
+				"description": "Krijg een lijst van al jouw invite codes"
 			}
 		},
 		"invites": {
 			"amount": {
-				"self": "You have {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
-				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)"
+				"self": "Jij hebt {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
+				"other": "{{{ target }}} heeft {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)"
 			},
 			"nextRank": {
-				"self": "You need **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
-				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
+				"self": "Jij hebt **{{ nextRankPointsDiff }}** meer invites nodig om de rank **{{ nextRankName }}** te krijgen!",
+				"other": "{{{ target }}} heeft **{{ nextRankPointsDiff }}** meer invites nodig om de rank **{{ nextRankName }}** te krijgen!"
 			},
 			"highestRank": {
-				"self": "Congratulations, you currently have the highest rank!",
-				"other": "{{{ target }}} currently has the highest rank!"
+				"self": "Gefeliciteerd! Je hebt momenteel de hoogste rank!",
+				"other": "{{{ target }}} heeft momenteel de hoogste rank!"
 			},
 			"self": {
 				"args": {
-					"user": "The user for whom you want to show invites."
+					"user": "De gebruiker van wie je de invites wilt zien."
 				},
-				"description": "Show personal invites."
+				"description": "Zie persoonlijke invites."
 			}
 		},
 		"kick": {
-			"missingPermissions": "I need the `Kick Members` permission to kick members",
-			"canNotKick": "I cannot kick this user.",
-			"done": "The user was successfully kicked.",
-			"error": "There was an error kicking this user:\n{{ error }}",
+			"missingPermissions": "Ik heb de `Kick Members` permissie nodig om gebruikers te kicken.",
+			"canNotKick": "Ik kan deze gebruiker niet kicken.",
+			"done": "De gebruiker is succesvol gekicked.",
+			"error": "Er is een error opgetreden tijdens het kicken van deze gebruiker:\n{{ error }}",
 			"self": {
 				"args": {
-					"member": "Member to kick.",
-					"reason": "Why the member was kicked."
+					"member": "Gebruiker om te kicken.",
+					"reason": "Waarom de gebruiker is gekicked."
 				},
-				"description": "Kick a member from the server."
+				"description": "Kick een gebruiker van de server."
 			}
 		},
 		"leaderboard": {
@@ -352,7 +355,7 @@
 			"invalidDate": "Ongeldige datum: {{ date }}",
 			"noInvites": "Geen invites!",
 			"comparedTo": "wijzigingen vergeleken met {{ to }}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos}}** {{{ chang }}} **{{{ name }}}** - {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
 			"col": {
 				"change": "Verander",
 				"name": "Naam",
@@ -365,24 +368,24 @@
 			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves",
 			"self": {
 				"args": {
-					"page": "Which page of the leaderboard to get.",
-					"date": "The date (& time) for which the leaderboard is shown."
+					"page": "Welke pagina van de leaderboard om te krijgen.",
+					"date": "De datum (& tijd) waarop de leaderboard wordt weergegeven."
 				},
-				"description": "Show members with most invites."
+				"description": "Laat de mensen zien met de meeste invites."
 			}
 		},
 		"memberConfig": {
-			"title": "Your memberConfig settings",
-			"text": "Below are all the available memberConfig settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"canNotClear": "The memberConfig setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
+			"title": "Jouw memberConfig instellingen",
+			"text": "Hieronder staan alle beschikbare memberConfig instellingen.\n\nGebruik `{{ prefix }}memberConfig <key>` om gebruikers te zien die de setting `<key>` hebben\nGebruik `{{ prefix }}memberConfig <key> @user` om de instelling van een enkele `@user` te zien\nGebruik `{{ prefix }}memberConfig <key> @user <value>` om de configuratie `<key>` te zetten naar `<value>` voor `@user`",
+			"canNotClear": "De memberConfig setting **{{ key }}** kan niet verwijdert worden. Je kan `memberConfig {{ key }} default` om het te resetten naar de standaard waarde.",
 			"keys": {
-				"title": "Valid memberConfig keys"
+				"title": "Geldige memberConfig keys"
 			},
-			"notSet": "This memberConfig settings is currently not set for any members",
+			"notSet": "Deze memberConfig instelling is momenteel niet gezet voor alle gebruikers.",
 			"current": {
 				"title": "Huidige Waarde",
-				"text": "This memberConfig is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
-				"notSet": "This memberConfig is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
+				"text": "Deze memberConfig is momenteel gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} default` om dit te resetten naar de standaard waarde.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te verwijderen.}}",
+				"notSet": "Deze memberConfig is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}MemberConfig {{ key }} {{ username }} <value>` om dit te zetten."
 			},
 			"previous": {
 				"title": "Vorige Waarde"
@@ -792,7 +795,8 @@
 					"user": "The user that should be unbanned.",
 					"reason": "The reason why this user is unbanned."
 				}
-			}
+			},
+			"done": "cmd.unban.done"
 		},
 		"mute": {
 			"missingRole": "Muted role not set or does not exist!",
@@ -813,7 +817,9 @@
 				"args": {
 					"user": "The user that should be unmuted."
 				}
-			}
+			},
+			"canNotUnmute": "cmd.unmute.canNotUnmute",
+			"done": "cmd.unmute.done"
 		},
 		"cleanShort": {
 			"self": {
@@ -1125,9 +1131,6 @@
 	"prompt": {
 		"canceled": "Canceled"
 	},
-	"command": {
-		"error": "There was an error executing the command."
-	},
 	"messages": {
 		"unknownInviter": "Unknown",
 		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
@@ -1136,5 +1139,19 @@
 	"captcha": {
 		"invalid": "Captcha didn't match, please try again."
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM"
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM",
+	"moderation": {
+		"strikes": {
+			"dm": "You have received **{{ amount }}** strikes for violating the **{{ type }}** rule in **{{ guild }}**"
+		},
+		"punishments": {
+			"dm": {
+				"warn": "moderation.punishments.dm.warn",
+				"amount": "moderation.punishments.dm.amount",
+				"mute": "moderation.punishments.dm.mute",
+				"kick": "moderation.punishments.dm.kick",
+				"ban": "moderation.punishments.dm.ban"
+			}
+		}
+	}
 }
