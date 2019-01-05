@@ -1,5 +1,4 @@
 import { IMClient } from '../client';
-
 import { Context } from '../commands/Command';
 
 export interface ResolverConstructor {
@@ -19,7 +18,7 @@ export abstract class Resolver {
 		previous: any[]
 	): Promise<any>;
 
-	public getHelp(context: Context): string {
+	public getHelp(context: Context, previous?: any[]): string {
 		return;
 	}
 }
