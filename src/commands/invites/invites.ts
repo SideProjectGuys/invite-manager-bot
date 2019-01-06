@@ -28,26 +28,26 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		let target = user ? user : message.author;
+		const target = user ? user : message.author;
 		const invites = await getInviteCounts(guild.id, target.id);
 
 		let textMessage = '';
 		if (target.id === message.author.id) {
 			textMessage = t('cmd.invites.amount.self', {
-				total: invites.total,
-				regular: invites.regular,
-				custom: invites.custom,
-				fake: invites.fake,
-				leave: invites.leave
+				total: `**${invites.total}**`,
+				regular: `**${invites.regular}**`,
+				custom: `**${invites.custom}**`,
+				fake: `**${invites.fake}**`,
+				leave: `**${invites.leave}**`
 			});
 		} else {
 			textMessage = t('cmd.invites.amount.other', {
 				target: `<@${target.id}>`,
-				total: invites.total,
-				regular: invites.regular,
-				custom: invites.custom,
-				fake: invites.fake,
-				leave: invites.leave
+				total: `**${invites.total}**`,
+				regular: `**${invites.regular}**`,
+				custom: `**${invites.custom}**`,
+				fake: `**${invites.fake}**`,
+				leave: `**${invites.leave}**`
 			});
 		}
 		textMessage += '\n';
@@ -79,7 +79,7 @@ export default class extends Command {
 					} = promoteInfo;
 
 					if (nextRank) {
-						let nextRankPointsDiff = nextRank.numInvites - invites.total;
+						const nextRankPointsDiff = nextRank.numInvites - invites.total;
 						if (message.author.id === target.id) {
 							textMessage += t('cmd.invites.nextRank.self', {
 								nextRankPointsDiff,

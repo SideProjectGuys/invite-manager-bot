@@ -3,12 +3,10 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { generateLeaderboard } from '../../functions/Leaderboard';
-import { NumberResolver, StringResolver } from '../../resolvers';
+import { DurationResolver, NumberResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-
-const chrono = require('chrono-node');
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
@@ -22,12 +20,20 @@ export default class extends Command {
 			aliases: ['top'],
 			args: [
 				{
-					name: 'page',
-					resolver: NumberResolver
+					name: 'duration',
+					resolver: DurationResolver
 				},
 				{
-					name: 'date',
-					resolver: StringResolver
+					name: 'page',
+					resolver: NumberResolver
+				}
+			],
+			flags: [
+				{
+					name: 'compare',
+					short: 'c',
+					resolver: DurationResolver,
+					valueRequired: true
 				}
 			],
 			group: CommandGroup.Invites,
@@ -37,30 +43,14 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[_page, _date]: [number, string],
-		flags: {},
+		[duration, _page]: [moment.Duration, number],
+		{ compare }: { compare: moment.Duration },
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		let from = moment();
-		let to = moment().subtract(1, 'day');
-		if (_date) {
-			const res = chrono.parse(_date);
-			if (!res[0]) {
-				return this.client.sendReply(message, t('cmd.leaderboard.invalidDate'));
-			}
-			if (res[0].start) {
-				from = moment(res[0].start.date());
-				to = from.clone().subtract(1, 'day');
-			}
-			if (res[0].end) {
-				to = moment.min(moment(), moment(res[0].end.date()));
-			} else if (!from.isSame(moment(), 'day')) {
-				to = moment();
-			}
-			const min = moment.min(from, to);
-			from = moment.max(from, to);
-			to = min;
-		}
+		const from = duration ? moment().subtract(duration) : moment.unix(0);
+		const comp = compare
+			? moment().subtract(compare)
+			: moment().subtract(1, 'day');
 
 		const hideLeft = settings.hideLeftMembersFromLeaderboard;
 
@@ -68,14 +58,18 @@ export default class extends Command {
 			guild,
 			hideLeft,
 			from,
-			to,
+			comp,
 			100
 		);
+
+		const fromText = t('cmd.leaderboard.from', {
+			from: from.format('YYYY/MM/DD - HH:mm:ss - z')
+		});
 
 		if (keys.length === 0) {
 			const embed = this.client.createEmbed({
 				title: t('cmd.leaderboard.title'),
-				description: t('cmd.leaderboard.noInvites')
+				description: fromText + '\n\n**' + t('cmd.leaderboard.noInvites') + '**'
 			});
 			return this.client.sendReply(message, embed);
 		}
@@ -87,16 +81,15 @@ export default class extends Command {
 
 		// Show the leaderboard as a paginated list
 		this.client.showPaginated(message, p, maxPage, page => {
-			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
-			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
+			const compText = t('cmd.leaderboard.comparedTo', {
+				to: comp.format('YYYY/MM/DD - HH:mm:ss - z')
+			});
 
-			let str = `${fromText}\n(${t('cmd.leaderboard.comparedTo', {
-				to: toText
-			})})\n\n`;
+			let str = `${fromText}\n(${compText})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
-			let lengths: number[] = [2, 1, 4, 1, 1, 1, 1];
+			const lengths: number[] = [2, 1, 4, 1, 1, 1, 1];
 
 			if (style === LeaderboardStyle.table) {
 				lines.push([
@@ -130,15 +123,15 @@ export default class extends Command {
 						posChange > 0
 							? upSymbol
 							: posChange < 0
-								? downSymbol
-								: neutralSymbol;
+							? downSymbol
+							: neutralSymbol;
 
 					const posText =
 						posChange > 0
 							? `+${posChange}`
 							: posChange === 0
-								? `±0`
-								: posChange;
+							? `±0`
+							: posChange;
 
 					const line = [
 						`${pos}.`,

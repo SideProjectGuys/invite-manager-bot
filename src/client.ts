@@ -226,9 +226,9 @@ export class IMClient extends Client {
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
-		const premium = await this.cache.premium.get(guild.id);
-
 		const channel = await this.getDMChannel(guild.ownerID);
+
+		const premium = await this.cache.premium.get(guild.id);
 
 		if (this.isPro && !premium) {
 			await channel

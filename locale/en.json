@@ -247,7 +247,7 @@
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
 					"title": "Cleared invites",
-					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)"
+					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)"
 				}
 			},
 			"joined": {
@@ -354,6 +354,7 @@
 			"title": "Leaderboard",
 			"invalidDate": "Invalid date: {{ date }}",
 			"noInvites": "No invites!",
+			"from": "Invites since {{{ from }}}",
 			"comparedTo": "changes compared to {{{ to }}}",
 			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"col": {

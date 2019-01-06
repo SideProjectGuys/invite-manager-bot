@@ -50,9 +50,7 @@ export default class extends Command {
 				guildId: guild.id,
 				generatedReason: [
 					CustomInvitesGeneratedReason.clear_regular,
-					CustomInvitesGeneratedReason.clear_custom,
-					CustomInvitesGeneratedReason.clear_fake,
-					CustomInvitesGeneratedReason.clear_leave
+					CustomInvitesGeneratedReason.clear_custom
 				],
 				...(memberId && { memberId })
 			}
@@ -93,8 +91,6 @@ export default class extends Command {
 		});
 
 		const regular: { [x: string]: number } = {};
-		const fake: { [x: string]: number } = {};
-		const leave: { [x: string]: number } = {};
 		const custom: { [x: string]: number } = {};
 
 		invs.forEach((inv: any) => {
@@ -103,22 +99,6 @@ export default class extends Command {
 			}
 			regular[inv.inviterId] += parseInt(inv.totalUses, 10);
 		});
-		customInvs
-			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.fake)
-			.forEach((inv: any) => {
-				if (!fake[inv.memberId]) {
-					fake[inv.memberId] = 0;
-				}
-				fake[inv.memberId] += parseInt(inv.totalAmount, 10);
-			});
-		customInvs
-			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.leave)
-			.forEach((inv: any) => {
-				if (!leave[inv.memberId]) {
-					leave[inv.memberId] = 0;
-				}
-				leave[inv.memberId] += parseInt(inv.totalAmount, 10);
-			});
 
 		const cleared: { [x: string]: boolean } = {};
 		const newInvs: CustomInviteAttributes[] = [];
@@ -131,30 +111,6 @@ export default class extends Command {
 				amount: -regular[memId],
 				reason: null,
 				generatedReason: CustomInvitesGeneratedReason.clear_regular
-			});
-			cleared[memId] = true;
-		});
-		Object.keys(fake).forEach(memId => {
-			newInvs.push({
-				id: null,
-				guildId: guild.id,
-				memberId: memId,
-				creatorId: null,
-				amount: -fake[memId],
-				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_fake
-			});
-			cleared[memId] = true;
-		});
-		Object.keys(leave).forEach(memId => {
-			newInvs.push({
-				id: null,
-				guildId: guild.id,
-				memberId: memId,
-				creatorId: null,
-				amount: -leave[memId],
-				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_leave
 			});
 			cleared[memId] = true;
 		});

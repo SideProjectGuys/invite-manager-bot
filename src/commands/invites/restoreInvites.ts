@@ -40,9 +40,7 @@ export default class extends Command {
 				guildId: guild.id,
 				generatedReason: [
 					CustomInvitesGeneratedReason.clear_regular,
-					CustomInvitesGeneratedReason.clear_custom,
-					CustomInvitesGeneratedReason.clear_fake,
-					CustomInvitesGeneratedReason.clear_leave
+					CustomInvitesGeneratedReason.clear_custom
 				],
 				...(memberId && { memberId })
 			}

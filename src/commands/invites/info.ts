@@ -1,5 +1,6 @@
 import { Message, User } from 'eris';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { EnumResolver, NumberResolver, UserResolver } from '../../resolvers';
@@ -7,6 +8,7 @@ import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	JoinInvalidatedReason,
 	joins,
 	members,
 	sequelize
@@ -100,7 +102,7 @@ export default class extends Command {
 					value: t('cmd.info.bonusInvites.more')
 				});
 			}
-			const maxPage = Math.ceil(invitedMembers.length / ENTRIES_PER_PAGE);
+			const maxPage = Math.ceil(bonusInvs.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
 			return this.client.showPaginated(message, p, maxPage, page => {
@@ -171,38 +173,40 @@ export default class extends Command {
 			raw: true
 		});
 
-		let regular = invCodes.reduce((acc, inv) => acc + inv.uses, 0);
-		let custom = 0;
+		const js = await joins.findAll({
+			attributes: [
+				'invalidatedReason',
+				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
+			],
+			where: {
+				guildId: guild.id,
+				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
+				invalidatedReason: { [Op.ne]: null }
+			},
+			group: ['invalidatedReason'],
+			raw: true
+		});
+
 		let fake = 0;
 		let leave = 0;
+		js.forEach((j: any) => {
+			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
+				fake -= Number(j.total);
+			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
+				leave -= Number(j.total);
+			}
+		});
+
+		let regular = invCodes.reduce((acc, inv) => acc + inv.uses, 0);
+		let custom = 0;
 
 		let clearRegular = 0;
 		let clearCustom = 0;
-		let clearFake = 0;
-		let clearLeave = 0;
 		customInvs.forEach(inv => {
 			switch (inv.generatedReason) {
 				case CustomInvitesGeneratedReason.clear_regular:
 					clearRegular += inv.amount;
 					regular += inv.amount;
-					break;
-
-				case CustomInvitesGeneratedReason.clear_fake:
-					clearFake += inv.amount;
-					fake += inv.amount;
-					break;
-
-				case CustomInvitesGeneratedReason.fake:
-					fake += inv.amount;
-					break;
-
-				case CustomInvitesGeneratedReason.clear_leave:
-					clearLeave += inv.amount;
-					leave += inv.amount;
-					break;
-
-				case CustomInvitesGeneratedReason.leave:
-					leave += inv.amount;
 					break;
 
 				case CustomInvitesGeneratedReason.clear_custom:
@@ -216,8 +220,8 @@ export default class extends Command {
 			}
 		});
 
-		const numTotal = regular + custom + fake + leave;
-		const clearTotal = clearRegular + clearCustom + clearFake + clearLeave;
+		const numTotal = regular + custom;
+		const clearTotal = clearRegular + clearCustom;
 
 		// Try and get the member if they are still in the guild
 		let member = guild.members.get(user.id);
@@ -286,9 +290,9 @@ export default class extends Command {
 			value: t('cmd.info.invites.clear.text', {
 				total: clearTotal,
 				regular: clearRegular,
-				custom: clearCustom,
-				fake: clearFake,
-				leave: clearLeave
+				custom: clearCustom
+				// fake: clearFake,
+				// leave: clearLeave
 			}),
 			inline: true
 		});

@@ -7,12 +7,16 @@ import {
 	Role,
 	TextChannel
 } from 'eris';
+import { Moment } from 'moment';
+import { Op } from 'sequelize';
 
 import { IMClient } from './client';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
 	inviteCodes,
+	JoinInvalidatedReason,
+	joins,
 	RankAssignmentStyle,
 	RankInstance,
 	ranks,
@@ -33,13 +37,28 @@ export async function getInviteCounts(
 	guildId: string,
 	memberId: string
 ): Promise<InviteCounts> {
-	const regularPromise = inviteCodes.sum('uses', {
+	const invCodes = await inviteCodes.findAll({
 		where: {
 			guildId: guildId,
-			inviterId: memberId
-		}
+			inviterId: memberId,
+			uses: { [Op.gt]: 0 }
+		},
+		raw: true
 	});
-	const customPromise = customInvites.findAll({
+	const js = await joins.findAll({
+		attributes: [
+			'invalidatedReason',
+			[sequelize.fn('COUNT', sequelize.col('id')), 'total']
+		],
+		where: {
+			guildId,
+			exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
+			invalidatedReason: { [Op.ne]: null }
+		},
+		group: ['invalidatedReason'],
+		raw: true
+	});
+	const customInvs = await customInvites.findAll({
 		attributes: [
 			'generatedReason',
 			[sequelize.fn('SUM', sequelize.col('amount')), 'total']
@@ -51,39 +70,37 @@ export async function getInviteCounts(
 		group: ['generatedReason'],
 		raw: true
 	});
-	const values = await Promise.all([regularPromise, customPromise]);
-
-	const reg = values[0] || 0;
-
-	const customUser = values[1].find(ci => ci.generatedReason === null) as any;
-	const ctm = customUser ? parseInt(customUser.total, 10) : 0;
 
 	const generated: { [x in CustomInvitesGeneratedReason]: number } = {
 		[CustomInvitesGeneratedReason.clear_regular]: 0,
-		[CustomInvitesGeneratedReason.clear_custom]: 0,
-		[CustomInvitesGeneratedReason.clear_fake]: 0,
-		[CustomInvitesGeneratedReason.clear_leave]: 0,
-		[CustomInvitesGeneratedReason.fake]: 0,
-		[CustomInvitesGeneratedReason.leave]: 0
+		[CustomInvitesGeneratedReason.clear_custom]: 0
 	};
 
-	values[1].forEach((ci: any) => {
+	let ctm = 0;
+	customInvs.forEach((ci: any) => {
 		if (ci.generatedReason === null) {
+			ctm += Number(ci.total);
 			return;
 		}
 		const reason = ci.generatedReason as CustomInvitesGeneratedReason;
-		const amount = parseInt(ci.total, 10);
+		const amount = Number(ci.total);
 		generated[reason] = amount;
 	});
 
-	const regular = reg + generated[CustomInvitesGeneratedReason.clear_regular];
+	let fake = 0;
+	let leave = 0;
+	js.forEach((j: any) => {
+		if (j.invalidatedReason === JoinInvalidatedReason.fake) {
+			fake -= Number(j.total);
+		} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
+			leave -= Number(j.total);
+		}
+	});
+
+	const regular =
+		invCodes.reduce((arr, i) => arr + i.uses, 0) +
+		generated[CustomInvitesGeneratedReason.clear_regular];
 	const custom = ctm + generated[CustomInvitesGeneratedReason.clear_custom];
-	const fake =
-		generated[CustomInvitesGeneratedReason.fake] +
-		generated[CustomInvitesGeneratedReason.clear_fake];
-	const leave =
-		generated[CustomInvitesGeneratedReason.leave] +
-		generated[CustomInvitesGeneratedReason.clear_leave];
 
 	return {
 		regular,
@@ -217,7 +234,7 @@ export async function promoteIfQualified(
 
 		if (style === RankAssignmentStyle.all) {
 			// Add all roles that we've reached to the member
-			let newRoles = reached.filter(r => !member.roles.includes(r.id));
+			const newRoles = reached.filter(r => !member.roles.includes(r.id));
 			// Roles that the member should have but we can't assign
 			shouldHave = newRoles.filter(r => tooHighRoles.includes(r));
 			// Assign only the roles that we can assign

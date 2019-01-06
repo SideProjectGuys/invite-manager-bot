@@ -63,11 +63,15 @@ type InvCacheType = {
 export async function generateLeaderboard(
 	guild: Guild,
 	hideLeft?: boolean,
-	from: moment.Moment = moment(),
-	to?: moment.Moment,
+	from?: moment.Moment,
+	compare?: moment.Moment,
 	limit: number = null
 ) {
 	const guildId = guild.id;
+
+	const fromCond = from
+		? `AND createdAt < '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'`
+		: '';
 
 	const codeInvs = await inviteCodes.findAll({
 		attributes: [
@@ -75,8 +79,7 @@ export async function generateLeaderboard(
 			[
 				sequelize.literal(
 					'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
-						`exactMatchCode = code AND deletedAt IS NULL AND ` +
-						`createdAt >= '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+						`exactMatchCode = code AND deletedAt IS NULL ${fromCond}))`
 				),
 				'totalJoins'
 			]
@@ -101,8 +104,13 @@ export async function generateLeaderboard(
 		attributes: attrs,
 		where: {
 			guildId,
-			createdAt: {
-				[Op.lte]: from
+			[Op.or]: {
+				createdAt: {
+					[Op.gte]: from
+				},
+				generatedReason: {
+					[Op.not]: null
+				}
 			}
 		},
 		group: 'customInvite.memberId',
@@ -163,15 +171,15 @@ export async function generateLeaderboard(
 		}
 	});
 
-	if (to) {
+	if (compare) {
 		const oldCodeInvs = await inviteCodes.findAll({
 			attributes: [
 				'inviterId',
 				[
 					sequelize.literal(
 						'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
-							`exactMatchCode = code AND deletedAt IS NULL AND ` +
-							`createdAt >= '${to.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+							`exactMatchCode = code AND deletedAt IS NULL ${fromCond} AND ` +
+							`createdAt >= '${compare.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
 					),
 					'totalJoins'
 				]
@@ -196,8 +204,13 @@ export async function generateLeaderboard(
 			attributes: attrs,
 			where: {
 				guildId,
-				createdAt: {
-					[Op.lte]: to
+				[Op.or]: {
+					createdAt: {
+						[Op.gte]: from
+					},
+					generatedReason: {
+						[Op.not]: null
+					}
 				}
 			},
 			group: ['memberId'],
@@ -280,8 +293,8 @@ export async function generateLeaderboard(
 			return diff !== 0
 				? diff
 				: invs[a].name
-					? invs[a].name.localeCompare(invs[b].name)
-					: 0;
+				? invs[a].name.localeCompare(invs[b].name)
+				: 0;
 		});
 
 	const lastJoinAndLeave = await members.findAll({
@@ -333,8 +346,8 @@ export async function generateLeaderboard(
 		return diff !== 0
 			? diff
 			: invs[a].name
-				? invs[a].name.localeCompare(invs[b].name)
-				: 0;
+			? invs[a].name.localeCompare(invs[b].name)
+			: 0;
 	});
 
 	return { keys, oldKeys, invs, stillInServer };

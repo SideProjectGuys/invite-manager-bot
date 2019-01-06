@@ -469,12 +469,17 @@ inviteCodes.hasMany(inviteCodeSettings, { foreignKey: 'inviteCode' });
 // ------------------------------------
 // Joins
 // ------------------------------------
+export enum JoinInvalidatedReason {
+	fake = 'fake',
+	leave = 'leave'
+}
 export interface JoinAttributes extends BaseAttributes {
 	id: number;
 	exactMatchCode: string;
 	possibleMatches: string;
 	guildId: string;
 	memberId: string;
+	invalidatedReason: JoinInvalidatedReason;
 }
 export interface JoinInstance
 	extends Sequelize.Instance<JoinAttributes>,
@@ -492,7 +497,8 @@ export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32)
+		memberId: Sequelize.STRING(32),
+		invalidatedReason: Sequelize.ENUM(Object.values(JoinInvalidatedReason))
 	},
 	{
 		timestamps: true,
@@ -569,11 +575,7 @@ joins.hasOne(leaves);
 // ------------------------------------
 export enum CustomInvitesGeneratedReason {
 	clear_regular = 'clear_regular',
-	clear_custom = 'clear_custom',
-	clear_fake = 'clear_fake',
-	clear_leave = 'clear_leave',
-	fake = 'fake',
-	leave = 'leave'
+	clear_custom = 'clear_custom'
 }
 export interface CustomInviteAttributes extends BaseAttributes {
 	id: number;
