@@ -444,7 +444,8 @@ export class Commands {
 					id: guild.id,
 					name: guild.name,
 					icon: guild.iconURL,
-					memberCount: guild.memberCount
+					memberCount: guild.memberCount,
+					banReason: null
 				},
 				{
 					id: message.author.id,
