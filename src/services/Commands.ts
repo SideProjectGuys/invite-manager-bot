@@ -391,7 +391,7 @@ export class Commands {
 						t('arguments.missingRequired', {
 							name: arg.name,
 							usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
-							help: resolver.getHelp(context)
+							help: resolver.getHelp(context, args)
 						})
 					);
 					return;
@@ -406,7 +406,7 @@ export class Commands {
 						usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
 						arg: arg.name,
 						error: e.message,
-						help: resolver.getHelp(context)
+						help: resolver.getHelp(context, args)
 					})
 				);
 				return;
@@ -444,7 +444,8 @@ export class Commands {
 					id: guild.id,
 					name: guild.name,
 					icon: guild.iconURL,
-					memberCount: guild.memberCount
+					memberCount: guild.memberCount,
+					banReason: null
 				},
 				{
 					id: message.author.id,

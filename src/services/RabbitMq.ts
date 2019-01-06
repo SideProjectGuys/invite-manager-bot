@@ -12,7 +12,8 @@ import {
 	JoinAttributes,
 	joins,
 	LeaveAttributes,
-	members
+	members,
+	SettingsKey
 } from '../sequelize';
 import { RabbitMqMember, ShardCommand } from '../types';
 import { FakeChannel, getInviteCounts, promoteIfQualified } from '../util';
@@ -143,6 +144,12 @@ export class RabbitMq {
 			console.error(
 				`Guild ${guild.id} has invalid ` +
 					`join message channel ${joinChannelId}`
+			);
+			// Reset the channel
+			this.client.cache.settings.setOne(
+				guild.id,
+				SettingsKey.joinMessageChannel,
+				null
 			);
 		}
 
@@ -346,6 +353,12 @@ export class RabbitMq {
 				`Guild ${guild.id} has invalid leave ` +
 					`message channel ${leaveChannelId}`
 			);
+			// Reset the channel
+			this.client.cache.settings.setOne(
+				guild.id,
+				SettingsKey.leaveMessageChannel,
+				null
+			);
 		}
 
 		// Exit if we can't find the join
@@ -509,7 +522,7 @@ export class RabbitMq {
 			case ShardCommand.DIAGNOSE:
 				if (!guild) {
 					return sendResponse({
-						error: 'Guild not found'
+						error: `Guild ${guildId} not found`
 					});
 				}
 
@@ -559,8 +572,11 @@ export class RabbitMq {
 					.getRESTUser(guild.ownerID)
 					.catch(() => undefined);
 
+				const premium = await this.client.cache.premium.get(guildId);
+
 				sendResponse({
 					owner,
+					premium,
 					settings: sets,
 					perms,
 					joinChannelPerms,
