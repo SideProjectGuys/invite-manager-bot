@@ -16,7 +16,8 @@ import {
 	RankAssignmentStyle,
 	RankInstance,
 	ranks,
-	sequelize
+	sequelize,
+	SettingsKey
 } from './sequelize';
 import { Permissions } from './types';
 
@@ -195,6 +196,11 @@ export async function promoteIfQualified(
 				console.error(
 					`Guild ${guild.id} has invalid ` +
 						`rank announcement channel ${rankChannelId}`
+				);
+				client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.rankAnnouncementChannel,
+					null
 				);
 			}
 		}
