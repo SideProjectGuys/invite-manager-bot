@@ -6,7 +6,6 @@ import { IMClient } from '../../client';
 import { EnumResolver, NumberResolver, UserResolver } from '../../resolvers';
 import {
 	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
@@ -66,7 +65,8 @@ export default class extends Command {
 				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
 			],
 			where: {
-				guildId: guild.id
+				guildId: guild.id,
+				invalidatedReason: null
 			},
 			group: [sequelize.col('memberId')],
 			order: [sequelize.literal('MAX(join.createdAt) DESC')],
@@ -92,7 +92,7 @@ export default class extends Command {
 			raw: true
 		});
 
-		const bonusInvs = customInvs.filter(inv => inv.generatedReason === null);
+		const bonusInvs = customInvs.filter(ci => !ci.cleared);
 
 		if (details === InfoDetails.bonus) {
 			// Exit if we have no bonus invites
@@ -176,6 +176,7 @@ export default class extends Command {
 		const js = await joins.findAll({
 			attributes: [
 				'invalidatedReason',
+				'cleared',
 				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
 			],
 			where: {
@@ -183,44 +184,48 @@ export default class extends Command {
 				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
 				invalidatedReason: { [Op.ne]: null }
 			},
-			group: ['invalidatedReason'],
+			group: ['invalidatedReason', 'cleared'],
 			raw: true
 		});
 
 		let fake = 0;
+		let clearFake = 0;
 		let leave = 0;
+		let clearLeave = 0;
 		js.forEach((j: any) => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				fake -= Number(j.total);
+				if (j.cleared) {
+					clearFake += Number(j.total);
+				} else {
+					fake -= Number(j.total);
+				}
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				leave -= Number(j.total);
+				if (j.cleared) {
+					clearLeave += Number(j.total);
+				} else {
+					leave -= Number(j.total);
+				}
 			}
 		});
 
-		let regular = invCodes.reduce((acc, inv) => acc + inv.uses, 0);
-		let custom = 0;
-
+		let regular = 0;
 		let clearRegular = 0;
+		invCodes.forEach(ic => {
+			clearRegular += ic.clearedAmount;
+			regular += ic.uses - ic.clearedAmount;
+		});
+
+		let custom = 0;
 		let clearCustom = 0;
-		customInvs.forEach(inv => {
-			switch (inv.generatedReason) {
-				case CustomInvitesGeneratedReason.clear_regular:
-					clearRegular += inv.amount;
-					regular += inv.amount;
-					break;
-
-				case CustomInvitesGeneratedReason.clear_custom:
-					clearCustom += inv.amount;
-					custom += inv.amount;
-					break;
-
-				default:
-					custom += inv.amount;
-					break;
+		customInvs.forEach(ci => {
+			if (ci.cleared) {
+				clearCustom += ci.amount;
+			} else {
+				custom += ci.amount;
 			}
 		});
 
-		const numTotal = regular + custom;
+		const numTotal = regular + custom + fake + leave;
 		const clearTotal = clearRegular + clearCustom;
 
 		// Try and get the member if they are still in the guild
@@ -290,9 +295,9 @@ export default class extends Command {
 			value: t('cmd.info.invites.clear.text', {
 				total: clearTotal,
 				regular: clearRegular,
-				custom: clearCustom
-				// fake: clearFake,
-				// leave: clearLeave
+				custom: clearCustom,
+				fake: clearFake,
+				leave: clearLeave
 			}),
 			inline: true
 		});

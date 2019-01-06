@@ -3,7 +3,6 @@ import { Message } from 'eris';
 import { IMClient } from '../../client';
 import {
 	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	joins,
 	leaves,

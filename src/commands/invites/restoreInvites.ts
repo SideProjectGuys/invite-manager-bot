@@ -1,11 +1,14 @@
 import { Message, User } from 'eris';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { UserResolver } from '../../resolvers';
 import {
 	customInvites,
-	CustomInvitesGeneratedReason,
-	LogAction
+	inviteCodes,
+	joins,
+	LogAction,
+	sequelize
 } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -35,25 +38,50 @@ export default class extends Command {
 	): Promise<any> {
 		const memberId = user ? user.id : null;
 
-		const num = await customInvites.destroy({
-			where: {
-				guildId: guild.id,
-				generatedReason: [
-					CustomInvitesGeneratedReason.clear_regular,
-					CustomInvitesGeneratedReason.clear_custom
-				],
-				...(memberId && { memberId })
+		await inviteCodes.update(
+			{
+				clearedAmount: 0
+			},
+			{
+				where: {
+					guildId: guild.id,
+					inviterId: memberId ? memberId : { [Op.ne]: null }
+				}
 			}
-		});
+		);
+
+		await joins.update(
+			{
+				cleared: false
+			},
+			{
+				where: {
+					guildId: guild.id,
+					...(memberId && {
+						exactMatchCode: (await inviteCodes.findAll({
+							where: { guildId: guild.id, inviterId: memberId }
+						})).map(ic => ic.code)
+					})
+				}
+			}
+		);
+
+		await customInvites.update(
+			{
+				cleared: false
+			},
+			{
+				where: {
+					guildId: guild.id,
+					...(memberId && { memberId })
+				}
+			}
+		);
 
 		this.client.logAction(guild, message, LogAction.restoreInvites, {
-			...(memberId && { targetId: memberId }),
-			num
+			...(memberId && { targetId: memberId })
 		});
 
-		return this.client.sendReply(
-			message,
-			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
-		);
+		return this.client.sendReply(message, t('cmd.restoreInvites.done'));
 	}
 }

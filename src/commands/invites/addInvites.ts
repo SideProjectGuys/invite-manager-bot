@@ -61,7 +61,7 @@ export default class extends Command {
 			creatorId: message.author.id,
 			amount,
 			reason,
-			generatedReason: null
+			cleared: false
 		});
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {

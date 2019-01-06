@@ -7,8 +7,6 @@ import { Op } from 'sequelize';
 import { IMClient } from '../client';
 import {
 	channels,
-	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinAttributes,
 	JoinInvalidatedReason,

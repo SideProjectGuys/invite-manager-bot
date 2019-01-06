@@ -7,13 +7,11 @@ import {
 	Role,
 	TextChannel
 } from 'eris';
-import { Moment } from 'moment';
 import { Op } from 'sequelize';
 
 import { IMClient } from './client';
 import {
 	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
@@ -37,55 +35,63 @@ export async function getInviteCounts(
 	guildId: string,
 	memberId: string
 ): Promise<InviteCounts> {
-	const invCodes = await inviteCodes.findAll({
+	const inviteCodePromise = inviteCodes.findOne({
+		attributes: [
+			[
+				sequelize.fn(
+					'SUM',
+					sequelize.col('uses') + ' - ' + sequelize.col('clearedAmount')
+				),
+				'total'
+			]
+		],
 		where: {
 			guildId: guildId,
 			inviterId: memberId,
-			uses: { [Op.gt]: 0 }
+			uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
 		},
 		raw: true
 	});
-	const js = await joins.findAll({
+	const joinsPromise = joins.findAll({
 		attributes: [
 			'invalidatedReason',
 			[sequelize.fn('COUNT', sequelize.col('id')), 'total']
 		],
 		where: {
 			guildId,
-			exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
-			invalidatedReason: { [Op.ne]: null }
+			invalidatedReason: { [Op.ne]: null },
+			cleared: false
 		},
+		include: [
+			{
+				attributes: [],
+				model: inviteCodes,
+				as: 'exactMatch',
+				required: true,
+				where: { inviterId: memberId }
+			}
+		],
 		group: ['invalidatedReason'],
 		raw: true
 	});
-	const customInvs = await customInvites.findAll({
-		attributes: [
-			'generatedReason',
-			[sequelize.fn('SUM', sequelize.col('amount')), 'total']
-		],
+	const customInvitesPromise = customInvites.findOne({
+		attributes: [[sequelize.fn('SUM', sequelize.col('amount')), 'total']],
 		where: {
 			guildId: guildId,
-			memberId: memberId
+			memberId: memberId,
+			cleared: false
 		},
-		group: ['generatedReason'],
 		raw: true
 	});
 
-	const generated: { [x in CustomInvitesGeneratedReason]: number } = {
-		[CustomInvitesGeneratedReason.clear_regular]: 0,
-		[CustomInvitesGeneratedReason.clear_custom]: 0
-	};
+	const [invCode, js, customInvs] = await Promise.all([
+		inviteCodePromise,
+		joinsPromise,
+		customInvitesPromise
+	]);
 
-	let ctm = 0;
-	customInvs.forEach((ci: any) => {
-		if (ci.generatedReason === null) {
-			ctm += Number(ci.total);
-			return;
-		}
-		const reason = ci.generatedReason as CustomInvitesGeneratedReason;
-		const amount = Number(ci.total);
-		generated[reason] = amount;
-	});
+	const regular = Number((invCode as any).total);
+	const custom = Number((customInvs as any).total);
 
 	let fake = 0;
 	let leave = 0;
@@ -96,11 +102,6 @@ export async function getInviteCounts(
 			leave -= Number(j.total);
 		}
 	});
-
-	const regular =
-		invCodes.reduce((arr, i) => arr + i.uses, 0) +
-		generated[CustomInvitesGeneratedReason.clear_regular];
-	const custom = ctm + generated[CustomInvitesGeneratedReason.clear_custom];
 
 	return {
 		regular,

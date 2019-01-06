@@ -1,13 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	inviteCodes,
-	joins,
-	sequelize
-} from '../../sequelize';
+import { customInvites, inviteCodes, joins, sequelize } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -28,6 +22,15 @@ export default class extends Command {
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
+		await joins.update(
+			{
+				cleared: false
+			},
+			{
+				where: { guildId: guild.id }
+			}
+		);
+
 		const js = await joins.findAll({
 			attributes: [
 				'memberId',

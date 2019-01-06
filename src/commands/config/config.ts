@@ -2,12 +2,7 @@ import { Embed, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
-import {
-	customInvites,
-	CustomInvitesGeneratedReason,
-	LogAction,
-	SettingsKey
-} from '../../sequelize';
+import { customInvites, LogAction, SettingsKey } from '../../sequelize';
 import { beautify, canClear, settingsInfo } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
@@ -283,13 +278,7 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete old duplicate removals
-				return async () =>
-					await customInvites.destroy({
-						where: {
-							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.fake
-						}
-					});
+				// TODO
 			}
 		}
 
@@ -302,13 +291,7 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete old leave removals
-				return async () =>
-					await customInvites.destroy({
-						where: {
-							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.leave
-						}
-					});
+				// TODO
 			}
 		}
 
