@@ -3,6 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
@@ -191,7 +192,8 @@ export class IMClient extends Client {
 		await this.cmds.init();
 
 		const gs = await guilds.findAll({
-			where: { id: this.guilds.map(g => g.id) }
+			where: { id: this.guilds.map(g => g.id), banReason: { [Op.ne]: null } },
+			paranoid: false
 		});
 
 		// Do some checks for all guilds
@@ -199,7 +201,7 @@ export class IMClient extends Client {
 			const dbGuild = gs.find(g => g.id === guild.id);
 
 			// Check if the guild was banned
-			if (dbGuild.banReason !== null) {
+			if (dbGuild) {
 				const dmChannel = await this.getDMChannel(guild.ownerID);
 				await dmChannel
 					.createMessage(
@@ -253,7 +255,7 @@ export class IMClient extends Client {
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
 
-		const dbGuild = await guilds.findById(guild.id, { paranoid: true });
+		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
 		if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(
