@@ -146,7 +146,7 @@ export default class extends Command {
 
 				if (!guildId) {
 					embed.description = t('cmd.premium.activate.noGuild');
-				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR || Permissions.MANAGE_GUILD)) {
+				} else if ((!message.member.permission.has(Permissions.ADMINISTRATOR)) || (!message.member.permission.has(Permissions.MANAGE_GUILD))) {
 					embed.description = t('cmd.premium.premium.adminOrManageGuildOnly');
 				} else if (isPremium) {
 					embed.description = t('cmd.premium.activate.currentlyActive');
