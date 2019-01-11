@@ -70,6 +70,7 @@ export default class extends Command {
 			return this.client.sendReply(message, t('cmd.subtractLeaves.none'));
 		}
 
+		/*
 		// Delete old duplicate removals
 		await customInvites.destroy({
 			where: {
@@ -100,5 +101,6 @@ export default class extends Command {
 			message,
 			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);
+		*/
 	}
 }

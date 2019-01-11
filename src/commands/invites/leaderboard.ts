@@ -32,8 +32,7 @@ export default class extends Command {
 				{
 					name: 'compare',
 					short: 'c',
-					resolver: DurationResolver,
-					valueRequired: true
+					resolver: DurationResolver
 				}
 			],
 			group: CommandGroup.Invites,
@@ -140,7 +139,7 @@ export default class extends Command {
 						`${inv.total} `,
 						`${inv.regular} `,
 						`${inv.custom} `,
-						`${inv.fake} `,
+						`${inv.fakes} `,
 						`${inv.leaves} `
 					];
 

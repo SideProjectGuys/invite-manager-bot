@@ -189,20 +189,14 @@ export default class extends Command {
 		});
 
 		let fake = 0;
-		let clearFake = 0;
 		let leave = 0;
-		let clearLeave = 0;
 		js.forEach((j: any) => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				if (j.cleared) {
-					clearFake += Number(j.total);
-				} else {
+				if (!j.cleared) {
 					fake -= Number(j.total);
 				}
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				if (j.cleared) {
-					clearLeave += Number(j.total);
-				} else {
+				if (!j.cleared) {
 					leave -= Number(j.total);
 				}
 			}
@@ -295,9 +289,7 @@ export default class extends Command {
 			value: t('cmd.info.invites.clear.text', {
 				total: clearTotal,
 				regular: clearRegular,
-				custom: clearCustom,
-				fake: clearFake,
-				leave: clearLeave
+				custom: clearCustom
 			}),
 			inline: true
 		});

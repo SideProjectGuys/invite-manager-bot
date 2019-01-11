@@ -65,7 +65,7 @@ export default class extends Command {
 			code => !codes.find(c => c.code === code.code)
 		);
 
-		const newDbCodes = newCodes.map(code => ({
+		const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
 			code: code.code,
 			channelId: code.channel ? code.channel.id : null,
 			maxAge: code.maxAge,
@@ -73,7 +73,8 @@ export default class extends Command {
 			uses: code.uses,
 			temporary: code.temporary,
 			guildId: code.guild.id,
-			inviterId: code.inviter ? code.inviter.id : null
+			inviterId: code.inviter ? code.inviter.id : null,
+			clearedAmount: 0
 		}));
 
 		// Insert any new codes that haven't been used yet

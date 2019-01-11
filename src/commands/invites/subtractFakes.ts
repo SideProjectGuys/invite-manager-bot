@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { customInvites, inviteCodes, joins, sequelize } from '../../sequelize';
+import { inviteCodes, joins, sequelize } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -56,6 +56,7 @@ export default class extends Command {
 			return this.client.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
+		/*
 		// Delete old duplicate removals
 		await customInvites.destroy({
 			where: {
@@ -85,5 +86,6 @@ export default class extends Command {
 			message,
 			t('cmd.subtractFakes.done', { total })
 		);
+		*/
 	}
 }

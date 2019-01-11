@@ -1,8 +1,9 @@
 import { Message, User } from 'eris';
+import { Moment } from 'moment';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import { BooleanResolver, UserResolver } from '../../resolvers';
+import { BooleanResolver, DateResolver, UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	inviteCodes,
@@ -20,15 +21,22 @@ export default class extends Command {
 			aliases: ['clear-invites'],
 			args: [
 				{
-					name: 'clearBonus',
-					resolver: BooleanResolver
-				},
-				{
 					name: 'user',
 					resolver: UserResolver
 				}
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
+			flags: [
+				{
+					name: 'date',
+					resolver: DateResolver,
+					short: 'd'
+				},
+				{
+					name: 'clearBonus',
+					resolver: BooleanResolver,
+					short: 'cb'
+				}
+			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			strict: true
@@ -37,11 +45,23 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[clearBonus, user]: [boolean, User],
-		flags: {},
+		[user]: [User],
+		{ date, clearBonus }: { date: Moment; clearBonus: boolean },
 		{ guild, t }: Context
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;
+
+		await inviteCodes.update(
+			{
+				clearedAmount: sequelize.col('uses') as any
+			},
+			{
+				where: {
+					guildId: guild.id,
+					inviterId: memberId ? memberId : { [Op.ne]: null }
+				}
+			}
+		);
 
 		await inviteCodes.update(
 			{

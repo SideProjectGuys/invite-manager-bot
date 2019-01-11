@@ -56,7 +56,7 @@ export default class extends Command {
 								`${i.total},` +
 								`${i.regular},` +
 								`${i.custom},` +
-								`${i.fake},` +
+								`${i.fakes},` +
 								`${i.leaves},` +
 								`\n`;
 						});

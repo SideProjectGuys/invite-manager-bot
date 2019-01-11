@@ -37,13 +37,7 @@ export async function getInviteCounts(
 ): Promise<InviteCounts> {
 	const inviteCodePromise = inviteCodes.findOne({
 		attributes: [
-			[
-				sequelize.fn(
-					'SUM',
-					sequelize.col('uses') + ' - ' + sequelize.col('clearedAmount')
-				),
-				'total'
-			]
+			[sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']
 		],
 		where: {
 			guildId: guildId,
