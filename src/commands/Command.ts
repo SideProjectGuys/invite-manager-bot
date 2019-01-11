@@ -17,7 +17,6 @@ export interface Flag {
 	name: string;
 	resolver: Resolver | ResolverConstructor;
 	short?: string;
-	valueRequired?: boolean;
 }
 
 export interface CommandOptions {
@@ -84,12 +83,7 @@ export abstract class Command {
 			this.flagResolvers.set(flag.name, res);
 			delete flag.resolver;
 
-			const val =
-				res instanceof BooleanResolver
-					? ''
-					: flag.valueRequired
-					? '=value'
-					: '[=value]';
+			const val = res instanceof BooleanResolver ? '' : '=value';
 			const short = flag.short ? `-${flag.short}${val.replace('=', ' ')}|` : '';
 			this.usage += `[${short}--${flag.name}${val}] `;
 		});
