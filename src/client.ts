@@ -3,6 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
@@ -190,17 +191,43 @@ export class IMClient extends Client {
 		await this.rabbitmq.init();
 		await this.cmds.init();
 
-		// Disable guilds of pro bot
-		this.guilds.forEach(async g => {
+		const gs = await guilds.findAll({
+			where: { id: this.guilds.map(g => g.id), banReason: { [Op.ne]: null } },
+			paranoid: false
+		});
+
+		// Do some checks for all guilds
+		this.guilds.forEach(async guild => {
+			const dbGuild = gs.find(g => g.id === guild.id);
+
+			// Check if the guild was banned
+			if (dbGuild) {
+				const dmChannel = await this.getDMChannel(guild.ownerID);
+				await dmChannel
+					.createMessage(
+						'Hi! Thanks for inviting me to your server `' +
+							guild.name +
+							'`!\n\n' +
+							'It looks like this guild was banned from using the InviteManager bot.\n' +
+							'If you believe this was a mistake please contact staff on our support server.\n\n' +
+							config.botSupport +
+							'\n\n' +
+							'I will be leaving your server now, thanks for having me!'
+					)
+					.catch(() => undefined);
+				await guild.leave();
+				return;
+			}
+
 			if (this.isPro) {
 				// If this is the pro bot then leave any guilds that aren't pro
-				const premium = await this.cache.premium.get(g.id);
+				const premium = await this.cache.premium.get(guild.id);
 				if (!premium) {
-					const dmChannel = await this.getDMChannel(g.ownerID);
+					const dmChannel = await this.getDMChannel(guild.ownerID);
 					await dmChannel
 						.createMessage(
 							'Hi! Thanks for inviting me to your server `' +
-								g.name +
+								guild.name +
 								'`!\n\n' +
 								'I am the pro version of InviteManager, and only available to people ' +
 								'that support me on Patreon with the pro tier.\n\n' +
@@ -208,11 +235,11 @@ export class IMClient extends Client {
 								'I will be leaving your server now, thanks for having me!'
 						)
 						.catch(() => undefined);
-					await g.leave();
+					await guild.leave();
 				}
-			} else if (g.members.has(this.config.proBotId)) {
+			} else if (guild.members.has(this.config.proBotId)) {
 				// Otherwise disable the guild if the pro bot is in it
-				this.disabledGuilds.add(g.id);
+				this.disabledGuilds.add(guild.id);
 			}
 		});
 
@@ -227,6 +254,24 @@ export class IMClient extends Client {
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
+
+		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
+		if (dbGuild.banReason !== null) {
+			await channel
+				.createMessage(
+					'Hi! Thanks for inviting me to your server `' +
+						guild.name +
+						'`!\n\n' +
+						'It looks like this guild was banned from using the InviteManager bot.\n' +
+						'If you believe this was a mistake please contact staff on our support server.\n\n' +
+						config.botSupport +
+						'\n\n' +
+						'I will be leaving your server now, thanks for having me!'
+				)
+				.catch(() => undefined);
+			await guild.leave();
+			return;
+		}
 
 		const premium = await this.cache.premium.get(guild.id);
 
@@ -362,7 +407,8 @@ export class IMClient extends Client {
 				id: guild.id,
 				name: guild.name,
 				icon: guild.iconURL,
-				memberCount: guild.memberCount
+				memberCount: guild.memberCount,
+				banReason: null
 			},
 			{
 				id: message.author.id,

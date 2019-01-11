@@ -58,6 +58,7 @@ export interface GuildAttributes extends BaseAttributes {
 	name: string;
 	icon: string;
 	memberCount: number;
+	banReason: string;
 }
 export interface GuildInstance
 	extends Sequelize.Instance<GuildAttributes>,
@@ -87,7 +88,8 @@ export const guilds = sequelize.define<GuildInstance, GuildAttributes>(
 		id: { type: Sequelize.STRING(32), primaryKey: true },
 		name: Sequelize.STRING,
 		icon: Sequelize.STRING,
-		memberCount: Sequelize.INTEGER
+		memberCount: Sequelize.INTEGER,
+		banReason: { type: Sequelize.STRING, allowNull: true }
 	},
 	{
 		timestamps: true,
