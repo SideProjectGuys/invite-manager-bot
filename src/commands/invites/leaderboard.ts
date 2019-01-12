@@ -62,7 +62,7 @@ export default class extends Command {
 		);
 
 		const fromText = t('cmd.leaderboard.from', {
-			from: from.format('YYYY/MM/DD - HH:mm:ss - z')
+			from: `**${from.locale(settings.lang).fromNow()}**`
 		});
 
 		if (keys.length === 0) {
@@ -81,7 +81,7 @@ export default class extends Command {
 		// Show the leaderboard as a paginated list
 		this.client.showPaginated(message, p, maxPage, page => {
 			const compText = t('cmd.leaderboard.comparedTo', {
-				to: comp.format('YYYY/MM/DD - HH:mm:ss - z')
+				to: `**${comp.locale(settings.lang).fromNow()}**`
 			});
 
 			let str = `${fromText}\n(${compText})\n\n`;
