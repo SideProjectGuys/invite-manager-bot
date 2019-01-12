@@ -544,8 +544,7 @@
 			}
 		},
 		"subtractFakes": {
-			"noInvites": "There have been no invites so far!",
-			"done": "Removed {{ total }} fake invites!",
+			"done": "Removed fake invites!",
 			"none": "No fake invites found.",
 			"self": {
 				"description": "Remove fake invites from all users."
@@ -565,8 +564,7 @@
 			"unusedViolations": "Unused violations"
 		},
 		"subtractLeaves": {
-			"noLeaves": "There have been no leaves so far!",
-			"done": "Removed {{ total }} leaves!",
+			"done": "Removed leaves!",
 			"none": "No leaves found.",
 			"self": {
 				"description": "Remove leaves from all users"
