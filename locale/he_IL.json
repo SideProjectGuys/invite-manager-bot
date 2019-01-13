@@ -6,23 +6,23 @@
 			"invalid": "Not a valid value."
 		},
 		"user": {
-			"notFound": "User was not found.",
+			"notFound": "משתמש לא נמצא.",
 			"multiple": "Multiple matching users found. {{{ users }}}"
 		},
 		"number": {
-			"invalid": "Not a valid number."
+			"invalid": "מספר לא תקף."
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
+			"notFound": "הפקודה לא נמצאה.",
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
+			"notFound": "ערוץ לא נמצא.",
 			"multiple": "Multiple matching channels found. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
+			"notFound": "התפקיד לא נמצא.",
 			"multiple": "Multiple matching roles found. {{{ roles }}}"
 		},
 		"boolean": {
@@ -35,13 +35,13 @@
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": "Support Discord"
+			"title": "תתמוך בDiscord"
 		},
 		"invite": {
-			"title": "Add bot to your server"
+			"title": "תוסיף את הבוט לשרת שלך"
 		},
 		"website": {
-			"title": "Bot website"
+			"title": "אתר הבוט"
 		},
 		"patreon": {
 			"title": "Patreon"
@@ -50,7 +50,7 @@
 	"cmd": {
 		"error": "There was an error executing the command.",
 		"addInvites": {
-			"zero": "Adding zero invites doesn't really make sense...",
+			"zero": "להוסיף אפס הזמנות זה לא ממש הגיוני...",
 			"amount": {
 				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
 				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
@@ -59,7 +59,7 @@
 				"args": {
 					"user": "The user that will receive/lose the bonus invites.",
 					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
-					"reason": "The reason for adding/removing the invites."
+					"reason": "הסיבה בשביל הוספת\\מחיקת ההזמנת"
 				},
 				"description": "Adds/Removes invites to/from a member."
 			}
@@ -74,18 +74,18 @@
 					"invites": "The amount of invites needed to reach the rank.",
 					"info": "A description that users will see so they know more about this rank."
 				},
-				"description": "Add a new rank."
+				"description": "תוסיף דרגה חדשה."
 			}
 		},
 		"ban": {
 			"error": "There was an error banning this user:\n{{ error }}",
 			"done": "The user was successfully banned.",
-			"canNotBan": "I cannot ban this user.",
+			"canNotBan": "אין ביכולתי לגרש את המשתמש הזה.",
 			"self": {
 				"args": {
-					"user": "User to ban.",
+					"user": "משתמש לגרש.",
 					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned."
+					"reason": "למה המשתמש גורש."
 				},
 				"description": "Ban a member from the server."
 			},
@@ -94,8 +94,8 @@
 		"botInfo": {
 			"version": "Version",
 			"uptime": "Uptime",
-			"guilds": "Guilds",
-			"members": "Members",
+			"guilds": "גילדות",
+			"members": "חברים",
 			"shards": {
 				"current": "Current Shard",
 				"total": "Total Shards"
@@ -104,7 +104,7 @@
 				"description": "Get general information about the bot."
 			},
 			"premium": {
-				"title": "Premium",
+				"title": "פרימיום",
 				"active": "This server has an **active premium** subscription.",
 				"none": "This server currently **does not** have premium."
 			}
@@ -116,21 +116,21 @@
 				"total": "Strikes Total"
 			},
 			"punishments": {
-				"title": "Punishments",
+				"title": "הענשות",
 				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
 				"total": "Punishments Total"
 			},
 			"noHistory": "User does not have any history.",
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "משתמש לבדוק."
 				},
 				"description": "Check violation and punishment history of a user."
 			}
 		},
 		"clean": {
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
-			"error": "Error",
+			"error": "שגיאה",
 			"title": "Deleted Messages",
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
 			"self": {
@@ -1152,11 +1152,6 @@
 				"kick": "moderation.punishments.dm.kick",
 				"ban": "moderation.punishments.dm.ban"
 			}
-		}
-	},
-	"settings": {
-		"lang": {
-			"description": "settings.lang.description"
 		}
 	}
 }

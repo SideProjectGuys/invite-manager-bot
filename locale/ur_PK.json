@@ -1153,10 +1153,5 @@
 				"ban": "moderation.punishments.dm.ban"
 			}
 		}
-	},
-	"settings": {
-		"lang": {
-			"description": "settings.lang.description"
-		}
 	}
 }
