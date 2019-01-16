@@ -1,7 +1,7 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { UserResolver } from '../../resolvers';
+import { BasicUser, UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -29,7 +29,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user]: [User],
+		[user]: [BasicUser],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {

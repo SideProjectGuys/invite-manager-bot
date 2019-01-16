@@ -1,7 +1,8 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { UserResolver } from '../../resolvers';
+import { BasicUser, UserResolver } from '../../resolvers';
+import { members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { getInviteCounts, promoteIfQualified } from '../../util';
 import { Command, Context } from '../Command';
@@ -24,11 +25,15 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user]: [User],
+		[user]: [BasicUser],
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		let target = user ? user : message.author;
+		const target = user
+			? user
+			: await members
+					.findOne({ where: { id: message.author.id }, raw: true })
+					.then(u => ({ ...u, username: u.name }));
 		const invites = await getInviteCounts(guild.id, target.id);
 
 		let textMessage = '';
@@ -52,81 +57,80 @@ export default class extends Command {
 		}
 		textMessage += '\n';
 
-		if (!target.bot) {
-			let targetMember = guild.members.get(target.id);
-			if (!targetMember) {
-				targetMember = await guild.getRESTMember(target.id);
-			}
+		let targetMember = guild.members.get(target.id);
+		if (!targetMember) {
+			targetMember = await guild
+				.getRESTMember(target.id)
+				.catch(() => undefined);
+		}
+		// Only process if the user is still in the guild
+		if (targetMember && !targetMember.bot) {
+			const promoteInfo = await promoteIfQualified(
+				this.client,
+				guild,
+				targetMember,
+				me,
+				invites.total
+			);
 
-			// Only process if the user is still in the guild
-			if (targetMember) {
-				const promoteInfo = await promoteIfQualified(
-					this.client,
-					guild,
-					targetMember,
-					me,
-					invites.total
-				);
+			if (promoteInfo) {
+				const {
+					nextRank,
+					nextRankName,
+					numRanks,
+					shouldHave,
+					shouldNotHave,
+					dangerous
+				} = promoteInfo;
 
-				if (promoteInfo) {
-					const {
-						nextRank,
-						nextRankName,
-						numRanks,
-						shouldHave,
-						shouldNotHave,
-						dangerous
-					} = promoteInfo;
-
-					if (nextRank) {
-						let nextRankPointsDiff = nextRank.numInvites - invites.total;
+				if (nextRank) {
+					const nextRankPointsDiff = nextRank.numInvites - invites.total;
+					if (message.author.id === target.id) {
+						textMessage += t('cmd.invites.nextRank.self', {
+							nextRankPointsDiff,
+							nextRankName
+						});
+					} else {
+						textMessage += t('cmd.invites.nextRank.other', {
+							target: `<@${target.id}>`,
+							nextRankPointsDiff,
+							nextRankName
+						});
+					}
+					textMessage += '\n';
+				} else {
+					if (numRanks > 0) {
 						if (message.author.id === target.id) {
-							textMessage += t('cmd.invites.nextRank.self', {
-								nextRankPointsDiff,
-								nextRankName
-							});
+							textMessage += t('cmd.invites.highestRank.self');
 						} else {
-							textMessage += t('cmd.invites.nextRank.other', {
-								target: `<@${target.id}>`,
-								nextRankPointsDiff,
-								nextRankName
+							textMessage += t('cmd.invites.highestRank.other', {
+								target: `<@${target.id}>`
 							});
 						}
 						textMessage += '\n';
-					} else {
-						if (numRanks > 0) {
-							if (message.author.id === target.id) {
-								textMessage += t('cmd.invites.highestRank.self');
-							} else {
-								textMessage += t('cmd.invites.highestRank.other', {
-									target: `<@${target.id}>`
-								});
-							}
-							textMessage += '\n';
-						}
 					}
+				}
 
-					if (shouldHave.length > 0) {
-						textMessage +=
-							'\n\n' +
-							t('roles.shouldHave', {
-								shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
-							});
-					}
-					if (shouldNotHave.length > 0) {
-						textMessage +=
-							'\n\n' +
-							t('roles.shouldNotHave', {
-								shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
-							});
-					}
-					if (dangerous.length > 0) {
-						textMessage +=
-							'\n\n' +
-							t('roles.dangerous', {
-								dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
-							});
-					}
+				if (shouldHave.length > 0) {
+					textMessage +=
+						'\n\n' +
+						t('roles.shouldHave', {
+							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
+				if (shouldNotHave.length > 0) {
+					textMessage +=
+						'\n\n' +
+						t('roles.shouldNotHave', {
+							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+						});
+				}
+				if (dangerous.length > 0) {
+					textMessage +=
+						'\n\n' +
+						t('roles.dangerous', {
+							dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
+						});
 				}
 			}
 		}
