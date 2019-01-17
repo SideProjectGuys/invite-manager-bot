@@ -1,8 +1,13 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { EnumResolver, NumberResolver, UserResolver } from '../../resolvers';
+import {
+	BasicUser,
+	EnumResolver,
+	NumberResolver,
+	UserResolver
+} from '../../resolvers';
 import {
 	customInvites,
 	CustomInvitesGeneratedReason,
@@ -48,7 +53,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user, details, _page]: [User, InfoDetails, number],
+		[user, details, _page]: [BasicUser, InfoDetails, number],
 		flags: {},
 		{ guild, t, settings, me }: Context
 	): Promise<any> {
@@ -222,7 +227,7 @@ export default class extends Command {
 		// Try and get the member if they are still in the guild
 		let member = guild.members.get(user.id);
 		if (!member) {
-			member = await guild.getRESTMember(user.id);
+			member = await guild.getRESTMember(user.id).catch(() => undefined);
 		}
 
 		if (member) {
@@ -459,7 +464,7 @@ export default class extends Command {
 			const detailMsg =
 				'\n' +
 				t('cmd.info.bonusInvites.details', {
-					cmd: `\`${settings.prefix}info @${user.username} bonus\``
+					cmd: `\`${settings.prefix}info ${user.id} bonus\``
 				});
 
 			// Crop the text because we don't know how long the 'reasons' are that
@@ -505,7 +510,7 @@ export default class extends Command {
 			const detailMsg =
 				'\n' +
 				t('cmd.info.invitedMembers.details', {
-					cmd: `\`${settings.prefix}info @${user.username} members\``
+					cmd: `\`${settings.prefix}info ${user.id} members\``
 				});
 
 			embed.fields.push({

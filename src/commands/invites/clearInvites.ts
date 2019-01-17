@@ -1,8 +1,8 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import { BooleanResolver, UserResolver } from '../../resolvers';
+import { BasicUser, BooleanResolver, UserResolver } from '../../resolvers';
 import {
 	CustomInviteAttributes,
 	customInvites,
@@ -38,7 +38,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[clearBonus, user]: [boolean, User],
+		[clearBonus, user]: [boolean, BasicUser],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
