@@ -258,7 +258,7 @@
 				"title": "Créé"
 			},
 			"joins": {
-				"title": "joint",
+				"title": "Membres invités",
 				"entry": {
 					"text": "{{ total }} fois {{ time }}, invité par:",
 					"invite": "{{{ member }}} ({{ times }} fois)"
@@ -289,7 +289,7 @@
 			"self": {
 				"args": {
 					"user": "L'utilisateur pour lequel vous souhaitez voir des informations supplémentaires.",
-					"details": "Request only specific details about a member.",
+					"details": "Voir uniquement des détails spécifiques d'un membre.",
 					"page": "Quelle page des détails afficher. Vous pouvez aussi utiliser les réactions pour naviguer. "
 				},
 				"description": "Afficher des informations sur un membre spécifique."
@@ -375,11 +375,11 @@
 			}
 		},
 		"memberConfig": {
-			"title": "Votre paramètres de configuration de membre",
+			"title": "Vos paramètres de configuration de membre",
 			"text": "Below are all the available memberConfig settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
 			"canNotClear": "The memberConfig setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valid memberConfig keys"
+				"title": "Valeurs acceptées "
 			},
 			"notSet": "Ces paramètres \"memberConfig\" ne sont actuellement définis pour aucun membre.",
 			"current": {
@@ -598,7 +598,7 @@
 			}
 		},
 		"prefix": {
-			"title": "Le préfixe actuel est {{ préfixe }}",
+			"title": "Le préfixe actuel est {{{ prefix }}}",
 			"self": {
 				"description": "Affiche le préfixe actuel du bot."
 			}
@@ -659,7 +659,7 @@
 			},
 			"check": {
 				"title": "Check for a Premium Subscription",
-				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
+				"notFound": "Votre compte n'est pas associé à un abonnement premium.\n\nSi vous avez acquis le premium par Patreon, assurez vous d'avoir lié votre compte Discord à votre Patreon pour pouvoir profiter des récompenses, puis refaites cette commande.",
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info."
 			}
@@ -702,7 +702,7 @@
 				},
 				"description": "Mentionnez un rôle non-mentionnable."
 			},
-			"roleTooHigh": "cmd.mentionRole.roleTooHigh"
+			"roleTooHigh": "Le rôle que vous souhaitez mentionner est plus haut que le mien, cette action est donc impossible."
 		},
 		"warn": {
 			"text": "Vous avez été averti sur le serveur  {{ guild }}\n{{ text }}",
@@ -789,7 +789,7 @@
 		},
 		"unban": {
 			"missingPermissions": "J'ai besoin de la permission `Ban Members` pour utiliser cette commande.",
-			"canNotUnban": "I cannot unban this member.",
+			"canNotUnban": "Je ne peux pas dé-bannir ce membre.",
 			"self": {
 				"args": {
 					"user": "The user that should be unbanned.",
@@ -824,8 +824,8 @@
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "All messages shorter than this will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"maxTextLength": "Tous les messages plus courts que ça seront supprimés.",
+					"numberOfMessages": "Nombre de messages qui seront recherchés."
 				},
 				"description": "Effacer les messages courts. "
 			}
@@ -834,12 +834,12 @@
 			"self": {
 				"args": {
 					"text": "Tous les messages contenants ce mot seront supprimés.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"numberOfMessages": "Nombre de messages qui seront recherchés."
 				}
 			}
 		},
 		"interactiveConfig": {
-			"welcome": "Use the reactions to pick one of the available options.",
+			"welcome": "Utilisez les réactions pour choisir l'une des options disponibles.",
 			"none": "<None>",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"new": "Entrez une nouvelle valeur:",
@@ -854,7 +854,7 @@
 				"string[]": "Une liste de mots, par exemple pour: licorne magique, \"mot avec espace\""
 			},
 			"items": {
-				"title": "Interactive Config",
+				"title": "Configuration interactive",
 				"basic": {
 					"description": "Paramètres de base du bot tels que le préfixe, la langue et l'historique.",
 					"title": "Paramètres de base",
@@ -896,7 +896,7 @@
 							"title": "Delete Bot messages"
 						},
 						"deleteBotMessagesTimeout": {
-							"title": "Bot message deletion delay"
+							"title": "Délai de suppression des messages du bot."
 						},
 						"autoLogEnabled": {
 							"title": "Log Automoderation"
@@ -921,11 +921,11 @@
 							"title": "Liste noire"
 						},
 						"followLinkRedirects": {
-							"title": "Follow redirects"
+							"title": "Suivre les redirections"
 						}
 					},
 					"bannedWords": {
-						"description": "Settings related to banned words.",
+						"description": "Paramètres liés aux mots bannis. ",
 						"title": "Mots bannis",
 						"enabled": {
 							"title": "Activé"
@@ -936,7 +936,7 @@
 					},
 					"caps": {
 						"description": "Settings related to ALL CAPS messages",
-						"title": "Caps-Lock",
+						"title": "Majuscules",
 						"enabled": {
 							"title": "Activé"
 						},
@@ -948,7 +948,7 @@
 						}
 					},
 					"duplicate": {
-						"description": "Settings related to duplicate messages.",
+						"description": "Paramètres liés aux messages en double.",
 						"title": "Texte doublon",
 						"enabled": {
 							"title": "Activé"
@@ -1152,6 +1152,11 @@
 				"kick": "moderation.punishments.dm.kick",
 				"ban": "moderation.punishments.dm.ban"
 			}
+		}
+	},
+	"settings": {
+		"lang": {
+			"description": "settings.lang.description"
 		}
 	}
 }
