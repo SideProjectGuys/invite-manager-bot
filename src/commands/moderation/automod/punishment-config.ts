@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-
 import {
 	EnumResolver,
 	NumberResolver,

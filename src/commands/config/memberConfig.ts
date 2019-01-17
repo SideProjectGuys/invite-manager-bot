@@ -6,13 +6,12 @@ import {
 	SettingsValueResolver,
 	UserResolver
 } from '../../resolvers';
-import { LogAction, MemberSettingsKey, sequelize } from '../../sequelize';
+import { LogAction, MemberSettingsKey } from '../../sequelize';
 import {
 	beautify,
 	canClear,
 	fromDbValue,
-	memberSettingsInfo,
-	toDbValue
+	memberSettingsInfo
 } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';

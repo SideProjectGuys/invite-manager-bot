@@ -3,13 +3,7 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
 import { UserResolver } from '../../resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	joins,
-	LogAction,
-	sequelize
-} from '../../sequelize';
+import { customInvites, inviteCodes, joins, LogAction } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 

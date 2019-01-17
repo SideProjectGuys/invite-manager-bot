@@ -3,10 +3,8 @@ import { Emoji, Message, TextChannel } from 'eris';
 import { IMClient } from '../../client';
 import { SettingsValueResolver } from '../../resolvers';
 import {
-	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
 	RankAssignmentStyle,
 	SettingsKey
 } from '../../sequelize';

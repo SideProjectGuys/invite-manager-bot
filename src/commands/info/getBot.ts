@@ -22,7 +22,7 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.createEmbed();
 
-		let params = [];
+		const params = [];
 		params.push(`origin=getbot`);
 		params.push(`user=${message.author.id}`);
 		if (guild) {
