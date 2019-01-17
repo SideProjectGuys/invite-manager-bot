@@ -60,8 +60,9 @@ export class SettingsValueResolver extends Resolver {
 		return resolver.resolve(value, context, [key]);
 	}
 
-	public getHelp(context: Context, [key]: [string]): string {
-		if (key) {
+	public getHelp(context: Context, args?: [string]): string {
+		if (args && args.length > 0) {
+			const key = args[0];
 			return this.resolvers[this.infos[key].type].getHelp(context, [key]);
 		}
 		return super.getHelp(context);

@@ -1,7 +1,8 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import {
+	BasicUser,
 	NumberResolver,
 	StringResolver,
 	UserResolver
@@ -43,7 +44,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetUser, reason]: [User, string],
+		[targetUser, reason]: [BasicUser, string],
 		{ deleteMessageDays }: { deleteMessageDays: number },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {

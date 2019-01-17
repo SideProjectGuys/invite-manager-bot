@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "There was an error executing the command.",
+		"error": "Er is een foutmelding opgetreden tijdens het uitvoeren van deze command.",
 		"addInvites": {
 			"zero": "0 invites geven heeft niet veel zin...",
 			"amount": {
@@ -113,12 +113,12 @@
 			"strikes": {
 				"title": "Waarschuwingen",
 				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}",
-				"total": "Strikes Total"
+				"total": "Totale waarschuwingen"
 			},
 			"punishments": {
 				"title": "Straffen",
 				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}",
-				"total": "Punishments Total"
+				"total": "Totale straffen"
 			},
 			"noHistory": "Die gebruiker heeft geen straffen.",
 			"self": {
@@ -393,16 +393,16 @@
 			"new": {
 				"title": "Nieuwe Waarde"
 			},
-			"sameValue": "This memberConfig is already set to that value",
+			"sameValue": "Deze memberConfig is al gezet naar die waarde.",
 			"changed": {
-				"text": "This memberConfig has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
+				"text": "Deze memberConfig is gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te resetten."
 			},
 			"none": "Geen",
 			"self": {
 				"args": {
-					"key": "The memberConfig setting which you want to show/change.",
-					"user": "The member that the setting is shown/changed for.",
-					"value": "The new value of the setting."
+					"key": "De memberConfig instelling die je wilt zien/veranderen",
+					"user": "De gebruiker waar de setting voor is.",
+					"value": "De nieuwe waarde van de setting."
 				},
 				"description": "Show and change the config of members of the server."
 			}
@@ -598,7 +598,7 @@
 			}
 		},
 		"prefix": {
-			"title": "The current prefix is {{ prefix }}",
+			"title": "The current prefix is {{{ prefix }}}",
 			"self": {
 				"description": "Shows the current prefix of the bot."
 			}
@@ -1152,6 +1152,11 @@
 				"kick": "moderation.punishments.dm.kick",
 				"ban": "moderation.punishments.dm.ban"
 			}
+		}
+	},
+	"settings": {
+		"lang": {
+			"description": "settings.lang.description"
 		}
 	}
 }

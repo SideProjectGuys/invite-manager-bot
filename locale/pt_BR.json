@@ -1,18 +1,18 @@
 {
 	"arguments": {
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"missingRequired": "Faltando parâmetro requerido `{{ name }}`\n{{{ usage }}}\n{{{ help }}}",
 		"enum": {
-			"validValues": "Use one of the following values: {{{ values }}}",
-			"invalid": "Not a valid value."
+			"validValues": "Use um dos valores a seguir: {{{ values }}}",
+			"invalid": "Valor inválido."
 		},
 		"user": {
-			"notFound": "User was not found.",
+			"notFound": "Usuário não encontrado.",
 			"multiple": "Multiple matching users found. {{{ users }}}"
 		},
 		"number": {
-			"invalid": "Not a valid number."
+			"invalid": "Número invalido."
 		},
-		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"invalid": "Valor inválido para `{{ arg }}`: {{{ error }}}\n{{{ usage }}} {{{ help }}}",
 		"command": {
 			"notFound": "Command not found.",
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
@@ -35,73 +35,73 @@
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": "Boithise mas ston discord server ! https://discord.gg/sqYexQ"
+			"title": "Discord para suporte"
 		},
 		"invite": {
-			"title": "Bale afto to bot ston server sou ! https://discordapp.com/oauth2/authorize?client_id=409875566800404480&permissions=268435488&scope=bot"
+			"title": "Adicione o bot em seu servidor"
 		},
 		"website": {
-			"title": "Ela sto website gia perisotera ;) https://andreasgassmann.github.io/discord-invite-manager/"
+			"title": "Website do bot"
 		},
 		"patreon": {
-			"title": "Ela sto patreon kai kane ena donate please! ttps://patreon.com/invitemanager"
+			"title": "Patreon"
 		}
 	},
 	"cmd": {
 		"error": "There was an error executing the command.",
 		"addInvites": {
-			"zero": "Adding zero invites doesn't really make sense...",
+			"zero": "Adicionar zero convites não faz muito sentido...",
 			"amount": {
-				"positive": "Added **{{ amount }}** invites for <@{{ member }}>, now at: **{{ totalInvites }}** invites.",
-				"negative": "Removed **{{ amount }}** invites from <@{{ member }}>, now at: **{{ totalInvites }}** invites."
+				"positive": "Adicionado **{{ amount }}** convites para {{{ member }}}, agora com **{{ totalInvites }}** convites.",
+				"negative": "Removido **{{ amount }}** convites de {{{ member }}}, agora com **{{ totalInvites }}** convites."
 			},
 			"self": {
 				"args": {
-					"user": "The user that will receive/lose the bonus invites.",
-					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
-					"reason": "The reason for adding/removing the invites."
+					"user": "O usuário que vai receber/perder os convites bônus.",
+					"amount": "A quantia de convites que o usuário irá ganhar/perder. Use um número negativo (-) para remover convites.",
+					"reason": "A razão para adicionar/remover os convites"
 				},
-				"description": "Adds/Removes invites to/from a member."
+				"description": "Adiciona/Remove convites para/de um membro."
 			}
 		},
 		"addRank": {
 			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
-			"roleTooHigh": "The role **{{ role }}** is higher up than my role (**{{ myRole }}**), so I won't be able to assign it to members that earn it.",
+			"roleTooHigh": "O cargo {{{ role }}} é maior que o meu ({{{ myRole }}}), então eu não poderei dar ele para membros que ganharem isso.",
 			"self": {
 				"args": {
-					"role": "The role which the user will receive when reaching this rank.",
-					"invites": "The amount of invites needed to reach the rank.",
-					"info": "A description that users will see so they know more about this rank."
+					"role": "O cargo que o usuário irá receber quando conquistar esse rank.",
+					"invites": "A quantia de convites necessárias para chegar neste rank.",
+					"info": "Uma descrição que os usuários irão ver para saberem mais sobre esse rank."
 				},
-				"description": "Add a new rank."
+				"description": "Adiciona um novo rank."
 			}
 		},
 		"ban": {
-			"error": "There was an error banning this user:\n{{ error }}",
-			"done": "The user was successfully banned.",
-			"canNotBan": "I cannot ban this user.",
+			"error": "Ocorreu um erro banindo este usuário:\n{{ error }}",
+			"done": "O usuário foi banido com sucesso.",
+			"canNotBan": "Eu não posso banir este usuário.",
 			"self": {
 				"args": {
-					"user": "User to ban.",
-					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned."
+					"user": "Usuário para banir.",
+					"deleteMessageDays": "Quantas mensagens deverão ser deletadas (em dias).",
+					"reason": "Por que o usuário foi banido."
 				},
-				"description": "Ban a member from the server."
+				"description": "Bane um membro do servidor."
 			},
 			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
-			"version": "Version",
+			"version": "Versão",
 			"uptime": "Uptime",
 			"guilds": "Guilds",
-			"members": "Members",
+			"members": "Membros",
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "Shard atual",
+				"total": "Shards totais"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Dá informações gerais sobre o bot."
 			},
 			"premium": {
 				"title": "Premium",
@@ -116,16 +116,16 @@
 				"total": "Strikes Total"
 			},
 			"punishments": {
-				"title": "Punishments",
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
+				"title": "Punições",
+				"entry": "{{ punishment }} pois ele tinha {{ amount }} strikes {{ date }}",
 				"total": "Punishments Total"
 			},
-			"noHistory": "User does not have any history.",
+			"noHistory": "Usuário não tem nenhum histórico.",
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "Usuário para checar."
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "Checa o histórico de violações e punimentos de um usuário."
 			}
 		},
 		"clean": {
@@ -354,7 +354,7 @@
 			"title": "Leaderboard",
 			"invalidDate": "Invalid date: {{ date }}",
 			"noInvites": "No invites!",
-			"comparedTo": "changes compared to {{ to }}",
+			"comparedTo": "changes compared to {{{ to }}}",
 			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"col": {
 				"change": "Change",
@@ -463,15 +463,15 @@
 		},
 		"ranks": {
 			"none": "No ranks have been created yet.",
-			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
+			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
 			"title": "Ranks",
 			"self": {
 				"description": "Show all ranks."
 			}
 		},
 		"removeRank": {
-			"rankNotFound": "Rank {{ role }} does not exist!",
-			"done": "Rank {{ role }} removed.",
+			"rankNotFound": "Rank {{{ role }}} does not exist!",
+			"done": "Rank {{{ role }}} removed.",
 			"self": {
 				"args": {
 					"rank": "The for which you want to remove the rank."
@@ -480,7 +480,7 @@
 			}
 		},
 		"restoreInvites": {
-			"done": "Restored invites{{! args.user ? ` for <@${args.user}>` : '' !}}",
+			"done": "Restored invites",
 			"self": {
 				"args": {
 					"user": "The user to restore all invites to. If omitted restores invites for all users."

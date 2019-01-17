@@ -601,7 +601,7 @@
 			}
 		},
 		"prefix": {
-			"title": "The current prefix is {{ prefix }}",
+			"title": "The current prefix is {{{ prefix }}}",
 			"self": {
 				"description": "Shows the current prefix of the bot."
 			}
@@ -1155,6 +1155,11 @@
 				"kick": "moderation.punishments.dm.kick",
 				"ban": "moderation.punishments.dm.ban"
 			}
+		}
+	},
+	"settings": {
+		"lang": {
+			"description": "settings.lang.description"
 		}
 	}
 }

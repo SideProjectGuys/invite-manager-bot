@@ -1,7 +1,12 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
+import {
+	BasicUser,
+	NumberResolver,
+	StringResolver,
+	UserResolver
+} from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -35,7 +40,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user, amount, reason]: [User, number, string],
+		[user, amount, reason]: [BasicUser, number, string],
 		flags: {},
 		context: Context
 	): Promise<any> {

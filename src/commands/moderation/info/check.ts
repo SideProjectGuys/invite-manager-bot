@@ -1,8 +1,8 @@
-import { Member, Message } from 'eris';
+import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { UserResolver } from '../../../resolvers';
+import { BasicUser, UserResolver } from '../../../resolvers';
 import { punishments, strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
@@ -27,7 +27,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[user]: [Member],
+		[user]: [BasicUser],
 		flags: {},
 		{ guild, settings, t }: Context
 	): Promise<any> {

@@ -1,7 +1,8 @@
-import { Embed, Message, User } from 'eris';
+import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import {
+	BasicUser,
 	EnumResolver,
 	SettingsValueResolver,
 	UserResolver
@@ -44,7 +45,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, user, value]: [MemberSettingsKey, User, any],
+		[key, user, value]: [MemberSettingsKey, BasicUser, any],
 		flags: {},
 		context: Context
 	): Promise<any> {
@@ -135,7 +136,12 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.members.setOne(guild.id, user, key, value);
+		value = await this.client.cache.members.setOne(
+			guild.id,
+			user.id,
+			key,
+			value
+		);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.memberConfig.sameValue');

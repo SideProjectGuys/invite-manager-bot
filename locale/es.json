@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "There was an error executing the command.",
+		"error": "Ha habido un error ejecutando el comando.",
 		"addInvites": {
 			"zero": "Agregar cero invitaciones no tiene mucho sentido...",
 			"amount": {
@@ -112,13 +112,13 @@
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
-				"total": "Strikes Total"
+				"entry": "#{{ id }} - Recibido {{ amount }} strikes por {{ violation }} {{ date }}",
+				"total": "Strikes Totales"
 			},
 			"punishments": {
 				"title": "Castigos",
 				"entry": "{{ punishment }} porque tenía {{ amount }} strikes {{ date }}",
-				"total": "Punishments Total"
+				"total": "Castigos Totales"
 			},
 			"noHistory": "El usuario no tiene ningún historial.",
 			"self": {
@@ -269,22 +269,22 @@
 			"regularInvites": {
 				"title": "Invitaciones regulares",
 				"entry": "{{ uses }} de {{ code }} - creado {{ createdAt }}",
-				"more": "Plus another {{ amount }} more invite codes",
+				"more": "Más otras **{{ amount }}** más codigos de invitacion",
 				"none": "Más otras **{{ amount }}** más invitaciones bonus"
 			},
 			"bonusInvites": {
 				"title": "Invitaciones bonus",
-				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
-				"more": "Plus another {{ amount }} more bonus invites",
+				"entry": "{{ amount }} de {{{ creator }}} - {{ date }}, razón: {{ reason }}",
+				"more": "Más otras **{{ amount }}** más invitaciones bonus",
 				"none": "Este miembro no ha recibido invitaciones bonus hasta el momento",
 				"noReason": "Sin razón",
-				"details": "Use {{{ cmd }}} for details."
+				"details": "Usa {{{ cmd }}} para más detalles."
 			},
 			"invitedMembers": {
 				"title": "Miembros invitados",
-				"more": "Plus another {{ amount }} more invited members",
+				"more": "Más otros **{{ amount }}** miembros invitados",
 				"none": "Este miembro no ha invitado a nadie hasta el momento",
-				"details": "Use {{{ cmd }}} for details."
+				"details": "Usa {{{ cmd }}} para más detalles."
 			},
 			"self": {
 				"args": {
@@ -598,7 +598,7 @@
 			}
 		},
 		"prefix": {
-			"title": "El prefijo actual es {{ prefix }}",
+			"title": "El prefijo actual es {{{ prefix }}}",
 			"self": {
 				"description": "Muestra el prefijo actual del bot."
 			}
@@ -1152,6 +1152,11 @@
 				"kick": "moderation.punishments.dm.kick",
 				"ban": "moderation.punishments.dm.ban"
 			}
+		}
+	},
+	"settings": {
+		"lang": {
+			"description": "settings.lang.description"
 		}
 	}
 }

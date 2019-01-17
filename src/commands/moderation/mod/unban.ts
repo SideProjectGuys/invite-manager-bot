@@ -1,7 +1,7 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { StringResolver, UserResolver } from '../../../resolvers';
+import { BasicUser, StringResolver, UserResolver } from '../../../resolvers';
 import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
@@ -31,7 +31,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetUser, reason]: [User, string],
+		[targetUser, reason]: [BasicUser, string],
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
