@@ -150,7 +150,11 @@
 					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
 					"user": "The user to clear all invites from. If omitted clears all users."
 				},
-				"description": "Clear invites of the server/a user."
+				"description": "Clear invites of the server/a user.",
+				"flags": {
+					"date": "cmd.clearInvites.self.flags.date",
+					"clearBonus": "cmd.clearInvites.self.flags.clearBonus"
+				}
 			}
 		},
 		"config": {
