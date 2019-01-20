@@ -431,7 +431,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	autoModDuplicateTextTimeframeInSeconds: {
 		type: 'Number',
 		grouping: ['moderation', 'duplicate'],
-		defaultValue: 60,
+		defaultValue: 30,
 		exampleValues: ['5', '20']
 	},
 

@@ -25,6 +25,7 @@ interface PunishmentDetails {
 }
 
 interface MiniMessage {
+	id: string;
 	createdAt: number;
 	content: string;
 	mentions: number;
@@ -349,7 +350,7 @@ export class Moderation {
 		}
 
 		if (extra) {
-			extra.forEach(e => logEmbed.fields.push(e));
+			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push(e));
 		}
 		this.client.logModAction(guild, logEmbed);
 	}
@@ -378,6 +379,7 @@ export class Moderation {
 
 	private getMiniMessage(message: Message): MiniMessage {
 		return {
+			id: message.id,
 			createdAt: message.createdAt,
 			content: message.content,
 			mentions: message.mentions.length,
@@ -582,13 +584,11 @@ export class Moderation {
 			return false;
 		} else {
 			// Filter old messages
-			cachedMessages = cachedMessages.filter(
-				m => moment().diff(m.createdAt, 'second') < timeframe
-			);
 			// Filter current message
 			cachedMessages = cachedMessages.filter(
 				m =>
-					!(m.createdAt === message.createdAt && m.content === message.content)
+					m.id !== message.id &&
+					moment().diff(m.createdAt, 'second') < timeframe
 			);
 			const lastMessages = cachedMessages.map(m => m.content.toLowerCase());
 			return lastMessages.indexOf(message.content.toLowerCase()) >= 0;
