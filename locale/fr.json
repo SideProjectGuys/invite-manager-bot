@@ -464,7 +464,7 @@
 		"ranks": {
 			"none": "Aucun rang n'a encore été créé.",
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invitations**{{ description ?}}",
-			"title": "Rang",
+			"title": "Rangs",
 			"self": {
 				"description": "Montrer tous les rangs."
 			}
@@ -501,7 +501,7 @@
 			},
 			"faq": {
 				"title": "FAQs et plus",
-				"text": "Utilisez la commande `!faq` pour plus d'informations, par exemple si vous souhaitez changer le préfixe ou customiser le message d'arrivée et d'abandon.\n\nUn guide complet sur la configuration du bot peut être trouvé ici:\nhttps://docs.invitemanager.co/bot/ - Version anglaise"
+				"text": "Utilisez la commande `!faq` pour plus d'informations, par exemple si vous souhaitez changer le préfixe ou customiser le message d'arrivée et de départ.\n\nUn guide complet sur la configuration du bot peut être trouvé ici:\nhttps://docs.invitemanager.co/bot/ - Version anglaise"
 			},
 			"help": {
 				"title": "Aide",
@@ -658,9 +658,9 @@
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur."
 			},
 			"check": {
-				"title": "Check for a Premium Subscription",
+				"title": "Rechercher un abonnement Premium",
 				"notFound": "Votre compte n'est pas associé à un abonnement premium.\n\nSi vous avez acquis le premium par Patreon, assurez vous d'avoir lié votre compte Discord à votre Patreon pour pouvoir profiter des récompenses, puis refaites cette commande.",
-				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
+				"declined": "Votre paiement pour le premium a été refusé, veuillez vérifier votre Patreon.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info."
 			}
 		},
@@ -721,7 +721,7 @@
 			"self": {
 				"args": {
 					"key": "Les paramètres de configurations que vous souhaitez afficher / modifier.",
-					"code": "The invite code that the setting is changed for.",
+					"code": "Le code d'invitation pour lequel le paramètre est modifié.",
 					"value": "La nouvelle valeur du paramètre.",
 					"inviteCode": "The invite code for which you want to change the settings."
 				},
@@ -893,7 +893,7 @@
 							"title": "Rôles ignorés"
 						},
 						"deleteBotMessages": {
-							"title": "Delete Bot messages"
+							"title": "Supprimer les messages du Bot"
 						},
 						"deleteBotMessagesTimeout": {
 							"title": "Délai de suppression des messages du bot."
@@ -1043,8 +1043,8 @@
 					}
 				},
 				"joinAndLeaveMessages": {
-					"description": "Paramètres liés aux messages d'arrivée et d'abandon",
-					"title": "Messages d'arrivée et d'abandon",
+					"description": "Paramètres liés aux messages d'arrivées et de départs.",
+					"title": "Messages d'arrivées et de départs",
 					"joinChannel": {
 						"title": "Salon d'arrivée"
 					},
@@ -1052,10 +1052,10 @@
 						"title": "Message d'arrivée"
 					},
 					"leaveChannel": {
-						"title": "Salon d'abandon "
+						"title": "Salon de départ"
 					},
 					"leaveMessage": {
-						"title": "Message d'abandon"
+						"title": "Message de départ"
 					}
 				},
 				"memberSettings": {
@@ -1083,11 +1083,11 @@
 				},
 				"remove": {
 					"title": "Supprimer",
-					"text": "Remove an existing value from the list."
+					"text": "Supprimer une valeur existante de la liste."
 				},
 				"set": {
 					"title": "Définir",
-					"text": "Set the whole list using space separated values."
+					"text": "Définissez toute la liste en utilisant des valeurs séparées par des espaces."
 				},
 				"clear": {
 					"title": "Effacer",
@@ -1133,16 +1133,16 @@
 	},
 	"messages": {
 		"unknownInviter": "Inconnu",
-		"joinUnknownInviter": "<@{{ id }}> joined the server using a temporary or vanity invite, so I can't figure out who invited them.",
+		"joinUnknownInviter": "<@{{ id }}> a rejoint le serveur à l'aide d'une invitation temporaire ou privée, je n'ai donc pas pu identifier l'inviteur.",
 		"leaveUnknownInviter": "{{ tag }} a quitté le serveur, mais je n'ai trouvé qui l'a invité."
 	},
 	"captcha": {
 		"invalid": "Le Captcha ne correspond pas, veuillez réessayer."
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivée et d'abandon de type \"Embed\" est une fonction premium.",
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivées et de départs de type \"Embed\" est une fonction premium.",
 	"moderation": {
 		"strikes": {
-			"dm": "You have received **{{ amount }}** strikes for violating the **{{ type }}** rule in **{{ guild }}**"
+			"dm": "Vous avez reçu ** {{ amount }} ** Avertissements pour violation de la règle ** {{ type }} ** dans ** {{ guild }} **"
 		},
 		"punishments": {
 			"dm": {
