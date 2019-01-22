@@ -96,7 +96,7 @@ export default class extends Command {
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
-			let lengths: number[] = [2, 1, 4, 1, 1, 1, 1];
+			const lengths: number[] = [2, 1, 4, 1, 1, 1, 1];
 
 			if (style === LeaderboardStyle.table) {
 				lines.push([
@@ -130,15 +130,15 @@ export default class extends Command {
 						posChange > 0
 							? upSymbol
 							: posChange < 0
-								? downSymbol
-								: neutralSymbol;
+							? downSymbol
+							: neutralSymbol;
 
 					const posText =
 						posChange > 0
 							? `+${posChange}`
 							: posChange === 0
-								? `±0`
-								: posChange;
+							? `±0`
+							: posChange;
 
 					const line = [
 						`${pos}.`,

@@ -217,7 +217,7 @@ export async function promoteIfQualified(
 
 		if (style === RankAssignmentStyle.all) {
 			// Add all roles that we've reached to the member
-			let newRoles = reached.filter(r => !member.roles.includes(r.id));
+			const newRoles = reached.filter(r => !member.roles.includes(r.id));
 			// Roles that the member should have but we can't assign
 			shouldHave = newRoles.filter(r => tooHighRoles.includes(r));
 			// Assign only the roles that we can assign
