@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { DurationResolver, NumberResolver } from '../../resolvers';
+import { NumberResolver, StringResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -45,7 +45,7 @@ export default class extends Command {
 		if (_date) {
 			const res = chrono.parse(_date);
 			if (!res[0]) {
-				return this.client.sendReply(message, t('cmd.leaderboard.invalidDate'));
+				return this.sendReply(message, t('cmd.leaderboard.invalidDate'));
 			}
 			if (res[0].start) {
 				from = moment(res[0].start.date());
@@ -91,9 +91,8 @@ export default class extends Command {
 
 		// Show the leaderboard as a paginated list
 		this.showPaginated(message, p, maxPage, page => {
-			const compText = t('cmd.leaderboard.comparedTo', {
-				to: `**${comp.locale(settings.lang).fromNow()}**`
-			});
+			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
+			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
 
 			let str = `${fromText}\n(${t('cmd.leaderboard.comparedTo', {
 				to: toText
@@ -153,7 +152,7 @@ export default class extends Command {
 						`${inv.regular} `,
 						`${inv.custom} `,
 						`${inv.fake} `,
-						`${inv.leaves} `
+						`${inv.leave} `
 					];
 
 					lines.push(line);

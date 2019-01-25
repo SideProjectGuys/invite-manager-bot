@@ -1,13 +1,12 @@
 import { Guild, Member, Message, Role, TextChannel } from 'eris';
-import { Moment } from 'moment';
-import moment = require('moment');
-import { Op } from 'sequelize';
+import moment, { Moment } from 'moment';
+import { FindOptionsAttributesArray, Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {
 	customInvites,
+	CustomInvitesGeneratedReason,
 	inviteCodes,
-	JoinInvalidatedReason,
 	joins,
 	leaves,
 	members,
@@ -28,13 +27,13 @@ type InvCacheType = {
 		total: number;
 		regular: number;
 		custom: number;
-		fakes: number;
-		leaves: number;
+		fake: number;
+		leave: number;
 		oldTotal: number;
 		oldRegular: number;
 		oldCustom: number;
 		oldFake: number;
-		oldLeaves: number;
+		oldLeave: number;
 	};
 };
 
@@ -45,6 +44,36 @@ export interface InviteCounts {
 	leave: number;
 	total: number;
 }
+
+// Extra query stuff we need in multiple places
+const sumClearRegular =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'clear_regular',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalCustom =
+	`SUM(` +
+	`IF(customInvite.generatedReason IS NULL OR customInvite.generatedReason = 'clear_custom',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalFake =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'fake' OR customInvite.generatedReason = 'clear_fake',` +
+	`customInvite.amount,` +
+	`0))`;
+const sumTotalLeaves =
+	`SUM(` +
+	`IF(customInvite.generatedReason = 'leave' OR customInvite.generatedReason = 'clear_leave',` +
+	`customInvite.amount,` +
+	`0))`;
+
+const attrs: FindOptionsAttributesArray = [
+	'memberId',
+	[sumClearRegular, 'totalClearRegular'],
+	[sumTotalCustom, 'totalCustom'],
+	[sumTotalFake, 'totalFake'],
+	[sumTotalLeaves, 'totalLeaves']
+];
 
 export class InvitesService {
 	private client: IMClient;
@@ -57,70 +86,57 @@ export class InvitesService {
 		guildId: string,
 		memberId: string
 	): Promise<InviteCounts> {
-		const inviteCodePromise = inviteCodes.findOne({
-			attributes: [
-				[
-					sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')),
-					'total'
-				]
-			],
+		const regularPromise = inviteCodes.sum('uses', {
 			where: {
 				guildId: guildId,
-				inviterId: memberId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			raw: true
-		});
-		const joinsPromise = joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
-			],
-			where: {
-				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
-			},
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					where: { inviterId: memberId }
-				}
-			],
-			group: ['invalidatedReason'],
-			raw: true
-		});
-		const customInvitesPromise = customInvites.findOne({
-			attributes: [[sequelize.fn('SUM', sequelize.col('amount')), 'total']],
-			where: {
-				guildId: guildId,
-				memberId: memberId,
-				cleared: false
-			},
-			raw: true
-		});
-
-		const [invCode, js, customInvs] = await Promise.all([
-			inviteCodePromise,
-			joinsPromise,
-			customInvitesPromise
-		]);
-
-		const regular = Number((invCode as any).total);
-		const custom = Number((customInvs as any).total);
-
-		let fake = 0;
-		let leave = 0;
-		js.forEach((j: any) => {
-			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				fake -= Number(j.total);
-			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				leave -= Number(j.total);
+				inviterId: memberId
 			}
 		});
+		const customPromise = customInvites.findAll({
+			attributes: [
+				'generatedReason',
+				[sequelize.fn('SUM', sequelize.col('amount')), 'total']
+			],
+			where: {
+				guildId: guildId,
+				memberId: memberId
+			},
+			group: ['generatedReason'],
+			raw: true
+		});
+		const values = await Promise.all([regularPromise, customPromise]);
+
+		const reg = values[0] || 0;
+
+		const customUser = values[1].find(ci => ci.generatedReason === null) as any;
+		const ctm = customUser ? parseInt(customUser.total, 10) : 0;
+
+		const generated: { [x in CustomInvitesGeneratedReason]: number } = {
+			[CustomInvitesGeneratedReason.clear_regular]: 0,
+			[CustomInvitesGeneratedReason.clear_custom]: 0,
+			[CustomInvitesGeneratedReason.clear_fake]: 0,
+			[CustomInvitesGeneratedReason.clear_leave]: 0,
+			[CustomInvitesGeneratedReason.fake]: 0,
+			[CustomInvitesGeneratedReason.leave]: 0
+		};
+
+		values[1].forEach((ci: any) => {
+			if (ci.generatedReason === null) {
+				return;
+			}
+			const reason = ci.generatedReason as CustomInvitesGeneratedReason;
+			const amount = parseInt(ci.total, 10);
+			generated[reason] = amount;
+		});
+
+		const regular = reg + generated[CustomInvitesGeneratedReason.clear_regular];
+		const custom = ctm + generated[CustomInvitesGeneratedReason.clear_custom];
+		const fake =
+			generated[CustomInvitesGeneratedReason.fake] +
+			generated[CustomInvitesGeneratedReason.clear_fake];
+		const leave =
+			generated[CustomInvitesGeneratedReason.leave] +
+			generated[CustomInvitesGeneratedReason.clear_leave];
 
 		return {
 			regular,
@@ -134,230 +150,204 @@ export class InvitesService {
 	public async generateLeaderboard(
 		guild: Guild,
 		hideLeft?: boolean,
-		from?: Moment,
-		compare?: Moment,
+		from: Moment = moment(),
+		to?: Moment,
 		limit: number = null
 	) {
 		const guildId = guild.id;
 
-		/*const fromCond = from
-		? `AND createdAt < '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'`
-		: '';*/
-
-		const inviteCodePromise = inviteCodes.findAll({
+		const codeInvs = await inviteCodes.findAll({
 			attributes: [
 				'inviterId',
 				[
-					sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')),
-					'total'
+					sequelize.literal(
+						'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
+							`exactMatchCode = code AND deletedAt IS NULL AND ` +
+							`createdAt >= '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+					),
+					'totalJoins'
 				]
 			],
+			where: {
+				guildId
+			},
+			group: 'inviteCode.inviterId',
 			include: [
 				{
-					attributes: ['name', 'discriminator'],
+					attributes: ['name'],
 					model: members,
 					as: 'inviter',
 					required: true
 				}
 			],
-			where: {
-				guildId: guildId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			group: ['inviterId'],
-			order: [sequelize.literal('total DESC')],
+			order: [sequelize.literal('totalJoins DESC'), 'inviterId'],
+			limit,
 			raw: true
 		});
-
-		const joinsPromise = joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'total']
-			],
+		const customInvs = await customInvites.findAll({
+			attributes: attrs,
 			where: {
 				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
+				createdAt: {
+					[Op.lte]: from
+				}
 			},
+			group: 'customInvite.memberId',
 			include: [
 				{
-					attributes: ['code', 'inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					include: [
-						{
-							attributes: ['name', 'discriminator'],
-							model: members,
-							as: 'inviter',
-							required: true
-						}
-					]
+					attributes: ['name'],
+					model: members
 				}
 			],
-			group: ['exactMatch.inviterId', 'invalidatedReason'],
-			order: [sequelize.literal('total DESC')],
 			raw: true
 		});
-
-		const customInvitesPromise = customInvites.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.fn('SUM', sequelize.col('amount')), 'total']
-			],
-			where: {
-				guildId: guildId,
-				cleared: false
-			},
-			include: [
-				{
-					attributes: ['name', 'discriminator'],
-					model: members,
-					required: true
-				}
-			],
-			group: ['memberId'],
-			order: [sequelize.literal('total DESC')],
-			raw: true
-		});
-
-		const [invCodes, js, customInvs] = await Promise.all([
-			inviteCodePromise,
-			joinsPromise,
-			customInvitesPromise
-		]);
 
 		const invs: InvCacheType = {};
-		invCodes.forEach((inv: any) => {
+		codeInvs.forEach((inv: any) => {
 			const id = inv.inviterId;
 			invs[id] = {
 				id,
 				name: inv['inviter.name'],
-				total: Number(inv.total),
-				regular: Number(inv.total),
+				total: parseInt(inv.totalJoins, 10),
+				regular: parseInt(inv.totalJoins, 10),
 				custom: 0,
-				fakes: 0,
-				leaves: 0,
+				fake: 0,
+				leave: 0,
 				oldTotal: 0,
 				oldRegular: 0,
 				oldCustom: 0,
 				oldFake: 0,
-				oldLeaves: 0
+				oldLeave: 0
 			};
 		});
-
-		js.forEach((join: any) => {
-			const id = join['exactMatch.inviterId'];
-			let fake = 0;
-			let leave = 0;
-			if (join.invalidatedReason === JoinInvalidatedReason.fake) {
-				fake += Number(join.total);
-			} else {
-				leave += Number(join.total);
-			}
-			if (invs[id]) {
-				invs[id].total -= fake + leave;
-				invs[id].fakes -= fake;
-				invs[id].leaves -= leave;
-			} else {
-				invs[id] = {
-					id,
-					name: join['exactMatch.inviter.name'],
-					total: -(fake + leave),
-					regular: 0,
-					custom: 0,
-					fakes: -fake,
-					leaves: -leave,
-					oldTotal: 0,
-					oldRegular: 0,
-					oldCustom: 0,
-					oldFake: 0,
-					oldLeaves: 0
-				};
-			}
-		});
-
 		customInvs.forEach((inv: any) => {
 			const id = inv.memberId;
-			const custom = Number(inv.total);
+			const clearReg = parseInt(inv.totalClearRegular, 10);
+			const custom = parseInt(inv.totalCustom, 10);
+			const fake = parseInt(inv.totalFake, 10);
+			const lvs = parseInt(inv.totalLeaves, 10);
 			if (invs[id]) {
-				invs[id].total += custom;
-				invs[id].custom += custom;
+				invs[id].total += custom + clearReg + fake + lvs;
+				invs[id].regular += clearReg;
+				invs[id].custom = custom;
+				invs[id].fake = fake;
+				invs[id].leave = lvs;
 			} else {
 				invs[id] = {
 					id,
 					name: inv['member.name'],
-					total: custom,
-					regular: 0,
+					total: custom + clearReg + fake + lvs,
+					regular: clearReg,
 					custom: custom,
-					fakes: 0,
-					leaves: 0,
+					fake: fake,
+					leave: lvs,
 					oldTotal: 0,
 					oldRegular: 0,
 					oldCustom: 0,
 					oldFake: 0,
-					oldLeaves: 0
+					oldLeave: 0
 				};
 			}
 		});
 
-		if (compare) {
-			/*const oldJoinsPromise = joins.findAll({
+		if (to) {
+			const oldCodeInvs = await inviteCodes.findAll({
 				attributes: [
-					'invalidatedReason',
-					[sequelize.fn('COUNT', sequelize.col('join.id')), 'total']
+					'inviterId',
+					[
+						sequelize.literal(
+							'SUM(inviteCode.uses) - MAX((SELECT COUNT(joins.id) FROM joins WHERE ' +
+								`exactMatchCode = code AND deletedAt IS NULL AND ` +
+								`createdAt >= '${to.utc().format('YYYY/MM/DD HH:mm:ss')}'))`
+						),
+						'totalJoins'
+					]
 				],
 				where: {
-					guildId,
-					invalidatedReason: { [Op.ne]: null },
-					cleared: false
+					guildId
 				},
+				group: 'inviteCode.inviterId',
 				include: [
 					{
-						attributes: ['code', 'inviterId'],
-						model: inviteCodes,
-						as: 'exactMatch',
-						required: true,
-						include: [
-							{
-								attributes: ['name', 'discriminator'],
-								model: members,
-								as: 'inviter',
-								required: true
-							}
-						]
-					}
-				],
-				group: ['exactMatch.inviterId', 'invalidatedReason'],
-				order: [sequelize.literal('total DESC')],
-				raw: true
-			});
-
-			const oldCustomInvitesPromise = customInvites.findAll({
-				attributes: [
-					'memberId',
-					[sequelize.fn('SUM', sequelize.col('amount')), 'total']
-				],
-				where: {
-					guildId: guildId,
-					cleared: false
-				},
-				include: [
-					{
-						attributes: ['name', 'discriminator'],
+						attributes: ['name'],
 						model: members,
+						as: 'inviter',
 						required: true
 					}
 				],
+				order: [sequelize.literal('totalJoins DESC'), 'inviterId'],
+				limit,
+				raw: true
+			});
+			const oldCustomInvs = await customInvites.findAll({
+				attributes: attrs,
+				where: {
+					guildId,
+					createdAt: {
+						[Op.lte]: to
+					}
+				},
 				group: ['memberId'],
-				order: [sequelize.literal('total DESC')],
+				include: [
+					{
+						attributes: ['name'],
+						model: members
+					}
+				],
 				raw: true
 			});
 
-			const [oldJs, oldCustomInvs] = await Promise.all([
-				oldJoinsPromise,
-				oldCustomInvitesPromise
-			]);*/
+			oldCodeInvs.forEach((inv: any) => {
+				const id = inv.inviterId;
+				if (invs[id]) {
+					invs[id].oldTotal = parseInt(inv.totalJoins, 10);
+					invs[id].oldRegular = parseInt(inv.totalJoins, 10);
+				} else {
+					invs[id] = {
+						id,
+						name: inv['inviter.name'],
+						total: 0,
+						regular: 0,
+						custom: 0,
+						fake: 0,
+						leave: 0,
+						oldTotal: parseInt(inv.totalJoins, 10),
+						oldRegular: parseInt(inv.totalJoins, 10),
+						oldCustom: 0,
+						oldFake: 0,
+						oldLeave: 0
+					};
+				}
+			});
+			oldCustomInvs.forEach((inv: any) => {
+				const id = inv.memberId;
+				const clearReg = parseInt(inv.totalClearRegular, 10);
+				const custom = parseInt(inv.totalCustom, 10);
+				const fake = parseInt(inv.totalFake, 10);
+				const lvs = parseInt(inv.totalLeaves, 10);
+				if (invs[id]) {
+					invs[id].oldTotal += custom + clearReg + fake + lvs;
+					invs[id].oldRegular += clearReg;
+					invs[id].oldCustom = custom;
+					invs[id].oldFake = fake;
+					invs[id].oldLeave = lvs;
+				} else {
+					invs[id] = {
+						id,
+						name: inv['member.name'],
+						total: 0,
+						regular: 0,
+						custom: 0,
+						fake: 0,
+						leave: 0,
+						oldTotal: custom + clearReg + fake + lvs,
+						oldRegular: clearReg,
+						oldCustom: custom,
+						oldFake: fake,
+						oldLeave: lvs
+					};
+				}
+			});
 		}
 
 		const hidden = (await memberSettings.findAll({

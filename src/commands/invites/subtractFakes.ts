@@ -78,11 +78,6 @@ export default class extends Command {
 		});
 
 		const total = -customInvs.reduce((acc, inv) => acc + inv.amount, 0);
-		return this.client.sendReply(
-			message,
-			t('cmd.subtractFakes.done', { total })
-		);
-
-		return this.sendReply(message, t('cmd.subtractFakes.done'));
+		return this.sendReply(message, t('cmd.subtractFakes.done', { total }));
 	}
 }

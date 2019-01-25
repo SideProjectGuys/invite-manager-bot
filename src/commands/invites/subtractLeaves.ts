@@ -68,7 +68,7 @@ export default class extends Command {
 		});
 
 		if (ls.length === 0) {
-			return this.client.sendReply(message, t('cmd.subtractLeaves.none'));
+			return this.sendReply(message, t('cmd.subtractLeaves.none'));
 		}
 
 		// Delete old duplicate removals
@@ -97,11 +97,9 @@ export default class extends Command {
 			updateOnDuplicate: ['amount', 'updatedAt']
 		});
 
-		return this.client.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);
-
-		return this.sendReply(message, t('cmd.subtractLeaves.done'));
 	}
 }

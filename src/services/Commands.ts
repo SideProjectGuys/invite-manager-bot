@@ -334,7 +334,7 @@ export class Commands {
 			const hasVal = typeof rawVal !== 'undefined';
 
 			if (flag.valueRequired && !hasVal) {
-				this.client.sendReply(
+				this.client.msg.sendReply(
 					message,
 					`Missing required value for flag \`${flag.name}\`.\n` +
 						`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
@@ -350,7 +350,7 @@ export class Commands {
 				try {
 					val = await resolver.resolve(rawVal, context, []);
 				} catch (e) {
-					this.client.sendReply(
+					this.client.msg.sendReply(
 						message,
 						`Invalid value for \`${flag.name}\`: ${e.message}\n` +
 							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
