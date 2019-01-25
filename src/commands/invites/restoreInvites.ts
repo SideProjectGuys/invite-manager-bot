@@ -76,6 +76,6 @@ export default class extends Command {
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.client.sendReply(message, t('cmd.restoreInvites.done'));
+		return this.sendReply(message, t('cmd.restoreInvites.done'));
 	}
 }

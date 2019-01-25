@@ -20,7 +20,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		const params = [];
 		params.push(`origin=getbot`);
@@ -33,6 +33,6 @@ export default class extends Command {
 			`[${t('cmd.getBot.title')}]` +
 			`(https://invitemanager.co/add-bot?${params.join('&')})`;
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

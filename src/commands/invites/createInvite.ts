@@ -37,7 +37,7 @@ export default class extends Command {
 		const channel = _channel ? _channel : (message.channel as TextChannel);
 
 		if (!channel.permissionsOf(me.id).has(Permissions.CREATE_INSTANT_INVITE)) {
-			return this.client.sendReply(message, t('permissions.createInviteCode'));
+			return this.sendReply(message, t('permissions.createInviteCode'));
 		}
 
 		// TODO: Eris typescript is missing the 'unique' parameter
@@ -75,7 +75,7 @@ export default class extends Command {
 			name
 		);
 
-		this.client.sendReply(
+		this.sendReply(
 			message,
 			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,

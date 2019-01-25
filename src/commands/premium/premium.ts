@@ -45,7 +45,7 @@ export default class extends Command {
 		const lang = settings.lang;
 		const guildId = guild ? guild.id : undefined;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		const sub = await premiumSubscriptions.findOne({
 			where: {
@@ -242,6 +242,6 @@ export default class extends Command {
 			}
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

@@ -361,7 +361,7 @@ export class Moderation {
 		amount: number,
 		extra?: { name: string; value: string }[]
 	) {
-		const logEmbed = this.client.createEmbed({
+		const logEmbed = this.client.msg.createEmbed({
 			author: { name: 'AutoModerator' },
 			color: 16711680 // red
 		});
@@ -752,7 +752,7 @@ export class Moderation {
 		) {
 			return;
 		}
-		const reply = await this.client.sendReply(message, embed);
+		const reply = await this.client.msg.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(
 				() => reply.delete(),
@@ -763,7 +763,7 @@ export class Moderation {
 
 	public createPunishmentEmbed(name: string, icon?: string) {
 		const object = icon ? { name: name, icon_url: icon } : { name: name };
-		const embed = this.client.createEmbed({
+		const embed = this.client.msg.createEmbed({
 			author: object,
 			description: ''
 		});
@@ -791,7 +791,7 @@ export class Moderation {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.createEmbed({
+					const embed = this.client.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{
@@ -841,7 +841,7 @@ export class Moderation {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.createEmbed({
+					const embed = this.client.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{

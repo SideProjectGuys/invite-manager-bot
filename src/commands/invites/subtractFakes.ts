@@ -33,7 +33,7 @@ export default class extends Command {
 		});
 
 		if (maxJoins.length === 0) {
-			return this.client.sendReply(message, t('cmd.subtractFakes.none'));
+			return this.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
 		const jIds = maxJoins.map(j => j.id).join(', ');
@@ -50,6 +50,6 @@ export default class extends Command {
 			}
 		);
 
-		return this.client.sendReply(message, t('cmd.subtractFakes.done'));
+		return this.sendReply(message, t('cmd.subtractFakes.done'));
 	}
 }

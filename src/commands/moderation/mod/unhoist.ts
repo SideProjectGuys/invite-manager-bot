@@ -30,12 +30,12 @@ export default class extends Command {
 		let lastId: string = undefined;
 		const batches = Math.ceil(guild.memberCount / 1000);
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.unhoist.title'),
 			description: t('cmd.unhoist.starting')
 		});
 
-		const msg = await this.client.sendReply(message, embed);
+		const msg = await this.sendReply(message, embed);
 
 		let changed = 0;
 		let ignored = 0;

@@ -32,7 +32,7 @@ export default class extends Command {
 		let output = '';
 
 		if (rs.length === 0) {
-			return this.client.sendReply(message, t('cmd.ranks.none'));
+			return this.sendReply(message, t('cmd.ranks.none'));
 		} else {
 			rs.forEach(r => {
 				output +=
@@ -42,12 +42,12 @@ export default class extends Command {
 						description: r.description
 					}) + '\n';
 			});
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				title: t('cmd.ranks.title'),
 				description: output
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 	}
 }

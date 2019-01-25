@@ -34,6 +34,6 @@ export default class extends Command {
 			}
 		);
 
-		return this.client.sendReply(message, t('cmd.subtractLeaves.done'));
+		return this.sendReply(message, t('cmd.subtractLeaves.done'));
 	}
 }

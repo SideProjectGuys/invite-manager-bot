@@ -41,7 +41,7 @@ export default class extends Command {
 		});
 
 		if (invs.length === 0) {
-			this.client.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
+			this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
 			return;
 		}
 
@@ -66,6 +66,6 @@ export default class extends Command {
 				}) + '\n';
 		}
 
-		this.client.sendReply(message, invText);
+		this.sendReply(message, invText);
 	}
 }

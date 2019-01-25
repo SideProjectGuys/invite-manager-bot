@@ -128,6 +128,6 @@ export default class extends Command {
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.client.sendReply(message, t('cmd.clearInvites.done'));
+		return this.sendReply(message, t('cmd.clearInvites.done'));
 	}
 }

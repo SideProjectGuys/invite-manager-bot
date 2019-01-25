@@ -2,7 +2,6 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { generateLeaderboard } from '../../functions/Leaderboard';
 import { DurationResolver, NumberResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
@@ -53,7 +52,12 @@ export default class extends Command {
 
 		const hideLeft = settings.hideLeftMembersFromLeaderboard;
 
-		const { keys, oldKeys, invs, stillInServer } = await generateLeaderboard(
+		const {
+			keys,
+			oldKeys,
+			invs,
+			stillInServer
+		} = await this.client.invs.generateLeaderboard(
 			guild,
 			hideLeft,
 			from,
@@ -66,11 +70,11 @@ export default class extends Command {
 		});
 
 		if (keys.length === 0) {
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				title: t('cmd.leaderboard.title'),
 				description: fromText + '\n\n**' + t('cmd.leaderboard.noInvites') + '**'
 			});
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const maxPage = Math.ceil(keys.length / usersPerPage);
@@ -79,7 +83,7 @@ export default class extends Command {
 		const style: LeaderboardStyle = settings.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
-		this.client.showPaginated(message, p, maxPage, page => {
+		this.showPaginated(message, p, maxPage, page => {
 			const compText = t('cmd.leaderboard.comparedTo', {
 				to: `**${comp.locale(settings.lang).fromNow()}**`
 			});
@@ -181,7 +185,7 @@ export default class extends Command {
 				str += '\n```\n' + t('cmd.leaderboard.legend');
 			}
 
-			return this.client.createEmbed({
+			return this.createEmbed({
 				title: t('cmd.leaderboard.title'),
 				description: str
 			});

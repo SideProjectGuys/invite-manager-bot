@@ -108,7 +108,7 @@ export default class extends Command {
 			permanentInvites[0]
 		);
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.inviteCodes.title', { guild: guild.name })
 		});
 
@@ -175,7 +175,7 @@ export default class extends Command {
 			});
 		}
 
-		this.client.sendEmbed(await message.author.getDMChannel(), embed);
+		this.sendEmbed(await message.author.getDMChannel(), embed);
 		message.channel.createMessage(
 			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
 		);

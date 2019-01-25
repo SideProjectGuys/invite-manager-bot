@@ -53,7 +53,7 @@ export default class extends Command {
 				raw: true
 			});
 
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
@@ -91,7 +91,7 @@ export default class extends Command {
 				});
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const cmds = [rawCmd];
@@ -127,7 +127,7 @@ export default class extends Command {
 		*/
 
 		if (!cmds.length) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.permissions.invalidCommand', {
 					cmd: rawCmd,
@@ -166,7 +166,7 @@ export default class extends Command {
 				raw: true
 			});
 
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
 			});
 
@@ -191,7 +191,7 @@ export default class extends Command {
 				});
 			}
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (
@@ -201,7 +201,7 @@ export default class extends Command {
 			cmds.find(c => c.name === BotCommand.permissions) ||
 			cmds.find(c => c.name === BotCommand.addRank)
 		) {
-			return this.client.sendReply(message, t('cmd.permissions.canNotChange'));
+			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
 		const oldPerms = await rolePermissions.findAll({
@@ -214,7 +214,7 @@ export default class extends Command {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			this.client.sendReply(
+			this.sendReply(
 				message,
 				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
@@ -237,7 +237,7 @@ export default class extends Command {
 				}))
 			);
 
-			this.client.sendReply(
+			this.sendReply(
 				message,
 				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,

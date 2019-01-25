@@ -60,7 +60,7 @@ export default class extends Command {
 	): Promise<any> {
 		const lang = settings.lang;
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: `${user.username}#${user.discriminator}`
 		});
 
@@ -110,7 +110,7 @@ export default class extends Command {
 			const maxPage = Math.ceil(bonusInvs.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-			return this.client.showPaginated(message, p, maxPage, page => {
+			return this.showPaginated(message, p, maxPage, page => {
 				let customInvText = '';
 
 				bonusInvs
@@ -143,13 +143,13 @@ export default class extends Command {
 					name: t('cmd.info.invitedMembers.title'),
 					value: t('cmd.info.invitedMembers.none')
 				});
-				return this.client.sendReply(message, embed);
+				return this.sendReply(message, embed);
 			}
 
 			const maxPage = Math.ceil(invitedMembers.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-			return this.client.showPaginated(message, p, maxPage, page => {
+			return this.showPaginated(message, p, maxPage, page => {
 				let inviteText = '';
 				invitedMembers
 					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
@@ -525,6 +525,6 @@ export default class extends Command {
 			});
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }
