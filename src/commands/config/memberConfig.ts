@@ -2,7 +2,6 @@ import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import {
-	BasicUser,
 	EnumResolver,
 	SettingsValueResolver,
 	UserResolver
@@ -14,7 +13,7 @@ import {
 	fromDbValue,
 	memberSettingsInfo
 } from '../../settings';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {

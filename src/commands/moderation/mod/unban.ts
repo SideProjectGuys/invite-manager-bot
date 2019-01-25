@@ -1,8 +1,13 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BasicUser, StringResolver, UserResolver } from '../../../resolvers';
-import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
+import { StringResolver, UserResolver } from '../../../resolvers';
+import {
+	BasicUser,
+	CommandGroup,
+	ModerationCommand,
+	Permissions
+} from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -39,9 +44,14 @@ export default class extends Command {
 			return;
 		}
 
+		let targetMember = guild.members.get(targetUser.id);
+		if (!targetMember) {
+			targetMember = await guild.getRESTMember(targetUser.id);
+		}
+
 		const embed = this.client.mod.createPunishmentEmbed(
 			targetUser.username,
-			targetUser.avatarURL
+			targetMember ? targetMember.avatarURL : null
 		);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
@@ -54,7 +64,7 @@ export default class extends Command {
 			} else {
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetUser.username,
-					targetUser.avatarURL
+					targetMember ? targetMember.avatarURL : null
 				);
 
 				const usr =

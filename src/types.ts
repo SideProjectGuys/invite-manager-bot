@@ -1,3 +1,10 @@
+export interface BasicUser {
+	id: string;
+	createdAt: number;
+	username: string;
+	discriminator: string;
+}
+
 export enum Permissions {
 	ADMINISTRATOR = 'administrator',
 	READ_MESSAGES = 'readMessages',

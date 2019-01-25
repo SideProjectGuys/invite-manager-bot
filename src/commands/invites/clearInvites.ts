@@ -3,12 +3,7 @@ import { Moment } from 'moment';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import {
-	BasicUser,
-	BooleanResolver,
-	DateResolver,
-	UserResolver
-} from '../../resolvers';
+import { BooleanResolver, DateResolver, UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	inviteCodes,
@@ -16,7 +11,7 @@ import {
 	LogAction,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {

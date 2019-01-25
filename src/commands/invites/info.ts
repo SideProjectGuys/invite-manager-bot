@@ -3,12 +3,7 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import {
-	BasicUser,
-	EnumResolver,
-	NumberResolver,
-	UserResolver
-} from '../../resolvers';
+import { EnumResolver, NumberResolver, UserResolver } from '../../resolvers';
 import {
 	customInvites,
 	inviteCodes,
@@ -17,7 +12,7 @@ import {
 	members,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 const ENTRIES_PER_PAGE = 20;

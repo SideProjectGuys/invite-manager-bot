@@ -1,8 +1,8 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BasicUser, NumberResolver, UserResolver } from '../../../resolvers';
-import { ModerationCommand } from '../../../types';
+import { NumberResolver, UserResolver } from '../../../resolvers';
+import { BasicUser, ModerationCommand } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
