@@ -24,11 +24,31 @@ export type InternalSettingsTypes =
 
 export interface SettingsInfo {
 	type: InternalSettingsTypes;
-	grouping: string[];
+	grouping: SettingsGroup[];
 	defaultValue: any;
 	exampleValues?: string[];
 	possibleValues?: string[];
 	hasPremiumInfo?: boolean;
+}
+
+export enum SettingsGroup {
+	general = 'general',
+	invites = 'invites',
+	moderation = 'moderation',
+	joins = 'joins',
+	leaves = 'leaves',
+	leaderboard = 'leaderboard',
+	fakes = 'fakes',
+	ranks = 'ranks',
+	captcha = 'captcha',
+	logging = 'logging',
+	links = 'links',
+	bannedWords = 'bannedWords',
+	caps = 'caps',
+	duplicate = 'duplicate',
+	spam = 'spam',
+	mentions = 'mentions',
+	emojis = 'emojis'
 }
 
 // ------------------------------------
@@ -121,100 +141,100 @@ export type SettingsObject = {
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	prefix: {
 		type: 'String',
-		grouping: ['general'],
+		grouping: [SettingsGroup.general],
 		defaultValue: '!',
 		exampleValues: ['+', '>']
 	},
 	lang: {
 		type: 'Enum<Lang>',
-		grouping: ['general'],
+		grouping: [SettingsGroup.general],
 		defaultValue: Lang.en,
 		possibleValues: Object.values(Lang)
 	},
 	logChannel: {
 		type: 'Channel',
-		grouping: ['general'],
+		grouping: [SettingsGroup.general],
 		defaultValue: null,
 		exampleValues: ['#channel']
 	},
 	getUpdates: {
 		type: 'Boolean',
-		grouping: ['general'],
+		grouping: [SettingsGroup.general],
 		defaultValue: true
 	},
 
 	joinMessage: {
 		type: 'String',
-		grouping: ['invites', 'joins'],
+		grouping: [SettingsGroup.invites, SettingsGroup.joins],
 		defaultValue:
 			'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 		hasPremiumInfo: true
 	},
 	joinMessageChannel: {
 		type: 'Channel',
-		grouping: ['invites', 'joins'],
+		grouping: [SettingsGroup.invites, SettingsGroup.joins],
 		defaultValue: null,
 		exampleValues: ['#general', '#joins']
 	},
 	leaveMessage: {
 		type: 'String',
-		grouping: ['invites', 'leaves'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaves],
 		defaultValue: '{memberName} **left**; Invited by **{inviterName}**',
 		exampleValues: ['', ''],
 		hasPremiumInfo: true
 	},
 	leaveMessageChannel: {
 		type: 'Channel',
-		grouping: ['invites', 'leaves'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaves],
 		defaultValue: null,
 		exampleValues: ['#general', '#leaves']
 	},
 
 	leaderboardStyle: {
 		type: 'Enum<LeaderboardStyle>',
-		grouping: ['invites', 'leaderboard'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaderboard],
 		defaultValue: LeaderboardStyle.normal,
 		possibleValues: Object.values(LeaderboardStyle)
 	},
 	hideLeftMembersFromLeaderboard: {
 		type: 'Boolean',
-		grouping: ['invites', 'leaderboard'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaderboard],
 		defaultValue: true
 	},
 
 	autoSubtractFakes: {
 		type: 'Boolean',
-		grouping: ['invites', 'fakes'],
+		grouping: [SettingsGroup.invites, SettingsGroup.fakes],
 		defaultValue: true
 	},
 	autoSubtractLeaves: {
 		type: 'Boolean',
-		grouping: ['invites', 'leaves'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaves],
 		defaultValue: true
 	},
 
 	autoSubtractLeaveThreshold: {
 		type: 'Number' /* seconds */,
-		grouping: ['invites', 'leaves'],
+		grouping: [SettingsGroup.invites, SettingsGroup.leaves],
 		defaultValue: 600,
 		exampleValues: ['60', '3600']
 	},
 
 	rankAssignmentStyle: {
 		type: 'Enum<RankAssignmentStyle>',
-		grouping: ['invites', 'ranks'],
+		grouping: [SettingsGroup.invites, SettingsGroup.ranks],
 		defaultValue: RankAssignmentStyle.all,
 		possibleValues: Object.values(RankAssignmentStyle)
 	},
 	rankAnnouncementChannel: {
 		type: 'Channel',
-		grouping: ['invites', 'ranks'],
+		grouping: [SettingsGroup.invites, SettingsGroup.ranks],
 		defaultValue: null,
 		exampleValues: ['', '']
 	},
 	rankAnnouncementMessage: {
 		type: 'String',
-		grouping: ['invites', 'ranks'],
+		grouping: [SettingsGroup.invites, SettingsGroup.ranks],
 		defaultValue:
 			'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 		exampleValues: ['', ''],
@@ -223,13 +243,13 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 
 	captchaVerificationOnJoin: {
 		type: 'Boolean',
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue: false,
 		hasPremiumInfo: true
 	},
 	captchaVerificationWelcomeMessage: {
 		type: 'String',
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue:
 			'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
 		exampleValues: ['Welcome, please enter the captcha below!'],
@@ -237,7 +257,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationSuccessMessage: {
 		type: 'String',
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue:
 			'You have successfully entered the captcha. Welcome to the server!',
 		exampleValues: ['Thanks for entering the captcha, enjoy our server!'],
@@ -245,7 +265,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationFailedMessage: {
 		type: 'String',
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue:
 			'You did not enter the captha right within the specified time.' +
 			`We're sorry, but we have to kick you from the server. Feel free to join again.`,
@@ -256,241 +276,241 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	},
 	captchaVerificationTimeout: {
 		type: 'Number' /* seconds */,
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue: 180,
 		exampleValues: ['60', '600'],
 		hasPremiumInfo: true
 	},
 	captchaVerificationLogEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'captcha'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
 		defaultValue: true,
 		hasPremiumInfo: true
 	},
 
 	autoModEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: false
 	},
 	autoModModeratedChannels: {
 		type: 'Channel[]',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: [],
 		exampleValues: ['#general', '#support,#help']
 	},
 	autoModModeratedRoles: {
 		type: 'Role[]',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: [],
 		exampleValues: ['@NewMembers', '@Newbies,@Starters']
 	},
 	autoModIgnoredChannels: {
 		type: 'Channel[]',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: [],
 		exampleValues: ['#general', '#off-topic,#nsfw']
 	},
 	autoModIgnoredRoles: {
 		type: 'Role[]',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: [],
 		exampleValues: ['@TrustedMembers', '@Moderators,@Staff']
 	},
 	mutedRole: {
 		type: 'Role',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: null,
 		exampleValues: ['@muted']
 	},
 	autoModDisabledForOldMembers: {
 		type: 'Boolean',
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: false
 	},
 	autoModDisabledForOldMembersThreshold: {
 		type: 'Number' /* seconds */,
-		grouping: ['moderation', 'general'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.general],
 		defaultValue: 604800 /* 1 week */,
 		exampleValues: ['604800` (1 week)`', '2419200` (1 month)`']
 	},
 
 	autoModLogEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	modLogChannel: {
 		type: 'Channel',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: null,
 		exampleValues: ['#channel', '#logs']
 	},
 	autoModDeleteBotMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	autoModDeleteBotMessageTimeoutInSeconds: {
 		type: 'Number',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: 5,
 		exampleValues: ['5', '10']
 	},
 	modPunishmentBanDeleteMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	modPunishmentKickDeleteMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	modPunishmentSoftbanDeleteMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	modPunishmentWarnDeleteMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 	modPunishmentMuteDeleteMessage: {
 		type: 'Boolean',
-		grouping: ['moderation', 'logging'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.logging],
 		defaultValue: true
 	},
 
 	autoModInvitesEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'invites'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.invites],
 		defaultValue: true
 	},
 
 	autoModLinksEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'links'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.links],
 		defaultValue: true
 	},
 	autoModLinksWhitelist: {
 		type: 'String[]',
-		grouping: ['moderation', 'links'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.links],
 		defaultValue: [],
 		exampleValues: ['discordbots.org', 'youtube.com,twitch.com']
 	},
 	autoModLinksBlacklist: {
 		type: 'String[]',
-		grouping: ['moderation', 'links'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.links],
 		defaultValue: [],
 		exampleValues: ['google.com', 'twitch.com,youtube.com']
 	},
 	autoModLinksFollowRedirects: {
 		type: 'Boolean',
-		grouping: ['moderation', 'links'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.links],
 		defaultValue: true,
 		hasPremiumInfo: true
 	},
 
 	autoModWordsEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'bannedWords'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.bannedWords],
 		defaultValue: true
 	},
 	autoModWordsBlacklist: {
 		type: 'String[]',
-		grouping: ['moderation', 'bannedWords'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.bannedWords],
 		defaultValue: [],
 		exampleValues: ['gay', 'stupid,fuck']
 	},
 
 	autoModAllCapsEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'caps'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.caps],
 		defaultValue: true
 	},
 	autoModAllCapsMinCharacters: {
 		type: 'Number',
-		grouping: ['moderation', 'caps'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.caps],
 		defaultValue: 10,
 		exampleValues: ['5', '15']
 	},
 	autoModAllCapsPercentageCaps: {
 		type: 'Number',
-		grouping: ['moderation', 'caps'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.caps],
 		defaultValue: 70,
 		exampleValues: ['50', '90']
 	},
 
 	autoModDuplicateTextEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'duplicate'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.duplicate],
 		defaultValue: true
 	},
 	autoModDuplicateTextTimeframeInSeconds: {
 		type: 'Number',
-		grouping: ['moderation', 'duplicate'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.duplicate],
 		defaultValue: 30,
 		exampleValues: ['5', '20']
 	},
 
 	autoModQuickMessagesEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'spam'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.spam],
 		defaultValue: true
 	},
 	autoModQuickMessagesNumberOfMessages: {
 		type: 'Number',
-		grouping: ['moderation', 'spam'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.spam],
 		defaultValue: 5,
 		exampleValues: ['5', '10']
 	},
 	autoModQuickMessagesTimeframeInSeconds: {
 		type: 'Number',
-		grouping: ['moderation', 'spam'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.spam],
 		defaultValue: 3,
 		exampleValues: ['2', '10']
 	},
 
 	autoModMentionUsersEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'mentions'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.mentions],
 		defaultValue: true
 	},
 	autoModMentionUsersMaxNumberOfMentions: {
 		type: 'Number',
-		grouping: ['moderation', 'mentions'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.mentions],
 		defaultValue: 5,
 		exampleValues: ['2', '5']
 	},
 	autoModMentionRolesEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'mentions'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.mentions],
 		defaultValue: true
 	},
 	autoModMentionRolesMaxNumberOfMentions: {
 		type: 'Number',
-		grouping: ['moderation', 'mentions'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.mentions],
 		defaultValue: 3,
 		exampleValues: ['2', '5']
 	},
 
 	autoModEmojisEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'emojis'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: true
 	},
 	autoModEmojisMaxNumberOfEmojis: {
 		type: 'Number',
-		grouping: ['moderation', 'emojis'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: 5,
 		exampleValues: ['5', '10']
 	},
 
 	autoModHoistEnabled: {
 		type: 'Boolean',
-		grouping: ['moderation', 'emojis'],
+		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: true
 	}
 };
@@ -510,7 +530,7 @@ export type MemberSettingsObject = {
 export const memberSettingsInfo: { [k in MemberSettingsKey]: SettingsInfo } = {
 	hideFromLeaderboard: {
 		type: 'Boolean',
-		grouping: ['invites'],
+		grouping: [SettingsGroup.invites],
 		defaultValue: false
 	}
 };
@@ -534,12 +554,12 @@ export const inviteCodeSettingsInfo: {
 } = {
 	name: {
 		type: 'String',
-		grouping: ['invites'],
+		grouping: [SettingsGroup.invites],
 		defaultValue: null
 	},
 	roles: {
 		type: 'Role[]',
-		grouping: ['invites'],
+		grouping: [SettingsGroup.invites],
 		defaultValue: []
 	}
 };
