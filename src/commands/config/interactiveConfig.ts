@@ -60,14 +60,14 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
 
 		message.delete();
 
-		const msg = await this.client.sendReply(message, embed);
+		const msg = await this.sendReply(message, embed);
 
 		for (let i = 0; i < this.choices.length; i++) {
 			msg.addReaction(this.choices[i]);
@@ -286,7 +286,7 @@ export default class extends Command {
 				let newVal = undefined;
 				if (choice === 0) {
 					// Add item
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description + '**' + context.t('cmd.interactiveConfig.add') + '**'
@@ -309,7 +309,7 @@ export default class extends Command {
 					}
 
 					// Remove item
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description +
@@ -328,7 +328,7 @@ export default class extends Command {
 					}
 				} else if (choice === 2) {
 					// Set list
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description + '**' + context.t('cmd.interactiveConfig.set') + '**'
@@ -362,7 +362,7 @@ export default class extends Command {
 				}
 			} else {
 				// Change a non-list setting
-				const embed = this.client.createEmbed({
+				const embed = this.createEmbed({
 					title,
 					description:
 						description + '**' + context.t('cmd.interactiveConfig.new') + '**'
@@ -458,7 +458,7 @@ export default class extends Command {
 		items: { title: string; description: string }[]
 	) {
 		const t = context.t;
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title,
 			description: t('cmd.interactiveConfig.welcome') + '\n\n' + description,
 			fields: items.map((item, i) => ({

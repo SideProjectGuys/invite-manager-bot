@@ -15,7 +15,8 @@ import moment from 'moment';
 import { IMClient } from '../client';
 import { joins } from '../sequelize';
 import { PromptResult, RabbitMqMember } from '../types';
-import { getInviteCounts, InviteCounts } from '../util';
+
+import { InviteCounts } from './Invites';
 
 const upSymbol = '🔺';
 const downSymbol = '🔻';
@@ -107,7 +108,7 @@ export class Messaging {
 				? this.createEmbed({ description: embed })
 				: embed;
 
-		return new Promise<Message | Message[]>((resolve, reject) => {
+		return new Promise<Message>((resolve, reject) => {
 			target
 				.createMessage({ embed: e })
 				.then(resolve)
@@ -249,7 +250,7 @@ export class Messaging {
 			template.indexOf('{numFakeInvites}') >= 0 ||
 			template.indexOf('{numLeaveInvites}') >= 0
 		) {
-			invites = await getInviteCounts(guild.id, inviterId);
+			invites = await this.client.invs.getInviteCounts(guild.id, inviterId);
 		}
 
 		let numJoins = 0;
@@ -302,8 +303,8 @@ export class Messaging {
 		const inviterFullName = inviter
 			? inviter.user.username + '#' + inviter.user.discriminator
 			: inviterName
-				? inviterName + '#' + inviterDiscriminator
-				: unknown;
+			? inviterName + '#' + inviterDiscriminator
+			: unknown;
 
 		let memberName = member.nick ? member.nick : member.user.username;
 		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
@@ -410,11 +411,7 @@ export class Messaging {
 			}
 		} else {
 			author = prevMsg.author;
-			prevMsg = await this.client.sendEmbed(
-				prevMsg.channel,
-				embed,
-				prevMsg.author
-			);
+			prevMsg = await this.sendEmbed(prevMsg.channel, embed, prevMsg.author);
 		}
 
 		// Don't paginate for sudo messages

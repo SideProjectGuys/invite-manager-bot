@@ -35,7 +35,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: user.username
 		});
 
@@ -110,6 +110,6 @@ export default class extends Command {
 			embed.description = t('cmd.check.noHistory');
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

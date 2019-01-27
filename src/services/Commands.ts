@@ -151,10 +151,10 @@ export class Commands {
 						`To invite me to your own server, just click here: https://invitemanager.co/add-bot?origin=initial-dm \n\n` +
 						`If you need help, you can either write me here (try "help") or join our discord support server: ` +
 						`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
-					const embed = this.client.createEmbed({
+					const embed = this.client.msg.createEmbed({
 						description: initialMessage
 					});
-					await this.client.sendEmbed(await user.getDMChannel(), embed);
+					await this.client.msg.sendEmbed(await user.getDMChannel(), embed);
 				}
 
 				/* TODO: Send DMs
@@ -193,7 +193,7 @@ export class Commands {
 				if (!lastCall.warned) {
 					lastCall.warned = true;
 					lastCall.last = now + cooldown * 1000;
-					this.client.sendReply(
+					this.client.msg.sendReply(
 						message,
 						t('permissions.rateLimit', {
 							cooldown: cooldown.toString()
@@ -215,7 +215,7 @@ export class Commands {
 			: false;
 
 		if (!isPremium && cmd.premiumOnly) {
-			this.client.sendReply(message, t('permissions.premiumOnly'));
+			this.client.msg.sendReply(message, t('permissions.premiumOnly'));
 			return;
 		}
 
@@ -235,7 +235,7 @@ export class Commands {
 				console.error(
 					`Could not get member ${message.author.id} for ${guild.id}`
 				);
-				this.client.sendReply(message, t('permissions.memberError'));
+				this.client.msg.sendReply(message, t('permissions.memberError'));
 				return;
 			}
 
@@ -251,7 +251,7 @@ export class Commands {
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
 					if (!perms.some(p => member.roles.indexOf(p) >= 0)) {
-						this.client.sendReply(
+						this.client.msg.sendReply(
 							message,
 							t('permissions.role', {
 								roles: perms.map(p => `<@&${p}>`).join(', ')
@@ -261,7 +261,7 @@ export class Commands {
 					}
 				} else if (cmd.strict) {
 					// Allow commands that require no roles, if strict is not true
-					this.client.sendReply(message, t('permissions.adminOnly'));
+					this.client.msg.sendReply(message, t('permissions.adminOnly'));
 					return;
 				}
 			}
@@ -386,7 +386,7 @@ export class Commands {
 				const val = await resolver.resolve(rawVal, context, args);
 
 				if (typeof val === typeof undefined && arg.required) {
-					this.client.sendReply(
+					this.client.msg.sendReply(
 						message,
 						t('arguments.missingRequired', {
 							name: arg.name,
@@ -399,7 +399,7 @@ export class Commands {
 
 				args.push(val);
 			} catch (e) {
-				this.client.sendReply(
+				this.client.msg.sendReply(
 					message,
 					t('arguments.invalid', {
 						name: arg.name,
@@ -420,7 +420,7 @@ export class Commands {
 			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
-			this.client.sendReply(message, t('cmd.error'));
+			this.client.msg.sendReply(message, t('cmd.error'));
 			return;
 		}
 

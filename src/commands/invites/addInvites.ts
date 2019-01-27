@@ -9,7 +9,6 @@ import {
 } from '../../resolvers';
 import { customInvites, LogAction, members } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
-import { getInviteCounts, promoteIfQualified } from '../../util';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -47,10 +46,10 @@ export default class extends Command {
 		{ guild, t, me }: Context
 	): Promise<any> {
 		if (amount === 0) {
-			return this.client.sendReply(message, t('cmd.addInvites.zero'));
+			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
 
-		const invites = await getInviteCounts(guild.id, user.id);
+		const invites = await this.client.invs.getInviteCounts(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
 		await members.insertOrUpdate({
@@ -76,7 +75,7 @@ export default class extends Command {
 			reason
 		});
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: user.username
 		});
 
@@ -102,8 +101,7 @@ export default class extends Command {
 		// Promote the member if it's not a bot
 		// and if the member is still in the guild
 		if (member && !member.bot) {
-			const promoteInfo = await promoteIfQualified(
-				this.client,
+			const promoteInfo = await this.client.invs.promoteIfQualified(
 				guild,
 				member,
 				me,
@@ -139,6 +137,6 @@ export default class extends Command {
 
 		embed.description = descr;
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

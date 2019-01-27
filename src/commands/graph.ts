@@ -167,7 +167,7 @@ export default class extends Command {
 
 		let chart = new Chart();
 		chart.getChart('line', config).then((buffer: Buffer) => {
-			const embed = this.client.createEmbed({
+			const embed = this.createEmbed({
 				title,
 				description,
 				image: {

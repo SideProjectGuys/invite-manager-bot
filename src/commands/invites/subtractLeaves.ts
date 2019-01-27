@@ -101,5 +101,7 @@ export default class extends Command {
 			message,
 			t('cmd.subtractLeaves.done', { total: customInvs.length })
 		);
+
+		return this.sendReply(message, t('cmd.subtractLeaves.done'));
 	}
 }

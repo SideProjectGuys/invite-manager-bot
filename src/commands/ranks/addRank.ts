@@ -57,7 +57,7 @@ export default class extends Command {
 		});
 		// Check if we are higher then the role we want to assign
 		if (myRole.position < role.position) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.addRank.roleTooHigh', { role: role.name, myRole: myRole.name })
 			);
@@ -107,7 +107,7 @@ export default class extends Command {
 		);
 
 		if (!isNew) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.addRank.updated', {
 					role: `<@&${role.id}>`,
@@ -116,7 +116,7 @@ export default class extends Command {
 				})
 			);
 		} else {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.addRank.created', {
 					role: `<@&${role.id}>`,

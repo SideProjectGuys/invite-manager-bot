@@ -30,7 +30,7 @@ export default class extends Command {
 		{ t, me, guild }: Context
 	): Promise<any> {
 		if (role.mentionable) {
-			return this.client.sendReply(
+			return this.sendReply(
 				message,
 				t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` })
 			);
@@ -44,7 +44,7 @@ export default class extends Command {
 			});
 			// Check if we are higher then the role we want to edit
 			if (myRole.position < role.position) {
-				return this.client.sendReply(
+				return this.sendReply(
 					message,
 					t('cmd.mentionRole.roleTooHigh', {
 						role: role.name,

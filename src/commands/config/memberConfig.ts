@@ -51,7 +51,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.memberConfig.title');
@@ -63,7 +63,7 @@ export default class extends Command {
 				value: keys.join('\n')
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (!user) {
@@ -78,7 +78,7 @@ export default class extends Command {
 			} else {
 				embed.description = t('cmd.memberConfig.notSet');
 			}
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const memSettings = await this.client.cache.members.getOne(
@@ -116,12 +116,12 @@ export default class extends Command {
 					key
 				});
 			}
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		if (value === null) {
 			if (!canClear(key)) {
-				this.client.sendReply(
+				this.sendReply(
 					message,
 					t('cmd.memberConfig.canNotClear', { prefix, key })
 				);
@@ -130,7 +130,7 @@ export default class extends Command {
 			// Only validate the config setting if we're not resetting or clearing it
 			const error = this.validate(key, value, context);
 			if (error) {
-				return this.client.sendReply(message, error);
+				return this.sendReply(message, error);
 			}
 		}
 
@@ -149,7 +149,7 @@ export default class extends Command {
 				name: t('cmd.memberConfig.current.title'),
 				value: beautify(key, oldVal)
 			});
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		embed.description = t('cmd.memberConfig.changed.text', { prefix, key });
@@ -176,7 +176,7 @@ export default class extends Command {
 		// Do any post processing, such as example messages
 		const cb = await this.after(message, embed, key, value, context);
 
-		await this.client.sendReply(message, embed);
+		await this.sendReply(message, embed);
 
 		if (typeof cb === typeof Function) {
 			await cb();

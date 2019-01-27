@@ -53,9 +53,6 @@ export default class extends Command {
 			num
 		});
 
-		return this.client.sendReply(
-			message,
-			t('cmd.restoreInvites.done', { user: user ? user.id : undefined })
-		);
+		return this.sendReply(message, t('cmd.restoreInvites.done'));
 	}
 }

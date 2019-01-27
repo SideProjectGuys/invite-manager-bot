@@ -3,6 +3,12 @@ import { Guild, Member, Message } from 'eris';
 import { IMClient } from '../client';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
+import {
+	CreateEmbedFunc,
+	SendEmbedFunc,
+	SendReplyFunc,
+	ShowPaginatedFunc
+} from '../services/Messaging';
 import { SettingsObject } from '../settings';
 import { BotCommand, CommandGroup, ModerationCommand } from '../types';
 
@@ -62,6 +68,11 @@ export abstract class Command {
 	public guildOnly: boolean;
 	public premiumOnly?: boolean;
 
+	protected createEmbed: CreateEmbedFunc;
+	protected sendReply: SendReplyFunc;
+	protected sendEmbed: SendEmbedFunc;
+	protected showPaginated: ShowPaginatedFunc;
+
 	public constructor(client: IMClient, props: CommandOptions) {
 		this.client = client;
 		this.name = props.name;
@@ -105,6 +116,11 @@ export abstract class Command {
 
 			this.usage += arg.required ? `<${arg.name}> ` : `[${arg.name}] `;
 		});
+
+		this.createEmbed = client.msg.createEmbed.bind(client.msg);
+		this.sendReply = client.msg.sendReply.bind(client.msg);
+		this.sendEmbed = client.msg.sendEmbed.bind(client.msg);
+		this.showPaginated = client.msg.showPaginated.bind(client.msg);
 	}
 
 	public getInfo(context: Context) {

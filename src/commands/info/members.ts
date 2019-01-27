@@ -43,7 +43,7 @@ export default class extends Command {
 			m => todayTimestamp - m.joinedAt < ONE_MONTH
 		).length;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 		embed.fields.push({
 			name: t('cmd.members.members'),
 			value: guild.memberCount.toString(),
@@ -80,6 +80,6 @@ export default class extends Command {
 			inline: true
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

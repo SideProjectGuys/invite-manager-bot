@@ -28,7 +28,7 @@ export default class extends Command {
 	): Promise<any> {
 		const prefix = settings.prefix;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		const trialDuration = moment.duration(1, 'week');
 		const validUntil = moment().add(trialDuration);
@@ -41,23 +41,23 @@ export default class extends Command {
 				prefix
 			});
 		} else {
-			const promptEmbed = this.client.createEmbed();
+			const promptEmbed = this.createEmbed();
 
 			promptEmbed.description = t('cmd.tryPremium.text', {
 				duration: trialDuration.humanize()
 			});
 
-			await this.client.sendReply(message, promptEmbed);
+			await this.sendReply(message, promptEmbed);
 
 			const [keyResult, keyValue] = await this.client.msg.prompt(
 				message,
 				t('cmd.tryPremium.prompt')
 			);
 			if (keyResult === PromptResult.TIMEOUT) {
-				return this.client.sendReply(message, t('prompt.timedOut'));
+				return this.sendReply(message, t('prompt.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return this.client.sendReply(message, t('prompt.canceled'));
+				return this.sendReply(message, t('prompt.canceled'));
 			}
 
 			const sub = await premiumSubscriptions.create({
@@ -82,7 +82,7 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {

@@ -50,7 +50,7 @@ export default class extends Command {
 		});
 
 		if (js.length === 0) {
-			return this.client.sendReply(message, t('cmd.subtractFakes.none'));
+			return this.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
 		// Delete old duplicate removals
@@ -82,5 +82,7 @@ export default class extends Command {
 			message,
 			t('cmd.subtractFakes.done', { total })
 		);
+
+		return this.sendReply(message, t('cmd.subtractFakes.done'));
 	}
 }

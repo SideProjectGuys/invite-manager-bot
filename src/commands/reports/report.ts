@@ -16,7 +16,7 @@ export default class extends Command {
 	}
 
 	public async action(message: Message): Promise<any> {
-		this.client.sendReply(message, 'Not implemented');
+		this.sendReply(message, 'Not implemented');
 	}
 }
 */

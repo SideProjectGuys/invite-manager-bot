@@ -34,7 +34,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: `Case: ${caseNumber}`
 		});
 
@@ -58,6 +58,6 @@ export default class extends Command {
 			embed.description = t('cmd.caseView.notFound');
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

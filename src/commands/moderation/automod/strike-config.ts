@@ -38,7 +38,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.strikeConfig.title')
 		});
 
@@ -93,6 +93,6 @@ export default class extends Command {
 		}
 
 		this.client.cache.strikes.flush(guild.id);
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

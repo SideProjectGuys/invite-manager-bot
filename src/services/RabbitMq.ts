@@ -16,7 +16,7 @@ import {
 	SettingsKey
 } from '../sequelize';
 import { RabbitMqMember, ShardCommand } from '../types';
-import { FakeChannel, getInviteCounts, promoteIfQualified } from '../util';
+import { FakeChannel } from '../util';
 
 interface ShardMessage {
 	id: string;
@@ -268,7 +268,7 @@ export class RabbitMq {
 		if (!inviter) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
-		const invites = await getInviteCounts(guild.id, inviterId);
+		const invites = await this.client.invs.getInviteCounts(guild.id, inviterId);
 
 		// Add any roles for this invite code
 		let mem = guild.members.get(member.id);
@@ -291,7 +291,12 @@ export class RabbitMq {
 			me = await guild.getRESTMember(this.client.user.id);
 		}
 		if (inviter && !inviter.user.bot) {
-			await promoteIfQualified(this.client, guild, inviter, me, invites.total);
+			await this.client.invs.promoteIfQualified(
+				guild,
+				inviter,
+				me,
+				invites.total
+			);
 		}
 
 		const channelName = jn['exactMatch.channel.name'];
@@ -655,7 +660,7 @@ export class RabbitMq {
 				const dmChannel = guild.channels.get(content.channelId) as TextChannel;
 				const sender = content.user;
 
-				const embed = this.client.createEmbed({
+				const embed = this.client.msg.createEmbed({
 					author: {
 						name: `${sender.username}#${sender.discriminator}`,
 						url: sender.avatarURL

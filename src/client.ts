@@ -16,6 +16,7 @@ import { guilds, LogAction, members } from './sequelize';
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
+import { InvitesService } from './services/Invites';
 import {
 	CreateEmbedFunc,
 	Messaging,
@@ -76,20 +77,16 @@ export class IMClient extends Client {
 	};
 	public dbQueue: DBQueue;
 
-	public msg: Messaging;
-	public createEmbed: CreateEmbedFunc;
-	public sendReply: SendReplyFunc;
-	public sendEmbed: SendEmbedFunc;
-	public showPaginated: ShowPaginatedFunc;
-
 	public rabbitmq: RabbitMq;
 	public shardId: number;
 	public shardCount: number;
 
+	public msg: Messaging;
 	public mod: Moderation;
 	public scheduler: Scheduler;
 	public cmds: Commands;
 	public captcha: CaptchaService;
+	public invs: InvitesService;
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
@@ -148,20 +145,16 @@ export class IMClient extends Client {
 		};
 		this.dbQueue = new DBQueue(this);
 
-		this.msg = new Messaging(this);
-		this.createEmbed = this.msg.createEmbed.bind(this.msg);
-		this.sendReply = this.msg.sendReply.bind(this.msg);
-		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
-		this.showPaginated = this.msg.showPaginated.bind(this.msg);
-
 		this.shardId = shardId;
 		this.shardCount = shardCount;
 		this.rabbitmq = new RabbitMq(this, conn);
 
+		this.msg = new Messaging(this);
 		this.mod = new Moderation(this);
 		this.scheduler = new Scheduler(this);
 		this.cmds = new Commands(this);
 		this.captcha = new CaptchaService(this);
+		this.invs = new InvitesService(this);
 
 		this.disabledGuilds = new Set();
 
@@ -340,7 +333,7 @@ export class IMClient extends Client {
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
 			if (logChannel) {
-				this.sendEmbed(logChannel, embed);
+				this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 	}
@@ -365,7 +358,7 @@ export class IMClient extends Client {
 					json = json.substr(0, 1000) + '...';
 				}
 
-				const embed = this.createEmbed({
+				const embed = this.msg.createEmbed({
 					title: 'Log Action',
 					fields: [
 						{
@@ -388,7 +381,7 @@ export class IMClient extends Client {
 						}
 					]
 				});
-				this.sendEmbed(logChannel, embed);
+				this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 
