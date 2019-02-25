@@ -412,8 +412,8 @@ export class IMClient extends Client {
 	}
 
 	public async getMembersCount() {
-		// If cached member count is older than 5 minutes, update it
-		if (Date.now() - this.membersCachedAt > 1000 * 60 * 60) {
+		// If cached member count is older than 12 hours, update it
+		if (Date.now() - this.membersCachedAt > 1000 * 60 * 60 * 12) {
 			console.log('Fetching guild & member count from DB...');
 			this.numMembers = await members.count();
 			this.membersCachedAt = Date.now();
@@ -422,8 +422,8 @@ export class IMClient extends Client {
 	}
 
 	public async getGuildsCount() {
-		// If cached guild count is older than 5 minutes, update it
-		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 60) {
+		// If cached guild count is older than 12 hours, update it
+		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 60 * 12) {
 			console.log('Fetching guild & member count from DB...');
 			this.numGuilds = await guilds.count({
 				where: {
