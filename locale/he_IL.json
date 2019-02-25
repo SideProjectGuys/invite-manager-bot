@@ -3,7 +3,7 @@
 		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
 		"enum": {
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"invalid": "Not a valid value."
+			"invalid": "ערך לא חוקי."
 		},
 		"user": {
 			"notFound": "משתמש לא נמצא.",
@@ -18,18 +18,18 @@
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "ערוץ לא נמצא.",
+			"notFound": "חדר לא נמצא.",
 			"multiple": "Multiple matching channels found. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "התפקיד לא נמצא.",
+			"notFound": "הדרגה לא נמצאה.",
 			"multiple": "Multiple matching roles found. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "Not a valid yes/no value."
+			"invalid": "ערך כן/לא לא חוקי."
 		},
 		"member": {
-			"notFound": "Member was not found.",
+			"notFound": "משתמש לא נמצא.",
 			"multiple": "Multiple matching members found. {{{ members }}}"
 		}
 	},
@@ -44,7 +44,7 @@
 			"title": "אתר הבוט"
 		},
 		"patreon": {
-			"title": "Patreon"
+			"title": "מנוי פטראון"
 		}
 	},
 	"cmd": {
@@ -79,22 +79,22 @@
 		},
 		"ban": {
 			"error": "There was an error banning this user:\n{{ error }}",
-			"done": "The user was successfully banned.",
-			"canNotBan": "אין ביכולתי לגרש את המשתמש הזה.",
+			"done": "המשתמש הזה הורחק בהצלחה.",
+			"canNotBan": "אני לא יכול להרחיק את המשתמש הזה.",
 			"self": {
 				"args": {
-					"user": "משתמש לגרש.",
+					"user": "משתמש להרחיק.",
 					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "למה המשתמש גורש."
+					"reason": "למה המשתמש הורחק."
 				},
-				"description": "Ban a member from the server."
+				"description": "להרחיק משתמש מהשרת הזה."
 			},
 			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
 		"botInfo": {
-			"version": "Version",
+			"version": "גרסה",
 			"uptime": "Uptime",
-			"guilds": "גילדות",
+			"guilds": "מדריכים",
 			"members": "חברים",
 			"shards": {
 				"current": "Current Shard",
@@ -120,7 +120,7 @@
 				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
 				"total": "Punishments Total"
 			},
-			"noHistory": "User does not have any history.",
+			"noHistory": "למשתמש הזה אין שום היסטוריה.",
 			"self": {
 				"args": {
 					"user": "משתמש לבדוק."
@@ -131,20 +131,20 @@
 		"clean": {
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
 			"error": "שגיאה",
-			"title": "Deleted Messages",
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
+			"title": "הודעות שנמחקו",
+			"text": "מחק {{amount}} הודעות. הודעה זו תימחק בעוד 5 שניות.",
 			"self": {
 				"description": "Clean a channel of certain message types.",
 				"args": {
 					"quantity": "How many messages should be deleted.",
 					"member": "User whose messages get deleted.",
-					"type": "The type of messages that will be deleted.",
+					"type": "סוג ההודעות שימחקו.",
 					"numberOfMessages": "Number of messages that will be searched."
 				}
 			}
 		},
 		"clearInvites": {
-			"done": "Cleared invites for {{ amount }} users!",
+			"done": "ניקה את ההזמנות ל {{amount}} משתמשים!",
 			"self": {
 				"args": {
 					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
@@ -163,16 +163,16 @@
 			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
 			"notSet": "These settings are not set",
 			"current": {
-				"title": "Current Value",
+				"title": "ערך נוכחי",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "ערך קודם"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "ערך חדש"
 			},
 			"sameValue": "This config is already set to that value.",
 			"changed": {
@@ -232,7 +232,7 @@
 			"aliases": {
 				"title": "Aliases"
 			},
-			"links": "Links",
+			"links": "קישורים",
 			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
 			"self": {
 				"args": {
@@ -244,13 +244,13 @@
 		"info": {
 			"lastJoined": {
 				"notInGuild": "User is not part of your guild",
-				"title": "Last joined"
+				"title": "התחבר בפעם האחרונה"
 			},
 			"invites": {
 				"title": "Invites",
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
-					"title": "Cleared invites",
+					"title": "ניקה הזמנות",
 					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)"
 				}
 			},
@@ -388,7 +388,7 @@
 			},
 			"notSet": "This memberConfig settings is currently not set for any members",
 			"current": {
-				"title": "Current Value",
+				"title": "ערך נוכחי",
 				"text": "This memberConfig is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
 				"notSet": "This memberConfig is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
 			},

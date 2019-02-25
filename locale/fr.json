@@ -568,7 +568,7 @@
 			"unusedViolations": "Violations vide"
 		},
 		"subtractLeaves": {
-			"done": "Removed leaves!",
+			"done": "Départs supprimés!",
 			"none": "Aucun invité parti trouvé.",
 			"self": {
 				"description": "Supprimer le nombre des invitations des personne qui ont quitter de tous les utilisateurs."
@@ -651,7 +651,7 @@
 				"title": "Activer le premium sur ce serveur",
 				"currentlyActive": "Ce serveur dispose **déjà** d'un abonnement premium.",
 				"done": "Le premium a correctement été activé sur ce serveur.",
-				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
+				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur."
 			},
 			"deactivate": {
@@ -844,7 +844,7 @@
 		"interactiveConfig": {
 			"welcome": "Utilisez les réactions pour choisir l'une des options disponibles.",
 			"none": "<None>",
-			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"change": "**Valeur actuelle**\n{{{ current }}}\n\n**Valeurs possibles**\n{{{ possible }}}",
 			"new": "Entrez une nouvelle valeur:",
 			"values": {
 				"boolean": "`Oui` ou `Non`",
@@ -896,7 +896,7 @@
 			"translators": "Traducteurs"
 		},
 		"unhoist": {
-			"title": "Unhoist users",
+			"title": "Utilisateurs non séparés dans la liste",
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
@@ -930,10 +930,10 @@
 		},
 		"punishments": {
 			"dm": {
-				"warn": "You have been **warned** in **{{ guild }}**",
-				"mute": "You have been **muted** in **{{ guild }}**",
-				"kick": "You have been **kicked** from **{{ guild }}**",
-				"ban": "You have been **banned** from **{{ guild }}**"
+				"warn": "Vous avez été **averti** dans **{{ guild }}**",
+				"mute": "Vous avez été **rendu muet** dans **{{ guild }}**",
+				"kick": "Vous avez été **expulsé** de **{{ guild }}**",
+				"ban": "Vous avez été **banni** de **{{ guild }}**"
 			}
 		}
 	},
