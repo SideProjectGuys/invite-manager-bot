@@ -3,7 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { Op } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
@@ -12,18 +12,12 @@ import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
-import { guilds, LogAction, members } from './sequelize';
+import { guilds, LogAction, sequelize } from './sequelize';
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
 import { InvitesService } from './services/Invites';
-import {
-	CreateEmbedFunc,
-	Messaging,
-	SendEmbedFunc,
-	SendReplyFunc,
-	ShowPaginatedFunc
-} from './services/Messaging';
+import { Messaging } from './services/Messaging';
 import { Moderation } from './services/Moderation';
 import { RabbitMq } from './services/RabbitMq';
 import { Scheduler } from './services/Scheduler';
@@ -92,12 +86,12 @@ export class IMClient extends Client {
 	public gatewayConnected: boolean;
 	public activityInterval: NodeJS.Timer;
 
-	public numGuilds: number = 0;
-	public guildsCachedAt: number = 0;
+	private counts: {
+		cachedAt: number;
+		guilds: number;
+		members: number;
+	};
 	public disabledGuilds: Set<string>;
-
-	public numMembers: number = 0;
-	public membersCachedAt: number = 0;
 
 	private dbl: DBL;
 
@@ -127,6 +121,11 @@ export class IMClient extends Client {
 		});
 
 		this.startedAt = moment();
+		this.counts = {
+			cachedAt: 0,
+			guilds: 0,
+			members: 0
+		};
 
 		this.version = version;
 		this.config = config;
@@ -411,28 +410,22 @@ export class IMClient extends Client {
 		);
 	}
 
-	public async getMembersCount() {
-		// If cached member count is older than 12 hours, update it
-		if (Date.now() - this.membersCachedAt > 1000 * 60 * 60 * 12) {
-			console.log('Fetching guild & member count from DB...');
-			this.numMembers = await members.count();
-			this.membersCachedAt = Date.now();
+	public async getCounts() {
+		// If cached data is older than 12 hours, update it
+		if (Date.now() - this.counts.cachedAt > 1000 * 60 * 60) {
+			console.log('Fetching data counts from DB...');
+			const rows = await sequelize.query(
+				`SHOW TABLE STATUS WHERE name IN ('members', 'guilds')`,
+				{ type: QueryTypes.SELECT }
+			);
+			this.counts = {
+				cachedAt: Date.now(),
+				guilds: rows.find((r: any) => r.Name === 'guilds').Rows,
+				members: rows.find((m: any) => m.Name === 'members').Rows
+			};
 		}
-		return this.numMembers;
-	}
 
-	public async getGuildsCount() {
-		// If cached guild count is older than 12 hours, update it
-		if (Date.now() - this.guildsCachedAt > 1000 * 60 * 60 * 12) {
-			console.log('Fetching guild & member count from DB...');
-			this.numGuilds = await guilds.count({
-				where: {
-					deletedAt: null
-				}
-			});
-			this.guildsCachedAt = Date.now();
-		}
-		return this.numGuilds;
+		return this.counts;
 	}
 
 	private async setActivity() {
@@ -440,10 +433,10 @@ export class IMClient extends Client {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
-		const numGuilds = await this.getGuildsCount();
+		const counts = await this.getCounts();
 		this.editStatus('online', {
-			name: `invitemanager.co - ${numGuilds} servers!`,
-			type: 1
+			name: `invitemanager.co - ${counts.guilds} servers!`,
+			type: 0
 		});
 	}
 
