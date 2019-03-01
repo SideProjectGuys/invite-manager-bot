@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { generateLeaderboard } from '../../functions/Leaderboard';
 import { EnumResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
@@ -35,7 +34,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, isPremium }: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.export.title')
 		});
 
@@ -43,11 +42,13 @@ export default class extends Command {
 
 		switch (type) {
 			case ExportType.leaderboard:
-				this.client.sendReply(message, embed).then(async (msg: Message) => {
+				this.sendReply(message, embed).then(async (msg: Message) => {
 					if (type === 'leaderboard') {
 						let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-						const { keys, invs } = await generateLeaderboard(guild);
+						const { keys, invs } = await this.client.invs.generateLeaderboard(
+							guild
+						);
 						keys.forEach(id => {
 							const i = invs[id];
 							csv +=
@@ -56,7 +57,7 @@ export default class extends Command {
 								`${i.total},` +
 								`${i.regular},` +
 								`${i.custom},` +
-								`${i.fake},` +
+								`${i.fakes},` +
 								`${i.leaves},` +
 								`\n`;
 						});

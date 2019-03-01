@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 
-var canvasClass = require('canvas');
+const canvasClass = require('canvas');
 
 export enum FileMode {
 	FILE = 'file',
@@ -62,7 +62,7 @@ export class CaptchaService {
 
 		const [text, buffer] = await this.createCaptcha(captchaOptions);
 
-		const embed = this.client.createEmbed({
+		const embed = this.client.msg.createEmbed({
 			title: 'Captcha',
 			description: sets.captchaVerificationWelcomeMessage.replace(
 				/\{serverName\}/g,

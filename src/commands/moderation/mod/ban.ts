@@ -1,4 +1,4 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import {
@@ -7,7 +7,12 @@ import {
 	UserResolver
 } from '../../../resolvers';
 import { punishments, PunishmentType } from '../../../sequelize';
-import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
+import {
+	BasicUser,
+	CommandGroup,
+	ModerationCommand,
+	Permissions
+} from '../../../types';
 import { isPunishable, to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -32,8 +37,7 @@ export default class extends Command {
 				{
 					name: 'deleteMessageDays',
 					resolver: NumberResolver,
-					short: 'd',
-					valueRequired: true
+					short: 'd'
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -44,7 +48,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetUser, reason]: [User, string],
+		[targetUser, reason]: [BasicUser, string],
 		{ deleteMessageDays }: { deleteMessageDays: number },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
@@ -52,12 +56,15 @@ export default class extends Command {
 			return;
 		}
 
+		let targetMember = guild.members.get(targetUser.id);
+		if (!targetMember) {
+			targetMember = await guild.getRESTMember(targetUser.id);
+		}
+
 		const embed = this.client.mod.createPunishmentEmbed(
 			targetUser.username,
-			targetUser.avatarURL
+			targetMember ? targetMember.avatarURL : null
 		);
-
-		const targetMember = guild.members.get(targetUser.id);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.ban.missingPermissions');
@@ -110,7 +117,7 @@ export default class extends Command {
 			embed.description = t('cmd.ban.canNotBan');
 		}
 
-		const response = await this.client.sendReply(message, embed);
+		const response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

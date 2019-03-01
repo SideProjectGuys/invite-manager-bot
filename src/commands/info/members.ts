@@ -30,20 +30,21 @@ export default class extends Command {
 		const ONE_MONTH = 4 * ONE_WEEK;
 		const todayTimestamp = new Date().getTime();
 
-		let botCount = guild.members.filter(m => m.user.bot).length;
-		let humanCount = guild.memberCount - botCount;
-		let offlineCount = guild.members.filter(m => m.status === 'offline').length;
-		let joinedToday = guild.members.filter(
+		const botCount = guild.members.filter(m => m.user.bot).length;
+		const humanCount = guild.memberCount - botCount;
+		const offlineCount = guild.members.filter(m => m.status === 'offline')
+			.length;
+		const joinedToday = guild.members.filter(
 			m => todayTimestamp - m.joinedAt < ONE_DAY
 		).length;
-		let joinedThisWeek = guild.members.filter(
+		const joinedThisWeek = guild.members.filter(
 			m => todayTimestamp - m.joinedAt < ONE_WEEK
 		).length;
-		let joinedThisMonth = guild.members.filter(
+		const joinedThisMonth = guild.members.filter(
 			m => todayTimestamp - m.joinedAt < ONE_MONTH
 		).length;
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 		embed.fields.push({
 			name: t('cmd.members.members'),
 			value: guild.memberCount.toString(),
@@ -80,6 +81,6 @@ export default class extends Command {
 			inline: true
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

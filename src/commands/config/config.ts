@@ -3,8 +3,8 @@ import { Embed, Message, TextChannel } from 'eris';
 import { IMClient } from '../../client';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
-	customInvites,
-	CustomInvitesGeneratedReason,
+	JoinInvalidatedReason,
+	joins,
 	LogAction,
 	SettingsKey
 } from '../../sequelize';
@@ -42,7 +42,7 @@ export default class extends Command {
 	): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		if (!key) {
 			embed.title = t('cmd.config.title');
@@ -62,7 +62,7 @@ export default class extends Command {
 					`**${group}**\n` + configs[group].join(', ') + '\n\n';
 			});
 
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		const oldVal = settings[key];
@@ -96,13 +96,13 @@ export default class extends Command {
 					key
 				});
 			}
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
 			if (!canClear(key)) {
-				return this.client.sendReply(
+				return this.sendReply(
 					message,
 					t('cmd.config.canNotClear', { prefix, key })
 				);
@@ -111,7 +111,7 @@ export default class extends Command {
 			// Only validate the config setting if we're not resetting or clearing it
 			const error = this.validate(key, value, context);
 			if (error) {
-				return this.client.sendReply(message, error);
+				return this.sendReply(message, error);
 			}
 		}
 
@@ -125,7 +125,7 @@ export default class extends Command {
 				name: t('cmd.config.current.title'),
 				value: beautify(key, oldVal)
 			});
-			return this.client.sendReply(message, embed);
+			return this.sendReply(message, embed);
 		}
 
 		embed.description = t('cmd.config.changed.text', { prefix, key });
@@ -152,7 +152,7 @@ export default class extends Command {
 		// Do any post processing, such as example messages
 		const cb = await this.after(message, embed, key, value, context);
 
-		await this.client.sendReply(message, embed);
+		await this.sendReply(message, embed);
 
 		if (typeof cb === typeof Function) {
 			await cb();
@@ -245,7 +245,7 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.client.sendReply(message, preview);
+				return () => this.sendReply(message, preview);
 			}
 		}
 
@@ -270,7 +270,7 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.client.sendReply(message, preview);
+				return () => this.sendReply(message, preview);
 			}
 		}
 
@@ -282,14 +282,18 @@ export default class extends Command {
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
-				// Delete old duplicate removals
-				return async () =>
-					await customInvites.destroy({
+				// Delete all fake invalidations
+				await joins.update(
+					{
+						invalidatedReason: null
+					},
+					{
 						where: {
 							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.fake
+							invalidatedReason: JoinInvalidatedReason.fake
 						}
-					});
+					}
+				);
 			}
 		}
 
@@ -301,14 +305,18 @@ export default class extends Command {
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
-				// Delete old leave removals
-				return async () =>
-					await customInvites.destroy({
+				// Delete all leave invalidations
+				await joins.update(
+					{
+						invalidatedReason: null
+					},
+					{
 						where: {
 							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.leave
+							invalidatedReason: JoinInvalidatedReason.leave
 						}
-					});
+					}
+				);
 			}
 		}
 

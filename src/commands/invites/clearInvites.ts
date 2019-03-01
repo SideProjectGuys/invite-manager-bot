@@ -1,17 +1,17 @@
 import { Message } from 'eris';
+import { Moment } from 'moment';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import { BasicUser, BooleanResolver, UserResolver } from '../../resolvers';
+import { BooleanResolver, DateResolver, UserResolver } from '../../resolvers';
 import {
-	CustomInviteAttributes,
 	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
+	joins,
 	LogAction,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -21,15 +21,22 @@ export default class extends Command {
 			aliases: ['clear-invites'],
 			args: [
 				{
-					name: 'clearBonus',
-					resolver: BooleanResolver
-				},
-				{
 					name: 'user',
 					resolver: UserResolver
 				}
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
+			flags: [
+				{
+					name: 'date',
+					resolver: DateResolver,
+					short: 'd'
+				},
+				{
+					name: 'clearBonus',
+					resolver: BooleanResolver,
+					short: 'cb'
+				}
+			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			strict: true
@@ -38,164 +45,84 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[clearBonus, user]: [boolean, BasicUser],
-		flags: {},
+		[user]: [BasicUser],
+		{ date, clearBonus }: { date: Moment; clearBonus: boolean },
 		{ guild, t }: Context
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;
 
-		// First clear any previous clearinvites we might have
-		await customInvites.destroy({
-			where: {
-				guildId: guild.id,
-				generatedReason: [
-					CustomInvitesGeneratedReason.clear_regular,
-					CustomInvitesGeneratedReason.clear_custom,
-					CustomInvitesGeneratedReason.clear_fake,
-					CustomInvitesGeneratedReason.clear_leave
-				],
-				...(memberId && { memberId })
-			}
-		});
-
-		const invs = await inviteCodes.findAll({
-			attributes: [
-				'inviterId',
-				[sequelize.fn('SUM', sequelize.col('inviteCode.uses')), 'totalUses']
-			],
-			where: {
-				guildId: guild.id,
-				inviterId: {
-					[Op.ne]: null,
-					...(memberId && { [Op.eq]: memberId })
-				}
+		await inviteCodes.update(
+			{
+				clearedAmount: sequelize.col('uses') as any
 			},
-			group: 'inviteCode.inviterId',
-			raw: true
-		});
-
-		// Get all custom generated invites (all clear_invites were removed before)
-		const customInvs = await customInvites.findAll({
-			attributes: [
-				'memberId',
-				'generatedReason',
-				[sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
-			],
-			where: {
-				guildId: guild.id,
-				memberId: {
-					[Op.ne]: null,
-					...(memberId && { [Op.eq]: memberId })
+			{
+				where: {
+					guildId: guild.id,
+					inviterId: memberId ? memberId : { [Op.ne]: null }
 				}
-			},
-			group: ['memberId', 'generatedReason'],
-			raw: true
-		});
-
-		const regular: { [x: string]: number } = {};
-		const fake: { [x: string]: number } = {};
-		const leave: { [x: string]: number } = {};
-		const custom: { [x: string]: number } = {};
-
-		invs.forEach((inv: any) => {
-			if (!regular[inv.inviterId]) {
-				regular[inv.inviterId] = 0;
 			}
-			regular[inv.inviterId] += parseInt(inv.totalUses, 10);
-		});
-		customInvs
-			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.fake)
-			.forEach((inv: any) => {
-				if (!fake[inv.memberId]) {
-					fake[inv.memberId] = 0;
-				}
-				fake[inv.memberId] += parseInt(inv.totalAmount, 10);
-			});
-		customInvs
-			.filter(inv => inv.generatedReason === CustomInvitesGeneratedReason.leave)
-			.forEach((inv: any) => {
-				if (!leave[inv.memberId]) {
-					leave[inv.memberId] = 0;
-				}
-				leave[inv.memberId] += parseInt(inv.totalAmount, 10);
-			});
+		);
 
-		const cleared: { [x: string]: boolean } = {};
-		const newInvs: CustomInviteAttributes[] = [];
-		Object.keys(regular).forEach(memId => {
-			newInvs.push({
-				id: null,
-				guildId: guild.id,
-				memberId: memId,
-				creatorId: null,
-				amount: -regular[memId],
-				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_regular
-			});
-			cleared[memId] = true;
-		});
-		Object.keys(fake).forEach(memId => {
-			newInvs.push({
-				id: null,
-				guildId: guild.id,
-				memberId: memId,
-				creatorId: null,
-				amount: -fake[memId],
-				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_fake
-			});
-			cleared[memId] = true;
-		});
-		Object.keys(leave).forEach(memId => {
-			newInvs.push({
-				id: null,
-				guildId: guild.id,
-				memberId: memId,
-				creatorId: null,
-				amount: -leave[memId],
-				reason: null,
-				generatedReason: CustomInvitesGeneratedReason.clear_leave
-			});
-			cleared[memId] = true;
-		});
+		await inviteCodes.update(
+			{
+				clearedAmount: sequelize.col('uses') as any
+			},
+			{
+				where: {
+					guildId: guild.id,
+					inviterId: memberId ? memberId : { [Op.ne]: null }
+				}
+			}
+		);
+
+		await joins.update(
+			{
+				cleared: true
+			},
+			{
+				where: {
+					guildId: guild.id,
+					...(memberId && {
+						exactMatchCode: (await inviteCodes.findAll({
+							where: { guildId: guild.id, inviterId: memberId }
+						})).map(ic => ic.code)
+					})
+				}
+			}
+		);
+
+		await customInvites.update(
+			{
+				cleared: false
+			},
+			{
+				where: {
+					guildId: guild.id,
+					...(memberId && { memberId })
+				}
+			}
+		);
 
 		if (clearBonus) {
-			// Process any custom invites
-			customInvs
-				.filter(inv => inv.generatedReason === null)
-				.forEach((inv: any) => {
-					if (!custom[inv.memberId]) {
-						custom[inv.memberId] = 0;
+			// Clear invites
+			await customInvites.update(
+				{
+					cleared: true
+				},
+				{
+					where: {
+						guildId: guild.id,
+						...(memberId && { memberId })
 					}
-					custom[inv.memberId] += parseInt(inv.totalAmount, 10);
-				});
-
-			Object.keys(custom).forEach(memId => {
-				newInvs.push({
-					id: null,
-					guildId: guild.id,
-					memberId: memId,
-					creatorId: null,
-					amount: -custom[memId],
-					reason: null,
-					generatedReason: CustomInvitesGeneratedReason.clear_custom
-				});
-				cleared[memId] = true;
-			});
+				}
+			);
 		}
 
-		const createdInvs = await customInvites.bulkCreate(newInvs);
-
 		this.client.logAction(guild, message, LogAction.clearInvites, {
-			customInviteIds: createdInvs.map(inv => inv.id),
+			clearBonus,
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.client.sendReply(
-			message,
-			t('cmd.clearInvites.done', {
-				amount: Object.keys(cleared).length
-			})
-		);
+		return this.sendReply(message, t('cmd.clearInvites.done'));
 	}
 }

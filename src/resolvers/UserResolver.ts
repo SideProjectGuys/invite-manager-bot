@@ -1,16 +1,10 @@
 import { Context } from '../commands/Command';
 import { members } from '../sequelize';
+import { BasicUser } from '../types';
 
 import { Resolver } from './Resolver';
 
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
-
-export interface BasicUser {
-	id: string;
-	createdAt: number;
-	username: string;
-	discriminator: string;
-}
 
 export class UserResolver extends Resolver {
 	public async resolve(

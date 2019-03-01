@@ -12,6 +12,7 @@ import {
 	ViolationType
 } from '../sequelize';
 import { SettingsObject } from '../settings';
+import { BasicUser } from '../types';
 import { to } from '../util';
 
 interface Arguments {
@@ -91,75 +92,16 @@ export class Moderation {
 		setInterval(scanMessageCache, 60 * 1000);
 
 		client.on('messageCreate', this.onMessage.bind(this));
+		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
 	}
 
+	private async onGuildMemberAdd(guild: Guild, member: Member) {
+		this.hoist(guild, member);
+	}
+
 	private async onGuildMemberUpdate(guild: Guild, member: Member) {
-		// Ignore when pro bot is active
-		if (this.client.disabledGuilds.has(guild.id)) {
-			return;
-		}
-
-		// Ignore bots
-		if (member.bot) {
-			return;
-		}
-
-		const settings = await this.client.cache.settings.get(guild.id);
-
-		// Ignore if automod is disabled
-		if (!settings.autoModEnabled) {
-			return;
-		}
-
-		// Ignore if hoist rule is disabled
-		if (!settings.autoModHoistEnabled) {
-			return;
-		}
-
-		// If moderated roles are set then only moderate those roles
-		if (
-			settings.autoModModeratedRoles &&
-			settings.autoModModeratedRoles.length > 0
-		) {
-			if (
-				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
-			) {
-				return;
-			}
-		}
-
-		// Don't moderate ignored roles
-		if (
-			settings.autoModIgnoredRoles &&
-			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-		) {
-			return;
-		}
-
-		const type = ViolationType.hoist;
-		const strikesCache = await this.client.cache.strikes.get(guild.id);
-		const strike = strikesCache.find(s => s.type === type);
-		const amount = strike ? strike.amount : 0;
-
-		const name = member.nick ? member.nick : member.username;
-
-		if (!NAME_HOIST_REGEX.test(name)) {
-			return;
-		}
-
-		const newName = '▼ ' + name;
-		member.edit({ nick: newName }, 'Auto dehoist');
-
-		this.logViolationModAction(guild, member.user, type, amount, [
-			{ name: 'New name', value: newName },
-			{ name: 'Previous name', value: name }
-		]);
-
-		this.addStrikesAndPunish(member, strike.type, strike.amount, {
-			guild,
-			settings
-		});
+		this.hoist(guild, member);
 	}
 
 	private async onMessage(message: Message) {
@@ -333,7 +275,7 @@ export class Moderation {
 
 	public logViolationModAction(
 		guild: Guild,
-		user: User,
+		user: BasicUser,
 		type: ViolationType,
 		amount: number,
 		extra?: { name: string; value: string }[]
@@ -357,12 +299,12 @@ export class Moderation {
 
 	public logPunishmentModAction(
 		guild: Guild,
-		user: User,
+		user: BasicUser,
 		type: PunishmentType,
 		amount: number,
 		extra?: { name: string; value: string }[]
 	) {
-		const logEmbed = this.client.createEmbed({
+		const logEmbed = this.client.msg.createEmbed({
 			author: { name: 'AutoModerator' },
 			color: 16711680 // red
 		});
@@ -684,6 +626,74 @@ export class Moderation {
 		return nofEmojis;
 	}
 
+	private async hoist(guild: Guild, member: Member) {
+		// Ignore when pro bot is active
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		// Ignore bots
+		if (member.bot) {
+			return;
+		}
+
+		const settings = await this.client.cache.settings.get(guild.id);
+
+		// Ignore if automod is disabled
+		if (!settings.autoModEnabled) {
+			return;
+		}
+
+		// Ignore if hoist rule is disabled
+		if (!settings.autoModHoistEnabled) {
+			return;
+		}
+
+		// If moderated roles are set then only moderate those roles
+		if (
+			settings.autoModModeratedRoles &&
+			settings.autoModModeratedRoles.length > 0
+		) {
+			if (
+				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
+			) {
+				return;
+			}
+		}
+
+		// Don't moderate ignored roles
+		if (
+			settings.autoModIgnoredRoles &&
+			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
+		) {
+			return;
+		}
+
+		const type = ViolationType.hoist;
+		const strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strike = strikesCache.find(s => s.type === type);
+		const amount = strike ? strike.amount : 0;
+
+		const name = member.nick ? member.nick : member.username;
+
+		if (!NAME_HOIST_REGEX.test(name)) {
+			return;
+		}
+
+		const newName = '▼ ' + name;
+		member.edit({ nick: newName }, 'Auto dehoist');
+
+		this.logViolationModAction(guild, member.user, type, amount, [
+			{ name: 'New name', value: newName },
+			{ name: 'Previous name', value: name }
+		]);
+
+		this.addStrikesAndPunish(member, strike.type, strike.amount, {
+			guild,
+			settings
+		});
+	}
+
 	//////////////////////////////
 	// PUNISHMENT FUNCTIONS
 	//////////////////////////////
@@ -752,7 +762,7 @@ export class Moderation {
 		) {
 			return;
 		}
-		const reply = await this.client.sendReply(message, embed);
+		const reply = await this.client.msg.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(
 				() => reply.delete(),
@@ -763,7 +773,7 @@ export class Moderation {
 
 	public createPunishmentEmbed(name: string, icon?: string) {
 		const object = icon ? { name: name, icon_url: icon } : { name: name };
-		const embed = this.client.createEmbed({
+		const embed = this.client.msg.createEmbed({
 			author: object,
 			description: ''
 		});
@@ -791,7 +801,7 @@ export class Moderation {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.createEmbed({
+					const embed = this.client.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{
@@ -841,7 +851,7 @@ export class Moderation {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.createEmbed({
+					const embed = this.client.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{

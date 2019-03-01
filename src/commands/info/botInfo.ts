@@ -25,10 +25,9 @@ export default class extends Command {
 	): Promise<any> {
 		const lang = settings.lang;
 
-		const numGuilds = await this.client.getGuildsCount();
-		const numMembers = await this.client.getMembersCount();
+		const counts = await this.client.getCounts();
 
-		const embed = this.client.createEmbed();
+		const embed = this.createEmbed();
 
 		// Version
 		embed.fields.push({
@@ -50,14 +49,14 @@ export default class extends Command {
 		// Guild count
 		embed.fields.push({
 			name: t('cmd.botInfo.guilds'),
-			value: numGuilds.toString(),
+			value: counts.guilds.toString(),
 			inline: true
 		});
 
 		// Member count
 		embed.fields.push({
 			name: t('cmd.botInfo.members'),
-			value: numMembers.toString(),
+			value: counts.members.toString(),
 			inline: true
 		});
 
@@ -107,6 +106,6 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

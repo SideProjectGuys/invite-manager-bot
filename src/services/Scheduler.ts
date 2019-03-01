@@ -31,7 +31,7 @@ export class Scheduler {
 		date: Date,
 		reason: string
 	) {
-		let action = await scheduledActions.create({
+		const action = await scheduledActions.create({
 			id: null,
 			guildId: guildId,
 			actionType: actionType,
@@ -62,7 +62,7 @@ export class Scheduler {
 		actionType: ScheduledActionType,
 		args: JSON
 	) {
-		let actionString = `${guildId}|${actionType}|${args}`;
+		const actionString = `${guildId}|${actionType}|${args}`;
 		return crypto
 			.createHash('md5')
 			.update(actionString)
@@ -91,14 +91,14 @@ export class Scheduler {
 		actionType: ScheduledActionType,
 		args: JSON
 	) {
-		let hash = this.getActionHash(guildId, actionType, args);
-		let timeout = this.scheduledActionTimers.get(hash);
+		const hash = this.getActionHash(guildId, actionType, args);
+		const timeout = this.scheduledActionTimers.get(hash);
 		clearTimeout(timeout);
 		this.scheduledActionTimers.delete(hash);
 	}
 
 	private async scheduleScheduledActions() {
-		let actions = await scheduledActions.findAll({
+		const actions = await scheduledActions.findAll({
 			where: {
 				guildId: this.client.guilds.map(g => g.id)
 			}

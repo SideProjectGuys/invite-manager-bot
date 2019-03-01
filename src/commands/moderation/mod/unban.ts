@@ -1,8 +1,13 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { StringResolver, UserResolver } from '../../../resolvers';
-import { CommandGroup, ModerationCommand, Permissions } from '../../../types';
+import {
+	BasicUser,
+	CommandGroup,
+	ModerationCommand,
+	Permissions
+} from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';
 
@@ -31,7 +36,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[targetUser, reason]: [User, string],
+		[targetUser, reason]: [BasicUser, string],
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
@@ -39,9 +44,14 @@ export default class extends Command {
 			return;
 		}
 
+		let targetMember = guild.members.get(targetUser.id);
+		if (!targetMember) {
+			targetMember = await guild.getRESTMember(targetUser.id);
+		}
+
 		const embed = this.client.mod.createPunishmentEmbed(
 			targetUser.username,
-			targetUser.avatarURL
+			targetMember ? targetMember.avatarURL : null
 		);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
@@ -54,7 +64,7 @@ export default class extends Command {
 			} else {
 				const logEmbed = this.client.mod.createPunishmentEmbed(
 					targetUser.username,
-					targetUser.avatarURL
+					targetMember ? targetMember.avatarURL : null
 				);
 
 				const usr =
@@ -79,7 +89,7 @@ export default class extends Command {
 			}
 		}
 
-		const response = (await this.client.sendReply(message, embed)) as Message;
+		const response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {

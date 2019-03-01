@@ -2,9 +2,9 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BasicUser, UserResolver } from '../../../resolvers';
+import { UserResolver } from '../../../resolvers';
 import { punishments, strikes } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -35,7 +35,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: user.username
 		});
 
@@ -110,6 +110,6 @@ export default class extends Command {
 			embed.description = t('cmd.check.noHistory');
 		}
 
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

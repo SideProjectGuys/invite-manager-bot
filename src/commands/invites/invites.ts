@@ -1,10 +1,9 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { BasicUser, UserResolver } from '../../resolvers';
+import { UserResolver } from '../../resolvers';
 import { members } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
-import { getInviteCounts, promoteIfQualified } from '../../util';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -34,25 +33,25 @@ export default class extends Command {
 			: await members
 					.findOne({ where: { id: message.author.id }, raw: true })
 					.then(u => ({ ...u, username: u.name }));
-		const invites = await getInviteCounts(guild.id, target.id);
+		const invites = await this.client.invs.getInviteCounts(guild.id, target.id);
 
 		let textMessage = '';
 		if (target.id === message.author.id) {
 			textMessage = t('cmd.invites.amount.self', {
-				total: invites.total,
-				regular: invites.regular,
-				custom: invites.custom,
-				fake: invites.fake,
-				leave: invites.leave
+				total: `**${invites.total}**`,
+				regular: `**${invites.regular}**`,
+				custom: `**${invites.custom}**`,
+				fake: `**${invites.fake}**`,
+				leave: `**${invites.leave}**`
 			});
 		} else {
 			textMessage = t('cmd.invites.amount.other', {
 				target: `<@${target.id}>`,
-				total: invites.total,
-				regular: invites.regular,
-				custom: invites.custom,
-				fake: invites.fake,
-				leave: invites.leave
+				total: `**${invites.total}**`,
+				regular: `**${invites.regular}**`,
+				custom: `**${invites.custom}**`,
+				fake: `**${invites.fake}**`,
+				leave: `**${invites.leave}**`
 			});
 		}
 		textMessage += '\n';
@@ -65,8 +64,7 @@ export default class extends Command {
 		}
 		// Only process if the user is still in the guild
 		if (targetMember && !targetMember.bot) {
-			const promoteInfo = await promoteIfQualified(
-				this.client,
+			const promoteInfo = await this.client.invs.promoteIfQualified(
 				guild,
 				targetMember,
 				me,
@@ -86,15 +84,10 @@ export default class extends Command {
 				if (nextRank) {
 					const nextRankPointsDiff = nextRank.numInvites - invites.total;
 					if (message.author.id === target.id) {
-						textMessage += t('cmd.invites.nextRank.self', {
-							nextRankPointsDiff,
-							nextRankName
-						});
+						textMessage += t('cmd.invites.highestRank.self');
 					} else {
-						textMessage += t('cmd.invites.nextRank.other', {
-							target: `<@${target.id}>`,
-							nextRankPointsDiff,
-							nextRankName
+						textMessage += t('cmd.invites.highestRank.other', {
+							target: `<@${target.id}>`
 						});
 					}
 					textMessage += '\n';
@@ -109,6 +102,7 @@ export default class extends Command {
 						}
 						textMessage += '\n';
 					}
+					textMessage += '\n';
 				}
 
 				if (shouldHave.length > 0) {
@@ -135,11 +129,11 @@ export default class extends Command {
 			}
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: target.username,
 			description: textMessage
 		});
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

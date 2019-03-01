@@ -23,7 +23,7 @@ export default class extends Command {
 		flags: {},
 		{ t, me }: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.setup.title'),
 			description: t('cmd.setup.text')
 		});
@@ -76,6 +76,6 @@ export default class extends Command {
 			});
 		}
 
-		return this.client.sendReply(message, embed);
+		return this.sendReply(message, embed);
 	}
 }

@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { MemberResolver, StringResolver } from '../../../resolvers';
 import { punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { isPunishable, to } from '../../../util';
+import { isPunishable } from '../../../util';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -80,7 +80,7 @@ export default class extends Command {
 			embed.description = t('cmd.warn.canNotWarn');
 		}
 
-		const response = await this.client.sendReply(message, embed);
+		const response = await this.sendReply(message, embed);
 
 		if (settings.modPunishmentWarnDeleteMessage) {
 			const func = () => {

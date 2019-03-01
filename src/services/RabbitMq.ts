@@ -2,21 +2,21 @@ import * as amqplib from 'amqplib';
 import { Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {
 	channels,
-	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinAttributes,
+	JoinInvalidatedReason,
 	joins,
 	LeaveAttributes,
 	members,
 	SettingsKey
 } from '../sequelize';
 import { RabbitMqMember, ShardCommand } from '../types';
-import { FakeChannel, getInviteCounts, promoteIfQualified } from '../util';
+import { FakeChannel } from '../util';
 
 interface ShardMessage {
 	id: string;
@@ -155,14 +155,18 @@ export class RabbitMq {
 
 		// Auto remove leaves if enabled
 		if (settings.autoSubtractLeaves) {
-			// Delete removals for this member because the member rejoined
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
+			await joins.update(
+				{
+					invalidatedReason: null
+				},
+				{
+					where: {
+						guildId: guild.id,
+						memberId: member.id,
+						invalidatedReason: JoinInvalidatedReason.leave
+					}
 				}
-			});
+			);
 		}
 
 		// Exit if we can't find the join
@@ -226,49 +230,29 @@ export class RabbitMq {
 
 		// Auto remove fakes if enabled
 		if (settings.autoSubtractFakes) {
-			const numJoins = await joins.count({
-				where: {
-					memberId: member.id,
-					guildId
+			await joins.update(
+				{
+					invalidatedReason: JoinInvalidatedReason.fake
 				},
-				include: [
-					{
-						model: inviteCodes,
-						as: 'exactMatch',
-						where: {
-							inviterId
+				{
+					where: {
+						id: {
+							[Op.ne]: jn.id
 						},
-						required: true
+						guildId,
+						memberId: member.id,
+						invalidatedReason: null,
+						exactMatchCode: jn.exactMatchCode
 					}
-				]
-			});
-
-			// Remove old custom invites
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					memberId: inviterId,
-					reason: member.id
 				}
-			});
-
-			// Add removals for duplicate invites
-			await customInvites.insertOrUpdate({
-				id: null,
-				creatorId: null,
-				guildId: guild.id,
-				memberId: inviterId,
-				amount: -(numJoins - 1),
-				reason: member.id,
-				generatedReason: CustomInvitesGeneratedReason.fake
-			});
+			);
 		}
 
 		let inviter = guild.members.get(inviterId);
 		if (!inviter) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
-		const invites = await getInviteCounts(guild.id, inviterId);
+		const invites = await this.client.invs.getInviteCounts(guild.id, inviterId);
 
 		// Add any roles for this invite code
 		let mem = guild.members.get(member.id);
@@ -291,7 +275,12 @@ export class RabbitMq {
 			me = await guild.getRESTMember(this.client.user.id);
 		}
 		if (inviter && !inviter.user.bot) {
-			await promoteIfQualified(this.client, guild, inviter, me, invites.total);
+			await this.client.invs.promoteIfQualified(
+				guild,
+				inviter,
+				me,
+				invites.total
+			);
 		}
 
 		const channelName = jn['exactMatch.channel.name'];
@@ -394,30 +383,19 @@ export class RabbitMq {
 
 		// Auto remove leaves if enabled (and if we know the inviter)
 		if (inviterId && settings.autoSubtractLeaves) {
-			// Delete any old entries for the leaving of this member
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
-				}
-			});
-
 			const threshold = Number(settings.autoSubtractLeaveThreshold);
 			const timeDiff = moment
 				.utc(join.createdAt)
 				.diff(moment.utc(leave.createdAt), 's');
 			if (timeDiff < threshold) {
-				// Add removals for leaves
-				await customInvites.create({
-					id: null,
-					creatorId: null,
-					guildId: guild.id,
-					memberId: inviterId,
-					amount: -1,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
-				});
+				await joins.update(
+					{
+						invalidatedReason: JoinInvalidatedReason.leave
+					},
+					{
+						where: { id: join.id }
+					}
+				);
 			}
 		}
 
@@ -655,7 +633,7 @@ export class RabbitMq {
 				const dmChannel = guild.channels.get(content.channelId) as TextChannel;
 				const sender = content.user;
 
-				const embed = this.client.createEmbed({
+				const embed = this.client.msg.createEmbed({
 					author: {
 						name: `${sender.username}#${sender.discriminator}`,
 						url: sender.avatarURL

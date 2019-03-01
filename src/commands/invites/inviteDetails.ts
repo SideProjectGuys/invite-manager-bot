@@ -2,9 +2,9 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { BasicUser, UserResolver } from '../../resolvers';
+import { UserResolver } from '../../resolvers';
 import { inviteCodes } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -41,7 +41,7 @@ export default class extends Command {
 		});
 
 		if (invs.length === 0) {
-			this.client.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
+			this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
 			return;
 		}
 
@@ -66,6 +66,6 @@ export default class extends Command {
 				}) + '\n';
 		}
 
-		this.client.sendReply(message, invText);
+		this.sendReply(message, invText);
 	}
 }

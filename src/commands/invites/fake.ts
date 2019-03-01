@@ -87,7 +87,7 @@ export default class extends Command {
 		})) as any;
 
 		if (js.length <= 0) {
-			return this.client.sendReply(message, t('cmd.fake.none'));
+			return this.sendReply(message, t('cmd.fake.none'));
 		}
 
 		const suspiciousJoins = js
@@ -98,13 +98,13 @@ export default class extends Command {
 			);
 
 		if (suspiciousJoins.length === 0) {
-			return this.client.sendReply(message, t('cmd.fake.noneSinceJoin'));
+			return this.sendReply(message, t('cmd.fake.noneSinceJoin'));
 		}
 
 		const maxPage = Math.ceil(suspiciousJoins.length / USERS_PER_PAGE);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		this.client.showPaginated(message, p, maxPage, page => {
+		this.showPaginated(message, p, maxPage, page => {
 			let description = '';
 
 			suspiciousJoins
@@ -130,12 +130,11 @@ export default class extends Command {
 					});
 
 					const invText = Object.keys(invs)
-						.map(name => {
-							return t('cmd.fake.join.entry.invite', {
-								name,
-								times: invs[name] > 1 ? invs[name] : undefined
-							});
-						})
+						.map(name =>
+							invs[name] > 1
+								? t('cmd.fake.join.entry.multi', { name, times: invs[name] })
+								: t('cmd.fake.join.entry.single', { name })
+						)
 						.join(', ');
 
 					const newFakeText = mainText + ' ' + invText + '\n';
@@ -144,7 +143,7 @@ export default class extends Command {
 					}
 				});
 
-			return this.client.createEmbed({
+			return this.createEmbed({
 				title: t('cmd.fake.title'),
 				description
 			});

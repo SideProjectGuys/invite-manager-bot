@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-
 import {
 	EnumResolver,
 	NumberResolver,
@@ -47,7 +46,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: t('cmd.punishmentConfig.title')
 		});
 
@@ -101,6 +100,6 @@ export default class extends Command {
 		}
 
 		this.client.cache.punishments.flush(guild.id);
-		this.client.sendReply(message, embed);
+		this.sendReply(message, embed);
 	}
 }

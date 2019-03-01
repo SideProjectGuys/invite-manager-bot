@@ -1,13 +1,8 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	BasicUser,
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../resolvers';
-import { BotCommand, CommandGroup } from '../../types';
+import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {

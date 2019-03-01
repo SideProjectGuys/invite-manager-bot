@@ -3,18 +3,25 @@ import { Emoji, Message, TextChannel } from 'eris';
 import { IMClient } from '../../client';
 import { SettingsValueResolver } from '../../resolvers';
 import {
-	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
 	RankAssignmentStyle,
 	SettingsKey
 } from '../../sequelize';
-import { beautify, fromDbValue, settingsInfo, toDbValue } from '../../settings';
+import {
+	beautify,
+	fromDbValue,
+	SettingsGroup,
+	settingsInfo,
+	toDbValue
+} from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
-type ConfigMenu = { items: { [x: string]: ConfigMenu } } | SettingsKey;
+interface ConfigMenu {
+	items: SettingsKey[];
+	subMenus: SettingsGroup[];
+}
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -28,7 +35,9 @@ export default class extends Command {
 		});
 	}
 
-	private back: string = '↩';
+	private prev: string = '⬅';
+	private next: string = '➡';
+	private up: string = '↩';
 	private cancel: string = '❌';
 	private choices: string[] = [
 		'1⃣',
@@ -39,7 +48,8 @@ export default class extends Command {
 		'6⃣',
 		'7⃣',
 		'8⃣',
-		'9⃣'
+		'9⃣',
+		'🔟'
 	];
 
 	public async action(
@@ -48,217 +58,129 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
 
 		message.delete();
 
-		const msg = await this.client.sendReply(message, embed);
+		const msg = await this.sendReply(message, embed);
 
-		for (let i = 0; i < 9; i++) {
+		for (let i = 0; i < this.choices.length; i++) {
 			msg.addReaction(this.choices[i]);
 		}
 
-		msg.addReaction(this.back);
+		msg.addReaction(this.prev);
+		msg.addReaction(this.next);
+		msg.addReaction(this.up);
 		msg.addReaction(this.cancel);
 
 		while (
-			(await this.showConfigMenu(context, message.author.id, msg, [], {
-				items: {
-					basic: {
-						items: {
-							prefix: SettingsKey.prefix,
-							lang: SettingsKey.lang,
-							logChannel: SettingsKey.logChannel,
-							getUpdates: SettingsKey.getUpdates
-						}
-					},
-					mod: {
-						items: {
-							general: {
-								items: {
-									enabled: SettingsKey.autoModEnabled,
-									moderatedChannels: SettingsKey.autoModModeratedChannels,
-									moderatedRoles: SettingsKey.autoModModeratedRoles,
-									ignoredChannels: SettingsKey.autoModIgnoredChannels,
-									ignoredRoles: SettingsKey.autoModIgnoredRoles,
-									deleteBotMessages: SettingsKey.autoModDeleteBotMessage,
-									deleteBotMessagesTimeout:
-										SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
-									mutedRole: SettingsKey.mutedRole
-								}
-							},
-							logging: {
-								items: {
-									logChannel: SettingsKey.modLogChannel,
-									autoLogEnabled: SettingsKey.autoModLogEnabled,
-									deleteBotMessage: SettingsKey.autoModDeleteBotMessage,
-									deleteMessageTimeout:
-										SettingsKey.autoModDeleteBotMessageTimeoutInSeconds,
-									deleteBanMessages: SettingsKey.modPunishmentBanDeleteMessage,
-									deleteKickMessages:
-										SettingsKey.modPunishmentKickDeleteMessage,
-									deleteSoftBanMessages:
-										SettingsKey.modPunishmentSoftbanDeleteMessage,
-									deleteWarnMessages:
-										SettingsKey.modPunishmentWarnDeleteMessage,
-									deleteMuteMessages: SettingsKey.modPunishmentMuteDeleteMessage
-								}
-							},
-							invitesAndLinks: {
-								items: {
-									invitesEnabled: SettingsKey.autoModInvitesEnabled,
-									linksEnabled: SettingsKey.autoModLinksEnabled,
-									linksWhitelist: SettingsKey.autoModLinksWhitelist,
-									linksBlacklist: SettingsKey.autoModLinksBlacklist,
-									followLinkRedirects: SettingsKey.autoModLinksFollowRedirects
-								}
-							},
-							bannedWords: {
-								items: {
-									enabled: SettingsKey.autoModWordsEnabled,
-									blacklist: SettingsKey.autoModWordsBlacklist
-								}
-							},
-							caps: {
-								items: {
-									enabled: SettingsKey.autoModAllCapsEnabled,
-									minCharacters: SettingsKey.autoModAllCapsMinCharacters,
-									percentageCaps: SettingsKey.autoModAllCapsPercentageCaps
-								}
-							},
-							duplicate: {
-								items: {
-									enabled: SettingsKey.autoModDuplicateTextEnabled,
-									timeframe: SettingsKey.autoModDuplicateTextTimeframeInSeconds
-								}
-							},
-							spam: {
-								items: {
-									enabled: SettingsKey.autoModQuickMessagesEnabled,
-									numberOfMessages:
-										SettingsKey.autoModQuickMessagesNumberOfMessages,
-									timeframe: SettingsKey.autoModQuickMessagesTimeframeInSeconds
-								}
-							},
-							mentions: {
-								items: {
-									usersEnabled: SettingsKey.autoModMentionUsersEnabled,
-									usersMax: SettingsKey.autoModMentionUsersMaxNumberOfMentions,
-									rolesEnabled: SettingsKey.autoModMentionRolesEnabled,
-									rolesMax: SettingsKey.autoModMentionRolesMaxNumberOfMentions
-								}
-							},
-							emojis: {
-								items: {
-									enabled: SettingsKey.autoModEmojisEnabled,
-									max: SettingsKey.autoModEmojisMaxNumberOfEmojis
-								}
-							}
-						}
-					},
-					captcha: {
-						items: {
-							enabled: SettingsKey.captchaVerificationOnJoin,
-							welcome: SettingsKey.captchaVerificationWelcomeMessage,
-							success: SettingsKey.captchaVerificationSuccessMessage,
-							failed: SettingsKey.captchaVerificationFailedMessage,
-							timeout: SettingsKey.captchaVerificationTimeout,
-							logs: SettingsKey.captchaVerificationLogEnabled
-						}
-					},
-					leaderboard: {
-						items: {
-							style: SettingsKey.leaderboardStyle,
-							hideLeftMembers: SettingsKey.hideLeftMembersFromLeaderboard
-						}
-					},
-					ranks: {
-						items: {
-							style: SettingsKey.rankAssignmentStyle,
-							channel: SettingsKey.rankAnnouncementChannel,
-							message: SettingsKey.rankAnnouncementMessage
-						}
-					},
-					joinAndLeaveMessages: {
-						items: {
-							joinChannel: SettingsKey.joinMessageChannel,
-							joinMessage: SettingsKey.joinMessage,
-							leaveChannel: SettingsKey.leaveMessageChannel,
-							leaveMessage: SettingsKey.leaveMessage
-						}
-					}
-				}
-			})) === -1
+			(await this.showConfigMenu(context, message.author.id, msg, [])) === 'up'
 		) {
 			// NOP
 		}
 	}
 
-	private getTranslationKey(path: string[]) {
-		return 'cmd.interactiveConfig.items.' + path.map(p => `${p}.`).join('');
+	private buildConfigMenu(path: SettingsGroup[] = []): ConfigMenu {
+		const menu: ConfigMenu = {
+			items: [],
+			subMenus: []
+		};
+
+		Object.keys(settingsInfo)
+			.filter((key: SettingsKey) =>
+				path.every((p, i) => settingsInfo[key].grouping[i] === p)
+			)
+			.forEach((key: SettingsKey) => {
+				const info = settingsInfo[key];
+				if (info.grouping.length === path.length) {
+					menu.items.push(key);
+				} else {
+					const group = info.grouping[path.length];
+					if (!menu.subMenus.includes(group)) {
+						menu.subMenus.push(group);
+					}
+				}
+			});
+
+		return menu;
 	}
 
 	private async showConfigMenu(
 		context: Context,
 		authorId: string,
 		msg: Message,
-		path: string[],
-		menu: ConfigMenu
+		path: SettingsGroup[]
 	) {
-		if (typeof menu === 'string') {
-			return -1;
-		}
-
 		const t = context.t;
-		const keys = Object.keys(menu.items);
-		const basePath = this.getTranslationKey(path);
+		const menu = this.buildConfigMenu(path);
+		const basePath = path.map(p => `${p}.`).join('');
+		let page = 0;
 
 		do {
-			const title =
-				'InviteManager - ' +
-				path.map(p => `${p} - `).join('') +
-				t(basePath + 'title');
+			let title = 'InviteManager';
+			for (let i = 0; i < path.length; i++) {
+				title +=
+					' - ' + t(`settings.groups.${path.slice(0, i + 1).join('.')}.title`);
+			}
+
+			// Compute these every time so that possible value changes are shown
+			const allChoices = menu.subMenus
+				.map(sub => ({
+					type: 'menu',
+					value: sub as string,
+					title: t(`settings.groups.${basePath}${sub}.title`),
+					description: t(`settings.groups.${basePath}${sub}.description`)
+				}))
+				.concat(
+					menu.items.map(item => ({
+						type: 'key',
+						value: item as string,
+						title: t(`settings.${item}.title`),
+						description: beautify(item, context.settings[item])
+					}))
+				);
+
+			// Only extract the page we need
+			const choices = allChoices.slice(page * 10, (page + 1) * 10);
 
 			const choice = await this.showMenu(
 				context,
 				msg,
 				authorId,
 				title,
-				'',
-				keys.map((key, i) => {
-					let val: any;
-					if (typeof menu.items[key] === 'string') {
-						const settingsKey = menu.items[key] as SettingsKey;
-						val = beautify(settingsKey, context.settings[settingsKey]);
-					} else {
-						val = t(basePath + key + '.description');
-					}
-
-					if (val === null || val === '') {
-						val = t('cmd.interactiveConfig.none');
-					}
-					return {
-						title: t(basePath + key + '.title'),
-						description: val
-					};
-				})
+				`Page: ${page + 1}/${Math.ceil(allChoices.length / 10.0)}`,
+				choices
 			);
 			if (choice === undefined) {
 				// Quit menu
 				return;
 			}
-			if (choice === -1) {
+			if (choice === 'prev') {
+				// Move to previous page of items
+				if (page > 0) {
+					page--;
+				}
+				continue;
+			}
+			if (choice === 'next') {
+				// Move to next page of items
+				if (page < Math.ceil(allChoices.length / 10.0) - 1) {
+					page++;
+				}
+				continue;
+			}
+			if (choice === 'up') {
 				// Move one menu up
-				return -1;
+				return 'up';
 			}
 
-			const subMenu = menu.items[keys[choice]];
+			const sel = choices[choice];
 
-			if (typeof subMenu === 'string') {
-				const key = subMenu as SettingsKey;
+			if (sel.type === 'key') {
+				const key = sel.value as SettingsKey;
 
 				if (settingsInfo[key].type === 'Boolean') {
 					await this.client.cache.settings.setOne(
@@ -283,8 +205,7 @@ export default class extends Command {
 					context,
 					authorId,
 					msg,
-					path.concat([keys[choice]]),
-					subMenu
+					path.concat([sel.value as SettingsGroup])
 				);
 				if (subChoice === undefined) {
 					// Quit menu
@@ -351,15 +272,19 @@ export default class extends Command {
 					// Quit menu
 					return;
 				}
-				if (choice === -1) {
+				if (choice === 'prev' || choice === 'next') {
+					// Ignore invalid options
+					continue;
+				}
+				if (choice === 'up') {
 					// Move one menu up
-					return -1;
+					return 'up';
 				}
 
 				let newVal = undefined;
 				if (choice === 0) {
 					// Add item
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description + '**' + context.t('cmd.interactiveConfig.add') + '**'
@@ -382,7 +307,7 @@ export default class extends Command {
 					}
 
 					// Remove item
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description +
@@ -401,7 +326,7 @@ export default class extends Command {
 					}
 				} else if (choice === 2) {
 					// Set list
-					const embed = this.client.createEmbed({
+					const embed = this.createEmbed({
 						title,
 						description:
 							description + '**' + context.t('cmd.interactiveConfig.set') + '**'
@@ -435,7 +360,7 @@ export default class extends Command {
 				}
 			} else {
 				// Change a non-list setting
-				const embed = this.client.createEmbed({
+				const embed = this.createEmbed({
 					title,
 					description:
 						description + '**' + context.t('cmd.interactiveConfig.new') + '**'
@@ -444,16 +369,23 @@ export default class extends Command {
 
 				let newVal = await this.parseInput(context, authorId, msg, key);
 
-				if (newVal !== undefined) {
-					const err = this.validate(key, newVal, context);
-					if (err) {
-						embed.description = err;
-						await msg.edit({ embed });
-						newVal = undefined;
-					}
+				if (typeof newVal === 'undefined') {
+					return 'up';
 				}
-				await this.client.cache.settings.setOne(context.guild.id, key, newVal);
-				return;
+
+				const err = this.validate(key, newVal, context);
+				if (err) {
+					embed.description = err;
+					await msg.edit({ embed });
+					newVal = undefined;
+				} else {
+					await this.client.cache.settings.setOne(
+						context.guild.id,
+						key,
+						newVal
+					);
+					return 'up';
+				}
 			}
 		} while (true);
 	}
@@ -464,8 +396,6 @@ export default class extends Command {
 		msg: Message,
 		key: SettingsKey
 	) {
-		const info = settingsInfo[key];
-
 		return new Promise<any>(async (resolve, reject) => {
 			let timeOut: NodeJS.Timer;
 
@@ -526,12 +456,15 @@ export default class extends Command {
 		items: { title: string; description: string }[]
 	) {
 		const t = context.t;
-		const embed = this.client.createEmbed({
+		const embed = this.createEmbed({
 			title,
 			description: t('cmd.interactiveConfig.welcome') + '\n\n' + description,
 			fields: items.map((item, i) => ({
 				name: `${i + 1}. ${item.title}`,
-				value: `${item.description}`
+				value:
+					item.description !== null && item.description !== ''
+						? item.description
+						: t('cmd.interactiveConfig.none')
 			}))
 		});
 
@@ -543,9 +476,9 @@ export default class extends Command {
 				// Quit menu
 				return;
 			}
-			if (choice === -1) {
+			if (choice === 'up' || choice === 'prev' || choice === 'next') {
 				// Move one menu up
-				return -1;
+				return choice;
 			}
 			if (choice >= items.length) {
 				// Restart this menu
@@ -557,8 +490,8 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async awaitChoice(authorId: string, msg: Message): Promise<number> {
-		return new Promise<number>(async resolve => {
+	private async awaitChoice(authorId: string, msg: Message) {
+		return new Promise<'prev' | 'next' | 'up' | number>(async resolve => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message, emoji: Emoji, userId: string) => {
 				if (resp.id !== msg.id || authorId !== userId) {
@@ -577,8 +510,12 @@ export default class extends Command {
 				const id = this.choices.indexOf(emoji.name);
 				await resp.removeReaction(emoji.name, userId);
 
-				if (emoji.name === this.back) {
-					resolve(-1);
+				if (emoji.name === this.prev) {
+					resolve('prev');
+				} else if (emoji.name === this.next) {
+					resolve('next');
+				} else if (emoji.name === this.up) {
+					resolve('up');
 				} else {
 					resolve(id);
 				}
