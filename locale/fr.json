@@ -940,8 +940,8 @@
 	"settings": {
 		"groups": {
 			"general": {
-				"title": "settings.groups.general.title",
-				"description": "settings.groups.general.description"
+				"title": "Paramètres de base",
+				"description": "Paramètres de base du bot tels que le préfixe, la langue et l'historique."
 			},
 			"invites": {
 				"title": "settings.groups.invites.title",
@@ -955,28 +955,28 @@
 					"description": "settings.groups.invites.leaves.description"
 				},
 				"leaderboard": {
-					"title": "settings.groups.invites.leaderboard.title",
-					"description": "settings.groups.invites.leaderboard.description"
+					"description": "Paramètres liés au classement",
+					"title": "Classement"
 				},
 				"fakes": {
 					"title": "settings.groups.invites.fakes.title",
 					"description": "settings.groups.invites.fakes.description"
 				},
 				"ranks": {
-					"title": "settings.groups.invites.ranks.title",
-					"description": "settings.groups.invites.ranks.description"
+					"description": "Paramètres liés aux rangs",
+					"title": "Rangs"
 				}
 			},
 			"moderation": {
-				"title": "settings.groups.moderation.title",
-				"description": "settings.groups.moderation.description",
+				"title": "Modération",
+				"description": "Paramètres liés à la modération.",
 				"captcha": {
-					"description": "settings.groups.moderation.captcha.description",
-					"title": "settings.groups.moderation.captcha.title"
+					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre.",
+					"title": "Captcha"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.description",
-					"title": "settings.groups.moderation.general.title"
+					"title": "Général",
+					"description": "Paramètres généraux liés à la modération."
 				},
 				"logging": {
 					"description": "settings.groups.moderation.logging.description",
@@ -991,52 +991,52 @@
 					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
-					"description": "settings.groups.moderation.bannedWords.description",
-					"title": "settings.groups.moderation.bannedWords.title"
+					"title": "Mots bannis",
+					"description": "Paramètres liés aux mots bannis. "
 				},
 				"caps": {
-					"description": "settings.groups.moderation.caps.description",
-					"title": "settings.groups.moderation.caps.title"
+					"title": "Majuscules",
+					"description": "Settings related to ALL CAPS messages"
 				},
 				"duplicate": {
-					"description": "settings.groups.moderation.duplicate.description",
-					"title": "settings.groups.moderation.duplicate.title"
+					"description": "Paramètres liés aux messages en double.",
+					"title": "Texte doublon"
 				},
 				"spam": {
-					"description": "settings.groups.moderation.spam.description",
-					"title": "settings.groups.moderation.spam.title"
+					"description": "Paramètres liés au spam (envoi rapide de messages).",
+					"title": "Spam"
 				},
 				"mentions": {
-					"description": "settings.groups.moderation.mentions.description",
-					"title": "settings.groups.moderation.mentions.title"
+					"description": "Paramètres liés au spam de mentions.",
+					"title": "Spam de mentions"
 				},
 				"emojis": {
-					"description": "settings.groups.moderation.emojis.description",
-					"title": "settings.groups.moderation.emojis.title"
+					"description": "Paramètres liés au spam d'émojis.",
+					"title": "Emojis"
 				}
 			}
 		},
 		"lang": {
-			"description": "settings.lang.description",
-			"title": "settings.lang.title"
+			"title": "Langage",
+			"description": "settings.lang.description"
 		},
 		"prefix": {
-			"title": "settings.prefix.title",
+			"title": "Préfixe",
 			"description": "settings.prefix.description"
 		},
 		"logChannel": {
-			"title": "settings.logChannel.title",
+			"title": "Salon des logs",
 			"description": "settings.logChannel.description"
 		},
 		"getUpdates": {
-			"title": "settings.getUpdates.title"
+			"title": "Obtenir les mises à jour."
 		},
 		"joinMessage": {
-			"title": "settings.joinMessage.title",
+			"title": "Message d'arrivée",
 			"description": "settings.joinMessage.description"
 		},
 		"joinMessageChannel": {
-			"title": "settings.joinMessageChannel.title",
+			"title": "Salon d'arrivée",
 			"description": "settings.joinMessageChannel.description"
 		},
 		"rankAssignmentStyle": {
@@ -1052,11 +1052,11 @@
 			"description": "settings.rankAnnouncementMessage.description"
 		},
 		"leaveMessage": {
-			"title": "settings.leaveMessage.title",
+			"title": "Message de départ",
 			"description": "settings.leaveMessage.description"
 		},
 		"leaveMessageChannel": {
-			"title": "settings.leaveMessageChannel.title",
+			"title": "Salon de départ",
 			"description": "settings.leaveMessageChannel.description"
 		},
 		"autoSubtractLeaves": {
@@ -1067,54 +1067,54 @@
 			"description": "settings.autoSubtractLeaveThreshold.description"
 		},
 		"leaderboardStyle": {
-			"title": "settings.leaderboardStyle.title",
+			"title": "Style",
 			"description": "settings.leaderboardStyle.description"
 		},
 		"hideLeftMembersFromLeaderboard": {
-			"title": "settings.hideLeftMembersFromLeaderboard.title"
+			"title": "Cacher les membres partis"
 		},
 		"autoSubtractFakes": {
 			"title": "settings.autoSubtractFakes.title"
 		},
 		"captchaVerificationOnJoin": {
-			"title": "settings.captchaVerificationOnJoin.title"
+			"title": "Activé"
 		},
 		"captchaVerificationWelcomeMessage": {
-			"title": "settings.captchaVerificationWelcomeMessage.title",
+			"title": "Message de bienvenue",
 			"description": "settings.captchaVerificationWelcomeMessage.description"
 		},
 		"captchaVerificationSuccessMessage": {
-			"title": "settings.captchaVerificationSuccessMessage.title",
+			"title": "Message de réussite",
 			"description": "settings.captchaVerificationSuccessMessage.description"
 		},
 		"captchaVerificationFailedMessage": {
-			"title": "settings.captchaVerificationFailedMessage.title",
+			"title": "Message d’échec",
 			"description": "settings.captchaVerificationFailedMessage.description"
 		},
 		"captchaVerificationTimeout": {
-			"title": "settings.captchaVerificationTimeout.title",
+			"title": "Message de temps expiré",
 			"description": "settings.captchaVerificationTimeout.description"
 		},
 		"captchaVerificationLogEnabled": {
-			"title": "settings.captchaVerificationLogEnabled.title"
+			"title": "Logs"
 		},
 		"autoModEnabled": {
-			"title": "settings.autoModEnabled.title"
+			"title": "Activé"
 		},
 		"autoModModeratedChannels": {
-			"title": "settings.autoModModeratedChannels.title",
+			"title": "Salons modérés",
 			"description": "settings.autoModModeratedChannels.description"
 		},
 		"autoModModeratedRoles": {
-			"title": "settings.autoModModeratedRoles.title",
+			"title": "Rôles modérés",
 			"description": "settings.autoModModeratedRoles.description"
 		},
 		"autoModIgnoredChannels": {
-			"title": "settings.autoModIgnoredChannels.title",
+			"title": "Salons ignorés",
 			"description": "settings.autoModIgnoredChannels.description"
 		},
 		"autoModIgnoredRoles": {
-			"title": "settings.autoModIgnoredRoles.title",
+			"title": "Rôles ignorés",
 			"description": "settings.autoModIgnoredRoles.description"
 		},
 		"mutedRole": {
@@ -1129,17 +1129,17 @@
 			"description": "settings.autoModDisabledForOldMembersThreshold.description"
 		},
 		"autoModLogEnabled": {
-			"title": "settings.autoModLogEnabled.title"
+			"title": "Mod Log Channel"
 		},
 		"modLogChannel": {
 			"title": "settings.modLogChannel.title",
 			"description": "settings.modLogChannel.description"
 		},
 		"autoModDeleteBotMessage": {
-			"title": "settings.autoModDeleteBotMessage.title"
+			"title": "Supprimer les messages du Bot"
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"title": "settings.autoModDeleteBotMessageTimeoutInSeconds.title",
+			"title": "Délai de suppression des messages du bot.",
 			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description"
 		},
 		"modPunishmentBanDeleteMessage": {
@@ -1158,81 +1158,81 @@
 			"title": "settings.modPunishmentMuteDeleteMessage.title"
 		},
 		"autoModInvitesEnabled": {
-			"title": "settings.autoModInvitesEnabled.title"
+			"title": "Les invitations sont désormais modérées"
 		},
 		"autoModLinksEnabled": {
-			"title": "settings.autoModLinksEnabled.title"
+			"title": "Les liens sont désormais modérés"
 		},
 		"autoModLinksWhitelist": {
-			"title": "settings.autoModLinksWhitelist.title",
+			"title": "Liste blanche",
 			"description": "settings.autoModLinksWhitelist.description"
 		},
 		"autoModLinksBlacklist": {
-			"title": "settings.autoModLinksBlacklist.title",
+			"title": "Liste noire",
 			"description": "settings.autoModLinksBlacklist.description"
 		},
 		"autoModLinksFollowRedirects": {
-			"title": "settings.autoModLinksFollowRedirects.title"
+			"title": "Suivre les redirections"
 		},
 		"autoModWordsEnabled": {
-			"title": "settings.autoModWordsEnabled.title"
+			"title": "Activé"
 		},
 		"autoModWordsBlacklist": {
-			"title": "settings.autoModWordsBlacklist.title",
+			"title": "Liste noire",
 			"description": "settings.autoModWordsBlacklist.description"
 		},
 		"autoModAllCapsEnabled": {
-			"title": "settings.autoModAllCapsEnabled.title"
+			"title": "Activé"
 		},
 		"autoModAllCapsMinCharacters": {
-			"title": "settings.autoModAllCapsMinCharacters.title",
+			"title": "Caractères minimum",
 			"description": "settings.autoModAllCapsMinCharacters.description"
 		},
 		"autoModAllCapsPercentageCaps": {
-			"title": "settings.autoModAllCapsPercentageCaps.title",
+			"title": "Percentage Caps",
 			"description": "settings.autoModAllCapsPercentageCaps.description"
 		},
 		"autoModDuplicateTextEnabled": {
-			"title": "settings.autoModDuplicateTextEnabled.title"
+			"title": "Activé"
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"title": "settings.autoModDuplicateTextTimeframeInSeconds.title",
+			"title": "Timeframe",
 			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description"
 		},
 		"autoModQuickMessagesEnabled": {
-			"title": "settings.autoModQuickMessagesEnabled.title"
+			"title": "Activé"
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"title": "settings.autoModQuickMessagesNumberOfMessages.title",
+			"title": "Nombre de messages",
 			"description": "settings.autoModQuickMessagesNumberOfMessages.description"
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"title": "settings.autoModQuickMessagesTimeframeInSeconds.title",
+			"title": "Timeframe",
 			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description"
 		},
 		"autoModMentionUsersEnabled": {
-			"title": "settings.autoModMentionUsersEnabled.title"
+			"title": "Activé"
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"title": "settings.autoModMentionUsersMaxNumberOfMentions.title",
+			"title": "Nombre maximal de mentions utilisateurs par message",
 			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description"
 		},
 		"autoModMentionRolesEnabled": {
-			"title": "settings.autoModMentionRolesEnabled.title"
+			"title": "Activé"
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"title": "settings.autoModMentionRolesMaxNumberOfMentions.title",
+			"title": "Nombre maximal de mentions de rôle par message",
 			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description"
 		},
 		"autoModEmojisEnabled": {
-			"title": "settings.autoModEmojisEnabled.title"
+			"title": "Activé"
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"title": "settings.autoModEmojisMaxNumberOfEmojis.title",
+			"title": "Nombre maximal d'émojis",
 			"description": "settings.autoModEmojisMaxNumberOfEmojis.description"
 		},
 		"autoModHoistEnabled": {
-			"title": "settings.autoModHoistEnabled.title"
+			"title": "Activé"
 		}
 	}
 }
