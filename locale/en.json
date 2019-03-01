@@ -375,9 +375,13 @@
 			"self": {
 				"args": {
 					"page": "Which page of the leaderboard to get.",
-					"date": "The date (& time) for which the leaderboard is shown."
+					"date": "The date (& time) for which the leaderboard is shown.",
+					"duration": "cmd.leaderboard.self.args.duration"
 				},
-				"description": "Show members with most invites."
+				"description": "Show members with most invites.",
+				"flags": {
+					"compare": "cmd.leaderboard.self.flags.compare"
+				}
 			}
 		},
 		"memberConfig": {

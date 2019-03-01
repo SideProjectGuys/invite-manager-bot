@@ -91,6 +91,18 @@ export default class extends Command {
 						});
 					}
 					textMessage += '\n';
+				} else {
+					if (numRanks > 0) {
+						if (message.author.id === target.id) {
+							textMessage += t('cmd.invites.highestRank.self');
+						} else {
+							textMessage += t('cmd.invites.highestRank.other', {
+								target: `<@${target.id}>`
+							});
+						}
+						textMessage += '\n';
+					}
+					textMessage += '\n';
 				}
 
 				if (shouldHave.length > 0) {

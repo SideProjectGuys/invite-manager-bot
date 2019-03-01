@@ -45,7 +45,9 @@ export default class extends Command {
 		{ compare }: { compare: moment.Duration },
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		const from = duration ? moment().subtract(duration) : moment.unix(0);
+		const from = duration
+			? moment().subtract(duration)
+			: moment(guild.createdAt);
 		const comp = compare
 			? moment().subtract(compare)
 			: moment().subtract(1, 'day');
