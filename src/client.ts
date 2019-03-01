@@ -12,7 +12,7 @@ import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
-import { guilds, LogAction, sequelize } from './sequelize';
+import { dbStats, guilds, LogAction } from './sequelize';
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
@@ -414,14 +414,13 @@ export class IMClient extends Client {
 		// If cached data is older than 12 hours, update it
 		if (Date.now() - this.counts.cachedAt > 1000 * 60 * 60) {
 			console.log('Fetching data counts from DB...');
-			const rows = await sequelize.query(
-				`SHOW TABLE STATUS WHERE name IN ('members', 'guilds')`,
-				{ type: QueryTypes.SELECT }
-			);
+			const rows = await dbStats.findAll({
+				where: { key: ['guilds', 'members'] }
+			});
 			this.counts = {
 				cachedAt: Date.now(),
-				guilds: rows.find((r: any) => r.Name === 'guilds').Rows,
-				members: rows.find((m: any) => m.Name === 'members').Rows
+				guilds: rows.find(r => r.key === 'guilds').value,
+				members: rows.find(r => r.key === 'members').value
 			};
 		}
 

@@ -128,6 +128,7 @@ export class InvitesService {
 			where: {
 				guildId: guildId,
 				memberId: memberId,
+				generatedReason: null,
 				cleared: false
 			},
 			raw: true
@@ -211,7 +212,7 @@ export class InvitesService {
 			},
 			include: [
 				{
-					attributes: ['code', 'inviterId'],
+					attributes: ['inviterId'],
 					model: inviteCodes,
 					as: 'exactMatch',
 					required: true,
@@ -237,6 +238,7 @@ export class InvitesService {
 			],
 			where: {
 				guildId: guildId,
+				generatedReason: null,
 				cleared: false
 			},
 			include: [

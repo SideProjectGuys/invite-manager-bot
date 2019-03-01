@@ -1238,3 +1238,23 @@ export const reports = sequelize.define<ReportInstance, ReportAttributes>(
 
 reports.belongsTo(guilds);
 guilds.hasMany(reports);
+
+// ------------------------------------
+// DB Stats
+// ------------------------------------
+
+export interface DBStatsAttributes extends BaseAttributes {
+	key: string;
+	value: number;
+}
+export interface DBStatsInstance
+	extends Sequelize.Instance<DBStatsAttributes>,
+		DBStatsAttributes {}
+
+export const dbStats = sequelize.define<DBStatsInstance, DBStatsAttributes>(
+	'dbStats',
+	{
+		key: { type: Sequelize.STRING, primaryKey: true },
+		value: Sequelize.DOUBLE
+	}
+);
