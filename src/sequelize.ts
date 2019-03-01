@@ -613,7 +613,7 @@ export const customInvites = sequelize.define<
 	'customInvite',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		amount: Sequelize.INTEGER,
+		amount: Sequelize.BIGINT,
 		reason: Sequelize.STRING,
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32),
@@ -904,8 +904,8 @@ export const premiumSubscriptions = sequelize.define<
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
-		maxGuilds: Sequelize.INTEGER,
-		isFreeTier: Sequelize.BOOLEAN,
+		maxGuilds: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 5 },
+		isFreeTier: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: 0 },
 		validUntil: Sequelize.DATE,
 		memberId: Sequelize.STRING(32),
 		reason: Sequelize.TEXT
