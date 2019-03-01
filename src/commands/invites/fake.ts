@@ -130,12 +130,11 @@ export default class extends Command {
 					});
 
 					const invText = Object.keys(invs)
-						.map(name => {
-							return t('cmd.fake.join.entry.invite', {
-								name,
-								times: invs[name] > 1 ? invs[name] : undefined
-							});
-						})
+						.map(name =>
+							invs[name] > 1
+								? t('cmd.fake.join.entry.multi', { name, times: invs[name] })
+								: t('cmd.fake.join.entry.single', { name })
+						)
 						.join(', ');
 
 					const newFakeText = mainText + ' ' + invText + '\n';

@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { NumberResolver } from '../../../resolvers';
-
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { to } from '../../../util';
 import { Command, Context } from '../../Command';

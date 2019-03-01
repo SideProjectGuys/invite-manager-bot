@@ -2,9 +2,9 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BasicUser, UserResolver } from '../../../resolvers';
+import { UserResolver } from '../../../resolvers';
 import { punishments, strikes } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {

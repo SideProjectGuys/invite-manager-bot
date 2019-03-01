@@ -12,6 +12,7 @@ import {
 	ViolationType
 } from '../sequelize';
 import { SettingsObject } from '../settings';
+import { BasicUser } from '../types';
 import { to } from '../util';
 
 interface Arguments {
@@ -274,7 +275,7 @@ export class Moderation {
 
 	public logViolationModAction(
 		guild: Guild,
-		user: User,
+		user: BasicUser,
 		type: ViolationType,
 		amount: number,
 		extra?: { name: string; value: string }[]
@@ -298,7 +299,7 @@ export class Moderation {
 
 	public logPunishmentModAction(
 		guild: Guild,
-		user: User,
+		user: BasicUser,
 		type: PunishmentType,
 		amount: number,
 		extra?: { name: string; value: string }[]

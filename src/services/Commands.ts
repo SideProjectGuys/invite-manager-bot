@@ -333,30 +333,30 @@ export class Commands {
 			const rawVal = isShort ? rawArgs[1] : flagSplits[1];
 			const hasVal = typeof rawVal !== 'undefined';
 
-			if (flag.valueRequired && !hasVal) {
-				this.client.msg.sendReply(
-					message,
-					`Missing required value for flag \`${flag.name}\`.\n` +
-						`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
-						resolver.getHelp(context)
-				);
-				return;
-			}
-
 			const skipVal = resolver instanceof BooleanResolver;
 
 			let val: any = true;
-			if (hasVal && !skipVal) {
-				try {
-					val = await resolver.resolve(rawVal, context, []);
-				} catch (e) {
+			if (!skipVal) {
+				if (!hasVal) {
 					this.client.msg.sendReply(
 						message,
-						`Invalid value for \`${flag.name}\`: ${e.message}\n` +
+						`Missing required value for flag \`${flag.name}\`.\n` +
 							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
 							resolver.getHelp(context)
 					);
 					return;
+				} else {
+					try {
+						val = await resolver.resolve(rawVal, context, []);
+					} catch (e) {
+						this.client.msg.sendReply(
+							message,
+							`Invalid value for \`${flag.name}\`: ${e.message}\n` +
+								`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
+								resolver.getHelp(context)
+						);
+						return;
+					}
 				}
 			}
 

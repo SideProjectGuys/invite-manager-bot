@@ -2,12 +2,10 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { NumberResolver, StringResolver } from '../../resolvers';
+import { DurationResolver, NumberResolver } from '../../resolvers';
 import { LeaderboardStyle } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
-
-const chrono = require('chrono-node');
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
@@ -21,12 +19,19 @@ export default class extends Command {
 			aliases: ['top'],
 			args: [
 				{
-					name: 'page',
-					resolver: NumberResolver
+					name: 'duration',
+					resolver: DurationResolver
 				},
 				{
-					name: 'date',
-					resolver: StringResolver
+					name: 'page',
+					resolver: NumberResolver
+				}
+			],
+			flags: [
+				{
+					name: 'compare',
+					short: 'c',
+					resolver: DurationResolver
 				}
 			],
 			group: CommandGroup.Invites,
@@ -36,30 +41,16 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[_page, _date]: [number, string],
-		flags: {},
+		[duration, _page]: [moment.Duration, number],
+		{ compare }: { compare: moment.Duration },
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		let from = moment();
-		let to = moment().subtract(1, 'day');
-		if (_date) {
-			const res = chrono.parse(_date);
-			if (!res[0]) {
-				return this.sendReply(message, t('cmd.leaderboard.invalidDate'));
-			}
-			if (res[0].start) {
-				from = moment(res[0].start.date());
-				to = from.clone().subtract(1, 'day');
-			}
-			if (res[0].end) {
-				to = moment.min(moment(), moment(res[0].end.date()));
-			} else if (!from.isSame(moment(), 'day')) {
-				to = moment();
-			}
-			const min = moment.min(from, to);
-			from = moment.max(from, to);
-			to = min;
-		}
+		const from = duration
+			? moment().subtract(duration)
+			: moment(guild.createdAt);
+		const comp = compare
+			? moment().subtract(compare)
+			: moment().subtract(1, 'day');
 
 		const hideLeft = settings.hideLeftMembersFromLeaderboard;
 
@@ -72,14 +63,18 @@ export default class extends Command {
 			guild,
 			hideLeft,
 			from,
-			to,
+			comp,
 			100
 		);
+
+		const fromText = t('cmd.leaderboard.from', {
+			from: `**${from.locale(settings.lang).fromNow()}**`
+		});
 
 		if (keys.length === 0) {
 			const embed = this.createEmbed({
 				title: t('cmd.leaderboard.title'),
-				description: t('cmd.leaderboard.noInvites')
+				description: fromText + '\n\n**' + t('cmd.leaderboard.noInvites') + '**'
 			});
 			return this.sendReply(message, embed);
 		}
@@ -91,12 +86,11 @@ export default class extends Command {
 
 		// Show the leaderboard as a paginated list
 		this.showPaginated(message, p, maxPage, page => {
-			const fromText = from.format('YYYY/MM/DD - HH:mm:ss - z');
-			const toText = to.format('YYYY/MM/DD - HH:mm:ss - z');
+			const compText = t('cmd.leaderboard.comparedTo', {
+				to: `**${comp.locale(settings.lang).fromNow()}**`
+			});
 
-			let str = `${fromText}\n(${t('cmd.leaderboard.comparedTo', {
-				to: toText
-			})})\n\n`;
+			let str = `${fromText}\n(${compText})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
@@ -151,8 +145,8 @@ export default class extends Command {
 						`${inv.total} `,
 						`${inv.regular} `,
 						`${inv.custom} `,
-						`${inv.fake} `,
-						`${inv.leave} `
+						`${inv.fakes} `,
+						`${inv.leaves} `
 					];
 
 					lines.push(line);

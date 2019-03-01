@@ -1,3 +1,10 @@
+export interface BasicUser {
+	id: string;
+	createdAt: number;
+	username: string;
+	discriminator: string;
+}
+
 export enum Permissions {
 	ADMINISTRATOR = 'administrator',
 	READ_MESSAGES = 'readMessages',
@@ -72,6 +79,7 @@ export enum BotCommand {
 	inviteDetails = 'inviteDetails',
 	invites = 'invites',
 	leaderboard = 'leaderboard',
+	legacyLeaderboard = 'legacyLeaderboard',
 	removeInvites = 'removeInvites',
 	restoreInvites = 'restoreInvites',
 	subtractFakes = 'subtractFakes',

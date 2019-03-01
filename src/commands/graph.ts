@@ -138,13 +138,13 @@ export default class extends Command {
 		const labels: string[] = [];
 		const data: number[] = [];
 
-		for (var m = moment(start); m.diff(end, 'days') <= 0; m.add(1, 'days')) {
+		for (const m = moment(start); m.diff(end, 'days') <= 0; m.add(1, 'days')) {
 			labels.push(m.format('DD.MM.YYYY'));
 			const val = vs[m.format('YYYY-M-D')];
 			data.push(val ? val : 0);
 		}
 
-		let config = {
+		const config = {
 			labels,
 			datasets: [
 				{
@@ -165,7 +165,7 @@ export default class extends Command {
 			]
 		};
 
-		let chart = new Chart();
+		const chart = new Chart();
 		chart.getChart('line', config).then((buffer: Buffer) => {
 			const embed = this.createEmbed({
 				title,

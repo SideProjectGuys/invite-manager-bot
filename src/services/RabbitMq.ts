@@ -2,14 +2,14 @@ import * as amqplib from 'amqplib';
 import { Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../client';
 import {
 	channels,
-	customInvites,
-	CustomInvitesGeneratedReason,
 	inviteCodes,
 	JoinAttributes,
+	JoinInvalidatedReason,
 	joins,
 	LeaveAttributes,
 	members,
@@ -155,14 +155,18 @@ export class RabbitMq {
 
 		// Auto remove leaves if enabled
 		if (settings.autoSubtractLeaves) {
-			// Delete removals for this member because the member rejoined
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
+			await joins.update(
+				{
+					invalidatedReason: null
+				},
+				{
+					where: {
+						guildId: guild.id,
+						memberId: member.id,
+						invalidatedReason: JoinInvalidatedReason.leave
+					}
 				}
-			});
+			);
 		}
 
 		// Exit if we can't find the join
@@ -226,42 +230,22 @@ export class RabbitMq {
 
 		// Auto remove fakes if enabled
 		if (settings.autoSubtractFakes) {
-			const numJoins = await joins.count({
-				where: {
-					memberId: member.id,
-					guildId
+			await joins.update(
+				{
+					invalidatedReason: JoinInvalidatedReason.fake
 				},
-				include: [
-					{
-						model: inviteCodes,
-						as: 'exactMatch',
-						where: {
-							inviterId
+				{
+					where: {
+						id: {
+							[Op.ne]: jn.id
 						},
-						required: true
+						guildId,
+						memberId: member.id,
+						invalidatedReason: null,
+						exactMatchCode: jn.exactMatchCode
 					}
-				]
-			});
-
-			// Remove old custom invites
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					memberId: inviterId,
-					reason: member.id
 				}
-			});
-
-			// Add removals for duplicate invites
-			await customInvites.insertOrUpdate({
-				id: null,
-				creatorId: null,
-				guildId: guild.id,
-				memberId: inviterId,
-				amount: -(numJoins - 1),
-				reason: member.id,
-				generatedReason: CustomInvitesGeneratedReason.fake
-			});
+			);
 		}
 
 		let inviter = guild.members.get(inviterId);
@@ -399,30 +383,19 @@ export class RabbitMq {
 
 		// Auto remove leaves if enabled (and if we know the inviter)
 		if (inviterId && settings.autoSubtractLeaves) {
-			// Delete any old entries for the leaving of this member
-			await customInvites.destroy({
-				where: {
-					guildId: guild.id,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
-				}
-			});
-
 			const threshold = Number(settings.autoSubtractLeaveThreshold);
 			const timeDiff = moment
 				.utc(join.createdAt)
 				.diff(moment.utc(leave.createdAt), 's');
 			if (timeDiff < threshold) {
-				// Add removals for leaves
-				await customInvites.create({
-					id: null,
-					creatorId: null,
-					guildId: guild.id,
-					memberId: inviterId,
-					amount: -1,
-					reason: member.id,
-					generatedReason: CustomInvitesGeneratedReason.leave
-				});
+				await joins.update(
+					{
+						invalidatedReason: JoinInvalidatedReason.leave
+					},
+					{
+						where: { id: join.id }
+					}
+				);
 			}
 		}
 

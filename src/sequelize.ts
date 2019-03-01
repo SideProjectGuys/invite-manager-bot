@@ -378,6 +378,7 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	deletedAt?: Date;
 	guildId: string;
 	inviterId: string;
+	clearedAmount: number;
 }
 export interface InviteCodeInstance
 	extends Sequelize.Instance<InviteCodeAttributes>,
@@ -406,7 +407,8 @@ export const inviteCodes = sequelize.define<
 		temporary: Sequelize.BOOLEAN,
 		channelId: Sequelize.STRING(32),
 		guildId: Sequelize.STRING(32),
-		inviterId: Sequelize.STRING(32)
+		inviterId: Sequelize.STRING(32),
+		clearedAmount: { type: Sequelize.INTEGER, defaultValue: 0 }
 	},
 	{
 		timestamps: true,
@@ -481,12 +483,18 @@ inviteCodes.hasMany(inviteCodeSettings, { foreignKey: 'inviteCode' });
 // ------------------------------------
 // Joins
 // ------------------------------------
+export enum JoinInvalidatedReason {
+	fake = 'fake',
+	leave = 'leave'
+}
 export interface JoinAttributes extends BaseAttributes {
 	id: number;
 	exactMatchCode: string;
 	possibleMatches: string;
 	guildId: string;
 	memberId: string;
+	invalidatedReason: JoinInvalidatedReason;
+	cleared: boolean;
 }
 export interface JoinInstance
 	extends Sequelize.Instance<JoinAttributes>,
@@ -504,7 +512,9 @@ export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32)
+		memberId: Sequelize.STRING(32),
+		invalidatedReason: Sequelize.ENUM(Object.values(JoinInvalidatedReason)),
+		cleared: { type: Sequelize.BOOLEAN, defaultValue: 0 }
 	},
 	{
 		timestamps: true,
@@ -579,22 +589,14 @@ joins.hasOne(leaves);
 // ------------------------------------
 // Custom Invites
 // ------------------------------------
-export enum CustomInvitesGeneratedReason {
-	clear_regular = 'clear_regular',
-	clear_custom = 'clear_custom',
-	clear_fake = 'clear_fake',
-	clear_leave = 'clear_leave',
-	fake = 'fake',
-	leave = 'leave'
-}
 export interface CustomInviteAttributes extends BaseAttributes {
 	id: number;
 	amount: number;
 	reason: string;
-	generatedReason: CustomInvitesGeneratedReason;
 	guildId: string;
 	memberId: string;
 	creatorId: string;
+	cleared: boolean;
 }
 export interface CustomInviteInstance
 	extends Sequelize.Instance<CustomInviteAttributes>,
@@ -611,14 +613,12 @@ export const customInvites = sequelize.define<
 	'customInvite',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		amount: Sequelize.INTEGER,
+		amount: Sequelize.BIGINT,
 		reason: Sequelize.STRING,
-		generatedReason: Sequelize.ENUM(
-			Object.values(CustomInvitesGeneratedReason)
-		),
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32),
-		creatorId: Sequelize.STRING(32)
+		creatorId: Sequelize.STRING(32),
+		cleared: Sequelize.BOOLEAN
 	},
 	{
 		timestamps: true,
@@ -904,8 +904,8 @@ export const premiumSubscriptions = sequelize.define<
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		amount: Sequelize.DECIMAL(10, 2),
-		maxGuilds: Sequelize.INTEGER,
-		isFreeTier: Sequelize.BOOLEAN,
+		maxGuilds: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 5 },
+		isFreeTier: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: 0 },
 		validUntil: Sequelize.DATE,
 		memberId: Sequelize.STRING(32),
 		reason: Sequelize.TEXT

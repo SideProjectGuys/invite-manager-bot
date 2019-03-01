@@ -3,8 +3,8 @@ import { Embed, Message, TextChannel } from 'eris';
 import { IMClient } from '../../client';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import {
-	customInvites,
-	CustomInvitesGeneratedReason,
+	JoinInvalidatedReason,
+	joins,
 	LogAction,
 	SettingsKey
 } from '../../sequelize';
@@ -282,14 +282,18 @@ export default class extends Command {
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
-				// Delete old duplicate removals
-				return async () =>
-					await customInvites.destroy({
+				// Delete all fake invalidations
+				await joins.update(
+					{
+						invalidatedReason: null
+					},
+					{
 						where: {
 							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.fake
+							invalidatedReason: JoinInvalidatedReason.fake
 						}
-					});
+					}
+				);
 			}
 		}
 
@@ -301,14 +305,18 @@ export default class extends Command {
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
-				// Delete old leave removals
-				return async () =>
-					await customInvites.destroy({
+				// Delete all leave invalidations
+				await joins.update(
+					{
+						invalidatedReason: null
+					},
+					{
 						where: {
 							guildId: guild.id,
-							generatedReason: CustomInvitesGeneratedReason.leave
+							invalidatedReason: JoinInvalidatedReason.leave
 						}
-					});
+					}
+				);
 			}
 		}
 

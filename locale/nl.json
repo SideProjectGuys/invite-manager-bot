@@ -150,7 +150,11 @@
 					"clearBonus": "Voer `true` in om bonus invites te verwijderen, anders `false` (standaard).",
 					"user": "De gebruiker waar alle invites worden verwijdert. Wanneer dit wordt weggelaten, worden alle gebruikers verwijdert."
 				},
-				"description": "Verwijder alle invites van de server/een gebruiker"
+				"description": "Verwijder alle invites van de server/een gebruiker",
+				"flags": {
+					"date": "cmd.clearInvites.self.flags.date",
+					"clearBonus": "cmd.clearInvites.self.flags.clearBonus"
+				}
 			}
 		},
 		"config": {
@@ -247,7 +251,7 @@
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
 					"title": "Verwijderde invites.",
-					"text": "**{{ total }}** (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake}}** fake, **{{ leave }}** leaves)"
+					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)"
 				}
 			},
 			"joined": {
@@ -354,6 +358,7 @@
 			"title": "Leaderboard",
 			"invalidDate": "Ongeldige datum: {{ date }}",
 			"noInvites": "Geen invites!",
+			"from": "Invites sinds {{{ from }}}",
 			"comparedTo": "wijzigingen vergeleken met {{ to }}",
 			"entry": "**{{ pos}}** {{{ chang }}} **{{{ name }}}** - {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
 			"col": {
@@ -404,7 +409,7 @@
 					"user": "De gebruiker waar de setting voor is.",
 					"value": "De nieuwe waarde van de setting."
 				},
-				"description": "Show and change the config of members of the server."
+				"description": "Zie en verander de configuratie van de gebruikers van deze server."
 			}
 		},
 		"members": {
@@ -418,47 +423,47 @@
 				"month": "Is gejoint deze maan"
 			},
 			"self": {
-				"description": "Show member count of current server."
+				"description": "Zie de gebruiker aantal van deze server."
 			}
 		},
 		"punishmentConfig": {
-			"title": "Punishment Config",
-			"text": "{{ strikes }} strikes are punished with a {{ punishment }}",
+			"title": "Straffen Configuratie",
+			"text": "{{ strikes }} waarschuwingen zijn bestraft met een {{ punishment }}",
 			"self": {
 				"args": {
-					"punishment": "Type of punishment to use.",
-					"strikes": "Number of strikes for this punishment to be used.",
+					"punishment": "Straf type om te gebruiken.",
+					"strikes": "Waarschuwing aantal voor deze straf mom te gebruiken.",
 					"args": "Arguments passed to the punishment."
 				},
 				"description": "Configure punishments when reaching a certain amount of strikes."
 			},
-			"unusedPunishment": "Unused Punishment",
-			"deletedText": "Members will no longer receive the punishment {{ punishment }}"
+			"unusedPunishment": "Ongebruikte Straffen",
+			"deletedText": "Gebruikers zullen niet meer de {{ punishment }} straf krijgen"
 		},
 		"purge": {
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
-			"error": "Error",
-			"title": "Deleted Messages",
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
+			"invalidQuantity": "Je moet een geldig aantal berichten opgeven om te verwijderen",
+			"error": "Fout opgetreden",
+			"title": "Verwijderde Berichten",
+			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
 			"self": {
 				"args": {
-					"quantity": "How many messages should be deleted.",
-					"member": "User whose messages get deleted"
+					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
+					"member": "Van wie de berichten worden verwijdert"
 				},
-				"description": "Purge messages in a channel."
+				"description": "Verwijder berichten in een kanaal."
 			}
 		},
 		"purgeUntil": {
-			"title": "Delete Messages",
-			"none": "No messages found to delete.",
-			"msgNotFound": "Could not find messageID in the last 100 messages.",
-			"error": "Error",
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
+			"title": "Verwijder Berichten",
+			"none": "Geen berichten gevonden om te verwijderen.",
+			"msgNotFound": "De bericht ID kan niet worden gevonden in de laatste 100 berichten.",
+			"error": "Fout opgetreden",
+			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
 			"self": {
 				"args": {
-					"messageID": "Last message ID to be deleted."
+					"messageID": "Laatste bericht ID om te verwijderen."
 				},
-				"description": "Purge messages in a channel up until a specified message."
+				"description": "Verwijder berichten in een kanaal tot een specifiek aan berichten."
 			}
 		},
 		"ranks": {
@@ -466,7 +471,7 @@
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
 			"title": "Ranken",
 			"self": {
-				"description": "Show all ranks."
+				"description": "Zie alle ranks."
 			}
 		},
 		"removeRank": {
@@ -474,18 +479,18 @@
 			"done": "De rank {{ role }} is verwijdert.",
 			"self": {
 				"args": {
-					"rank": "The for which you want to remove the rank."
+					"rank": "Voor wie je de rank wilt verwijderen."
 				},
-				"description": "Remove a rank."
+				"description": "Verwijder een rank."
 			}
 		},
 		"restoreInvites": {
 			"done": "Invites terug gezet{{! args.user ? ` for <@${args.user}>` : '' !}}",
 			"self": {
 				"args": {
-					"user": "The user to restore all invites to. If omitted restores invites for all users."
+					"user": "De gebruiker om alle invites terug te zetten. Wanneer leeg gelaten worden de invites van iedereen terug gezet."
 				},
-				"description": "Restore all previously cleared invites."
+				"description": "Zat alle vorige verwijderde invites terug."
 			}
 		},
 		"setup": {
@@ -501,15 +506,15 @@
 			},
 			"faq": {
 				"title": "Vraag en antwoorden en meer",
-				"text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
+				"text": "Gebruik `!faq` om meer informatie te zien, bijvoorbeeld hoe je de prefix veranderd of hoe je de join/leave bericht aanpast.\n\nEen complete documentatie hoe je de bot instelt kan hier gevonden worden: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Help",
-				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
+				"text": "Als je hulp nodig hebt, of als je een feedback hebt, kan je de `!feedback` commando gebruiken or join onze discord hulp server: {{{ link }}}"
 			},
 			"premium": {
 				"title": "Betaalde versie",
-				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
+				"text": "Als je het leuk vind om de ontwikkeling van deze bot te ondersteunen, kan je ons ondersteunen via Patreon: {{{ link }}}\n\nAfhankelijk van je tier, krijg je extra functies."
 			},
 			"manageGuild": {
 				"title": "Ik mis de permissie: Server beheren",
@@ -520,108 +525,106 @@
 				"text": "De bot heeft de \"Rollen beheren\" permissies niet. Deze permissie is nodig om iemand een role te geven die hij / zij krijgt wanneer hij de zoveel invites heeft behaald. Zonder deze permissie kan de bot niet automatisch de role geven."
 			},
 			"viewAuditLogs": {
-				"title": "Missing permission: View Audit Logs",
-				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites."
+				"title": "Ik mis de permissie: Zie logboeken.",
+				"text": "De bot heeft niet de `Zie logboeken` permissie. Deze permissie laat de bot toe om op een betere manier de invites te volgen."
 			},
 			"self": {
-				"description": "Help with setting up the bot and checking for problems (e.g. missing permissions)"
+				"description": "Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies)"
 			}
 		},
 		"softBan": {
-			"missingPermissions": "I need the `Ban Members` permission to use this command",
-			"canNotSoftBan": "I cannot soft-ban this user.",
-			"done": "The user was successfully soft-banned.",
-			"error": "There was an error banning this user:\n{{ error }}",
-			"unBanError": "The user was but could not be unbanned...\n{{ error }}",
+			"missingPermissions": "Ik heb de `Ban Gebruikers` permissie nodig om dit commando te gebruiken.",
+			"canNotSoftBan": "Ik kan deze gebruiker niet soft-bannen.",
+			"done": "De gebruiker is succesvol gesoft-banned.",
+			"error": "Er was een error tijdens het verbannen van deze gebruiker: \n{{ error }}",
+			"unBanError": "De gebruiker is verbannen maar kan niet worden geunbanned...\n{{ error }}",
 			"self": {
 				"args": {
-					"user": "User to ban.",
-					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned."
+					"user": "Gebruiker om te verbannen.",
+					"deleteMessageDays": "Hoeveel vorige berichten worden verwijdert (in dagen).",
+					"reason": "Waarom de gebruiker was verbannen."
 				},
-				"description": "Ban and then automatically unban a member from the server."
+				"description": "Ban en dan unban een gebruiker automatisch van de server."
 			}
 		},
 		"subtractFakes": {
-			"noInvites": "Er zijn geen invites tot nu toe!",
-			"done": "{{ total }} fake invites verwijdert!",
-			"none": "No fake invites found.",
+			"done": "Verwijder nep invites!",
+			"none": "Geen fake invites gevonden.",
 			"self": {
-				"description": "Remove fake invites from all users."
+				"description": "Verwijder fake invites van alle gebruikers."
 			}
 		},
 		"strikeConfig": {
-			"title": "Strike Config",
-			"text": "The violation {{ violation }} gives a user {{ strikes }} strikes.",
+			"title": "Waarschuwing Configuratie",
+			"text": "De straf {{ violation }} geeft een gebruiker {{ strikes }} waarschuwingen.",
 			"self": {
 				"args": {
-					"violation": "Violation type.",
-					"strikes": "Number of strikes."
+					"violation": "Straf type.",
+					"strikes": "Aantal waarschuwingen."
 				},
-				"description": "Configure strikes received for various violations."
+				"description": "Configureer waarschuwingen die gegeven zijn door vorige straffen."
 			},
-			"deletedText": "Members who violate the rule {{ violation }} will no longer receive strikes.",
-			"unusedViolations": "Unused violations"
+			"deletedText": "Gebruikers die de straf {{ violation }} overtreden zullen niet langer waarschuwingen ontvangen.",
+			"unusedViolations": "Ongebruikte straffen."
 		},
 		"subtractLeaves": {
-			"noLeaves": "Er zijn geen leaves tot nu toe!",
-			"done": "{{ total }} leaves verwijdert!",
-			"none": "No leaves found.",
+			"done": "Leaves verwijdert!",
+			"none": "Geen leaves gevonden.",
 			"self": {
-				"description": "Remove leaves from all users"
+				"description": "Verwijder leaves voor alle gebruikers."
 			}
 		},
 		"createInvite": {
-			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
+			"done": "Invite code **{{{ code }}}** aangemaakt genaamd **{{ name }}** voor {{{ channel }}}.",
 			"self": {
 				"args": {
-					"name": "The name of the invite code.",
-					"channel": "The channel for which the invite code is created. Uses the current channel by default."
+					"name": "De naam van de invite code.",
+					"channel": "De kanaal waarvoor de invite code is aangemaakt. De huidige kanaal wordt standaard gebruikt."
 				},
-				"description": "Creates unique invite codes."
+				"description": "Maak unieke invite codes aan."
 			}
 		},
 		"inviteDetails": {
-			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
+			"entry": "**{{ uses }}** van {{{ code }}} - aangemaakt op **{{ createdAt }}**",
 			"self": {
 				"args": {
-					"user": "The user for whom you want to show detailed invites."
+					"user": "De gebruiker van wie je de invites gedetailleerd wilt zien."
 				},
-				"description": "Shows details about where your invites are from."
+				"description": "Zie details waar je je invites vandaan komen."
 			},
-			"noInviteCodes": "You don't have any invite codes yet."
+			"noInviteCodes": "Je hebt momenteel geen invite codes."
 		},
 		"getBot": {
-			"title": "Add InviteManager to your server",
+			"title": "Voeg inviteManager aan jouw server toe.",
 			"self": {
-				"description": "Get an invite link for the bot."
+				"description": "Krijg een invite link voor de bot."
 			}
 		},
 		"prefix": {
-			"title": "The current prefix is {{{ prefix }}}",
+			"title": "De huidige prefix is {{{ prefix }}}",
 			"self": {
-				"description": "Shows the current prefix of the bot."
+				"description": "Laat de huidige prefix zien van de bot."
 			}
 		},
 		"support": {
-			"server": "Support server",
+			"server": "Hulp discord",
 			"self": {
-				"description": "Get an invite link to our support server."
+				"description": "Krijg een invite link naar onze hulp server."
 			}
 		},
 		"premium": {
 			"noPremium": {
-				"title": "You currently do not have a premium subscription",
-				"text": "By subscribing to a premium tier you help the development of the bot and also get some additional features."
+				"title": "Je hebt momenteel geen betaalde abonnement",
+				"text": "Door te abonneren op een betaalde tier help je de ontwikkeling van de bot en krijg je wat extra toevoegingen."
 			},
 			"feature": {
 				"servers": {
-					"title": "Premium Feature: Up to 5 servers",
-					"text": "Once you have premium you may activate it on up to 5 servers of your choosing, and you can change these 5 servers anytime."
+					"title": "Betaalde toevoegingen: Tot 5 servers",
+					"text": "Wanneer je de betaalde functies hebt kan je dit activeren tot 5 servers naar jouw keuze, en je kan deze 5 servers op elk moment wijzigen."
 				},
 				"embeds": {
-					"title": "Premium Feature: Embeds in join messages",
-					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{{ link }}})"
+					"title": "Betaalde toevoegingen: Embeds in join berichten",
+					"text": "Je kan deze embed gebruiken in je join en leave bericht en dat zal een stuk beter staan. \n[Ze een aantal voorbeelden hier]({{{ link }}})"
 				},
 				"export": {
 					"title": "Premium Feature: History export",
@@ -853,229 +856,6 @@
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string[]": "A list of words, for example: word another \"word with space\""
 			},
-			"items": {
-				"title": "Interactive Config",
-				"basic": {
-					"description": "Base bot settings such as prefix, language and logging.",
-					"title": "Basic Settings",
-					"prefix": {
-						"title": "Prefix"
-					},
-					"lang": {
-						"title": "Language"
-					},
-					"logChannel": {
-						"title": "Log Channel"
-					},
-					"getUpdates": {
-						"title": "Get Updates"
-					}
-				},
-				"mod": {
-					"description": "Settings related to moderation.",
-					"title": "Moderation",
-					"general": {
-						"description": "General settings related to moderation.",
-						"title": "General",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"moderatedChannels": {
-							"title": "Moderated Channels"
-						},
-						"moderatedRoles": {
-							"title": "Moderated Roles"
-						},
-						"ignoredChannels": {
-							"title": "Ignored Channels"
-						},
-						"ignoredRoles": {
-							"title": "Ignored Roles"
-						},
-						"deleteBotMessages": {
-							"title": "Delete Bot messages"
-						},
-						"deleteBotMessagesTimeout": {
-							"title": "Bot message deletion delay"
-						},
-						"autoLogEnabled": {
-							"title": "Log Automoderation"
-						},
-						"logChannel": {
-							"title": "Mod Log Channel"
-						}
-					},
-					"invitesAndLinks": {
-						"description": "Settings related to invites and links.",
-						"title": "Invites and Links",
-						"invitesEnabled": {
-							"title": "Invite moderation enabled"
-						},
-						"linksEnabled": {
-							"title": "Link moderation enabled"
-						},
-						"linksWhitelist": {
-							"title": "Whitelist"
-						},
-						"linksBlacklist": {
-							"title": "Blacklist"
-						},
-						"followLinkRedirects": {
-							"title": "Follow redirects"
-						}
-					},
-					"bannedWords": {
-						"description": "Settings related to banned words.",
-						"title": "Banned words",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"blacklist": {
-							"title": "Blacklist"
-						}
-					},
-					"caps": {
-						"description": "Settings related to ALL CAPS messages",
-						"title": "Caps-Lock",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"minCharacters": {
-							"title": "Minimum Characters"
-						},
-						"percentageCaps": {
-							"title": "Percentage Caps"
-						}
-					},
-					"duplicate": {
-						"description": "Settings related to duplicate messages.",
-						"title": "Duplicate Text",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"timeframe": {
-							"title": "Timeframe"
-						}
-					},
-					"spam": {
-						"description": "Settings related to spam (quick sending of messages).",
-						"title": "Spam",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"numberOfMessages": {
-							"title": "Number of messages"
-						},
-						"timeframe": {
-							"title": "Timeframe"
-						}
-					},
-					"mentions": {
-						"description": "Settings related to mention-spam.",
-						"title": "Mention-Spam",
-						"usersEnabled": {
-							"title": "User Mention Detection Enabled"
-						},
-						"usersMax": {
-							"title": "Maximum User Mentions per Message"
-						},
-						"rolesEnabled": {
-							"title": "Role Mention Detection Enabled"
-						},
-						"rolesMax": {
-							"title": "Maximum Role Mentions per Message"
-						}
-					},
-					"emojis": {
-						"description": "Settings related to emoji-spam.",
-						"title": "Emojis",
-						"enabled": {
-							"title": "Enabled"
-						},
-						"max": {
-							"title": "Maximum emojis"
-						}
-					}
-				},
-				"captcha": {
-					"description": "Settings related to captchas on join.",
-					"title": "Captcha",
-					"enabled": {
-						"title": "Enabled"
-					},
-					"welcome": {
-						"title": "Welcome Message"
-					},
-					"success": {
-						"title": "Success Message"
-					},
-					"failed": {
-						"title": "Failed Message"
-					},
-					"timeout": {
-						"title": "Timeout Message"
-					},
-					"logs": {
-						"title": "Logs"
-					}
-				},
-				"leaderboard": {
-					"description": "Settings related to the leaderboard",
-					"title": "Leaderboard",
-					"style": {
-						"title": "Style"
-					},
-					"hideLeftMembers": {
-						"title": "Hide Left Members"
-					}
-				},
-				"ranks": {
-					"description": "Settings related to Ranks",
-					"title": "Ranks",
-					"style": {
-						"title": "Style"
-					},
-					"channel": {
-						"title": "Channel"
-					},
-					"message": {
-						"title": "Message"
-					}
-				},
-				"joinAndLeaveMessages": {
-					"description": "Settings related to Join and Leave Messages",
-					"title": "Join and Leave Messages",
-					"joinChannel": {
-						"title": "Join Channel"
-					},
-					"joinMessage": {
-						"title": "Join Message"
-					},
-					"leaveChannel": {
-						"title": "Leave Channel"
-					},
-					"leaveMessage": {
-						"title": "Leave Message"
-					}
-				},
-				"memberSettings": {
-					"description": "Settings related to specific members.",
-					"title": "Member Settings",
-					"hideFromLeaderboard": {
-						"title": "Hide from Leaderboard"
-					}
-				},
-				"inviteCodeSettings": {
-					"description": "Settings related to specific invite codes.",
-					"title": "Invite Code Settings",
-					"name": {
-						"title": "Name"
-					},
-					"roles": {
-						"title": "Role"
-					}
-				}
-			},
 			"list": {
 				"add": {
 					"title": "Add",
@@ -1103,7 +883,11 @@
 			"remove": "Enter a value or a list of values to remove.",
 			"add": "Enter a value or list of values to add.",
 			"set": "Enter the new values for the list.",
-			"removeEmpty": "The list is already empty."
+			"removeEmpty": "The list is already empty.",
+			"more": {
+				"title": "cmd.interactiveConfig.more.title",
+				"description": "cmd.interactiveConfig.more.description"
+			}
 		},
 		"credits": {
 			"developers": "Developers",
@@ -1146,17 +930,309 @@
 		},
 		"punishments": {
 			"dm": {
-				"warn": "moderation.punishments.dm.warn",
-				"amount": "moderation.punishments.dm.amount",
-				"mute": "moderation.punishments.dm.mute",
-				"kick": "moderation.punishments.dm.kick",
-				"ban": "moderation.punishments.dm.ban"
+				"warn": "You have been **warned** in **{{ guild }}**",
+				"mute": "You have been **muted** in **{{ guild }}**",
+				"kick": "You have been **kicked** from **{{ guild }}**",
+				"ban": "You have been **banned** from **{{ guild }}**"
 			}
 		}
 	},
 	"settings": {
+		"groups": {
+			"general": {
+				"title": "settings.groups.general.title",
+				"description": "settings.groups.general.description"
+			},
+			"invites": {
+				"title": "settings.groups.invites.title",
+				"description": "settings.groups.invites.description",
+				"joins": {
+					"title": "settings.groups.invites.joins.title",
+					"description": "settings.groups.invites.joins.description"
+				},
+				"leaves": {
+					"title": "settings.groups.invites.leaves.title",
+					"description": "settings.groups.invites.leaves.description"
+				},
+				"leaderboard": {
+					"title": "settings.groups.invites.leaderboard.title",
+					"description": "settings.groups.invites.leaderboard.description"
+				},
+				"fakes": {
+					"title": "settings.groups.invites.fakes.title",
+					"description": "settings.groups.invites.fakes.description"
+				},
+				"ranks": {
+					"title": "settings.groups.invites.ranks.title",
+					"description": "settings.groups.invites.ranks.description"
+				}
+			},
+			"moderation": {
+				"title": "settings.groups.moderation.title",
+				"description": "settings.groups.moderation.description",
+				"captcha": {
+					"description": "settings.groups.moderation.captcha.description",
+					"title": "settings.groups.moderation.captcha.title"
+				},
+				"general": {
+					"description": "settings.groups.moderation.general.description",
+					"title": "settings.groups.moderation.general.title"
+				},
+				"logging": {
+					"description": "settings.groups.moderation.logging.description",
+					"title": "settings.groups.moderation.logging.title"
+				},
+				"invites": {
+					"description": "settings.groups.moderation.invites.description",
+					"title": "settings.groups.moderation.invites.title"
+				},
+				"links": {
+					"description": "settings.groups.moderation.links.description",
+					"title": "settings.groups.moderation.links.title"
+				},
+				"bannedWords": {
+					"description": "settings.groups.moderation.bannedWords.description",
+					"title": "settings.groups.moderation.bannedWords.title"
+				},
+				"caps": {
+					"description": "settings.groups.moderation.caps.description",
+					"title": "settings.groups.moderation.caps.title"
+				},
+				"duplicate": {
+					"description": "settings.groups.moderation.duplicate.description",
+					"title": "settings.groups.moderation.duplicate.title"
+				},
+				"spam": {
+					"description": "settings.groups.moderation.spam.description",
+					"title": "settings.groups.moderation.spam.title"
+				},
+				"mentions": {
+					"description": "settings.groups.moderation.mentions.description",
+					"title": "settings.groups.moderation.mentions.title"
+				},
+				"emojis": {
+					"description": "settings.groups.moderation.emojis.description",
+					"title": "settings.groups.moderation.emojis.title"
+				}
+			}
+		},
 		"lang": {
-			"description": "settings.lang.description"
+			"description": "settings.lang.description",
+			"title": "settings.lang.title"
+		},
+		"prefix": {
+			"title": "settings.prefix.title",
+			"description": "settings.prefix.description"
+		},
+		"logChannel": {
+			"title": "settings.logChannel.title",
+			"description": "settings.logChannel.description"
+		},
+		"getUpdates": {
+			"title": "settings.getUpdates.title"
+		},
+		"joinMessage": {
+			"title": "settings.joinMessage.title",
+			"description": "settings.joinMessage.description"
+		},
+		"joinMessageChannel": {
+			"title": "settings.joinMessageChannel.title",
+			"description": "settings.joinMessageChannel.description"
+		},
+		"rankAssignmentStyle": {
+			"title": "settings.rankAssignmentStyle.title",
+			"description": "settings.rankAssignmentStyle.description"
+		},
+		"rankAnnouncementChannel": {
+			"title": "settings.rankAnnouncementChannel.title",
+			"description": "settings.rankAnnouncementChannel.description"
+		},
+		"rankAnnouncementMessage": {
+			"title": "settings.rankAnnouncementMessage.title",
+			"description": "settings.rankAnnouncementMessage.description"
+		},
+		"leaveMessage": {
+			"title": "settings.leaveMessage.title",
+			"description": "settings.leaveMessage.description"
+		},
+		"leaveMessageChannel": {
+			"title": "settings.leaveMessageChannel.title",
+			"description": "settings.leaveMessageChannel.description"
+		},
+		"autoSubtractLeaves": {
+			"title": "settings.autoSubtractLeaves.title"
+		},
+		"autoSubtractLeaveThreshold": {
+			"title": "settings.autoSubtractLeaveThreshold.title",
+			"description": "settings.autoSubtractLeaveThreshold.description"
+		},
+		"leaderboardStyle": {
+			"title": "settings.leaderboardStyle.title",
+			"description": "settings.leaderboardStyle.description"
+		},
+		"hideLeftMembersFromLeaderboard": {
+			"title": "settings.hideLeftMembersFromLeaderboard.title"
+		},
+		"autoSubtractFakes": {
+			"title": "settings.autoSubtractFakes.title"
+		},
+		"captchaVerificationOnJoin": {
+			"title": "settings.captchaVerificationOnJoin.title"
+		},
+		"captchaVerificationWelcomeMessage": {
+			"title": "settings.captchaVerificationWelcomeMessage.title",
+			"description": "settings.captchaVerificationWelcomeMessage.description"
+		},
+		"captchaVerificationSuccessMessage": {
+			"title": "settings.captchaVerificationSuccessMessage.title",
+			"description": "settings.captchaVerificationSuccessMessage.description"
+		},
+		"captchaVerificationFailedMessage": {
+			"title": "settings.captchaVerificationFailedMessage.title",
+			"description": "settings.captchaVerificationFailedMessage.description"
+		},
+		"captchaVerificationTimeout": {
+			"title": "settings.captchaVerificationTimeout.title",
+			"description": "settings.captchaVerificationTimeout.description"
+		},
+		"captchaVerificationLogEnabled": {
+			"title": "settings.captchaVerificationLogEnabled.title"
+		},
+		"autoModEnabled": {
+			"title": "settings.autoModEnabled.title"
+		},
+		"autoModModeratedChannels": {
+			"title": "settings.autoModModeratedChannels.title",
+			"description": "settings.autoModModeratedChannels.description"
+		},
+		"autoModModeratedRoles": {
+			"title": "settings.autoModModeratedRoles.title",
+			"description": "settings.autoModModeratedRoles.description"
+		},
+		"autoModIgnoredChannels": {
+			"title": "settings.autoModIgnoredChannels.title",
+			"description": "settings.autoModIgnoredChannels.description"
+		},
+		"autoModIgnoredRoles": {
+			"title": "settings.autoModIgnoredRoles.title",
+			"description": "settings.autoModIgnoredRoles.description"
+		},
+		"mutedRole": {
+			"title": "settings.mutedRole.title",
+			"description": "settings.mutedRole.description"
+		},
+		"autoModDisabledForOldMembers": {
+			"title": "settings.autoModDisabledForOldMembers.title"
+		},
+		"autoModDisabledForOldMembersThreshold": {
+			"title": "settings.autoModDisabledForOldMembersThreshold.title",
+			"description": "settings.autoModDisabledForOldMembersThreshold.description"
+		},
+		"autoModLogEnabled": {
+			"title": "settings.autoModLogEnabled.title"
+		},
+		"modLogChannel": {
+			"title": "settings.modLogChannel.title",
+			"description": "settings.modLogChannel.description"
+		},
+		"autoModDeleteBotMessage": {
+			"title": "settings.autoModDeleteBotMessage.title"
+		},
+		"autoModDeleteBotMessageTimeoutInSeconds": {
+			"title": "settings.autoModDeleteBotMessageTimeoutInSeconds.title",
+			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description"
+		},
+		"modPunishmentBanDeleteMessage": {
+			"title": "settings.modPunishmentBanDeleteMessage.title"
+		},
+		"modPunishmentKickDeleteMessage": {
+			"title": "settings.modPunishmentKickDeleteMessage.title"
+		},
+		"modPunishmentSoftbanDeleteMessage": {
+			"title": "settings.modPunishmentSoftbanDeleteMessage.title"
+		},
+		"modPunishmentWarnDeleteMessage": {
+			"title": "settings.modPunishmentWarnDeleteMessage.title"
+		},
+		"modPunishmentMuteDeleteMessage": {
+			"title": "settings.modPunishmentMuteDeleteMessage.title"
+		},
+		"autoModInvitesEnabled": {
+			"title": "settings.autoModInvitesEnabled.title"
+		},
+		"autoModLinksEnabled": {
+			"title": "settings.autoModLinksEnabled.title"
+		},
+		"autoModLinksWhitelist": {
+			"title": "settings.autoModLinksWhitelist.title",
+			"description": "settings.autoModLinksWhitelist.description"
+		},
+		"autoModLinksBlacklist": {
+			"title": "settings.autoModLinksBlacklist.title",
+			"description": "settings.autoModLinksBlacklist.description"
+		},
+		"autoModLinksFollowRedirects": {
+			"title": "settings.autoModLinksFollowRedirects.title"
+		},
+		"autoModWordsEnabled": {
+			"title": "settings.autoModWordsEnabled.title"
+		},
+		"autoModWordsBlacklist": {
+			"title": "settings.autoModWordsBlacklist.title",
+			"description": "settings.autoModWordsBlacklist.description"
+		},
+		"autoModAllCapsEnabled": {
+			"title": "settings.autoModAllCapsEnabled.title"
+		},
+		"autoModAllCapsMinCharacters": {
+			"title": "settings.autoModAllCapsMinCharacters.title",
+			"description": "settings.autoModAllCapsMinCharacters.description"
+		},
+		"autoModAllCapsPercentageCaps": {
+			"title": "settings.autoModAllCapsPercentageCaps.title",
+			"description": "settings.autoModAllCapsPercentageCaps.description"
+		},
+		"autoModDuplicateTextEnabled": {
+			"title": "settings.autoModDuplicateTextEnabled.title"
+		},
+		"autoModDuplicateTextTimeframeInSeconds": {
+			"title": "settings.autoModDuplicateTextTimeframeInSeconds.title",
+			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description"
+		},
+		"autoModQuickMessagesEnabled": {
+			"title": "settings.autoModQuickMessagesEnabled.title"
+		},
+		"autoModQuickMessagesNumberOfMessages": {
+			"title": "settings.autoModQuickMessagesNumberOfMessages.title",
+			"description": "settings.autoModQuickMessagesNumberOfMessages.description"
+		},
+		"autoModQuickMessagesTimeframeInSeconds": {
+			"title": "settings.autoModQuickMessagesTimeframeInSeconds.title",
+			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description"
+		},
+		"autoModMentionUsersEnabled": {
+			"title": "settings.autoModMentionUsersEnabled.title"
+		},
+		"autoModMentionUsersMaxNumberOfMentions": {
+			"title": "settings.autoModMentionUsersMaxNumberOfMentions.title",
+			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description"
+		},
+		"autoModMentionRolesEnabled": {
+			"title": "settings.autoModMentionRolesEnabled.title"
+		},
+		"autoModMentionRolesMaxNumberOfMentions": {
+			"title": "settings.autoModMentionRolesMaxNumberOfMentions.title",
+			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description"
+		},
+		"autoModEmojisEnabled": {
+			"title": "settings.autoModEmojisEnabled.title"
+		},
+		"autoModEmojisMaxNumberOfEmojis": {
+			"title": "settings.autoModEmojisMaxNumberOfEmojis.title",
+			"description": "settings.autoModEmojisMaxNumberOfEmojis.description"
+		},
+		"autoModHoistEnabled": {
+			"title": "settings.autoModHoistEnabled.title"
 		}
 	}
 }

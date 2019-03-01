@@ -1,14 +1,9 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	BasicUser,
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../resolvers';
+import { NumberResolver, StringResolver, UserResolver } from '../../resolvers';
 import { customInvites, LogAction, members } from '../../sequelize';
-import { BotCommand, CommandGroup } from '../../types';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -65,7 +60,7 @@ export default class extends Command {
 			creatorId: message.author.id,
 			amount,
 			reason,
-			generatedReason: null
+			cleared: false
 		});
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {

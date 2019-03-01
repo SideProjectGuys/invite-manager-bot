@@ -12,6 +12,7 @@ import {
 export type InternalSettingsTypes =
 	| 'Boolean'
 	| 'Number'
+	| 'Date'
 	| 'String'
 	| 'String[]'
 	| 'Channel'
@@ -451,7 +452,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	autoModDuplicateTextTimeframeInSeconds: {
 		type: 'Number',
 		grouping: [SettingsGroup.moderation, SettingsGroup.duplicate],
-		defaultValue: 30,
+		defaultValue: 60,
 		exampleValues: ['5', '20']
 	},
 
