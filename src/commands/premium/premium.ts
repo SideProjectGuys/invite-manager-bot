@@ -117,15 +117,15 @@ export default class extends Command {
 				if (guildId) {
 					if (allGuildSubs.some(s => s.guildId === guildId)) {
 						guildList +=
-							'\n`' +
+							'\n' +
 							t('cmd.premium.premium.deactivate', {
-								cmd: settings.prefix + 'premium deactivate`'
+								cmd: `\`${settings.prefix}premium deactivate\``
 							});
 					} else {
 						guildList +=
-							'\n`' +
+							'\n' +
 							t('cmd.premium.premium.activate', {
-								cmd: settings.prefix + 'premium activate`'
+								cmd: `\`${settings.prefix}premium deactivate\``
 							});
 					}
 				}
@@ -161,7 +161,7 @@ export default class extends Command {
 						}
 					});
 
-					if (subs > sub.maxGuilds) {
+					if (subs >= sub.maxGuilds) {
 						embed.description = t('cmd.premium.activate.maxGuilds');
 					} else {
 						await premiumSubscriptionGuilds.create({
@@ -180,7 +180,11 @@ export default class extends Command {
 
 				if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (isPremium) {
+				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
+					embed.description = t('cmd.premium.deactivate.adminOnly');
+				} else if (!isPremium) {
+					embed.description = t('cmd.premium.deactivate.noSubscription');
+				} else {
 					await premiumSubscriptionGuilds.destroy({
 						where: {
 							premiumSubscriptionId: sub.id,
@@ -191,8 +195,6 @@ export default class extends Command {
 					this.client.cache.premium.flush(guildId);
 
 					embed.description = t('cmd.premium.deactivate.done');
-				} else {
-					embed.description = t('cmd.premium.deactivate.noSubscription');
 				}
 			} else if (action === Action.Check) {
 				embed.title = t('cmd.premium.check.title');
