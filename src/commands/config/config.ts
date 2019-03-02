@@ -245,7 +245,10 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.sendReply(message, preview);
+				return () =>
+					this.sendReply(message, preview).catch(err =>
+						this.sendReply(message, err.message)
+					);
 			}
 		}
 
@@ -270,7 +273,10 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.sendReply(message, preview);
+				return () =>
+					this.sendReply(message, preview).catch(err =>
+						this.sendReply(message, err.message)
+					);
 			}
 		}
 

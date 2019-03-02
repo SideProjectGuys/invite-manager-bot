@@ -159,6 +159,7 @@ export class IMClient extends Client {
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
+		this.on('guildDelete', this.onGuildDelete);
 		this.on('guildUnavailable', this.onGuildUnavailable);
 		this.on('guildMemberAdd', this.onGuildMemberAdd);
 		this.on('guildMemberRemove', this.onGuildMemberRemove);
@@ -202,8 +203,7 @@ export class IMClient extends Client {
 							'`!\n\n' +
 							'It looks like this guild was banned from using the InviteManager bot.\n' +
 							'If you believe this was a mistake please contact staff on our support server.\n\n' +
-							config.botSupport +
-							'\n\n' +
+							`${config.botSupport}\n\n` +
 							'I will be leaving your server now, thanks for having me!'
 					)
 					.catch(() => undefined);
@@ -218,12 +218,12 @@ export class IMClient extends Client {
 					const dmChannel = await this.getDMChannel(guild.ownerID);
 					await dmChannel
 						.createMessage(
-							'Hi! Thanks for inviting me to your server `' +
-								guild.name +
-								'`!\n\n' +
+							'Hi!' +
+								`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 								'I am the pro version of InviteManager, and only available to people ' +
 								'that support me on Patreon with the pro tier.\n\n' +
 								'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+								'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
 								'I will be leaving your server now, thanks for having me!'
 						)
 						.catch(() => undefined);
@@ -251,13 +251,10 @@ export class IMClient extends Client {
 		if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(
-					'Hi! Thanks for inviting me to your server `' +
-						guild.name +
-						'`!\n\n' +
+					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 						'It looks like this guild was banned from using the InviteManager bot.\n' +
 						'If you believe this was a mistake please contact staff on our support server.\n\n' +
-						config.botSupport +
-						'\n\n' +
+						`${config.botSupport}\n\n` +
 						'I will be leaving your server now, thanks for having me!'
 				)
 				.catch(() => undefined);
@@ -265,21 +262,28 @@ export class IMClient extends Client {
 			return;
 		}
 
-		const premium = await this.cache.premium.get(guild.id);
+		// Clear the deleted timestamp if it's still set
+		// We have to do this before checking premium or it will fail
+		if (dbGuild.deletedAt) {
+			dbGuild.deletedAt = null;
+			await dbGuild.save();
+		}
+
+		// We use a DB query instead of getting the value from the cache
+		const premium = await this.cache.premium._get(guild.id);
 
 		if (this.isPro && !premium) {
 			await channel
 				.createMessage(
-					'Hi! Thanks for inviting me to your server `' +
-						guild.name +
-						'`!\n\n' +
+					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 						'I am the pro version of InviteManager, and only available to people ' +
 						'that support me on Patreon with the pro tier.\n\n' +
 						'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-						'I will be leaving your server now, thanks for having me!'
+						'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
-			await guild.leave();
+			setTimeout(() => guild.leave(), 60000);
 			return;
 		}
 
@@ -295,6 +299,21 @@ export class IMClient extends Client {
 				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
 				'https://discord.gg/2eTnsVM'
 		);
+	}
+
+	private async onGuildDelete(guild: Guild): Promise<void> {
+		// If we're disabled it means the pro bot is in that guild,
+		// so don't delete the guild
+		if (this.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		// Remove the guild (only sets the 'deletedAt' timestamp)
+		await guilds.destroy({
+			where: {
+				id: guild.id
+			}
+		});
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {

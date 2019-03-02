@@ -152,8 +152,8 @@
 				},
 				"description": "Effacer les invitations du serveur/d'un utilisateur.",
 				"flags": {
-					"date": "cmd.clearInvites.self.flags.date",
-					"clearBonus": "cmd.clearInvites.self.flags.clearBonus"
+					"date": "The date start at which invites should be counted. Default is today.",
+					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched."
 				}
 			}
 		},
@@ -208,7 +208,8 @@
 			"join": {
 				"entry": {
 					"text": "**{{ name }}** a rejoint **{{ times }} fois**, invité par:",
-					"invite": "**{{ name }}**{{! args.times ? ` (**${args.times}** fois)` : '' !}}"
+					"multi": "**{{ name }}** (**{{ times }}** times)",
+					"single": "**{{ name }}**"
 				}
 			},
 			"self": {
@@ -374,23 +375,27 @@
 			"self": {
 				"args": {
 					"page": "Quelle page du classement voulez vous voir.",
-					"date": "La date (et l'heure) pour laquelle le classement est affiché."
+					"date": "La date (et l'heure) pour laquelle le classement est affiché.",
+					"duration": "The duration for which to calculate the leaderboard."
 				},
-				"description": "Afficher les membres avec le plus d'invitations."
+				"description": "Afficher les membres avec le plus d'invitations.",
+				"flags": {
+					"compare": "The date to which the current leaderboard standings are compared to"
+				}
 			}
 		},
 		"memberConfig": {
-			"title": "Vos paramètres de configuration de membre",
-			"text": "Below are all the available memberConfig settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"canNotClear": "The memberConfig setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
+			"title": "Member Config",
+			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valeurs acceptées "
+				"title": "Valid member config keys"
 			},
-			"notSet": "Ces paramètres \"memberConfig\" ne sont actuellement définis pour aucun membre.",
+			"notSet": "This member config settings is currently not set for any members",
 			"current": {
 				"title": "Valeur actuelle",
-				"text": "This memberConfig is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
-				"notSet": "This memberConfig is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
 			},
 			"previous": {
 				"title": "Valeur précédente"
@@ -398,14 +403,14 @@
 			"new": {
 				"title": "Nouvelle Valeur"
 			},
-			"sameValue": "Cette configuration de membre est déjà définie sur cette valeur.",
+			"sameValue": "This member config is already set to that value",
 			"changed": {
-				"text": "This memberConfig has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
+				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
 			"none": "aucun",
 			"self": {
 				"args": {
-					"key": "The memberConfig setting which you want to show/change.",
+					"key": "The member config setting which you want to show/change.",
 					"user": "Le membre ou le paramètre est affiché / modifié.",
 					"value": "La nouvelle valeur du paramètre."
 				},
@@ -644,7 +649,7 @@
 			"self": {
 				"description": "Informations sur la version premium d'InviteManager.",
 				"args": {
-					"action": "cmd.premium.self.args.action"
+					"action": "The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server."
 				}
 			},
 			"activate": {
@@ -733,27 +738,26 @@
 			"title": "Invite Code Config",
 			"text": "Set configs for individual invite codes.",
 			"keys": {
-				"title": "Champs"
+				"title": "Valid invite code config keys"
 			},
-			"noneSet": "cmd.inviteCodeConfig.noneSet",
+			"notSet": "This invite code config is currently not set for any invite code",
 			"current": {
-				"text": "cmd.inviteCodeConfig.current.text",
-				"title": "cmd.inviteCodeConfig.current.title",
-				"notSet": "cmd.inviteCodeConfig.current.notSet",
-				"clear": "cmd.inviteCodeConfig.current.clear"
+				"title": "Current Value",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
+				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
+				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it."
 			},
 			"changed": {
-				"text": "cmd.inviteCodeConfig.changed.text"
+				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
 			},
 			"previous": {
-				"text": "cmd.inviteCodeConfig.previous.text",
-				"title": "cmd.inviteCodeConfig.previous.title"
+				"title": "Previous Value"
 			},
 			"new": {
-				"title": "cmd.inviteCodeConfig.new.title"
+				"title": "New Value"
 			},
-			"sameValue": "cmd.inviteCodeConfig.sameValue",
-			"none": "cmd.inviteCodeConfig.none"
+			"sameValue": "This invite code config is already set to that value",
+			"none": "None"
 		},
 		"permissions": {
 			"self": {
@@ -799,7 +803,7 @@
 					"reason": "La raison de pourquoi l'utilisateur est dé-banni."
 				}
 			},
-			"done": "cmd.unban.done"
+			"done": "User has been unbanned."
 		},
 		"mute": {
 			"missingRole": "Rôle muet non défini ou inexistant!",
@@ -821,8 +825,8 @@
 					"user": "L'utilisateur qui doit reprendre la parole."
 				}
 			},
-			"canNotUnmute": "cmd.unmute.canNotUnmute",
-			"done": "cmd.unmute.done"
+			"canNotUnmute": "Cannot unmute that user.",
+			"done": "User has been unmuted."
 		},
 		"cleanShort": {
 			"self": {
@@ -885,8 +889,8 @@
 			"set": "Entrez les nouvelles valeurs par la liste.",
 			"removeEmpty": "La liste est déjà vide.",
 			"more": {
-				"title": "cmd.interactiveConfig.more.title",
-				"description": "cmd.interactiveConfig.more.description"
+				"title": "More",
+				"description": "Show more entries"
 			}
 		},
 		"credits": {
@@ -944,156 +948,129 @@
 				"description": "Paramètres de base du bot tels que le préfixe, la langue et l'historique."
 			},
 			"invites": {
-				"title": "settings.groups.invites.title",
-				"description": "settings.groups.invites.description",
+				"title": "Invites",
+				"description": "Invite related settings, such as channel and message.",
 				"joins": {
-					"title": "settings.groups.invites.joins.title",
-					"description": "settings.groups.invites.joins.description"
+					"title": "Joins",
+					"description": "Join related settings, such as join message."
 				},
 				"leaves": {
-					"title": "settings.groups.invites.leaves.title",
-					"description": "settings.groups.invites.leaves.description"
+					"title": "Leaves",
+					"description": "Leave related settings, such as leave message."
 				},
 				"leaderboard": {
-					"description": "Paramètres liés au classement",
-					"title": "Classement"
+					"title": "Classement",
+					"description": "Paramètres liés au classement"
 				},
 				"fakes": {
-					"title": "settings.groups.invites.fakes.title",
-					"description": "settings.groups.invites.fakes.description"
+					"title": "Fakes",
+					"description": "Settings for fake invites."
 				},
 				"ranks": {
-					"description": "Paramètres liés aux rangs",
-					"title": "Rangs"
+					"title": "Rangs",
+					"description": "Paramètres liés aux rangs"
 				}
 			},
 			"moderation": {
 				"title": "Modération",
 				"description": "Paramètres liés à la modération.",
-				"captcha": {
-					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre.",
-					"title": "Captcha"
-				},
 				"general": {
-					"title": "Général",
 					"description": "Paramètres généraux liés à la modération."
 				},
+				"captcha": {
+					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre."
+				},
 				"logging": {
-					"description": "settings.groups.moderation.logging.description",
-					"title": "settings.groups.moderation.logging.title"
+					"description": "Logging"
 				},
 				"invites": {
-					"description": "settings.groups.moderation.invites.description",
-					"title": "settings.groups.moderation.invites.title"
+					"description": "Invites"
 				},
 				"links": {
-					"description": "settings.groups.moderation.links.description",
-					"title": "settings.groups.moderation.links.title"
+					"description": "Links"
 				},
 				"bannedWords": {
-					"title": "Mots bannis",
 					"description": "Paramètres liés aux mots bannis. "
 				},
 				"caps": {
-					"title": "Majuscules",
 					"description": "Settings related to ALL CAPS messages"
 				},
 				"duplicate": {
-					"description": "Paramètres liés aux messages en double.",
-					"title": "Texte doublon"
+					"description": "Paramètres liés aux messages en double."
 				},
 				"spam": {
-					"description": "Paramètres liés au spam (envoi rapide de messages).",
-					"title": "Spam"
+					"description": "Paramètres liés au spam (envoi rapide de messages)."
 				},
 				"mentions": {
-					"description": "Paramètres liés au spam de mentions.",
-					"title": "Spam de mentions"
+					"description": "Paramètres liés au spam de mentions."
 				},
 				"emojis": {
-					"description": "Paramètres liés au spam d'émojis.",
-					"title": "Emojis"
+					"description": "Paramètres liés au spam d'émojis."
 				}
 			}
 		},
 		"lang": {
-			"title": "Langage",
-			"description": "settings.lang.description"
+			"title": "Langage"
 		},
 		"prefix": {
-			"title": "Préfixe",
-			"description": "settings.prefix.description"
+			"title": "Préfixe"
 		},
 		"logChannel": {
-			"title": "Salon des logs",
-			"description": "settings.logChannel.description"
+			"title": "Salon des logs"
 		},
 		"getUpdates": {
 			"title": "Obtenir les mises à jour."
 		},
 		"joinMessage": {
-			"title": "Message d'arrivée",
-			"description": "settings.joinMessage.description"
+			"title": "Message d'arrivée"
 		},
 		"joinMessageChannel": {
-			"title": "Salon d'arrivée",
-			"description": "settings.joinMessageChannel.description"
+			"title": "Salon d'arrivée"
 		},
 		"rankAssignmentStyle": {
-			"title": "settings.rankAssignmentStyle.title",
-			"description": "settings.rankAssignmentStyle.description"
+			"title": "Assignment Style"
 		},
 		"rankAnnouncementChannel": {
-			"title": "settings.rankAnnouncementChannel.title",
-			"description": "settings.rankAnnouncementChannel.description"
+			"title": "Announcement Channel"
 		},
 		"rankAnnouncementMessage": {
-			"title": "settings.rankAnnouncementMessage.title",
-			"description": "settings.rankAnnouncementMessage.description"
+			"title": "Announcement Message"
 		},
 		"leaveMessage": {
-			"title": "Message de départ",
-			"description": "settings.leaveMessage.description"
+			"title": "Message de départ"
 		},
 		"leaveMessageChannel": {
-			"title": "Salon de départ",
-			"description": "settings.leaveMessageChannel.description"
+			"title": "Salon de départ"
 		},
 		"autoSubtractLeaves": {
-			"title": "settings.autoSubtractLeaves.title"
+			"title": "Auto Subtract"
 		},
 		"autoSubtractLeaveThreshold": {
-			"title": "settings.autoSubtractLeaveThreshold.title",
-			"description": "settings.autoSubtractLeaveThreshold.description"
+			"title": "Auto Subtract Threshold"
 		},
 		"leaderboardStyle": {
-			"title": "Style",
-			"description": "settings.leaderboardStyle.description"
+			"title": "Style"
 		},
 		"hideLeftMembersFromLeaderboard": {
 			"title": "Cacher les membres partis"
 		},
 		"autoSubtractFakes": {
-			"title": "settings.autoSubtractFakes.title"
+			"title": "Auto Subtract"
 		},
 		"captchaVerificationOnJoin": {
 			"title": "Activé"
 		},
 		"captchaVerificationWelcomeMessage": {
-			"title": "Message de bienvenue",
-			"description": "settings.captchaVerificationWelcomeMessage.description"
+			"title": "Message de bienvenue"
 		},
 		"captchaVerificationSuccessMessage": {
-			"title": "Message de réussite",
-			"description": "settings.captchaVerificationSuccessMessage.description"
+			"title": "Message de réussite"
 		},
 		"captchaVerificationFailedMessage": {
-			"title": "Message d’échec",
-			"description": "settings.captchaVerificationFailedMessage.description"
+			"title": "Message d’échec"
 		},
 		"captchaVerificationTimeout": {
-			"title": "Message de temps expiré",
-			"description": "settings.captchaVerificationTimeout.description"
+			"title": "Message de temps expiré"
 		},
 		"captchaVerificationLogEnabled": {
 			"title": "Logs"
@@ -1102,60 +1079,52 @@
 			"title": "Activé"
 		},
 		"autoModModeratedChannels": {
-			"title": "Salons modérés",
-			"description": "settings.autoModModeratedChannels.description"
+			"title": "Salons modérés"
 		},
 		"autoModModeratedRoles": {
-			"title": "Rôles modérés",
-			"description": "settings.autoModModeratedRoles.description"
+			"title": "Rôles modérés"
 		},
 		"autoModIgnoredChannels": {
-			"title": "Salons ignorés",
-			"description": "settings.autoModIgnoredChannels.description"
+			"title": "Salons ignorés"
 		},
 		"autoModIgnoredRoles": {
-			"title": "Rôles ignorés",
-			"description": "settings.autoModIgnoredRoles.description"
+			"title": "Rôles ignorés"
 		},
 		"mutedRole": {
-			"title": "settings.mutedRole.title",
-			"description": "settings.mutedRole.description"
+			"title": "Muted Role"
 		},
 		"autoModDisabledForOldMembers": {
-			"title": "settings.autoModDisabledForOldMembers.title"
+			"title": "Disabled for Old Members"
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"title": "settings.autoModDisabledForOldMembersThreshold.title",
-			"description": "settings.autoModDisabledForOldMembersThreshold.description"
+			"title": "Old Members Threshold"
 		},
 		"autoModLogEnabled": {
 			"title": "Mod Log Channel"
 		},
 		"modLogChannel": {
-			"title": "settings.modLogChannel.title",
-			"description": "settings.modLogChannel.description"
+			"title": "Log Channel"
 		},
 		"autoModDeleteBotMessage": {
 			"title": "Supprimer les messages du Bot"
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"title": "Délai de suppression des messages du bot.",
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description"
+			"title": "Délai de suppression des messages du bot."
 		},
 		"modPunishmentBanDeleteMessage": {
-			"title": "settings.modPunishmentBanDeleteMessage.title"
+			"title": "Delete Ban Messages"
 		},
 		"modPunishmentKickDeleteMessage": {
-			"title": "settings.modPunishmentKickDeleteMessage.title"
+			"title": "Delete Kick Messages"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
-			"title": "settings.modPunishmentSoftbanDeleteMessage.title"
+			"title": "Delete Softban Messages"
 		},
 		"modPunishmentWarnDeleteMessage": {
-			"title": "settings.modPunishmentWarnDeleteMessage.title"
+			"title": "Delete Warn Messages"
 		},
 		"modPunishmentMuteDeleteMessage": {
-			"title": "settings.modPunishmentMuteDeleteMessage.title"
+			"title": "Delete Mute Messages"
 		},
 		"autoModInvitesEnabled": {
 			"title": "Les invitations sont désormais modérées"
@@ -1164,12 +1133,10 @@
 			"title": "Les liens sont désormais modérés"
 		},
 		"autoModLinksWhitelist": {
-			"title": "Liste blanche",
-			"description": "settings.autoModLinksWhitelist.description"
+			"title": "Liste blanche"
 		},
 		"autoModLinksBlacklist": {
-			"title": "Liste noire",
-			"description": "settings.autoModLinksBlacklist.description"
+			"title": "Liste noire"
 		},
 		"autoModLinksFollowRedirects": {
 			"title": "Suivre les redirections"
@@ -1178,58 +1145,49 @@
 			"title": "Activé"
 		},
 		"autoModWordsBlacklist": {
-			"title": "Liste noire",
-			"description": "settings.autoModWordsBlacklist.description"
+			"title": "Liste noire"
 		},
 		"autoModAllCapsEnabled": {
 			"title": "Activé"
 		},
 		"autoModAllCapsMinCharacters": {
-			"title": "Caractères minimum",
-			"description": "settings.autoModAllCapsMinCharacters.description"
+			"title": "Caractères minimum"
 		},
 		"autoModAllCapsPercentageCaps": {
-			"title": "Percentage Caps",
-			"description": "settings.autoModAllCapsPercentageCaps.description"
+			"title": "Percentage Caps"
 		},
 		"autoModDuplicateTextEnabled": {
 			"title": "Activé"
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"title": "Timeframe",
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description"
+			"title": "Timeframe"
 		},
 		"autoModQuickMessagesEnabled": {
 			"title": "Activé"
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"title": "Nombre de messages",
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description"
+			"title": "Nombre de messages"
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"title": "Timeframe",
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description"
+			"title": "Timeframe"
 		},
 		"autoModMentionUsersEnabled": {
 			"title": "Activé"
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"title": "Nombre maximal de mentions utilisateurs par message",
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description"
+			"title": "Nombre maximal de mentions utilisateurs par message"
 		},
 		"autoModMentionRolesEnabled": {
 			"title": "Activé"
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"title": "Nombre maximal de mentions de rôle par message",
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description"
+			"title": "Nombre maximal de mentions de rôle par message"
 		},
 		"autoModEmojisEnabled": {
 			"title": "Activé"
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"title": "Nombre maximal d'émojis",
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description"
+			"title": "Nombre maximal d'émojis"
 		},
 		"autoModHoistEnabled": {
 			"title": "Activé"

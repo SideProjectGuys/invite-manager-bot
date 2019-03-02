@@ -305,7 +305,6 @@ export class RabbitMq {
 				invites
 			);
 
-			// Send the message now so it doesn't take too long
 			await joinChannel.createMessage(
 				typeof msg === 'string' ? msg : { embed: msg }
 			);
