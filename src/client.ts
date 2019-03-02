@@ -269,7 +269,8 @@ export class IMClient extends Client {
 			await dbGuild.save();
 		}
 
-		const premium = await this.cache.premium.get(guild.id);
+		// We use a DB query instead of getting the value from the cache
+		const premium = await this.cache.premium._get(guild.id);
 
 		if (this.isPro && !premium) {
 			await channel
@@ -301,6 +302,12 @@ export class IMClient extends Client {
 	}
 
 	private async onGuildDelete(guild: Guild): Promise<void> {
+		// If we're disabled it means the pro bot is in that guild,
+		// so don't delete the guild
+		if (this.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
 		// Remove the guild (only sets the 'deletedAt' timestamp)
 		await guilds.destroy({
 			where: {

@@ -37,7 +37,8 @@ export class PremiumCache extends GuildCache<boolean> {
 		});
 	}
 
-	protected async _get(guildId: string): Promise<boolean> {
+	// This is public on purpose, so we can use it in the IMClient class
+	public async _get(guildId: string): Promise<boolean> {
 		const sub = await premiumSubscriptionGuilds.findOne({
 			where: {
 				guildId
