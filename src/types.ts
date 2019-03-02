@@ -77,7 +77,7 @@ export enum BotCommand {
 	info = 'info',
 	inviteCodes = 'inviteCodes',
 	inviteDetails = 'inviteDetails',
-	invites = 'invites',
+	legacyInvites = 'legacyInvites',
 	leaderboard = 'leaderboard',
 	legacyLeaderboard = 'legacyLeaderboard',
 	removeInvites = 'removeInvites',
