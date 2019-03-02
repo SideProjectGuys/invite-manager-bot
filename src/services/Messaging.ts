@@ -70,7 +70,10 @@ export class Messaging {
 		this.client = client;
 	}
 
-	public createEmbed(options: EmbedOptions = {}): Embed {
+	public createEmbed(
+		options: EmbedOptions = {},
+		overrideFooter: boolean = true
+	): Embed {
 		let color = options.color
 			? (options.color as number | string)
 			: parseInt('00AE86', 16);
@@ -80,17 +83,26 @@ export class Messaging {
 			color = parseInt(code, 16);
 		}
 
+		const footer =
+			overrideFooter || !options.footer
+				? this.getDefaultFooter()
+				: options.footer;
+
 		delete options.color;
 		return {
 			...options,
 			type: 'rich',
 			color,
-			footer: {
-				text: this.client.user.username,
-				icon_url: this.client.user.avatarURL
-			},
+			footer,
 			fields: options.fields ? options.fields : [],
 			timestamp: new Date().toISOString()
+		};
+	}
+
+	private getDefaultFooter() {
+		return {
+			text: this.client.user.username,
+			icon_url: this.client.user.avatarURL
 		};
 	}
 
@@ -179,7 +191,7 @@ export class Messaging {
 		try {
 			const temp = JSON.parse(msg);
 			if (await this.client.cache.premium.get(guild.id)) {
-				return this.createEmbed(temp);
+				return this.createEmbed(temp, false);
 			} else {
 				const lang = (await this.client.cache.settings.get(guild.id)).lang;
 				msg +=
