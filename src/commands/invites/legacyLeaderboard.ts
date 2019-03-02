@@ -16,7 +16,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.legacyLeaderboard,
-			aliases: ['legacy-top', 'legacy-leaderboard'],
+			aliases: ['legacy-leaderboard', 'legacyTop', 'legacy-top'],
 			args: [
 				{
 					name: 'page',
