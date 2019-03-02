@@ -25,7 +25,7 @@ export default class extends Command {
 		await sequelize.query(
 			`UPDATE joins j LEFT JOIN leaves l ON l.joinId = j.id SET invalidatedReason = ` +
 				`CASE WHEN l.id IS NULL OR TIMESTAMPDIFF(SECOND, j.createdAt, l.createdAt) > :time THEN NULL ELSE 'leave' END ` +
-				`WHERE j.guildId = :guildId AND j.invalidatedReason IS NULL`,
+				`WHERE j.guildId = :guildId AND (j.invalidatedReason IS NULL OR j.invalidatedReason = 'leave')`,
 			{
 				replacements: {
 					guildId: guild.id,
