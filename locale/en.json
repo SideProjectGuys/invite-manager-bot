@@ -376,26 +376,26 @@
 				"args": {
 					"page": "Which page of the leaderboard to get.",
 					"date": "The date (& time) for which the leaderboard is shown.",
-					"duration": "cmd.leaderboard.self.args.duration"
+					"duration": "The duration for which to calculate the leaderboard."
 				},
 				"description": "Show members with most invites.",
 				"flags": {
-					"compare": "cmd.leaderboard.self.flags.compare"
+					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			}
 		},
 		"memberConfig": {
-			"title": "Your memberConfig settings",
-			"text": "Below are all the available memberConfig settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"canNotClear": "The memberConfig setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
+			"title": "Member Config",
+			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
+			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valid memberConfig keys"
+				"title": "Valid member config keys"
 			},
-			"notSet": "This memberConfig settings is currently not set for any members",
+			"notSet": "This member config settings is currently not set for any members",
 			"current": {
 				"title": "Current Value",
-				"text": "This memberConfig is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
-				"notSet": "This memberConfig is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
 			},
 			"previous": {
 				"title": "Previous Value"
@@ -403,14 +403,14 @@
 			"new": {
 				"title": "New Value"
 			},
-			"sameValue": "This memberConfig is already set to that value",
+			"sameValue": "This member config is already set to that value",
 			"changed": {
-				"text": "This memberConfig has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
+				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
 			"none": "None",
 			"self": {
 				"args": {
-					"key": "The memberConfig setting which you want to show/change.",
+					"key": "The member config setting which you want to show/change.",
 					"user": "The member that the setting is shown/changed for.",
 					"value": "The new value of the setting."
 				},
@@ -738,27 +738,26 @@
 			"title": "Invite Code Config",
 			"text": "Set configs for individual invite codes.",
 			"keys": {
-				"title": "Fields"
+				"title": "Valid invite code config keys"
 			},
-			"noneSet": "cmd.inviteCodeConfig.noneSet",
+			"notSet": "This invite code config is currently not set for any invite code",
 			"current": {
-				"text": "cmd.inviteCodeConfig.current.text",
-				"title": "cmd.inviteCodeConfig.current.title",
-				"notSet": "cmd.inviteCodeConfig.current.notSet",
-				"clear": "cmd.inviteCodeConfig.current.clear"
+				"title": "Current Value",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
+				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
+				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it."
 			},
 			"changed": {
-				"text": "cmd.inviteCodeConfig.changed.text"
+				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
 			},
 			"previous": {
-				"text": "cmd.inviteCodeConfig.previous.text",
-				"title": "cmd.inviteCodeConfig.previous.title"
+				"title": "Previous Value"
 			},
 			"new": {
-				"title": "cmd.inviteCodeConfig.new.title"
+				"title": "New Value"
 			},
-			"sameValue": "cmd.inviteCodeConfig.sameValue",
-			"none": "cmd.inviteCodeConfig.none"
+			"sameValue": "This invite code config is already set to that value",
+			"none": "None"
 		},
 		"permissions": {
 			"self": {
