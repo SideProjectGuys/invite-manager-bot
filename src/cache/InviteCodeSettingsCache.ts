@@ -1,6 +1,11 @@
 import { Invite } from 'eris';
 
-import { inviteCodeSettings, InviteCodeSettingsKey } from '../sequelize';
+import {
+	inviteCodeSettings,
+	InviteCodeSettingsInstance,
+	InviteCodeSettingsKey,
+	sequelize
+} from '../sequelize';
 import {
 	fromDbValue,
 	inviteCodeDefaultSettings,
@@ -15,29 +20,6 @@ export class InviteCodeSettingsCache extends GuildCache<
 > {
 	public initOne(guilId: string) {
 		return new Map();
-	}
-
-	public async getAll(guildIds: string[]) {
-		const sets = await inviteCodeSettings.findAll({
-			where: {
-				guildId: guildIds
-			},
-			raw: true
-		});
-
-		sets.forEach(set => {
-			if (set.value === null) {
-				return;
-			}
-
-			const guildSets = this.cache.get(set.guildId);
-			let invSets = guildSets.get(set.inviteCode);
-			if (!invSets) {
-				invSets = { ...inviteCodeDefaultSettings };
-				guildSets.set(set.inviteCode, invSets);
-			}
-			invSets[set.key] = fromDbValue(set.key, set.value);
-		});
 	}
 
 	protected async _get(

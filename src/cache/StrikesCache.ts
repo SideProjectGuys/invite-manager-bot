@@ -7,19 +7,6 @@ export class StrikesCache extends GuildCache<StrikeConfigInstance[]> {
 		return [];
 	}
 
-	protected async getAll(guildIds: string[]): Promise<void> {
-		const cfgs = await strikeConfigs.findAll({
-			where: {
-				guildId: guildIds
-			},
-			order: [['amount', 'DESC']]
-		});
-
-		cfgs.forEach(cfg => {
-			this.cache.get(cfg.guildId).push(cfg);
-		});
-	}
-
 	protected async _get(guildId: string): Promise<StrikeConfigInstance[]> {
 		return await strikeConfigs.findAll({
 			where: {

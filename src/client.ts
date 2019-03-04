@@ -12,7 +12,13 @@ import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
-import { dbStats, guilds, LogAction } from './sequelize';
+import {
+	dbStats,
+	GuildInstance,
+	guilds,
+	LogAction,
+	sequelize
+} from './sequelize';
 import { CaptchaService } from './services/Captcha';
 import { Commands } from './services/Commands';
 import { DBQueue } from './services/DBQueue';
@@ -184,11 +190,10 @@ export class IMClient extends Client {
 		await this.rabbitmq.init();
 		await this.cmds.init();
 
-		const gs = await guilds.findAll({
-			where:
-				'CONVERT(SUBSTRING(guilds.id, CHAR_LENGTH(guilds.id) - 22, CHAR_LENGTH(guilds.id)), UNSIGNED INTEGER) % 40 = 5;',
-			paranoid: false
-		});
+		const gs: GuildInstance[] = await sequelize.query(
+			`SELECT * FROM guilds WHERE banReason IS NOT NULL AND ${this.getGuildsFilter()}`,
+			{ type: sequelize.QueryTypes.SELECT, raw: true }
+		);
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async guild => {
@@ -243,6 +248,14 @@ export class IMClient extends Client {
 
 		this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
+	}
+
+	public getGuildsFilter() {
+		return (
+			`(CONVERT(SUBSTRING(guilds.id, CHAR_LENGTH(guilds.id) - 22, ` +
+			`CHAR_LENGTH(guilds.id)), UNSIGNED INTEGER) % ` +
+			`${this.shardCount} = ${this.shardId - 1})`
+		);
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {

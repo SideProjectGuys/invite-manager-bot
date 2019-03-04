@@ -1,4 +1,9 @@
-import { memberSettings, MemberSettingsKey } from '../sequelize';
+import {
+	memberSettings,
+	MemberSettingsInstance,
+	MemberSettingsKey,
+	sequelize
+} from '../sequelize';
 import {
 	fromDbValue,
 	memberDefaultSettings,
@@ -13,29 +18,6 @@ export class MemberSettingsCache extends GuildCache<
 > {
 	public initOne(guilId: string) {
 		return new Map();
-	}
-
-	public async getAll(guildIds: string[]) {
-		const sets = await memberSettings.findAll({
-			where: {
-				guildId: guildIds
-			},
-			raw: true
-		});
-
-		sets.forEach(set => {
-			if (set.value === null) {
-				return;
-			}
-
-			const guildSets = this.cache.get(set.guildId);
-			let memberSets = guildSets.get(set.memberId);
-			if (!memberSets) {
-				memberSets = { ...memberDefaultSettings };
-				guildSets.set(set.memberId, memberSets);
-			}
-			memberSets[set.key] = fromDbValue(set.key, set.value);
-		});
 	}
 
 	protected async _get(
