@@ -185,7 +185,8 @@ export class IMClient extends Client {
 		await this.cmds.init();
 
 		const gs = await guilds.findAll({
-			where: { id: this.guilds.map(g => g.id), banReason: { [Op.ne]: null } },
+			where:
+				'CONVERT(SUBSTRING(guilds.id, CHAR_LENGTH(guilds.id) - 22, CHAR_LENGTH(guilds.id)), UNSIGNED INTEGER) % 40 = 5;',
 			paranoid: false
 		});
 
