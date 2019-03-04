@@ -84,10 +84,15 @@ export default class extends Command {
 				if (nextRank) {
 					const nextRankPointsDiff = nextRank.numInvites - invites.total;
 					if (message.author.id === target.id) {
-						textMessage += t('cmd.invites.highestRank.self');
+						textMessage += t('cmd.invites.nextRank.self', {
+							nextRankPointsDiff,
+							nextRankName
+						});
 					} else {
-						textMessage += t('cmd.invites.highestRank.other', {
-							target: `<@${target.id}>`
+						textMessage += t('cmd.invites.nextRank.other', {
+							target: `<@${target.id}>`,
+							nextRankPointsDiff,
+							nextRankName
 						});
 					}
 					textMessage += '\n';
