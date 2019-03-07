@@ -80,6 +80,12 @@ export interface GuildInstance
 	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
 		PremiumSubscriptionInstance
 	>;
+	getStrikes: Sequelize.HasManyGetAssociationsMixin<StrikeInstance>;
+	getStrikeConfigs: Sequelize.HasManyGetAssociationsMixin<StrikeConfigInstance>;
+	getPunishments: Sequelize.HasManyGetAssociationsMixin<PunishmentInstance>;
+	getPunishmentConfigs: Sequelize.HasManyGetAssociationsMixin<
+		PunishmentConfigInstance
+	>;
 }
 
 export const guilds = sequelize.define<GuildInstance, GuildAttributes>(

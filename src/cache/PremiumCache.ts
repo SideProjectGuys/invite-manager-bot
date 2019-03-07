@@ -11,32 +11,6 @@ export class PremiumCache extends GuildCache<boolean> {
 		return false;
 	}
 
-	protected async getAll(guildIds: string[]): Promise<void> {
-		// Load valid premium subs
-		const subs = await premiumSubscriptionGuilds.findAll({
-			where: {
-				guildId: guildIds
-			},
-			include: [
-				{
-					attributes: [],
-					model: premiumSubscriptions,
-					where: {
-						validUntil: {
-							[sequelize.Op.gte]: new Date()
-						}
-					},
-					required: true
-				}
-			],
-			raw: true
-		});
-
-		subs.forEach(sub => {
-			this.cache.set(sub.guildId, true);
-		});
-	}
-
 	// This is public on purpose, so we can use it in the IMClient class
 	public async _get(guildId: string): Promise<boolean> {
 		const sub = await premiumSubscriptionGuilds.findOne({

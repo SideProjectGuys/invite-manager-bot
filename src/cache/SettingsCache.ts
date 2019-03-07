@@ -13,27 +13,6 @@ export class SettingsCache extends GuildCache<SettingsObject> {
 		return { ...defaultSettings };
 	}
 
-	protected async getAll(guildIds: string[]): Promise<void> {
-		// Load all settings from DB
-		const sets = await settings.findAll({
-			where: {
-				guildId: guildIds
-			},
-			raw: true
-		});
-
-		// Then insert the settings we got from the DB
-		sets.forEach(set => {
-			// Skip any empty values that aren't allowed to be empty.
-			// This is a backward fix to insert any missing non-empty settings
-			// for guilds that don't have them yet.
-			if (set.value === null && defaultSettings[set.key] !== null) {
-				return;
-			}
-			this.cache.get(set.guildId)[set.key] = fromDbValue(set.key, set.value);
-		});
-	}
-
 	protected async _get(guildId: string): Promise<SettingsObject> {
 		const sets = await settings.findAll({ where: { guildId } });
 
