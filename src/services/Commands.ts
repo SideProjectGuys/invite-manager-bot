@@ -158,12 +158,12 @@ export class Commands {
 				}
 
 				/* TODO: Send DMs
-				this.client.rabbitmq.sendCommandToGuild(this.client.config.dmGuild, {
+				this.client.rabbitmq.sendCommandToGuild(this.client.config.bot.dm.guild, {
 					id: message.id,
 					cmd: ShardCommand.USER_DM,
 					user: user,
-					guildId: this.client.config.dmGuild,
-					channelId: this.client.config.dmChannel,
+					guildId: this.client.config.bot.dm.guild,
+					channelId: this.client.config.bot.dm.channel,
 					isInitial: isInitialMessage,
 					message: message.content
 				});

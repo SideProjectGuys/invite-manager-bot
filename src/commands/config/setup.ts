@@ -47,12 +47,12 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.setup.help.title'),
-			value: t('cmd.setup.help.text', { link: config.botSupport })
+			value: t('cmd.setup.help.text', { link: config.bot.links.support })
 		});
 
 		embed.fields.push({
 			name: t('cmd.setup.premium.title'),
-			value: t('cmd.setup.premium.text', { link: config.botPatreon })
+			value: t('cmd.setup.premium.text', { link: config.bot.links.patreon })
 		});
 
 		if (!me.permission.has(Permissions.MANAGE_GUILD)) {
