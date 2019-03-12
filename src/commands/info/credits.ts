@@ -69,25 +69,21 @@ const translators = [
 	{
 		name: 'amiog',
 		discriminator: '5622',
-		language: '',
 		link: ''
 	},
 	{
 		name: 'CyberDarkBR',
 		discriminator: '7805',
-		language: 'pt',
 		link: ''
 	},
 	{
 		name: 'qq1zz (REAL) (New Account)2374',
 		discriminator: '1204',
-		language: '',
 		link: ''
 	},
 	{
 		name: 'Lorio',
 		discriminator: '6270',
-		language: 'French',
 		link: ''
 	},
 	{
@@ -103,19 +99,21 @@ const translators = [
 	{
 		name: 'Mennoplays',
 		discriminator: '5632',
-		language: 'Dutch',
 		link: ''
 	},
 	{
 		name: 'RMG | RoHellowtf💤',
 		discriminator: '6783',
-		language: 'Romanian',
 		link: ''
 	},
 	{
 		name: 'Thę_Olaoleo[TGB]',
 		discriminator: '1391',
-		language: '',
+		link: ''
+	},
+	{
+		name: 'Izmoqwy',
+		discriminator: '0423',
 		link: ''
 	}
 ];
