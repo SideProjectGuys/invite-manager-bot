@@ -385,13 +385,13 @@
 			}
 		},
 		"memberConfig": {
-			"title": "Member Config",
-			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
+			"title": "Gebruik Configuratie",
+			"text": "Hieronder staan alle beschikbare gebruiker configuratie instellingen.\n\nGebruik `{{ prefix }}memberConfig <key>` om gebruikers te zien die de instelling `<key>` hebben\nGebruik `{{ prefix }}memberConfig <key> @gebruiker` om de instelling van een enkele `@gebruiker` te zien\nGebruik `{{ prefix }}memberConfig <key> @gebruiker <value>` om de configuratie `<key>` te zetten naar `<value>` voor `@gebruiker`",
+			"canNotClear": "De gebruiker configuratie **{{ key }}** kan niet verwijderd worden. Je kan `memberConfig {{ key }} default` gebruiken om dit te resetten naar de standaard waarde.",
 			"keys": {
-				"title": "Valid member config keys"
+				"title": "Geldige gebruiker configuratie keys"
 			},
-			"notSet": "This member config settings is currently not set for any members",
+			"notSet": "Deze gebruiker configuratie instelling is momenteel niet gezet voor iemand",
 			"current": {
 				"title": "Huidige Waarde",
 				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",

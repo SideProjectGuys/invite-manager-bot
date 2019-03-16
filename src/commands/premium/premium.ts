@@ -125,7 +125,7 @@ export default class extends Command {
 						guildList +=
 							'\n' +
 							t('cmd.premium.premium.activate', {
-								cmd: `\`${settings.prefix}premium deactivate\``
+								cmd: `\`${settings.prefix}premium activate\``
 							});
 					}
 				}

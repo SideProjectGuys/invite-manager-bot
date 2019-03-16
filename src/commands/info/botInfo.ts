@@ -81,28 +81,31 @@ export default class extends Command {
 		});
 
 		// Support discord
-		if (config.botSupport) {
+		if (config.bot.links.support) {
 			embed.fields.push({
 				name: t('bot.supportDiscord.title'),
-				value: config.botSupport
+				value: config.bot.links.support
 			});
 		}
 		// Add bot
-		if (config.botAdd) {
-			embed.fields.push({ name: t('bot.invite.title'), value: config.botAdd });
+		if (config.bot.links.add) {
+			embed.fields.push({
+				name: t('bot.invite.title'),
+				value: config.bot.links.add
+			});
 		}
 		// Bot website
-		if (config.botWebsite) {
+		if (config.bot.links.website) {
 			embed.fields.push({
 				name: t('bot.website.title'),
-				value: config.botWebsite
+				value: config.bot.links.website
 			});
 		}
 		// Patreon
-		if (config.botPatreon) {
+		if (config.bot.links.patreon) {
 			embed.fields.push({
 				name: t('bot.patreon.title'),
-				value: config.botPatreon
+				value: config.bot.links.patreon
 			});
 		}
 

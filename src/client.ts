@@ -3,7 +3,6 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { Op, QueryTypes } from 'sequelize';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
@@ -176,7 +175,7 @@ export class IMClient extends Client {
 	}
 
 	private async onClientReady(): Promise<void> {
-		this.isPro = this.user.id === this.config.proBotId;
+		this.isPro = this.user.id === this.config.bot.ids.pro;
 
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 		console.log(
@@ -209,7 +208,7 @@ export class IMClient extends Client {
 							'`!\n\n' +
 							'It looks like this guild was banned from using the InviteManager bot.\n' +
 							'If you believe this was a mistake please contact staff on our support server.\n\n' +
-							`${config.botSupport}\n\n` +
+							`${config.bot.links.support}\n\n` +
 							'I will be leaving your server now, thanks for having me!'
 					)
 					.catch(() => undefined);
@@ -235,15 +234,15 @@ export class IMClient extends Client {
 						.catch(() => undefined);
 					await guild.leave();
 				}
-			} else if (guild.members.has(this.config.proBotId)) {
+			} else if (guild.members.has(this.config.bot.ids.pro)) {
 				// Otherwise disable the guild if the pro bot is in it
 				this.disabledGuilds.add(guild.id);
 			}
 		});
 
 		// Setup discord bots api
-		if (this.config.discordBotsToken) {
-			this.dbl = new DBL(this.config.discordBotsToken, this);
+		if (this.config.bot.dblToken) {
+			this.dbl = new DBL(this.config.bot.dblToken, this);
 		}
 
 		this.setActivity();
@@ -268,7 +267,7 @@ export class IMClient extends Client {
 					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 						'It looks like this guild was banned from using the InviteManager bot.\n' +
 						'If you believe this was a mistake please contact staff on our support server.\n\n' +
-						`${config.botSupport}\n\n` +
+						`${config.bot.links.support}\n\n` +
 						'I will be leaving your server now, thanks for having me!'
 				)
 				.catch(() => undefined);
@@ -322,6 +321,11 @@ export class IMClient extends Client {
 			return;
 		}
 
+		// If this is the pro bot and the guild has the regular bot do nothing
+		if (guild.members.has(this.config.bot.ids.regular)) {
+			return;
+		}
+
 		// Remove the guild (only sets the 'deletedAt' timestamp)
 		await guilds.destroy({
 			where: {
@@ -340,7 +344,7 @@ export class IMClient extends Client {
 
 		if (member.user.bot) {
 			// Check if it's our premium bot
-			if (member.user.id === this.config.proBotId) {
+			if (member.user.id === this.config.bot.ids.pro) {
 				console.log(
 					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
 				);
@@ -352,7 +356,7 @@ export class IMClient extends Client {
 
 	private async onGuildMemberRemove(guild: Guild, member: Member) {
 		// If the pro version of our bot left, re-enable this version
-		if (member.user.bot && member.user.id === this.config.proBotId) {
+		if (member.user.bot && member.user.id === this.config.bot.ids.pro) {
 			this.disabledGuilds.delete(guild.id);
 			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}

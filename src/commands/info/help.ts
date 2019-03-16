@@ -110,24 +110,26 @@ export default class extends Command {
 		}
 
 		const linksArray = [];
-		if (this.client.config.botSupport) {
+		if (this.client.config.bot.links.support) {
 			linksArray.push(
-				`[${t('bot.supportDiscord.title')}](${this.client.config.botSupport})`
+				`[${t('bot.supportDiscord.title')}](${
+					this.client.config.bot.links.support
+				})`
 			);
 		}
-		if (this.client.config.botAdd) {
+		if (this.client.config.bot.links.add) {
 			linksArray.push(
-				`[${t('bot.invite.title')}](${this.client.config.botAdd})`
+				`[${t('bot.invite.title')}](${this.client.config.bot.links.add})`
 			);
 		}
-		if (this.client.config.botWebsite) {
+		if (this.client.config.bot.links.website) {
 			linksArray.push(
-				`[${t('bot.website.title')}](${this.client.config.botWebsite})`
+				`[${t('bot.website.title')}](${this.client.config.bot.links.website})`
 			);
 		}
-		if (this.client.config.botPatreon) {
+		if (this.client.config.bot.links.patreon) {
 			linksArray.push(
-				`[${t('bot.patreon.title')}](${this.client.config.botPatreon})`
+				`[${t('bot.patreon.title')}](${this.client.config.bot.links.patreon})`
 			);
 		}
 
