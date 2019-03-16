@@ -53,7 +53,7 @@
 			"zero": "Ajouter aucune invitation n'a aucun intérêt...",
 			"amount": {
 				"positive": "Ajout de **{{ amount }}** invitations pour {{{ member }}} qui possède désormais **{{ totalInvites }}** invitations.",
-				"negative": "** {{ amount }} ** invitation Supprimé de <@ {{ member }}>, maintenant à: ** {{ totalInvites }} ** invites."
+				"negative": "** {{ amount }} ** invitations supprimés de {{{ member }}}, désormais à: ** {{ totalInvites }} ** invitations."
 			},
 			"self": {
 				"args": {
@@ -152,7 +152,7 @@
 				},
 				"description": "Effacer les invitations du serveur/d'un utilisateur.",
 				"flags": {
-					"date": "The date start at which invites should be counted. Default is today.",
+					"date": "La date à laquelle les invitations doivent être comptées. La valeur par défaut est aujourd'hui.",
 					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched."
 				}
 			}
@@ -208,7 +208,7 @@
 			"join": {
 				"entry": {
 					"text": "**{{ name }}** a rejoint **{{ times }} fois**, invité par:",
-					"multi": "**{{ name }}** (**{{ times }}** times)",
+					"multi": "**{{ name }}** (**{{ times }}** fois)",
 					"single": "**{{ name }}**"
 				}
 			},
@@ -376,7 +376,7 @@
 				"args": {
 					"page": "Quelle page du classement voulez vous voir.",
 					"date": "La date (et l'heure) pour laquelle le classement est affiché.",
-					"duration": "The duration for which to calculate the leaderboard."
+					"duration": "La durée pour laquelle calculer le classement."
 				},
 				"description": "Afficher les membres avec le plus d'invitations.",
 				"flags": {
@@ -385,11 +385,11 @@
 			}
 		},
 		"memberConfig": {
-			"title": "Member Config",
+			"title": "Configuration de membre",
 			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
 			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valid member config keys"
+				"title": "Valeurs acceptées"
 			},
 			"notSet": "This member config settings is currently not set for any members",
 			"current": {
@@ -403,14 +403,14 @@
 			"new": {
 				"title": "Nouvelle Valeur"
 			},
-			"sameValue": "This member config is already set to that value",
+			"sameValue": "Cette configuration de membre est déjà définie sur cette valeur.",
 			"changed": {
 				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
 			"none": "aucun",
 			"self": {
 				"args": {
-					"key": "The member config setting which you want to show/change.",
+					"key": "La configuration de membre que vous souhaitez voir/changer.",
 					"user": "Le membre ou le paramètre est affiché / modifié.",
 					"value": "La nouvelle valeur du paramètre."
 				},
@@ -473,7 +473,7 @@
 		},
 		"ranks": {
 			"none": "Aucun rang n'a encore été créé.",
-			"entry": "<@&{{ role }}>: **{{ numInvites }} invitations**{{ description ?}}",
+			"entry": "{{{ role }}}: **{{ numInvites }} invitations** {{ description }}",
 			"title": "Rangs",
 			"self": {
 				"description": "Montrer tous les rangs."
@@ -490,7 +490,7 @@
 			}
 		},
 		"restoreInvites": {
-			"done": "Invitations restaurées {{! args.user ? ` pour <@${args.user}>` : '' !}}",
+			"done": "Invitations restaurées.",
 			"self": {
 				"args": {
 					"user": "L'utilisateur à qui restaurer les invitations. Si aucun utilisateur n'est indiqué, cela restaure les invitations pour tous les utilisateurs."
@@ -669,15 +669,15 @@
 				"title": "Rechercher un abonnement Premium",
 				"notFound": "Votre compte n'est pas associé à un abonnement premium.\n\nSi vous avez acquis le premium par Patreon, assurez vous d'avoir lié votre compte Discord à votre Patreon pour pouvoir profiter des récompenses, puis refaites cette commande.",
 				"declined": "Votre paiement pour le premium a été refusé, veuillez vérifier votre Patreon.",
-				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info."
+				"done": "Vous disposez d'un abonnement premium valide jusqu'à {{{ valid }}}.\n\nUtilisez {{{ cmd }}} pour plus d'informations."
 			}
 		},
 		"tryPremium": {
 			"title": "InviteManager - Essayer l'abonnement Premium",
-			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
+			"text": "Vous pouvez essayer nos fonctionnalités premium pour {{ duration }}. Vous ne pouvez le faire qu'une seule fois. Êtes-vous sûr de les tester maintenant ?",
 			"prompt": "Veuillez répondre par **oui** ou par **non**.",
 			"started": "Vous avez commencé votre essai avec succès! Utilisez `{{ prefix }}premium` pour vérifier le temps qu'il vous reste.",
-			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
+			"alreadyUsed": "Vous avez déjà utilisé votre essai premium gratuit! Si vous aimez ce bot, envisagez de payer le premium.",
 			"currentlyActive": "Vous avez un abonnement premium actif !",
 			"self": {
 				"description": "Essayez gratuitement la version premium d’InviteManager pour une durée limitée."
@@ -738,11 +738,11 @@
 			"title": "Invite Code Config",
 			"text": "Set configs for individual invite codes.",
 			"keys": {
-				"title": "Valid invite code config keys"
+				"title": "Valeurs acceptées"
 			},
 			"notSet": "This invite code config is currently not set for any invite code",
 			"current": {
-				"title": "Current Value",
+				"title": "Valeur actuelle",
 				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
 				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
 				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it."
@@ -751,13 +751,13 @@
 				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Valeur précédente"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nouvelle valeur"
 			},
-			"sameValue": "This invite code config is already set to that value",
-			"none": "None"
+			"sameValue": "Cette configuration est déjà définie sur cette valeur.",
+			"none": "Aucun"
 		},
 		"permissions": {
 			"self": {
@@ -803,7 +803,7 @@
 					"reason": "La raison de pourquoi l'utilisateur est dé-banni."
 				}
 			},
-			"done": "User has been unbanned."
+			"done": "L'utilisateur a été dé-banni."
 		},
 		"mute": {
 			"missingRole": "Rôle muet non défini ou inexistant!",
@@ -825,8 +825,8 @@
 					"user": "L'utilisateur qui doit reprendre la parole."
 				}
 			},
-			"canNotUnmute": "Cannot unmute that user.",
-			"done": "User has been unmuted."
+			"canNotUnmute": "Impossible de rendre la parole à cet utilisateur.",
+			"done": "L'utilisateur peut de nouveau parler."
 		},
 		"cleanShort": {
 			"self": {
@@ -889,8 +889,8 @@
 			"set": "Entrez les nouvelles valeurs par la liste.",
 			"removeEmpty": "La liste est déjà vide.",
 			"more": {
-				"title": "More",
-				"description": "Show more entries"
+				"title": "Plus",
+				"description": "Voir plus d'entrées"
 			}
 		},
 		"credits": {
@@ -903,7 +903,7 @@
 			"title": "Utilisateurs non séparés dans la liste",
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
+			"done": "**Terminé!**\n\n**Changé:** {{ changed }}**\nIgnoré: {{ ignored }}\n"
 		}
 	},
 	"permissions": {
@@ -948,23 +948,23 @@
 				"description": "Paramètres de base du bot tels que le préfixe, la langue et l'historique."
 			},
 			"invites": {
-				"title": "Invites",
-				"description": "Invite related settings, such as channel and message.",
+				"title": "Invitations",
+				"description": "Paramètres des invitations, tel que le salon et le message.",
 				"joins": {
-					"title": "Joins",
-					"description": "Join related settings, such as join message."
+					"title": "Arrivées",
+					"description": "Paramètres d'arrivées, tel que les messages d'arrivées."
 				},
 				"leaves": {
-					"title": "Leaves",
-					"description": "Leave related settings, such as leave message."
+					"title": "Départs",
+					"description": "Paramètres des départs, tel que les messages de départs."
 				},
 				"leaderboard": {
 					"title": "Classement",
 					"description": "Paramètres liés au classement"
 				},
 				"fakes": {
-					"title": "Fakes",
-					"description": "Settings for fake invites."
+					"title": "Faux",
+					"description": "Paramètres des fausses invitations."
 				},
 				"ranks": {
 					"title": "Rangs",
@@ -981,13 +981,13 @@
 					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre."
 				},
 				"logging": {
-					"description": "Logging"
+					"description": "Enregistrement"
 				},
 				"invites": {
-					"description": "Invites"
+					"description": "Invitations"
 				},
 				"links": {
-					"description": "Links"
+					"description": "Liens"
 				},
 				"bannedWords": {
 					"description": "Paramètres liés aux mots bannis. "
@@ -1031,10 +1031,10 @@
 			"title": "Assignment Style"
 		},
 		"rankAnnouncementChannel": {
-			"title": "Announcement Channel"
+			"title": "Salon d'annonce"
 		},
 		"rankAnnouncementMessage": {
-			"title": "Announcement Message"
+			"title": "Message d'annonce "
 		},
 		"leaveMessage": {
 			"title": "Message de départ"
@@ -1043,10 +1043,10 @@
 			"title": "Salon de départ"
 		},
 		"autoSubtractLeaves": {
-			"title": "Auto Subtract"
+			"title": "Soustraction automatique"
 		},
 		"autoSubtractLeaveThreshold": {
-			"title": "Auto Subtract Threshold"
+			"title": "Seuil de soustraction automatique"
 		},
 		"leaderboardStyle": {
 			"title": "Style"
@@ -1055,7 +1055,7 @@
 			"title": "Cacher les membres partis"
 		},
 		"autoSubtractFakes": {
-			"title": "Auto Subtract"
+			"title": "Soustraction automatique"
 		},
 		"captchaVerificationOnJoin": {
 			"title": "Activé"
@@ -1091,19 +1091,19 @@
 			"title": "Rôles ignorés"
 		},
 		"mutedRole": {
-			"title": "Muted Role"
+			"title": "Rôle muet"
 		},
 		"autoModDisabledForOldMembers": {
-			"title": "Disabled for Old Members"
+			"title": "Désactivé pour les anciens membres"
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"title": "Old Members Threshold"
+			"title": "Seuil pour les anciens membres"
 		},
 		"autoModLogEnabled": {
 			"title": "Mod Log Channel"
 		},
 		"modLogChannel": {
-			"title": "Log Channel"
+			"title": "Salon des logs"
 		},
 		"autoModDeleteBotMessage": {
 			"title": "Supprimer les messages du Bot"
@@ -1112,19 +1112,19 @@
 			"title": "Délai de suppression des messages du bot."
 		},
 		"modPunishmentBanDeleteMessage": {
-			"title": "Delete Ban Messages"
+			"title": "Supprimer les messages de bannissement"
 		},
 		"modPunishmentKickDeleteMessage": {
-			"title": "Delete Kick Messages"
+			"title": "Supprimer les messages d'expulsion"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
 			"title": "Delete Softban Messages"
 		},
 		"modPunishmentWarnDeleteMessage": {
-			"title": "Delete Warn Messages"
+			"title": "Supprimer les messages d'avertissement"
 		},
 		"modPunishmentMuteDeleteMessage": {
-			"title": "Delete Mute Messages"
+			"title": "Supprimer les messages de mute"
 		},
 		"autoModInvitesEnabled": {
 			"title": "Les invitations sont désormais modérées"

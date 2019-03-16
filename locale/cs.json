@@ -1,166 +1,166 @@
 {
 	"arguments": {
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"missingRequired": "Chybí potřebný parametr `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
 		"enum": {
-			"validValues": "Use one of the following values: {{{ values }}}",
-			"invalid": "Not a valid value."
+			"validValues": "Použijte jednu z následujících hodnot: {{{ values }}}",
+			"invalid": "Toto není platná hodnota."
 		},
 		"user": {
-			"notFound": "User was not found.",
-			"multiple": "Multiple matching users found. {{{ users }}}"
+			"notFound": "Uživatel nebyl nalezen.",
+			"multiple": "Nalezeno více uživatelů. {{{ users }}}"
 		},
 		"number": {
-			"invalid": "Not a valid number."
+			"invalid": "Toto není platné číslo."
 		},
-		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"invalid": "Špatná hodnota pro `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
-			"multiple": "Multiple matching commands found. {{{ commands }}}"
+			"notFound": "Příkaz nebyl nalezen",
+			"multiple": "Nalezeno více příkazů. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
-			"multiple": "Multiple matching channels found. {{{ channels }}}"
+			"notFound": "Kanál nebyl nalezen.",
+			"multiple": "Nalezeno více kanálů. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
-			"multiple": "Multiple matching roles found. {{{ roles }}}"
+			"notFound": "Role nebyla nalezena.",
+			"multiple": "Nalezeno více rolí. {{{ roles }}}"
 		},
 		"boolean": {
-			"invalid": "Not a valid yes/no value."
+			"invalid": "Neplatná Ano/Ne hodnota."
 		},
 		"member": {
-			"notFound": "Member was not found.",
-			"multiple": "Multiple matching members found. {{{ members }}}"
+			"notFound": "Člen nebyl nalezen.",
+			"multiple": "Nalezeno více členů. {{{ members }}}"
 		}
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": "Support Discord"
+			"title": "Discord Podpora"
 		},
 		"invite": {
-			"title": "Add bot to your server"
+			"title": "Přidat bota na svůj server"
 		},
 		"website": {
-			"title": "Bot website"
+			"title": "Webová stránka bota"
 		},
 		"patreon": {
 			"title": "Patreon"
 		}
 	},
 	"cmd": {
-		"error": "There was an error executing the command.",
+		"error": "Nastala chyba při provádění příkazu.",
 		"addInvites": {
-			"zero": "Adding zero invites doesn't really make sense...",
+			"zero": "Přidání nula pozvání opravdu nedává smysl...",
 			"amount": {
-				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
-				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
+				"positive": "Přidáno **{{ amount }}** pozvání pro {{{ member }}}, nyní má **{{ totalInvites }}** pozvání.",
+				"negative": "Odebráno **{{ amount }}** pozvání od  {{{ member }}}, teď má **{{ totalInvites }}** pozvání."
 			},
 			"self": {
 				"args": {
-					"user": "The user that will receive/lose the bonus invites.",
-					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
-					"reason": "The reason for adding/removing the invites."
+					"user": "Uživatel, který získá/ztratí bonusová pozvání.",
+					"amount": "Počet pozvání které uživatel získá/ztratí. Použijte negativní (-) číslo pro odebrání pozvání.",
+					"reason": "Důvod pro přidání/odebrání pozvání."
 				},
-				"description": "Adds/Removes invites to/from a member."
+				"description": "Přidá/odebere pozvání členovi."
 			}
 		},
 		"addRank": {
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
-			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
+			"updated": "Rank {{{ role }}} byl aktualizován: Nyní potřebuje {{ invites }} pozvání a má tento popis: {{ description }}",
+			"created": "Přidán rank {{{ role }}}, který potřebuje {{ invites }} pozvání a má tento popis: {{ description }}",
+			"roleTooHigh": "Role {{{ role }}} je víš než moje role ({{{ myRole }}}), takže nebudu moct ji přidělit členům, kteří ji získají.",
 			"self": {
 				"args": {
-					"role": "The role which the user will receive when reaching this rank.",
-					"invites": "The amount of invites needed to reach the rank.",
-					"info": "A description that users will see so they know more about this rank."
+					"role": "Role, kterou uživatel získá po dosažení tohoto ranku.",
+					"invites": "Počet pozvání potřebných k dosažení ranku.",
+					"info": "Popis, aby uživatelé veděli více o tomto ranku."
 				},
-				"description": "Add a new rank."
+				"description": "Přidat nový rank."
 			}
 		},
 		"ban": {
-			"error": "There was an error banning this user:\n{{ error }}",
-			"done": "The user was successfully banned.",
-			"canNotBan": "I cannot ban this user.",
+			"error": "Nastala chyba při banování tohoto uživatele\n{{ error }}",
+			"done": "Uživatel byl úspěšně zabanován.",
+			"canNotBan": "Tohoto uživatele nelze zabanovat.",
 			"self": {
 				"args": {
-					"user": "User to ban.",
-					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned."
+					"user": "Uživatel k zabanování.",
+					"deleteMessageDays": "Jak moc zpátky budou vymazány zprávy (ve dnech).",
+					"reason": "Proč byl uživatel zabanován."
 				},
-				"description": "Ban a member from the server."
+				"description": "Zabanovat člena."
 			},
-			"missingPermissions": "I need the `Ban Members` permission to use this command."
+			"missingPermissions": "Potřebuju oprávnění `Banovat Uživatele` pro použití tohoto příkazu."
 		},
 		"botInfo": {
-			"version": "Version",
-			"uptime": "Uptime",
-			"guilds": "Guilds",
-			"members": "Members",
+			"version": "Verze",
+			"uptime": "Bot je online",
+			"guilds": "Servery",
+			"members": "Členové",
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "Aktuální Shard",
+				"total": "Dohromady Shardů"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Získáte základní informace o botovi."
 			},
 			"premium": {
 				"title": "Premium",
-				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium."
+				"active": "Tento server má **aktivní premium** předplatné.",
+				"none": "Tento server aktuálně **nemá** premium."
 			}
 		},
 		"check": {
 			"strikes": {
 				"title": "Strikes",
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
-				"total": "Strikes Total"
+				"entry": "#{{id}} - Získal {{ amount }} striků za {{ violation }} {{ date }}",
+				"total": "Dohromady striků"
 			},
 			"punishments": {
-				"title": "Punishments",
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
-				"total": "Punishments Total"
+				"title": "Postihy",
+				"entry": "{{ punishment }} protože měl {{ amount }} striků {{ date }}",
+				"total": "Dohromady postihů"
 			},
-			"noHistory": "User does not have any history.",
+			"noHistory": "Uživatel nemá žádnou historii.",
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "Uživatel ke zkontrolování."
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "Zkontrolovat historii přestupků a postihů daného uživatele."
 			}
 		},
 		"clean": {
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
-			"error": "Error",
-			"title": "Deleted Messages",
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
+			"invalidQuantity": "Musíte specifikovat kladný počet zpráv k vyčištění",
+			"error": "Chyba",
+			"title": "Smazány zprávy",
+			"text": "Smazáno {{ amount }} zpráv\nTato zpráva bude smazána za 5 sekund.",
 			"self": {
-				"description": "Clean a channel of certain message types.",
+				"description": "Vyčistit z kanálu určité typy zpráv.",
 				"args": {
-					"quantity": "How many messages should be deleted.",
-					"member": "User whose messages get deleted.",
-					"type": "The type of messages that will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"quantity": "Kolik zpráv má být smazáno.",
+					"member": "Uživatelé, kterých zprávy mají být smazány.",
+					"type": "Typ zpráv, které budou smazány.",
+					"numberOfMessages": "Počet zpráv, které budou prohledány."
 				}
 			}
 		},
 		"clearInvites": {
-			"done": "Cleared invites for {{ amount }} users!",
+			"done": "Vyčištěný pozvánky pro {{ amount }} uživatelů.",
 			"self": {
 				"args": {
 					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
-					"user": "The user to clear all invites from. If omitted clears all users."
+					"user": "Uživatel, od kterého vymazat všechna pozvání. Pokud vynecháno, vymaže věem uživatelům."
 				},
-				"description": "Clear invites of the server/a user.",
+				"description": "Vyčistit pozvání ze serveru/uživatele.",
 				"flags": {
-					"date": "The date start at which invites should be counted. Default is today.",
+					"date": "Datum, kdy začít počítat pozvání. Výchozí je dnes.",
 					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched."
 				}
 			}
 		},
 		"config": {
-			"title": "Your config settings",
-			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"title": "Vaše nastavení",
+			"text": "Níže jsou všechna nastavení vašeho serveru\nPoužijte `{{ prefix }}config <key>` pro zobrazení jednotlivých nastavení\nPoužijte `{{ prefix }}config <key> <value>` pro nastavení <key> na <value>",
+			"canNotClear": "Nastavení **{{ key }}** nemůže být vyčištěno. Můžete použít `config {{ key }} default` pro resetování na výchozí hodnotu.",
 			"notSet": "These settings are not set",
 			"current": {
 				"title": "Current Value",
