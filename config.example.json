@@ -16,6 +16,7 @@
 			"guild": "",
 			"channel": ""
 		},
+		"apiKey": "",
 		"dblToken": null
 	},
 	"rabbitmq": {
