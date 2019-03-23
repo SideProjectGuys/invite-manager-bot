@@ -44,10 +44,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, settings }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const source =
 			`${message.author.username}#${message.author.discriminator} ` +
 			`(ID: ${message.author.id})`;

@@ -52,10 +52,6 @@ export default class extends Command {
 		{ duration }: { duration: Duration },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		const mutedRole = settings.mutedRole;

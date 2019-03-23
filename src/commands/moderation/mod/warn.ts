@@ -36,10 +36,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		if (isPunishable(guild, targetMember, message.member, me)) {

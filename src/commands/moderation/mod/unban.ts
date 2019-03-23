@@ -40,10 +40,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		let targetMember = guild.members.get(targetUser.id);
 		if (!targetMember) {
 			targetMember = await guild.getRESTMember(targetUser.id);

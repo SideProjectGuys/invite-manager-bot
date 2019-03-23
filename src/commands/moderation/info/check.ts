@@ -31,10 +31,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const embed = this.createEmbed({
 			title: user.username
 		});
