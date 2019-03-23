@@ -39,7 +39,9 @@ export default class extends Command {
 		}
 
 		const embed = this.createEmbed({
-			title: `Case: ${caseNumber}`
+			title: t('cmd.caseDelete.title', {
+				number: caseNumber
+			})
 		});
 
 		const strike = await strikes.find({

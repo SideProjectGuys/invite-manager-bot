@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { NumberResolver } from '../../../resolvers';
-import { strikes } from '../../../sequelize';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { members, strikes } from '../../../sequelize';
+import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 import { Command, Context } from '../../Command';
 
 export default class extends Command {
@@ -35,24 +35,55 @@ export default class extends Command {
 		}
 
 		const embed = this.createEmbed({
-			title: `Case: ${caseNumber}`
+			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
 		const strike = await strikes.find({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
-			}
+			},
+			include: [
+				{
+					attributes: ['id', 'name', 'discriminator'],
+					model: members,
+					required: true
+				}
+			]
 		});
+
+		let user: BasicUser = await guild
+			.getRESTMember(strike.memberId)
+			.then(m => ({
+				id: m.user.id,
+				username: m.username,
+				discriminator: m.discriminator,
+				createdAt: m.createdAt,
+				avatarURL: m.avatarURL
+			}));
+		if (!user) {
+			const mem = strike as any;
+			user = {
+				id: strike.memberId,
+				username: mem['members.name'],
+				discriminator: mem['members.discriminator'],
+				createdAt: mem['members.createdAt'],
+				avatarURL: undefined
+			};
+		}
 
 		if (strike) {
 			embed.description = t('cmd.caseView.strike', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
 				violation: `**${strike.type}**`,
-				date: moment(strike.createdAt)
-					.locale(settings.lang)
-					.fromNow()
+				date:
+					'**' +
+					moment(strike.createdAt)
+						.locale(settings.lang)
+						.fromNow() +
+					'**',
+				member: `**${user.username}#${user.discriminator}** (${user.id})`
 			});
 		} else {
 			embed.description = t('cmd.caseView.notFound');

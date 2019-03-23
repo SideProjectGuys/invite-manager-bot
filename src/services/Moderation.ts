@@ -122,11 +122,6 @@ export class Moderation {
 			return;
 		}
 
-		// TODO Enable for all guilds when ready
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const settings = await this.client.cache.settings.get(guild.id);
 
 		// Ignore if automod is disabled
@@ -232,7 +227,7 @@ export class Moderation {
 				]
 			);
 
-			const embed = this.createPunishmentEmbed('AutoModerator');
+			const embed = this.createBasicEmbed();
 			const usr = `<@${message.author.id}>`;
 			const viol = `\`${strike.type}\``;
 			embed.description = `Message by ${usr} was removed because it violated the ${viol} rule.\n`;
@@ -264,7 +259,7 @@ export class Moderation {
 				{ name: 'Message', value: message.content }
 			]);
 
-			const embed = this.createPunishmentEmbed('AutoModerator');
+			const embed = this.createBasicEmbed();
 			const usr = `<@${message.author.id}>`;
 			embed.description = `Message by ${usr} was removed because it violated the \`${violation}\` rule.\n`;
 
@@ -273,14 +268,28 @@ export class Moderation {
 		}
 	}
 
+	public createBasicEmbed(user?: BasicUser) {
+		const author = user
+			? { name: `${user.username} (${user.id})`, icon_url: user.avatarURL }
+			: { name: 'AutoModerator', icon_url: this.client.user.avatarURL };
+		const embed = this.client.msg.createEmbed({
+			author,
+			description: ''
+		});
+		return embed;
+	}
+
 	public logViolationModAction(
 		guild: Guild,
 		user: BasicUser,
 		type: ViolationType,
 		amount: number,
-		extra?: { name: string; value: string }[]
+		extra?: { name: string; value: string }[],
+		mod?: User
 	) {
-		const logEmbed = this.createPunishmentEmbed('AutoModerator');
+		const logEmbed = this.createBasicEmbed(mod);
+		logEmbed.color = 16756480; // orange
+
 		const usr = `${user.username}#${user.discriminator}`;
 		logEmbed.description += `**User**: ${usr} (ID: ${user.id})\n`;
 
@@ -302,12 +311,12 @@ export class Moderation {
 		user: BasicUser,
 		type: PunishmentType,
 		amount: number,
-		extra?: { name: string; value: string }[]
+		extra?: { name: string; value: string }[],
+		mod?: User
 	) {
-		const logEmbed = this.client.msg.createEmbed({
-			author: { name: 'AutoModerator' },
-			color: 16711680 // red
-		});
+		const logEmbed = this.createBasicEmbed(mod);
+		logEmbed.color = 16711680; // orange
+
 		const usr = `${user.username}#${user.discriminator}`;
 		logEmbed.description = `**User**: ${usr} (ID: ${user.id})\n`;
 		logEmbed.description += `**Strikes**: ${amount}\n`;
@@ -769,15 +778,6 @@ export class Moderation {
 				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
 			);
 		}
-	}
-
-	public createPunishmentEmbed(name: string, icon?: string) {
-		const object = icon ? { name: name, icon_url: icon } : { name: name };
-		const embed = this.client.msg.createEmbed({
-			author: object,
-			description: ''
-		});
-		return embed;
 	}
 
 	public async informAboutStrike(

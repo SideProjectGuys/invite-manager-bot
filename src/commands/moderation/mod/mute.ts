@@ -33,13 +33,13 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			flags: [
+			/*flags: [
 				{
 					name: 'duration',
 					resolver: DurationResolver,
 					short: 'd'
 				}
-			],
+			],*/
 			group: CommandGroup.Moderation,
 			strict: true,
 			guildOnly: true
@@ -56,10 +56,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetMember.username,
-			targetMember.avatarURL
-		);
+		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		const mutedRole = settings.mutedRole;
 
@@ -94,10 +91,8 @@ export default class extends Command {
 					targetMember.user,
 					punishment.type,
 					punishment.amount,
-					[
-						{ name: 'Mod', value: `<@${message.author.id}>` },
-						{ name: 'Reason', value: reason }
-					]
+					[{ name: 'Reason', value: reason }],
+					message.author
 				);
 
 				if (duration) {

@@ -2,6 +2,7 @@ export interface BasicUser {
 	id: string;
 	createdAt: number;
 	username: string;
+	avatarURL: string;
 	discriminator: string;
 }
 

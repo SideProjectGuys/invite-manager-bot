@@ -61,10 +61,7 @@ export default class extends Command {
 			targetMember = await guild.getRESTMember(targetUser.id);
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetUser.username,
-			targetMember ? targetMember.avatarURL : null
-		);
+		const embed = this.client.mod.createBasicEmbed(targetUser);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.ban.missingPermissions');
@@ -105,10 +102,8 @@ export default class extends Command {
 					targetUser,
 					punishment.type,
 					punishment.amount,
-					[
-						{ name: 'Mod', value: `<@${message.author.id}>` },
-						{ name: 'Reason', value: reason }
-					]
+					[{ name: 'Reason', value: reason }],
+					message.author
 				);
 
 				embed.description = t('cmd.ban.done');

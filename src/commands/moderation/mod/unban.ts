@@ -49,10 +49,7 @@ export default class extends Command {
 			targetMember = await guild.getRESTMember(targetUser.id);
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetUser.username,
-			targetMember ? targetMember.avatarURL : null
-		);
+		const embed = this.client.mod.createBasicEmbed(targetUser);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('cmd.unban.missingPermissions');
@@ -62,27 +59,18 @@ export default class extends Command {
 			if (error) {
 				embed.description = t('cmd.unban.error', { error });
 			} else {
-				const logEmbed = this.client.mod.createPunishmentEmbed(
-					targetUser.username,
-					targetMember ? targetMember.avatarURL : null
-				);
+				const logEmbed = this.client.mod.createBasicEmbed(message.author);
 
 				const usr =
 					`${targetUser.username}#${targetUser.discriminator} ` +
-					`(ID: ${targetUser.id})`;
+					`(${targetUser.id})`;
 				logEmbed.description += `**User**: ${usr}\n`;
 				logEmbed.description += `**Action**: unban\n`;
 
-				logEmbed.fields.push(
-					{
-						name: 'Mod',
-						value: `<@${message.author.id}>`
-					},
-					{
-						name: 'Reason',
-						value: reason
-					}
-				);
+				logEmbed.fields.push({
+					name: 'Reason',
+					value: reason
+				});
 				this.client.logModAction(guild, logEmbed);
 
 				embed.description = t('cmd.unban.done');

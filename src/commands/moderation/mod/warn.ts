@@ -40,10 +40,7 @@ export default class extends Command {
 			return;
 		}
 
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetMember.username,
-			targetMember.avatarURL
-		);
+		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		if (isPunishable(guild, targetMember, message.member, me)) {
 			await this.client.mod.informAboutPunishment(
