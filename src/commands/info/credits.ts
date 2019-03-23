@@ -5,117 +5,30 @@ import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 // Developers
-const developers = [
-	{
-		name: 'Andy',
-		discriminator: '1801',
-		link: ''
-	},
-	{
-		name: 'Valandur',
-		discriminator: '3581',
-		link: ''
-	},
-	{
-		name: 'santjum',
-		discriminator: '0651',
-		link: ''
-	},
-	{
-		name: 'legendarylol',
-		discriminator: '8215',
-		link: ''
-	}
-];
+const developers: string[] = ['Andy', 'Valandur', 'santjum', 'legendarylol'];
 
 // Staff
-const moderators = [
-	{
-		name: 'SemiMute',
-		discriminator: '2018',
-		link: ''
-	},
-	{
-		name: 'theGordHoard',
-		discriminator: '9607',
-		link: ''
-	}
+const moderators: string[] = ['SemiMute', 'theGordHoard', 'Mennoplays'];
+
+const staff: string[] = [
+	'CelestialStriden',
+	'Lukas',
+	'Audio',
+	'ᴊᴀᴄᴋ❤ Crush',
+	'Lukas1703'
 ];
 
-const staff = [
-	{
-		name: 'CelestialStriden',
-		discriminator: '1931',
-		link: ''
-	},
-	{
-		name: 'Mennoplays',
-		discriminator: '5632',
-		link: ''
-	},
-	{
-		name: `Lukas'`,
-		discriminator: '8798',
-		link: ''
-	},
-	{
-		name: 'JackJuiCE',
-		discriminator: '1180',
-		link: ''
-	}
-];
-
-const translators = [
-	{
-		name: 'amiog',
-		discriminator: '5622',
-		link: ''
-	},
-	{
-		name: 'CyberDarkBR',
-		discriminator: '7805',
-		link: ''
-	},
-	{
-		name: 'qq1zz (REAL) (New Account)2374',
-		discriminator: '1204',
-		link: ''
-	},
-	{
-		name: 'Lorio',
-		discriminator: '6270',
-		link: ''
-	},
-	{
-		name: 'legendarylol',
-		discriminator: '8215',
-		link: ''
-	},
-	{
-		name: `Lukas'`,
-		discriminator: '8798',
-		link: ''
-	},
-	{
-		name: 'Mennoplays',
-		discriminator: '5632',
-		link: ''
-	},
-	{
-		name: 'RMG | RoHellowtf💤',
-		discriminator: '6783',
-		link: ''
-	},
-	{
-		name: 'Thę_Olaoleo[TGB]',
-		discriminator: '1391',
-		link: ''
-	},
-	{
-		name: 'Izmoqwy',
-		discriminator: '0423',
-		link: ''
-	}
+const translators: string[] = [
+	'amiog',
+	'CyberDarkBR',
+	'qq1zz',
+	'Lorio',
+	'legendarylol',
+	'Lukas',
+	'Mennoplays',
+	'RMG | RoHellowtf💤',
+	'Thę_Olaoleo',
+	'Izmoqwy'
 ];
 
 export default class extends Command {
@@ -159,17 +72,11 @@ export default class extends Command {
 		return this.sendReply(message, embed);
 	}
 
-	private getList(array: any[]) {
-		return this.shuffle(array)
-			.map(d =>
-				d.link
-					? `[${d.name}#${d.discriminator}](${d.link})`
-					: `${d.name}#${d.discriminator}`
-			)
-			.join('\n');
+	private getList<T>(array: T[]) {
+		return this.shuffle(array).join('\n');
 	}
 
-	private shuffle(array: any[]) {
+	private shuffle<T>(array: T[]) {
 		var currentIndex = array.length,
 			temporaryValue,
 			randomIndex;

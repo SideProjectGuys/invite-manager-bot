@@ -30,7 +30,8 @@ export class UserResolver extends Resolver {
 				user = await members.findOne({ where: { id }, raw: true }).then(u => ({
 					...u,
 					username: u.name,
-					createdAt: (u.createdAt as Date).getTime()
+					createdAt: (u.createdAt as Date).getTime(),
+					avatarURL: undefined
 				}));
 			}
 			if (!user) {
@@ -76,7 +77,8 @@ export class UserResolver extends Resolver {
 						us.map(u => ({
 							...u,
 							username: u.name,
-							createdAt: (u.createdAt as Date).getTime()
+							createdAt: (u.createdAt as Date).getTime(),
+							avatarURL: undefined
 						}))
 					);
 			}
@@ -95,7 +97,8 @@ export class UserResolver extends Resolver {
 						us.map(u => ({
 							...u,
 							username: u.name,
-							createdAt: (u.createdAt as Date).getTime()
+							createdAt: (u.createdAt as Date).getTime(),
+							avatarURL: undefined
 						}))
 					);
 			}

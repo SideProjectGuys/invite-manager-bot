@@ -23,10 +23,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		let lastId: string = undefined;
 		const batches = Math.ceil(guild.memberCount / 1000);
 

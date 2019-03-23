@@ -47,14 +47,7 @@ export default class extends Command {
 		{ deleteMessageDays }: { deleteMessageDays: number },
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetMember.username,
-			targetMember.avatarURL
-		);
+		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
 			embed.description = t('ban.softBan.missingPermissions');
@@ -93,10 +86,8 @@ export default class extends Command {
 						targetMember.user,
 						punishment.type,
 						punishment.amount,
-						[
-							{ name: 'Mod', value: `<@${message.author.id}>` },
-							{ name: 'Reason', value: reason }
-						]
+						[{ name: 'Reason', value: reason }],
+						message.author
 					);
 
 					embed.description = t('cmd.softBan.done');

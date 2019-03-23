@@ -30,14 +30,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
-		const embed = this.client.mod.createPunishmentEmbed(
-			targetMember.username,
-			targetMember.avatarURL
-		);
+		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		const mutedRole = settings.mutedRole;
 
@@ -49,10 +42,7 @@ export default class extends Command {
 			if (error) {
 				embed.description = t('cmd.unmute.error', { error });
 			} else {
-				const logEmbed = this.client.mod.createPunishmentEmbed(
-					targetMember.username,
-					targetMember.avatarURL
-				);
+				const logEmbed = this.client.mod.createBasicEmbed(targetMember);
 
 				const usr =
 					`${targetMember.username}#${targetMember.discriminator} ` +

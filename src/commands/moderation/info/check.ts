@@ -31,10 +31,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, settings, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const embed = this.createEmbed({
 			title: user.username
 		});
@@ -50,8 +46,11 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.check.strikes.total'),
-			value: `${strikeList.length} violations worth ${strikeTotal} strikes`,
-			inline: true
+			value: t('cmd.check.strikes.totalText', {
+				amount: `**${strikeList.length}**`,
+				total: `**${strikeTotal}**`
+			}),
+			inline: false
 		});
 
 		const punishmentList = await punishments.findAll({
@@ -63,8 +62,10 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.check.punishments.total'),
-			value: `${punishmentList.length} punishments`,
-			inline: true
+			value: t('cmd.check.punishments.totalText', {
+				amount: `**${punishmentList.length}**`
+			}),
+			inline: false
 		});
 
 		const strikeText = strikeList

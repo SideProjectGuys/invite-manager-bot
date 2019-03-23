@@ -34,12 +34,10 @@ export default class extends Command {
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
-		if (this.client.config.ownerGuildIds.indexOf(guild.id) === -1) {
-			return;
-		}
-
 		const embed = this.createEmbed({
-			title: `Case: ${caseNumber}`
+			title: t('cmd.caseDelete.title', {
+				number: caseNumber
+			})
 		});
 
 		const strike = await strikes.find({
