@@ -8,6 +8,7 @@ import { Command, Context } from '../Command';
 
 const ytdl = require('ytdl-core');
 const soundCloud = require('soundcloud-audio');
+const iheart = require('iheart');
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -16,7 +17,8 @@ export default class extends Command {
 			args: [
 				{
 					name: 'link',
-					resolver: StringResolver
+					resolver: StringResolver,
+					rest: true
 				}
 			],
 			aliases: ['p'],
@@ -121,6 +123,47 @@ export default class extends Command {
 
 			const time = Number(data.duration) * 1000;
 			setTimeout(() => voiceChannel.leave(), time);
+		} else if (link.startsWith('iheart')) {
+			const search = link.substr(6).trim();
+
+			const matches = await iheart.search(search);
+			console.log(matches.stations);
+
+			const station = matches.stations[0];
+			console.log(station);
+
+			const url = await iheart.streamURL(station);
+			console.log(url);
+
+			const embed = this.createEmbed({
+				author: {
+					name: message.author.id,
+					icon_url: message.author.avatarURL
+				},
+				image: { url: station.newlogo },
+				title: station.name,
+				fields: [
+					{
+						name: 'Air',
+						value: station.frequency + ' ' + station.band,
+						inline: true
+					},
+					{
+						name: 'Location',
+						value: station.city + ', ' + station.state,
+						inline: true
+					},
+					{
+						name: 'Description',
+						value: station.description,
+						inline: false
+					}
+				]
+			});
+			this.sendEmbed(message.channel, embed);
+
+			const conn = await voiceChannel.join({});
+			conn.play(url);
 		} else {
 			this.sendReply(
 				message,
