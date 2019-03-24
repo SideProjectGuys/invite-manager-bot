@@ -25,7 +25,7 @@ interface ShardMessage {
 	[x: string]: any;
 }
 
-export class RabbitMq {
+export class RabbitMqService {
 	private client: IMClient;
 	private shard: string;
 
