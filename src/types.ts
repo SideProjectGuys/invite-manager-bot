@@ -145,3 +145,10 @@ export interface RabbitMqMember {
 		username: string;
 	};
 }
+
+export interface NowPlayingInfo {
+	title: string;
+	imageURL: string;
+	source: BasicUser;
+	extras: { name: string; value: string; inline?: boolean }[];
+}

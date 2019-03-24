@@ -20,6 +20,6 @@ export default class extends Command {
 		flags: {},
 		{ t, guild }: Context
 	): Promise<any> {
-		// TODO
+		this.client.music.disconnect(guild);
 	}
 }

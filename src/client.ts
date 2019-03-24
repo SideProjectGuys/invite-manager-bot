@@ -161,6 +161,7 @@ export class IMClient extends Client {
 		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
+		this.music = new MusicService(this);
 
 		this.disabledGuilds = new Set();
 

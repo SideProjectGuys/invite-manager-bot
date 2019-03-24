@@ -43,7 +43,6 @@
 		"node-opus": "0.3.1",
 		"sequelize": "4.42.0",
 		"sodium-native": "2.3.0",
-		"soundcloud-audio": "1.4.0",
 		"uws": "10.148.1",
 		"ytdl-core": "0.29.1",
 		"zlib-sync": "0.1.4"
