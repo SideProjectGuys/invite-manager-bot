@@ -39,8 +39,12 @@
 		"i18n": "0.8.3",
 		"moment": "2.23.0",
 		"mysql2": "1.6.4",
+		"node-opus": "0.3.1",
 		"sequelize": "4.42.0",
+		"sodium-native": "2.3.0",
+		"soundcloud-audio": "1.4.0",
 		"uws": "10.148.1",
+		"ytdl-core": "0.29.1",
 		"zlib-sync": "0.1.4"
 	},
 	"devDependencies": {

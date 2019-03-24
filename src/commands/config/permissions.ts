@@ -15,7 +15,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.permissions,
-			aliases: ['perms', 'p'],
+			aliases: ['perms'],
 			args: [
 				{
 					name: 'cmd',

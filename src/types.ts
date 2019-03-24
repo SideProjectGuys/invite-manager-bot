@@ -33,6 +33,7 @@ export enum CommandGroup {
 	Premium = 'Premium',
 	Moderation = 'Moderation',
 	Report = 'Report',
+	Music = 'Music',
 	Other = 'Other'
 }
 
@@ -99,6 +100,9 @@ export enum BotCommand {
 	mentionRole = 'mentionRole',
 
 	/*report = 'report',*/
+
+	play = 'play',
+	stop = 'stop',
 
 	graph = 'graph'
 }
