@@ -54,7 +54,9 @@ export default class extends Command {
 	): Promise<any> {
 		let targetMember = guild.members.get(targetUser.id);
 		if (!targetMember) {
-			targetMember = await guild.getRESTMember(targetUser.id);
+			targetMember = await guild
+				.getRESTMember(targetUser.id)
+				.catch(() => undefined);
 		}
 
 		const embed = this.client.mod.createBasicEmbed(targetUser);
