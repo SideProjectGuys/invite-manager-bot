@@ -63,7 +63,7 @@ export type ShowPaginatedFunc = (
 	render: (page: number, maxPage: number) => Embed
 ) => Promise<void>;
 
-export class Messaging {
+export class MessagingService {
 	private client: IMClient;
 
 	public constructor(client: IMClient) {

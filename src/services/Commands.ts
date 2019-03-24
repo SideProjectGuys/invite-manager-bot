@@ -14,7 +14,7 @@ const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const rateLimit = 1; // max commands per second
 const cooldown = 5; // in seconds
 
-export class Commands {
+export class CommandsService {
 	private client: IMClient;
 
 	public commands: Command[];

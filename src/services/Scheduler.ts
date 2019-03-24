@@ -8,7 +8,7 @@ import {
 	ScheduledActionType
 } from '../sequelize';
 
-export class Scheduler {
+export class SchedulerService {
 	private client: IMClient = null;
 	private scheduledActionTimers: Map<string, any>;
 	private scheduledActionFunctions: {
