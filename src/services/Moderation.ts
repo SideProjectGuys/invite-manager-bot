@@ -697,7 +697,7 @@ export class ModerationService {
 			{ name: 'Previous name', value: name }
 		]);
 
-		this.addStrikesAndPunish(member, strike.type, strike.amount, {
+		this.addStrikesAndPunish(member, type, amount, {
 			guild,
 			settings
 		});
