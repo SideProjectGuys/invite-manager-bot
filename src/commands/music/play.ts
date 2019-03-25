@@ -97,7 +97,7 @@ export default class extends Command {
 					imageURL: videoInfo.thumbnail_url,
 					user: message.author,
 					platform,
-					stream: ytdl(link, { filter: 'audioonly', begin: '1m30s' }),
+					stream: ytdl(link, { filter: 'audioonly' }),
 					duration: Number(videoInfo.length_seconds),
 					extras: [
 						{ name: 'Duration', value: `${videoInfo.length_seconds} seconds` },
