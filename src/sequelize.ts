@@ -1260,3 +1260,36 @@ export const dbStats = sequelize.define<DBStatsInstance, DBStatsAttributes>(
 		value: Sequelize.DOUBLE
 	}
 );
+
+// ------------------------------------
+// Music History
+// ------------------------------------
+export interface MusicHistoryAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	sourcePlatform: string;
+	sourceLink: string;
+	skippedAt: number;
+}
+export interface MusicHistoryInstance
+	extends Sequelize.Instance<MusicHistoryAttributes>,
+		MusicHistoryAttributes {}
+
+export const musicHistory = sequelize.define<
+	MusicHistoryInstance,
+	MusicHistoryAttributes
+>('musicHistory', {
+	id: { type: Sequelize.INTEGER, primaryKey: true },
+	guildId: Sequelize.STRING(32),
+	memberId: Sequelize.STRING(32),
+	sourcePlatform: Sequelize.STRING,
+	sourceLink: Sequelize.STRING,
+	skippedAt: Sequelize.INTEGER
+});
+
+musicHistory.belongsTo(guilds);
+guilds.hasMany(musicHistory);
+
+musicHistory.belongsTo(members);
+members.hasMany(musicHistory);

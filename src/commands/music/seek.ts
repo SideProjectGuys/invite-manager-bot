@@ -1,14 +1,22 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
+import { NumberResolver } from '../../resolvers';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.stop,
+			name: BotCommand.seek,
 			aliases: [],
+			args: [
+				{
+					name: 'duration',
+					resolver: NumberResolver,
+					rest: false
+				}
+			],
 			group: CommandGroup.Music,
 			guildOnly: true
 		});
@@ -16,10 +24,16 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: any[],
+		[duration]: [number],
 		flags: {},
 		{ t, guild }: Context
 	): Promise<any> {
-		this.client.music.disconnect(guild);
+		const conn = await this.client.music.getMusicConnection(guild);
+		if (!conn.isPlaying()) {
+			this.sendReply(message, 'I am currently not playing any music');
+			return;
+		}
+
+		conn.seek(duration);
 	}
 }

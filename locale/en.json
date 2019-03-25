@@ -10,7 +10,8 @@
 			"multiple": "Multiple matching users found. {{{ users }}}"
 		},
 		"number": {
-			"invalid": "Not a valid number."
+			"invalid": "Not a valid number.",
+			"tooLarge": "arguments.number.tooLarge"
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {

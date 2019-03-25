@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
+import { MusicCache } from './cache/MusicCache';
 import { PermissionsCache } from './cache/PermissionsCache';
 import { PremiumCache } from './cache/PremiumCache';
 import { PunishmentCache } from './cache/PunishmentsCache';
@@ -74,6 +75,7 @@ export class IMClient extends Client {
 		punishments: PunishmentCache;
 		settings: SettingsCache;
 		strikes: StrikesCache;
+		music: MusicCache;
 	};
 	public dbQueue: DBQueueService;
 
@@ -147,7 +149,8 @@ export class IMClient extends Client {
 			premium: new PremiumCache(this),
 			punishments: new PunishmentCache(this),
 			settings: new SettingsCache(this),
-			strikes: new StrikesCache(this)
+			strikes: new StrikesCache(this),
+			music: new MusicCache(this)
 		};
 		this.dbQueue = new DBQueueService(this);
 

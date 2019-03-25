@@ -1,3 +1,5 @@
+import { VoiceChannel, VoiceConnection } from 'eris';
+
 export interface BasicUser {
 	id: string;
 	createdAt: number;
@@ -102,7 +104,16 @@ export enum BotCommand {
 	/*report = 'report',*/
 
 	play = 'play',
-	stop = 'stop',
+	pause = 'pause',
+	resume = 'resume',
+	skip = 'skip',
+	seek = 'seek',
+	queue = 'queue',
+	rewind = 'rewind',
+	nowPlaying = 'nowPlaying',
+	disconnect = 'disconnect',
+	search = 'search',
+	volume = 'volume',
 
 	graph = 'graph'
 }
@@ -146,9 +157,24 @@ export interface RabbitMqMember {
 	};
 }
 
-export interface NowPlayingInfo {
+export interface MusicQueue {
+	current: MusicQueueItem;
+	queue: MusicQueueItem[];
+}
+
+export interface MusicQueueItem {
 	title: string;
+	platform: MusicPlatform;
+	stream: string;
+	duration: number | null;
+	user: BasicUser;
 	imageURL: string;
-	source: BasicUser;
 	extras: { name: string; value: string; inline?: boolean }[];
+}
+
+export enum MusicPlatform {
+	YouTube = 'youtube',
+	SoundCloud = 'soundcloud',
+	RaveDJ = 'ravedj',
+	iHeartRADIO = 'iheartradio'
 }

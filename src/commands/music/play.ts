@@ -1,23 +1,20 @@
 import axios from 'axios';
 import { Message, VoiceChannel } from 'eris';
-import { Readable } from 'stream';
 
 import { IMClient } from '../../client';
 import { EnumResolver, StringResolver } from '../../resolvers';
-import { BotCommand, CommandGroup, NowPlayingInfo } from '../../types';
+import {
+	BotCommand,
+	CommandGroup,
+	MusicPlatform,
+	MusicQueueItem
+} from '../../types';
 import { Command, Context } from '../Command';
 
 const ytdl = require('ytdl-core');
 const iheart = require('iheart');
 
 const SOUNDCLOUD_CLIENT_ID = 'z7npDMrLmgiW4wc8pPCQkkUUtRQkWZOF';
-
-enum MusicPlatform {
-	YouTube = 'youtube',
-	SoundCloud = 'soundcloud',
-	RaveDJ = 'ravedj',
-	iHeartRADIO = 'iheartradio'
-}
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -59,8 +56,6 @@ export default class extends Command {
 			return;
 		}
 
-		const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
-
 		// Try and guess the music platform according to the argument
 		if (!platform) {
 			if (link.startsWith('https://www.youtube.com')) {
@@ -82,9 +77,7 @@ export default class extends Command {
 			return;
 		}
 
-		let stream: string | Readable;
-		let info: NowPlayingInfo;
-		let duration: number;
+		let item: MusicQueueItem;
 
 		switch (platform) {
 			case MusicPlatform.YouTube:
@@ -99,18 +92,18 @@ export default class extends Command {
 
 				console.log(videoInfo);
 
-				stream = ytdl(link, { filter: 'audioonly' });
-				duration = Number(videoInfo.length_seconds);
-				info = {
+				item = {
 					title: videoInfo.player_response.videoDetails.title,
 					imageURL: videoInfo.thumbnail_url,
-					source: message.author,
+					user: message.author,
+					platform,
+					stream: ytdl(link, { filter: 'audioonly', begin: '1m30s' }),
+					duration: Number(videoInfo.length_seconds),
 					extras: [
 						{ name: 'Duration', value: `${videoInfo.length_seconds} seconds` },
 						{ name: 'Channel', value: videoInfo.author.name }
 					]
 				};
-
 				break;
 
 			case MusicPlatform.SoundCloud:
@@ -130,18 +123,18 @@ export default class extends Command {
 					`${scData.stream_url}?client_id=${SOUNDCLOUD_CLIENT_ID}`
 				);
 
-				stream = redir.request.res.responseUrl;
-				duration = scData.duration;
-				info = {
+				item = {
 					title: scData.title,
 					imageURL: scData.artwork_url,
-					source: message.author,
+					user: message.author,
+					platform,
+					stream: redir.request.res.responseUrl,
+					duration: scData.duration,
 					extras: [
 						{ name: 'Duration', value: `${scData.duration / 1000} seconds` },
 						{ name: 'Artist', value: scData.user.username }
 					]
 				};
-
 				break;
 
 			case MusicPlatform.RaveDJ:
@@ -160,12 +153,13 @@ export default class extends Command {
 
 				const data = res.data.data;
 
-				stream = data.urls.audio;
-				duration = Number(data.duration);
-				info = {
+				item = {
 					title: data.title,
 					imageURL: data.thumbnails.default,
-					source: message.author,
+					user: message.author,
+					platform,
+					duration: Number(data.duration),
+					stream: data.urls.audio,
 					extras: [
 						{ name: 'First', value: data.media[0].title },
 						{ name: 'Second', value: data.media[1].title }
@@ -179,12 +173,13 @@ export default class extends Command {
 				const matches = await iheart.search(search);
 				const station = matches.stations[0];
 
-				stream = await iheart.streamURL(station);
-				duration = null;
-				info = {
+				item = {
 					title: station.name,
 					imageURL: station.newlogo,
-					source: message.author,
+					user: message.author,
+					platform,
+					duration: null,
+					stream: await iheart.streamURL(station),
 					extras: [
 						{
 							name: 'Air',
@@ -209,18 +204,17 @@ export default class extends Command {
 				break;
 		}
 
-		if (stream) {
-			const conn = await this.client.music.connect(voiceChannel);
-			conn.play(info, stream);
+		if (item) {
+			const conn = await this.client.music.getMusicConnection(guild);
+
+			const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
+
+			conn.play(item, voiceChannel);
+
 			this.sendEmbed(
 				message.channel,
-				this.client.music.createPlayingEmbed(info)
+				this.client.music.createPlayingEmbed(item)
 			);
-
-			if (duration) {
-				const time = duration * 1000;
-				setTimeout(() => conn.disconnect(), time);
-			}
 		}
 	}
 }
