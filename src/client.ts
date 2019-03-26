@@ -171,7 +171,7 @@ export class IMClient extends Client {
 		this.on('guildMemberAdd', this.onGuildMemberAdd);
 		this.on('guildMemberRemove', this.onGuildMemberRemove);
 		this.on('connect', this.onConnect);
-		this.on('disconnect', this.onDisconnect);
+		this.on('shardDisconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
 	}
@@ -478,7 +478,7 @@ export class IMClient extends Client {
 		});
 	}
 
-	private async onConnect() {
+	private async onConnect(err: Error) {
 		console.error('DISCORD CONNECT');
 		this.rabbitmq.sendToManager({
 			id: 'status',
@@ -486,9 +486,13 @@ export class IMClient extends Client {
 			connected: true
 		});
 		this.gatewayConnected = true;
+
+		if (err) {
+			console.error(err);
+		}
 	}
 
-	private async onDisconnect() {
+	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
 		this.rabbitmq.sendToManager({
 			id: 'status',
@@ -496,6 +500,14 @@ export class IMClient extends Client {
 			connected: false
 		});
 		this.gatewayConnected = false;
+
+		if (err) {
+			console.error(err);
+		}
+	}
+
+	private async onShardDisconnect(err: Error) {
+		// TODO
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
