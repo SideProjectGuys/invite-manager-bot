@@ -478,7 +478,7 @@ export class IMClient extends Client {
 		});
 	}
 
-	private async onConnect(err: Error) {
+	private async onConnect() {
 		console.error('DISCORD CONNECT');
 		this.rabbitmq.sendToManager({
 			id: 'status',
@@ -486,10 +486,6 @@ export class IMClient extends Client {
 			connected: true
 		});
 		this.gatewayConnected = true;
-
-		if (err) {
-			console.error(err);
-		}
 	}
 
 	private async onDisconnect(err: Error) {
@@ -497,17 +493,14 @@ export class IMClient extends Client {
 		this.rabbitmq.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
-			connected: false
+			connected: false,
+			error: err ? err.message : null
 		});
 		this.gatewayConnected = false;
 
 		if (err) {
 			console.error(err);
 		}
-	}
-
-	private async onShardDisconnect(err: Error) {
-		// TODO
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
