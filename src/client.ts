@@ -19,13 +19,14 @@ import {
 	sequelize
 } from './sequelize';
 import { CaptchaService } from './services/Captcha';
-import { Commands } from './services/Commands';
-import { DBQueue } from './services/DBQueue';
+import { CommandsService } from './services/Commands';
+import { DBQueueService } from './services/DBQueue';
 import { InvitesService } from './services/Invites';
-import { Messaging } from './services/Messaging';
-import { Moderation } from './services/Moderation';
-import { RabbitMq } from './services/RabbitMq';
-import { Scheduler } from './services/Scheduler';
+import { MessagingService } from './services/Messaging';
+import { ModerationService } from './services/Moderation';
+import { MusicService } from './services/Music';
+import { RabbitMqService } from './services/RabbitMq';
+import { SchedulerService } from './services/Scheduler';
 import { ShardCommand } from './types';
 
 const config = require('../config.json');
@@ -74,18 +75,19 @@ export class IMClient extends Client {
 		settings: SettingsCache;
 		strikes: StrikesCache;
 	};
-	public dbQueue: DBQueue;
+	public dbQueue: DBQueueService;
 
-	public rabbitmq: RabbitMq;
+	public rabbitmq: RabbitMqService;
 	public shardId: number;
 	public shardCount: number;
 
-	public msg: Messaging;
-	public mod: Moderation;
-	public scheduler: Scheduler;
-	public cmds: Commands;
+	public msg: MessagingService;
+	public mod: ModerationService;
+	public scheduler: SchedulerService;
+	public cmds: CommandsService;
 	public captcha: CaptchaService;
 	public invs: InvitesService;
+	public music: MusicService;
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
@@ -147,16 +149,16 @@ export class IMClient extends Client {
 			settings: new SettingsCache(this),
 			strikes: new StrikesCache(this)
 		};
-		this.dbQueue = new DBQueue(this);
+		this.dbQueue = new DBQueueService(this);
 
 		this.shardId = shardId;
 		this.shardCount = shardCount;
-		this.rabbitmq = new RabbitMq(this, conn);
+		this.rabbitmq = new RabbitMqService(this, conn);
 
-		this.msg = new Messaging(this);
-		this.mod = new Moderation(this);
-		this.scheduler = new Scheduler(this);
-		this.cmds = new Commands(this);
+		this.msg = new MessagingService(this);
+		this.mod = new ModerationService(this);
+		this.scheduler = new SchedulerService(this);
+		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
 
@@ -169,7 +171,7 @@ export class IMClient extends Client {
 		this.on('guildMemberAdd', this.onGuildMemberAdd);
 		this.on('guildMemberRemove', this.onGuildMemberRemove);
 		this.on('connect', this.onConnect);
-		this.on('disconnect', this.onDisconnect);
+		this.on('shardDisconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
 	}
@@ -486,14 +488,19 @@ export class IMClient extends Client {
 		this.gatewayConnected = true;
 	}
 
-	private async onDisconnect() {
+	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
 		this.rabbitmq.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
-			connected: false
+			connected: false,
+			error: err ? err.message : null
 		});
 		this.gatewayConnected = false;
+
+		if (err) {
+			console.error(err);
+		}
 	}
 
 	private async onGuildUnavailable(guild: Guild) {

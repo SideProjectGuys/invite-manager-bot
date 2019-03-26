@@ -36,7 +36,7 @@ interface MiniMessage {
 export const NAME_DEHOIST_PREFIX = '▼';
 export const NAME_HOIST_REGEX = /^[-.:,;|\/\\~!+*%$£€&()[\]{}°§<>?'"`^´¦@#¬]+/;
 
-export class Moderation {
+export class ModerationService {
 	private client: IMClient;
 	private messageCache: Map<string, MiniMessage[]>;
 
@@ -697,7 +697,7 @@ export class Moderation {
 			{ name: 'Previous name', value: name }
 		]);
 
-		this.addStrikesAndPunish(member, strike.type, strike.amount, {
+		this.addStrikesAndPunish(member, type, amount, {
 			guild,
 			settings
 		});

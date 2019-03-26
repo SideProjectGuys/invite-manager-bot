@@ -10,7 +10,7 @@ import {
 	members
 } from '../sequelize';
 
-export class DBQueue {
+export class DBQueueService {
 	private client: IMClient = null;
 
 	private logActions: LogAttributes[] = [];
