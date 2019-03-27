@@ -1,8 +1,34 @@
+import AWS from 'aws-sdk';
+import axios from 'axios';
 import { Guild, Message, VoiceChannel, VoiceConnection } from 'eris';
+import { Stream } from 'stream';
+import { URLSearchParams } from 'url';
 
 import { MusicCache } from '../cache/MusicCache';
 import { IMClient } from '../client';
 import { MusicQueue, MusicQueueItem } from '../types';
+
+interface YoutubeVideo {
+	id: string;
+	videoId?: string;
+	contentDetails: YoutubeVideoContentDetails;
+	snippet: {
+		channelTitle: string;
+		description: string;
+		thumbnails: {
+			default: {
+				height: number;
+				url: string;
+				width: number;
+			};
+		};
+		title: string;
+	};
+}
+
+interface YoutubeVideoContentDetails {
+	duration: string;
+}
 
 const VOL_FADE_TIME = 1.5;
 
@@ -15,6 +41,7 @@ class MusicConnection {
 	private volume: number = 1.0;
 	private doPlayNext: boolean = true;
 	private speaking: Set<string> = new Set();
+	private doneCallback: () => void;
 
 	public constructor(service: MusicService, musicQueueCache: MusicQueue) {
 		this.service = service;
@@ -116,6 +143,7 @@ class MusicConnection {
 		} else {
 			this.voiceChannel = channel;
 			this.connection = await channel.join({ inlineVolume: true });
+			this.connection.on('error', error => console.error(error));
 			this.connection.on('speakingStart', userId => {
 				if (this.speaking.size === 0) {
 					if (this.speakTimeout) {
@@ -142,6 +170,12 @@ class MusicConnection {
 			this.connection.on('end', () => {
 				console.log('STREAM END');
 				this.musicQueueCache.current = null;
+
+				if (this.doneCallback) {
+					this.doneCallback();
+					this.doneCallback = null;
+				}
+
 				if (this.doPlayNext) {
 					this.playNext();
 				}
@@ -157,13 +191,34 @@ class MusicConnection {
 				this.connection.stopPlaying();
 			}
 
-			this.musicQueueCache.current = next;
-			this.connection.play(next.stream, {
-				inlineVolume: true
-			});
-			this.updateNowPlayingMessage();
+			this.service.polly.synthesizeSpeech(
+				{
+					Text: 'Now playing: ' + next.title,
+					LanguageCode: 'en-US',
+					OutputFormat: 'ogg_vorbis',
+					VoiceId: 'Joanna'
+				},
+				(err, data) => {
+					if (err) {
+						throw new Error(err.message);
+					}
 
-			this.doPlayNext = true;
+					this.doneCallback = () => {
+						this.musicQueueCache.current = next;
+						this.connection.play(next.stream, {
+							inlineVolume: true
+						});
+						this.updateNowPlayingMessage();
+
+						this.doPlayNext = true;
+					};
+
+					const bufferStream = new Stream.PassThrough();
+					bufferStream.end(data.AudioStream);
+
+					this.connection.play(bufferStream);
+				}
+			);
 		}
 	}
 
@@ -221,11 +276,17 @@ export class MusicService {
 	private client: IMClient = null;
 	private cache: MusicCache;
 	private musicConnections: Map<string, MusicConnection>;
+	public polly: AWS.Polly;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 		this.cache = client.cache.music;
 		this.musicConnections = new Map();
+		this.polly = new AWS.Polly({
+			signatureVersion: 'v4',
+			region: 'us-east-1',
+			credentials: client.config.bot.aws
+		});
 	}
 
 	public async getMusicConnection(guild: Guild) {
@@ -257,5 +318,45 @@ export class MusicService {
 			title: item.title,
 			fields: item.extras
 		});
+	}
+
+	public async searchYoutube(searchTerm: string, maxResults?: number) {
+		const params: URLSearchParams = new URLSearchParams();
+		params.set('key', this.client.config.bot.youtubeApiKey);
+		params.set('type', 'video');
+		// params.set('videoEmbeddable', "true");
+		// params.set('videoSyndicated', "true");
+		params.set('videoCategoryId', '10'); // only music videos
+		params.set('maxResults', (maxResults || 10).toString());
+		params.set('part', 'id');
+		params.set('fields', 'items(id(videoId))');
+		params.set('q', searchTerm);
+
+		const { data } = await axios(
+			`https://www.googleapis.com/youtube/v3/search?${params}`
+		);
+
+		return this.getVideoDetails(
+			data.items.map((item: any) => item.id.videoId).join(',')
+		);
+	}
+
+	private async getVideoDetails(
+		idList: string
+	): Promise<{ items: Array<YoutubeVideo> }> {
+		const params: URLSearchParams = new URLSearchParams();
+		params.set('key', this.client.config.bot.youtubeApiKey);
+		params.set('id', idList);
+		params.set('part', 'contentDetails,snippet');
+		params.set(
+			'fields',
+			'items(id,snippet(title,description,thumbnails(default),channelTitle),contentDetails(duration))'
+		);
+
+		const { data } = await axios(
+			`https://www.googleapis.com/youtube/v3/videos?${params}`
+		);
+
+		return data;
 	}
 }

@@ -68,7 +68,7 @@ export default class extends Command {
 				platform = MusicPlatform.iHeartRADIO;
 			}
 		}
-
+		/*
 		if (!platform) {
 			this.sendReply(
 				message,
@@ -76,7 +76,7 @@ export default class extends Command {
 			);
 			return;
 		}
-
+*/
 		let item: MusicQueueItem;
 
 		switch (platform) {
@@ -89,8 +89,6 @@ export default class extends Command {
 					);
 					return;
 				}
-
-				console.log(videoInfo);
 
 				item = {
 					title: videoInfo.player_response.videoDetails.title,
@@ -201,6 +199,28 @@ export default class extends Command {
 				break;
 
 			default:
+				const { items } = await this.client.music.searchYoutube(link, 1);
+				if (items.length > 0) {
+					const videoInfo2 = items[0];
+					item = {
+						title: videoInfo2.snippet.title,
+						imageURL: videoInfo2.snippet.thumbnails.default.url,
+						user: message.author,
+						platform: MusicPlatform.YouTube,
+						stream: ytdl(`https://youtube.com/watch?v=${videoInfo2.id}`, {
+							filter: 'audioonly'
+						}),
+						duration: null,
+						extras: [
+							{
+								name: 'Duration',
+								value: `${videoInfo2.contentDetails.duration} seconds`
+							},
+							{ name: 'Channel', value: videoInfo2.snippet.channelTitle }
+						]
+					};
+				}
+
 				break;
 		}
 

@@ -27,6 +27,7 @@
 	"homepage": "https://docs.invitemanager.co/bot/",
 	"dependencies": {
 		"amqplib": "0.5.3",
+		"aws-sdk": "2.429.0",
 		"axios": "0.18.0",
 		"bufferutil": "4.0.1",
 		"chart.js": "2.7.3",
