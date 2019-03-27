@@ -22,13 +22,7 @@ export abstract class Cache<CachedObject> {
 
 		if (cached !== undefined) {
 			const time = this.cacheTime.get(key);
-			if (
-				time &&
-				time
-					.clone()
-					.add(maxCacheDuration)
-					.isAfter(moment())
-			) {
+			if (time && time.isAfter(moment())) {
 				return cached;
 			}
 		}
@@ -36,7 +30,7 @@ export abstract class Cache<CachedObject> {
 		const obj = await this._get(key);
 
 		this.cache.set(key, obj);
-		this.cacheTime.set(key, moment());
+		this.cacheTime.set(key, moment().add(maxCacheDuration));
 
 		return obj;
 	}
@@ -45,7 +39,7 @@ export abstract class Cache<CachedObject> {
 
 	public async set(key: string, value: CachedObject): Promise<CachedObject> {
 		this.cache.set(key, value);
-		this.cacheTime.set(key, moment());
+		this.cacheTime.set(key, moment().add(maxCacheDuration));
 		return value;
 	}
 
