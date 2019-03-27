@@ -91,9 +91,10 @@ export default class extends Command {
 			imageURL: videoInfo.snippet.thumbnails.default.url,
 			user: message.author,
 			platform: MusicPlatform.YouTube,
-			stream: ytdl(`https://youtube.com/watch?v=${videoInfo.id}`, {
-				filter: 'audioonly'
-			}),
+			getStream: () =>
+				ytdl(`https://youtube.com/watch?v=${videoInfo.id}`, {
+					filter: 'audioonly'
+				}),
 			duration: null,
 			extras: [
 				{

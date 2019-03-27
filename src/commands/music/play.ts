@@ -95,7 +95,7 @@ export default class extends Command {
 					imageURL: videoInfo.thumbnail_url,
 					user: message.author,
 					platform,
-					stream: ytdl(link, { filter: 'audioonly' }),
+					getStream: () => ytdl(link, { filter: 'audioonly' }),
 					duration: Number(videoInfo.length_seconds),
 					extras: [
 						{ name: 'Duration', value: `${videoInfo.length_seconds} seconds` },
@@ -126,7 +126,7 @@ export default class extends Command {
 					imageURL: scData.artwork_url,
 					user: message.author,
 					platform,
-					stream: redir.request.res.responseUrl,
+					getStream: () => redir.request.res.responseUrl,
 					duration: scData.duration,
 					extras: [
 						{ name: 'Duration', value: `${scData.duration / 1000} seconds` },
@@ -157,7 +157,7 @@ export default class extends Command {
 					user: message.author,
 					platform,
 					duration: Number(data.duration),
-					stream: data.urls.audio,
+					getStream: () => data.urls.audio,
 					extras: [
 						{ name: 'First', value: data.media[0].title },
 						{ name: 'Second', value: data.media[1].title }
@@ -177,16 +177,16 @@ export default class extends Command {
 					user: message.author,
 					platform,
 					duration: null,
-					stream: await iheart.streamURL(station),
+					getStream: () => iheart.streamURL(station),
 					extras: [
 						{
 							name: 'Air',
-							value: station.frequency + ' ' + station.band,
+							value: `${station.frequency} ${station.band}`,
 							inline: true
 						},
 						{
 							name: 'Location',
-							value: station.city + ', ' + station.state,
+							value: `${station.city}, ${station.state}`,
 							inline: true
 						},
 						{
@@ -207,9 +207,10 @@ export default class extends Command {
 						imageURL: videoInfo2.snippet.thumbnails.default.url,
 						user: message.author,
 						platform: MusicPlatform.YouTube,
-						stream: ytdl(`https://youtube.com/watch?v=${videoInfo2.id}`, {
-							filter: 'audioonly'
-						}),
+						getStream: () =>
+							ytdl(`https://youtube.com/watch?v=${videoInfo2.id}`, {
+								filter: 'audioonly'
+							}),
 						duration: null,
 						extras: [
 							{

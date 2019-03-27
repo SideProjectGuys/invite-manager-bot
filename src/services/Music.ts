@@ -203,9 +203,11 @@ class MusicConnection {
 						throw new Error(err.message);
 					}
 
-					this.doneCallback = () => {
+					this.doneCallback = async () => {
+						const stream = await next.getStream();
+
 						this.musicQueueCache.current = next;
-						this.connection.play(next.stream, {
+						this.connection.play(stream, {
 							inlineVolume: true
 						});
 						this.updateNowPlayingMessage();
@@ -222,12 +224,14 @@ class MusicConnection {
 		}
 	}
 
-	public seek(time: number) {
+	public async seek(time: number) {
 		this.doPlayNext = false;
 
 		const current = this.musicQueueCache.current;
+		const stream = await current.getStream();
+
 		this.connection.stopPlaying();
-		this.connection.play(current.stream, {
+		this.connection.play(stream, {
 			inlineVolume: true,
 			inputArgs: [`-ss`, `${time}`]
 		});

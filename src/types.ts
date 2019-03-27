@@ -1,4 +1,5 @@
 import { VoiceChannel, VoiceConnection } from 'eris';
+import { Readable } from 'stream';
 
 export interface BasicUser {
 	id: string;
@@ -165,11 +166,11 @@ export interface MusicQueue {
 export interface MusicQueueItem {
 	title: string;
 	platform: MusicPlatform;
-	stream: string;
 	duration: number | null;
 	user: BasicUser;
 	imageURL: string;
 	extras: { name: string; value: string; inline?: boolean }[];
+	getStream: () => Promise<string | Readable>;
 }
 
 export enum MusicPlatform {
