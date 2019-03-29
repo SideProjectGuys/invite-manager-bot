@@ -1,3 +1,9 @@
+export enum BotType {
+	regular = 'regular',
+	pro = 'pro',
+	custom = 'custom'
+}
+
 export interface BasicUser {
 	id: string;
 	createdAt: number;
