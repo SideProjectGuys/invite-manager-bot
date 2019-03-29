@@ -10,7 +10,7 @@ import {
 	premiumSubscriptions,
 	sequelize
 } from '../../sequelize';
-import { BotCommand, CommandGroup, Permissions } from '../../types';
+import { BotCommand, BotType, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
 enum Action {
@@ -144,7 +144,9 @@ export default class extends Command {
 			if (action === Action.Activate) {
 				embed.title = t('cmd.premium.activate.title');
 
-				if (!guildId) {
+				if (this.client.type === BotType.custom) {
+					embed.description = t('cmd.premium.activate.customBot');
+				} else if (!guildId) {
 					embed.description = t('cmd.premium.activate.noGuild');
 				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
 					embed.description = t('cmd.premium.premium.adminOnly');
@@ -178,7 +180,9 @@ export default class extends Command {
 			} else if (action === Action.Deactivate) {
 				embed.title = t('cmd.premium.deactivate.title');
 
-				if (!guildId) {
+				if (this.client.type === BotType.custom) {
+					embed.description = t('cmd.premium.deactivate.customBot');
+				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
 				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
 					embed.description = t('cmd.premium.deactivate.adminOnly');
@@ -219,7 +223,8 @@ export default class extends Command {
 					const day = moment(res.data.created_at).date();
 					const validUntil = moment()
 						.add(1, 'month')
-						.date(day);
+						.date(day)
+						.add(1, 'day');
 
 					if (sub) {
 						sub.validUntil = validUntil.toDate();
@@ -227,7 +232,7 @@ export default class extends Command {
 					} else {
 						await premiumSubscriptions.create({
 							id: null,
-							amount: null,
+							amount: res.data.amount_cents / 100,
 							maxGuilds: 5,
 							isFreeTier: false,
 							memberId: userId,
