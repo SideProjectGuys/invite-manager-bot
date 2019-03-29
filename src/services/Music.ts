@@ -136,7 +136,8 @@ class MusicConnection {
 		this.nowPlayingMessage = message;
 	}
 
-	private speakTimeout: NodeJS.Timer;
+	private startSpeakingTimeout: NodeJS.Timer;
+	private stopSpeakingTimeout: NodeJS.Timer;
 	public async connect(channel: VoiceChannel) {
 		if (this.connection) {
 			this.switchChannel(channel);
@@ -146,13 +147,16 @@ class MusicConnection {
 			this.connection.on('error', error => console.error(error));
 			this.connection.on('speakingStart', userId => {
 				if (this.speaking.size === 0) {
-					if (this.speakTimeout) {
-						clearTimeout(this.speakTimeout);
-						this.speakTimeout = null;
+					if (this.stopSpeakingTimeout) {
+						clearTimeout(this.stopSpeakingTimeout);
+						this.stopSpeakingTimeout = null;
 					} else {
 						this.cancelFadeVolume();
-						this.connection.setVolume(0.2 * this.volume);
-						// this.fadeVolumeTo(0.2 * this.volume);
+						const func = () => {
+							this.connection.setVolume(0.2 * this.volume);
+							this.startSpeakingTimeout = null;
+						};
+						this.startSpeakingTimeout = setTimeout(func, 500);
 					}
 				}
 				this.speaking.add(userId);
@@ -160,11 +164,15 @@ class MusicConnection {
 			this.connection.on('speakingStop', userId => {
 				this.speaking.delete(userId);
 				if (this.speaking.size === 0) {
+					if (this.startSpeakingTimeout) {
+						clearTimeout(this.startSpeakingTimeout);
+						this.startSpeakingTimeout = null;
+					}
 					const func = () => {
-						this.speakTimeout = null;
+						this.stopSpeakingTimeout = null;
 						this.fadeVolumeTo(this.volume);
 					};
-					this.speakTimeout = setTimeout(func, 1000);
+					this.stopSpeakingTimeout = setTimeout(func, 1000);
 				}
 			});
 			this.connection.on('end', () => {
@@ -200,7 +208,9 @@ class MusicConnection {
 				},
 				(err, data) => {
 					if (err) {
-						throw new Error(err.message);
+						console.error(err);
+						this.doneCallback();
+						return;
 					}
 
 					this.doneCallback = async () => {

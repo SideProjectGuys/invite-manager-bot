@@ -250,7 +250,10 @@ export enum SettingsKey {
 	autoModEmojisEnabled = 'autoModEmojisEnabled',
 	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis',
 
-	autoModHoistEnabled = 'autoModHoistEnabled'
+	autoModHoistEnabled = 'autoModHoistEnabled',
+
+	announceNextSong = 'announceNextSong',
+	announcementVoice = 'announcementVoice'
 }
 
 export enum Lang {
@@ -280,6 +283,17 @@ export enum LeaderboardStyle {
 export enum RankAssignmentStyle {
 	all = 'all',
 	highest = 'highest'
+}
+
+export enum AnnouncementVoice {
+	Joanna = 'Joanna',
+	Salli = 'Salli',
+	Kendra = 'Kendra',
+	Kimberly = 'Kimberly',
+	Ivy = 'Ivy',
+	Matthew = 'Matthew',
+	Justin = 'Justin',
+	Joey = 'Joey'
 }
 
 export interface SettingAttributes extends BaseAttributes {

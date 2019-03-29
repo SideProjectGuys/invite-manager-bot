@@ -1,6 +1,7 @@
 import { Channel, Role } from 'eris';
 
 import {
+	AnnouncementVoice,
 	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
@@ -21,7 +22,8 @@ export type InternalSettingsTypes =
 	| 'Role[]'
 	| 'Enum<LeaderboardStyle>'
 	| 'Enum<RankAssignmentStyle>'
-	| 'Enum<Lang>';
+	| 'Enum<Lang>'
+	| 'Enum<AnnouncementVoice>';
 
 export interface SettingsInfo {
 	type: InternalSettingsTypes;
@@ -49,7 +51,8 @@ export enum SettingsGroup {
 	duplicate = 'duplicate',
 	spam = 'spam',
 	mentions = 'mentions',
-	emojis = 'emojis'
+	emojis = 'emojis',
+	music = 'music'
 }
 
 // ------------------------------------
@@ -137,6 +140,9 @@ export type SettingsObject = {
 	autoModEmojisMaxNumberOfEmojis: number;
 
 	autoModHoistEnabled: boolean;
+
+	announceNextSong: boolean;
+	announcementVoice: AnnouncementVoice;
 };
 
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
@@ -513,6 +519,17 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		type: 'Boolean',
 		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: true
+	},
+
+	announceNextSong: {
+		type: 'Boolean',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: true
+	},
+	announcementVoice: {
+		type: 'Enum<AnnouncementVoice>',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 'Joanna'
 	}
 };
 
