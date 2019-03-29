@@ -27,6 +27,7 @@ import { ModerationService } from './services/Moderation';
 import { MusicService } from './services/Music';
 import { RabbitMqService } from './services/RabbitMq';
 import { SchedulerService } from './services/Scheduler';
+import { TrackingService } from './services/Tracking';
 import { ShardCommand } from './types';
 
 const config = require('../config.json');
@@ -88,6 +89,7 @@ export class IMClient extends Client {
 	public captcha: CaptchaService;
 	public invs: InvitesService;
 	public music: MusicService;
+	public tracking: TrackingService;
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
@@ -161,6 +163,7 @@ export class IMClient extends Client {
 		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
+		this.tracking = new TrackingService(this);
 
 		this.disabledGuilds = new Set();
 
@@ -187,7 +190,7 @@ export class IMClient extends Client {
 		// Init all caches
 		await Promise.all(Object.values(this.cache).map(c => c.init()));
 
-		// Other services
+		// Sservices
 		await this.rabbitmq.init();
 		await this.cmds.init();
 

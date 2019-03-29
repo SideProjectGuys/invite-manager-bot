@@ -129,15 +129,10 @@ export enum ModerationCommand {
 	purge = 'purge'
 }
 
-export interface RabbitMqMember {
-	id: string;
-	nick?: string;
-	user: {
-		id: string;
-		avatarUrl?: string;
-		createdAt: number;
-		bot: boolean;
-		discriminator: string;
-		username: string;
-	};
+export enum ChannelType {
+	GUILD_TEXT = 0,
+	DM = 1,
+	GUILD_VOICE = 2,
+	GROUP_DM = 3,
+	GUILD_CATEGORY = 4
 }

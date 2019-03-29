@@ -6,11 +6,10 @@ import { IMClient } from '../client';
 import {
 	channels,
 	guilds,
+	InviteCodeAttributes,
 	inviteCodes,
-	JoinAttributes,
 	JoinInvalidatedReason,
 	joins,
-	LeaveAttributes,
 	leaves,
 	members,
 	ranks,
@@ -21,13 +20,13 @@ import {
 	SettingsKey
 } from '../sequelize';
 import { defaultSettings, toDbValue } from '../settings';
-import { RabbitMqMember } from '../types';
+import { ChannelType } from '../types';
 import { deconstruct } from '../util';
 
 const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
 
-export class Tracking {
+export class TrackingService {
 	private client: IMClient;
 
 	public readyGuilds: number = 0;
@@ -61,7 +60,7 @@ export class Tracking {
 				icon: g.iconURL,
 				memberCount: g.memberCount,
 				deletedAt: null,
-				banReason: null
+				banReason: undefined
 			})),
 			{
 				updateOnDuplicate: [
@@ -75,12 +74,10 @@ export class Tracking {
 		);
 
 		// Fetch all invites from DB
-		const allCodes = await inviteCodes.findAll({
-			where: {
-				guildId: allGuilds.map(g => g.id)
-			},
-			raw: true
-		});
+		const allCodes: InviteCodeAttributes[] = await sequelize.query(
+			`SELECT * FROM inviteCode WHERE ${this.client.getGuildsFilter()}`,
+			{ type: sequelize.QueryTypes.SELECT, raw: true }
+		);
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
@@ -209,9 +206,10 @@ export class Tracking {
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
 		console.log(
 			'EVENT(guildMemberAdd):',
+			guild.id,
 			guild.name,
-			member.user.username,
-			member.user.discriminator
+			member.id,
+			member.username + '#' + member.discriminator
 		);
 
 		// Ignore disabled guilds
@@ -223,7 +221,7 @@ export class Tracking {
 			// Check if it's our premium bot
 			if (member.user.id === this.client.config.proBotId) {
 				console.log(
-					`DISABLING TRACKER FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`
+					`DISABLING BOT FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`
 				);
 				this.client.disabledGuilds.add(guild.id);
 			}
@@ -316,7 +314,7 @@ export class Tracking {
 
 		const newMembers = newAndUsedCodes
 			.map(inv => inv.inviter)
-			.filter(inviter => !!inviter)
+			.filter(inv => !!inv)
 			.concat(member.user) // Add invitee
 			.map(m => ({
 				id: m.id,
@@ -371,6 +369,7 @@ export class Tracking {
 			updateOnDuplicate: ['uses', 'updatedAt']
 		});
 
+		// Insert the join
 		const join = await joins.create({
 			id: null,
 			exactMatchCode,
@@ -382,24 +381,6 @@ export class Tracking {
 			cleared: false
 		});
 
-		this._onGuildMemberAdd(
-			guild,
-			join,
-			member,
-			exactMatchCode
-				? newAndUsedCodes.find(c => c.code === exactMatchCode)
-				: null
-		);
-	}
-
-	private async _onGuildMemberAdd(
-		guild: Guild,
-		join: JoinAttributes,
-		member: RabbitMqMember,
-		invite?: Invite
-	): Promise<void> {
-		console.log(member.id + ' joined ' + guild.id);
-
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
 		const lang = sets.lang;
@@ -408,6 +389,7 @@ export class Tracking {
 		const joinChannel = joinChannelId
 			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
+
 		// Check if it's a valid channel
 		if (joinChannelId && !joinChannel) {
 			console.error(
@@ -437,6 +419,8 @@ export class Tracking {
 				}
 			);
 		}
+
+		const invite = newAndUsedCodes.find(c => c.code === exactMatchCode);
 
 		// Exit if we can't find the invite code used
 		if (!invite) {
@@ -477,18 +461,12 @@ export class Tracking {
 		);
 
 		// Add any roles for this invite code
-		let mem = guild.members.get(member.id);
-		if (!mem) {
-			mem = await guild.getRESTMember(member.id);
-		}
-		if (mem) {
-			const invCodeSettings = await this.client.cache.inviteCodes.getOne(
-				guild.id,
-				join.exactMatchCode
-			);
-			if (invCodeSettings && invCodeSettings.roles) {
-				invCodeSettings.roles.forEach(r => mem.addRole(r));
-			}
+		const invCodeSettings = await this.client.cache.inviteCodes.getOne(
+			guild.id,
+			join.exactMatchCode
+		);
+		if (invCodeSettings && invCodeSettings.roles) {
+			invCodeSettings.roles.forEach(r => member.addRole(r));
 		}
 
 		let inviter = guild.members.get(invite.inviter.id);
@@ -597,36 +575,6 @@ export class Tracking {
 				updateOnDuplicate: []
 			}
 		))[0];
-
-		this._onGuildMemberRemove(
-			guild,
-			{
-				id: member.id,
-				user: {
-					id: member.user.id,
-					username: member.user.username,
-					discriminator: member.user.discriminator,
-					bot: member.user.bot,
-					createdAt: member.user.createdAt,
-					avatarUrl: member.user.avatarURL
-				}
-			},
-			leave,
-			join
-		);
-	}
-
-	private async _onGuildMemberRemove(
-		guild: Guild,
-		member: RabbitMqMember,
-		leave: LeaveAttributes,
-		join: JoinAttributes
-	) {
-		if (member.user.bot) {
-			return;
-		}
-
-		console.log(member.id + ' left ' + guild.id);
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
