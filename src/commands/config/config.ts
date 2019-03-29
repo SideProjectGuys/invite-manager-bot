@@ -11,6 +11,7 @@ import {
 import { beautify, canClear, settingsInfo } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
+import moment = require('moment');
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -206,32 +207,20 @@ export default class extends Command {
 			const preview = await this.client.msg.fillJoinLeaveTemplate(
 				value,
 				guild,
+				member,
 				{
-					id: member.id,
-					nick: member.nick,
-					user: {
-						id: user.id,
-						avatarUrl: user.avatarURL,
-						createdAt: user.createdAt,
-						bot: user.bot,
-						discriminator: user.discriminator,
-						username: user.username
+					invite: {
+						code: 'tEsTcOdE',
+						channel: message.channel as TextChannel
+					},
+					inviter: me,
+					invites: {
+						total: Math.round(Math.random() * 1000),
+						regular: Math.round(Math.random() * 1000),
+						custom: Math.round(Math.random() * 1000),
+						fake: Math.round(Math.random() * 1000),
+						leave: Math.round(Math.random() * 1000)
 					}
-				},
-				member.joinedAt,
-				'tEsTcOdE',
-				message.channel.id,
-				(message.channel as any).name,
-				me.id,
-				me.nick,
-				me.user.discriminator,
-				me,
-				{
-					total: Math.round(Math.random() * 1000),
-					regular: Math.round(Math.random() * 1000),
-					custom: Math.round(Math.random() * 1000),
-					fake: Math.round(Math.random() * 1000),
-					leave: Math.round(Math.random() * 1000)
 				}
 			);
 

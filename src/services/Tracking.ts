@@ -23,6 +23,8 @@ import { defaultSettings, toDbValue } from '../settings';
 import { ChannelType } from '../types';
 import { deconstruct } from '../util';
 
+import { BasicInviter } from './Messaging';
+
 const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
 
@@ -40,42 +42,19 @@ export class TrackingService {
 	public constructor(client: IMClient) {
 		this.client = client;
 
-		client.on('ready', this.onReady.bind(this));
-		client.on('guildCreate', this.onGuildCreate.bind(this));
-		client.on('guildDelete', this.onGuildDelete.bind(this));
 		client.on('guildRoleCreate', this.onGuildRoleCreate.bind(this));
 		client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
-	private async onReady() {
+	public async init() {
 		const allGuilds = this.client.guilds;
 
-		// Insert guilds into db
-		guilds.bulkCreate(
-			allGuilds.map(g => ({
-				id: g.id,
-				name: g.name,
-				icon: g.iconURL,
-				memberCount: g.memberCount,
-				deletedAt: null,
-				banReason: undefined
-			})),
-			{
-				updateOnDuplicate: [
-					'name',
-					'icon',
-					'memberCount',
-					'updatedAt',
-					'deletedAt'
-				]
-			}
-		);
-
 		// Fetch all invites from DB
+		const where = this.client.getGuildsFilter('inviteCodes.guildId');
 		const allCodes: InviteCodeAttributes[] = await sequelize.query(
-			`SELECT * FROM inviteCode WHERE ${this.client.getGuildsFilter()}`,
+			`SELECT * FROM inviteCodes WHERE ${where}`,
 			{ type: sequelize.QueryTypes.SELECT, raw: true }
 		);
 
@@ -99,67 +78,21 @@ export class TrackingService {
 		allGuilds.forEach(async guild => {
 			const func = async () => {
 				// Filter any guilds that have the pro tracker
-				if (guild.members.has(this.client.config.proBotId)) {
-					console.log(
-						`DISABLING TRACKER FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`
-					);
-					this.client.disabledGuilds.add(guild.id);
+				if (this.client.disabledGuilds.has(guild.id)) {
 					return;
 				}
 
-				try {
-					// Insert data into db
-					await this.insertGuildData(guild);
+				// Insert data into db
+				await this.insertGuildData(guild);
 
-					console.log(
-						'EVENT(clientReady): Updated invite count for ' + guild.name
-					);
-				} catch (e) {
-					console.log(
-						`ERROR in EVENT(clientReady):${guild.id},${guild.name}`,
-						e
-					);
-				}
+				console.log(
+					'EVENT(clientReady): Updated invite count for ' + guild.name
+				);
 
 				this.readyGuilds++;
 			};
 			setTimeout(func, i * GUILD_START_INTERVAL);
 			i++;
-		});
-	}
-
-	private async onGuildCreate(guild: Guild) {
-		await guilds.insertOrUpdate({
-			id: guild.id,
-			name: guild.name,
-			icon: guild.iconURL,
-			memberCount: guild.memberCount,
-			deletedAt: null,
-			banReason: null
-		});
-
-		try {
-			// Insert data into db
-			await this.insertGuildData(guild, true);
-
-			console.log('EVENT(guildCreate):Updated invite count for ' + guild.name);
-		} catch (e) {
-			console.log(`ERROR in EVENT(guildCreate):${guild.id},${guild.name}`, e);
-		}
-	}
-
-	private async onGuildDelete(guild: Guild) {
-		// If we're disabled it means the pro tracker is in that guild,
-		// so don't delete the guild
-		if (this.client.disabledGuilds.has(guild.id)) {
-			return;
-		}
-
-		// Remove the guild (only sets the 'deletedAt' timestamp)
-		await guilds.destroy({
-			where: {
-				id: guild.id
-			}
 		});
 	}
 
@@ -493,7 +426,6 @@ export class TrackingService {
 				joinMessageFormat,
 				guild,
 				member,
-				join,
 				{
 					invite,
 					inviter,
@@ -626,6 +558,21 @@ export class TrackingService {
 		const inviterName = jn['exactMatch.inviter.name'];
 		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
 
+		let inviter: BasicInviter = guild.members.get(inviterId);
+		if (!inviter) {
+			inviter = await guild.getRESTMember(inviter.id);
+		}
+		if (!inviter) {
+			inviter = {
+				id: inviterId,
+				username: inviterName,
+				discriminator: inviterDiscriminator,
+				user: {
+					avatarURL: null
+				}
+			};
+		}
+
 		// Auto remove leaves if enabled (and if we know the inviter)
 		if (inviterId && sets.autoSubtractLeaves) {
 			const threshold = Number(sets.autoSubtractLeaveThreshold);
@@ -650,7 +597,6 @@ export class TrackingService {
 				leaveMessageFormat,
 				guild,
 				member,
-				join,
 				{
 					invite: {
 						code: inviteCode,
@@ -659,11 +605,7 @@ export class TrackingService {
 							name: inviteChannelName
 						}
 					},
-					inviter: {
-						id: inviterId,
-						username: inviterName,
-						discriminator: inviterDiscriminator
-					}
+					inviter
 				}
 			);
 
@@ -673,7 +615,7 @@ export class TrackingService {
 		}
 	}
 
-	private async insertGuildData(guild: Guild, isNew: boolean = false) {
+	public async insertGuildData(guild: Guild, isNew: boolean = false) {
 		// Get the invites
 		const invs = await guild.getInvites();
 

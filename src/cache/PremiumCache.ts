@@ -8,7 +8,7 @@ import { BotType } from '../types';
 import { GuildCache } from './GuildCache';
 
 export class PremiumCache extends GuildCache<boolean> {
-	protected initOne(guildId: string): boolean {
+	protected initOne(guildId: string) {
 		return false;
 	}
 

@@ -188,9 +188,26 @@ export class IMClient extends Client {
 		// Init all caches
 		await Promise.all(Object.values(this.cache).map(c => c.init()));
 
-		// Sservices
-		await this.rabbitmq.init();
-		await this.cmds.init();
+		// Insert guilds into db
+		await guilds.bulkCreate(
+			this.guilds.map(g => ({
+				id: g.id,
+				name: g.name,
+				icon: g.iconURL,
+				memberCount: g.memberCount,
+				deletedAt: null,
+				banReason: undefined
+			})),
+			{
+				updateOnDuplicate: [
+					'name',
+					'icon',
+					'memberCount',
+					'updatedAt',
+					'deletedAt'
+				]
+			}
+		);
 
 		const gs: GuildInstance[] = await sequelize.query(
 			`SELECT * FROM guilds WHERE banReason IS NOT NULL AND ${this.getGuildsFilter()}`,
@@ -254,6 +271,11 @@ export class IMClient extends Client {
 			}
 		});
 
+		// Services
+		await this.rabbitmq.init();
+		await this.cmds.init();
+		await this.tracking.init();
+
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
 			this.dbl = new DBL(this.config.bot.dblToken, this);
@@ -263,16 +285,25 @@ export class IMClient extends Client {
 		this.activityInterval = setInterval(() => this.setActivity(), 30000);
 	}
 
-	public getGuildsFilter() {
+	public getGuildsFilter(columnName: string = 'guilds.id') {
 		return (
-			`(CONVERT(SUBSTRING(guilds.id, CHAR_LENGTH(guilds.id) - 22, ` +
-			`CHAR_LENGTH(guilds.id)), UNSIGNED INTEGER) % ` +
+			`(CONVERT(SUBSTRING(${columnName}, CHAR_LENGTH(${columnName}) - 22, ` +
+			`CHAR_LENGTH(${columnName})), UNSIGNED INTEGER) % ` +
 			`${this.shardCount} = ${this.shardId - 1})`
 		);
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
+
+		await guilds.insertOrUpdate({
+			id: guild.id,
+			name: guild.name,
+			icon: guild.iconURL,
+			memberCount: guild.memberCount,
+			deletedAt: undefined,
+			banReason: undefined
+		});
 
 		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
 		if (dbGuild.banReason !== null) {
@@ -288,6 +319,9 @@ export class IMClient extends Client {
 			await guild.leave();
 			return;
 		}
+
+		// Insert tracking data
+		await this.tracking.insertGuildData(guild, true);
 
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail

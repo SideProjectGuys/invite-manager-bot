@@ -4,6 +4,7 @@ import {
 	EmbedOptions,
 	Emoji,
 	Guild,
+	Member,
 	Message,
 	TextableChannel,
 	User
@@ -12,8 +13,8 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../client';
-import { JoinAttributes, joins } from '../sequelize';
-import { PromptResult, RabbitMqMember } from '../types';
+import { joins } from '../sequelize';
+import { PromptResult } from '../types';
 
 import { InviteCounts } from './Invites';
 
@@ -62,20 +63,23 @@ export type ShowPaginatedFunc = (
 	render: (page: number, maxPage: number) => Embed
 ) => Promise<void>;
 
-interface BasicInvite {
+export interface BasicInvite {
 	code: string;
 	channel: {
 		id: string;
 		name: string;
 	};
 }
-interface BasicInviter {
+export interface BasicInviter {
 	id: string;
 	username: string;
 	discriminator: string;
 	nick?: string;
+	user: {
+		avatarURL: string;
+	};
 }
-interface JoinLeaveTemplateData {
+export interface JoinLeaveTemplateData {
 	invite: BasicInvite;
 	inviter: BasicInviter;
 	invites?: InviteCounts;
@@ -244,22 +248,30 @@ export class MessagingService {
 	public async fillJoinLeaveTemplate(
 		template: any,
 		guild: Guild,
-		member: RabbitMqMember,
-		join: JoinAttributes,
+		member: Member,
 		{ invite, inviter, invites }: JoinLeaveTemplateData
 	): Promise<string | Embed> {
 		// Override the inviter name with the display name, if the member is still here
 		const inviterName = inviter.nick ? inviter.nick : inviter.username;
 
-		// Total invites is only zero if it's set by default value
-		if (
-			(!invites && template.indexOf('{numInvites}') >= 0) ||
-			template.indexOf('{numRegularInvites}') >= 0 ||
-			template.indexOf('{numBonusInvites}') >= 0 ||
-			template.indexOf('{numFakeInvites}') >= 0 ||
-			template.indexOf('{numLeaveInvites}') >= 0
-		) {
-			invites = await this.client.invs.getInviteCounts(guild.id, inviter.id);
+		if (!invites) {
+			if (
+				template.indexOf('{numInvites}') >= 0 ||
+				template.indexOf('{numRegularInvites}') >= 0 ||
+				template.indexOf('{numBonusInvites}') >= 0 ||
+				template.indexOf('{numFakeInvites}') >= 0 ||
+				template.indexOf('{numLeaveInvites}') >= 0
+			) {
+				invites = await this.client.invs.getInviteCounts(guild.id, inviter.id);
+			} else {
+				invites = {
+					custom: 0,
+					fake: 0,
+					leave: 0,
+					regular: 0,
+					total: 0
+				};
+			}
 		}
 
 		let numJoins = 0;
@@ -312,7 +324,7 @@ export class MessagingService {
 			inviterName.length + 1
 		);
 
-		const joinedAt = moment(join.createdAt);
+		const joinedAt = moment(member.joinedAt);
 		const createdAt = moment(member.user.createdAt);
 
 		return this.fillTemplate(
@@ -324,7 +336,7 @@ export class MessagingService {
 				memberName: memberName,
 				memberFullName: memberFullName,
 				memberMention: `<@${member.id}>`,
-				memberImage: member.user.avatarUrl,
+				memberImage: member.user.avatarURL,
 				numJoins: `${numJoins}`,
 				inviterId: inviter.id,
 				inviterName: invName,

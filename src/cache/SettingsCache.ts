@@ -9,7 +9,7 @@ import {
 import { GuildCache } from './GuildCache';
 
 export class SettingsCache extends GuildCache<SettingsObject> {
-	protected initOne(guildId: string): SettingsObject {
+	protected initOne(guildId: string) {
 		return { ...defaultSettings };
 	}
 
