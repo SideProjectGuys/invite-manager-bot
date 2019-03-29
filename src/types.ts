@@ -134,7 +134,7 @@ export interface RabbitMqMember {
 	nick?: string;
 	user: {
 		id: string;
-		avatarUrl: string | null;
+		avatarUrl?: string;
 		createdAt: number;
 		bot: boolean;
 		discriminator: string;
