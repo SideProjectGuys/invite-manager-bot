@@ -11,7 +11,6 @@ import {
 import { beautify, canClear, settingsInfo } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
-import moment = require('moment');
 
 export default class extends Command {
 	public constructor(client: IMClient) {
