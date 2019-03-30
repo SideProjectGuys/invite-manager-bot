@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 import { Cache } from './Cache';
 
 export abstract class GuildCache<CachedObject> extends Cache<CachedObject> {

@@ -1,4 +1,4 @@
-import { rolePermissions, RolePermissionsInstance, roles } from '../sequelize';
+import { rolePermissions, roles } from '../sequelize';
 import { BotCommand, ModerationCommand } from '../types';
 
 import { GuildCache } from './GuildCache';

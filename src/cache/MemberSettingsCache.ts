@@ -1,9 +1,4 @@
-import {
-	memberSettings,
-	MemberSettingsInstance,
-	MemberSettingsKey,
-	sequelize
-} from '../sequelize';
+import { memberSettings, MemberSettingsKey } from '../sequelize';
 import {
 	fromDbValue,
 	memberDefaultSettings,
