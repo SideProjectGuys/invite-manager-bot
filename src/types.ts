@@ -1,4 +1,3 @@
-import { VoiceChannel, VoiceConnection } from 'eris';
 import { Readable } from 'stream';
 
 export interface BasicUser {
@@ -165,6 +164,7 @@ export interface MusicQueue {
 
 export interface MusicQueueItem {
 	title: string;
+	link?: string;
 	platform: MusicPlatform;
 	duration: number | null;
 	user: BasicUser;

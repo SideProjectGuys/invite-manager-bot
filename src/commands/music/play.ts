@@ -94,11 +94,15 @@ export default class extends Command {
 					title: videoInfo.player_response.videoDetails.title,
 					imageURL: videoInfo.thumbnail_url,
 					user: message.author,
+					link,
 					platform,
 					getStream: () => ytdl(link, { filter: 'audioonly' }),
 					duration: Number(videoInfo.length_seconds),
 					extras: [
-						{ name: 'Duration', value: `${videoInfo.length_seconds} seconds` },
+						{
+							name: 'Duration',
+							value: this.client.music.formatTime(videoInfo.length_seconds)
+						},
 						{ name: 'Channel', value: videoInfo.author.name }
 					]
 				};
@@ -125,11 +129,15 @@ export default class extends Command {
 					title: scData.title,
 					imageURL: scData.artwork_url,
 					user: message.author,
+					link,
 					platform,
 					getStream: () => redir.request.res.responseUrl,
 					duration: scData.duration,
 					extras: [
-						{ name: 'Duration', value: `${scData.duration / 1000} seconds` },
+						{
+							name: 'Duration',
+							value: this.client.music.formatTime(scData.duration / 1000)
+						},
 						{ name: 'Artist', value: scData.user.username }
 					]
 				};
@@ -155,6 +163,7 @@ export default class extends Command {
 					title: data.title,
 					imageURL: data.thumbnails.default,
 					user: message.author,
+					link,
 					platform,
 					duration: Number(data.duration),
 					getStream: () => data.urls.audio,
@@ -202,20 +211,27 @@ export default class extends Command {
 				const { items } = await this.client.music.searchYoutube(link, 1);
 				if (items.length > 0) {
 					const videoInfo2 = items[0];
+					const dur = this.client.music.parseYoutubeDuration(
+						videoInfo2.contentDetails.duration
+					);
+
+					const ytLink = `https://youtube.com/watch?v=${videoInfo2.id}`;
+
 					item = {
 						title: videoInfo2.snippet.title,
 						imageURL: videoInfo2.snippet.thumbnails.default.url,
 						user: message.author,
+						link: ytLink,
 						platform: MusicPlatform.YouTube,
 						getStream: () =>
-							ytdl(`https://youtube.com/watch?v=${videoInfo2.id}`, {
+							ytdl(ytLink, {
 								filter: 'audioonly'
 							}),
-						duration: null,
+						duration: dur,
 						extras: [
 							{
 								name: 'Duration',
-								value: `${videoInfo2.contentDetails.duration} seconds`
+								value: this.client.music.formatTime(dur)
 							},
 							{ name: 'Channel', value: videoInfo2.snippet.channelTitle }
 						]

@@ -1,4 +1,4 @@
-import { Embed, Message, TextChannel } from 'eris';
+import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../client';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
@@ -332,6 +332,17 @@ export default class extends Command {
 				c => c.name === BotCommand.subtractLeaves
 			);
 			return async () => await cmd.action(message, [], {}, context);
+		}
+
+		if (key === SettingsKey.announcementVoice) {
+			// Play sample announcement message
+			if (member.voiceState && member.voiceState.channelID) {
+				const channel = guild.channels.get(
+					member.voiceState.channelID
+				) as VoiceChannel;
+				const conn = await this.client.music.getMusicConnection(guild);
+				conn.playAnnouncement(`Hi, my name is ${value}`, channel);
+			}
 		}
 	}
 }

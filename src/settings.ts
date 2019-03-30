@@ -141,6 +141,8 @@ export type SettingsObject = {
 
 	autoModHoistEnabled: boolean;
 
+	musicVolume: number;
+
 	announceNextSong: boolean;
 	announcementVoice: AnnouncementVoice;
 };
@@ -519,6 +521,12 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		type: 'Boolean',
 		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: true
+	},
+
+	musicVolume: {
+		type: 'Number',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 100
 	},
 
 	announceNextSong: {

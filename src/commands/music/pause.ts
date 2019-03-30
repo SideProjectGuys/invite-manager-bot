@@ -26,7 +26,7 @@ export default class extends Command {
 			return;
 		}
 
-		if (conn.isPaused()) {
+		if (conn.isPlaying()) {
 			conn.pause();
 		}
 	}

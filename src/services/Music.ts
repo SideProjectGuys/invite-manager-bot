@@ -31,9 +31,11 @@ interface YoutubeVideoContentDetails {
 }
 
 const VOL_FADE_TIME = 1.5;
+const USELESS_WORDS = [/official.*?video/gi, /original.*?video/gi];
 
 class MusicConnection {
 	private service: MusicService;
+	private guild: Guild;
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
 	private connection: VoiceConnection;
@@ -43,9 +45,18 @@ class MusicConnection {
 	private speaking: Set<string> = new Set();
 	private doneCallback: () => void;
 
-	public constructor(service: MusicService, musicQueueCache: MusicQueue) {
+	public constructor(
+		service: MusicService,
+		guild: Guild,
+		musicQueueCache: MusicQueue
+	) {
 		this.service = service;
+		this.guild = guild;
 		this.musicQueueCache = musicQueueCache;
+	}
+
+	private getSettings() {
+		return this.service.client.cache.settings.get(this.guild.id);
 	}
 
 	public switchChannel(voiceChannel: VoiceChannel) {
@@ -107,7 +118,7 @@ class MusicConnection {
 			}
 		}
 
-		this.musicQueueCache.queue.unshift(this.musicQueueCache.current);
+		this.musicQueueCache.queue.unshift({ ...this.musicQueueCache.current });
 		this.playNext();
 	}
 
@@ -120,12 +131,23 @@ class MusicConnection {
 	public setVolume(volume: number) {
 		if (this.connection) {
 			this.volume = volume;
+			this.connection.setVolume(volume);
+		}
+	}
+
+	public fadeVolume(volume: number) {
+		if (this.connection) {
+			this.volume = volume;
 			this.fadeVolumeTo(volume);
 		}
 	}
 
 	public getNowPlaying() {
 		return this.musicQueueCache.current;
+	}
+
+	public getPlayTime() {
+		return this.connection ? this.connection.current.playTime / 1000 : null;
 	}
 
 	public getQueue() {
@@ -144,6 +166,7 @@ class MusicConnection {
 		} else {
 			this.voiceChannel = channel;
 			this.connection = await channel.join({ inlineVolume: true });
+			this.connection.setVolume(this.volume);
 			this.connection.on('error', error => console.error(error));
 			this.connection.on('speakingStart', userId => {
 				if (this.speaking.size === 0) {
@@ -152,11 +175,7 @@ class MusicConnection {
 						this.stopSpeakingTimeout = null;
 					} else {
 						this.cancelFadeVolume();
-						const func = () => {
-							this.connection.setVolume(0.2 * this.volume);
-							this.startSpeakingTimeout = null;
-						};
-						this.startSpeakingTimeout = setTimeout(func, 500);
+						this.fadeVolumeTo(0.2 * this.volume, 500);
 					}
 				}
 				this.speaking.add(userId);
@@ -191,20 +210,23 @@ class MusicConnection {
 		}
 	}
 
-	private playNext() {
-		const next = this.musicQueueCache.queue.shift();
-		if (next) {
-			if (this.connection.playing) {
-				this.doPlayNext = false;
-				this.connection.stopPlaying();
-			}
+	public async playAnnouncement(message: string, channel?: VoiceChannel) {
+		if (!this.connection || channel) {
+			await this.connect(channel);
+		} else if (this.connection.playing) {
+			this.doPlayNext = false;
+			this.connection.stopPlaying();
+		}
 
+		const sets = await this.getSettings();
+
+		return new Promise(resolve => {
 			this.service.polly.synthesizeSpeech(
 				{
-					Text: 'Now playing: ' + next.title,
+					Text: message,
 					LanguageCode: 'en-US',
 					OutputFormat: 'ogg_vorbis',
-					VoiceId: 'Joanna'
+					VoiceId: sets.announcementVoice
 				},
 				(err, data) => {
 					if (err) {
@@ -214,15 +236,8 @@ class MusicConnection {
 					}
 
 					this.doneCallback = async () => {
-						const stream = await next.getStream();
-
-						this.musicQueueCache.current = next;
-						this.connection.play(stream, {
-							inlineVolume: true
-						});
-						this.updateNowPlayingMessage();
-
 						this.doPlayNext = true;
+						resolve();
 					};
 
 					const bufferStream = new Stream.PassThrough();
@@ -231,32 +246,65 @@ class MusicConnection {
 					this.connection.play(bufferStream);
 				}
 			);
+		});
+	}
+
+	private async playNext() {
+		const next = this.musicQueueCache.queue.shift();
+		if (next) {
+			if (this.connection.playing) {
+				this.doPlayNext = false;
+				this.connection.stopPlaying();
+			}
+
+			let sanitizedTitle = next.title;
+			USELESS_WORDS.forEach(
+				word => (sanitizedTitle = sanitizedTitle.replace(word, ''))
+			);
+
+			await this.playAnnouncement('Playing: ' + sanitizedTitle);
+
+			const stream = await next.getStream();
+
+			this.musicQueueCache.current = next;
+			this.connection.play(stream, {
+				inlineVolume: true
+			});
+			this.updateNowPlayingMessage();
 		}
 	}
 
 	public async seek(time: number) {
 		this.doPlayNext = false;
 
-		const current = this.musicQueueCache.current;
-		const stream = await current.getStream();
+		const current = { ...this.musicQueueCache.current };
+
+		this.doneCallback = async () => {
+			const stream = await current.getStream();
+
+			this.musicQueueCache.current = current;
+			this.connection.play(stream, {
+				inlineVolume: true,
+				inputArgs: [`-ss`, `${time}`]
+			});
+
+			this.doPlayNext = true;
+		};
 
 		this.connection.stopPlaying();
-		this.connection.play(stream, {
-			inlineVolume: true,
-			inputArgs: [`-ss`, `${time}`]
-		});
-		this.musicQueueCache.current = current;
-		this.doPlayNext = true;
 	}
 
 	private fadeTimeouts: NodeJS.Timer[] = [];
-	private fadeVolumeTo(newVolume: number) {
+	private fadeVolumeTo(
+		newVolume: number,
+		fadeDuration: number = VOL_FADE_TIME
+	) {
 		this.cancelFadeVolume();
 
 		const startVol = this.connection.volume;
 		const diff = newVolume - startVol;
-		const step = diff / (VOL_FADE_TIME * 10);
-		for (let i = 0; i < VOL_FADE_TIME * 10; i++) {
+		const step = diff / (fadeDuration * 10);
+		for (let i = 0; i < fadeDuration * 10; i++) {
 			const newVol = Math.max(0, Math.min(startVol + i * step, 2));
 			this.fadeTimeouts.push(
 				setTimeout(() => this.connection.setVolume(newVol), i * 100)
@@ -287,10 +335,11 @@ class MusicConnection {
 }
 
 export class MusicService {
-	private client: IMClient = null;
-	private cache: MusicCache;
-	private musicConnections: Map<string, MusicConnection>;
+	public client: IMClient;
+	public cache: MusicCache;
 	public polly: AWS.Polly;
+
+	private musicConnections: Map<string, MusicConnection>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -306,7 +355,10 @@ export class MusicService {
 	public async getMusicConnection(guild: Guild) {
 		let conn = this.musicConnections.get(guild.id);
 		if (!conn) {
-			conn = new MusicConnection(this, await this.cache.get(guild.id));
+			conn = new MusicConnection(this, guild, await this.cache.get(guild.id));
+			const sets = await this.client.cache.settings.get(guild.id);
+			conn.setVolume(sets.musicVolume);
+
 			this.musicConnections.set(guild.id, conn);
 		}
 		return conn;
@@ -327,10 +379,11 @@ export class MusicService {
 				name: `${item.user.username}#${item.user.discriminator}`,
 				icon_url: item.user.avatarURL
 			},
+			url: item.link,
 			image: { url: item.imageURL },
 			color: 255, // blue
 			title: item.title,
-			fields: item.extras
+			fields: [...item.extras]
 		});
 	}
 
@@ -372,5 +425,69 @@ export class MusicService {
 		);
 
 		return data;
+	}
+
+	public formatTime(timeInSeconds: number) {
+		const h = Math.floor(timeInSeconds / 3600);
+		const m = Math.floor((timeInSeconds - 3600 * h) / 60);
+		const s = Math.floor(timeInSeconds - h * 3600 - m * 60);
+		return (
+			h.toString().padStart(2, '0') +
+			':' +
+			m.toString().padStart(2, '0') +
+			':' +
+			s.toString().padStart(2, '0')
+		);
+	}
+
+	public parseYoutubeDuration(PT: string) {
+		let durationInSec = 0;
+		const matches = PT.match(
+			/P(?:(\d*)Y)?(?:(\d*)M)?(?:(\d*)W)?(?:(\d*)D)?T(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/i
+		);
+		const parts = [
+			{
+				// years
+				pos: 1,
+				multiplier: 86400 * 365
+			},
+			{
+				// months
+				pos: 2,
+				multiplier: 86400 * 30
+			},
+			{
+				// weeks
+				pos: 3,
+				multiplier: 604800
+			},
+			{
+				// days
+				pos: 4,
+				multiplier: 86400
+			},
+			{
+				// hours
+				pos: 5,
+				multiplier: 3600
+			},
+			{
+				// minutes
+				pos: 6,
+				multiplier: 60
+			},
+			{
+				// seconds
+				pos: 7,
+				multiplier: 1
+			}
+		];
+		for (var i = 0; i < parts.length; i++) {
+			if (typeof matches[parts[i].pos] !== 'undefined') {
+				durationInSec +=
+					parseInt(matches[parts[i].pos], 10) * parts[i].multiplier;
+			}
+		}
+		return durationInSec;
 	}
 }

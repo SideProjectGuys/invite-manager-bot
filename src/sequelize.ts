@@ -252,6 +252,8 @@ export enum SettingsKey {
 
 	autoModHoistEnabled = 'autoModHoistEnabled',
 
+	musicVolume = 'musicVolume',
+
 	announceNextSong = 'announceNextSong',
 	announcementVoice = 'announcementVoice'
 }
