@@ -1,10 +1,10 @@
 import { StrikeConfigInstance, strikeConfigs } from '../sequelize';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class StrikesCache extends GuildCache<StrikeConfigInstance[]> {
-	protected initOne(guildId: string): StrikeConfigInstance[] {
-		return [];
+export class StrikesCache extends Cache<StrikeConfigInstance[]> {
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(guildId: string): Promise<StrikeConfigInstance[]> {
