@@ -3,12 +3,12 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { sequelize } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.subtractLeaves,
+			name: InvitesCommand.subtractLeaves,
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			group: CommandGroup.Invites,
 			guildOnly: true,

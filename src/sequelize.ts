@@ -255,7 +255,11 @@ export enum SettingsKey {
 	musicVolume = 'musicVolume',
 
 	announceNextSong = 'announceNextSong',
-	announcementVoice = 'announcementVoice'
+	announcementVoice = 'announcementVoice',
+
+	fadeMusicOnTalk = 'fadeMusicOnTalk',
+	fadeMusicStartDuration = 'fadeMusicStartDuration',
+	fadeMusicEndDelay = 'fadeMusicEndDelay'
 }
 
 export enum Lang {

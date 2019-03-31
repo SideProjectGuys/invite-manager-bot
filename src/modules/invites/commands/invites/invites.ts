@@ -4,12 +4,12 @@ import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { UserResolver } from '../../../../framework/resolvers';
 import { members } from '../../../../sequelize';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.invites,
+			name: InvitesCommand.invites,
 			aliases: ['invite', 'rank'],
 			args: [
 				{

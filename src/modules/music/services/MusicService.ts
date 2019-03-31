@@ -3,11 +3,11 @@ import axios from 'axios';
 import { Guild } from 'eris';
 import { URLSearchParams } from 'url';
 
-import { MusicCache } from '../cache/MusicCache';
 import { IMClient } from '../../../client';
 import { MusicQueueItem } from '../../../types';
-
+import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
+import { MusicPlatformService } from '../models/MusicPlatformService';
 
 interface YoutubeVideo {
 	id: string;
@@ -35,6 +35,8 @@ export class MusicService {
 	public client: IMClient;
 	public cache: MusicCache;
 	public polly: AWS.Polly;
+
+	public musicPlatformService: MusicPlatformService = new MusicPlatformService();
 
 	private musicConnections: Map<string, MusicConnection>;
 

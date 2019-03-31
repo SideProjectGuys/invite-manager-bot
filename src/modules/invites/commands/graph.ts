@@ -6,13 +6,13 @@ import { IMClient } from '../../../client';
 import { Command } from '../../../framework/commands/Command';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { commandUsage, joins, leaves, sequelize } from '../../../sequelize';
-import { BotCommand, ChartType, CommandGroup } from '../../../types';
+import { ChartType, CommandGroup, InvitesCommand } from '../../../types';
 import { Chart } from '../models/Chart';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.graph,
+			name: InvitesCommand.graph,
 			aliases: ['g', 'chart'],
 			args: [
 				{

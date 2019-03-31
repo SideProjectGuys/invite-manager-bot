@@ -8,7 +8,7 @@ import {
 	NumberResolver
 } from '../../../../framework/resolvers';
 import { LeaderboardStyle } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 const usersPerPage = 10;
 const upSymbol = '🔺';
@@ -18,7 +18,7 @@ const neutralSymbol = '🔹';
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.leaderboard,
+			name: InvitesCommand.leaderboard,
 			aliases: ['top'],
 			args: [
 				{

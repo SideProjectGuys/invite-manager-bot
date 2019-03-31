@@ -10,12 +10,12 @@ import {
 	joins,
 	LogAction
 } from '../../../../sequelize';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.restoreInvites,
+			name: InvitesCommand.restoreInvites,
 			aliases: ['restore-invites', 'unclear-invites', 'unclearInvites'],
 			args: [
 				{

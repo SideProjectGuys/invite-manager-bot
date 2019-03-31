@@ -4,12 +4,12 @@ import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { RoleResolver } from '../../../../framework/resolvers';
 import { LogAction, ranks } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.removeRank,
+			name: InvitesCommand.removeRank,
 			aliases: ['remove-rank'],
 			args: [
 				{

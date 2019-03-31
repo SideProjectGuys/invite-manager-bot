@@ -150,6 +150,10 @@ export type SettingsObject = {
 
 	announceNextSong: boolean;
 	announcementVoice: AnnouncementVoice;
+
+	fadeMusicOnTalk: boolean;
+	fadeMusicStartDuration: number;
+	fadeMusicEndDelay: number;
 };
 
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
@@ -543,6 +547,22 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		type: 'Enum<AnnouncementVoice>',
 		grouping: [SettingsGroup.music, SettingsGroup.general],
 		defaultValue: 'Joanna'
+	},
+
+	fadeMusicOnTalk: {
+		type: 'Boolean',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: true
+	},
+	fadeMusicStartDuration: {
+		type: 'Number',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 0.7
+	},
+	fadeMusicEndDelay: {
+		type: 'Number',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 1.0
 	}
 };
 

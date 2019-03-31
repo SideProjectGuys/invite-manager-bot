@@ -2,16 +2,23 @@ import { Guild, Message, VoiceChannel, VoiceConnection } from 'eris';
 import { Stream } from 'stream';
 
 import { AnnouncementVoice } from '../../../sequelize';
+import { SettingsObject } from '../../../settings';
 import { MusicQueue, MusicQueueItem } from '../../../types';
-
 import { MusicService } from '../services/MusicService';
 
-const VOL_FADE_TIME = 1.5;
-const USELESS_WORDS = [/official.*?video/gi, /original.*?video/gi, /video/gi];
+const DEFAULT_VOL_FADE_TIME = 1.5;
+const IGNORED_ANNOUNCEMENT_WORDS = [
+	/official/gi,
+	/original/gi,
+	/video/gi,
+	/song/gi,
+	/[\(\[\{].*?[\)\[\{]/gi
+];
 
 export class MusicConnection {
 	private service: MusicService;
 	private guild: Guild;
+	private settings: SettingsObject;
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
 	private connection: VoiceConnection;
@@ -30,10 +37,10 @@ export class MusicConnection {
 		this.service = service;
 		this.guild = guild;
 		this.musicQueueCache = musicQueueCache;
-	}
 
-	private getSettings() {
-		return this.service.client.cache.settings.get(this.guild.id);
+		this.onSpeakingStart = this.onSpeakingStart.bind(this);
+		this.onSpeakingEnd = this.onSpeakingEnd.bind(this);
+		this.onStreamEnd = this.onStreamEnd.bind(this);
 	}
 
 	public switchChannel(voiceChannel: VoiceChannel) {
@@ -152,14 +159,17 @@ export class MusicConnection {
 		this.nowPlayingMessage = message;
 	}
 
-	private startSpeakingTimeout: NodeJS.Timer;
 	private stopSpeakingTimeout: NodeJS.Timer;
 	public async connect(channel: VoiceChannel) {
 		if (this.connection) {
 			this.switchChannel(channel);
 		} else {
+			this.settings = await this.service.client.cache.settings.get(
+				this.guild.id
+			);
+
 			this.voiceChannel = channel;
-			this.connection = await channel.join({ inlineVolume: true });
+			this.connection = await channel.join({});
 			this.connection.setVolume(this.volume);
 			this.connection.on('error', error => console.error(error));
 			this.connection.on('speakingStart', this.onSpeakingStart);
@@ -168,35 +178,39 @@ export class MusicConnection {
 		}
 	}
 
-	private onSpeakingStart = (userId: string) => {
-		if (this.speaking.size === 0) {
+	private onSpeakingStart(userId: string) {
+		if (this.settings.fadeMusicOnTalk && this.speaking.size === 0) {
 			if (this.stopSpeakingTimeout) {
 				clearTimeout(this.stopSpeakingTimeout);
 				this.stopSpeakingTimeout = null;
 			} else {
 				this.cancelFadeVolume();
-				this.fadeVolumeTo(0.2 * this.volume, 500);
+				this.fadeVolumeTo(
+					0.2 * this.volume,
+					this.settings.fadeMusicStartDuration
+				);
 			}
 		}
-		this.speaking.add(userId);
-	};
 
-	private onSpeakingEnd = (userId: string) => {
+		this.speaking.add(userId);
+	}
+
+	private onSpeakingEnd(userId: string) {
 		this.speaking.delete(userId);
-		if (this.speaking.size === 0) {
-			if (this.startSpeakingTimeout) {
-				clearTimeout(this.startSpeakingTimeout);
-				this.startSpeakingTimeout = null;
-			}
+
+		if (this.settings.fadeMusicOnTalk && this.speaking.size === 0) {
 			const func = () => {
 				this.stopSpeakingTimeout = null;
 				this.fadeVolumeTo(this.volume);
 			};
-			this.stopSpeakingTimeout = setTimeout(func, 1000);
+			this.stopSpeakingTimeout = setTimeout(
+				func,
+				this.settings.fadeMusicEndDelay * 1000
+			);
 		}
-	};
+	}
 
-	private onStreamEnd = () => {
+	private onStreamEnd() {
 		console.log('STREAM END');
 
 		if (this.repeat && this.musicQueueCache.current) {
@@ -213,7 +227,7 @@ export class MusicConnection {
 		if (this.doPlayNext) {
 			this.playNext();
 		}
-	};
+	}
 
 	public async playAnnouncement(
 		voice: AnnouncementVoice,
@@ -267,15 +281,13 @@ export class MusicConnection {
 			console.log(next);
 
 			let sanitizedTitle = next.title;
-			USELESS_WORDS.forEach(
+			IGNORED_ANNOUNCEMENT_WORDS.forEach(
 				word => (sanitizedTitle = sanitizedTitle.replace(word, ''))
 			);
 
-			const sets = await this.getSettings();
-
-			if (sets.announceNextSong) {
+			if (this.settings.announceNextSong) {
 				await this.playAnnouncement(
-					sets.announcementVoice,
+					this.settings.announcementVoice,
 					'Playing: ' + sanitizedTitle
 				);
 			}
@@ -313,7 +325,7 @@ export class MusicConnection {
 	private fadeTimeouts: NodeJS.Timer[] = [];
 	private fadeVolumeTo(
 		newVolume: number,
-		fadeDuration: number = VOL_FADE_TIME
+		fadeDuration: number = DEFAULT_VOL_FADE_TIME
 	) {
 		this.cancelFadeVolume();
 

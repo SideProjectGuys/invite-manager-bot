@@ -9,7 +9,7 @@ import {
 	roles,
 	sequelize
 } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { BotCommand, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -200,7 +200,8 @@ export default class extends Command {
 			cmds.find(c => c.name === BotCommand.inviteCodeConfig) ||
 			cmds.find(c => c.name === BotCommand.memberConfig) ||
 			cmds.find(c => c.name === BotCommand.permissions) ||
-			cmds.find(c => c.name === BotCommand.addRank)
+			cmds.find(c => c.name === InvitesCommand.addRank) ||
+			cmds.find(c => c.name === InvitesCommand.removeRank)
 		) {
 			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}

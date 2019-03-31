@@ -5,6 +5,7 @@ import { SettingsObject } from '../../settings';
 import {
 	BotCommand,
 	CommandGroup,
+	InvitesCommand,
 	ModerationCommand,
 	MusicCommand
 } from '../../types';
@@ -31,7 +32,7 @@ export interface Flag {
 }
 
 export interface CommandOptions {
-	name: BotCommand | ModerationCommand | MusicCommand;
+	name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
 	aliases: string[];
 	args?: Arg[];
 	flags?: Flag[];
@@ -58,7 +59,7 @@ export abstract class Command {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | ModerationCommand | MusicCommand;
+	public name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
 
 	public aliases: string[];
 	public args: Arg[];

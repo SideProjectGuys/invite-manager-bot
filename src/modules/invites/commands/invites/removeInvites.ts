@@ -7,12 +7,12 @@ import {
 	StringResolver,
 	UserResolver
 } from '../../../../framework/resolvers';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.removeInvites,
+			name: InvitesCommand.removeInvites,
 			aliases: ['remove-invites'],
 			args: [
 				{
@@ -44,7 +44,7 @@ export default class extends Command {
 		context: Context
 	): Promise<any> {
 		const cmd = this.client.cmds.commands.find(
-			c => c.name === BotCommand.addInvites
+			c => c.name === InvitesCommand.addInvites
 		);
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}

@@ -10,14 +10,14 @@ import {
 	members,
 	sequelize
 } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 const USERS_PER_PAGE = 20;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.fake,
+			name: InvitesCommand.fake,
 			aliases: ['fakes', 'cheaters', 'cheater', 'invalid'],
 			args: [
 				{

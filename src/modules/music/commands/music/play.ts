@@ -14,9 +14,6 @@ import {
 	MusicPlatform,
 	MusicQueueItem
 } from '../../../../types';
-import { Youtube } from '../../models/platforms/Youtube';
-
-const iheart = require('iheart');
 
 export default class extends Command {
 	public constructor(client: IMClient) {

@@ -1,14 +1,15 @@
 import { Message } from 'eris';
+import ytdl from 'ytdl-core';
 
 import { IMClient } from '../../../../client';
 import { MusicPlatform, MusicQueueItem } from '../../../../types';
 
 import { Platform } from './PlatformInterface';
 
-const ytdl = require('ytdl-core');
-
 export class Youtube implements Platform {
-	public constructor() {}
+	public constructor() {
+		// TODO
+	}
 
 	public isPlatformUrl(url: string): boolean {
 		return url.startsWith('https://youtube.com/');
@@ -34,12 +35,12 @@ export class Youtube implements Platform {
 			user: message.author,
 			link: link,
 			platform: MusicPlatform.YouTube,
-			getStream: () => ytdl(link, { filter: 'audioonly' }),
+			getStream: async () => ytdl(link, { filter: 'audioonly' }),
 			duration: Number(videoInfo.length_seconds),
 			extras: [
 				{
 					name: 'Duration',
-					value: client.music.formatTime(videoInfo.length_seconds)
+					value: client.music.formatTime(Number(videoInfo.length_seconds))
 				},
 				{ name: 'Channel', value: videoInfo.author.name }
 			]

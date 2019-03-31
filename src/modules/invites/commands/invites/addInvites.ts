@@ -8,12 +8,12 @@ import {
 	UserResolver
 } from '../../../../framework/resolvers';
 import { customInvites, LogAction, members } from '../../../../sequelize';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.addInvites,
+			name: InvitesCommand.addInvites,
 			aliases: ['add-invites'],
 			args: [
 				{

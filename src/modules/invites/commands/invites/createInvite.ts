@@ -11,12 +11,12 @@ import {
 	inviteCodes,
 	InviteCodeSettingsKey
 } from '../../../../sequelize';
-import { BotCommand, CommandGroup, Permissions } from '../../../../types';
+import { CommandGroup, InvitesCommand, Permissions } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.createInvite,
+			name: InvitesCommand.createInvite,
 			aliases: ['create-invite'],
 			args: [
 				{

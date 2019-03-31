@@ -8,12 +8,12 @@ import {
 	StringResolver
 } from '../../../../framework/resolvers';
 import { LogAction, ranks, roles } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.addRank,
+			name: InvitesCommand.addRank,
 			aliases: ['add-rank', 'set-rank', 'setRank'],
 			args: [
 				{

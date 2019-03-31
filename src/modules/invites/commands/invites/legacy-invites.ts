@@ -9,7 +9,7 @@ import {
 	members,
 	sequelize
 } from '../../../../sequelize';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 import { InviteCounts } from '../../services/Invites';
 
 enum CustomInvitesGeneratedReason {
@@ -24,7 +24,7 @@ enum CustomInvitesGeneratedReason {
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.legacyInvites,
+			name: InvitesCommand.legacyInvites,
 			aliases: ['legacy-invites'],
 			args: [
 				{

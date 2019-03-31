@@ -9,12 +9,12 @@ import {
 	inviteCodes,
 	members
 } from '../../../../sequelize';
-import { BotCommand, CommandGroup } from '../../../../types';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.inviteCodes,
+			name: InvitesCommand.inviteCodes,
 			aliases: [
 				'inviteCode',
 				'invite-code',

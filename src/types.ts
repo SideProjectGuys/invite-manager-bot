@@ -65,6 +65,7 @@ export enum ChartType {
 
 export enum BotCommand {
 	config = 'config',
+	botConfig = 'botConfig',
 	inviteCodeConfig = 'inviteCodeConfig',
 	memberConfig = 'memberConfig',
 	permissions = 'permissions',
@@ -80,6 +81,17 @@ export enum BotCommand {
 	setup = 'setup',
 	support = 'support',
 
+	export = 'export',
+	premium = 'premium',
+	tryPremium = 'tryPremium',
+
+	makeMentionable = 'makeMentionable',
+	mentionRole = 'mentionRole'
+
+	/*report = 'report',*/
+}
+
+export enum InvitesCommand {
 	createInvite = 'createInvite',
 	addInvites = 'addInvites',
 	clearInvites = 'clearInvites',
@@ -96,20 +108,10 @@ export enum BotCommand {
 	subtractFakes = 'subtractFakes',
 	subtractLeaves = 'subtractLeaves',
 
-	export = 'export',
-	premium = 'premium',
-	tryPremium = 'tryPremium',
-
 	addRank = 'addRank',
 	ranks = 'ranks',
 	removeRank = 'removeRank',
 
-	makeMentionable = 'makeMentionable',
-	mentionRole = 'mentionRole',
-
-	/*report = 'report',*/
-
-	botConfig = 'botConfig',
 	graph = 'graph'
 }
 
@@ -151,7 +153,8 @@ export enum MusicCommand {
 	disconnect = 'disconnect',
 	search = 'search',
 	volume = 'volume',
-	repeat = 'repeat'
+	repeat = 'repeat',
+	mashup = 'mashup'
 }
 
 export interface RabbitMqMember {

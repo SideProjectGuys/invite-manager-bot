@@ -13,7 +13,12 @@ import {
 	SettingsKey
 } from '../../../../sequelize';
 import { beautify, canClear, settingsInfo } from '../../../../settings';
-import { BotCommand, CommandGroup, Permissions } from '../../../../types';
+import {
+	BotCommand,
+	CommandGroup,
+	InvitesCommand,
+	Permissions
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -287,7 +292,7 @@ export default class extends Command {
 			if (value) {
 				// Subtract fake invites from all members
 				const cmd = this.client.cmds.commands.find(
-					c => c.name === BotCommand.subtractFakes
+					c => c.name === InvitesCommand.subtractFakes
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
@@ -310,7 +315,7 @@ export default class extends Command {
 			if (value) {
 				// Subtract leaves from all members
 				const cmd = this.client.cmds.commands.find(
-					c => c.name === BotCommand.subtractLeaves
+					c => c.name === InvitesCommand.subtractLeaves
 				);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
@@ -332,7 +337,7 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
 			const cmd = this.client.cmds.commands.find(
-				c => c.name === BotCommand.subtractLeaves
+				c => c.name === InvitesCommand.subtractLeaves
 			);
 			return async () => await cmd.action(message, [], {}, context);
 		}

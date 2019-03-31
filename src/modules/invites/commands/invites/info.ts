@@ -17,7 +17,7 @@ import {
 	members,
 	sequelize
 } from '../../../../sequelize';
-import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
+import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 const ENTRIES_PER_PAGE = 20;
 
@@ -29,7 +29,7 @@ enum InfoDetails {
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.info,
+			name: InvitesCommand.info,
 			aliases: ['showinfo'],
 			args: [
 				{
