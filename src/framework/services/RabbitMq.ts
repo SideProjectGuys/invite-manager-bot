@@ -290,7 +290,7 @@ export class RabbitMqService {
 
 		const joinMessageFormat = settings.joinMessage;
 		if (joinChannel && joinMessageFormat) {
-			const msg = await this.client.msg.fillJoinLeaveTemplate(
+			const msg = await this.client.invs.fillJoinLeaveTemplate(
 				joinMessageFormat,
 				guild,
 				member,
@@ -400,7 +400,7 @@ export class RabbitMqService {
 
 		const leaveMessageFormat = settings.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
-			const msg = await this.client.msg.fillJoinLeaveTemplate(
+			const msg = await this.client.invs.fillJoinLeaveTemplate(
 				leaveMessageFormat,
 				guild,
 				member,
