@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { BotCommand, CommandGroup } from '../../types';
+import { BotCommand, BotType, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 const config = require('../../../config.json');
@@ -75,9 +75,12 @@ export default class extends Command {
 		// Premium
 		embed.fields.push({
 			name: t('cmd.botInfo.premium.title'),
-			value: isPremium
-				? t('cmd.botInfo.premium.active')
-				: t('cmd.botInfo.premium.none')
+			value:
+				this.client.type === BotType.custom
+					? '**' + t('cmd.botInfo.premium.custom') + '**'
+					: isPremium
+					? t('cmd.botInfo.premium.active')
+					: t('cmd.botInfo.premium.none')
 		});
 
 		// Support discord

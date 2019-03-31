@@ -287,12 +287,18 @@ export class CommandsService {
 		let acc = '';
 		for (let j = 1; j < splits.length; j++) {
 			const split = splits[j];
+			// Skip empty strings
+			if (split.length === 0) {
+				continue;
+			}
 
+			// Check if this is a new quote starting
 			if (!quote && split.startsWith(`"`)) {
 				quote = true;
 				acc = '';
 			}
 
+			// Check if this is a quote ending
 			if (split.endsWith(`"`)) {
 				quote = false;
 				acc += ' ' + split.substring(0, split.length - 1);
@@ -300,6 +306,7 @@ export class CommandsService {
 				continue;
 			}
 
+			// Add to arguments according to quote mode
 			if (quote) {
 				acc += ' ' + split;
 			} else {

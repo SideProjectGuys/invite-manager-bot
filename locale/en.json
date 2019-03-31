@@ -106,7 +106,8 @@
 			"premium": {
 				"title": "Premium",
 				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium."
+				"none": "This server currently **does not** have premium.",
+				"custom": "You are using a custom version of the bot!"
 			}
 		},
 		"check": {
@@ -659,13 +660,15 @@
 				"currentlyActive": "There is already a premium subscription active on this server.",
 				"done": "Premium has been successfully activated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"deactivate": {
 				"title": "Deactivate premium on this server",
 				"done": "Premium has been successfully deactivated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"check": {
 				"title": "Check for a Premium Subscription",

@@ -20,7 +20,7 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		let msg = await message.channel.createMessage('Pong!');
+		const msg = await message.channel.createMessage('Pong!');
 		msg.edit(`Pong! (${(msg.createdAt - message.createdAt).toFixed(0)}ms)`);
 	}
 }

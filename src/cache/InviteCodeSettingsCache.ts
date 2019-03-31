@@ -13,13 +13,13 @@ import {
 	toDbValue
 } from '../settings';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class InviteCodeSettingsCache extends GuildCache<
+export class InviteCodeSettingsCache extends Cache<
 	Map<string, InviteCodeSettingsObject>
 > {
-	public initOne(guilId: string) {
-		return new Map();
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(

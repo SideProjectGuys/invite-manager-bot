@@ -1,15 +1,15 @@
-import { rolePermissions, RolePermissionsInstance, roles } from '../sequelize';
+import { rolePermissions, roles } from '../sequelize';
 import { BotCommand, ModerationCommand } from '../types';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
 type AnyCommand = BotCommand | ModerationCommand;
 
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 
-export class PermissionsCache extends GuildCache<PermissionsObject> {
-	protected initOne() {
-		return {};
+export class PermissionsCache extends Cache<PermissionsObject> {
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {

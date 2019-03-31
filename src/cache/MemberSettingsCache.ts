@@ -1,9 +1,4 @@
-import {
-	memberSettings,
-	MemberSettingsInstance,
-	MemberSettingsKey,
-	sequelize
-} from '../sequelize';
+import { memberSettings, MemberSettingsKey } from '../sequelize';
 import {
 	fromDbValue,
 	memberDefaultSettings,
@@ -11,13 +6,13 @@ import {
 	toDbValue
 } from '../settings';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class MemberSettingsCache extends GuildCache<
+export class MemberSettingsCache extends Cache<
 	Map<string, MemberSettingsObject>
 > {
-	public initOne(guilId: string) {
-		return new Map();
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(
