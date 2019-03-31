@@ -4,14 +4,23 @@ import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
-import { MemberSettingsCache } from './cache/MemberSettingsCache';
-import { MusicCache } from './cache/MusicCache';
-import { PermissionsCache } from './cache/PermissionsCache';
-import { PremiumCache } from './cache/PremiumCache';
-import { PunishmentCache } from './cache/PunishmentsCache';
-import { SettingsCache } from './cache/SettingsCache';
-import { StrikesCache } from './cache/StrikesCache';
+import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
+import { PermissionsCache } from './framework/cache/PermissionsCache';
+import { PremiumCache } from './framework/cache/PremiumCache';
+import { SettingsCache } from './framework/cache/SettingsCache';
+import { CommandsService } from './framework/services/Commands';
+import { DBQueueService } from './framework/services/DBQueue';
+import { MessagingService } from './framework/services/Messaging';
+import { RabbitMqService } from './framework/services/RabbitMq';
+import { SchedulerService } from './framework/services/Scheduler';
+import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
+import { CaptchaService } from './modules/invites/services/Captcha';
+import { InvitesService } from './modules/invites/services/Invites';
+import { PunishmentCache } from './modules/mod/cache/PunishmentsCache';
+import { StrikesCache } from './modules/mod/cache/StrikesCache';
+import { ModerationService } from './modules/mod/services/Moderation';
+import { MusicCache } from './modules/music/cache/MusicCache';
+import { MusicService } from './modules/music/services/MusicService';
 import {
 	botSettings,
 	BotSettingsObject,
@@ -21,15 +30,6 @@ import {
 	LogAction,
 	sequelize
 } from './sequelize';
-import { CaptchaService } from './services/Captcha';
-import { CommandsService } from './services/Commands';
-import { DBQueueService } from './services/DBQueue';
-import { InvitesService } from './services/Invites';
-import { MessagingService } from './services/Messaging';
-import { ModerationService } from './services/Moderation';
-import { MusicService } from './services/Music';
-import { RabbitMqService } from './services/RabbitMq';
-import { SchedulerService } from './services/Scheduler';
 import { botDefaultSettings } from './settings';
 import { BotType, ShardCommand } from './types';
 
@@ -168,6 +168,7 @@ export class IMClient extends Client {
 		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
+		this.music = new MusicService(this);
 
 		this.disabledGuilds = new Set();
 

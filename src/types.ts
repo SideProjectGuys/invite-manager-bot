@@ -1,4 +1,5 @@
 import { Readable } from 'stream';
+
 export enum BotType {
 	regular = 'regular',
 	pro = 'pro',
