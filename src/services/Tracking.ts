@@ -414,18 +414,20 @@ export class TrackingService {
 			inviter = await guild.getRESTMember(invite.inviter.id).catch(() => null);
 		}
 
-		// Promote the inviter if required
-		let me = guild.members.get(this.client.user.id);
-		if (!me) {
-			me = await guild.getRESTMember(this.client.user.id).catch(() => null);
-		}
+		if (inviter) {
+			// Promote the inviter if required
+			let me = guild.members.get(this.client.user.id);
+			if (!me) {
+				me = await guild.getRESTMember(this.client.user.id).catch(() => null);
+			}
 
-		await this.client.invs.promoteIfQualified(
-			guild,
-			inviter,
-			me,
-			invites.total
-		);
+			await this.client.invs.promoteIfQualified(
+				guild,
+				inviter,
+				me,
+				invites.total
+			);
+		}
 
 		const joinMessageFormat = sets.joinMessage;
 		if (joinChannel && joinMessageFormat) {
@@ -435,7 +437,7 @@ export class TrackingService {
 				member,
 				{
 					invite,
-					inviter,
+					inviter: inviter || { user: invite.inviter },
 					invites
 				}
 			);
