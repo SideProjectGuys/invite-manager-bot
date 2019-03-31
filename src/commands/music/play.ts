@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../client';
-import { EnumResolver, StringResolver } from '../../resolvers';
+import { EnumResolver, StringResolver, BooleanResolver } from '../../resolvers';
 import {
 	BotCommand,
 	CommandGroup,
@@ -20,6 +20,7 @@ export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.play,
+			aliases: ['p'],
 			args: [
 				{
 					name: 'link',
@@ -32,9 +33,13 @@ export default class extends Command {
 					name: 'platform',
 					short: 'p',
 					resolver: new EnumResolver(client, Object.values(MusicPlatform))
+				},
+				{
+					name: 'next',
+					short: 'n',
+					resolver: BooleanResolver
 				}
 			],
-			aliases: ['p'],
 			group: CommandGroup.Music,
 			guildOnly: true
 		});
@@ -43,7 +48,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[link]: [string],
-		{ platform }: { platform: MusicPlatform },
+		{ platform, next }: { platform: MusicPlatform; next: boolean },
 		{ t, guild }: Context
 	): Promise<any> {
 		// TODO
@@ -246,7 +251,7 @@ export default class extends Command {
 
 			const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
-			conn.play(item, voiceChannel);
+			conn.play(item, voiceChannel, next);
 
 			this.sendEmbed(
 				message.channel,

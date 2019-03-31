@@ -341,7 +341,7 @@ export default class extends Command {
 					member.voiceState.channelID
 				) as VoiceChannel;
 				const conn = await this.client.music.getMusicConnection(guild);
-				conn.playAnnouncement(`Hi, my name is ${value}`, channel);
+				conn.playAnnouncement(value, `Hi, my name is ${value}`, channel);
 			}
 		}
 	}

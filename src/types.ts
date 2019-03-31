@@ -114,6 +114,7 @@ export enum BotCommand {
 	disconnect = 'disconnect',
 	search = 'search',
 	volume = 'volume',
+	repeat = 'repeat',
 
 	graph = 'graph'
 }
