@@ -113,12 +113,14 @@
 			"strikes": {
 				"title": "Strikes ",
 				"entry": "#{{ id }} - A reçu {{ amount }} avertissements pour {{ violation }} {{ date }}",
-				"total": "Nombre total d'avertissements"
+				"total": "Nombre total d'avertissements",
+				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
 			},
 			"punishments": {
 				"title": "Les sanctions",
 				"entry": "{{ punition }} car il avait {{ amount }} strikes {{ date }}",
-				"total": "Total des punitions"
+				"total": "Total des punitions",
+				"totalText": "{{{ amount }}} punishments."
 			},
 			"noHistory": "L'utilisateur n'a pas d'historique.",
 			"self": {
@@ -904,6 +906,11 @@
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"done": "**Terminé!**\n\n**Changé:** {{ changed }}**\nIgnoré: {{ ignored }}\n"
+		},
+		"caseView": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
 		}
 	},
 	"permissions": {
