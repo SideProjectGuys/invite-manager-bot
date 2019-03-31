@@ -70,18 +70,18 @@ export interface BasicInvite {
 		name: string;
 	};
 }
-export interface BasicInviter {
-	id: string;
-	username: string;
-	discriminator: string;
+export interface BasicMember {
 	nick?: string;
 	user: {
+		id: string;
+		username: string;
+		discriminator: string;
 		avatarURL: string;
 	};
 }
 export interface JoinLeaveTemplateData {
 	invite: BasicInvite;
-	inviter: BasicInviter;
+	inviter: BasicMember;
 	invites?: InviteCounts;
 }
 
@@ -253,9 +253,6 @@ export class MessagingService {
 		member: Member,
 		{ invite, inviter, invites }: JoinLeaveTemplateData
 	): Promise<string | Embed> {
-		// Override the inviter name with the display name, if the member is still here
-		const inviterName = inviter.nick ? inviter.nick : inviter.username;
-
 		if (!invites) {
 			if (
 				template.indexOf('{numInvites}') >= 0 ||
@@ -264,7 +261,10 @@ export class MessagingService {
 				template.indexOf('{numFakeInvites}') >= 0 ||
 				template.indexOf('{numLeaveInvites}') >= 0
 			) {
-				invites = await this.client.invs.getInviteCounts(guild.id, inviter.id);
+				invites = await this.client.invs.getInviteCounts(
+					guild.id,
+					inviter.user.id
+				);
 			} else {
 				invites = {
 					custom: 0,
@@ -317,14 +317,14 @@ export class MessagingService {
 
 		const memberFullName =
 			member.user.username + '#' + member.user.discriminator;
-		const inviterFullName = inviter.username + '#' + inviter.discriminator;
+		const inviterFullName =
+			inviter.user.username + '#' + inviter.user.discriminator;
 
 		let memberName = member.nick ? member.nick : member.user.username;
 		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
-		const invName = JSON.stringify(inviterName).substring(
-			1,
-			inviterName.length + 1
-		);
+
+		let invName = inviter.nick ? inviter.nick : inviter.user.username;
+		invName = JSON.stringify(invName).substring(1, invName.length + 1);
 
 		const joinedAt = moment(member.joinedAt);
 		const createdAt = moment(member.user.createdAt);
@@ -340,10 +340,10 @@ export class MessagingService {
 				memberMention: `<@${member.id}>`,
 				memberImage: member.user.avatarURL,
 				numJoins: `${numJoins}`,
-				inviterId: inviter.id,
+				inviterId: inviter.user.id,
 				inviterName: invName,
 				inviterFullName: inviterFullName,
-				inviterMention: `<@${inviter.id}>`,
+				inviterMention: `<@${inviter.user.id}>`,
 				inviterImage: inviter.user.avatarURL,
 				numInvites: `${invites.total}`,
 				numRegularInvites: `${invites.regular}`,

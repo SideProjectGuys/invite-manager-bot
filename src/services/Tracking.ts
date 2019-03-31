@@ -23,7 +23,7 @@ import { defaultSettings, toDbValue } from '../settings';
 import { ChannelType } from '../types';
 import { deconstruct } from '../util';
 
-import { BasicInviter } from './Messaging';
+import { BasicMember } from './Messaging';
 
 const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
@@ -569,16 +569,16 @@ export class TrackingService {
 		const inviterName = jn['exactMatch.inviter.name'];
 		const inviterDiscriminator = jn['exactMatch.inviter.discriminator'];
 
-		let inviter: BasicInviter = guild.members.get(inviterId);
+		let inviter: BasicMember = guild.members.get(inviterId);
 		if (!inviter) {
 			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
 		if (!inviter) {
 			inviter = {
-				id: inviterId,
-				username: inviterName,
-				discriminator: inviterDiscriminator,
 				user: {
+					id: inviterId,
+					username: inviterName,
+					discriminator: inviterDiscriminator,
 					avatarURL: null
 				}
 			};

@@ -3,10 +3,9 @@ import moment from 'moment';
 
 import { IMClient } from '../client';
 import {
-	ScheduledActionInstance,
+	ScheduledActionAttributes,
 	scheduledActions,
 	ScheduledActionType,
-	ScheduledActionAttributes,
 	sequelize
 } from '../sequelize';
 

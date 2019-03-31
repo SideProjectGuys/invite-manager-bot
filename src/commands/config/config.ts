@@ -197,7 +197,6 @@ export default class extends Command {
 	): Promise<Function> {
 		const { guild, t, me } = context;
 		const member = message.member;
-		const user = member.user;
 
 		if (
 			value &&
