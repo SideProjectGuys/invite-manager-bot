@@ -2,10 +2,8 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../../../client';
-import { BotCommand, BotType, CommandGroup } from '../../../../../types';
 import { Command, Context } from '../../../../../framework/commands/Command';
-
-const config = require('../../../config.json');
+import { BotCommand, BotType, CommandGroup } from '../../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -84,31 +82,31 @@ export default class extends Command {
 		});
 
 		// Support discord
-		if (config.bot.links.support) {
+		if (this.client.config.bot.links.support) {
 			embed.fields.push({
 				name: t('bot.supportDiscord.title'),
-				value: config.bot.links.support
+				value: this.client.config.bot.links.support
 			});
 		}
 		// Add bot
-		if (config.bot.links.add) {
+		if (this.client.config.bot.links.add) {
 			embed.fields.push({
 				name: t('bot.invite.title'),
-				value: config.bot.links.add
+				value: this.client.config.bot.links.add
 			});
 		}
 		// Bot website
-		if (config.bot.links.website) {
+		if (this.client.config.bot.links.website) {
 			embed.fields.push({
 				name: t('bot.website.title'),
-				value: config.bot.links.website
+				value: this.client.config.bot.links.website
 			});
 		}
 		// Patreon
-		if (config.bot.links.patreon) {
+		if (this.client.config.bot.links.patreon) {
 			embed.fields.push({
 				name: t('bot.patreon.title'),
-				value: config.bot.links.patreon
+				value: this.client.config.bot.links.patreon
 			});
 		}
 

@@ -1,7 +1,7 @@
 import { Member, Message, PrivateChannel, TextChannel } from 'eris';
-import fs from 'fs';
+import { readdirSync, statSync } from 'fs';
 import i18n from 'i18n';
-import path from 'path';
+import { basename, resolve } from 'path';
 
 import { IMClient } from '../../client';
 import { defaultSettings } from '../../settings';
@@ -9,7 +9,7 @@ import { Permissions } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
 
-const cmdDir = path.resolve(__dirname, '../commands/');
+const cmdDir = resolve(__dirname, '../../modules/');
 const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const rateLimit = 1; // max commands per second
 const cooldown = 5; // in seconds
@@ -28,14 +28,14 @@ export class CommandsService {
 		this.cmdMap = new Map();
 		this.commandCalls = new Map();
 
-		console.log(`Loading commands from \x1b[2m${cmdDir}\x1b[0m...`);
+		console.log(`Loading commands...`);
 
 		// Load all commands
 		const loadRecursive = (dir: string) =>
-			fs.readdirSync(dir).forEach((fileName: string) => {
+			readdirSync(dir).forEach((fileName: string) => {
 				const file = dir + '/' + fileName;
 
-				if (fs.statSync(file).isDirectory()) {
+				if (statSync(file).isDirectory()) {
 					loadRecursive(file);
 					return;
 				}
@@ -43,6 +43,11 @@ export class CommandsService {
 				const clazz = require(file);
 				if (clazz.default) {
 					const constr = clazz.default;
+					const parent = Object.getPrototypeOf(constr);
+					if (!parent || parent.name !== 'Command') {
+						return;
+					}
+
 					const inst: Command = new constr(this.client);
 					this.commands.push(inst);
 
@@ -64,7 +69,7 @@ export class CommandsService {
 
 					console.log(
 						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-							`\x1b[2m${path.basename(file)}\x1b[0m`
+							`\x1b[2m${basename(file)}\x1b[0m`
 					);
 				}
 			});

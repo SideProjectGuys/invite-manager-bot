@@ -1,10 +1,8 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../../../client';
-import { BotCommand, CommandGroup, Permissions } from '../../../../../types';
 import { Command, Context } from '../../../../../framework/commands/Command';
-
-const config = require('../../../config.json');
+import { BotCommand, CommandGroup, Permissions } from '../../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -47,12 +45,16 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.setup.help.title'),
-			value: t('cmd.setup.help.text', { link: config.bot.links.support })
+			value: t('cmd.setup.help.text', {
+				link: this.client.config.bot.links.support
+			})
 		});
 
 		embed.fields.push({
 			name: t('cmd.setup.premium.title'),
-			value: t('cmd.setup.premium.text', { link: config.bot.links.patreon })
+			value: t('cmd.setup.premium.text', {
+				link: this.client.config.bot.links.patreon
+			})
 		});
 
 		if (!me.permission.has(Permissions.MANAGE_GUILD)) {
