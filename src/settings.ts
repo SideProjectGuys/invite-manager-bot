@@ -1,6 +1,8 @@
 import { Channel, Role } from 'eris';
 
 import {
+	BotSettingsKey,
+	BotSettingsObject,
 	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
@@ -21,7 +23,9 @@ export type InternalSettingsTypes =
 	| 'Role[]'
 	| 'Enum<LeaderboardStyle>'
 	| 'Enum<RankAssignmentStyle>'
-	| 'Enum<Lang>';
+	| 'Enum<Lang>'
+	| 'Enum<ActivityStatus>'
+	| 'Enum<ActivityType>';
 
 export interface SettingsInfo {
 	type: InternalSettingsTypes;
@@ -49,7 +53,8 @@ export enum SettingsGroup {
 	duplicate = 'duplicate',
 	spam = 'spam',
 	mentions = 'mentions',
-	emojis = 'emojis'
+	emojis = 'emojis',
+	bot = 'bot'
 }
 
 // ------------------------------------
@@ -572,13 +577,60 @@ Object.keys(inviteCodeSettingsInfo).forEach(
 );
 
 // ------------------------------------
+// Bot Settings
+// ------------------------------------
+export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
+	activityStatus: {
+		type: 'Enum<ActivityStatus>',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: 'online'
+	},
+	activityEnabled: {
+		type: 'Boolean',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: true
+	},
+	activityType: {
+		type: 'Enum<ActivityType>',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: 'playing'
+	},
+	activityMessage: {
+		type: 'String',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: null
+	},
+	activityUrl: {
+		type: 'String',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: null
+	},
+	embedDefaultColor: {
+		type: 'String',
+		grouping: [SettingsGroup.bot, SettingsGroup.general],
+		defaultValue: null
+	}
+};
+
+export const botDefaultSettings: BotSettingsObject = {} as any;
+Object.keys(botSettingsInfo).forEach(
+	(k: BotSettingsKey) =>
+		(botDefaultSettings[k] = botSettingsInfo[k].defaultValue)
+);
+
+// ------------------------------------
 // Functions
 // ------------------------------------
-type AllKeys = SettingsKey | MemberSettingsKey | InviteCodeSettingsKey;
+type AllKeys =
+	| SettingsKey
+	| MemberSettingsKey
+	| InviteCodeSettingsKey
+	| BotSettingsKey;
 export const allSettingsInfo = {
 	...settingsInfo,
 	...memberSettingsInfo,
-	...inviteCodeSettingsInfo
+	...inviteCodeSettingsInfo,
+	...botSettingsInfo
 };
 
 export function canClear<K extends AllKeys>(key: K) {

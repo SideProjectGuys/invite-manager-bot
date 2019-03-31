@@ -113,12 +113,14 @@
 			"strikes": {
 				"title": "Strikes",
 				"entry": "#{{id}} - Získal {{ amount }} striků za {{ violation }} {{ date }}",
-				"total": "Dohromady striků"
+				"total": "Dohromady striků",
+				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
 			},
 			"punishments": {
 				"title": "Postihy",
 				"entry": "{{ punishment }} protože měl {{ amount }} striků {{ date }}",
-				"total": "Dohromady postihů"
+				"total": "Dohromady postihů",
+				"totalText": "{{{ amount }}} punishments."
 			},
 			"noHistory": "Uživatel nemá žádnou historii.",
 			"self": {
@@ -904,6 +906,11 @@
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
+		},
+		"caseView": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
 		}
 	},
 	"permissions": {
