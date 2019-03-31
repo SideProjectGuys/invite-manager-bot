@@ -15,12 +15,8 @@ import {
 	ranks,
 	roles,
 	sequelize,
-	SettingAttributes,
-	settings,
 	SettingsKey
 } from '../sequelize';
-import { defaultSettings, toDbValue } from '../settings';
-import { ChannelType } from '../types';
 import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
@@ -626,7 +622,7 @@ export class TrackingService {
 		}
 	}
 
-	public async insertGuildData(guild: Guild, isNew: boolean = false) {
+	public async insertGuildData(guild: Guild) {
 		// Get the invites
 		const invs = await guild.getInvites();
 
@@ -643,30 +639,6 @@ export class TrackingService {
 
 		// Collect concurrent promises
 		const promises: any[] = [];
-
-		// Insert settings if this is a new guild
-		if (isNew) {
-			const defChannel = await this.getDefaultChannel(guild);
-			const newSets = {
-				...defaultSettings,
-				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
-			};
-
-			const sets: SettingAttributes[] = Object.keys(newSets)
-				.filter((key: SettingsKey) => newSets[key] !== null)
-				.map((key: SettingsKey) => ({
-					id: null,
-					key,
-					value: toDbValue(key, newSets[key]),
-					guildId: guild.id
-				}));
-
-			promises.push(
-				settings.bulkCreate(sets, {
-					ignoreDuplicates: true
-				})
-			);
-		}
 
 		// Add all new inviters to db
 		promises.push(
@@ -725,29 +697,6 @@ export class TrackingService {
 		return inviteCodes.bulkCreate(codes, {
 			updateOnDuplicate: ['uses', 'updatedAt']
 		});
-	}
-
-	private async getDefaultChannel(guild: Guild) {
-		// get "original" default channel
-		if (guild.channels.has(guild.id)) {
-			return guild.channels.get(guild.id);
-		}
-
-		// Check for a "general" channel, which is often default chat
-		const gen = guild.channels.find(c => c.name === 'general');
-		if (gen) {
-			return gen;
-		}
-
-		// First channel in order where the bot can speak
-		return guild.channels
-			.filter(
-				c =>
-					c.type ===
-					ChannelType.GUILD_TEXT /*&&
-					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/
-			)
-			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
 
 	private getInviteCounts(

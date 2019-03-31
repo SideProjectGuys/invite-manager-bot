@@ -18,7 +18,10 @@ import {
 	GuildInstance,
 	guilds,
 	LogAction,
-	sequelize
+	sequelize,
+	SettingAttributes,
+	settings,
+	SettingsKey
 } from './sequelize';
 import { CaptchaService } from './services/Captcha';
 import { CommandsService } from './services/Commands';
@@ -30,8 +33,8 @@ import { MusicService } from './services/Music';
 import { RabbitMqService } from './services/RabbitMq';
 import { SchedulerService } from './services/Scheduler';
 import { TrackingService } from './services/Tracking';
-import { botDefaultSettings } from './settings';
-import { BotType, ShardCommand } from './types';
+import { botDefaultSettings, defaultSettings, toDbValue } from './settings';
+import { BotType, ChannelType, ShardCommand } from './types';
 
 const config = require('../config.json');
 
@@ -306,17 +309,36 @@ export class IMClient extends Client {
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
 
-		await guilds.insertOrUpdate({
-			id: guild.id,
-			name: guild.name,
-			icon: guild.iconURL,
-			memberCount: guild.memberCount,
-			deletedAt: undefined,
-			banReason: undefined
-		});
-
 		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
-		if (dbGuild.banReason !== null) {
+		if (!dbGuild) {
+			await guilds.insertOrUpdate({
+				id: guild.id,
+				name: guild.name,
+				icon: guild.iconURL,
+				memberCount: guild.memberCount,
+				deletedAt: undefined,
+				banReason: undefined
+			});
+
+			const defChannel = await this.getDefaultChannel(guild);
+			const newSets = {
+				...defaultSettings,
+				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
+			};
+
+			const sets: SettingAttributes[] = Object.keys(newSets)
+				.filter((key: SettingsKey) => newSets[key] !== null)
+				.map((key: SettingsKey) => ({
+					id: null,
+					key,
+					value: toDbValue(key, newSets[key]),
+					guildId: guild.id
+				}));
+
+			await settings.bulkCreate(sets, {
+				ignoreDuplicates: true
+			});
+		} else if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(
 					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
@@ -331,7 +353,7 @@ export class IMClient extends Client {
 		}
 
 		// Insert tracking data
-		await this.tracking.insertGuildData(guild, true);
+		await this.tracking.insertGuildData(guild);
 
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail
@@ -426,6 +448,29 @@ export class IMClient extends Client {
 			this.disabledGuilds.delete(guild.id);
 			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
+	}
+
+	private async getDefaultChannel(guild: Guild) {
+		// get "original" default channel
+		if (guild.channels.has(guild.id)) {
+			return guild.channels.get(guild.id);
+		}
+
+		// Check for a "general" channel, which is often default chat
+		const gen = guild.channels.find(c => c.name === 'general');
+		if (gen) {
+			return gen;
+		}
+
+		// First channel in order where the bot can speak
+		return guild.channels
+			.filter(
+				c =>
+					c.type ===
+					ChannelType.GUILD_TEXT /*&&
+					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/
+			)
+			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {
