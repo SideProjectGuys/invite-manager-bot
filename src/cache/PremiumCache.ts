@@ -5,11 +5,11 @@ import {
 } from '../sequelize';
 import { BotType } from '../types';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class PremiumCache extends GuildCache<boolean> {
-	protected initOne(guildId: string) {
-		return false;
+export class PremiumCache extends Cache<boolean> {
+	public async init() {
+		// TODO
 	}
 
 	// This is public on purpose, so we can use it in the IMClient class

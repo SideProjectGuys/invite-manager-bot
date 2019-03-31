@@ -113,12 +113,14 @@
 			"strikes": {
 				"title": "Schedazioni",
 				"entry": "#{{ id }} - Ha ricevuto {{ amount }} schedazioni per {{ violation }} {{ date }}",
-				"total": "Schedazioni totali"
+				"total": "Schedazioni totali",
+				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
 			},
 			"punishments": {
 				"title": "Punizioni",
 				"entry": "{{ punishment }} perché ha avuto {{ amount }} schedazioni {{ date }}",
-				"total": "Punizioni totali"
+				"total": "Punizioni totali",
+				"totalText": "{{{ amount }}} punishments."
 			},
 			"noHistory": "L'utente non ha nessuna cronologia",
 			"self": {
@@ -904,6 +906,11 @@
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
+		},
+		"caseView": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
 		}
 	},
 	"permissions": {

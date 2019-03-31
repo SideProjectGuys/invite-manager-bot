@@ -179,22 +179,20 @@
 			},
 			"sameValue": "This config is already set to that value.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"preview": {
 				"title": "Preview",
 				"nextMessage": "<See next message>"
 			},
 			"none": "None",
-			"channel": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
-			},
 			"invalid": {
 				"lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
 				"leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
-				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
+				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}",
+				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
+				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
 			},
 			"self": {
 				"args": {
@@ -223,7 +221,7 @@
 			}
 		},
 		"help": {
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
 			"command": {
 				"title": "Command"
 			},
@@ -914,6 +912,45 @@
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
 			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+		},
+		"botConfig": {
+			"title": "Custom Bot Config",
+			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"notSet": "These settings are not set",
+			"current": {
+				"title": "Current Value",
+				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it."
+			},
+			"previous": {
+				"title": "Previous Value"
+			},
+			"new": {
+				"title": "New Value"
+			},
+			"sameValue": "This config is already set to that value.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+			},
+			"preview": {
+				"title": "Preview",
+				"nextMessage": "<See next message>"
+			},
+			"none": "None",
+			"invalid": {
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity.",
+				"activityType": "Invalid activity type **{{ value }}**. The following types are supported: {{ langs }}"
+			},
+			"self": {
+				"args": {
+					"key": "The bot config setting which you want to show/change.",
+					"value": "The new value of the setting."
+				},
+				"description": "Show and change the config of the bot."
+			}
 		}
 	},
 	"permissions": {
@@ -986,47 +1023,47 @@
 				"description": "Moderation and auto moderation settings.",
 				"general": {
 					"description": "General",
-					"title": ""
+					"title": "settings.groups.moderation.general.title"
 				},
 				"captcha": {
 					"description": "Captcha",
-					"title": ""
+					"title": "settings.groups.moderation.captcha.title"
 				},
 				"logging": {
 					"description": "Logging",
-					"title": ""
+					"title": "settings.groups.moderation.logging.title"
 				},
 				"invites": {
 					"description": "Invites",
-					"title": ""
+					"title": "settings.groups.moderation.invites.title"
 				},
 				"links": {
 					"description": "Links",
-					"title": ""
+					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
 					"description": "Banned Words",
-					"title": ""
+					"title": "settings.groups.moderation.bannedWords.title"
 				},
 				"caps": {
 					"description": "Caps",
-					"title": ""
+					"title": "settings.groups.moderation.caps.title"
 				},
 				"duplicate": {
 					"description": "Duplicate Messages",
-					"title": ""
+					"title": "settings.groups.moderation.duplicate.title"
 				},
 				"spam": {
 					"description": "Spam",
-					"title": ""
+					"title": "settings.groups.moderation.spam.title"
 				},
 				"mentions": {
 					"description": "Mentions",
-					"title": ""
+					"title": "settings.groups.moderation.mentions.title"
 				},
 				"emojis": {
 					"description": "Emojis",
-					"title": ""
+					"title": "settings.groups.moderation.emojis.title"
 				}
 			}
 		},

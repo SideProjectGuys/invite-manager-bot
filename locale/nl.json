@@ -113,12 +113,14 @@
 			"strikes": {
 				"title": "Waarschuwingen",
 				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}",
-				"total": "Totale waarschuwingen"
+				"total": "Totale waarschuwingen",
+				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
 			},
 			"punishments": {
 				"title": "Straffen",
 				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}",
-				"total": "Totale straffen"
+				"total": "Totale straffen",
+				"totalText": "{{{ amount }}} punishments."
 			},
 			"noHistory": "Die gebruiker heeft geen straffen.",
 			"self": {
@@ -904,6 +906,11 @@
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
+		},
+		"caseView": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
 		}
 	},
 	"permissions": {

@@ -12,6 +12,8 @@ import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
 import {
+	botSettings,
+	BotSettingsObject,
 	dbStats,
 	GuildInstance,
 	guilds,
@@ -28,6 +30,7 @@ import { MusicService } from './services/Music';
 import { RabbitMqService } from './services/RabbitMq';
 import { SchedulerService } from './services/Scheduler';
 import { TrackingService } from './services/Tracking';
+import { botDefaultSettings } from './settings';
 import { BotType, ShardCommand } from './types';
 
 const config = require('../config.json');
@@ -66,6 +69,7 @@ export class IMClient extends Client {
 	public version: string;
 	public config: any;
 	public type: BotType;
+	public settings: BotSettingsObject;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -182,6 +186,9 @@ export class IMClient extends Client {
 	private async onClientReady(): Promise<void> {
 		this.type = this.config.bot.type;
 
+		const set = await botSettings.find({ where: { id: this.user.id } });
+		this.settings = set ? set.value : { ...botDefaultSettings };
+
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
 		console.log(`This is the ${this.type} version of the bot.`);
 
@@ -282,7 +289,10 @@ export class IMClient extends Client {
 		}
 
 		this.setActivity();
-		this.activityInterval = setInterval(() => this.setActivity(), 30000);
+		this.activityInterval = setInterval(
+			() => this.setActivity(),
+			60 * 60 * 1000
+		);
 	}
 
 	public getGuildsFilter(columnName: string = 'guilds.id') {
@@ -520,16 +530,42 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
-	private async setActivity() {
+	public async setActivity() {
 		if (this.dbl) {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
+		const status = this.settings.activityStatus;
+
+		if (!this.settings.activityEnabled) {
+			this.editStatus(status);
+			return;
+		}
+
 		const counts = await this.getCounts();
-		this.editStatus('online', {
-			name: `invitemanager.co - ${counts.guilds} servers!`,
-			type: 0
-		});
+
+		const type =
+			this.settings.activityType === 'playing'
+				? 0
+				: this.settings.activityType === 'streaming'
+				? 1
+				: this.settings.activityType === 'listening'
+				? 2
+				: this.settings.activityType === 'watching'
+				? 3
+				: 0;
+
+		let name = `invitemanager.co - ${counts.guilds} servers!`;
+		if (this.settings.activityMessage) {
+			name = this.settings.activityMessage.replace(
+				/{serverCount}/gi,
+				counts.guilds.toString()
+			);
+		}
+
+		const url = this.settings.activityUrl;
+
+		this.editStatus(status, { name, type, url });
 	}
 
 	private async onConnect() {

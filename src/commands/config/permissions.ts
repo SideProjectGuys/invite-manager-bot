@@ -196,6 +196,7 @@ export default class extends Command {
 
 		if (
 			cmds.find(c => c.name === BotCommand.config) ||
+			cmds.find(c => c.name === BotCommand.botConfig) ||
 			cmds.find(c => c.name === BotCommand.inviteCodeConfig) ||
 			cmds.find(c => c.name === BotCommand.memberConfig) ||
 			cmds.find(c => c.name === BotCommand.permissions) ||

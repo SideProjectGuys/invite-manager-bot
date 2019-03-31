@@ -106,6 +106,7 @@ export enum BotCommand {
 
 	/*report = 'report',*/
 
+	botConfig = 'botConfig',
 	graph = 'graph'
 }
 
