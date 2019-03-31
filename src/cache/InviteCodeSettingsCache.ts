@@ -1,11 +1,6 @@
 import { Invite } from 'eris';
 
-import {
-	inviteCodeSettings,
-	InviteCodeSettingsInstance,
-	InviteCodeSettingsKey,
-	sequelize
-} from '../sequelize';
+import { inviteCodeSettings, InviteCodeSettingsKey } from '../sequelize';
 import {
 	fromDbValue,
 	inviteCodeDefaultSettings,

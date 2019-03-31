@@ -470,7 +470,7 @@ export class IMClient extends Client {
 		// If cached data is older than 12 hours, update it
 		if (Date.now() - this.counts.cachedAt > 1000 * 60 * 60) {
 			console.log('Fetching data counts from DB...');
-			const rows = await dbStats.findAll({
+			const rows: any[] = await dbStats.findAll({
 				where: { key: ['guilds', 'members'] }
 			});
 			this.counts = {
