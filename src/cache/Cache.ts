@@ -20,7 +20,7 @@ export abstract class Cache<CachedObject> {
 	public async get(key: string): Promise<CachedObject> {
 		const cached = this.cache.get(key);
 
-		if (cached !== undefined) {
+		if (typeof cached !== 'undefined') {
 			const time = this.cacheTime.get(key);
 			if (time && time.isAfter(moment())) {
 				return cached;

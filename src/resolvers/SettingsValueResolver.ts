@@ -1,6 +1,8 @@
 import { IMClient } from '../client';
 import { Context } from '../commands/Command';
 import {
+	ActivityStatus,
+	ActivityType,
 	AnnouncementVoice,
 	Lang,
 	LeaderboardStyle,
@@ -50,6 +52,14 @@ export class SettingsValueResolver extends Resolver {
 			'Enum<AnnouncementVoice>': new EnumResolver(
 				client,
 				Object.values(AnnouncementVoice)
+			),
+			'Enum<ActivityType>': new EnumResolver(
+				client,
+				Object.values(ActivityType)
+			),
+			'Enum<ActivityStatus>': new EnumResolver(
+				client,
+				Object.values(ActivityStatus)
 			)
 		};
 	}

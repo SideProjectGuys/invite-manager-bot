@@ -6,11 +6,11 @@ import {
 	toDbValue
 } from '../settings';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class SettingsCache extends GuildCache<SettingsObject> {
-	protected initOne(guildId: string): SettingsObject {
-		return { ...defaultSettings };
+export class SettingsCache extends Cache<SettingsObject> {
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(guildId: string): Promise<SettingsObject> {

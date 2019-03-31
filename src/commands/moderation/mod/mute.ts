@@ -2,11 +2,7 @@ import { Member, Message } from 'eris';
 import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
-import {
-	DurationResolver,
-	MemberResolver,
-	StringResolver
-} from '../../../resolvers';
+import { MemberResolver, StringResolver } from '../../../resolvers';
 import {
 	punishments,
 	PunishmentType,

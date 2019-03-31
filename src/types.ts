@@ -1,4 +1,9 @@
 import { Readable } from 'stream';
+export enum BotType {
+	regular = 'regular',
+	pro = 'pro',
+	custom = 'custom'
+}
 
 export interface BasicUser {
 	id: string;
@@ -116,6 +121,7 @@ export enum BotCommand {
 	volume = 'volume',
 	repeat = 'repeat',
 
+	botConfig = 'botConfig',
 	graph = 'graph'
 }
 

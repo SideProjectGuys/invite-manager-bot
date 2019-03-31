@@ -1,4 +1,4 @@
-import { Message, User } from 'eris';
+import { Message } from 'eris';
 import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';

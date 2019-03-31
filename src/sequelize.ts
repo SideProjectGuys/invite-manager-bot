@@ -1309,3 +1309,52 @@ guilds.hasMany(musicHistory);
 
 musicHistory.belongsTo(members);
 members.hasMany(musicHistory);
+// BotSettings
+// ------------------------------------
+
+export enum BotSettingsKey {
+	activityStatus = 'activityStatus',
+	activityEnabled = 'activityEnabled',
+	activityType = 'activityType',
+	activityMessage = 'activityMessage',
+	activityUrl = 'activityUrl',
+	embedDefaultColor = 'embedDefaultColor'
+}
+
+export enum ActivityStatus {
+	online = 'online',
+	dnd = 'dnd',
+	idle = 'idle'
+}
+
+export enum ActivityType {
+	playing = 'playing',
+	streaming = 'streaming',
+	listening = 'listening',
+	watching = 'watching'
+}
+
+export type BotSettingsObject = {
+	activityStatus: ActivityStatus;
+	activityEnabled: boolean;
+	activityType: ActivityType;
+	activityMessage: string;
+	activityUrl: string;
+	embedDefaultColor: string;
+};
+
+export interface BotSettingsAttributes extends BaseAttributes {
+	id: string;
+	value: BotSettingsObject;
+}
+export interface BotSettingsInstance
+	extends Sequelize.Instance<BotSettingsAttributes>,
+		BotSettingsAttributes {}
+
+export const botSettings = sequelize.define<
+	BotSettingsInstance,
+	BotSettingsAttributes
+>('botSettings', {
+	id: { type: Sequelize.STRING(32), primaryKey: true },
+	value: Sequelize.JSON
+});

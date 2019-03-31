@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "5.0.1",
+	"version": "5.1.0",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -52,7 +52,7 @@
 		"@types/amqplib": "0.5.11",
 		"@types/i18n": "0.8.5",
 		"@types/node": "11.12.2",
-		"@types/sequelize": "4.27.46",
+		"@types/sequelize": "4.27.33",
 		"del": "4.0.0",
 		"gulp": "4.0.0",
 		"gulp-sourcemaps": "2.6.5",

@@ -2,6 +2,7 @@
 	"devToken": "NDg1MTU1MzY2Njk1NjAwMTM4.DszYBQ.HdyXNYsi37kQORbZ1tSLT2qD2K8",
 	"ownerGuildIds": [],
 	"bot": {
+		"type": "regular",
 		"ids": {
 			"regular": "",
 			"pro": ""

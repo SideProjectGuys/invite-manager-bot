@@ -1,11 +1,6 @@
 import { Invite } from 'eris';
 
-import {
-	inviteCodeSettings,
-	InviteCodeSettingsInstance,
-	InviteCodeSettingsKey,
-	sequelize
-} from '../sequelize';
+import { inviteCodeSettings, InviteCodeSettingsKey } from '../sequelize';
 import {
 	fromDbValue,
 	inviteCodeDefaultSettings,
@@ -13,13 +8,13 @@ import {
 	toDbValue
 } from '../settings';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class InviteCodeSettingsCache extends GuildCache<
+export class InviteCodeSettingsCache extends Cache<
 	Map<string, InviteCodeSettingsObject>
 > {
-	public initOne(guilId: string) {
-		return new Map();
+	public async init() {
+		// TODO
 	}
 
 	protected async _get(

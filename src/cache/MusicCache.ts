@@ -1,13 +1,18 @@
 import { MusicQueue } from '../types';
 
-import { GuildCache } from './GuildCache';
+import { Cache } from './Cache';
 
-export class MusicCache extends GuildCache<MusicQueue> {
-	protected initOne(guildId: string): MusicQueue {
-		return {
-			current: null,
-			queue: []
-		};
+export class MusicCache extends Cache<MusicQueue> {
+	public async init() {
+		this.client.guilds.forEach(g =>
+			this.cache.set(
+				g.id,
+				this.cache.get(g.id) || {
+					current: null,
+					queue: []
+				}
+			)
+		);
 	}
 
 	protected async _get(guildId: string): Promise<MusicQueue> {

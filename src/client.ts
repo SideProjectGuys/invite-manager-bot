@@ -13,6 +13,8 @@ import { PunishmentCache } from './cache/PunishmentsCache';
 import { SettingsCache } from './cache/SettingsCache';
 import { StrikesCache } from './cache/StrikesCache';
 import {
+	botSettings,
+	BotSettingsObject,
 	dbStats,
 	GuildInstance,
 	guilds,
@@ -28,7 +30,8 @@ import { ModerationService } from './services/Moderation';
 import { MusicService } from './services/Music';
 import { RabbitMqService } from './services/RabbitMq';
 import { SchedulerService } from './services/Scheduler';
-import { ShardCommand } from './types';
+import { botDefaultSettings } from './settings';
+import { BotType, ShardCommand } from './types';
 
 const config = require('../config.json');
 
@@ -65,7 +68,8 @@ i18n.configure({
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
-	public isPro: boolean;
+	public type: BotType;
+	public settings: BotSettingsObject;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -164,7 +168,6 @@ export class IMClient extends Client {
 		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
-		this.music = new MusicService(this);
 
 		this.disabledGuilds = new Set();
 
@@ -181,12 +184,13 @@ export class IMClient extends Client {
 	}
 
 	private async onClientReady(): Promise<void> {
-		this.isPro = this.user.id === this.config.bot.ids.pro;
+		this.type = this.config.bot.type;
+
+		const set = await botSettings.find({ where: { id: this.user.id } });
+		this.settings = set ? set.value : { ...botDefaultSettings };
 
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
-		console.log(
-			`This is the ${this.isPro ? 'PRO' : 'PUBLIC'} version of the bot.`
-		);
+		console.log(`This is the ${this.type} version of the bot.`);
 
 		// Init all caches
 		await Promise.all(Object.values(this.cache).map(c => c.init()));
@@ -222,27 +226,38 @@ export class IMClient extends Client {
 				return;
 			}
 
-			if (this.isPro) {
-				// If this is the pro bot then leave any guilds that aren't pro
-				const premium = await this.cache.premium.get(guild.id);
-				if (!premium) {
-					const dmChannel = await this.getDMChannel(guild.ownerID);
-					await dmChannel
-						.createMessage(
-							'Hi!' +
-								`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
-								'I am the pro version of InviteManager, and only available to people ' +
-								'that support me on Patreon with the pro tier.\n\n' +
-								'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-								'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
-								'I will be leaving your server now, thanks for having me!'
-						)
-						.catch(() => undefined);
-					await guild.leave();
-				}
-			} else if (guild.members.has(this.config.bot.ids.pro)) {
-				// Otherwise disable the guild if the pro bot is in it
-				this.disabledGuilds.add(guild.id);
+			switch (this.type) {
+				case BotType.regular:
+					if (guild.members.has(this.config.bot.ids.pro)) {
+						// Otherwise disable the guild if the pro bot is in it
+						this.disabledGuilds.add(guild.id);
+					}
+					break;
+
+				case BotType.pro:
+					// If this is the pro bot then leave any guilds that aren't pro
+					const premium = await this.cache.premium.get(guild.id);
+					if (!premium) {
+						const dmChannel = await this.getDMChannel(guild.ownerID);
+						await dmChannel
+							.createMessage(
+								'Hi!' +
+									`Thanks for inviting me to your server \`${
+										guild.name
+									}\`!\n\n` +
+									'I am the pro version of InviteManager, and only available to people ' +
+									'that support me on Patreon with the pro tier.\n\n' +
+									'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+									'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+									'I will be leaving your server now, thanks for having me!'
+							)
+							.catch(() => undefined);
+						await guild.leave();
+					}
+					break;
+
+				default:
+					break;
 			}
 		});
 
@@ -252,7 +267,10 @@ export class IMClient extends Client {
 		}
 
 		this.setActivity();
-		this.activityInterval = setInterval(() => this.setActivity(), 30000);
+		this.activityInterval = setInterval(
+			() => this.setActivity(),
+			60 * 60 * 1000
+		);
 	}
 
 	public getGuildsFilter() {
@@ -291,7 +309,7 @@ export class IMClient extends Client {
 		// We use a DB query instead of getting the value from the cache
 		const premium = await this.cache.premium._get(guild.id);
 
-		if (this.isPro && !premium) {
+		if (this.type === BotType.pro && !premium) {
 			await channel
 				.createMessage(
 					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
@@ -307,7 +325,6 @@ export class IMClient extends Client {
 		}
 
 		// Send welcome message to owner with setup instructions
-
 		channel.createMessage(
 			'Hi! Thanks for inviting me to your server `' +
 				guild.name +
@@ -328,7 +345,10 @@ export class IMClient extends Client {
 		}
 
 		// If this is the pro bot and the guild has the regular bot do nothing
-		if (guild.members.has(this.config.bot.ids.regular)) {
+		if (
+			this.type === BotType.pro &&
+			guild.members.has(this.config.bot.ids.regular)
+		) {
 			return;
 		}
 
@@ -349,8 +369,11 @@ export class IMClient extends Client {
 		}
 
 		if (member.user.bot) {
-			// Check if it's our premium bot
-			if (member.user.id === this.config.bot.ids.pro) {
+			// Check if it's our pro bot
+			if (
+				this.type === BotType.regular &&
+				member.user.id === this.config.bot.ids.pro
+			) {
 				console.log(
 					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
 				);
@@ -362,7 +385,10 @@ export class IMClient extends Client {
 
 	private async onGuildMemberRemove(guild: Guild, member: Member) {
 		// If the pro version of our bot left, re-enable this version
-		if (member.user.bot && member.user.id === this.config.bot.ids.pro) {
+		if (
+			this.type === BotType.regular &&
+			member.user.id === this.config.bot.ids.pro
+		) {
 			this.disabledGuilds.delete(guild.id);
 			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
@@ -470,16 +496,42 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
-	private async setActivity() {
+	public async setActivity() {
 		if (this.dbl) {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
+		const status = this.settings.activityStatus;
+
+		if (!this.settings.activityEnabled) {
+			this.editStatus(status);
+			return;
+		}
+
 		const counts = await this.getCounts();
-		this.editStatus('online', {
-			name: `invitemanager.co - ${counts.guilds} servers!`,
-			type: 0
-		});
+
+		const type =
+			this.settings.activityType === 'playing'
+				? 0
+				: this.settings.activityType === 'streaming'
+				? 1
+				: this.settings.activityType === 'listening'
+				? 2
+				: this.settings.activityType === 'watching'
+				? 3
+				: 0;
+
+		let name = `invitemanager.co - ${counts.guilds} servers!`;
+		if (this.settings.activityMessage) {
+			name = this.settings.activityMessage.replace(
+				/{serverCount}/gi,
+				counts.guilds.toString()
+			);
+		}
+
+		const url = this.settings.activityUrl;
+
+		this.editStatus(status, { name, type, url });
 	}
 
 	private async onConnect() {
