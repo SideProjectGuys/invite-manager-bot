@@ -137,7 +137,7 @@ export default class extends Command {
 			newValue: value
 		});
 
-		if (oldVal !== null) {
+		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
 				value: beautify(key, oldVal)
@@ -174,13 +174,13 @@ export default class extends Command {
 		if (info.type === 'Channel') {
 			const channel = value as TextChannel;
 			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
-				return t('cmd.config.channel.canNotReadMessages');
+				return t('cmd.config.invalid.canNotReadMessages');
 			}
 			if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
-				return t('cmd.config.channel.canNotSendMessages');
+				return t('cmd.config.invalid.canNotSendMessages');
 			}
 			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
-				return t('cmd.config.channel.canNotSendEmbeds');
+				return t('cmd.config.invalid.canNotSendEmbeds');
 			}
 		}
 

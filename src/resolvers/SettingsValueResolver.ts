@@ -1,6 +1,12 @@
 import { IMClient } from '../client';
 import { Context } from '../commands/Command';
-import { Lang, LeaderboardStyle, RankAssignmentStyle } from '../sequelize';
+import {
+	ActivityStatus,
+	ActivityType,
+	Lang,
+	LeaderboardStyle,
+	RankAssignmentStyle
+} from '../sequelize';
 import { InternalSettingsTypes, SettingsInfo } from '../settings';
 
 import {
@@ -41,6 +47,14 @@ export class SettingsValueResolver extends Resolver {
 			'Enum<RankAssignmentStyle>': new EnumResolver(
 				client,
 				Object.values(RankAssignmentStyle)
+			),
+			'Enum<ActivityType>': new EnumResolver(
+				client,
+				Object.values(ActivityType)
+			),
+			'Enum<ActivityStatus>': new EnumResolver(
+				client,
+				Object.values(ActivityStatus)
 			)
 		};
 	}
