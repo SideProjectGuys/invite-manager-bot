@@ -1,4 +1,5 @@
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
+import i18n from 'i18n';
 import moment from 'moment';
 import { Op } from 'sequelize';
 
