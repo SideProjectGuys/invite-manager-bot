@@ -1,14 +1,14 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
-import { NumberResolver } from '../../../../framework/resolvers';
-import { BotCommand, CommandGroup } from '../../../../types';
 import { Command, Context } from '../../../../framework/commands/Command';
+import { NumberResolver } from '../../../../framework/resolvers';
+import { CommandGroup, MusicCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.seek,
+			name: MusicCommand.seek,
 			aliases: [],
 			args: [
 				{

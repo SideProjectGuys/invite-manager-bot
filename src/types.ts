@@ -109,19 +109,6 @@ export enum BotCommand {
 
 	/*report = 'report',*/
 
-	play = 'play',
-	pause = 'pause',
-	resume = 'resume',
-	skip = 'skip',
-	seek = 'seek',
-	queue = 'queue',
-	rewind = 'rewind',
-	nowPlaying = 'nowPlaying',
-	disconnect = 'disconnect',
-	search = 'search',
-	volume = 'volume',
-	repeat = 'repeat',
-
 	botConfig = 'botConfig',
 	graph = 'graph'
 }
@@ -150,6 +137,21 @@ export enum ModerationCommand {
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
 	purge = 'purge'
+}
+
+export enum MusicCommand {
+	play = 'play',
+	pause = 'pause',
+	resume = 'resume',
+	skip = 'skip',
+	seek = 'seek',
+	queue = 'queue',
+	rewind = 'rewind',
+	nowPlaying = 'nowPlaying',
+	disconnect = 'disconnect',
+	search = 'search',
+	volume = 'volume',
+	repeat = 'repeat'
 }
 
 export interface RabbitMqMember {

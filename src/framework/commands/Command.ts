@@ -2,7 +2,12 @@ import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { SettingsObject } from '../../settings';
-import { BotCommand, CommandGroup, ModerationCommand } from '../../types';
+import {
+	BotCommand,
+	CommandGroup,
+	ModerationCommand,
+	MusicCommand
+} from '../../types';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 import {
@@ -26,7 +31,7 @@ export interface Flag {
 }
 
 export interface CommandOptions {
-	name: BotCommand | ModerationCommand;
+	name: BotCommand | ModerationCommand | MusicCommand;
 	aliases: string[];
 	args?: Arg[];
 	flags?: Flag[];
@@ -53,7 +58,7 @@ export abstract class Command {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | ModerationCommand;
+	public name: BotCommand | ModerationCommand | MusicCommand;
 
 	public aliases: string[];
 	public args: Arg[];

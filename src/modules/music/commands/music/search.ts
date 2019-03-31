@@ -1,21 +1,21 @@
 import { Emoji, Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../../client';
+import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, StringResolver } from '../../../../framework/resolvers';
 import {
-	BotCommand,
 	CommandGroup,
+	MusicCommand,
 	MusicPlatform,
 	MusicQueueItem
 } from '../../../../types';
-import { Command, Context } from '../../../../framework/commands/Command';
 
 const ytdl = require('ytdl-core');
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.search,
+			name: MusicCommand.search,
 			aliases: [],
 			args: [
 				{
