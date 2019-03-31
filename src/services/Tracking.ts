@@ -5,7 +5,6 @@ import { Op } from 'sequelize';
 import { IMClient } from '../client';
 import {
 	channels,
-	guilds,
 	InviteCodeAttributes,
 	inviteCodes,
 	JoinInvalidatedReason,
@@ -52,11 +51,22 @@ export class TrackingService {
 		const allGuilds = this.client.guilds;
 
 		// Fetch all invites from DB
-		const where = this.client.getGuildsFilter('inviteCodes.guildId');
-		const allCodes: InviteCodeAttributes[] = await sequelize.query(
-			`SELECT * FROM inviteCodes WHERE ${where}`,
-			{ type: sequelize.QueryTypes.SELECT, raw: true }
-		);
+		let allCodes: InviteCodeAttributes[] = [];
+
+		if (this.client.type === 'regular') {
+			const where = this.client.getGuildsFilter('inviteCodes.guildId');
+			allCodes = await sequelize.query(
+				`SELECT * FROM inviteCodes WHERE ${where}`,
+				{
+					type: sequelize.QueryTypes.SELECT,
+					raw: true
+				}
+			);
+		} else {
+			allCodes = await inviteCodes.findAll({
+				where: { guildId: allGuilds.map(g => g.id) }
+			});
+		}
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
