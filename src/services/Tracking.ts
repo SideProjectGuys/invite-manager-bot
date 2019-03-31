@@ -421,7 +421,7 @@ export class TrackingService {
 		// Promote the inviter if required
 		let me = guild.members.get(this.client.user.id);
 		if (!me) {
-			me = await guild.getRESTMember(this.client.user.id);
+			me = await guild.getRESTMember(this.client.user.id).catch(() => null);
 		}
 
 		await this.client.invs.promoteIfQualified(
@@ -571,7 +571,7 @@ export class TrackingService {
 
 		let inviter: BasicInviter = guild.members.get(inviterId);
 		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId);
+			inviter = await guild.getRESTMember(inviterId).catch(() => null);
 		}
 		if (!inviter) {
 			inviter = {
