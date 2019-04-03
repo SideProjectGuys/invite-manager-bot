@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import axios from 'axios';
 import { Guild } from 'eris';
-import { URLSearchParams } from 'url';
+import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
 import { MusicQueueItem } from '../../../types';
@@ -9,40 +9,32 @@ import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicPlatformService } from '../models/MusicPlatformService';
 
-interface YoutubeVideo {
-	id: string;
-	videoId?: string;
-	contentDetails: YoutubeVideoContentDetails;
-	snippet: {
-		channelTitle: string;
-		description: string;
-		thumbnails: {
-			default: {
-				height: number;
-				url: string;
-				width: number;
-			};
-		};
-		title: string;
-	};
-}
-
-interface YoutubeVideoContentDetails {
-	duration: string;
-}
+const ALPHA_INDEX: { [x: string]: string } = {
+	'&lt': '<',
+	'&gt': '>',
+	'&quot': '"',
+	'&apos': `'`,
+	'&amp': '&',
+	'&lt;': '<',
+	'&gt;': '>',
+	'&quot;': '"',
+	'&apos;': `'`,
+	'&amp;': '&'
+};
 
 export class MusicService {
 	public client: IMClient;
 	public cache: MusicCache;
 	public polly: AWS.Polly;
 
-	public musicPlatformService: MusicPlatformService = new MusicPlatformService();
+	public musicPlatformService: MusicPlatformService;
 
 	private musicConnections: Map<string, MusicConnection>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
 		this.cache = client.cache.music;
+		this.musicPlatformService = new MusicPlatformService(client);
 		this.musicConnections = new Map();
 		this.polly = new AWS.Polly({
 			signatureVersion: 'v4',
@@ -86,44 +78,39 @@ export class MusicService {
 		});
 	}
 
-	public async searchYoutube(searchTerm: string, maxResults?: number) {
-		const params: URLSearchParams = new URLSearchParams();
-		params.set('key', this.client.config.bot.youtubeApiKey);
-		params.set('type', 'video');
-		// params.set('videoEmbeddable', "true");
-		// params.set('videoSyndicated', "true");
-		params.set('videoCategoryId', '10'); // only music videos
-		params.set('maxResults', (maxResults || 10).toString());
-		params.set('part', 'id');
-		params.set('fields', 'items(id(videoId))');
-		params.set('q', searchTerm);
-
-		const { data } = await axios(
-			`https://www.googleapis.com/youtube/v3/search?${params}`
+	public async getLyrics(item: MusicQueueItem) {
+		const { data } = await axios.get(
+			`http://video.google.com/timedtext?lang=en&v=${item.id}`
 		);
 
-		return this.getVideoDetails(
-			data.items.map((item: any) => item.id.videoId).join(',')
-		);
+		const lyrics: { start: number; dur: number; text: string }[] = [];
+		const doc = new xmldoc.XmlDocument(data);
+		doc.children.forEach((txt: XmlElement) => {
+			lyrics.push({
+				start: Number(txt.attr.start),
+				dur: Number(txt.attr.dur),
+				text: this.decodeHTMLEntities(txt.val)
+			});
+		});
+
+		return lyrics;
 	}
 
-	private async getVideoDetails(
-		idList: string
-	): Promise<{ items: Array<YoutubeVideo> }> {
-		const params: URLSearchParams = new URLSearchParams();
-		params.set('key', this.client.config.bot.youtubeApiKey);
-		params.set('id', idList);
-		params.set('part', 'contentDetails,snippet');
-		params.set(
-			'fields',
-			'items(id,snippet(title,description,thumbnails(default),channelTitle),contentDetails(duration))'
-		);
+	private decodeHTMLEntities(str: string) {
+		return str.replace(/&#?[0-9a-zA-Z]+;?/g, s => {
+			if (s.charAt(1) === '#') {
+				const code =
+					s.charAt(2).toLowerCase() === 'x'
+						? parseInt(s.substr(3), 16)
+						: parseInt(s.substr(2), 10);
 
-		const { data } = await axios(
-			`https://www.googleapis.com/youtube/v3/videos?${params}`
-		);
-
-		return data;
+				if (isNaN(code) || code < -32768 || code > 65535) {
+					return '';
+				}
+				return String.fromCharCode(code);
+			}
+			return ALPHA_INDEX[s] || s;
+		});
 	}
 
 	public formatTime(timeInSeconds: number) {

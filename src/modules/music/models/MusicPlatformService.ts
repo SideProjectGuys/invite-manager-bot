@@ -1,3 +1,4 @@
+import { IMClient } from '../../../client';
 import { MusicPlatform } from '../../../types';
 
 import { IHeartRadio } from './platforms/IHeartRadio';
@@ -7,13 +8,16 @@ import { Soundcloud } from './platforms/SoundCloud';
 import { Youtube } from './platforms/Youtube';
 
 export class MusicPlatformService {
+	private client: IMClient;
 	private platforms: Map<MusicPlatform, Platform> = new Map();
 
-	public constructor() {
-		this.platforms.set(MusicPlatform.YouTube, new Youtube());
-		this.platforms.set(MusicPlatform.SoundCloud, new Soundcloud());
-		this.platforms.set(MusicPlatform.RaveDJ, new RaveDJ());
-		this.platforms.set(MusicPlatform.iHeartRADIO, new IHeartRadio());
+	public constructor(client: IMClient) {
+		this.client = client;
+
+		this.platforms.set(MusicPlatform.YouTube, new Youtube(client));
+		this.platforms.set(MusicPlatform.SoundCloud, new Soundcloud(client));
+		this.platforms.set(MusicPlatform.RaveDJ, new RaveDJ(client));
+		this.platforms.set(MusicPlatform.iHeartRADIO, new IHeartRadio(client));
 	}
 
 	public getPlatform(platform: MusicPlatform): Platform | undefined {

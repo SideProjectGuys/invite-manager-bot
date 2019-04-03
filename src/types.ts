@@ -154,7 +154,8 @@ export enum MusicCommand {
 	search = 'search',
 	volume = 'volume',
 	repeat = 'repeat',
-	mashup = 'mashup'
+	mashup = 'mashup',
+	lyrics = 'lyrics'
 }
 
 export interface RabbitMqMember {
@@ -176,6 +177,7 @@ export interface MusicQueue {
 }
 
 export interface MusicQueueItem {
+	id: string;
 	title: string;
 	link?: string;
 	platform: MusicPlatform;

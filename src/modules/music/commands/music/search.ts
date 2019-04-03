@@ -51,7 +51,10 @@ export default class extends Command {
 			return;
 		}
 
-		const { items } = await this.client.music.searchYoutube(searchTerm);
+		const musicPlatform = this.client.music.musicPlatformService.getPlatform(
+			MusicPlatform.YouTube
+		);
+		const { items } = await musicPlatform.search(searchTerm);
 
 		const msg = await this.sendReply(message, {
 			author: {
@@ -60,7 +63,7 @@ export default class extends Command {
 			},
 			color: 6737151, // lightblue
 			title: `Search for ${searchTerm}`,
-			fields: items.map((item, index) => ({
+			fields: items.map((item: any, index: number) => ({
 				name: `\`${index + 1}\`: ${item.snippet.title} **${
 					item.contentDetails.duration
 				}**`,
@@ -87,6 +90,7 @@ export default class extends Command {
 		console.log(videoInfo);
 
 		const queueItem: MusicQueueItem = {
+			id: videoInfo.id,
 			title: videoInfo.snippet.title,
 			imageURL: videoInfo.snippet.thumbnails.default.url,
 			user: message.author,

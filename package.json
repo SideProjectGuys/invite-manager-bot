@@ -45,6 +45,7 @@
 		"sequelize": "4.43.1",
 		"sodium-native": "2.3.0",
 		"uws": "10.148.1",
+		"xmldoc": "1.1.2",
 		"ytdl-core": "0.29.1",
 		"zlib-sync": "0.1.4"
 	},
@@ -53,6 +54,7 @@
 		"@types/i18n": "0.8.5",
 		"@types/node": "11.12.2",
 		"@types/sequelize": "4.27.33",
+		"@types/xmldoc": "1.1.4",
 		"del": "4.0.0",
 		"gulp": "4.0.0",
 		"gulp-sourcemaps": "2.6.5",

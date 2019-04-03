@@ -9,9 +9,10 @@ import { MusicService } from '../services/MusicService';
 const DEFAULT_VOL_FADE_TIME = 1.5;
 const IGNORED_ANNOUNCEMENT_WORDS = [
 	/official/gi,
-	/original/gi,
-	/video/gi,
-	/song/gi,
+	/originals?/gi,
+	/videos?/gi,
+	/songs?/gi,
+	/lyrics?/gi,
 	/[\(\[\{].*?[\)\[\{]/gi
 ];
 

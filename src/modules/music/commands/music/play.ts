@@ -14,6 +14,7 @@ import {
 	MusicPlatform,
 	MusicQueueItem
 } from '../../../../types';
+import { Platform } from '../../models/platforms/PlatformInterface';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -60,79 +61,54 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform = this.client.music.musicPlatformService.getPlatformForLink(
-			link
-		);
-
-		// Try and guess the music platform according to the argument
-		if (!platform) {
-			if (musicPlatform) {
-				platform = musicPlatform.getPlatform();
-			}
-		}
-		/*
-		if (!platform) {
-			this.sendReply(
-				message,
-				'Currently only YouTube, SoundCloud, Rave.DJ and iHeartRADIO are supported'
+		let musicPlatform: Platform;
+		if (platform) {
+			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+				platform
 			);
-			return;
+		} else {
+			musicPlatform = this.client.music.musicPlatformService.getPlatformForLink(
+				link
+			);
 		}
-*/
+
 		let item: MusicQueueItem;
+		if (musicPlatform) {
+			item = await musicPlatform.getVideoInfoForUrl(message, link);
+		} else {
+			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+				MusicPlatform.YouTube
+			);
+			const { items } = await musicPlatform.search(link, 1);
+			if (items.length > 0) {
+				const videoInfo2 = items[0];
+				const dur = this.client.music.parseYoutubeDuration(
+					videoInfo2.contentDetails.duration
+				);
 
-		try {
-			item = await musicPlatform.getVideoInfoForUrl(this.client, message, link);
-		} catch (error) {
-			this.sendReply(message, 'That does not seem to be a valid YouTube link');
-			return;
-		}
+				const ytLink = `https://youtube.com/watch?v=${videoInfo2.id}`;
 
-		switch (platform) {
-			case MusicPlatform.YouTube:
-				break;
-
-			case MusicPlatform.SoundCloud:
-				break;
-
-			case MusicPlatform.RaveDJ:
-				break;
-
-			case MusicPlatform.iHeartRADIO:
-				break;
-
-			default:
-				const { items } = await this.client.music.searchYoutube(link, 1);
-				if (items.length > 0) {
-					const videoInfo2 = items[0];
-					const dur = this.client.music.parseYoutubeDuration(
-						videoInfo2.contentDetails.duration
-					);
-
-					const ytLink = `https://youtube.com/watch?v=${videoInfo2.id}`;
-
-					item = {
-						title: videoInfo2.snippet.title,
-						imageURL: videoInfo2.snippet.thumbnails.default.url,
-						user: message.author,
-						link: ytLink,
-						platform: MusicPlatform.YouTube,
-						getStream: async () =>
-							ytdl(ytLink, {
-								filter: 'audioonly'
-							}),
-						duration: dur,
-						extras: [
-							{
-								name: 'Duration',
-								value: this.client.music.formatTime(dur)
-							},
-							{ name: 'Channel', value: videoInfo2.snippet.channelTitle }
-						]
-					};
-				}
-
-				break;
+				item = {
+					id: videoInfo2.id,
+					title: videoInfo2.snippet.title,
+					imageURL: videoInfo2.snippet.thumbnails.default.url,
+					user: message.author,
+					link: ytLink,
+					platform: MusicPlatform.YouTube,
+					getStream: async () =>
+						ytdl(ytLink, {
+							filter: 'audioonly'
+						}),
+					duration: dur,
+					extras: [
+						{
+							name: 'Duration',
+							value: this.client.music.formatTime(dur)
+						},
+						{ name: 'Channel', value: videoInfo2.snippet.channelTitle }
+					]
+				};
+			}
 		}
 
 		if (item) {

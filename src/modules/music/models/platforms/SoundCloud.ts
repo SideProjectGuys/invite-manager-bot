@@ -4,13 +4,13 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { MusicPlatform, MusicQueueItem } from '../../../../types';
 
-import { Platform } from './PlatformInterface';
+import { EmbedField, Platform } from './PlatformInterface';
 
 const SOUNDCLOUD_CLIENT_ID = 'z7npDMrLmgiW4wc8pPCQkkUUtRQkWZOF';
 
-export class Soundcloud implements Platform {
-	public constructor() {
-		// TODO
+export class Soundcloud extends Platform {
+	public constructor(client: IMClient) {
+		super(client);
 	}
 
 	public isPlatformUrl(url: string): boolean {
@@ -22,7 +22,6 @@ export class Soundcloud implements Platform {
 	}
 
 	public async getVideoInfoForUrl(
-		client: IMClient,
 		message: Message,
 		link: string
 	): Promise<MusicQueueItem> {
@@ -39,6 +38,7 @@ export class Soundcloud implements Platform {
 		);
 
 		return {
+			id: link,
 			title: scData.title,
 			imageURL: scData.artwork_url,
 			user: message.author,
@@ -49,10 +49,23 @@ export class Soundcloud implements Platform {
 			extras: [
 				{
 					name: 'Duration',
-					value: client.music.formatTime(scData.duration / 1000)
+					value: this.client.music.formatTime(scData.duration / 1000)
 				},
 				{ name: 'Artist', value: scData.user.username }
 			]
 		};
+	}
+
+	public async search(
+		searchTerm: string,
+		maxResults?: number
+	): Promise<EmbedField[]> {
+		const scLink = `http://api.soundcloud.com/tracks?q=${searchTerm}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
+		const scData = (await axios.get(scLink)).data;
+
+		return scData.map((item: any, index: number) => ({
+			name: `${index}: ${item.title}`,
+			value: `${item.duration}`
+		}));
 	}
 }

@@ -7,9 +7,9 @@ import { Platform } from './PlatformInterface';
 
 const iheart = require('iheart');
 
-export class IHeartRadio implements Platform {
-	public constructor() {
-		// TODO
+export class IHeartRadio extends Platform {
+	public constructor(client: IMClient) {
+		super(client);
 	}
 
 	public isPlatformUrl(url: string): boolean {
@@ -21,7 +21,6 @@ export class IHeartRadio implements Platform {
 	}
 
 	public async getVideoInfoForUrl(
-		client: IMClient,
 		message: Message,
 		link: string
 	): Promise<MusicQueueItem> {
@@ -31,6 +30,7 @@ export class IHeartRadio implements Platform {
 		const station = matches.stations[0];
 
 		return {
+			id: null,
 			title: station.name,
 			imageURL: station.newlogo,
 			user: message.author,

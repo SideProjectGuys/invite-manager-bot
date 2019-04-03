@@ -66,10 +66,11 @@ export interface IdTokenResponse {
 	localId: string;
 }
 
-export class RaveDJ implements Platform {
+export class RaveDJ extends Platform {
 	private idToken: string;
 
-	public constructor() {
+	public constructor(client: IMClient) {
+		super(client);
 		this.getIdToken();
 	}
 
@@ -95,7 +96,6 @@ export class RaveDJ implements Platform {
 	}
 
 	public async getVideoInfoForUrl(
-		client: IMClient,
 		message: Message,
 		link: string
 	): Promise<MusicQueueItem> {
@@ -121,6 +121,7 @@ export class RaveDJ implements Platform {
 		}
 
 		return {
+			id,
 			title: `${data.artist} - ${data.title}`,
 			imageURL: data.thumbnails.default,
 			user: message.author,
@@ -131,7 +132,7 @@ export class RaveDJ implements Platform {
 			extras: [
 				{
 					name: 'Duration',
-					value: client.music.formatTime(Number(data.duration))
+					value: this.client.music.formatTime(Number(data.duration))
 				},
 				{
 					name: 'Songs contained',
