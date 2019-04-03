@@ -1,5 +1,6 @@
 {
 	"devToken": "NDg1MTU1MzY2Njk1NjAwMTM4.DszYBQ.HdyXNYsi37kQORbZ1tSLT2qD2K8",
+	"sentryDsn": "",
 	"ownerGuildIds": [],
 	"bot": {
 		"type": "regular",
