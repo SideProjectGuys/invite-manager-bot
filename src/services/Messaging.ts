@@ -160,7 +160,7 @@ export class MessagingService {
 							if (target instanceof TextChannel) {
 								scope.setUser({ id: target.guild.id });
 							}
-							scope.setExtra('message', e);
+							scope.setExtra('message', embed);
 							captureException(error);
 						});
 					}
