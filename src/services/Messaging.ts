@@ -336,11 +336,11 @@ export class MessagingService {
 
 		let memberName = member.nick ? member.nick : member.user.username;
 		const encodedMemberName = JSON.stringify(memberName);
-		memberName = encodedMemberName.substring(1, encodedMemberName.length - 2);
+		memberName = encodedMemberName.substring(1, encodedMemberName.length - 1);
 
 		let invName = inviter.nick ? inviter.nick : inviter.user.username;
 		const encodedInvName = JSON.stringify(invName);
-		invName = encodedInvName.substring(1, encodedInvName.length - 2);
+		invName = encodedInvName.substring(1, encodedInvName.length - 1);
 
 		const joinedAt = moment(member.joinedAt);
 		const createdAt = moment(member.user.createdAt);
