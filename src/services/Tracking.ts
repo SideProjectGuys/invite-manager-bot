@@ -422,6 +422,7 @@ export class TrackingService {
 						}
 					});
 			}
+			return;
 		}
 
 		// Auto remove fakes if enabled
