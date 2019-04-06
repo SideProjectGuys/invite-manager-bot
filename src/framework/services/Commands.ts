@@ -1,3 +1,4 @@
+import { captureException, withScope } from '@sentry/node';
 import { Member, Message, PrivateChannel, TextChannel } from 'eris';
 import { readdirSync, statSync } from 'fs';
 import i18n from 'i18n';
@@ -37,6 +38,10 @@ export class CommandsService {
 
 				if (statSync(file).isDirectory()) {
 					loadRecursive(file);
+					return;
+				}
+
+				if (!fileName.endsWith('.js')) {
 					return;
 				}
 
@@ -111,7 +116,7 @@ export class CommandsService {
 			}
 		}
 
-		// Figure out which command is being run
+		// Save some constant stuff
 		let content = message.content.trim();
 		const sets = guild
 			? await this.client.cache.settings.get(guild.id)
@@ -120,6 +125,18 @@ export class CommandsService {
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
 			i18n.__({ locale: lang, phrase: key }, replacements);
+
+		// Check if we're executing the command in a valid channel
+		if (sets.channels && sets.channels.length) {
+			if (!sets.channels.includes(message.channel.id)) {
+				return;
+			}
+		}
+		if (sets.ignoredChannels && sets.ignoredChannels.length) {
+			if (sets.ignoredChannels.includes(message.channel.id)) {
+				return;
+			}
+		}
 
 		// Process prefix first so we can use any possible prefixes
 		if (content.startsWith(sets.prefix)) {
@@ -432,7 +449,20 @@ export class CommandsService {
 			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
-			this.client.msg.sendReply(message, t('cmd.error'));
+			withScope(scope => {
+				scope.setTag('command', cmd.name);
+				scope.setExtra('message', message.content);
+				if (guild) {
+					scope.setUser({ id: guild.id });
+				}
+				captureException(e);
+			});
+			this.client.msg.sendReply(
+				message,
+				t('cmd.error', {
+					error: e.message
+				})
+			);
 			return;
 		}
 

@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../client';
 import {
-	ScheduledActionInstance,
+	ScheduledActionAttributes,
 	scheduledActions,
 	ScheduledActionType
 } from '../../sequelize';
@@ -69,7 +69,7 @@ export class SchedulerService {
 			.digest('hex');
 	}
 
-	private createTimer(action: ScheduledActionInstance) {
+	private createTimer(action: ScheduledActionAttributes) {
 		const secondsUntilAction = moment(action.date).diff(
 			moment(),
 			'milliseconds'
@@ -99,9 +99,8 @@ export class SchedulerService {
 
 	private async scheduleScheduledActions() {
 		const actions = await scheduledActions.findAll({
-			where: {
-				guildId: this.client.guilds.map(g => g.id)
-			}
+			where: { guildId: this.client.guilds.map(g => g.id) },
+			raw: true
 		});
 		actions.forEach(action => {
 			this.createTimer(action);

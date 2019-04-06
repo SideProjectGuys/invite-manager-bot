@@ -12,6 +12,7 @@
 		"experimentalDecorators": true,
 		"typeRoots": [],
 		"types": ["node"],
+		"outDir": "bin",
 		"plugins": [
 			{
 				"name": "tslint-language-service"

@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "Une erreur est survenue lors de l’exécution de cette commande.",
+		"error": "Une erreur est survenue lors de l'execution de cette commande. Signalez ceci à un développeur:\n{{{ error }}}",
 		"addInvites": {
 			"zero": "Ajouter aucune invitation n'a aucun intérêt...",
 			"amount": {
@@ -106,7 +106,8 @@
 			"premium": {
 				"title": "Premium",
 				"active": "Ce serveur dispose d'un abonnement **premium actif**.",
-				"none": "Ce serveur **ne dispose pas** d'un abonnement premium."
+				"none": "Ce serveur **ne dispose pas** d'un abonnement premium.",
+				"custom": "Vous utilisez une version personnalisée du bot !"
 			}
 		},
 		"check": {
@@ -120,7 +121,7 @@
 				"title": "Les sanctions",
 				"entry": "{{ punition }} car il avait {{ amount }} strikes {{ date }}",
 				"total": "Total des punitions",
-				"totalText": "{{{ amount }}} punishments."
+				"totalText": "{{{ amount }}} sanctions."
 			},
 			"noHistory": "L'utilisateur n'a pas d'historique.",
 			"self": {
@@ -178,22 +179,17 @@
 			},
 			"sameValue": "Cette configuration est déjà définie sur cette valeur.",
 			"changed": {
-				"text": "Cette configuration a été modifiée.\nUtilisez `{{ prefix }}config {{ key }} <value>` pour la changer à nouveau.\nUtilisez `{{ prefix }}config {{ key }} none` pour la réinitialiser."
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"preview": {
 				"title": "Aperçu",
 				"nextMessage": "<Voir le message suivant>"
 			},
 			"none": "Aucun",
-			"channel": {
-				"canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce salon.",
-				"canNotSendMessages": "Je n'ai pas la permission d'**envoyer des messages** dans ce salon.",
-				"canNotSendEmbeds": "Je n'ai pas la permission d'**intégrer des liens** dans ce salon."
-			},
 			"invalid": {
-				"lang": "Langue invalide ** {{valeur}} **. Les langues supportées sont les suivantes: {{langs}}",
-				"leaderboardStyle": "Style de classement invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}",
-				"rankAssignmentStyle": "Style d'attribution de rang invalide **{{ value }}**. Les styles suivants sont pris en charge: {{ styles }}"
+				"canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce salon.",
+				"canNotSendMessages": "Je n'ai pas la permission **d'envoyer des messages** dans ce salon.",
+				"canNotSendEmbeds": "Je n'ai pas la permission **d'intégrer des liens** dans ce salon."
 			},
 			"self": {
 				"args": {
@@ -222,7 +218,7 @@
 			}
 		},
 		"help": {
-			"text": "Voila la liste des commandes que vous pouvez utilisez. Vous pouvez avoir plus d'informations sur une commande spécifique en utilisant \\`{{ prefix }}help \\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nLes arguments sont listé après les commandes. Les parenthèses indiquent un argument **optionnel**. (e.g. \\`(reason)\\` signifique que \\`reason\\` est optionnel)\n",
+			"text": "Ceci est une liste des commandes que vous pouvez utiliser. Vous pouvez obtenir plus d'informations à propos d'une commande spécifique en utilisant `{{ prefix }}help <command>`(ex: `{{ prefix }}help add-ranks`)",
 			"command": {
 				"title": "Commande"
 			},
@@ -382,7 +378,7 @@
 				},
 				"description": "Afficher les membres avec le plus d'invitations.",
 				"flags": {
-					"compare": "The date to which the current leaderboard standings are compared to"
+					"compare": "La date à laquelle le classement actuel est comparé à"
 				}
 			}
 		},
@@ -393,7 +389,7 @@
 			"keys": {
 				"title": "Valeurs acceptées"
 			},
-			"notSet": "This member config settings is currently not set for any members",
+			"notSet": "Ce paramètre de configuration de membre n'est défini pour aucun membre.",
 			"current": {
 				"title": "Valeur actuelle",
 				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
@@ -513,7 +509,7 @@
 			},
 			"faq": {
 				"title": "FAQs et plus",
-				"text": "Utilisez la commande `!faq` pour plus d'informations, par exemple si vous souhaitez changer le préfixe ou customiser le message d'arrivée et de départ.\n\nUn guide complet sur la configuration du bot peut être trouvé ici:\nhttps://docs.invitemanager.co/bot/ - Version anglaise"
+				"text": "Un guide complet sur la configuration du bot peut être trouvé ici: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Aide",
@@ -659,13 +655,15 @@
 				"currentlyActive": "Ce serveur dispose **déjà** d'un abonnement premium.",
 				"done": "Le premium a correctement été activé sur ce serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
-				"noGuild": "Vous devez exécuter cette commande depuis un serveur."
+				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
+				"customBot": "Vous utilisez une version personnalisée du bot. Ces bots ont toujours le premium."
 			},
 			"deactivate": {
 				"title": "Désactiver le premium sur ce serveur",
 				"done": "Le premium a correctement été désactivé sur ce serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
-				"noGuild": "Vous devez exécuter cette commande depuis un serveur."
+				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
+				"customBot": "Vous utilisez une version personnalisée du bot. Ces bots ont toujours le premium."
 			},
 			"check": {
 				"title": "Rechercher un abonnement Premium",
@@ -908,9 +906,52 @@
 			"done": "**Terminé!**\n\n**Changé:** {{ changed }}**\nIgnoré: {{ ignored }}\n"
 		},
 		"caseView": {
+			"title": "Cas #{{ id }}",
+			"notFound": "Cas introuvable",
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+		},
+		"caseDelete": {
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+			"done": "Case deleted"
+		},
+		"botConfig": {
+			"title": "Configuration du bot personnalisé",
+			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"notSet": "Ces paramètres ne sont pas définis",
+			"current": {
+				"title": "Valeur actuelle",
+				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"clear": "Utilisez `{{ prefix }}botConfig {{ key }} none` pour l'effacer."
+			},
+			"previous": {
+				"title": "Valuer précédente"
+			},
+			"new": {
+				"title": "Nouvelle valeur"
+			},
+			"sameValue": "Cette configuration est déjà définie sur cette valeur.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+			},
+			"preview": {
+				"title": "Aperçu",
+				"nextMessage": "<Voir le prochain message>"
+			},
+			"none": "Aucun",
+			"invalid": {
+				"twitchOnly": "Discord ne prend en charge que les URLs en twitch.tv pour l'activité de streaming."
+			},
+			"self": {
+				"args": {
+					"key": "Les paramètres de configurations que vous souhaitez afficher / modifier.",
+					"value": "La nouvelle valeur du paramètre."
+				},
+				"description": "Afficher et changer la configuration du bot."
+			}
 		}
 	},
 	"permissions": {
@@ -982,37 +1023,48 @@
 				"title": "Modération",
 				"description": "Paramètres liés à la modération.",
 				"general": {
-					"description": "Paramètres généraux liés à la modération."
+					"description": "Paramètres généraux liés à la modération.",
+					"title": "settings.groups.moderation.general.title"
 				},
 				"captcha": {
-					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre."
+					"description": "Paramètres liés aux Captchas lors de l'arrivée d'un nouveau membre.",
+					"title": "settings.groups.moderation.captcha.title"
 				},
 				"logging": {
-					"description": "Enregistrement"
+					"description": "Enregistrement",
+					"title": "settings.groups.moderation.logging.title"
 				},
 				"invites": {
-					"description": "Invitations"
+					"description": "Invitations",
+					"title": "settings.groups.moderation.invites.title"
 				},
 				"links": {
-					"description": "Liens"
+					"description": "Liens",
+					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
-					"description": "Paramètres liés aux mots bannis. "
+					"description": "Paramètres liés aux mots bannis. ",
+					"title": "settings.groups.moderation.bannedWords.title"
 				},
 				"caps": {
-					"description": "Settings related to ALL CAPS messages"
+					"description": "Settings related to ALL CAPS messages",
+					"title": "settings.groups.moderation.caps.title"
 				},
 				"duplicate": {
-					"description": "Paramètres liés aux messages en double."
+					"description": "Paramètres liés aux messages en double.",
+					"title": "settings.groups.moderation.duplicate.title"
 				},
 				"spam": {
-					"description": "Paramètres liés au spam (envoi rapide de messages)."
+					"description": "Paramètres liés au spam (envoi rapide de messages).",
+					"title": "settings.groups.moderation.spam.title"
 				},
 				"mentions": {
-					"description": "Paramètres liés au spam de mentions."
+					"description": "Paramètres liés au spam de mentions.",
+					"title": "settings.groups.moderation.mentions.title"
 				},
 				"emojis": {
-					"description": "Paramètres liés au spam d'émojis."
+					"description": "Paramètres liés au spam d'émojis.",
+					"title": "settings.groups.moderation.emojis.title"
 				}
 			}
 		},

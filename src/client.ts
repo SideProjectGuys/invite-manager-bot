@@ -3,6 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
@@ -16,6 +17,7 @@ import { SchedulerService } from './framework/services/Scheduler';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
 import { CaptchaService } from './modules/invites/services/Captcha';
 import { InvitesService } from './modules/invites/services/Invites';
+import { TrackingService } from './modules/invites/services/Tracking';
 import { PunishmentCache } from './modules/mod/cache/PunishmentsCache';
 import { StrikesCache } from './modules/mod/cache/StrikesCache';
 import { ModerationService } from './modules/mod/services/Moderation';
@@ -25,13 +27,14 @@ import {
 	botSettings,
 	BotSettingsObject,
 	dbStats,
-	GuildInstance,
 	guilds,
 	LogAction,
-	sequelize
+	SettingAttributes,
+	settings,
+	SettingsKey
 } from './sequelize';
-import { botDefaultSettings } from './settings';
-import { BotType, ShardCommand } from './types';
+import { botDefaultSettings, defaultSettings, toDbValue } from './settings';
+import { BotType, ChannelType, ShardCommand } from './types';
 
 const config = require('../config.json');
 
@@ -94,6 +97,7 @@ export class IMClient extends Client {
 	public captcha: CaptchaService;
 	public invs: InvitesService;
 	public music: MusicService;
+	public tracking: TrackingService;
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
@@ -169,6 +173,7 @@ export class IMClient extends Client {
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
 		this.music = new MusicService(this);
+		this.tracking = new TrackingService(this);
 
 		this.disabledGuilds = new Set();
 
@@ -196,14 +201,34 @@ export class IMClient extends Client {
 		// Init all caches
 		await Promise.all(Object.values(this.cache).map(c => c.init()));
 
-		// Other services
-		await this.rabbitmq.init();
-		await this.cmds.init();
-
-		const gs: GuildInstance[] = await sequelize.query(
-			`SELECT * FROM guilds WHERE banReason IS NOT NULL AND ${this.getGuildsFilter()}`,
-			{ type: sequelize.QueryTypes.SELECT, raw: true }
+		// Insert guilds into db
+		await guilds.bulkCreate(
+			this.guilds.map(g => ({
+				id: g.id,
+				name: g.name,
+				icon: g.iconURL,
+				memberCount: g.memberCount,
+				deletedAt: null,
+				banReason: undefined
+			})),
+			{
+				updateOnDuplicate: [
+					'name',
+					'icon',
+					'memberCount',
+					'updatedAt',
+					'deletedAt'
+				]
+			}
 		);
+
+		const gs = await guilds.findAll({
+			where: {
+				id: this.guilds.map(g => g.id),
+				banReason: { [Op.not]: null }
+			},
+			raw: true
+		});
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async guild => {
@@ -262,6 +287,11 @@ export class IMClient extends Client {
 			}
 		});
 
+		// Services
+		await this.rabbitmq.init();
+		await this.cmds.init();
+		await this.tracking.init();
+
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
 			this.dbl = new DBL(this.config.bot.dblToken, this);
@@ -274,19 +304,39 @@ export class IMClient extends Client {
 		);
 	}
 
-	public getGuildsFilter() {
-		return (
-			`(CONVERT(SUBSTRING(guilds.id, CHAR_LENGTH(guilds.id) - 22, ` +
-			`CHAR_LENGTH(guilds.id)), UNSIGNED INTEGER) % ` +
-			`${this.shardCount} = ${this.shardId - 1})`
-		);
-	}
-
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
 
 		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
-		if (dbGuild.banReason !== null) {
+		if (!dbGuild) {
+			await guilds.insertOrUpdate({
+				id: guild.id,
+				name: guild.name,
+				icon: guild.iconURL,
+				memberCount: guild.memberCount,
+				deletedAt: undefined,
+				banReason: undefined
+			});
+
+			const defChannel = await this.getDefaultChannel(guild);
+			const newSets = {
+				...defaultSettings,
+				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
+			};
+
+			const sets: SettingAttributes[] = Object.keys(newSets)
+				.filter((key: SettingsKey) => newSets[key] !== null)
+				.map((key: SettingsKey) => ({
+					id: null,
+					key,
+					value: toDbValue(key, newSets[key]),
+					guildId: guild.id
+				}));
+
+			await settings.bulkCreate(sets, {
+				ignoreDuplicates: true
+			});
+		} else if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(
 					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
@@ -300,9 +350,12 @@ export class IMClient extends Client {
 			return;
 		}
 
+		// Insert tracking data
+		await this.tracking.insertGuildData(guild);
+
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail
-		if (dbGuild.deletedAt) {
+		if (dbGuild && dbGuild.deletedAt) {
 			dbGuild.deletedAt = null;
 			await dbGuild.save();
 		}
@@ -393,6 +446,29 @@ export class IMClient extends Client {
 			this.disabledGuilds.delete(guild.id);
 			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
+	}
+
+	private async getDefaultChannel(guild: Guild) {
+		// get "original" default channel
+		if (guild.channels.has(guild.id)) {
+			return guild.channels.get(guild.id);
+		}
+
+		// Check for a "general" channel, which is often default chat
+		const gen = guild.channels.find(c => c.name === 'general');
+		if (gen) {
+			return gen;
+		}
+
+		// First channel in order where the bot can speak
+		return guild.channels
+			.filter(
+				c =>
+					c.type ===
+					ChannelType.GUILD_TEXT /*&&
+					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/
+			)
+			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {

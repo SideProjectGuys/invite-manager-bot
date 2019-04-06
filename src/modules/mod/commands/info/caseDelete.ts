@@ -44,7 +44,7 @@ export default class extends Command {
 			})
 		});
 
-		const strike = await strikes.find({
+		const strike = await strikes.findOne({
 			where: {
 				id: caseNumber,
 				guildId: guild.id

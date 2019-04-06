@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "Er is een foutmelding opgetreden tijdens het uitvoeren van deze command.",
+		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"addInvites": {
 			"zero": "0 invites geven heeft niet veel zin...",
 			"amount": {
@@ -106,7 +106,8 @@
 			"premium": {
 				"title": "Betaalde versie",
 				"active": "Op deze server staat de betaalde bot **actief**.",
-				"none": "Op deze server staat de betaalde bot **niet actief**."
+				"none": "Op deze server staat de betaalde bot **niet actief**.",
+				"custom": "You are using a custom version of the bot!"
 			}
 		},
 		"check": {
@@ -178,22 +179,17 @@
 			},
 			"sameValue": "De configuratie is al gezet naar die waarde.",
 			"changed": {
-				"text": "De configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}config {{ key }} none` om dit te resetten naar de standaard waarde."
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"preview": {
 				"title": "Voorbeeld",
 				"nextMessage": "<Zie volgende bericht>"
 			},
 			"none": "Geen",
-			"channel": {
-				"canNotReadMessages": "Ik heb geen permissies om **berichten te lezen** in dat kanaal.",
-				"canNotSendMessages": "Ik heb geen permissies om **berichten te versturen** in dat kanaal.",
-				"canNotSendEmbeds": "Ik heb geen permissies om **embed links** te versturen in dat kanaal."
-			},
 			"invalid": {
-				"lang": "Ongeldige taal **{{ value }}**. De volgende talen worden ondersteunt: {{ langs }}",
-				"leaderboardStyle": "Ongeldige leaderboard stijl **{{ value }}**. De volgende stijlen worden ondersteunt: {{ styles }}",
-				"rankAssignmentStyle": "Ongeldige rank toewijzing stijl **{{ value }}**. De volgende stijlen zijn ondersteunt: {{ styles }}"
+				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
+				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
 			},
 			"self": {
 				"args": {
@@ -222,7 +218,7 @@
 			}
 		},
 		"help": {
-			"text": "Dit is een lijst met commando's dat jij kan gebruiken. Je kan meer informatie krijgen over een specefieke commando door \\`{{ prefix }}help <command>`\\ te typen. (Zoals \\`{{ prefix }}help add-ranks`\\)\n\nArgumenten kan je gebruiken na een commando. Haakjes zoals \\`()`\\ hebben een argument nodig. (Bijvoorbeeld \\`reason`\\ betekent dat de reden een optimale argument nodig heeft.)",
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
 			"command": {
 				"title": "Commando"
 			},
@@ -513,7 +509,7 @@
 			},
 			"faq": {
 				"title": "Vraag en antwoorden en meer",
-				"text": "Gebruik `!faq` om meer informatie te zien, bijvoorbeeld hoe je de prefix veranderd of hoe je de join/leave bericht aanpast.\n\nEen complete documentatie hoe je de bot instelt kan hier gevonden worden: https://docs.invitemanager.co/bot/"
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Help",
@@ -659,13 +655,15 @@
 				"currentlyActive": "There is already a premium subscription active on this server.",
 				"done": "Premium has been successfully activated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"deactivate": {
 				"title": "Deactivate premium on this server",
 				"done": "Premium has been successfully deactivated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"check": {
 				"title": "Check for a Premium Subscription",
@@ -911,6 +909,49 @@
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
 			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+		},
+		"caseDelete": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"done": "Case deleted"
+		},
+		"botConfig": {
+			"title": "Custom Bot Config",
+			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"notSet": "These settings are not set",
+			"current": {
+				"title": "Current Value",
+				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it."
+			},
+			"previous": {
+				"title": "Previous Value"
+			},
+			"new": {
+				"title": "New Value"
+			},
+			"sameValue": "This config is already set to that value.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+			},
+			"preview": {
+				"title": "Preview",
+				"nextMessage": "<See next message>"
+			},
+			"none": "None",
+			"invalid": {
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+			},
+			"self": {
+				"args": {
+					"key": "The bot config setting which you want to show/change.",
+					"value": "The new value of the setting."
+				},
+				"description": "Show and change the config of the bot."
+			}
 		}
 	},
 	"permissions": {
@@ -982,37 +1023,48 @@
 				"title": "Moderation",
 				"description": "Moderation and auto moderation settings.",
 				"general": {
-					"description": "General"
+					"description": "General",
+					"title": "settings.groups.moderation.general.title"
 				},
 				"captcha": {
-					"description": "Captcha"
+					"description": "Captcha",
+					"title": "settings.groups.moderation.captcha.title"
 				},
 				"logging": {
-					"description": "Logging"
+					"description": "Logging",
+					"title": "settings.groups.moderation.logging.title"
 				},
 				"invites": {
-					"description": "Invites"
+					"description": "Invites",
+					"title": "settings.groups.moderation.invites.title"
 				},
 				"links": {
-					"description": "Links"
+					"description": "Links",
+					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
-					"description": "Banned Words"
+					"description": "Banned Words",
+					"title": "settings.groups.moderation.bannedWords.title"
 				},
 				"caps": {
-					"description": "Caps"
+					"description": "Caps",
+					"title": "settings.groups.moderation.caps.title"
 				},
 				"duplicate": {
-					"description": "Duplicate Messages"
+					"description": "Duplicate Messages",
+					"title": "settings.groups.moderation.duplicate.title"
 				},
 				"spam": {
-					"description": "Spam"
+					"description": "Spam",
+					"title": "settings.groups.moderation.spam.title"
 				},
 				"mentions": {
-					"description": "Mentions"
+					"description": "Mentions",
+					"title": "settings.groups.moderation.mentions.title"
 				},
 				"emojis": {
-					"description": "Emojis"
+					"description": "Emojis",
+					"title": "settings.groups.moderation.emojis.title"
 				}
 			}
 		},

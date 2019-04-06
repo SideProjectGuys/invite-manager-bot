@@ -19,7 +19,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../../../sequelize';
-import { Permissions, RabbitMqMember } from '../../../types';
+import { BasicInvite, BasicMember, Permissions } from '../../../types';
 
 // Extra query stuff we need in multiple places
 const sumClearRegular =
@@ -67,6 +67,12 @@ type InvCacheType = {
 		oldLeaves: number;
 	};
 };
+
+export interface JoinLeaveTemplateData {
+	invite: BasicInvite;
+	inviter: BasicMember;
+	invites?: InviteCounts;
+}
 
 export interface InviteCounts {
 	regular: number;
@@ -467,6 +473,124 @@ export class InvitesService {
 		});
 
 		return { keys, oldKeys, invs, stillInServer };
+	}
+
+	public async fillJoinLeaveTemplate(
+		template: any,
+		guild: Guild,
+		member: Member,
+		{ invite, inviter, invites }: JoinLeaveTemplateData
+	): Promise<string | Embed> {
+		if (!invites) {
+			if (
+				template.indexOf('{numInvites}') >= 0 ||
+				template.indexOf('{numRegularInvites}') >= 0 ||
+				template.indexOf('{numBonusInvites}') >= 0 ||
+				template.indexOf('{numFakeInvites}') >= 0 ||
+				template.indexOf('{numLeaveInvites}') >= 0
+			) {
+				invites = await this.client.invs.getInviteCounts(
+					guild.id,
+					inviter.user.id
+				);
+			} else {
+				invites = {
+					custom: 0,
+					fake: 0,
+					leave: 0,
+					regular: 0,
+					total: 0
+				};
+			}
+		}
+
+		let numJoins = 0;
+		if (template.indexOf('{numJoins}') >= 0) {
+			numJoins = await joins.count({
+				where: {
+					guildId: guild.id,
+					memberId: member.id
+				}
+			});
+		}
+
+		let firstJoin: moment.Moment | string = 'never';
+		if (template.indexOf('{firstJoin:') >= 0) {
+			const temp = await joins.find({
+				where: {
+					guildId: guild.id,
+					memberId: member.id
+				},
+				order: [['createdAt', 'ASC']]
+			});
+			if (temp) {
+				firstJoin = moment(temp.createdAt);
+			}
+		}
+
+		let prevJoin: moment.Moment | string = 'never';
+		if (template.indexOf('{previousJoin:') >= 0) {
+			const temp = await joins.find({
+				where: {
+					guildId: guild.id,
+					memberId: member.id
+				},
+				order: [['createdAt', 'DESC']],
+				offset: 1
+			});
+			if (temp) {
+				prevJoin = moment(temp.createdAt);
+			}
+		}
+
+		const memberFullName =
+			member.user.username + '#' + member.user.discriminator;
+		const inviterFullName =
+			inviter.user.username + '#' + inviter.user.discriminator;
+
+		let memberName = member.nick ? member.nick : member.user.username;
+		const encodedMemberName = JSON.stringify(memberName);
+		memberName = encodedMemberName.substring(1, encodedMemberName.length - 1);
+
+		let invName = inviter.nick ? inviter.nick : inviter.user.username;
+		const encodedInvName = JSON.stringify(invName);
+		invName = encodedInvName.substring(1, encodedInvName.length - 1);
+
+		const joinedAt = moment(member.joinedAt);
+		const createdAt = moment(member.user.createdAt);
+
+		return this.client.msg.fillTemplate(
+			guild,
+			template,
+			{
+				inviteCode: invite.code,
+				memberId: member.id,
+				memberName: memberName,
+				memberFullName: memberFullName,
+				memberMention: `<@${member.id}>`,
+				memberImage: member.user.avatarURL,
+				numJoins: `${numJoins}`,
+				inviterId: inviter.user.id,
+				inviterName: invName,
+				inviterFullName: inviterFullName,
+				inviterMention: `<@${inviter.user.id}>`,
+				inviterImage: inviter.user.avatarURL,
+				numInvites: `${invites.total}`,
+				numRegularInvites: `${invites.regular}`,
+				numBonusInvites: `${invites.custom}`,
+				numFakeInvites: `${invites.fake}`,
+				numLeaveInvites: `${invites.leave}`,
+				memberCount: `${guild.memberCount}`,
+				channelMention: `<#${invite.channel.id}>`,
+				channelName: invite.channel.name
+			},
+			{
+				memberCreated: createdAt,
+				firstJoin: firstJoin,
+				previousJoin: prevJoin,
+				joinedAt: joinedAt
+			}
+		);
 	}
 
 	public async generateLegacyLeaderboard(
@@ -920,142 +1044,5 @@ export class InvitesService {
 			shouldNotHave,
 			dangerous
 		};
-	}
-
-	public async fillJoinLeaveTemplate(
-		template: any,
-		guild: Guild,
-		member: RabbitMqMember,
-		joinedAt: number,
-		inviteCode: string,
-		channelId: string,
-		channelName: string,
-		inviterId: string,
-		inviterName: string,
-		inviterDiscriminator: string,
-		inviter?: Member,
-		invites: InviteCounts = {
-			total: 0,
-			regular: 0,
-			custom: 0,
-			fake: 0,
-			leave: 0
-		}
-	): Promise<string | Embed> {
-		// Only fetch the inviter if needed and they're undefined.
-		// If the inviter is null it means we tried before and couldn't fetch them.
-		if (
-			typeof inviter === 'undefined' &&
-			template.indexOf('{inviterName}') >= 0
-		) {
-			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
-		}
-		// Override the inviter name with the display name, if the member is still here
-		inviterName = inviter && inviter.nick ? inviter.nick : inviterName;
-
-		// Total invites is only zero if it's set by default value
-		if (
-			(invites.total === 0 && template.indexOf('{numInvites}') >= 0) ||
-			template.indexOf('{numRegularInvites}') >= 0 ||
-			template.indexOf('{numBonusInvites}') >= 0 ||
-			template.indexOf('{numFakeInvites}') >= 0 ||
-			template.indexOf('{numLeaveInvites}') >= 0
-		) {
-			invites = await this.client.invs.getInviteCounts(guild.id, inviterId);
-		}
-
-		let numJoins = 0;
-		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await joins.count({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				}
-			});
-		}
-
-		let firstJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await joins.find({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: [['createdAt', 'ASC']]
-			});
-			if (temp) {
-				firstJoin = moment(temp.createdAt);
-			}
-		}
-
-		let prevJoin: moment.Moment | string = 'never';
-		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await joins.find({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: [['createdAt', 'DESC']],
-				offset: 1
-			});
-			if (temp) {
-				prevJoin = moment(temp.createdAt);
-			}
-		}
-
-		const lang = (await this.client.cache.settings.get(guild.id)).lang;
-		const unknown = i18n.__({
-			locale: lang,
-			phrase: 'messages.unknownInviter'
-		});
-
-		const memberFullName =
-			member.user.username + '#' + member.user.discriminator;
-		const inviterFullName = inviter
-			? inviter.user.username + '#' + inviter.user.discriminator
-			: inviterName
-			? inviterName + '#' + inviterDiscriminator
-			: unknown;
-
-		let memberName = member.nick ? member.nick : member.user.username;
-		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
-		let invName = inviterName ? inviterName : unknown;
-		invName = JSON.stringify(invName).substring(1, invName.length + 1);
-
-		const _joinedAt = moment(joinedAt);
-		const createdAt = moment(member.user.createdAt);
-
-		return this.client.msg.fillTemplate(
-			guild,
-			template,
-			{
-				inviteCode: inviteCode ? inviteCode : unknown,
-				memberId: member.id,
-				memberName: memberName,
-				memberFullName: memberFullName,
-				memberMention: `<@${member.id}>`,
-				memberImage: member.user.avatarUrl,
-				numJoins: `${numJoins}`,
-				inviterId: inviterId ? inviterId : unknown,
-				inviterName: invName,
-				inviterFullName: inviterFullName,
-				inviterMention: inviterId ? `<@${inviterId}>` : unknown,
-				inviterImage: inviter ? inviter.user.avatarURL : undefined,
-				numInvites: `${invites.total}`,
-				numRegularInvites: `${invites.regular}`,
-				numBonusInvites: `${invites.custom}`,
-				numFakeInvites: `${invites.fake}`,
-				numLeaveInvites: `${invites.leave}`,
-				memberCount: `${guild.memberCount}`,
-				channelMention: channelId ? `<#${channelId}>` : unknown,
-				channelName: channelName ? channelName : unknown
-			},
-			{
-				memberCreated: createdAt,
-				firstJoin: firstJoin,
-				previousJoin: prevJoin,
-				joinedAt: _joinedAt
-			}
-		);
 	}
 }

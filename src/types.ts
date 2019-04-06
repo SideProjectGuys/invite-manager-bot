@@ -158,17 +158,12 @@ export enum MusicCommand {
 	lyrics = 'lyrics'
 }
 
-export interface RabbitMqMember {
-	id: string;
-	nick?: string;
-	user: {
-		id: string;
-		avatarUrl: string | null;
-		createdAt: number;
-		bot: boolean;
-		discriminator: string;
-		username: string;
-	};
+export enum ChannelType {
+	GUILD_TEXT = 0,
+	DM = 1,
+	GUILD_VOICE = 2,
+	GROUP_DM = 3,
+	GUILD_CATEGORY = 4
 }
 
 export interface MusicQueue {
@@ -193,4 +188,21 @@ export enum MusicPlatform {
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',
 	iHeartRADIO = 'iheartradio'
+}
+
+export interface BasicInvite {
+	code: string;
+	channel: {
+		id: string;
+		name: string;
+	};
+}
+export interface BasicMember {
+	nick?: string;
+	user: {
+		id: string;
+		username: string;
+		discriminator: string;
+		avatarURL: string;
+	};
 }
