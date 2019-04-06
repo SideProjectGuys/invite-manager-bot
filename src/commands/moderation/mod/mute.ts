@@ -109,8 +109,8 @@ export default class extends Command {
 
 		if (settings.modPunishmentMuteDeleteMessage) {
 			const func = () => {
-				message.delete();
-				response.delete();
+				message.delete().catch(() => undefined);
+				response.delete().catch(() => undefined);
 			};
 			setTimeout(func, 4000);
 		}

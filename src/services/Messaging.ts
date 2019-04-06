@@ -455,7 +455,9 @@ export class MessagingService {
 		} else {
 			const users = await prevMsg.getReaction(upSymbol, 10);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg.removeReaction(upSymbol, this.client.user.id);
+				prevMsg
+					.removeReaction(upSymbol, this.client.user.id)
+					.catch(() => undefined);
 			}
 		}
 
@@ -464,7 +466,9 @@ export class MessagingService {
 		} else {
 			const users = await prevMsg.getReaction(downSymbol, 10);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg.removeReaction(downSymbol, this.client.user.id);
+				prevMsg
+					.removeReaction(downSymbol, this.client.user.id)
+					.catch(() => undefined);
 			}
 		}
 
@@ -494,8 +498,12 @@ export class MessagingService {
 
 			const timeOut = () => {
 				this.client.removeListener('messageReactionAdd', func);
-				prevMsg.removeReaction(upSymbol, this.client.user.id);
-				prevMsg.removeReaction(downSymbol, this.client.user.id);
+				prevMsg
+					.removeReaction(upSymbol, this.client.user.id)
+					.catch(() => undefined);
+				prevMsg
+					.removeReaction(downSymbol, this.client.user.id)
+					.catch(() => undefined);
 			};
 
 			timer = setTimeout(timeOut, 15000);
