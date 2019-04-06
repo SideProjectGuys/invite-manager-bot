@@ -72,8 +72,8 @@ export default class extends Command {
 
 		if (settings.modPunishmentBanDeleteMessage) {
 			const func = () => {
-				message.delete();
-				response.delete();
+				message.delete().catch(() => undefined);
+				response.delete().catch(() => undefined);
 			};
 			setTimeout(func, 4000);
 		}

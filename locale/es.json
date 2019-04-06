@@ -969,7 +969,8 @@
 	},
 	"messages": {
 		"unknownInviter": "Desconocido",
-		"joinUnknownInviter": "<@{{ id }}> ha entrado utilizando una invitación temporal o vanity, no puedo averiguar quien lo ha invitado.",
+		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
+		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"leaveUnknownInviter": "{{ tag }} ha salido del servidor, pero no pude averiguar quien lo ha invitado."
 	},
 	"captcha": {
