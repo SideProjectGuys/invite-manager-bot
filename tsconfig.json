@@ -12,9 +12,12 @@
 		"experimentalDecorators": true,
 		"typeRoots": [],
 		"types": ["node"],
-		"plugins": [{
-			"name": "tslint-language-service"
-		}]
+		"outDir": "bin",
+		"plugins": [
+			{
+				"name": "tslint-language-service"
+			}
+		]
 	},
 	"exclude": [
 		"node_modules",
