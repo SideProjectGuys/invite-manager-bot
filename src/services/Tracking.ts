@@ -537,7 +537,7 @@ export class TrackingService {
 			return;
 		}
 
-		const join = await joins.find({
+		const join = await joins.findOne({
 			where: {
 				guildId: guild.id,
 				memberId: member.id
@@ -605,7 +605,7 @@ export class TrackingService {
 		}
 
 		// Exit if we can't find the join
-		if (!join) {
+		if (!join || !join.exactMatchCode) {
 			console.log(
 				`Could not find join for ${member.id} in ` +
 					`${guild.id} leaveId: ${leave.id}`
