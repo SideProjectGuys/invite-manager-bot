@@ -1,3 +1,4 @@
+import { configureScope, init } from '@sentry/node';
 import * as amqplib from 'amqplib';
 
 import { IMClient } from './client';
@@ -17,6 +18,12 @@ const token = process.argv[2];
 const shardId = parseInt(process.argv[3], 10);
 const shardCount = parseInt(process.argv[4], 10);
 const _prefix = process.argv[5];
+
+// Initialize sentry
+init({ dsn: config.sentryDsn, release: pkg.version });
+configureScope(scope => {
+	scope.setTag('shard', `${shardId}`);
+});
 
 process.on('unhandledRejection', (reason: any, p: any) => {
 	console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
