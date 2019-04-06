@@ -1,3 +1,4 @@
+import { captureException, withScope } from '@sentry/node';
 import { Member, Message, PrivateChannel, TextChannel } from 'eris';
 import fs from 'fs';
 import i18n from 'i18n';
@@ -37,6 +38,10 @@ export class CommandsService {
 
 				if (fs.statSync(file).isDirectory()) {
 					loadRecursive(file);
+					return;
+				}
+
+				if (!fileName.endsWith('.js')) {
 					return;
 				}
 
@@ -439,7 +444,20 @@ export class CommandsService {
 			await cmd.action(message, args, flags, context);
 		} catch (e) {
 			console.error(e);
-			this.client.msg.sendReply(message, t('cmd.error'));
+			withScope(scope => {
+				scope.setTag('command', cmd.name);
+				scope.setExtra('message', message.content);
+				if (guild) {
+					scope.setUser({ id: guild.id });
+				}
+				captureException(e);
+			});
+			this.client.msg.sendReply(
+				message,
+				t('cmd.error', {
+					error: e.message
+				})
+			);
 			return;
 		}
 

@@ -99,11 +99,10 @@ export class SchedulerService {
 	}
 
 	private async scheduleScheduledActions() {
-		const where = this.client.getGuildsFilter('scheduledActions.guildId');
-		const actions: ScheduledActionAttributes[] = await sequelize.query(
-			`SELECT * FROM scheduledActions WHERE ${where}`,
-			{ type: sequelize.QueryTypes.SELECT, raw: true }
-		);
+		const actions = await scheduledActions.findAll({
+			where: { guildId: this.client.guilds.map(g => g.id) },
+			raw: true
+		});
 		actions.forEach(action => {
 			this.createTimer(action);
 		});

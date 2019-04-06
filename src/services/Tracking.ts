@@ -48,22 +48,9 @@ export class TrackingService {
 		const allGuilds = this.client.guilds;
 
 		// Fetch all invites from DB
-		let allCodes: InviteCodeAttributes[] = [];
-
-		if (this.client.type === 'regular') {
-			const where = this.client.getGuildsFilter('inviteCodes.guildId');
-			allCodes = await sequelize.query(
-				`SELECT * FROM inviteCodes WHERE ${where}`,
-				{
-					type: sequelize.QueryTypes.SELECT,
-					raw: true
-				}
-			);
-		} else {
-			allCodes = await inviteCodes.findAll({
-				where: { guildId: allGuilds.map(g => g.id) }
-			});
-		}
+		const allCodes = await inviteCodes.findAll({
+			where: { guildId: allGuilds.map(g => g.id) }
+		});
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
@@ -225,6 +212,24 @@ export class TrackingService {
 		}
 
 		if (inviteCodesUsed.length === 0) {
+			const vanityInv = await guild.getVanity();
+			if (vanityInv && vanityInv.code) {
+				inviteCodesUsed.push((vanityInv.code as any) as string);
+				invs.push({
+					code: vanityInv.code,
+					channel: null,
+					guild,
+					inviter: null,
+					uses: 0,
+					maxUses: 0,
+					maxAge: 0,
+					temporary: false,
+					vanity: true
+				} as any);
+			}
+		}
+
+		if (inviteCodesUsed.length === 0) {
 			console.error(
 				`NO USED INVITE CODE FOUND: g:${guild.id} | m: ${member.id} ` +
 					`| t:${member.joinedAt} | invs: ${JSON.stringify(newInvs)} ` +
@@ -268,9 +273,10 @@ export class TrackingService {
 		const channelPromise = channels.bulkCreate(
 			newAndUsedCodes
 				.map(inv => inv.channel)
+				.filter(c => !!c)
 				.map(channel => ({
 					id: channel.id,
-					guildId: member.guild.id,
+					guildId: guild.id,
 					name: channel.name
 				})),
 			{
@@ -290,9 +296,10 @@ export class TrackingService {
 			maxUses: inv.maxUses,
 			uses: inv.uses,
 			temporary: inv.temporary,
-			guildId: member.guild.id,
+			guildId: guild.id,
 			inviterId: inv.inviter ? inv.inviter.id : null,
-			clearedAmount: 0
+			clearedAmount: 0,
+			reason: (inv as any).vanity ? 'Vanity' : null
 		}));
 
 		// Update old invite codes that were used

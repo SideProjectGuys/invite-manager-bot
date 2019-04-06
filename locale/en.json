@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "There was an error executing the command.",
+		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"addInvites": {
 			"zero": "Adding zero invites doesn't really make sense...",
 			"amount": {

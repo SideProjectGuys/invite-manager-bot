@@ -1,3 +1,4 @@
+import { captureException, withScope } from '@sentry/node';
 import {
 	Embed,
 	EmbedBase,
@@ -7,6 +8,7 @@ import {
 	Member,
 	Message,
 	TextableChannel,
+	TextChannel,
 	User
 } from 'eris';
 import i18n from 'i18n';
@@ -152,6 +154,17 @@ export class MessagingService {
 					console.error(error);
 
 					const content = convertEmbedToPlain(e);
+
+					if (error.code !== 50013) {
+						withScope(scope => {
+							if (target instanceof TextChannel) {
+								scope.setUser({ id: target.guild.id });
+							}
+							scope.setExtra('message', e);
+							captureException(error);
+						});
+					}
+
 					target
 						.createMessage(content)
 						.then(resolve)
@@ -163,19 +176,20 @@ export class MessagingService {
 
 							fallbackUser
 								.getDMChannel()
-								.then(channel => {
+								.then(dmChannel => {
 									let msg =
 										'I encountered an error when trying to send a message. ' +
 										'Please report this to a developer:\n```' +
 										`${error.message}\n\n${err.message}\`\`\``;
 
 									if (err.code === 50013) {
+										const name = this.client.user.username;
 										msg =
-											'**I do not have permissions to post to that channel.\n' +
-											`Please tell an admin to allow me to send messages in the channel.**\n\n`;
+											`**${name} does not have permissions to post to that channel.\n` +
+											`Please allow ${name} to send messages in that channel.**\n\n`;
 									}
 
-									channel
+									dmChannel
 										.createMessage(msg)
 										.then(resolve)
 										.catch(err2 => {

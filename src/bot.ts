@@ -22,7 +22,11 @@ const _prefix = process.argv[5];
 // Initialize sentry
 init({ dsn: config.sentryDsn, release: pkg.version });
 configureScope(scope => {
+	scope.setTag('botType', config.bot.type);
 	scope.setTag('shard', `${shardId}`);
+	if (_prefix) {
+		scope.setTag('prefix', _prefix);
+	}
 });
 
 process.on('unhandledRejection', (reason: any, p: any) => {
