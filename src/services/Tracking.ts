@@ -578,14 +578,30 @@ export class TrackingService {
 					`${guild.id} leaveId: ${leave.id}`
 			);
 			if (leaveChannel) {
-				leaveChannel.createMessage(
-					i18n.__(
-						{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
-						{
-							tag: member.user.username + '#' + member.user.discriminator
-						}
+				leaveChannel
+					.createMessage(
+						i18n.__(
+							{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
+							{
+								tag: member.user.username + '#' + member.user.discriminator
+							}
+						)
 					)
-				);
+					.catch(err => {
+						// Missing permissions
+						if (
+							err.code === 50001 ||
+							err.code === 50020 ||
+							err.code === 50013
+						) {
+							// Reset the channel
+							this.client.cache.settings.setOne(
+								guild.id,
+								SettingsKey.joinMessageChannel,
+								null
+							);
+						}
+					});
 			}
 			return;
 		}
@@ -650,15 +666,25 @@ export class TrackingService {
 				}
 			);
 
-			leaveChannel.createMessage(
-				typeof msg === 'string' ? msg : { embed: msg }
-			);
+			leaveChannel
+				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
+				.catch(err => {
+					// Missing permissions
+					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
+						// Reset the channel
+						this.client.cache.settings.setOne(
+							guild.id,
+							SettingsKey.joinMessageChannel,
+							null
+						);
+					}
+				});
 		}
 	}
 
 	public async insertGuildData(guild: Guild) {
 		// Get the invites
-		const invs = await guild.getInvites();
+		const invs = await guild.getInvites().catch(() => [] as Invite[]);
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(

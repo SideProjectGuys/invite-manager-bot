@@ -2,7 +2,10 @@ import Sequelize from 'sequelize';
 
 const config = require('../config.json');
 
-export const sequelize = new Sequelize(config.sequelize);
+export const sequelize = new Sequelize({
+	...config.sequelize,
+	logging: (msg: string) => console.log(msg)
+});
 
 export interface BaseAttributes {
 	createdAt?: Date | number | string;
