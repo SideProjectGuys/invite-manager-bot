@@ -6,7 +6,6 @@ import { Op } from 'sequelize';
 import { IMClient } from '../client';
 import {
 	channels,
-	InviteCodeAttributes,
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
@@ -372,12 +371,28 @@ export class TrackingService {
 		// Exit if we can't find the invite code used
 		if (!invite) {
 			if (joinChannel) {
-				joinChannel.createMessage(
-					i18n.__(
-						{ locale: lang, phrase: 'messages.joinUnknownInviter' },
-						{ id: member.id }
+				joinChannel
+					.createMessage(
+						i18n.__(
+							{ locale: lang, phrase: 'messages.joinUnknownInviter' },
+							{ id: member.id }
+						)
 					)
-				);
+					.catch(err => {
+						// Missing permissions
+						if (
+							err.code === 50001 ||
+							err.code === 50020 ||
+							err.code === 50013
+						) {
+							// Reset the channel
+							this.client.cache.settings.setOne(
+								guild.id,
+								SettingsKey.joinMessageChannel,
+								null
+							);
+						}
+					});
 			}
 			return;
 		}
@@ -449,9 +464,19 @@ export class TrackingService {
 				}
 			);
 
-			await joinChannel.createMessage(
-				typeof msg === 'string' ? msg : { embed: msg }
-			);
+			await joinChannel
+				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
+				.catch(err => {
+					// Missing permissions
+					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
+						// Reset the channel
+						this.client.cache.settings.setOne(
+							guild.id,
+							SettingsKey.joinMessageChannel,
+							null
+						);
+					}
+				});
 		}
 	}
 
