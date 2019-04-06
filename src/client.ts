@@ -3,6 +3,7 @@ import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { InviteCodeSettingsCache } from './cache/InviteCodeSettingsCache';
 import { MemberSettingsCache } from './cache/MemberSettingsCache';
@@ -15,10 +16,8 @@ import {
 	botSettings,
 	BotSettingsObject,
 	dbStats,
-	GuildInstance,
 	guilds,
 	LogAction,
-	sequelize,
 	SettingAttributes,
 	settings,
 	SettingsKey
@@ -219,10 +218,13 @@ export class IMClient extends Client {
 			}
 		);
 
-		const gs: GuildInstance[] = await sequelize.query(
-			`SELECT * FROM guilds WHERE banReason IS NOT NULL AND ${this.getGuildsFilter()}`,
-			{ type: sequelize.QueryTypes.SELECT, raw: true }
-		);
+		const gs = await guilds.findAll({
+			where: {
+				id: this.guilds.map(g => g.id),
+				banReason: { [Op.not]: null }
+			},
+			raw: true
+		});
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async guild => {
@@ -295,14 +297,6 @@ export class IMClient extends Client {
 		this.activityInterval = setInterval(
 			() => this.setActivity(),
 			60 * 60 * 1000
-		);
-	}
-
-	public getGuildsFilter(columnName: string = 'guilds.id') {
-		return (
-			`(CONVERT(SUBSTRING(${columnName}, CHAR_LENGTH(${columnName}) - 22, ` +
-			`CHAR_LENGTH(${columnName})), UNSIGNED INTEGER) % ` +
-			`${this.shardCount} = ${this.shardId - 1})`
 		);
 	}
 

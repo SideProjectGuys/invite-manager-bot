@@ -48,22 +48,9 @@ export class TrackingService {
 		const allGuilds = this.client.guilds;
 
 		// Fetch all invites from DB
-		let allCodes: InviteCodeAttributes[] = [];
-
-		if (this.client.type === 'regular') {
-			const where = this.client.getGuildsFilter('inviteCodes.guildId');
-			allCodes = await sequelize.query(
-				`SELECT * FROM inviteCodes WHERE ${where}`,
-				{
-					type: sequelize.QueryTypes.SELECT,
-					raw: true
-				}
-			);
-		} else {
-			allCodes = await inviteCodes.findAll({
-				where: { guildId: allGuilds.map(g => g.id) }
-			});
-		}
+		const allCodes = await inviteCodes.findAll({
+			where: { guildId: allGuilds.map(g => g.id) }
+		});
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
