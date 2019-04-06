@@ -351,7 +351,7 @@ export class IMClient extends Client {
 
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail
-		if (dbGuild.deletedAt) {
+		if (dbGuild && dbGuild.deletedAt) {
 			dbGuild.deletedAt = null;
 			await dbGuild.save();
 		}
