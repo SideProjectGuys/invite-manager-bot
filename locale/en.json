@@ -187,9 +187,6 @@
 			},
 			"none": "None",
 			"invalid": {
-				"lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
-				"leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
-				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}",
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
@@ -941,8 +938,7 @@
 			},
 			"none": "None",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity.",
-				"activityType": "Invalid activity type **{{ value }}**. The following types are supported: {{ langs }}"
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
 			},
 			"self": {
 				"args": {
