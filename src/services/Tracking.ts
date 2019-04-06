@@ -210,9 +210,11 @@ export class TrackingService {
 			}
 		}
 
+		let isVanity = false;
 		if (inviteCodesUsed.length === 0) {
 			const vanityInv = await guild.getVanity().catch(() => undefined);
 			if (vanityInv && vanityInv.code) {
+				isVanity = true;
 				inviteCodesUsed.push(vanityInv.code as string);
 				invs.push({
 					code: vanityInv.code,
@@ -395,6 +397,31 @@ export class TrackingService {
 					});
 			}
 			return;
+		} else if (isVanity) {
+			if (joinChannel) {
+				joinChannel
+					.createMessage(
+						i18n.__(
+							{ locale: lang, phrase: 'messages.joinVanityUrl' },
+							{ id: member.id }
+						)
+					)
+					.catch(err => {
+						// Missing permissions
+						if (
+							err.code === 50001 ||
+							err.code === 50020 ||
+							err.code === 50013
+						) {
+							// Reset the channel
+							this.client.cache.settings.setOne(
+								guild.id,
+								SettingsKey.joinMessageChannel,
+								null
+							);
+						}
+					});
+			}
 		}
 
 		// Auto remove fakes if enabled
@@ -432,23 +459,29 @@ export class TrackingService {
 		}
 
 		let inviter = guild.members.get(invite.inviter.id);
-		if (!inviter) {
-			inviter = await guild.getRESTMember(invite.inviter.id).catch(() => null);
+		if (!inviter && invite.inviter) {
+			inviter = await guild
+				.getRESTMember(invite.inviter.id)
+				.catch(() => undefined);
 		}
 
 		if (inviter) {
 			// Promote the inviter if required
 			let me = guild.members.get(this.client.user.id);
 			if (!me) {
-				me = await guild.getRESTMember(this.client.user.id).catch(() => null);
+				me = await guild
+					.getRESTMember(this.client.user.id)
+					.catch(() => undefined);
 			}
 
-			await this.client.invs.promoteIfQualified(
-				guild,
-				inviter,
-				me,
-				invites.total
-			);
+			if (me) {
+				await this.client.invs.promoteIfQualified(
+					guild,
+					inviter,
+					me,
+					invites.total
+				);
+			}
 		}
 
 		const joinMessageFormat = sets.joinMessage;
@@ -504,7 +537,7 @@ export class TrackingService {
 			return;
 		}
 
-		const join = await joins.find({
+		const join = await joins.findOne({
 			where: {
 				guildId: guild.id,
 				memberId: member.id
@@ -572,7 +605,7 @@ export class TrackingService {
 		}
 
 		// Exit if we can't find the join
-		if (!join) {
+		if (!join || !join.exactMatchCode) {
 			console.log(
 				`Could not find join for ${member.id} in ` +
 					`${guild.id} leaveId: ${leave.id}`

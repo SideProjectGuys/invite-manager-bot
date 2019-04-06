@@ -91,9 +91,10 @@ export default class extends Command {
 				)
 			);
 		}
+
 		if (error) {
 			embed.title = t('cmd.clean.error');
-			embed.description = error;
+			embed.description = error.message;
 		} else {
 			if (type === CleanType.reactions) {
 				embed.title = t('cmd.clean.title');
