@@ -106,7 +106,7 @@ export class CommandsService {
 			}
 		}
 
-		// Figure out which command is being run
+		// Save some constant stuff
 		let content = message.content.trim();
 		const sets = guild
 			? await this.client.cache.settings.get(guild.id)
@@ -115,6 +115,18 @@ export class CommandsService {
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
 			i18n.__({ locale: lang, phrase: key }, replacements);
+
+		// Check if we're executing the command in a valid channel
+		if (sets.channels && sets.channels.length) {
+			if (!sets.channels.includes(message.channel.id)) {
+				return;
+			}
+		}
+		if (sets.ignoredChannels && sets.ignoredChannels.length) {
+			if (sets.ignoredChannels.includes(message.channel.id)) {
+				return;
+			}
+		}
 
 		// Process prefix first so we can use any possible prefixes
 		if (content.startsWith(sets.prefix)) {

@@ -65,6 +65,8 @@ export type SettingsObject = {
 	lang: Lang;
 	logChannel: string;
 	getUpdates: boolean;
+	channels: string[];
+	ignoredChannels: string[];
 
 	joinMessage: string;
 	joinMessageChannel: string;
@@ -167,6 +169,16 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		type: 'Boolean',
 		grouping: [SettingsGroup.general],
 		defaultValue: true
+	},
+	channels: {
+		type: 'Channel[]',
+		grouping: [SettingsGroup.general],
+		defaultValue: []
+	},
+	ignoredChannels: {
+		type: 'Channel[]',
+		grouping: [SettingsGroup.general],
+		defaultValue: []
 	},
 
 	joinMessage: {

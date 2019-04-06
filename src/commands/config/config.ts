@@ -45,24 +45,10 @@ export default class extends Command {
 		const embed = this.createEmbed();
 
 		if (!key) {
-			embed.title = t('cmd.config.title');
-			embed.description = t('cmd.config.text', { prefix }) + '\n\n';
-
-			const configs: { [x: string]: string[] } = {};
-			Object.keys(settingsInfo).forEach((k: SettingsKey) => {
-				const info = settingsInfo[k];
-				if (!configs[info.grouping[0]]) {
-					configs[info.grouping[0]] = [];
-				}
-				configs[info.grouping[0]].push('`' + k + '`');
-			});
-
-			Object.keys(configs).forEach(group => {
-				embed.description +=
-					`**${group}**\n` + configs[group].join(', ') + '\n\n';
-			});
-
-			return this.sendReply(message, embed);
+			const cmd = this.client.cmds.commands.find(
+				c => c.name === BotCommand.interactiveConfig
+			);
+			return async () => await cmd.action(message, [], {}, context);
 		}
 
 		const oldVal = settings[key];
@@ -171,16 +157,22 @@ export default class extends Command {
 
 		const info = settingsInfo[key];
 
-		if (info.type === 'Channel') {
-			const channel = value as TextChannel;
-			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
-				return t('cmd.config.invalid.canNotReadMessages');
+		if (info.type === 'Channel' || info.type === 'Channel[]') {
+			let channels = value as TextChannel[];
+			if (info.type === 'Channel[]') {
+				channels = [value as TextChannel];
 			}
-			if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
-				return t('cmd.config.invalid.canNotSendMessages');
-			}
-			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
-				return t('cmd.config.invalid.canNotSendEmbeds');
+
+			for (const channel of channels) {
+				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
+					return t('cmd.config.invalid.canNotReadMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
+					return t('cmd.config.invalid.canNotSendMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
+					return t('cmd.config.invalid.canNotSendEmbeds');
+				}
 			}
 		}
 
