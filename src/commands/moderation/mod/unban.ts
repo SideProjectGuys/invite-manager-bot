@@ -40,11 +40,6 @@ export default class extends Command {
 		flags: {},
 		{ guild, me, settings, t }: Context
 	): Promise<any> {
-		let targetMember = guild.members.get(targetUser.id);
-		if (!targetMember) {
-			targetMember = await guild.getRESTMember(targetUser.id);
-		}
-
 		const embed = this.client.mod.createBasicEmbed(targetUser);
 
 		if (!me.permission.has(Permissions.BAN_MEMBERS)) {

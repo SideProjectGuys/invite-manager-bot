@@ -175,6 +175,8 @@ export enum SettingsKey {
 	lang = 'lang',
 	getUpdates = 'getUpdates',
 	logChannel = 'logChannel',
+	channels = 'channels',
+	ignoredChannels = 'ignoredChannels',
 
 	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',

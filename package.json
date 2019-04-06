@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "5.1.0",
+	"version": "6.0.0",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -26,6 +26,7 @@
 	},
 	"homepage": "https://docs.invitemanager.co/bot/",
 	"dependencies": {
+		"@sentry/node": "5.0.5",
 		"amqplib": "0.5.3",
 		"axios": "0.18.0",
 		"bufferutil": "4.0.1",

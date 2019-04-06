@@ -45,24 +45,10 @@ export default class extends Command {
 		const embed = this.createEmbed();
 
 		if (!key) {
-			embed.title = t('cmd.config.title');
-			embed.description = t('cmd.config.text', { prefix }) + '\n\n';
-
-			const configs: { [x: string]: string[] } = {};
-			Object.keys(settingsInfo).forEach((k: SettingsKey) => {
-				const info = settingsInfo[k];
-				if (!configs[info.grouping[0]]) {
-					configs[info.grouping[0]] = [];
-				}
-				configs[info.grouping[0]].push('`' + k + '`');
-			});
-
-			Object.keys(configs).forEach(group => {
-				embed.description +=
-					`**${group}**\n` + configs[group].join(', ') + '\n\n';
-			});
-
-			return this.sendReply(message, embed);
+			const cmd = this.client.cmds.commands.find(
+				c => c.name === BotCommand.interactiveConfig
+			);
+			return async () => await cmd.action(message, [], {}, context);
 		}
 
 		const oldVal = settings[key];
@@ -171,16 +157,22 @@ export default class extends Command {
 
 		const info = settingsInfo[key];
 
-		if (info.type === 'Channel') {
-			const channel = value as TextChannel;
-			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
-				return t('cmd.config.invalid.canNotReadMessages');
+		if (info.type === 'Channel' || info.type === 'Channel[]') {
+			let channels = value as TextChannel[];
+			if (info.type === 'Channel[]') {
+				channels = [value as TextChannel];
 			}
-			if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
-				return t('cmd.config.invalid.canNotSendMessages');
-			}
-			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
-				return t('cmd.config.invalid.canNotSendEmbeds');
+
+			for (const channel of channels) {
+				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
+					return t('cmd.config.invalid.canNotReadMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
+					return t('cmd.config.invalid.canNotSendMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
+					return t('cmd.config.invalid.canNotSendEmbeds');
+				}
 			}
 		}
 
@@ -197,7 +189,6 @@ export default class extends Command {
 	): Promise<Function> {
 		const { guild, t, me } = context;
 		const member = message.member;
-		const user = member.user;
 
 		if (
 			value &&
@@ -206,32 +197,20 @@ export default class extends Command {
 			const preview = await this.client.msg.fillJoinLeaveTemplate(
 				value,
 				guild,
+				member,
 				{
-					id: member.id,
-					nick: member.nick,
-					user: {
-						id: user.id,
-						avatarUrl: user.avatarURL,
-						createdAt: user.createdAt,
-						bot: user.bot,
-						discriminator: user.discriminator,
-						username: user.username
+					invite: {
+						code: 'tEsTcOdE',
+						channel: message.channel as TextChannel
+					},
+					inviter: me,
+					invites: {
+						total: Math.round(Math.random() * 1000),
+						regular: Math.round(Math.random() * 1000),
+						custom: Math.round(Math.random() * 1000),
+						fake: Math.round(Math.random() * 1000),
+						leave: Math.round(Math.random() * 1000)
 					}
-				},
-				member.joinedAt,
-				'tEsTcOdE',
-				message.channel.id,
-				(message.channel as any).name,
-				me.id,
-				me.nick,
-				me.user.discriminator,
-				me,
-				{
-					total: Math.round(Math.random() * 1000),
-					regular: Math.round(Math.random() * 1000),
-					custom: Math.round(Math.random() * 1000),
-					fake: Math.round(Math.random() * 1000),
-					leave: Math.round(Math.random() * 1000)
 				}
 			);
 
