@@ -617,7 +617,7 @@ export class TrackingService {
 
 		let inviter: BasicMember = guild.members.get(inviterId);
 		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId).catch(() => null);
+			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
 		if (!inviter) {
 			inviter = {
