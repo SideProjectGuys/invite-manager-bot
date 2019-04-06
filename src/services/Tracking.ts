@@ -684,7 +684,7 @@ export class TrackingService {
 
 	public async insertGuildData(guild: Guild) {
 		// Get the invites
-		const invs = await guild.getInvites();
+		const invs = await guild.getInvites().catch(() => [] as Invite[]);
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
