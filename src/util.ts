@@ -8,6 +8,9 @@ import {
 	TextChannel
 } from 'eris';
 
+// Discord epoch (2015-01-01T00:00:00.000Z)
+const EPOCH = 1420070400000;
+
 export class FakeChannel extends TextChannel {
 	public listener: (data: any) => void;
 
@@ -21,6 +24,11 @@ export class FakeChannel extends TextChannel {
 		return new Promise(resolve => resolve());
 	}
 }
+
+export const deconstruct = (snowflake: string) => {
+	const BINARY = idToBinary(snowflake).padStart(64, '0');
+	return parseInt(BINARY.substring(0, 42), 2) + EPOCH;
+};
 
 export function idToBinary(num: string) {
 	let bin = '';
