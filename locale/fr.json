@@ -910,6 +910,11 @@
 			"notFound": "Cas introuvable",
 			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
 		},
+		"caseDelete": {
+			"title": "Case #{{ id }}",
+			"notFound": "Case not found",
+			"done": "Case deleted"
+		},
 		"botConfig": {
 			"title": "Configuration du bot personnalisé",
 			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
