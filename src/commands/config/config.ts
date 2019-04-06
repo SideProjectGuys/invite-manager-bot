@@ -159,7 +159,7 @@ export default class extends Command {
 
 		if (info.type === 'Channel' || info.type === 'Channel[]') {
 			let channels = value as TextChannel[];
-			if (info.type === 'Channel[]') {
+			if (info.type === 'Channel') {
 				channels = [value as TextChannel];
 			}
 
