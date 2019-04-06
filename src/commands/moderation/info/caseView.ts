@@ -35,7 +35,7 @@ export default class extends Command {
 			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
-		const strike = await strikes.find({
+		const strike = await strikes.findOne({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
@@ -49,27 +49,29 @@ export default class extends Command {
 			]
 		});
 
-		let user: BasicUser = await guild
-			.getRESTMember(strike.memberId)
-			.then(m => ({
-				id: m.user.id,
-				username: m.username,
-				discriminator: m.discriminator,
-				createdAt: m.createdAt,
-				avatarURL: m.avatarURL
-			}));
-		if (!user) {
-			const mem = strike as any;
-			user = {
-				id: strike.memberId,
-				username: mem['members.name'],
-				discriminator: mem['members.discriminator'],
-				createdAt: mem['members.createdAt'],
-				avatarURL: undefined
-			};
-		}
-
 		if (strike) {
+			let user: BasicUser = await guild
+				.getRESTMember(strike.memberId)
+				.then(m => ({
+					id: m.user.id,
+					username: m.username,
+					discriminator: m.discriminator,
+					createdAt: m.createdAt,
+					avatarURL: m.avatarURL
+				}))
+				.catch(() => undefined);
+
+			if (!user) {
+				const mem = strike as any;
+				user = {
+					id: strike.memberId,
+					username: mem['members.name'],
+					discriminator: mem['members.discriminator'],
+					createdAt: mem['members.createdAt'],
+					avatarURL: undefined
+				};
+			}
+
 			embed.description = t('cmd.caseView.strike', {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
