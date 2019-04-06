@@ -6,42 +6,42 @@
 			"invalid": "Not a valid value."
 		},
 		"user": {
-			"notFound": "User was not found.",
-			"multiple": "Multiple matching users found. {{{ users }}}"
+			"notFound": "Kullanıcı bulunamadı.",
+			"multiple": "Birden fazla eşleşen kullanıcı bulundu. {{{ users }}}"
 		},
 		"number": {
 			"invalid": "Not a valid number."
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
-			"notFound": "Command not found.",
+			"notFound": "Komut bulunamadı.",
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
-			"multiple": "Multiple matching channels found. {{{ channels }}}"
+			"notFound": "Kanal bulunamadı.",
+			"multiple": "Birden fazla eşlenen kanal bulundu. {{{ channels }}}"
 		},
 		"role": {
-			"notFound": "Role was not found.",
-			"multiple": "Multiple matching roles found. {{{ roles }}}"
+			"notFound": "Rol bulunamadı.",
+			"multiple": "Birden fazla eşleşen rol bulundu. {{{ roles }}}"
 		},
 		"boolean": {
 			"invalid": "Not a valid yes/no value."
 		},
 		"member": {
-			"notFound": "Member was not found.",
-			"multiple": "Multiple matching members found. {{{ members }}}"
+			"notFound": "Üye bulunamadı.",
+			"multiple": "Birden fazla eşleşen üye bulundu. {{{ members }}}"
 		}
 	},
 	"bot": {
 		"supportDiscord": {
-			"title": "Support Discord"
+			"title": "Destek Discord'u"
 		},
 		"invite": {
-			"title": "Add bot to your server"
+			"title": "Botu sunucuna ekle"
 		},
 		"website": {
-			"title": "Bot website"
+			"title": "Botun sitesi"
 		},
 		"patreon": {
 			"title": "Patreon"
@@ -50,10 +50,10 @@
 	"cmd": {
 		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"addInvites": {
-			"zero": "Adicionar zero convites realmente não faz muito sentido.",
+			"zero": "Adding zero invites doesn't really make sense...",
 			"amount": {
-				"positive": "Adicionado **{{ amount }}** convites para <@{{ member }}>, agora com **{{ totalInvites }}** convites.",
-				"negative": "Removido **{{ amount }}** convites para <@{{ member }}>, agora com **{{ totalInvites }}** convites."
+				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites.",
+				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites."
 			},
 			"self": {
 				"args": {
@@ -67,7 +67,7 @@
 		"addRank": {
 			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}",
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
-			"roleTooHigh": "O cargo ***{{ role }}** é maior do que meu cargo (**{{ myRole }}**), Então eu não vou ser capaz de atribuí-lo em membros que tiverem ele.",
+			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
 			"self": {
 				"args": {
 					"role": "The role which the user will receive when reaching this rank.",
@@ -79,8 +79,8 @@
 		},
 		"ban": {
 			"error": "There was an error banning this user:\n{{ error }}",
-			"done": "The user was successfully banned.",
-			"canNotBan": "I cannot ban this user.",
+			"done": "Kullanıcı başarıyla yasaklandı.",
+			"canNotBan": "Bu kullanıcıyı yasaklayamam.",
 			"self": {
 				"args": {
 					"user": "User to ban.",
@@ -89,19 +89,19 @@
 				},
 				"description": "Ban a member from the server."
 			},
-			"missingPermissions": "I need the `Ban Members` permission to use this command."
+			"missingPermissions": "Bu komutu kullanmam için `Kullanıcıyı Yasakla` yetkimin olması gerek."
 		},
 		"botInfo": {
-			"version": "Versão",
-			"uptime": "Tempo de Atividade",
-			"guilds": "Guilda",
-			"members": "Membros",
+			"version": "Version",
+			"uptime": "Uptime",
+			"guilds": "Guilds",
+			"members": "Üyeler",
 			"shards": {
-				"current": "Shard Atual",
-				"total": "Shard Total"
+				"current": "Current Shard",
+				"total": "Total Shards"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Bot hakkında genel bilgi al."
 			},
 			"premium": {
 				"title": "Premium",
@@ -123,7 +123,7 @@
 				"total": "Punishments Total",
 				"totalText": "{{{ amount }}} punishments."
 			},
-			"noHistory": "User does not have any history.",
+			"noHistory": "Kullanıcı geçmişi yok.",
 			"self": {
 				"args": {
 					"user": "User to check."
@@ -133,8 +133,8 @@
 		},
 		"clean": {
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
-			"error": "Error",
-			"title": "Deleted Messages",
+			"error": "Hata",
+			"title": "Silinmiş mesaj",
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
 			"self": {
 				"description": "Clean a channel of certain message types.",
@@ -153,7 +153,7 @@
 					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
 					"user": "The user to clear all invites from. If omitted clears all users."
 				},
-				"description": "Clear invites of the server/a user.",
+				"description": "Sunucudaki/kullanıcıdaki davetleri temizler.",
 				"flags": {
 					"date": "The date start at which invites should be counted. Default is today.",
 					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched."
@@ -161,31 +161,31 @@
 			}
 		},
 		"config": {
-			"title": "Suas configurações dos ajustes ",
-			"text": "Abaixo estão todas as definições de configuração do seu servidor.\nUse `{{ prefix }}config <key>` par ver uma unica configuração\nUse `{{ prefix }}config <key> <value>` para setar uma configuração <key> para <value>",
-			"canNotClear": "A configuração definida **{{ key }}** não pode estar em branco. Você pode usar `config {{ key }} default` para resetar ela para o modelo padrão",
-			"notSet": "Estas configurações não estão definidas.",
+			"title": "Your config settings",
+			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"notSet": "These settings are not set",
 			"current": {
-				"title": "Valor atual",
+				"title": "Current Value",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"notSet": "Esta configuração **não** está definida no momento\nUse `{{ prefix }}config {{ key }} <value>` para configurá-lo.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it."
 			},
 			"previous": {
-				"title": "Valor anterior"
+				"title": "Previous Value"
 			},
 			"new": {
-				"title": "Valor novo"
+				"title": "New Value"
 			},
-			"sameValue": "Essa configuração já está definida para esse valor.",
+			"sameValue": "This config is already set to that value.",
 			"changed": {
 				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"preview": {
-				"title": "Visualizar",
-				"nextMessage": "<Veja a proxima mensagem>"
+				"title": "Preview",
+				"nextMessage": "<See next message>"
 			},
-			"none": "Nenhum",
+			"none": "None",
 			"invalid": {
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
@@ -200,12 +200,12 @@
 			}
 		},
 		"fake": {
-			"title": "Convites fake.",
-			"none": "Nenhum convite falso detectado até agora.",
-			"noneSinceJoin": "Não houve convites falsos desde que o bot foi adicionado a este servidor.",
+			"title": "Sahte davetler",
+			"none": "No fake invites detected so far.",
+			"noneSinceJoin": "There have been no fake invites since the bot has been added to this server.",
 			"join": {
 				"entry": {
-					"text": "**{{ name }}** entrou **{{ times }} vezes**, convidado por:",
+					"text": "**{{ name }}** joined **{{ times }} times**, invited by:",
 					"multi": "**{{ name }}** (**{{ times }}** times)",
 					"single": "**{{ name }}**"
 				}
@@ -220,18 +220,18 @@
 		"help": {
 			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
 			"command": {
-				"title": "Comando"
+				"title": "Komut"
 			},
 			"description": {
-				"title": "Descrição"
+				"title": "Açıklama"
 			},
 			"usage": {
-				"title": "Uso"
+				"title": "Kullanım"
 			},
 			"aliases": {
-				"title": "Acrônimos"
+				"title": "Aliases"
 			},
-			"links": "Links",
+			"links": "Linkler",
 			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
 			"self": {
 				"args": {
@@ -242,11 +242,11 @@
 		},
 		"info": {
 			"lastJoined": {
-				"notInGuild": "Usuario não faz parte de sua guild",
-				"title": "Ultima entrada"
+				"notInGuild": "User is not part of your guild",
+				"title": "Son katılan"
 			},
 			"invites": {
-				"title": "Convites",
+				"title": "Davetler",
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 				"clear": {
 					"title": "Cleared invites",
@@ -254,39 +254,39 @@
 				}
 			},
 			"joined": {
-				"title": "Ingressou",
-				"text": "{{ amount }} vezes"
+				"title": "Katıldı",
+				"text": "{{ amount }} times"
 			},
 			"created": {
-				"title": "Criado"
+				"title": "Created"
 			},
 			"joins": {
-				"title": "Ingressa",
+				"title": "Joins",
 				"entry": {
 					"text": "{{ total }} times {{ time }}, invited by:",
 					"invite": "{{{ member }}} ({{ times }} times)"
 				},
 				"more": "Plus another {{ amount }} more joins",
-				"unknown": "Desconhecido (Isto só funciona com membros novos)"
+				"unknown": "unknown (this only works for new members)"
 			},
 			"regularInvites": {
 				"title": "Regular invites",
 				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
 				"more": "Plus another {{ amount }} more invite codes",
-				"none": "Este membro não convidou ninguém até agora."
+				"none": "This member has not invited anyone so far"
 			},
 			"bonusInvites": {
-				"title": "Convites bônus",
+				"title": "Bonus invites",
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "Este membro não recebeu nenhum bónus até agora",
+				"none": "This member has received no bonuses so far",
 				"noReason": "No reason",
 				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
-				"title": "Membros Invalidos",
+				"title": "Invited members",
 				"more": "Plus another {{ amount }} more invited members",
-				"none": "Este membro não convidou mais ninguém até agora.",
+				"none": "This member has not invited anyone else so far",
 				"details": "Use {{{ cmd }}} for details."
 			},
 			"self": {
@@ -299,23 +299,23 @@
 			}
 		},
 		"inviteCodes": {
-			"title": "Você tem os seguintes códigos no servidor {{ guild }}",
-			"noCodes": "Você não tem nenhum codigo de convite ativo. Por favor, pergunte a um moderador do servidor como criar um.",
+			"title": "You have the following codes on the server {{ guild }}",
+			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one.",
 			"recommendedCode": {
-				"title": "Codigo de convite recomendado",
-				"none": "Por favor, crie um codigo de convite permamente"
+				"title": "Recommended invite code",
+				"none": "Please create a permanent invite code."
 			},
 			"permanent": {
-				"title": "Permanente",
-				"text": "Estes convites não expiram.",
+				"title": "Permanent",
+				"text": "These invites don't expire.",
 				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}"
 			},
 			"temporary": {
-				"title": "Temporario",
-				"text": "Estes convites expiram após um certo tempo",
+				"title": "Temporary",
+				"text": "These invites expire after a certain time.",
 				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}\r\n**Expires**: {{ expires }}"
 			},
-			"dmSent": "Enviei-lhe uma DM com todos os códigos de seu convites.",
+			"dmSent": "Senin Özel Mesajlarına tüm davet kodlarını gönderdim.",
 			"self": {
 				"description": "Get a list of all your invite codes"
 			}
@@ -330,7 +330,7 @@
 				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
 			},
 			"highestRank": {
-				"self": "Congratulations, you currently have the highest rank!",
+				"self": "Tebrikler, şuan en yüksek rütbedesin!",
 				"other": "{{{ target }}} currently has the highest rank!"
 			},
 			"self": {
@@ -341,9 +341,9 @@
 			}
 		},
 		"kick": {
-			"missingPermissions": "I need the `Kick Members` permission to kick members",
-			"canNotKick": "I cannot kick this user.",
-			"done": "The user was successfully kicked.",
+			"missingPermissions": "Üyeleri atmam için `Üyeleri At` yetkimin olması gerek",
+			"canNotKick": "Bu kullanıcıyı atamam.",
+			"done": "Kullanıcı başarıyla atıldı.",
 			"error": "There was an error kicking this user:\n{{ error }}",
 			"self": {
 				"args": {
@@ -354,22 +354,22 @@
 			}
 		},
 		"leaderboard": {
-			"title": "Leaderboard",
-			"invalidDate": "Data invalida: {{ date }}",
-			"noInvites": "Sem Convites!",
+			"title": "Liderlik Tablosu",
+			"invalidDate": "Invalid date: {{ date }}",
+			"noInvites": "Davet yok!",
 			"from": "Invites since {{{ from }}}",
-			"comparedTo": "Alterações em comparação com {{ to }}",
+			"comparedTo": "changes compared to {{{ to }}}",
 			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"col": {
-				"change": "Trocar",
-				"name": "Nome",
+				"change": "Change",
+				"name": "Name",
 				"total": "T",
-				"regular": "R",
+				"regular": "N",
 				"custom": "B",
-				"fake": "F",
-				"leave": "L"
+				"fake": "S",
+				"leave": "Ç"
 			},
-			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
+			"legend": "`T` = Toplam\n`N` = Normal\r\n`B` = Bonus\r\n`S` = Sahte Davetli\r\n`Ç` = Çıkanlar",
 			"self": {
 				"args": {
 					"page": "Which page of the leaderboard to get.",
@@ -391,21 +391,21 @@
 			},
 			"notSet": "This member config settings is currently not set for any members",
 			"current": {
-				"title": "Valor atual",
+				"title": "Current Value",
 				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it."
 			},
 			"previous": {
-				"title": "Antigo valor"
+				"title": "Previous Value"
 			},
 			"new": {
-				"title": "Novo valor"
+				"title": "New Value"
 			},
 			"sameValue": "This member config is already set to that value",
 			"changed": {
 				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
-			"none": "Nenhum",
+			"none": "None",
 			"self": {
 				"args": {
 					"key": "The member config setting which you want to show/change.",
@@ -416,14 +416,14 @@
 			}
 		},
 		"members": {
-			"members": "Membros",
-			"online": "Online",
-			"humans": "Humanos",
-			"bots": "Robos",
+			"members": "Üyeler",
+			"online": "Çevrimiçi",
+			"humans": "İnsanlar",
+			"bots": "Botlar",
 			"joined": {
-				"day": "Entrou nas ultimas 24h",
-				"week": "Entrou esta semana",
-				"month": "Entrou este mês"
+				"day": "Son 24 saatte katıldı",
+				"week": "Bu hafta katıldı",
+				"month": "Bu ay katıldı"
 			},
 			"self": {
 				"description": "Show member count of current server."
@@ -445,8 +445,8 @@
 		},
 		"purge": {
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
-			"error": "Error",
-			"title": "Deleted Messages",
+			"error": "Hata",
+			"title": "Silinmiş mesajlar",
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
 			"self": {
 				"args": {
@@ -460,7 +460,7 @@
 			"title": "Delete Messages",
 			"none": "No messages found to delete.",
 			"msgNotFound": "Could not find messageID in the last 100 messages.",
-			"error": "Error",
+			"error": "Hata",
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
 			"self": {
 				"args": {
@@ -470,16 +470,16 @@
 			}
 		},
 		"ranks": {
-			"none": "Nenhum rank foi criado ainda",
+			"none": "No ranks have been created yet.",
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
-			"title": "Cargos",
+			"title": "Ranks",
 			"self": {
 				"description": "Show all ranks."
 			}
 		},
 		"removeRank": {
-			"rankNotFound": "Cargo {{ role }} não existe.",
-			"done": "Cargo {{ role }} removido.",
+			"rankNotFound": "Rank {{{ role }}} does not exist!",
+			"done": "Rank {{{ role }}} removed.",
 			"self": {
 				"args": {
 					"rank": "The for which you want to remove the rank."
@@ -488,7 +488,7 @@
 			}
 		},
 		"restoreInvites": {
-			"done": "Convites restaurados{{! args.user ? ` for <@${args.user}>` : '' !}}",
+			"done": "Restored invites",
 			"self": {
 				"args": {
 					"user": "The user to restore all invites to. If omitted restores invites for all users."
@@ -497,22 +497,22 @@
 			}
 		},
 		"setup": {
-			"title": "Configurar ate InviteManager",
-			"text": "Após convidar o bot, todos os invites serão buscados automaticamente.",
+			"title": "Setting up InviteManager",
+			"text": "After inviting the bot, all invites will be tracked automatically.",
 			"joinLeave": {
-				"title": "Configurar o canal para a messagem de entrada e saida",
-				"text": "Se você deseja exibir a messagem de entrada e saida em um de seus canais, você tem que configurar este canal fazendo `!config leaveMessageChannel #channel`. Verifique se o bot tem permissão de escrever nesses canais."
+				"title": "Setting join and leave message channel",
+				"text": "If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!"
 			},
 			"prefix": {
-				"title": "Mudando o prefixo",
-				"text": "Você pode trocar o prefixo fazendo `!config prefix !`\n\nSe você não sabe o prefixo do bot, você pode procurar ele usando `@InviteManager config prefix`"
+				"title": "Changing the prefix",
+				"text": "You can change the prefix by doing `!config prefix !`\n\nIf you don't know the bots prefix, you can find it using `@InviteManager config prefix`."
 			},
 			"faq": {
-				"title": "FAQs e mais.",
+				"title": "FAQs and more",
 				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
-				"title": "Ajuda",
+				"title": "Yardım",
 				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}"
 			},
 			"premium": {
@@ -520,12 +520,12 @@
 				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features."
 			},
 			"manageGuild": {
-				"title": "Faltando a permissão: Gerenciar Servidor",
-				"text": "O bot não tem a permissão \"Gerenciar Servidor\". Esta permissão é necessaria para ver os convites dos usuarios. Sem essa permissão a messagem de entrada não funcionara."
+				"title": "Missing permission: Manage Server",
+				"text": "The bot does not have the \"Manage Server\" permission. This permission is required to read the invites of the user. Without this permission the join messages won't work."
 			},
 			"manageRoles": {
-				"title": "Faltando a permissão: Gerenciar Cargos",
-				"text": "O bot não tem a permissão \"Gerenciar Cargos\". Esta permissão é necessaria para dar o cargo ao usuario. Sem esta permissão os membros não podem ser promovidos automaticamente."
+				"title": "Missing permission: Manage Roles",
+				"text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted."
 			},
 			"viewAuditLogs": {
 				"title": "Missing permission: View Audit Logs",
@@ -536,7 +536,7 @@
 			}
 		},
 		"softBan": {
-			"missingPermissions": "I need the `Ban Members` permission to use this command",
+			"missingPermissions": "Bu komutu kullanmam için `Kullanıcıyı Yasakla` yetkimin olması gerek.",
 			"canNotSoftBan": "I cannot soft-ban this user.",
 			"done": "The user was successfully soft-banned.",
 			"error": "There was an error banning this user:\n{{ error }}",
@@ -554,7 +554,7 @@
 			"done": "Removed fake invites!",
 			"none": "No fake invites found.",
 			"self": {
-				"description": "Remove fake invites from all users."
+				"description": "Tüm kullanıcılardan sahte davetliler temizlendi."
 			}
 		},
 		"strikeConfig": {
@@ -851,7 +851,7 @@
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"new": "Enter a new value:",
 			"values": {
-				"boolean": "`Yes` or `No`",
+				"boolean": "`Evet` veya  `Hayır`",
 				"string": "Any text",
 				"channel": "Any channel, for example: #general",
 				"role": "Any role, for example: @Admin",
@@ -1002,7 +1002,7 @@
 					"description": "Leave related settings, such as leave message."
 				},
 				"leaderboard": {
-					"title": "Leaderboard",
+					"title": "Liderlik Tablosu",
 					"description": "Settings for the leaderboard, such as the visual style."
 				},
 				"fakes": {
@@ -1034,11 +1034,11 @@
 					"title": "settings.groups.moderation.invites.title"
 				},
 				"links": {
-					"description": "Links",
+					"description": "Linkler",
 					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
-					"description": "Banned Words",
+					"description": "Yasaklanmış Kelimeler",
 					"title": "settings.groups.moderation.bannedWords.title"
 				},
 				"caps": {
@@ -1064,7 +1064,7 @@
 			}
 		},
 		"lang": {
-			"title": "Language"
+			"title": "Dil"
 		},
 		"prefix": {
 			"title": "Prefix"
@@ -1187,7 +1187,7 @@
 			"title": "Enabled"
 		},
 		"autoModLinksWhitelist": {
-			"title": "Whitelist"
+			"title": "Betaz liste"
 		},
 		"autoModLinksBlacklist": {
 			"title": "Blacklist"
@@ -1199,7 +1199,7 @@
 			"title": "Enabled"
 		},
 		"autoModWordsBlacklist": {
-			"title": "Blacklist"
+			"title": "Kara liste"
 		},
 		"autoModAllCapsEnabled": {
 			"title": "Enabled"

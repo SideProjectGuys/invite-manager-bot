@@ -48,7 +48,7 @@
 		}
 	},
 	"cmd": {
-		"error": "There was an error executing the command.",
+		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"addInvites": {
 			"zero": "Nu prea are sens sa adaugi 0 invitatii...",
 			"amount": {
@@ -106,7 +106,8 @@
 			"premium": {
 				"title": "Premium",
 				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium."
+				"none": "This server currently **does not** have premium.",
+				"custom": "You are using a custom version of the bot!"
 			}
 		},
 		"check": {
@@ -178,22 +179,17 @@
 			},
 			"sameValue": "Acest config este deja setat la acea valoare.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} none` to reset it to the default."
+				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"preview": {
 				"title": "Previzualizeaza",
 				"nextMessage": "<See next message>"
 			},
 			"none": "Niciuna ",
-			"channel": {
-				"canNotReadMessages": "Nu am permisiuni sa **citesc mesaje** in acel canal.",
-				"canNotSendMessages": "Nu am permisiuni sa **trimit mesaje** in acel canal.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
-			},
 			"invalid": {
-				"lang": "Invalid language **{{ value }}**. The following languages are supported: {{ langs }}",
-				"leaderboardStyle": "Invalid leaderboard style **{{ value }}**. The following styles are supported: {{ styles }}",
-				"rankAssignmentStyle": "Invalid rank assignment style **{{ value }}**. The following styles are supported: {{ styles }}"
+				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
+				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
 			},
 			"self": {
 				"args": {
@@ -222,7 +218,7 @@
 			}
 		},
 		"help": {
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using \\`{{ prefix }}help <command>\\` (e.g. \\`{{ prefix }}help add-ranks\\`)\n\nArguments are listed after the command. Parentheses \\`()\\` indicate an **optional** argument. (e.g. \\`(reason)\\` means the \\`reason\\` is optional)",
+			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
 			"command": {
 				"title": "Comanda"
 			},
@@ -513,7 +509,7 @@
 			},
 			"faq": {
 				"title": "FAQs and more",
-				"text": "Use the `!faq` command for more info, eg. how to change the prefix or customize the join/leave messages.\n\nA complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/"
 			},
 			"help": {
 				"title": "Help",
@@ -659,13 +655,15 @@
 				"currentlyActive": "There is already a premium subscription active on this server.",
 				"done": "Premium has been successfully activated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"deactivate": {
 				"title": "Deactivate premium on this server",
 				"done": "Premium has been successfully deactivated for this server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"noGuild": "You must run this command inside a server."
+				"noGuild": "You must run this command inside a server.",
+				"customBot": "You are using a custom bot. Custom bots always have premium."
 			},
 			"check": {
 				"title": "Check for a Premium Subscription",
@@ -911,6 +909,44 @@
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
 			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+		},
+		"botConfig": {
+			"title": "Custom Bot Config",
+			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"notSet": "These settings are not set",
+			"current": {
+				"title": "Current Value",
+				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it."
+			},
+			"previous": {
+				"title": "Previous Value"
+			},
+			"new": {
+				"title": "New Value"
+			},
+			"sameValue": "This config is already set to that value.",
+			"changed": {
+				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+			},
+			"preview": {
+				"title": "Preview",
+				"nextMessage": "<See next message>"
+			},
+			"none": "None",
+			"invalid": {
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+			},
+			"self": {
+				"args": {
+					"key": "The bot config setting which you want to show/change.",
+					"value": "The new value of the setting."
+				},
+				"description": "Show and change the config of the bot."
+			}
 		}
 	},
 	"permissions": {
@@ -982,37 +1018,48 @@
 				"title": "Moderation",
 				"description": "Moderation and auto moderation settings.",
 				"general": {
-					"description": "General"
+					"description": "General",
+					"title": "settings.groups.moderation.general.title"
 				},
 				"captcha": {
-					"description": "Captcha"
+					"description": "Captcha",
+					"title": "settings.groups.moderation.captcha.title"
 				},
 				"logging": {
-					"description": "Logging"
+					"description": "Logging",
+					"title": "settings.groups.moderation.logging.title"
 				},
 				"invites": {
-					"description": "Invites"
+					"description": "Invites",
+					"title": "settings.groups.moderation.invites.title"
 				},
 				"links": {
-					"description": "Links"
+					"description": "Links",
+					"title": "settings.groups.moderation.links.title"
 				},
 				"bannedWords": {
-					"description": "Banned Words"
+					"description": "Banned Words",
+					"title": "settings.groups.moderation.bannedWords.title"
 				},
 				"caps": {
-					"description": "Caps"
+					"description": "Caps",
+					"title": "settings.groups.moderation.caps.title"
 				},
 				"duplicate": {
-					"description": "Duplicate Messages"
+					"description": "Duplicate Messages",
+					"title": "settings.groups.moderation.duplicate.title"
 				},
 				"spam": {
-					"description": "Spam"
+					"description": "Spam",
+					"title": "settings.groups.moderation.spam.title"
 				},
 				"mentions": {
-					"description": "Mentions"
+					"description": "Mentions",
+					"title": "settings.groups.moderation.mentions.title"
 				},
 				"emojis": {
-					"description": "Emojis"
+					"description": "Emojis",
+					"title": "settings.groups.moderation.emojis.title"
 				}
 			}
 		},
