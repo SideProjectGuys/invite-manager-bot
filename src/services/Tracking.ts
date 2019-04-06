@@ -225,6 +225,24 @@ export class TrackingService {
 		}
 
 		if (inviteCodesUsed.length === 0) {
+			const vanityInv = await guild.getVanity();
+			if (vanityInv && vanityInv.code) {
+				inviteCodesUsed.push((vanityInv.code as any) as string);
+				invs.push({
+					code: vanityInv.code,
+					channel: null,
+					guild,
+					inviter: null,
+					uses: 0,
+					maxUses: 0,
+					maxAge: 0,
+					temporary: false,
+					vanity: true
+				} as any);
+			}
+		}
+
+		if (inviteCodesUsed.length === 0) {
 			console.error(
 				`NO USED INVITE CODE FOUND: g:${guild.id} | m: ${member.id} ` +
 					`| t:${member.joinedAt} | invs: ${JSON.stringify(newInvs)} ` +
@@ -268,9 +286,10 @@ export class TrackingService {
 		const channelPromise = channels.bulkCreate(
 			newAndUsedCodes
 				.map(inv => inv.channel)
+				.filter(c => !!c)
 				.map(channel => ({
 					id: channel.id,
-					guildId: member.guild.id,
+					guildId: guild.id,
 					name: channel.name
 				})),
 			{
@@ -290,9 +309,10 @@ export class TrackingService {
 			maxUses: inv.maxUses,
 			uses: inv.uses,
 			temporary: inv.temporary,
-			guildId: member.guild.id,
+			guildId: guild.id,
 			inviterId: inv.inviter ? inv.inviter.id : null,
-			clearedAmount: 0
+			clearedAmount: 0,
+			reason: (inv as any).vanity ? 'Vanity' : null
 		}));
 
 		// Update old invite codes that were used
