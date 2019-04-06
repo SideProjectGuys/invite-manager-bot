@@ -154,7 +154,7 @@ export class TrackingService {
 			return;
 		}
 
-		let invs = await guild.getInvites();
+		let invs = await guild.getInvites().catch(() => [] as Invite[]);
 		const lastUpdate = this.inviteStoreUpdate[guild.id];
 		const newInvs = this.getInviteCounts(invs);
 		const oldInvs = this.inviteStore[guild.id];
@@ -617,7 +617,7 @@ export class TrackingService {
 
 		let inviter: BasicMember = guild.members.get(inviterId);
 		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId).catch(() => null);
+			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
 		}
 		if (!inviter) {
 			inviter = {

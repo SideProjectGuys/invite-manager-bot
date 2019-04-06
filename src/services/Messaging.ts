@@ -335,10 +335,12 @@ export class MessagingService {
 			inviter.user.username + '#' + inviter.user.discriminator;
 
 		let memberName = member.nick ? member.nick : member.user.username;
-		memberName = JSON.stringify(memberName).substring(1, memberName.length + 1);
+		const encodedMemberName = JSON.stringify(memberName);
+		memberName = encodedMemberName.substring(1, encodedMemberName.length - 2);
 
 		let invName = inviter.nick ? inviter.nick : inviter.user.username;
-		invName = JSON.stringify(invName).substring(1, invName.length + 1);
+		const encodedInvName = JSON.stringify(invName);
+		invName = encodedInvName.substring(1, encodedInvName.length - 2);
 
 		const joinedAt = moment(member.joinedAt);
 		const createdAt = moment(member.user.createdAt);
@@ -449,7 +451,7 @@ export class MessagingService {
 		}
 
 		if (page > 0) {
-			await prevMsg.addReaction(upSymbol);
+			await prevMsg.addReaction(upSymbol).catch(() => undefined);
 		} else {
 			const users = await prevMsg.getReaction(upSymbol, 10);
 			if (users.find(u => u.id === author.id)) {
@@ -458,7 +460,7 @@ export class MessagingService {
 		}
 
 		if (page < maxPage - 1) {
-			await prevMsg.addReaction(downSymbol);
+			await prevMsg.addReaction(downSymbol).catch(() => undefined);
 		} else {
 			const users = await prevMsg.getReaction(downSymbol, 10);
 			if (users.find(u => u.id === author.id)) {
