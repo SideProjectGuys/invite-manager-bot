@@ -212,9 +212,9 @@ export class TrackingService {
 		}
 
 		if (inviteCodesUsed.length === 0) {
-			const vanityInv = await guild.getVanity();
+			const vanityInv = await guild.getVanity().catch(() => undefined);
 			if (vanityInv && vanityInv.code) {
-				inviteCodesUsed.push((vanityInv.code as any) as string);
+				inviteCodesUsed.push(vanityInv.code as string);
 				invs.push({
 					code: vanityInv.code,
 					channel: null,
