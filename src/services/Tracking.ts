@@ -359,15 +359,14 @@ export class TrackingService {
 		const lang = sets.lang;
 		const joinChannelId = sets.joinMessageChannel;
 
-		const joinChannel = joinChannelId
+		let joinChannel = joinChannelId
 			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
 
 		// Check if it's a valid channel
 		if (joinChannelId && !joinChannel) {
 			console.error(
-				`Guild ${guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
+				`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
 			);
 
 			// Reset the channel
@@ -378,16 +377,20 @@ export class TrackingService {
 			);
 		}
 
-		if (joinChannel && typeof joinChannel.createMessage !== 'function') {
-			withScope(scope => {
-				scope.setUser({ id: guild.id });
-				scope.setExtra('joinChannel', joinChannel);
-				scope.setExtra('joinChannelId', joinChannelId);
-				captureException(
-					new Error('Join channel does not have createMessage function')
-				);
-			});
-			return;
+		// Someone set a non-text channel as join channel
+		if (!(joinChannel instanceof TextChannel)) {
+			console.error(
+				`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
+			);
+
+			// Reset the channel
+			this.client.cache.settings.setOne(
+				guild.id,
+				SettingsKey.joinMessageChannel,
+				null
+			);
+
+			joinChannel = undefined;
 		}
 
 		// Auto remove leaves if enabled
