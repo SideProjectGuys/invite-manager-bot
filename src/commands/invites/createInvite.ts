@@ -66,7 +66,9 @@ export default class extends Command {
 			uses: 0,
 			guildId: inv.guild.id,
 			inviterId: message.author.id,
-			clearedAmount: 0
+			clearedAmount: 0,
+			isVanity: false,
+			isWidget: false
 		});
 
 		await this.client.cache.inviteCodes.setOne(

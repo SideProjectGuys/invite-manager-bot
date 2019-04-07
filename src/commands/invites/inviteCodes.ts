@@ -65,20 +65,39 @@ export default class extends Command {
 			code => !codes.find(c => c.code === code.code)
 		);
 
-		const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
-			code: code.code,
-			channelId: code.channel ? code.channel.id : null,
-			maxAge: code.maxAge,
-			maxUses: code.maxUses,
-			uses: code.uses,
-			temporary: code.temporary,
-			guildId: code.guild.id,
-			inviterId: code.inviter ? code.inviter.id : null,
-			clearedAmount: 0
-		}));
-
-		// Insert any new codes that haven't been used yet
 		if (newCodes.length > 0) {
+			const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
+				code: code.code,
+				channelId: code.channel ? code.channel.id : null,
+				maxAge: code.maxAge,
+				maxUses: code.maxUses,
+				uses: code.uses,
+				temporary: code.temporary,
+				guildId: code.guild.id,
+				inviterId: code.inviter ? code.inviter.id : null,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: !code.inviter
+			}));
+
+			const vanityInv = await guild.getVanity().catch(() => undefined);
+			if (vanityInv && vanityInv.code) {
+				newDbCodes.push({
+					code: vanityInv.code,
+					channelId: null,
+					guildId: guild.id,
+					inviterId: null,
+					uses: 0,
+					maxUses: 0,
+					maxAge: 0,
+					temporary: false,
+					clearedAmount: 0,
+					isVanity: true,
+					isWidget: false
+				});
+			}
+
+			// Insert any new codes that haven't been used yet
 			await channels.bulkCreate(
 				newCodes.map(c => ({
 					id: c.channel.id,
@@ -90,9 +109,9 @@ export default class extends Command {
 				}
 			);
 			await inviteCodes.bulkCreate(newDbCodes);
-		}
 
-		codes = codes.concat(newDbCodes);
+			codes = codes.concat(newDbCodes);
+		}
 
 		const validCodes = codes.filter(
 			c =>
