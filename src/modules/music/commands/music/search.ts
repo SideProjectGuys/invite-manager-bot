@@ -6,11 +6,10 @@ import { EnumResolver, StringResolver } from '../../../../framework/resolvers';
 import {
 	CommandGroup,
 	MusicCommand,
-	MusicPlatform,
+	MusicPlatformTypes,
 	MusicQueueItem
 } from '../../../../types';
-
-const ytdl = require('ytdl-core');
+import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -28,7 +27,7 @@ export default class extends Command {
 				{
 					name: 'platform',
 					short: 'p',
-					resolver: new EnumResolver(client, Object.values(MusicPlatform))
+					resolver: new EnumResolver(client, Object.values(MusicPlatformTypes))
 				}
 			],
 			group: CommandGroup.Music,
@@ -39,7 +38,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[searchTerm]: [string],
-		{ platform }: { platform: MusicPlatform },
+		{ platform }: { platform: MusicPlatformTypes },
 		{ t, guild }: Context
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
@@ -51,10 +50,18 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform = this.client.music.musicPlatformService.getPlatform(
-			MusicPlatform.YouTube
-		);
-		const { items } = await musicPlatform.search(searchTerm);
+		let musicPlatform: MusicPlatform;
+		if (platform) {
+			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+				platform
+			);
+		} else {
+			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+				MusicPlatformTypes.YouTube
+			);
+		}
+
+		const items = await musicPlatform.search(searchTerm);
 
 		const msg = await this.sendReply(message, {
 			author: {
@@ -63,12 +70,7 @@ export default class extends Command {
 			},
 			color: 6737151, // lightblue
 			title: `Search for ${searchTerm}`,
-			fields: items.map((item: any, index: number) => ({
-				name: `\`${index + 1}\`: ${item.snippet.title} **${
-					item.contentDetails.duration
-				}**`,
-				value: `Uploader: ${item.snippet.channelTitle}`
-			}))
+			fields: items.map((item, index) => item.toSearchEntry(index + 1))
 		});
 
 		for (let i = 0; i < this.choices.length; i++) {
@@ -85,29 +87,11 @@ export default class extends Command {
 		msg.delete();
 		message.delete();
 
-		const videoInfo = items[choice];
+		const musicItem = items[choice];
 
-		console.log(videoInfo);
-
-		const queueItem: MusicQueueItem = {
-			id: videoInfo.id,
-			title: videoInfo.snippet.title,
-			imageURL: videoInfo.snippet.thumbnails.default.url,
-			user: message.author,
-			platform: MusicPlatform.YouTube,
-			getStream: () =>
-				ytdl(`https://youtube.com/watch?v=${videoInfo.id}`, {
-					filter: 'audioonly'
-				}),
-			duration: null,
-			extras: [
-				{
-					name: 'Duration',
-					value: `${videoInfo.contentDetails.duration} seconds`
-				},
-				{ name: 'Channel', value: videoInfo.snippet.channelTitle }
-			]
-		};
+		const queueItem: MusicQueueItem = await musicItem.toQueueItem(
+			message.author
+		);
 
 		const conn = await this.client.music.getMusicConnection(guild);
 

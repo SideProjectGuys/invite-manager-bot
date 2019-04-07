@@ -7,7 +7,8 @@ import { IMClient } from '../../../client';
 import { MusicQueueItem } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
-import { MusicPlatformService } from '../models/MusicPlatformService';
+
+import { MusicPlatformService } from './MusicPlatformService';
 
 const ALPHA_INDEX: { [x: string]: string } = {
 	'&lt': '<',
@@ -124,56 +125,5 @@ export class MusicService {
 			':' +
 			s.toString().padStart(2, '0')
 		);
-	}
-
-	public parseYoutubeDuration(PT: string) {
-		let durationInSec = 0;
-		const matches = PT.match(
-			/P(?:(\d*)Y)?(?:(\d*)M)?(?:(\d*)W)?(?:(\d*)D)?T(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/i
-		);
-		const parts = [
-			{
-				// years
-				pos: 1,
-				multiplier: 86400 * 365
-			},
-			{
-				// months
-				pos: 2,
-				multiplier: 86400 * 30
-			},
-			{
-				// weeks
-				pos: 3,
-				multiplier: 604800
-			},
-			{
-				// days
-				pos: 4,
-				multiplier: 86400
-			},
-			{
-				// hours
-				pos: 5,
-				multiplier: 3600
-			},
-			{
-				// minutes
-				pos: 6,
-				multiplier: 60
-			},
-			{
-				// seconds
-				pos: 7,
-				multiplier: 1
-			}
-		];
-		for (var i = 0; i < parts.length; i++) {
-			if (typeof matches[parts[i].pos] !== 'undefined') {
-				durationInSec +=
-					parseInt(matches[parts[i].pos], 10) * parts[i].multiplier;
-			}
-		}
-		return durationInSec;
 	}
 }

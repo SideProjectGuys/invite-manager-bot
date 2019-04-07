@@ -11,10 +11,10 @@ import {
 import {
 	CommandGroup,
 	MusicCommand,
-	MusicPlatform,
+	MusicPlatformTypes,
 	MusicQueueItem
 } from '../../../../types';
-import { Platform } from '../../models/platforms/PlatformInterface';
+import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -32,7 +32,7 @@ export default class extends Command {
 				{
 					name: 'platform',
 					short: 'p',
-					resolver: new EnumResolver(client, Object.values(MusicPlatform))
+					resolver: new EnumResolver(client, Object.values(MusicPlatformTypes))
 				},
 				{
 					name: 'next',
@@ -48,7 +48,7 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[link]: [string],
-		{ platform, next }: { platform: MusicPlatform; next: boolean },
+		{ platform, next }: { platform: MusicPlatformTypes; next: boolean },
 		{ t, guild }: Context
 	): Promise<any> {
 		// TODO
@@ -61,7 +61,7 @@ export default class extends Command {
 			return;
 		}
 
-		let musicPlatform: Platform;
+		let musicPlatform: MusicPlatform;
 		if (platform) {
 			musicPlatform = this.client.music.musicPlatformService.getPlatform(
 				platform
@@ -74,40 +74,16 @@ export default class extends Command {
 
 		let item: MusicQueueItem;
 		if (musicPlatform) {
-			item = await musicPlatform.getVideoInfoForUrl(message, link);
+			const musicItem = await musicPlatform.getByLink(link);
+			item = await musicItem.toQueueItem(message.author);
 		} else {
 			musicPlatform = this.client.music.musicPlatformService.getPlatform(
-				MusicPlatform.YouTube
+				MusicPlatformTypes.YouTube
 			);
-			const { items } = await musicPlatform.search(link, 1);
+			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
-				const videoInfo2 = items[0];
-				const dur = this.client.music.parseYoutubeDuration(
-					videoInfo2.contentDetails.duration
-				);
-
-				const ytLink = `https://youtube.com/watch?v=${videoInfo2.id}`;
-
-				item = {
-					id: videoInfo2.id,
-					title: videoInfo2.snippet.title,
-					imageURL: videoInfo2.snippet.thumbnails.default.url,
-					user: message.author,
-					link: ytLink,
-					platform: MusicPlatform.YouTube,
-					getStream: async () =>
-						ytdl(ytLink, {
-							filter: 'audioonly'
-						}),
-					duration: dur,
-					extras: [
-						{
-							name: 'Duration',
-							value: this.client.music.formatTime(dur)
-						},
-						{ name: 'Channel', value: videoInfo2.snippet.channelTitle }
-					]
-				};
+				const musicItem = items[0];
+				item = await musicItem.toQueueItem(message.author);
 			}
 		}
 

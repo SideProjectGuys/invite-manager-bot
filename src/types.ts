@@ -175,7 +175,7 @@ export interface MusicQueueItem {
 	id: string;
 	title: string;
 	link?: string;
-	platform: MusicPlatform;
+	platform: MusicPlatformTypes;
 	duration: number | null;
 	user: BasicUser;
 	imageURL: string;
@@ -183,11 +183,12 @@ export interface MusicQueueItem {
 	getStream: () => Promise<string | Readable>;
 }
 
-export enum MusicPlatform {
+export enum MusicPlatformTypes {
 	YouTube = 'youtube',
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',
-	iHeartRADIO = 'iheartradio'
+	iHeartRADIO = 'iheartradio',
+	TuneIn = 'tuneIn'
 }
 
 export interface BasicInvite {

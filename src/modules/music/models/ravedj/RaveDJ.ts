@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
-import { MusicPlatform, MusicQueueItem } from '../../../../types';
+import { MusicPlatformTypes } from '../../../../types';
+import { MusicItem } from '../MusicItem';
+import { MusicPlatform } from '../MusicPlatform';
 
-import { Platform } from './PlatformInterface';
+import { RaveDJMusicItem } from './RaveDJMusicItem';
 
 export interface Thumbnails {
 	standard: string;
@@ -66,7 +67,12 @@ export interface IdTokenResponse {
 	localId: string;
 }
 
-export class RaveDJ extends Platform {
+export class RaveDJ extends MusicPlatform {
+	public supportsRewind: boolean = true;
+	public supportsSeek: boolean = true;
+	public supportsLyrics: boolean = false;
+	public supportsSearch: boolean = false;
+
 	private idToken: string;
 
 	public constructor(client: IMClient) {
@@ -78,8 +84,8 @@ export class RaveDJ extends Platform {
 		return url.startsWith('https://rave.dj');
 	}
 
-	public getPlatform(): MusicPlatform {
-		return MusicPlatform.RaveDJ;
+	public getPlatform(): MusicPlatformTypes {
+		return MusicPlatformTypes.RaveDJ;
 	}
 
 	private async getIdToken() {
@@ -95,10 +101,7 @@ export class RaveDJ extends Platform {
 		this.idToken = data.idToken;
 	}
 
-	public async getVideoInfoForUrl(
-		message: Message,
-		link: string
-	): Promise<MusicQueueItem> {
+	public async getByLink(link: string): Promise<MusicItem> {
 		const id = link.substr(link.indexOf('.dj/') + 4);
 
 		const res = await axios.get<RaveDjResponse>(
@@ -120,34 +123,20 @@ export class RaveDJ extends Platform {
 			throw new Error('INVALID_PLATFORM_URL');
 		}
 
-		return {
-			id,
-			title: `${data.artist} - ${data.title}`,
-			imageURL: data.thumbnails.default,
-			user: message.author,
-			link,
-			platform: MusicPlatform.RaveDJ,
-			duration: Number(data.duration),
-			getStream: async () => data.urls.audio,
-			extras: [
-				{
-					name: 'Duration',
-					value: this.client.music.formatTime(Number(data.duration))
-				},
-				{
-					name: 'Songs contained',
-					value: data.media
-						.slice(0, 10)
-						.map(
-							(medium, index) =>
-								`${index}: [${medium.title}](https://youtube.com/watch?v=${
-									medium.providerId
-								})`
-						)
-						.join('\n')
-				}
-			]
-		};
+		return new RaveDJMusicItem(this, {
+			id: data.id,
+			title: data.title,
+			link: `https://rave.dj/${data.id}`,
+			imageUrl: data.thumbnails.default,
+			artist: data.artist,
+			audioUrl: data.urls.audio,
+			duration: data.duration,
+			medias: data.media
+		});
+	}
+
+	public search(searchTerm: string, maxResults?: number): Promise<MusicItem[]> {
+		throw new Error('Method not implemented.');
 	}
 
 	public async mix(video1: string, video2: string): Promise<string> {

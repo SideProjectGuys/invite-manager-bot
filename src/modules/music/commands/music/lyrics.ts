@@ -5,6 +5,7 @@ import { Command, Context } from '../../../../framework/commands/Command';
 import { BooleanResolver } from '../../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../../types';
 import { MusicConnection } from '../../models/MusicConnection';
+import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -33,6 +34,18 @@ export default class extends Command {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isConnected() || !conn.isPlaying()) {
 			this.sendReply(message, 'I am currently not playing any music');
+			return;
+		}
+
+		const musicPlatform: MusicPlatform = this.client.music.musicPlatformService.getPlatform(
+			conn.getNowPlaying().platform
+		);
+
+		if (!musicPlatform.supportsSeek) {
+			this.sendReply(
+				message,
+				`Lyrics are not supported on platform ${musicPlatform.getPlatform()}`
+			);
 			return;
 		}
 

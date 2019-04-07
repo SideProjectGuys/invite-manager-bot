@@ -3,8 +3,12 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { StringResolver } from '../../../../framework/resolvers';
-import { CommandGroup, MusicCommand, MusicPlatform } from '../../../../types';
-import { RaveDJ } from '../../models/platforms/RaveDJ';
+import {
+	CommandGroup,
+	MusicCommand,
+	MusicPlatformTypes
+} from '../../../../types';
+import { RaveDJ } from '../../models/ravedj/RaveDJ';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -45,7 +49,7 @@ export default class extends Command {
 		}
 
 		const musicPlatform = this.client.music.musicPlatformService.getPlatform(
-			MusicPlatform.RaveDJ
+			MusicPlatformTypes.RaveDJ
 		) as RaveDJ;
 
 		console.log(video1, video2);
