@@ -483,6 +483,18 @@ export class TrackingService {
 			);
 		}
 
+		if (!invite.inviter) {
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('invite', invite);
+				scope.setExtra('isVanity', isVanity);
+				scope.setExtra('exactMatchCode', exactMatchCode);
+				scope.setExtra('possibleMatches', possibleMatches);
+				captureException(new Error('Invite has no inviter'));
+			});
+			return;
+		}
+
 		const invites = await this.client.invs.getInviteCounts(
 			guild.id,
 			invite.inviter.id
