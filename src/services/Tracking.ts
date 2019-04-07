@@ -1,3 +1,4 @@
+import { captureException, withScope } from '@sentry/node';
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -6,6 +7,7 @@ import { Op } from 'sequelize';
 import { IMClient } from '../client';
 import {
 	channels,
+	guilds,
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
@@ -99,6 +101,18 @@ export class TrackingService {
 		if (color.length < 6) {
 			color = '0'.repeat(6 - color.length) + color;
 		}
+
+		// Create the guild first, because this event sometimes
+		// gets triggered before 'guildCreate' for new guilds
+		await guilds.insertOrUpdate({
+			id: guild.id,
+			name: guild.name,
+			icon: guild.iconURL,
+			memberCount: guild.memberCount,
+			deletedAt: undefined,
+			banReason: undefined
+		});
+
 		await roles.insertOrUpdate({
 			id: role.id,
 			name: role.name,
@@ -111,6 +125,17 @@ export class TrackingService {
 	private async onGuildRoleDelete(guild: Guild, role: Role) {
 		// Ignore disabled guilds
 		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		if (!role) {
+			console.error('Role was null on guild role delete');
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('guild', guild);
+				scope.setExtra('role', role);
+				captureException(new Error('Role was null on guild role delete'));
+			});
 			return;
 		}
 
@@ -344,12 +369,25 @@ export class TrackingService {
 				`Guild ${guild.id} has invalid ` +
 					`join message channel ${joinChannelId}`
 			);
+
 			// Reset the channel
 			this.client.cache.settings.setOne(
 				guild.id,
 				SettingsKey.joinMessageChannel,
 				null
 			);
+		}
+
+		if (joinChannel && typeof joinChannel.createMessage !== 'function') {
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('joinChannel', joinChannel);
+				scope.setExtra('joinChannelId', joinChannelId);
+				captureException(
+					new Error('Join channel does not have createMessage function')
+				);
+			});
+			return;
 		}
 
 		// Auto remove leaves if enabled
@@ -443,6 +481,18 @@ export class TrackingService {
 					}
 				}
 			);
+		}
+
+		if (!invite.inviter) {
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('invite', invite);
+				scope.setExtra('isVanity', isVanity);
+				scope.setExtra('exactMatchCode', exactMatchCode);
+				scope.setExtra('possibleMatches', possibleMatches);
+				captureException(new Error('Invite has no inviter'));
+			});
+			return;
 		}
 
 		const invites = await this.client.invs.getInviteCounts(

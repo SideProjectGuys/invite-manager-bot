@@ -28,12 +28,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		const target = user
-			? user
-			: await members
-					.findOne({ where: { id: message.author.id }, raw: true })
-					.then(u => ({ ...u, username: u.name }))
-					.catch(() => undefined);
+		const target = user ? user : message.author;
 		const invites = await this.client.invs.getInviteCounts(guild.id, target.id);
 
 		let textMessage = '';
