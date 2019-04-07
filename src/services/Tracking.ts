@@ -356,12 +356,25 @@ export class TrackingService {
 				`Guild ${guild.id} has invalid ` +
 					`join message channel ${joinChannelId}`
 			);
+
 			// Reset the channel
 			this.client.cache.settings.setOne(
 				guild.id,
 				SettingsKey.joinMessageChannel,
 				null
 			);
+		}
+
+		if (joinChannel && typeof joinChannel.createMessage !== 'function') {
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('joinChannel', joinChannel);
+				scope.setExtra('joinChannelId', joinChannelId);
+				captureException(
+					new Error('Join channel does not have createMessage function')
+				);
+			});
+			return;
 		}
 
 		// Auto remove leaves if enabled
