@@ -31,7 +31,7 @@ export default class extends Command {
 			conn.getNowPlaying().platform
 		);
 
-		if (!musicPlatform.supportsSeek) {
+		if (!musicPlatform.supportsRewind) {
 			this.sendReply(
 				message,
 				`Rewind is not supported on platform ${musicPlatform.getPlatform()}`

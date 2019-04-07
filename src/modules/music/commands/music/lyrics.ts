@@ -41,7 +41,7 @@ export default class extends Command {
 			conn.getNowPlaying().platform
 		);
 
-		if (!musicPlatform.supportsSeek) {
+		if (!musicPlatform.supportsLyrics) {
 			this.sendReply(
 				message,
 				`Lyrics are not supported on platform ${musicPlatform.getPlatform()}`

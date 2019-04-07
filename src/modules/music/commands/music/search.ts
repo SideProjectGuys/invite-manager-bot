@@ -61,6 +61,14 @@ export default class extends Command {
 			);
 		}
 
+		if (!musicPlatform.supportsSearch) {
+			this.sendReply(
+				message,
+				`Search is not supported on platform ${musicPlatform.getPlatform()}`
+			);
+			return;
+		}
+
 		const items = await musicPlatform.search(searchTerm);
 
 		const msg = await this.sendReply(message, {
