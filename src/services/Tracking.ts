@@ -7,6 +7,7 @@ import { Op } from 'sequelize';
 import { IMClient } from '../client';
 import {
 	channels,
+	guilds,
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
@@ -100,6 +101,18 @@ export class TrackingService {
 		if (color.length < 6) {
 			color = '0'.repeat(6 - color.length) + color;
 		}
+
+		// Create the guild first, because this event sometimes
+		// gets triggered before 'guildCreate' for new guilds
+		await guilds.insertOrUpdate({
+			id: guild.id,
+			name: guild.name,
+			icon: guild.iconURL,
+			memberCount: guild.memberCount,
+			deletedAt: undefined,
+			banReason: undefined
+		});
+
 		await roles.insertOrUpdate({
 			id: role.id,
 			name: role.name,
