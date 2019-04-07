@@ -1,3 +1,4 @@
+import { captureException, withScope } from '@sentry/node';
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -111,6 +112,17 @@ export class TrackingService {
 	private async onGuildRoleDelete(guild: Guild, role: Role) {
 		// Ignore disabled guilds
 		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		if (!role) {
+			console.error('Role was null on guild role delete');
+			withScope(scope => {
+				scope.setUser({ id: guild.id });
+				scope.setExtra('guild', guild);
+				scope.setExtra('role', role);
+				captureException(new Error('Role was null on guild role delete'));
+			});
 			return;
 		}
 
