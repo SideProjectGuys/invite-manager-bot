@@ -187,6 +187,7 @@
 			},
 			"none": "Aucun",
 			"invalid": {
+				"mustBeTextChannel": "That channel is not a text channel.",
 				"canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce salon.",
 				"canNotSendMessages": "Je n'ai pas la permission **d'envoyer des messages** dans ce salon.",
 				"canNotSendEmbeds": "Je n'ai pas la permission **d'intégrer des liens** dans ce salon."
