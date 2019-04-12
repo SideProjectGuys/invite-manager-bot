@@ -14,10 +14,16 @@ if (process.argv.length < 5) {
 	console.error('-------------------------------------');
 	process.exit(1);
 }
-const token = process.argv[2];
-const shardId = parseInt(process.argv[3], 10);
-const shardCount = parseInt(process.argv[4], 10);
-const _prefix = process.argv[5];
+const rawArgs = process.argv.slice(2);
+const args = rawArgs.filter(a => !a.startsWith('--'));
+const flags = rawArgs.filter(a => a.startsWith('--'));
+
+const noRabbitMq = flags.some(f => f === '--no-rabbitmq');
+
+const token = args[0];
+const shardId = Number(args[1]);
+const shardCount = Number(args[2]);
+const _prefix = args[3];
 
 // Initialize sentry
 init({ dsn: config.sentryDsn, release: pkg.version });
@@ -36,26 +42,29 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 console.log('-------------------------------------');
 console.log('Syncing database...');
 console.log('-------------------------------------');
-sequelize.sync().then(() => {
-	console.log('-------------------------------------');
-	console.log('Connecting to RabbitMQ...');
-	console.log('-------------------------------------');
-	amqplib.connect(config.rabbitmq).then(async conn => {
+sequelize.sync().then(async () => {
+	let conn: amqplib.Connection = null;
+	if (!noRabbitMq) {
 		console.log('-------------------------------------');
-		console.log(`This is shard ${shardId}/${shardCount}`);
+		console.log('Connecting to RabbitMQ...');
 		console.log('-------------------------------------');
-		const client = new IMClient(
-			pkg.version,
-			conn,
-			token,
-			shardId,
-			shardCount,
-			_prefix
-		);
+		conn = await amqplib.connect(config.rabbitmq);
+	}
 
-		console.log('-------------------------------------');
-		console.log('Starting bot...');
-		console.log('-------------------------------------');
-		client.connect();
-	});
+	console.log('-------------------------------------');
+	console.log(`This is shard ${shardId}/${shardCount}`);
+	console.log('-------------------------------------');
+	const client = new IMClient(
+		pkg.version,
+		conn,
+		token,
+		shardId,
+		shardCount,
+		_prefix
+	);
+
+	console.log('-------------------------------------');
+	console.log('Starting bot...');
+	console.log('-------------------------------------');
+	client.connect();
 });
