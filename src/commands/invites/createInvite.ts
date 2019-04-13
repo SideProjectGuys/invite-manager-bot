@@ -40,15 +40,14 @@ export default class extends Command {
 			return this.sendReply(message, t('permissions.createInviteCode'));
 		}
 
-		// TODO: Eris typescript is missing the 'unique' parameter
 		const inv = await channel.createInvite(
 			{
 				maxAge: 0,
 				maxUses: 0,
 				temporary: false,
 				unique: true
-			} as any,
-			name
+			},
+			name ? name : null
 		);
 
 		await channels.insertOrUpdate({
@@ -66,7 +65,9 @@ export default class extends Command {
 			uses: 0,
 			guildId: inv.guild.id,
 			inviterId: message.author.id,
-			clearedAmount: 0
+			clearedAmount: 0,
+			isVanity: false,
+			isWidget: false
 		});
 
 		await this.client.cache.inviteCodes.setOne(

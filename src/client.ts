@@ -284,9 +284,9 @@ export class IMClient extends Client {
 		});
 
 		// Services
-		await this.rabbitmq.init();
 		await this.cmds.init();
 		await this.tracking.init();
+		await this.rabbitmq.init();
 
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {

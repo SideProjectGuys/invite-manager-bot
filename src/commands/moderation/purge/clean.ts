@@ -79,9 +79,9 @@ export default class extends Command {
 		let error: any;
 		if (type === CleanType.reactions) {
 			for (const messageToBeDeleted of messagesToBeDeleted) {
-				await messageToBeDeleted.removeReactions();
+				await messageToBeDeleted.removeReactions().catch(() => undefined);
 			}
-			message.delete();
+			message.delete().catch(() => undefined);
 		} else {
 			messagesToBeDeleted.push(message);
 			[error] = await to(

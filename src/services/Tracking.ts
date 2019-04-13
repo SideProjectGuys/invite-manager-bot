@@ -1,4 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
+import axios from 'axios';
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -24,6 +25,8 @@ import { BasicMember } from './Messaging';
 
 const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
+const SERVER_WIDGET_URL = `https://discordapp.com/api/guilds/`;
+const INVITE_PREFIX = `https://discordapp.com/invite/`;
 
 export class TrackingService {
 	private client: IMClient;
@@ -325,7 +328,8 @@ export class TrackingService {
 			guildId: guild.id,
 			inviterId: inv.inviter ? inv.inviter.id : null,
 			clearedAmount: 0,
-			reason: (inv as any).vanity ? 'Vanity' : null
+			isVanity: !!(inv as any).vanity,
+			isWidget: !inv.inviter && !(inv as any).vanity
 		}));
 
 		// Update old invite codes that were used
@@ -359,15 +363,14 @@ export class TrackingService {
 		const lang = sets.lang;
 		const joinChannelId = sets.joinMessageChannel;
 
-		const joinChannel = joinChannelId
+		let joinChannel = joinChannelId
 			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
 
 		// Check if it's a valid channel
 		if (joinChannelId && !joinChannel) {
 			console.error(
-				`Guild ${guild.id} has invalid ` +
-					`join message channel ${joinChannelId}`
+				`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
 			);
 
 			// Reset the channel
@@ -378,16 +381,20 @@ export class TrackingService {
 			);
 		}
 
-		if (joinChannel && typeof joinChannel.createMessage !== 'function') {
-			withScope(scope => {
-				scope.setUser({ id: guild.id });
-				scope.setExtra('joinChannel', joinChannel);
-				scope.setExtra('joinChannelId', joinChannelId);
-				captureException(
-					new Error('Join channel does not have createMessage function')
-				);
-			});
-			return;
+		// Someone set a non-text channel as join channel
+		if (!(joinChannel instanceof TextChannel)) {
+			console.error(
+				`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
+			);
+
+			// Reset the channel
+			this.client.cache.settings.setOne(
+				guild.id,
+				SettingsKey.joinMessageChannel,
+				null
+			);
+
+			joinChannel = undefined;
 		}
 
 		// Auto remove leaves if enabled
@@ -483,15 +490,32 @@ export class TrackingService {
 			);
 		}
 
+		// Check if it's a server widget
 		if (!invite.inviter) {
-			withScope(scope => {
-				scope.setUser({ id: guild.id });
-				scope.setExtra('invite', invite);
-				scope.setExtra('isVanity', isVanity);
-				scope.setExtra('exactMatchCode', exactMatchCode);
-				scope.setExtra('possibleMatches', possibleMatches);
-				captureException(new Error('Invite has no inviter'));
-			});
+			if (joinChannel) {
+				joinChannel
+					.createMessage(
+						i18n.__(
+							{ locale: lang, phrase: 'messages.joinServerWidget' },
+							{ id: member.id }
+						)
+					)
+					.catch(err => {
+						// Missing permissions
+						if (
+							err.code === 50001 ||
+							err.code === 50020 ||
+							err.code === 50013
+						) {
+							// Reset the channel
+							this.client.cache.settings.setOne(
+								guild.id,
+								SettingsKey.joinMessageChannel,
+								null
+							);
+						}
+					});
+			}
 			return;
 		}
 
@@ -784,13 +808,29 @@ export class TrackingService {
 		// Collect concurrent promises
 		const promises: any[] = [];
 
+		const vanityInv = await guild.getVanity().catch(() => undefined);
+		if (vanityInv && vanityInv.code) {
+			newInviteCodes.push({
+				code: vanityInv.code,
+				channel: null,
+				guild,
+				inviter: null,
+				uses: 0,
+				maxUses: 0,
+				maxAge: 0,
+				temporary: false,
+				vanity: true
+			} as any);
+		}
+
 		// Add all new inviters to db
 		promises.push(
 			members.bulkCreate(
 				newInviteCodes
 					.map(i => i.inviter)
 					.filter(
-						(u, i, arr) => u && arr.findIndex(u2 => u2 && u2.id === u.id) === i
+						(u, i, arr) =>
+							!!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i
 					)
 					.map(m => ({
 						id: m.id,
@@ -809,7 +849,9 @@ export class TrackingService {
 			channels.bulkCreate(
 				newInviteCodes
 					.map(i => guild.channels.get(i.channel.id))
-					.filter((c, i, arr) => c && arr.findIndex(c2 => c2.id === c.id) === i)
+					.filter(
+						(c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i
+					)
 					.map(c => ({
 						id: c.id,
 						name: c.name,
@@ -834,7 +876,9 @@ export class TrackingService {
 			temporary: inv.temporary,
 			guildId: guild.id,
 			inviterId: inv.inviter ? inv.inviter.id : null,
-			clearedAmount: 0
+			clearedAmount: 0,
+			isVanity: (inv as any).vanity,
+			isWidget: !inv.inviter && !(inv as any).vanity
 		}));
 
 		// Then insert invite codes

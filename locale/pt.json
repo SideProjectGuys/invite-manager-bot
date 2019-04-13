@@ -187,6 +187,7 @@
 			},
 			"none": "Nenhum",
 			"invalid": {
+				"mustBeTextChannel": "That channel is not a text channel.",
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."

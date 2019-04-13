@@ -15,7 +15,7 @@ child.on('error', error => console.log(error));
 child.on('close', () => {
 	child = spawn(
 		'node',
-		['--inspect', './bin/bot.js', config.devToken, '1', '1'],
+		['--inspect', './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '1'],
 		{
 			stdio: 'inherit'
 		}

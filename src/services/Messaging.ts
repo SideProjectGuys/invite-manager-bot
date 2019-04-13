@@ -453,7 +453,9 @@ export class MessagingService {
 		if (page > 0) {
 			await prevMsg.addReaction(upSymbol).catch(() => undefined);
 		} else {
-			const users = await prevMsg.getReaction(upSymbol, 10);
+			const users = await prevMsg
+				.getReaction(upSymbol, 10)
+				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
 				prevMsg
 					.removeReaction(upSymbol, this.client.user.id)
@@ -464,7 +466,9 @@ export class MessagingService {
 		if (page < maxPage - 1) {
 			await prevMsg.addReaction(downSymbol).catch(() => undefined);
 		} else {
-			const users = await prevMsg.getReaction(downSymbol, 10);
+			const users = await prevMsg
+				.getReaction(downSymbol, 10)
+				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
 				prevMsg
 					.removeReaction(downSymbol, this.client.user.id)
