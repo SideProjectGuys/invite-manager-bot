@@ -22,6 +22,7 @@ import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
 
+const GUILDS_IN_PARALLEL = 10;
 const INVITE_CREATE = 40;
 
 export class TrackingService {
@@ -45,7 +46,11 @@ export class TrackingService {
 	}
 
 	public async init() {
-		const allGuilds = this.client.guilds;
+		// Save all guilds, sort descending by member count
+		// (Guilds with more members are more likely to get a join)
+		const allGuilds = [...this.client.guilds.values()].sort(
+			(a, b) => b.memberCount - a.memberCount
+		);
 
 		// Fetch all invites from DB
 		const allCodes = await inviteCodes.findAll({
@@ -67,21 +72,33 @@ export class TrackingService {
 				})
 		);
 
-		this.totalGuilds = allGuilds.size;
+		this.totalGuilds = allGuilds.length;
+		for (let j = 0; j < GUILDS_IN_PARALLEL; j++) {
+			const func = async () => {
+				const guild = allGuilds.shift();
 
-		for (const guild of allGuilds.values()) {
-			// Filter any guilds that have the pro tracker
-			if (this.client.disabledGuilds.has(guild.id)) {
-				return;
-			}
+				if (!guild) {
+					return;
+				}
 
-			// Insert data into db
-			await this.insertGuildData(guild);
+				// Filter any guilds that have the pro tracker
+				if (this.client.disabledGuilds.has(guild.id)) {
+					return;
+				}
 
-			console.log('EVENT(clientReady): Updated invite count for ' + guild.name);
+				// Insert data into db
+				await this.insertGuildData(guild);
 
-			this.readyGuilds++;
-			console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+				console.log(
+					'EVENT(clientReady): Updated invite count for ' + guild.name
+				);
+
+				this.readyGuilds++;
+				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+
+				setTimeout(func, 0);
+			};
+			func();
 		}
 	}
 
