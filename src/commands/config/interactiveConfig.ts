@@ -403,7 +403,7 @@ export default class extends Command {
 				if (userMsg.author.id === authorId) {
 					const newRawVal = userMsg.content;
 
-					await userMsg.delete();
+					await userMsg.delete().catch(() => undefined);
 
 					let newVal: any;
 
