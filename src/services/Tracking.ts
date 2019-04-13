@@ -1,5 +1,4 @@
 import { captureException, withScope } from '@sentry/node';
-import axios from 'axios';
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -23,7 +22,6 @@ import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
 
-const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
 
 export class TrackingService {
@@ -69,28 +67,22 @@ export class TrackingService {
 				})
 		);
 
-		let i = 0;
 		this.totalGuilds = allGuilds.size;
-		allGuilds.forEach(async guild => {
-			const func = async () => {
-				// Filter any guilds that have the pro tracker
-				if (this.client.disabledGuilds.has(guild.id)) {
-					return;
-				}
 
-				// Insert data into db
-				await this.insertGuildData(guild);
+		for (const guild of allGuilds.values()) {
+			// Filter any guilds that have the pro tracker
+			if (this.client.disabledGuilds.has(guild.id)) {
+				return;
+			}
 
-				console.log(
-					'EVENT(clientReady): Updated invite count for ' + guild.name
-				);
+			// Insert data into db
+			await this.insertGuildData(guild);
 
-				this.readyGuilds++;
-				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
-			};
-			setTimeout(func, i * GUILD_START_INTERVAL);
-			i++;
-		});
+			console.log('EVENT(clientReady): Updated invite count for ' + guild.name);
+
+			this.readyGuilds++;
+			console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+		}
 	}
 
 	private async onGuildRoleCreate(guild: Guild, role: Role) {
@@ -226,7 +218,7 @@ export class TrackingService {
 						},
 						guild: e.guild,
 						inviter: e.user,
-						uses: e.after.uses + 1,
+						uses: (e.after.uses as number) + 1,
 						maxUses: e.after.max_uses,
 						maxAge: e.after.max_age,
 						temporary: e.after.temporary,
