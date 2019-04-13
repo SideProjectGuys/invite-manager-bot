@@ -1,5 +1,4 @@
 import { captureException, withScope } from '@sentry/node';
-import axios from 'axios';
 import { Guild, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -22,7 +21,7 @@ import {
 import { BasicMember } from '../../../types';
 import { deconstruct } from '../../../util';
 
-const GUILD_START_INTERVAL = 50;
+const GUILDS_IN_PARALLEL = 10;
 const INVITE_CREATE = 40;
 
 export class TrackingService {
@@ -46,7 +45,11 @@ export class TrackingService {
 	}
 
 	public async init() {
-		const allGuilds = this.client.guilds;
+		// Save all guilds, sort descending by member count
+		// (Guilds with more members are more likely to get a join)
+		const allGuilds = [...this.client.guilds.values()].sort(
+			(a, b) => b.memberCount - a.memberCount
+		);
 
 		// Fetch all invites from DB
 		const allCodes = await inviteCodes.findAll({
@@ -68,12 +71,18 @@ export class TrackingService {
 				})
 		);
 
-		let i = 0;
-		this.totalGuilds = allGuilds.size;
-		allGuilds.forEach(async guild => {
+		this.totalGuilds = allGuilds.length;
+		for (let j = 0; j < GUILDS_IN_PARALLEL; j++) {
 			const func = async () => {
+				const guild = allGuilds.shift();
+
+				if (!guild) {
+					return;
+				}
+
 				// Filter any guilds that have the pro tracker
 				if (this.client.disabledGuilds.has(guild.id)) {
+					setTimeout(func, 0);
 					return;
 				}
 
@@ -86,10 +95,14 @@ export class TrackingService {
 
 				this.readyGuilds++;
 				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+				if (this.readyGuilds % 10 === 0) {
+					this.client.rabbitmq.sendStatusToManager();
+				}
+
+				setTimeout(func, 0);
 			};
-			setTimeout(func, i * GUILD_START_INTERVAL);
-			i++;
-		});
+			func();
+		}
 	}
 
 	private async onGuildRoleCreate(guild: Guild, role: Role) {
@@ -225,7 +238,7 @@ export class TrackingService {
 						},
 						guild: e.guild,
 						inviter: e.user,
-						uses: e.after.uses + 1,
+						uses: (e.after.uses as number) + 1,
 						maxUses: e.after.max_uses,
 						maxAge: e.after.max_age,
 						temporary: e.after.temporary,

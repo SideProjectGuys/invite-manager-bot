@@ -73,6 +73,7 @@ export class IMClient extends Client {
 	public config: any;
 	public type: BotType;
 	public settings: BotSettingsObject;
+	public hasStarted: boolean = false;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -146,6 +147,7 @@ export class IMClient extends Client {
 
 		this.version = version;
 		this.config = config;
+		this.type = config.bot.type;
 		if (_prefix) {
 			this.config.rabbitmq.prefix = _prefix;
 		}
@@ -190,7 +192,12 @@ export class IMClient extends Client {
 	}
 
 	private async onClientReady(): Promise<void> {
-		this.type = this.config.bot.type;
+		if (this.hasStarted) {
+			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
+			return;
+		}
+
+		this.hasStarted = true;
 
 		const set = await botSettings.find({ where: { id: this.user.id } });
 		this.settings = set ? set.value : { ...botDefaultSettings };
@@ -287,10 +294,10 @@ export class IMClient extends Client {
 			}
 		});
 
-		// Services
-		await this.cmds.init();
-		await this.tracking.init();
-		await this.rabbitmq.init();
+		// Services (don't await in case they take long)
+		this.cmds.init();
+		this.tracking.init();
+		this.rabbitmq.init();
 
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
@@ -615,23 +622,14 @@ export class IMClient extends Client {
 
 	private async onConnect() {
 		console.error('DISCORD CONNECT');
-		this.rabbitmq.sendToManager({
-			id: 'status',
-			cmd: ShardCommand.STATUS,
-			connected: true
-		});
 		this.gatewayConnected = true;
+		this.rabbitmq.sendStatusToManager();
 	}
 
 	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
-		this.rabbitmq.sendToManager({
-			id: 'status',
-			cmd: ShardCommand.STATUS,
-			connected: false,
-			error: err ? err.message : null
-		});
 		this.gatewayConnected = false;
+		this.rabbitmq.sendStatusToManager(err);
 
 		if (err) {
 			console.error(err);
