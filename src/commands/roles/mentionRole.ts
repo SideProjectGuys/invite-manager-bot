@@ -66,7 +66,14 @@ export default class extends Command {
 			if (!res) {
 				return;
 			}
-			await message.channel.createMessage(`<@&${role.id}>`);
+
+			const msg = await message.channel
+				.createMessage(`<@&${role.id}>`)
+				.catch(() => null as Message);
+			if (!msg) {
+				return;
+			}
+
 			await role.edit({ mentionable: false }, 'Done pinging role');
 			await message.delete().catch(() => undefined);
 		}
