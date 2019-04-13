@@ -774,7 +774,7 @@ export class ModerationService {
 		const reply = await this.client.msg.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(
-				() => reply.delete(),
+				() => reply.delete().catch(() => undefined),
 				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
 			);
 		}
