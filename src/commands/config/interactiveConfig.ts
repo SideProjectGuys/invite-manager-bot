@@ -469,7 +469,11 @@ export default class extends Command {
 		});
 
 		do {
-			await msg.edit({ embed });
+			const editMsg = await msg.edit({ embed }).catch(() => null as Message);
+			if (editMsg === null) {
+				// Quit menu on error
+				return;
+			}
 
 			const choice = await this.awaitChoice(authorId, msg);
 			if (choice === undefined) {
