@@ -690,7 +690,7 @@ export class ModerationService {
 		}
 
 		const newName = '▼ ' + name;
-		member.edit({ nick: newName }, 'Auto dehoist');
+		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
 		this.logViolationModAction(guild, member.user, type, amount, [
 			{ name: 'New name', value: newName },
