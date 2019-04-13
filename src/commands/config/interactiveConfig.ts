@@ -530,7 +530,7 @@ export default class extends Command {
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				msg.delete();
+				msg.delete().catch(() => undefined);
 
 				resolve(undefined);
 			};
