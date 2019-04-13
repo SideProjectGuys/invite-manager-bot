@@ -63,7 +63,7 @@ export default class extends Command {
 			description: 'Loading...'
 		});
 
-		message.delete();
+		message.delete().catch(() => undefined);
 
 		const msg = await this.sendReply(message, embed);
 
