@@ -1,4 +1,4 @@
-import { Message } from 'eris';
+import { Message, Invite } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
@@ -57,7 +57,7 @@ export default class extends Command {
 			raw: true
 		});
 
-		const activeCodes = (await guild.getInvites().catch(() => []))
+		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
