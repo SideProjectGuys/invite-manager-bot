@@ -23,7 +23,7 @@ export class MusicConnection {
 	private voiceChannel: VoiceChannel;
 	private player: LavaPlayer;
 	private nowPlayingMessage: Message;
-	private volume: number = 1.0;
+	private volume: number = 100;
 	private doPlayNext: boolean = true;
 	private speaking: Set<string> = new Set();
 	private repeat: boolean;
@@ -160,7 +160,7 @@ export class MusicConnection {
 
 			this.voiceChannel = channel;
 			this.player = (await channel.join({})) as LavaPlayer;
-			// this.connection.setVolume(this.volume);
+			this.player.setVolume(this.volume);
 			this.player.on('error', error => console.error(error));
 			this.player.on('speakingStart', this.onSpeakingStart);
 			this.player.on('speakingStop', this.onSpeakingEnd);

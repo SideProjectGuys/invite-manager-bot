@@ -34,7 +34,7 @@ export default class extends Command {
 			return;
 		}
 
-		conn.setVolume(volume / 100);
+		conn.setVolume(volume);
 
 		this.sendReply(message, `Changed volume to ${volume}`);
 	}
