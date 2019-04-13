@@ -56,7 +56,7 @@ export default class extends Command {
 			await role.edit({ mentionable: true }, 'Pinging role');
 			await message.channel.createMessage(`<@&${role.id}>`);
 			await role.edit({ mentionable: false }, 'Done pinging role');
-			await message.delete();
+			await message.delete().catch(() => undefined);
 		}
 	}
 }
