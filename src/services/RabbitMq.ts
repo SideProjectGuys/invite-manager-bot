@@ -86,7 +86,7 @@ export class RabbitMqService {
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			connected: this.client.gatewayConnected,
-			readyGuilds: this.client.tracking.totalGuilds,
+			readyGuilds: this.client.tracking.readyGuilds,
 			totalGuilds: this.client.tracking.totalGuilds,
 			error: err ? err.message : null
 		});
