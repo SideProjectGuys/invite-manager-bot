@@ -172,6 +172,9 @@ export default class extends Command {
 				.createMessage({ embed }, { file: buffer, name: 'chart.png' })
 				.then(() => {
 					chart.destroy();
+				})
+				.catch(() => {
+					chart.destroy();
 				});
 		});
 	}
