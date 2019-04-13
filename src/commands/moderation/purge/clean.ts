@@ -81,7 +81,7 @@ export default class extends Command {
 			for (const messageToBeDeleted of messagesToBeDeleted) {
 				await messageToBeDeleted.removeReactions().catch(() => undefined);
 			}
-			message.delete();
+			message.delete().catch(() => undefined);
 		} else {
 			messagesToBeDeleted.push(message);
 			[error] = await to(
