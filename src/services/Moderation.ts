@@ -252,7 +252,7 @@ export class ModerationService {
 				continue;
 			}
 
-			message.delete();
+			message.delete().catch(() => undefined);
 
 			this.logViolationModAction(guild, message.author, violation, 0, [
 				{ name: 'Channel', value: channel.name },
