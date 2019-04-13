@@ -25,7 +25,7 @@ export class IHeartRadio extends MusicPlatform {
 	}
 
 	public getByLink(link: string): Promise<IHeartMusicItem> {
-		throw new Error('Method not implemented.');
+		return this.search(link, 1).then(res => res[0]);
 	}
 
 	public async search(

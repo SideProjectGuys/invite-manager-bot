@@ -82,7 +82,9 @@ export default class extends Command {
 		let item: MusicQueueItem;
 		if (musicPlatform) {
 			const musicItem = await musicPlatform.getByLink(link);
-			item = await musicItem.toQueueItem(message.author);
+			if (musicItem) {
+				item = await musicItem.toQueueItem(message.author);
+			}
 		} else {
 			musicPlatform = this.client.music.musicPlatformService.getPlatform(
 				MusicPlatformTypes.YouTube
@@ -90,7 +92,9 @@ export default class extends Command {
 			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
 				const musicItem = items[0];
-				item = await musicItem.toQueueItem(message.author);
+				if (musicItem) {
+					item = await musicItem.toQueueItem(message.author);
+				}
 			}
 		}
 
