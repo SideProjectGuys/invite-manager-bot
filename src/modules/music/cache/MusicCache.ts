@@ -1,6 +1,5 @@
-import { MusicQueue } from '../../../types';
-
 import { Cache } from '../../../framework/cache/Cache';
+import { MusicQueue } from '../../../types';
 
 export class MusicCache extends Cache<MusicQueue> {
 	public async init() {
@@ -16,6 +15,9 @@ export class MusicCache extends Cache<MusicQueue> {
 	}
 
 	protected async _get(guildId: string): Promise<MusicQueue> {
-		return this.cache.get(guildId);
+		return {
+			current: null,
+			queue: []
+		};
 	}
 }

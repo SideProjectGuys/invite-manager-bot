@@ -24,6 +24,11 @@ export default class extends Command {
 		const nowPlaying = conn.getNowPlaying();
 		const queue = conn.getQueue();
 
+		if (!nowPlaying) {
+			this.sendReply(message, 'I am currently not playing any music');
+			return;
+		}
+
 		this.sendReply(message, {
 			author: {
 				name: `${nowPlaying.user.username}#${nowPlaying.user.discriminator}`,
