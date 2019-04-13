@@ -508,7 +508,7 @@ export default class extends Command {
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				await resp.removeReaction(emoji.name, userId);
+				await resp.removeReaction(emoji.name, userId).catch(() => undefined);
 
 				if (emoji.name === this.prev) {
 					resolve('prev');
