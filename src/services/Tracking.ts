@@ -18,6 +18,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../sequelize';
+import { ShardCommand } from '../types';
 import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
@@ -78,11 +79,18 @@ export class TrackingService {
 				const guild = allGuilds.shift();
 
 				if (!guild) {
+					this.client.rabbitmq.sendToManager({
+						id: 'status',
+						cmd: ShardCommand.STATUS,
+						readyGuilds: this.totalGuilds,
+						totalGuilds: this.totalGuilds
+					});
 					return;
 				}
 
 				// Filter any guilds that have the pro tracker
 				if (this.client.disabledGuilds.has(guild.id)) {
+					setTimeout(func, 0);
 					return;
 				}
 
@@ -95,6 +103,14 @@ export class TrackingService {
 
 				this.readyGuilds++;
 				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+				if (this.readyGuilds % 10 === 0) {
+					this.client.rabbitmq.sendToManager({
+						id: 'status',
+						cmd: ShardCommand.STATUS,
+						readyGuilds: this.readyGuilds,
+						totalGuilds: this.totalGuilds
+					});
+				}
 
 				setTimeout(func, 0);
 			};
