@@ -79,12 +79,6 @@ export class TrackingService {
 				const guild = allGuilds.shift();
 
 				if (!guild) {
-					this.client.rabbitmq.sendToManager({
-						id: 'status',
-						cmd: ShardCommand.STATUS,
-						readyGuilds: this.totalGuilds,
-						totalGuilds: this.totalGuilds
-					});
 					return;
 				}
 
@@ -104,12 +98,7 @@ export class TrackingService {
 				this.readyGuilds++;
 				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
 				if (this.readyGuilds % 10 === 0) {
-					this.client.rabbitmq.sendToManager({
-						id: 'status',
-						cmd: ShardCommand.STATUS,
-						readyGuilds: this.readyGuilds,
-						totalGuilds: this.totalGuilds
-					});
+					this.client.rabbitmq.sendStatusToManager();
 				}
 
 				setTimeout(func, 0);

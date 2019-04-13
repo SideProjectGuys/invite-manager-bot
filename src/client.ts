@@ -618,23 +618,14 @@ export class IMClient extends Client {
 
 	private async onConnect() {
 		console.error('DISCORD CONNECT');
-		this.rabbitmq.sendToManager({
-			id: 'status',
-			cmd: ShardCommand.STATUS,
-			connected: true
-		});
 		this.gatewayConnected = true;
+		this.rabbitmq.sendStatusToManager();
 	}
 
 	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
-		this.rabbitmq.sendToManager({
-			id: 'status',
-			cmd: ShardCommand.STATUS,
-			connected: false,
-			error: err ? err.message : null
-		});
 		this.gatewayConnected = false;
+		this.rabbitmq.sendStatusToManager(err);
 
 		if (err) {
 			console.error(err);

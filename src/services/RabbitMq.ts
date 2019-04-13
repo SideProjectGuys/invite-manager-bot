@@ -81,6 +81,17 @@ export class RabbitMqService {
 		);
 	}
 
+	public async sendStatusToManager(err?: Error) {
+		this.sendToManager({
+			id: 'status',
+			cmd: ShardCommand.STATUS,
+			connected: this.client.gatewayConnected,
+			readyGuilds: this.client.tracking.totalGuilds,
+			totalGuilds: this.client.tracking.totalGuilds,
+			error: err ? err.message : null
+		});
+	}
+
 	private async onShardCommand(msg: amqplib.Message) {
 		const content = JSON.parse(msg.content.toString()) as ShardMessage;
 		const cmd = content.cmd;
