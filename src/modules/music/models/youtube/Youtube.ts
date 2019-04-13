@@ -31,7 +31,7 @@ interface YoutubeVideo {
 
 export class Youtube extends MusicPlatform {
 	public supportsRewind: boolean = true;
-	public supportsSeek: boolean = false;
+	public supportsSeek: boolean = true;
 	public supportsLyrics: boolean = true;
 	public supportsSearch: boolean = true;
 

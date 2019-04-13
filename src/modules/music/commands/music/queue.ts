@@ -29,13 +29,17 @@ export default class extends Command {
 				name: `${nowPlaying.user.username}#${nowPlaying.user.discriminator}`,
 				icon_url: nowPlaying.user.avatarURL
 			},
-			description: `x/${nowPlaying.duration} played`,
+			description: `${this.client.music.formatTime(
+				conn.getPlayTime()
+			)}/${this.client.music.formatTime(nowPlaying.duration)} played`,
 			thumbnail: { url: nowPlaying.imageURL },
 			color: 255, // blue
 			title: nowPlaying.title,
 			fields: queue.map(item => ({
-				name: `${item.title} by ${item.user.username}`,
-				value: `${item.duration}`
+				name: `${item.title}`,
+				value: `Added by: ${
+					item.user.username
+				} | Duration: ${this.client.music.formatTime(item.duration)}`
 			}))
 		});
 	}

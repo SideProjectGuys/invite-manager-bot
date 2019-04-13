@@ -61,7 +61,10 @@ export default class extends Command {
 			return;
 		}
 
-		const index = lyrics.findIndex(l => l.start >= conn.getPlayTime());
+		const index = Math.max(
+			0,
+			lyrics.findIndex(l => l.start >= conn.getPlayTime()) - 1
+		);
 		const msg = await this.sendReply(message, 'Loading...');
 
 		this.scheduleNext(msg, conn, lyrics, index);
@@ -87,7 +90,7 @@ export default class extends Command {
 			text += next.text;
 			setTimeout(
 				() => this.scheduleNext(msg, conn, lyrics, index),
-				Math.max(0, (next.start - conn.getPlayTime()) * 1000 - 200)
+				Math.max(0, (next.start - conn.getPlayTime()) * 1000)
 			);
 		} else {
 			setTimeout(() => msg.delete(), now.dur * 1000 + 500);

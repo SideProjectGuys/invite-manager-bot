@@ -31,21 +31,25 @@ export class TuneInRadio extends MusicPlatform {
 
 	public async getByLink(link: string): Promise<MusicItem> {
 		const matches = LINK_REGEX.exec(link);
-		const id = matches[1];
+		if (matches) {
+			const id = matches[1];
 
-		const res = await axios.get(
-			`${BASE_URL}profiles/${id}&formats=mp3,aac,ogg`
-		);
+			const res = await axios.get(
+				`${BASE_URL}profiles/${id}&formats=mp3,aac,ogg`
+			);
 
-		const station: TuneInRadioStation = res.data.Item;
+			const station: TuneInRadioStation = res.data.Item;
 
-		return new TuneInMusicItem(this, {
-			id: station.GuideId,
-			title: station.Title,
-			imageUrl: station.Image,
-			link: station.Actions.Share.ShareUrl,
-			description: station.Subtitle
-		});
+			return new TuneInMusicItem(this, {
+				id: station.GuideId,
+				title: station.Title,
+				imageUrl: station.Image,
+				link: station.Actions.Share.ShareUrl,
+				description: station.Subtitle
+			});
+		} else {
+			return this.search(link, 1).then(res => res[0]);
+		}
 	}
 
 	public async search(
@@ -61,6 +65,10 @@ export class TuneInRadio extends MusicPlatform {
 		const stations = res.data.Items.find(
 			(i: any) => i.ContainerType === 'Stations'
 		);
+
+		if (!stations) {
+			return [];
+		}
 
 		return stations.Children.slice(0, maxResults).map(
 			(station: TuneInRadioStation) =>

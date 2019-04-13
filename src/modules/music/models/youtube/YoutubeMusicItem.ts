@@ -1,5 +1,4 @@
 import { User } from 'eris';
-import ytdl from 'ytdl-core';
 
 import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
@@ -39,10 +38,7 @@ export class YoutubeMusicItem extends MusicItem {
 			user: author,
 			link: this.link,
 			platform: MusicPlatformTypes.YouTube,
-			getStream: async () =>
-				ytdl(this.link, {
-					filter: 'audioonly'
-				}),
+			getStreamUrl: async () => this.link,
 			duration: this.duration,
 			extras: [
 				{

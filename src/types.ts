@@ -1,4 +1,4 @@
-import { Readable } from 'stream';
+import { VoiceConnection, VoiceConnectionManager } from 'eris';
 
 export enum BotType {
 	regular = 'regular',
@@ -180,7 +180,7 @@ export interface MusicQueueItem {
 	user: BasicUser;
 	imageURL: string;
 	extras: { name: string; value: string; inline?: boolean }[];
-	getStream: () => Promise<string | Readable>;
+	getStreamUrl: () => Promise<string>;
 }
 
 export enum MusicPlatformTypes {
@@ -206,4 +206,54 @@ export interface BasicMember {
 		discriminator: string;
 		avatarURL: string;
 	};
+}
+
+export interface LavaPlayerManager extends VoiceConnectionManager<LavaPlayer> {}
+
+export interface MusicServiceInterface extends LavaPlayerManager {}
+
+export interface LavaPlayer extends VoiceConnection {
+	node: string;
+	hostname: string;
+	manager: LavaPlayerManager | null;
+	track: string | null;
+	state: { position: number; time: number };
+
+	play: (track: string) => void;
+	stop: () => void;
+	pause: () => void;
+	resume: () => void;
+	seek: (position: number) => void;
+	setVolume: (volume: number) => void;
+
+	on(event: 'debug' | 'warn', listener: (message: string) => void): this;
+	on(event: 'error' | 'disconnect', listener: (err: Error) => void): this;
+	on(event: 'pong', listener: (latency: number) => void): this;
+	on(event: 'speakingStart', listener: (userID: string) => void): this;
+	on(event: 'speakingStop', listener: (userID: string) => void): this;
+	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
+}
+
+export interface LavaEndEvent {
+	op: string;
+	reason: string;
+	type: string;
+	track: string;
+	guildId: string;
+}
+
+export interface LavaTrackInfo {
+	identifier: string;
+	isSeekable: boolean;
+	author: string;
+	length: number;
+	isStream: boolean;
+	position: number;
+	title: string;
+	uri: string;
+}
+
+export interface LavaTrack {
+	track: string;
+	info: LavaTrackInfo;
 }

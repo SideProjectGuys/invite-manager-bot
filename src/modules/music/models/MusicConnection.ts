@@ -1,9 +1,8 @@
-import { Guild, Message, VoiceChannel, VoiceConnection } from 'eris';
-import { Stream } from 'stream';
+import { Guild, Message, VoiceChannel } from 'eris';
 
 import { AnnouncementVoice } from '../../../sequelize';
 import { SettingsObject } from '../../../settings';
-import { MusicQueue, MusicQueueItem } from '../../../types';
+import { LavaPlayer, MusicQueue, MusicQueueItem } from '../../../types';
 import { MusicService } from '../services/MusicService';
 
 const DEFAULT_VOL_FADE_TIME = 1.5;
@@ -22,13 +21,15 @@ export class MusicConnection {
 	private settings: SettingsObject;
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
-	private connection: VoiceConnection;
+	private player: LavaPlayer;
 	private nowPlayingMessage: Message;
 	private volume: number = 1.0;
 	private doPlayNext: boolean = true;
 	private speaking: Set<string> = new Set();
 	private repeat: boolean;
 	private doneCallback: () => void;
+	private playStart: number = 0;
+	private pauseStart: number = 0;
 
 	public constructor(
 		service: MusicService,
@@ -46,19 +47,19 @@ export class MusicConnection {
 
 	public switchChannel(voiceChannel: VoiceChannel) {
 		this.voiceChannel = voiceChannel;
-		this.connection.switchChannel(voiceChannel.id);
+		this.player.switchChannel(voiceChannel.id);
 	}
 
 	public isPlaying(): boolean {
-		return this.connection && this.connection.playing;
+		return this.player && this.player.playing;
 	}
 
 	public isPaused(): boolean {
-		return this.connection && this.connection.paused;
+		return this.player && this.player.paused;
 	}
 
 	public isConnected(): boolean {
-		return !!this.connection;
+		return !!this.player;
 	}
 
 	public async play(
@@ -68,7 +69,7 @@ export class MusicConnection {
 	) {
 		if (voiceChannel) {
 			await this.connect(voiceChannel);
-		} else if (!this.connection) {
+		} else if (!this.player) {
 			if (this.voiceChannel) {
 				await this.connect(this.voiceChannel);
 			} else {
@@ -90,34 +91,26 @@ export class MusicConnection {
 	}
 
 	public pause() {
-		if (this.connection) {
-			this.connection.pause();
+		if (!this.player.paused) {
+			this.pauseStart = new Date().getTime();
+			this.player.pause();
 		}
 	}
 
 	public resume() {
-		if (this.connection) {
-			this.connection.resume();
+		if (this.player.paused) {
+			this.playStart += new Date().getTime() - this.pauseStart;
+			this.pauseStart = 0;
+			this.player.resume();
 		}
 	}
 
 	public async rewind() {
-		if (!this.connection) {
-			if (this.voiceChannel) {
-				await this.connect(this.voiceChannel);
-			} else {
-				throw new Error('Not connected to a voice channel');
-			}
-		}
-
-		this.musicQueueCache.queue.unshift({ ...this.musicQueueCache.current });
-		this.playNext();
+		this.seek(0);
 	}
 
 	public async skip() {
-		if (this.connection) {
-			this.playNext();
-		}
+		this.playNext();
 	}
 
 	public isRepeating() {
@@ -129,19 +122,15 @@ export class MusicConnection {
 	}
 
 	public setVolume(volume: number) {
-		if (this.connection) {
-			this.cancelFadeVolume();
+		this.cancelFadeVolume();
 
-			this.volume = volume;
-			this.connection.setVolume(volume);
-		}
+		this.volume = volume;
+		this.player.setVolume(volume);
 	}
 
 	public fadeVolume(volume: number) {
-		if (this.connection) {
-			this.volume = volume;
-			this.fadeVolumeTo(volume);
-		}
+		this.volume = volume;
+		this.fadeVolumeTo(volume);
 	}
 
 	public getNowPlaying() {
@@ -149,7 +138,7 @@ export class MusicConnection {
 	}
 
 	public getPlayTime() {
-		return this.connection ? this.connection.current.playTime / 1000 : null;
+		return (new Date().getTime() - this.playStart) / 1000;
 	}
 
 	public getQueue() {
@@ -162,7 +151,7 @@ export class MusicConnection {
 
 	private stopSpeakingTimeout: NodeJS.Timer;
 	public async connect(channel: VoiceChannel) {
-		if (this.connection) {
+		if (this.player) {
 			this.switchChannel(channel);
 		} else {
 			this.settings = await this.service.client.cache.settings.get(
@@ -170,16 +159,17 @@ export class MusicConnection {
 			);
 
 			this.voiceChannel = channel;
-			this.connection = await channel.join({});
-			this.connection.setVolume(this.volume);
-			this.connection.on('error', error => console.error(error));
-			this.connection.on('speakingStart', this.onSpeakingStart);
-			this.connection.on('speakingStop', this.onSpeakingEnd);
-			this.connection.on('end', this.onStreamEnd);
+			this.player = (await channel.join({})) as LavaPlayer;
+			// this.connection.setVolume(this.volume);
+			this.player.on('error', error => console.error(error));
+			this.player.on('speakingStart', this.onSpeakingStart);
+			this.player.on('speakingStop', this.onSpeakingEnd);
+			this.player.on('end', this.onStreamEnd);
 		}
 	}
 
 	private onSpeakingStart(userId: string) {
+		console.log(`User ${userId} started speaking`);
 		if (this.settings.fadeMusicOnTalk && this.speaking.size === 0) {
 			if (this.stopSpeakingTimeout) {
 				clearTimeout(this.stopSpeakingTimeout);
@@ -211,8 +201,12 @@ export class MusicConnection {
 		}
 	}
 
-	private onStreamEnd() {
-		console.log('STREAM END');
+	private onStreamEnd(data: any) {
+		console.log(data);
+
+		if (data.reason && data.reason === 'REPLACED') {
+			return;
+		}
 
 		if (this.repeat && this.musicQueueCache.current) {
 			this.musicQueueCache.queue.push({ ...this.musicQueueCache.current });
@@ -235,50 +229,27 @@ export class MusicConnection {
 		message: string,
 		channel?: VoiceChannel
 	) {
-		if (!this.connection || channel) {
+		if (!this.player || channel) {
 			await this.connect(channel);
-		} else if (this.connection.playing) {
-			this.doPlayNext = false;
-			this.connection.stopPlaying();
 		}
 
-		return new Promise<void>(resolve => {
-			this.service.polly.synthesizeSpeech(
-				{
-					Text: message,
-					LanguageCode: 'en-US',
-					OutputFormat: 'ogg_vorbis',
-					VoiceId: voice
-				},
-				(err, data) => {
-					if (err) {
-						console.error(err);
-						this.doneCallback();
-						return;
-					}
+		this.doPlayNext = false;
 
-					this.doneCallback = async () => {
-						this.doPlayNext = true;
-						resolve();
-					};
+		return new Promise<void>(async resolve => {
+			this.doneCallback = async () => {
+				this.doPlayNext = true;
+				resolve();
+			};
 
-					const bufferStream = new Stream.PassThrough();
-					bufferStream.end(data.AudioStream);
-
-					this.connection.play(bufferStream);
-				}
-			);
+			const url = await this.service.getAnnouncementUrl(voice, message);
+			const tracks = await this.service.resolveTracks(url);
+			this.player.play(tracks[0].track);
 		});
 	}
 
 	private async playNext() {
 		const next = this.musicQueueCache.queue.shift();
 		if (next) {
-			if (this.connection.playing) {
-				this.doPlayNext = false;
-				this.connection.stopPlaying();
-			}
-
 			console.log(next);
 
 			let sanitizedTitle = next.title;
@@ -293,34 +264,20 @@ export class MusicConnection {
 				);
 			}
 
-			const stream = await next.getStream();
+			const stream = await next.getStreamUrl();
+			const tracks = await this.service.resolveTracks(stream);
 
+			this.playStart = new Date().getTime() + 400; // This additional time is lavalink buffering
 			this.musicQueueCache.current = next;
-			this.connection.play(stream, {
-				inlineVolume: true
-			});
+			this.player.play(tracks[0].track);
 			this.updateNowPlayingMessage();
 		}
 	}
 
 	public async seek(offsetSeconds: number) {
-		this.doPlayNext = false;
-
-		const current = { ...this.musicQueueCache.current };
-
-		this.doneCallback = async () => {
-			const stream = await current.getStream();
-
-			this.musicQueueCache.current = current;
-			this.connection.play(stream, {
-				inlineVolume: true,
-				inputArgs: [`-ss`, `${offsetSeconds}`]
-			});
-
-			this.doPlayNext = true;
-		};
-
-		this.connection.stopPlaying();
+		const now = new Date().getTime();
+		this.playStart = now - offsetSeconds * 1000 + 200;
+		this.player.seek(offsetSeconds * 1000);
 	}
 
 	private fadeTimeouts: NodeJS.Timer[] = [];
@@ -330,13 +287,13 @@ export class MusicConnection {
 	) {
 		this.cancelFadeVolume();
 
-		const startVol = this.connection.volume;
+		const startVol = this.player.volume;
 		const diff = newVolume - startVol;
 		const step = diff / (fadeDuration * 10);
 		for (let i = 0; i < fadeDuration * 10; i++) {
 			const newVol = Math.max(0, Math.min(startVol + i * step, 2));
 			this.fadeTimeouts.push(
-				setTimeout(() => this.connection.setVolume(newVol), i * 100)
+				setTimeout(() => this.player.setVolume(newVol), i * 100)
 			);
 		}
 	}
@@ -355,10 +312,8 @@ export class MusicConnection {
 	}
 
 	public disconnect() {
-		if (this.connection) {
-			this.connection.stopPlaying();
-			this.voiceChannel.leave();
-			this.connection = null;
-		}
+		this.player.stop();
+		this.voiceChannel.leave();
+		this.player = null;
 	}
 }

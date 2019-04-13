@@ -19,7 +19,18 @@
 			"channel": ""
 		},
 		"apiKey": "",
-		"dblToken": null
+		"dblToken": null,
+		"music": {
+			"pollyUrl": "",
+			"nodes": [
+				{
+					"host": "",
+					"port": 0,
+					"region": "",
+					"password": ""
+				}
+			]
+		}
 	},
 	"rabbitmq": {
 		"hostname": "localhost",

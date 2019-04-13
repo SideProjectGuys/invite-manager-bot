@@ -1,5 +1,4 @@
 import { Message, VoiceChannel } from 'eris';
-import ytdl from 'ytdl-core';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -51,13 +50,21 @@ export default class extends Command {
 		{ platform, next }: { platform: MusicPlatformTypes; next: boolean },
 		{ t, guild }: Context
 	): Promise<any> {
-		// TODO
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
 			this.sendReply(
 				message,
 				'Please join a voice channel before using this command'
 			);
+			return;
+		}
+
+		const conn = await this.client.music.getMusicConnection(guild);
+
+		if (!link) {
+			if (conn.isPaused()) {
+				conn.resume();
+			}
 			return;
 		}
 
@@ -88,8 +95,6 @@ export default class extends Command {
 		}
 
 		if (item) {
-			const conn = await this.client.music.getMusicConnection(guild);
-
 			const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
 			conn.play(item, voiceChannel, next);

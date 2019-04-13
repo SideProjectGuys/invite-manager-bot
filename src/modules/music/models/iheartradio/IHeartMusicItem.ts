@@ -39,7 +39,7 @@ export class IHeartMusicItem extends MusicItem {
 			link: this.link,
 			platform: MusicPlatformTypes.iHeartRADIO,
 			duration: 0,
-			getStream: async () => iheart.streamURL(this.station),
+			getStreamUrl: async () => iheart.streamURL(this.station),
 			extras: [
 				{
 					name: 'Air',

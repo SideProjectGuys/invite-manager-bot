@@ -45,7 +45,7 @@ export class RaveDJMusicItem extends MusicItem {
 			link: this.link,
 			platform: MusicPlatformTypes.RaveDJ,
 			duration: this.duration,
-			getStream: async () => this.audioUrl,
+			getStreamUrl: async () => this.audioUrl,
 			extras: [
 				{
 					name: 'Duration',

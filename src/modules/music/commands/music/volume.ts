@@ -13,7 +13,7 @@ export default class extends Command {
 			args: [
 				{
 					name: 'volume',
-					resolver: new NumberResolver(client, 0, 200)
+					resolver: new NumberResolver(client, 0, 1000)
 				}
 			],
 			group: CommandGroup.Music,

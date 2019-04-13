@@ -4,14 +4,14 @@ import moment, { Duration } from 'moment';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { DurationResolver, EnumResolver } from '../../../framework/resolvers';
-import { commandUsage, sequelize } from '../../../sequelize';
-import { BotCommand, ChartType, CommandGroup } from '../../../types';
+import { commandUsage, joins, leaves, sequelize } from '../../../sequelize';
+import { ChartType, CommandGroup, InvitesCommand } from '../../../types';
 import { Chart } from '../models/Chart';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.graph,
+			name: InvitesCommand.graph,
 			aliases: ['g', 'chart'],
 			args: [
 				{

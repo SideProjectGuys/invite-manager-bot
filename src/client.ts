@@ -34,7 +34,7 @@ import {
 	SettingsKey
 } from './sequelize';
 import { botDefaultSettings, defaultSettings, toDbValue } from './settings';
-import { BotType, ChannelType, ShardCommand } from './types';
+import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 const config = require('../config.json');
 
@@ -103,6 +103,7 @@ export class IMClient extends Client {
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
 	public activityInterval: NodeJS.Timer;
+	public voiceConnections: LavaPlayerManager;
 
 	private counts: {
 		cachedAt: number;
@@ -174,8 +175,8 @@ export class IMClient extends Client {
 		this.cmds = new CommandsService(this);
 		this.captcha = new CaptchaService(this);
 		this.invs = new InvitesService(this);
-		this.music = new MusicService(this);
 		this.tracking = new TrackingService(this);
+		this.music = new MusicService(this);
 
 		this.disabledGuilds = new Set();
 
@@ -298,6 +299,7 @@ export class IMClient extends Client {
 		this.cmds.init();
 		this.tracking.init();
 		this.rabbitmq.init();
+		this.music.init();
 
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {

@@ -1,14 +1,16 @@
-import AWS from 'aws-sdk';
 import axios from 'axios';
-import { Guild } from 'eris';
+import { Guild, VoiceConnection, VoiceConnectionManager } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
-import { MusicQueueItem } from '../../../types';
+import { AnnouncementVoice } from '../../../sequelize';
+import { LavaTrack, MusicQueueItem } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 
 import { MusicPlatformService } from './MusicPlatformService';
+
+const { PlayerManager } = require('eris-lavalink');
 
 const ALPHA_INDEX: { [x: string]: string } = {
 	'&lt': '<',
@@ -23,24 +25,38 @@ const ALPHA_INDEX: { [x: string]: string } = {
 	'&amp;': '&'
 };
 
+interface MusicNode {
+	host: string;
+	port: number;
+	region: string;
+	password: string;
+}
+
 export class MusicService {
 	public client: IMClient;
 	public cache: MusicCache;
-	public polly: AWS.Polly;
+	private nodes: MusicNode[];
 
 	public musicPlatformService: MusicPlatformService;
 
+	public oldConns: VoiceConnectionManager<VoiceConnection>;
 	private musicConnections: Map<string, MusicConnection>;
 
 	public constructor(client: IMClient) {
 		this.client = client;
+		this.nodes = client.config.bot.music.nodes;
+
 		this.cache = client.cache.music;
 		this.musicPlatformService = new MusicPlatformService(client);
 		this.musicConnections = new Map();
-		this.polly = new AWS.Polly({
-			signatureVersion: 'v4',
-			region: 'eu-central-1',
-			credentials: client.config.bot.aws
+	}
+
+	public async init() {
+		this.oldConns = this.client.voiceConnections;
+		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
+			numShards: 1,
+			userId: this.client.user.id,
+			defaultRegion: 'eu'
 		});
 	}
 
@@ -48,9 +64,6 @@ export class MusicService {
 		let conn = this.musicConnections.get(guild.id);
 		if (!conn) {
 			conn = new MusicConnection(this, guild, await this.cache.get(guild.id));
-			const sets = await this.client.cache.settings.get(guild.id);
-			conn.setVolume(sets.musicVolume);
-
 			this.musicConnections.set(guild.id, conn);
 		}
 		return conn;
@@ -125,5 +138,25 @@ export class MusicService {
 			':' +
 			s.toString().padStart(2, '0')
 		);
+	}
+
+	public async getAnnouncementUrl(voice: AnnouncementVoice, message: string) {
+		const msg = encodeURIComponent(message);
+		const baseUrl = this.client.config.bot.music.pollyUrl;
+		return `${baseUrl}/synth/${voice}?message=${msg}`;
+	}
+
+	public async resolveTracks(url: string) {
+		const baseUrl = `http://${this.nodes[0].host}:${this.nodes[0].port}`;
+		const res = await axios.get<{ tracks: LavaTrack[] }>(
+			`${baseUrl}/loadtracks?identifier=${encodeURIComponent(url)}`,
+			{
+				headers: {
+					Authorization: '8Z3Je8gIu53QVFZr1v*qgtneX@eTqv!^',
+					Accept: 'application/json'
+				}
+			}
+		);
+		return res.data.tracks;
 	}
 }

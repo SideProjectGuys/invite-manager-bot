@@ -40,7 +40,7 @@ export class TuneInMusicItem extends MusicItem {
 			user: author,
 			link: this.link,
 			platform: MusicPlatformTypes.YouTube,
-			getStream: async () => res.data.body[0].url,
+			getStreamUrl: async () => res.data.body[0].url,
 			duration: 0,
 			extras: []
 		};

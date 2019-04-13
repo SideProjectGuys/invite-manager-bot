@@ -45,7 +45,7 @@ export class SoundcloudMusicItem extends MusicItem {
 			user: author,
 			link: this.link,
 			platform: MusicPlatformTypes.SoundCloud,
-			getStream: async () => redir.request.res.responseUrl,
+			getStreamUrl: async () => redir.request.res.responseUrl,
 			duration: this.duration,
 			extras: [
 				{
