@@ -72,6 +72,7 @@ export class IMClient extends Client {
 	public config: any;
 	public type: BotType;
 	public settings: BotSettingsObject;
+	public hasStarted: boolean = false;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -144,6 +145,7 @@ export class IMClient extends Client {
 
 		this.version = version;
 		this.config = config;
+		this.type = config.bot.type;
 		if (_prefix) {
 			this.config.rabbitmq.prefix = _prefix;
 		}
@@ -186,7 +188,12 @@ export class IMClient extends Client {
 	}
 
 	private async onClientReady(): Promise<void> {
-		this.type = this.config.bot.type;
+		if (this.hasStarted) {
+			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
+			return;
+		}
+
+		this.hasStarted = true;
 
 		const set = await botSettings.find({ where: { id: this.user.id } });
 		this.settings = set ? set.value : { ...botDefaultSettings };
