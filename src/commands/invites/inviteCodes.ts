@@ -1,4 +1,4 @@
-import { Message, Invite } from 'eris';
+import { Invite, Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
@@ -195,7 +195,8 @@ export default class extends Command {
 		}
 
 		this.sendEmbed(await message.author.getDMChannel(), embed);
-		message.channel.createMessage(
+		this.sendReply(
+			message,
 			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
 		);
 	}
