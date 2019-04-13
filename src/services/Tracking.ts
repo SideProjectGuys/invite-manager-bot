@@ -25,8 +25,6 @@ import { BasicMember } from './Messaging';
 
 const GUILD_START_INTERVAL = 50;
 const INVITE_CREATE = 40;
-const SERVER_WIDGET_URL = `https://discordapp.com/api/guilds/`;
-const INVITE_PREFIX = `https://discordapp.com/invite/`;
 
 export class TrackingService {
 	private client: IMClient;
@@ -88,6 +86,7 @@ export class TrackingService {
 				);
 
 				this.readyGuilds++;
+				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
 			};
 			setTimeout(func, i * GUILD_START_INTERVAL);
 			i++;
