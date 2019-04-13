@@ -57,7 +57,7 @@ export default class extends Command {
 			raw: true
 		});
 
-		const activeCodes = (await guild.getInvites())
+		const activeCodes = (await guild.getInvites().catch(() => []))
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
