@@ -187,6 +187,7 @@
 			},
 			"none": "Aucun",
 			"invalid": {
+				"mustBeTextChannel": "That channel is not a text channel.",
 				"canNotReadMessages": "Je n'ai pas la permission de **lire les messages** dans ce salon.",
 				"canNotSendMessages": "Je n'ai pas la permission **d'envoyer des messages** dans ce salon.",
 				"canNotSendEmbeds": "Je n'ai pas la permission **d'intégrer des liens** dans ce salon."
@@ -969,7 +970,8 @@
 	},
 	"messages": {
 		"unknownInviter": "Inconnu",
-		"joinUnknownInviter": "<@{{ id }}> a rejoint le serveur à l'aide d'une invitation temporaire ou privée, je n'ai donc pas pu identifier l'inviteur.",
+		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
+		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"leaveUnknownInviter": "{{ tag }} a quitté le serveur, mais je n'ai trouvé qui l'a invité."
 	},
 	"captcha": {

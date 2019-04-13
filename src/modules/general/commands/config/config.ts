@@ -172,6 +172,9 @@ export default class extends Command {
 			}
 
 			for (const channel of channels) {
+				if (!(channel instanceof TextChannel)) {
+					return t('cmd.config.invalid.mustBeTextChannel');
+				}
 				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
 					return t('cmd.config.invalid.canNotReadMessages');
 				}

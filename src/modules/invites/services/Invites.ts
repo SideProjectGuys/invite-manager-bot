@@ -945,7 +945,12 @@ export class InvitesService {
 		notReached
 			.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
 			.forEach(r =>
-				member.removeRole(r.id, 'Not have enough invites for rank')
+				this.client.removeGuildMemberRole(
+					guild.id,
+					member.id,
+					r.id,
+					'Not have enough invites for rank'
+				)
 			);
 
 		if (highest && !member.roles.includes(highest.id)) {
@@ -1007,7 +1012,14 @@ export class InvitesService {
 				// Assign only the roles that we can assign
 				newRoles
 					.filter(r => !tooHighRoles.includes(r))
-					.forEach(r => member.addRole(r.id, 'Reached a new rank by invites'));
+					.forEach(r =>
+						this.client.addGuildMemberRole(
+							guild.id,
+							member.id,
+							r.id,
+							'Reached a new rank by invites'
+						)
+					);
 			} else if (style === RankAssignmentStyle.highest) {
 				// Only add the highest role we've reached to the member
 				// Remove roles that we've reached but aren't the highest
@@ -1021,11 +1033,23 @@ export class InvitesService {
 				// Remove the old ones from the member
 				oldRoles
 					.filter(r => !tooHighRoles.includes(r))
-					.forEach(r => member.removeRole(r.id, 'Only keeping highest rank'));
+					.forEach(r =>
+						this.client.removeGuildMemberRole(
+							guild.id,
+							member.id,
+							r.id,
+							'Only keeping highest rank'
+						)
+					);
 				// Add the highest one if we don't have it yet
 				if (highest && !member.roles.includes(highest.id)) {
 					if (!tooHighRoles.includes(highest)) {
-						member.addRole(highest.id, 'Reached a new rank by invites');
+						this.client.addGuildMemberRole(
+							guild.id,
+							member.id,
+							highest.id,
+							'Reached a new rank by invites'
+						);
 					} else {
 						shouldHave = [highest];
 					}

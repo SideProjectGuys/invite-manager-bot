@@ -252,7 +252,7 @@ export class ModerationService {
 				continue;
 			}
 
-			message.delete();
+			message.delete().catch(() => undefined);
 
 			this.logViolationModAction(guild, message.author, violation, 0, [
 				{ name: 'Channel', value: channel.name },
@@ -690,7 +690,7 @@ export class ModerationService {
 		}
 
 		const newName = '▼ ' + name;
-		member.edit({ nick: newName }, 'Auto dehoist');
+		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
 		this.logViolationModAction(guild, member.user, type, amount, [
 			{ name: 'New name', value: newName },
@@ -774,7 +774,7 @@ export class ModerationService {
 		const reply = await this.client.msg.sendReply(message, embed);
 		if (settings.autoModDeleteBotMessage) {
 			setTimeout(
-				() => reply.delete(),
+				() => reply.delete().catch(() => undefined),
 				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
 			);
 		}

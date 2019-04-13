@@ -79,9 +79,9 @@ export default class extends Command {
 		let error: any;
 		if (type === CleanType.reactions) {
 			for (const messageToBeDeleted of messagesToBeDeleted) {
-				await messageToBeDeleted.removeReactions();
+				await messageToBeDeleted.removeReactions().catch(() => undefined);
 			}
-			message.delete();
+			message.delete().catch(() => undefined);
 		} else {
 			messagesToBeDeleted.push(message);
 			[error] = await to(
@@ -110,10 +110,7 @@ export default class extends Command {
 		}
 
 		const response = await this.sendReply(message, embed);
-
-		const func = () => {
-			response.delete();
-		};
+		const func = () => response.delete().catch(() => undefined);
 		setTimeout(func, 5000);
 	}
 

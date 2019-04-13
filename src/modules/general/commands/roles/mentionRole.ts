@@ -5,6 +5,8 @@ import { Command, Context } from '../../../../framework/commands/Command';
 import { RoleResolver } from '../../../../framework/resolvers';
 import { BotCommand, CommandGroup } from '../../../../types';
 
+const MISSING_PERMISSIONS = 50013;
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -53,10 +55,27 @@ export default class extends Command {
 				);
 			}
 
-			await role.edit({ mentionable: true }, 'Pinging role');
-			await message.channel.createMessage(`<@&${role.id}>`);
+			const res = await role
+				.edit({ mentionable: true }, 'Pinging role')
+				.catch(e => {
+					if (e.code === MISSING_PERMISSIONS) {
+						this.sendReply(message, 'cmd.mentionRole.missingPermissions');
+					}
+					return null as Role;
+				});
+			if (!res) {
+				return;
+			}
+
+			const msg = await message.channel
+				.createMessage(`<@&${role.id}>`)
+				.catch(() => null as Message);
+			if (!msg) {
+				return;
+			}
+
 			await role.edit({ mentionable: false }, 'Done pinging role');
-			await message.delete();
+			await message.delete().catch(() => undefined);
 		}
 	}
 }

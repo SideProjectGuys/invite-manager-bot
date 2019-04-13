@@ -16,12 +16,6 @@ export class RabbitMqService {
 	private client: IMClient;
 	private shard: string;
 
-	private qJoinsName: string;
-	private channelJoins: amqplib.Channel;
-
-	private qLeavesName: string;
-	private channelLeaves: amqplib.Channel;
-
 	private qCmdsName: string;
 	private channelCmds: amqplib.Channel;
 
@@ -31,29 +25,9 @@ export class RabbitMqService {
 			? client.config.rabbitmq.prefix
 			: this.client.shardId;
 
-		// Setup RabbitMQ channels
-		/*const prefix = client.config.rabbitmq.prefix
-			? `${client.config.rabbitmq.prefix}-`
-			: '';
-		const suffix = `${this.client.shardId}-${this.client.shardCount}`;*/
-
-		/*this.qJoinsName = `${prefix}joins-${suffix}`;
-		conn.createChannel().then(async channel => {
-			this.channelJoins = channel;
-
-			await channel.assertQueue(this.qJoinsName, {
-				durable: true
-			});
-		});*/
-
-		/*this.qLeavesName = `${prefix}leaves-${suffix}`;
-		conn.createChannel().then(async channel => {
-			this.channelLeaves = channel;
-
-			await channel.assertQueue(this.qLeavesName, {
-				durable: true
-			});
-		});*/
+		if (!conn) {
+			return;
+		}
 
 		this.qCmdsName = `shard-${this.shard}-bot`;
 		conn.createChannel().then(async channel => {
@@ -79,23 +53,9 @@ export class RabbitMqService {
 	}
 
 	public async init() {
-		/*await this.channelJoins.prefetch(5);
-		this.channelJoins.consume(
-			this.qJoinsName,
-			msg => this.onGuildMemberAdd(msg),
-			{
-				noAck: false
-			}
-		);
-
-		await this.channelLeaves.prefetch(5);
-		this.channelLeaves.consume(
-			this.qLeavesName,
-			msg => this.onGuildMemberRemove(msg),
-			{
-				noAck: false
-			}
-		);*/
+		if (!this.channelCmds) {
+			return;
+		}
 
 		await this.channelCmds.prefetch(5);
 		this.channelCmds.consume(this.qCmdsName, msg => this.onShardCommand(msg), {
@@ -104,6 +64,11 @@ export class RabbitMqService {
 	}
 
 	public async sendToManager(message: { id: string; [x: string]: any }) {
+		if (!this.channelCmds) {
+			console.log('Send message to RabbitMQ', message);
+			return;
+		}
+
 		this.channelCmds.sendToQueue(
 			'manager',
 			Buffer.from(

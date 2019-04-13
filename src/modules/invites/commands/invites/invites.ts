@@ -3,7 +3,6 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { UserResolver } from '../../../../framework/resolvers';
-import { members } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -28,11 +27,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		const target = user
-			? user
-			: await members
-					.findOne({ where: { id: message.author.id }, raw: true })
-					.then(u => ({ ...u, username: u.name }));
+		const target = user ? user : message.author;
 		const invites = await this.client.invs.getInviteCounts(guild.id, target.id);
 
 		let textMessage = '';

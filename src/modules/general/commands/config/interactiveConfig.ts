@@ -63,7 +63,7 @@ export default class extends Command {
 			description: 'Loading...'
 		});
 
-		message.delete();
+		message.delete().catch(() => undefined);
 
 		const msg = await this.sendReply(message, embed);
 
@@ -402,7 +402,7 @@ export default class extends Command {
 				if (userMsg.author.id === authorId) {
 					const newRawVal = userMsg.content;
 
-					await userMsg.delete();
+					await userMsg.delete().catch(() => undefined);
 
 					let newVal: any;
 
@@ -468,7 +468,11 @@ export default class extends Command {
 		});
 
 		do {
-			await msg.edit({ embed });
+			const editMsg = await msg.edit({ embed }).catch(() => null as Message);
+			if (editMsg === null) {
+				// Quit menu on error
+				return;
+			}
 
 			const choice = await this.awaitChoice(authorId, msg);
 			if (choice === undefined) {
@@ -507,7 +511,7 @@ export default class extends Command {
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				await resp.removeReaction(emoji.name, userId);
+				await resp.removeReaction(emoji.name, userId).catch(() => undefined);
 
 				if (emoji.name === this.prev) {
 					resolve('prev');
@@ -525,7 +529,7 @@ export default class extends Command {
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				msg.delete();
+				msg.delete().catch(() => undefined);
 
 				resolve(undefined);
 			};

@@ -97,7 +97,7 @@ export class CaptchaService {
 						member.guild.name
 					)
 				);
-				member.kick();
+				member.kick().catch(() => undefined);
 				return;
 			}
 

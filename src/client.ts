@@ -288,9 +288,9 @@ export class IMClient extends Client {
 		});
 
 		// Services
-		await this.rabbitmq.init();
 		await this.cmds.init();
 		await this.tracking.init();
+		await this.rabbitmq.init();
 
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
@@ -379,16 +379,18 @@ export class IMClient extends Client {
 		}
 
 		// Send welcome message to owner with setup instructions
-		channel.createMessage(
-			'Hi! Thanks for inviting me to your server `' +
-				guild.name +
-				'`!\n\n' +
-				'I am now tracking all invites on your server.\n\n' +
-				'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
-				'You can see a list of all commands using the `!help` command.\n\n' +
-				`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
-				'https://discord.gg/2eTnsVM'
-		);
+		channel
+			.createMessage(
+				'Hi! Thanks for inviting me to your server `' +
+					guild.name +
+					'`!\n\n' +
+					'I am now tracking all invites on your server.\n\n' +
+					'To get help setting up join messages or changing the prefix, please run the `!setup` command.\n\n' +
+					'You can see a list of all commands using the `!help` command.\n\n' +
+					`That's it! Enjoy the bot and if you have any questions feel free to join our support server!\n` +
+					'https://discord.gg/2eTnsVM'
+			)
+			.catch(() => undefined);
 	}
 
 	private async onGuildDelete(guild: Guild): Promise<void> {

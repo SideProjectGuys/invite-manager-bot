@@ -406,6 +406,8 @@ export interface InviteCodeAttributes extends BaseAttributes {
 	guildId: string;
 	inviterId: string;
 	clearedAmount: number;
+	isVanity: boolean;
+	isWidget: boolean;
 }
 export interface InviteCodeInstance
 	extends Sequelize.Instance<InviteCodeAttributes>,
@@ -435,7 +437,9 @@ export const inviteCodes = sequelize.define<
 		channelId: Sequelize.STRING(32),
 		guildId: Sequelize.STRING(32),
 		inviterId: Sequelize.STRING(32),
-		clearedAmount: { type: Sequelize.INTEGER, defaultValue: 0 }
+		clearedAmount: { type: Sequelize.INTEGER, defaultValue: 0 },
+		isVanity: Sequelize.BOOLEAN,
+		isWidget: Sequelize.BOOLEAN
 	},
 	{
 		timestamps: true,

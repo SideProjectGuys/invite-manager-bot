@@ -1,18 +1,17 @@
 import { Message } from 'eris';
-import moment from 'moment';
-import { Context } from 'vm';
+import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command } from '../../../framework/commands/Command';
-import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
-import { commandUsage, joins, leaves, sequelize } from '../../../sequelize';
-import { ChartType, CommandGroup, InvitesCommand } from '../../../types';
+import { Command, Context } from '../../../framework/commands/Command';
+import { DurationResolver, EnumResolver } from '../../../framework/resolvers';
+import { commandUsage, sequelize } from '../../../sequelize';
+import { BotCommand, ChartType, CommandGroup } from '../../../types';
 import { Chart } from '../models/Chart';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.graph,
+			name: BotCommand.graph,
 			aliases: ['g', 'chart'],
 			args: [
 				{
@@ -22,7 +21,7 @@ export default class extends Command {
 				},
 				{
 					name: 'duration',
-					resolver: NumberResolver
+					resolver: DurationResolver
 				}
 			],
 			group: CommandGroup.Other,
@@ -32,22 +31,15 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[type, duration]: [ChartType, string],
+		[type, duration]: [ChartType, Duration],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
 		let days = 60;
 		if (duration) {
-			const d = parseInt(duration, 10);
-
-			if (duration.indexOf('d') >= 0) {
-				days = d;
-			} else if (duration.indexOf('w') >= 0) {
-				days = d * 7;
-			} else if (duration.indexOf('m') >= 0) {
-				days = d * 30;
-			} else if (duration.indexOf('y') >= 0) {
-				days = d * 365;
+			days = duration.asDays();
+			if (days < 5) {
+				days = 5;
 			}
 		}
 
@@ -178,6 +170,9 @@ export default class extends Command {
 			message.channel
 				.createMessage({ embed }, { file: buffer, name: 'chart.png' })
 				.then(() => {
+					chart.destroy();
+				})
+				.catch(() => {
 					chart.destroy();
 				});
 		});
