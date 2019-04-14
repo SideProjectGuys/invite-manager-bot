@@ -25,7 +25,7 @@ export class YoutubeMusicItem extends MusicItem {
 
 	public toSearchEntry(index: number): { name: string; value: string } {
 		return {
-			name: `\`${index}\`: ${this.title} **${this.duration}**`,
+			name: `\`${index}\`: ${this.title} **${this.platform.service.formatTime(this.duration)}**`,
 			value: `Uploader: ${this.channel}`
 		};
 	}
