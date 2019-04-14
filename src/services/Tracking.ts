@@ -1,5 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
-import { Guild, Invite, Member, Role, TextChannel } from 'eris';
+import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -224,8 +224,10 @@ export class TrackingService {
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
-			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE);
-			if (logs.entries.length) {
+			const logs = await guild
+				.getAuditLogs(50, undefined, INVITE_CREATE)
+				.catch(() => null as GuildAuditLog);
+			if (logs && logs.entries.length) {
 				const createdCodes = logs.entries
 					.filter(
 						e =>
