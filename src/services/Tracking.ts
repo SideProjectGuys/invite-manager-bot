@@ -1,4 +1,3 @@
-import { captureException, withScope } from '@sentry/node';
 import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -18,7 +17,6 @@ import {
 	sequelize,
 	SettingsKey
 } from '../sequelize';
-import { ShardCommand } from '../types';
 import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
@@ -287,7 +285,7 @@ export class TrackingService {
 		if (inviteCodesUsed.length === 1) {
 			exactMatchCode = inviteCodesUsed[0];
 		} else {
-			possibleMatches = inviteCodesUsed.join(',');
+			possibleMatches = inviteCodesUsed.join(',').substr(0, 255);
 		}
 
 		const updatedCodes: string[] = [];
