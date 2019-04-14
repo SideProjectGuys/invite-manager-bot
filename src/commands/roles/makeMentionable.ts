@@ -70,7 +70,7 @@ export default class extends Command {
 
 			setTimeout(timeOut, 60000);
 
-			await message.delete();
+			await message.delete().catch(() => undefined);
 		}
 	}
 }
