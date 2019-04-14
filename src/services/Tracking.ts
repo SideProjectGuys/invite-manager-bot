@@ -1,5 +1,4 @@
-import { captureException, withScope } from '@sentry/node';
-import { Guild, Invite, Member, Role, TextChannel } from 'eris';
+import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -18,7 +17,6 @@ import {
 	sequelize,
 	SettingsKey
 } from '../sequelize';
-import { ShardCommand } from '../types';
 import { deconstruct } from '../util';
 
 import { BasicMember } from './Messaging';
@@ -145,29 +143,32 @@ export class TrackingService {
 		}
 
 		if (!role) {
-			console.error('Role was null on guild role delete');
-			withScope(scope => {
-				scope.setUser({ id: guild.id });
-				scope.setExtra('guild', guild);
-				scope.setExtra('role', role);
-				captureException(new Error('Role was null on guild role delete'));
+			const allRoles = await guild.getRESTRoles();
+			const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
+			const oldRankIds = allRanks
+				.filter(rank => !allRoles.some(r => r.id === rank.roleId))
+				.map(r => r.id);
+			await ranks.destroy({
+				where: { guildId: guild.id, roleId: oldRankIds }
 			});
-			return;
+			await roles.destroy({
+				where: { guildId: guild.id, id: oldRankIds }
+			});
+		} else {
+			await ranks.destroy({
+				where: {
+					roleId: role.id,
+					guildId: role.guild.id
+				}
+			});
+
+			await roles.destroy({
+				where: {
+					id: role.id,
+					guildId: role.guild.id
+				}
+			});
 		}
-
-		await ranks.destroy({
-			where: {
-				roleId: role.id,
-				guildId: role.guild.id
-			}
-		});
-
-		await roles.destroy({
-			where: {
-				id: role.id,
-				guildId: role.guild.id
-			}
-		});
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
@@ -224,8 +225,10 @@ export class TrackingService {
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
-			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE);
-			if (logs.entries.length) {
+			const logs = await guild
+				.getAuditLogs(50, undefined, INVITE_CREATE)
+				.catch(() => null as GuildAuditLog);
+			if (logs && logs.entries.length) {
 				const createdCodes = logs.entries
 					.filter(
 						e =>
@@ -282,7 +285,7 @@ export class TrackingService {
 		if (inviteCodesUsed.length === 1) {
 			exactMatchCode = inviteCodesUsed[0];
 		} else {
-			possibleMatches = inviteCodesUsed.join(',');
+			possibleMatches = inviteCodesUsed.join(',').substr(0, 255);
 		}
 
 		const updatedCodes: string[] = [];

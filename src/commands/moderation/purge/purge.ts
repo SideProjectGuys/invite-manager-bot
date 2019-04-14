@@ -53,11 +53,15 @@ export default class extends Command {
 		}
 		messages.push(message);
 		const [error] = await to(
-			this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
+			this.client.deleteMessages(
+				message.channel.id,
+				messages.map(m => m.id),
+				'purge command'
+			)
 		);
 		if (error) {
 			embed.title = t('cmd.purge.error');
-			embed.description = error;
+			embed.description = error.message;
 		} else {
 			embed.title = t('cmd.purge.title');
 			embed.description = t('cmd.purge.text', {

@@ -68,13 +68,13 @@ export default class extends Command {
 		const msg = await this.sendReply(message, embed);
 
 		for (let i = 0; i < this.choices.length; i++) {
-			msg.addReaction(this.choices[i]);
+			msg.addReaction(this.choices[i]).catch(() => undefined);
 		}
 
-		msg.addReaction(this.prev);
-		msg.addReaction(this.next);
-		msg.addReaction(this.up);
-		msg.addReaction(this.cancel);
+		msg.addReaction(this.prev).catch(() => undefined);
+		msg.addReaction(this.next).catch(() => undefined);
+		msg.addReaction(this.up).catch(() => undefined);
+		msg.addReaction(this.cancel).catch(() => undefined);
 
 		while (
 			(await this.showConfigMenu(context, message.author.id, msg, [])) === 'up'
@@ -427,7 +427,7 @@ export default class extends Command {
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
 
-					await msg.removeReaction(emoji.name, userId);
+					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
 
 					resolve();
 				}
