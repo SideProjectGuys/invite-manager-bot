@@ -20,7 +20,7 @@ export class IHeartRadio extends MusicPlatform {
 		return url.startsWith('iheart');
 	}
 
-	public getPlatform(): MusicPlatformTypes {
+	public getType(): MusicPlatformTypes {
 		return MusicPlatformTypes.iHeartRADIO;
 	}
 

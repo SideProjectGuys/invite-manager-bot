@@ -43,7 +43,7 @@ export class Youtube extends MusicPlatform {
 		return url.startsWith('https://youtube.com/');
 	}
 
-	public getPlatform(): MusicPlatformTypes {
+	public getType(): MusicPlatformTypes {
 		return MusicPlatformTypes.YouTube;
 	}
 

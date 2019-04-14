@@ -21,11 +21,11 @@ export class MusicPlatformService {
 		this.platforms.set(MusicPlatformTypes.TuneIn, new TuneInRadio(client));
 	}
 
-	public getPlatform(platform: MusicPlatformTypes): MusicPlatform | undefined {
+	public get(platform: MusicPlatformTypes): MusicPlatform | undefined {
 		return this.platforms.get(platform);
 	}
 
-	public getPlatformForLink(link: string): MusicPlatform | undefined {
+	public getForLink(link: string): MusicPlatform | undefined {
 		for (const v of this.platforms.values()) {
 			if (v.isPlatformUrl(link)) {
 				return v;

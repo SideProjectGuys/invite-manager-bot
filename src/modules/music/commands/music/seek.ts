@@ -35,14 +35,14 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform: MusicPlatform = this.client.music.musicPlatformService.getPlatform(
+		const musicPlatform: MusicPlatform = this.client.music.platforms.get(
 			conn.getNowPlaying().platform
 		);
 
 		if (!musicPlatform.supportsSeek) {
 			this.sendReply(
 				message,
-				`Seeking is not supported on platform ${musicPlatform.getPlatform()}`
+				`Seeking is not supported on platform ${musicPlatform.getType()}`
 			);
 			return;
 		}

@@ -70,13 +70,9 @@ export default class extends Command {
 
 		let musicPlatform: MusicPlatform;
 		if (platform) {
-			musicPlatform = this.client.music.musicPlatformService.getPlatform(
-				platform
-			);
+			musicPlatform = this.client.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.musicPlatformService.getPlatformForLink(
-				link
-			);
+			musicPlatform = this.client.music.platforms.getForLink(link);
 		}
 
 		let item: MusicQueueItem;
@@ -86,7 +82,7 @@ export default class extends Command {
 				item = await musicItem.toQueueItem(message.author);
 			}
 		} else {
-			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+			musicPlatform = this.client.music.platforms.get(
 				MusicPlatformTypes.YouTube
 			);
 			const items = await musicPlatform.search(link, 1);

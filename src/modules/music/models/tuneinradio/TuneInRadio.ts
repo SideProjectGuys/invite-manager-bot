@@ -25,7 +25,7 @@ export class TuneInRadio extends MusicPlatform {
 		return url.startsWith('tunein');
 	}
 
-	public getPlatform(): MusicPlatformTypes {
+	public getType(): MusicPlatformTypes {
 		return MusicPlatformTypes.iHeartRADIO;
 	}
 

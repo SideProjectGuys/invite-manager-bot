@@ -52,11 +52,9 @@ export default class extends Command {
 
 		let musicPlatform: MusicPlatform;
 		if (platform) {
-			musicPlatform = this.client.music.musicPlatformService.getPlatform(
-				platform
-			);
+			musicPlatform = this.client.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.musicPlatformService.getPlatform(
+			musicPlatform = this.client.music.platforms.get(
 				MusicPlatformTypes.YouTube
 			);
 		}
@@ -64,7 +62,7 @@ export default class extends Command {
 		if (!musicPlatform.supportsSearch) {
 			this.sendReply(
 				message,
-				`Search is not supported on platform ${musicPlatform.getPlatform()}`
+				`Search is not supported on platform ${musicPlatform.getType()}`
 			);
 			return;
 		}

@@ -27,14 +27,14 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform: MusicPlatform = this.client.music.musicPlatformService.getPlatform(
+		const musicPlatform: MusicPlatform = this.client.music.platforms.get(
 			conn.getNowPlaying().platform
 		);
 
 		if (!musicPlatform.supportsRewind) {
 			this.sendReply(
 				message,
-				`Rewind is not supported on platform ${musicPlatform.getPlatform()}`
+				`Rewind is not supported on platform ${musicPlatform.getType()}`
 			);
 			return;
 		}

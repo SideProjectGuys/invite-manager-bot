@@ -84,7 +84,7 @@ export class Soundcloud extends MusicPlatform {
 		return url.startsWith('https://soundcloud.com');
 	}
 
-	public getPlatform(): MusicPlatformTypes {
+	public getType(): MusicPlatformTypes {
 		return MusicPlatformTypes.SoundCloud;
 	}
 

@@ -37,7 +37,7 @@ export class MusicService {
 	public cache: MusicCache;
 	private nodes: MusicNode[];
 
-	public musicPlatformService: MusicPlatformService;
+	public platforms: MusicPlatformService;
 
 	public oldConns: VoiceConnectionManager<VoiceConnection>;
 	private musicConnections: Map<string, MusicConnection>;
@@ -47,7 +47,7 @@ export class MusicService {
 		this.nodes = client.config.bot.music.nodes;
 
 		this.cache = client.cache.music;
-		this.musicPlatformService = new MusicPlatformService(client);
+		this.platforms = new MusicPlatformService(client);
 		this.musicConnections = new Map();
 	}
 

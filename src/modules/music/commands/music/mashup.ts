@@ -17,14 +17,10 @@ export default class extends Command {
 			aliases: [],
 			args: [
 				{
-					name: 'video1',
+					name: 'videos',
 					resolver: StringResolver,
-					rest: false
-				},
-				{
-					name: 'video2',
-					resolver: StringResolver,
-					rest: false
+					required: true,
+					rest: true
 				}
 			],
 			group: CommandGroup.Music,
@@ -34,7 +30,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[video1, video2]: [string, string],
+		[videos]: [string],
 		flags: {},
 		{ t, guild }: Context
 	): Promise<any> {
@@ -48,15 +44,36 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform = this.client.music.musicPlatformService.getPlatform(
+		const [link1, link2] = videos.split(' ');
+		const platform1 = this.client.music.platforms.getForLink(link1);
+		const platform2 = this.client.music.platforms.getForLink(link2);
+
+		const musicPlatform = this.client.music.platforms.get(
 			MusicPlatformTypes.RaveDJ
 		) as RaveDJ;
 
-		console.log(video1, video2);
+		let mashupId;
 
-		const mashupId = await musicPlatform.mix(video1, video2);
+		if (
+			platform1 &&
+			platform1.getType() === MusicPlatformTypes.YouTube &&
+			platform2 &&
+			platform2.getType() === MusicPlatformTypes.YouTube
+		) {
+			const video1 = await platform1.getByLink(link1);
+			const video2 = await platform2.getByLink(link2);
+			mashupId = await musicPlatform.mix(video1.id, video2.id);
+		} else {
+			const [search1, search2] = videos.split(',');
 
-		console.log(mashupId);
+			const youtubePlatform = this.client.music.platforms.get(
+				MusicPlatformTypes.YouTube
+			);
+			const [result1] = await youtubePlatform.search(search1, 1);
+			const [result2] = await youtubePlatform.search(search2, 1);
+
+			mashupId = await musicPlatform.mix(result1.id, result2.id);
+		}
 
 		this.sendReply(message, `RaveDJ Link: https://rave.dj/${mashupId}`);
 	}

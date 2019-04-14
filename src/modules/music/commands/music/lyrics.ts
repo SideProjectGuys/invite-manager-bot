@@ -37,14 +37,14 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform: MusicPlatform = this.client.music.musicPlatformService.getPlatform(
+		const musicPlatform: MusicPlatform = this.client.music.platforms.get(
 			conn.getNowPlaying().platform
 		);
 
 		if (!musicPlatform.supportsLyrics) {
 			this.sendReply(
 				message,
-				`Lyrics are not supported on platform ${musicPlatform.getPlatform()}`
+				`Lyrics are not supported on platform ${musicPlatform.getType()}`
 			);
 			return;
 		}

@@ -84,7 +84,7 @@ export class RaveDJ extends MusicPlatform {
 		return url.startsWith('https://rave.dj');
 	}
 
-	public getPlatform(): MusicPlatformTypes {
+	public getType(): MusicPlatformTypes {
 		return MusicPlatformTypes.RaveDJ;
 	}
 

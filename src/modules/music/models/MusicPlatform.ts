@@ -20,7 +20,7 @@ export abstract class MusicPlatform {
 	}
 
 	public abstract isPlatformUrl(url: string): boolean;
-	public abstract getPlatform(): MusicPlatformTypes;
+	public abstract getType(): MusicPlatformTypes;
 
 	public abstract getByLink(link: string): Promise<MusicItem>;
 	public abstract search(
