@@ -895,7 +895,7 @@ export class InvitesService {
 						this.client
 							.addGuildMemberRole(
 								guild.id,
-								member.id,
+								member.user.id,
 								r.id,
 								'Reached a new rank by invites'
 							)
