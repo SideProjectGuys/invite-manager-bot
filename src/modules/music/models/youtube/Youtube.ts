@@ -8,6 +8,7 @@ import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { YoutubeMusicItem } from './YoutubeMusicItem';
+const ytSearch = require('scrape-youtube');
 
 interface YoutubeVideo {
 	id: string;
@@ -67,53 +68,25 @@ export class Youtube extends MusicPlatform {
 		searchTerm: string,
 		maxResults: number = 10
 	): Promise<Array<MusicItem>> {
-		const params: URLSearchParams = new URLSearchParams();
-		params.set('key', this.client.config.bot.youtubeApiKey);
-		params.set('type', 'video');
-		// params.set('videoEmbeddable', "true");
-		// params.set('videoSyndicated', "true");
-		params.set('videoCategoryId', '10'); // only music videos
-		params.set('maxResults', (maxResults || 10).toString());
-		params.set('part', 'id');
-		params.set('fields', 'items(id(videoId))');
-		params.set('q', searchTerm);
 
-		const { data } = await axios(
-			`https://www.googleapis.com/youtube/v3/search?${params}`
+		const results = await ytSearch(searchTerm, {
+			limit: maxResults,
+			type: 'video'
+		});
+
+		return results.map(
+			(result: any) => {
+				const id = result.link.split('=')[1];
+				return new YoutubeMusicItem(this, {
+					id: id,
+					title: result.title,
+					link: `https://youtube.com/watch?v=${id}`,
+					imageUrl: result.thumbnail,
+					channel: result.channel,
+					duration: result.duration
+				});
+			}
 		);
-
-		const details = await this.getVideoDetails(
-			data.items.map((item: any) => item.id.videoId).join(',')
-		);
-
-		return details.map(
-			detail =>
-				new YoutubeMusicItem(this, {
-					id: detail.id,
-					title: detail.snippet.title,
-					link: `https://youtube.com/watch?v=${detail.id}`,
-					imageUrl: detail.snippet.thumbnails.default.url,
-					channel: detail.snippet.channelTitle,
-					duration: this.parseYoutubeDuration(detail.contentDetails.duration)
-				})
-		);
-	}
-
-	private async getVideoDetails(idList: string): Promise<Array<YoutubeVideo>> {
-		const params: URLSearchParams = new URLSearchParams();
-		params.set('key', this.client.config.bot.youtubeApiKey);
-		params.set('id', idList);
-		params.set('part', 'contentDetails,snippet');
-		params.set(
-			'fields',
-			'items(id,snippet(title,description,thumbnails(default),channelTitle),contentDetails(duration))'
-		);
-
-		const { data } = await axios(
-			`https://www.googleapis.com/youtube/v3/videos?${params}`
-		);
-
-		return data.items;
 	}
 
 	public parseYoutubeDuration(PT: string) {
