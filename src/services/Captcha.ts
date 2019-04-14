@@ -91,12 +91,14 @@ export class CaptchaService {
 			);
 
 			if (!response) {
-				await dmChannel.createMessage(
-					sets.captchaVerificationFailedMessage.replace(
-						/\{serverName\}/g,
-						member.guild.name
+				await dmChannel
+					.createMessage(
+						sets.captchaVerificationFailedMessage.replace(
+							/\{serverName\}/g,
+							member.guild.name
+						)
 					)
-				);
+					.catch(() => undefined);
 				member.kick().catch(() => undefined);
 				return;
 			}
