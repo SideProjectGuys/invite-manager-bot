@@ -842,7 +842,8 @@ export class InvitesService {
 						);
 						rankChannel
 							.createMessage(typeof msg === 'string' ? msg : { embed: msg })
-							.then((m: Message) => m.addReaction('🎉'));
+							.then((m: Message) => m.addReaction('🎉'))
+							.catch(() => undefined);
 					}
 				} else {
 					console.error(
