@@ -145,29 +145,32 @@ export class TrackingService {
 		}
 
 		if (!role) {
-			console.error('Role was null on guild role delete');
-			withScope(scope => {
-				scope.setUser({ id: guild.id });
-				scope.setExtra('guild', guild);
-				scope.setExtra('role', role);
-				captureException(new Error('Role was null on guild role delete'));
+			const allRoles = await guild.getRESTRoles();
+			const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
+			const oldRankIds = allRanks
+				.filter(rank => !allRoles.some(r => r.id === rank.roleId))
+				.map(r => r.id);
+			await ranks.destroy({
+				where: { guildId: guild.id, roleId: oldRankIds }
 			});
-			return;
+			await roles.destroy({
+				where: { guildId: guild.id, id: oldRankIds }
+			});
+		} else {
+			await ranks.destroy({
+				where: {
+					roleId: role.id,
+					guildId: role.guild.id
+				}
+			});
+
+			await roles.destroy({
+				where: {
+					id: role.id,
+					guildId: role.guild.id
+				}
+			});
 		}
-
-		await ranks.destroy({
-			where: {
-				roleId: role.id,
-				guildId: role.guild.id
-			}
-		});
-
-		await roles.destroy({
-			where: {
-				id: role.id,
-				guildId: role.guild.id
-			}
-		});
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
