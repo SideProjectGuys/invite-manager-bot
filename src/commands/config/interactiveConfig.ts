@@ -427,7 +427,7 @@ export default class extends Command {
 					this.client.removeListener('messageCreate', func);
 					this.client.removeListener('messageReactionAdd', func);
 
-					await msg.removeReaction(emoji.name, userId);
+					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
 
 					resolve();
 				}
