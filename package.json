@@ -43,6 +43,7 @@
 		"moment": "2.24.0",
 		"mysql2": "1.6.5",
 		"node-opus": "0.3.1",
+		"scrape-youtube": "0.0.4",
 		"sequelize": "4.43.1",
 		"sodium-native": "2.3.0",
 		"uws": "10.148.1",
