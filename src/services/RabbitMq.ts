@@ -112,10 +112,7 @@ export class RabbitMqService {
 
 		switch (cmd) {
 			case ShardCommand.STATUS:
-				sendResponse({
-					connected: this.client.gatewayConnected,
-					guildCount: this.client.guilds.size
-				});
+				this.sendStatusToManager();
 				break;
 
 			case ShardCommand.CUSTOM:
