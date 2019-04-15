@@ -6,8 +6,8 @@ This is the code repository for the InviteManager Discord Bot.
 
 ## Docs
 
-- [Command reference](docs/Commands) that lists all available commands
-- [Settings](docs/Commands) reference for details about the `!config` command
+- [Command reference](docs/Commands.md) that lists all available commands
+- [Settings](docs/Settings.md) reference for details about the `!config` command
 
 ## Requirements
 
