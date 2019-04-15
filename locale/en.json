@@ -61,7 +61,8 @@
 					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
 					"reason": "The reason for adding/removing the invites."
 				},
-				"description": "Adds/Removes invites to/from a member."
+				"description": "Adds/Removes invites to/from a member.",
+				"title": "cmd.addInvites.self.title"
 			}
 		},
 		"addRank": {
@@ -74,7 +75,8 @@
 					"invites": "The amount of invites needed to reach the rank.",
 					"info": "A description that users will see so they know more about this rank."
 				},
-				"description": "Add a new rank."
+				"description": "Add a new rank.",
+				"title": "cmd.addRank.self.title"
 			}
 		},
 		"ban": {
@@ -87,7 +89,11 @@
 					"deleteMessageDays": "How far back messages will be deleted (in days).",
 					"reason": "Why was the user banned."
 				},
-				"description": "Ban a member from the server."
+				"description": "Ban a member from the server.",
+				"flags": {
+					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+				},
+				"title": "cmd.ban.self.title"
 			},
 			"missingPermissions": "I need the `Ban Members` permission to use this command."
 		},
@@ -101,7 +107,8 @@
 				"total": "Total Shards"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Get general information about the bot.",
+				"title": "cmd.botInfo.self.title"
 			},
 			"premium": {
 				"title": "Premium",
@@ -128,7 +135,8 @@
 				"args": {
 					"user": "User to check."
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "Check violation and punishment history of a user.",
+				"title": "cmd.check.self.title"
 			}
 		},
 		"clean": {
@@ -143,7 +151,8 @@
 					"member": "User whose messages get deleted.",
 					"type": "The type of messages that will be deleted.",
 					"numberOfMessages": "Number of messages that will be searched."
-				}
+				},
+				"title": "cmd.clean.self.title"
 			}
 		},
 		"clearInvites": {
@@ -157,7 +166,8 @@
 				"flags": {
 					"date": "The date start at which invites should be counted. Default is today.",
 					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched."
-				}
+				},
+				"title": "cmd.clearInvites.self.title"
 			}
 		},
 		"config": {
@@ -197,7 +207,8 @@
 					"key": "The config setting which you want to show/change.",
 					"value": "The new value of the setting."
 				},
-				"description": "Show and change the config of the server."
+				"description": "Show and change the config of the server.",
+				"title": "cmd.config.self.title"
 			}
 		},
 		"fake": {
@@ -215,7 +226,8 @@
 				"args": {
 					"page": "Which page of the fake list to get."
 				},
-				"description": "Help find users trying to cheat."
+				"description": "Help find users trying to cheat.",
+				"title": "cmd.fake.self.title"
 			}
 		},
 		"help": {
@@ -238,7 +250,8 @@
 				"args": {
 					"command": "The command to get detailed information for."
 				},
-				"description": "Display help."
+				"description": "Display help.",
+				"title": "cmd.help.self.title"
 			}
 		},
 		"info": {
@@ -296,7 +309,8 @@
 					"details": "Request only specific details about a member.",
 					"page": "What page of the details to show. You can also use the reactions to navigate."
 				},
-				"description": "Show info about a specific member."
+				"description": "Show info about a specific member.",
+				"title": "cmd.info.self.title"
 			}
 		},
 		"inviteCodes": {
@@ -318,7 +332,8 @@
 			},
 			"dmSent": "I sent you a DM with all your invite codes.",
 			"self": {
-				"description": "Get a list of all your invite codes"
+				"description": "Get a list of all your invite codes",
+				"title": "cmd.inviteCodes.self.title"
 			}
 		},
 		"invites": {
@@ -338,7 +353,8 @@
 				"args": {
 					"user": "The user for whom you want to show invites."
 				},
-				"description": "Show personal invites."
+				"description": "Show personal invites.",
+				"title": "cmd.invites.self.title"
 			}
 		},
 		"kick": {
@@ -351,7 +367,8 @@
 					"member": "Member to kick.",
 					"reason": "Why the member was kicked."
 				},
-				"description": "Kick a member from the server."
+				"description": "Kick a member from the server.",
+				"title": "cmd.kick.self.title"
 			}
 		},
 		"leaderboard": {
@@ -380,7 +397,8 @@
 				"description": "Show members with most invites.",
 				"flags": {
 					"compare": "The date to which the current leaderboard standings are compared to"
-				}
+				},
+				"title": "cmd.leaderboard.self.title"
 			}
 		},
 		"memberConfig": {
@@ -413,7 +431,8 @@
 					"user": "The member that the setting is shown/changed for.",
 					"value": "The new value of the setting."
 				},
-				"description": "Show and change the config of members of the server."
+				"description": "Show and change the config of members of the server.",
+				"title": "cmd.memberConfig.self.title"
 			}
 		},
 		"members": {
@@ -427,7 +446,8 @@
 				"month": "Joined this month"
 			},
 			"self": {
-				"description": "Show member count of current server."
+				"description": "Show member count of current server.",
+				"title": "cmd.members.self.title"
 			}
 		},
 		"punishmentConfig": {
@@ -439,7 +459,8 @@
 					"strikes": "Number of strikes for this punishment to be used.",
 					"args": "Arguments passed to the punishment."
 				},
-				"description": "Configure punishments when reaching a certain amount of strikes."
+				"description": "Configure punishments when reaching a certain amount of strikes.",
+				"title": "cmd.punishmentConfig.self.title"
 			},
 			"unusedPunishment": "Unused Punishment",
 			"deletedText": "Members will no longer receive the punishment {{ punishment }}"
@@ -452,9 +473,11 @@
 			"self": {
 				"args": {
 					"quantity": "How many messages should be deleted.",
-					"member": "User whose messages get deleted"
+					"member": "User whose messages get deleted",
+					"user": "cmd.purge.self.args.user"
 				},
-				"description": "Purge messages in a channel."
+				"description": "Purge messages in a channel.",
+				"title": "cmd.purge.self.title"
 			}
 		},
 		"purgeUntil": {
@@ -467,7 +490,8 @@
 				"args": {
 					"messageID": "Last message ID to be deleted."
 				},
-				"description": "Purge messages in a channel up until a specified message."
+				"description": "Purge messages in a channel up until a specified message.",
+				"title": "cmd.purgeUntil.self.title"
 			}
 		},
 		"ranks": {
@@ -475,7 +499,8 @@
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
 			"title": "Ranks",
 			"self": {
-				"description": "Show all ranks."
+				"description": "Show all ranks.",
+				"title": "cmd.ranks.self.title"
 			}
 		},
 		"removeRank": {
@@ -485,7 +510,8 @@
 				"args": {
 					"rank": "The for which you want to remove the rank."
 				},
-				"description": "Remove a rank."
+				"description": "Remove a rank.",
+				"title": "cmd.removeRank.self.title"
 			}
 		},
 		"restoreInvites": {
@@ -494,7 +520,8 @@
 				"args": {
 					"user": "The user to restore all invites to. If omitted restores invites for all users."
 				},
-				"description": "Restore all previously cleared invites."
+				"description": "Restore all previously cleared invites.",
+				"title": "cmd.restoreInvites.self.title"
 			}
 		},
 		"setup": {
@@ -533,7 +560,8 @@
 				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites."
 			},
 			"self": {
-				"description": "Help with setting up the bot and checking for problems (e.g. missing permissions)"
+				"description": "Help with setting up the bot and checking for problems (e.g. missing permissions)",
+				"title": "cmd.setup.self.title"
 			}
 		},
 		"softBan": {
@@ -548,14 +576,19 @@
 					"deleteMessageDays": "How far back messages will be deleted (in days).",
 					"reason": "Why was the user banned."
 				},
-				"description": "Ban and then automatically unban a member from the server."
+				"description": "Ban and then automatically unban a member from the server.",
+				"flags": {
+					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+				},
+				"title": "cmd.softBan.self.title"
 			}
 		},
 		"subtractFakes": {
 			"done": "Removed fake invites!",
 			"none": "No fake invites found.",
 			"self": {
-				"description": "Remove fake invites from all users."
+				"description": "Remove fake invites from all users.",
+				"title": "cmd.subtractFakes.self.title"
 			}
 		},
 		"strikeConfig": {
@@ -566,7 +599,8 @@
 					"violation": "Violation type.",
 					"strikes": "Number of strikes."
 				},
-				"description": "Configure strikes received for various violations."
+				"description": "Configure strikes received for various violations.",
+				"title": "cmd.strikeConfig.self.title"
 			},
 			"deletedText": "Members who violate the rule {{ violation }} will no longer receive strikes.",
 			"unusedViolations": "Unused violations"
@@ -575,7 +609,8 @@
 			"done": "Removed leaves!",
 			"none": "No leaves found.",
 			"self": {
-				"description": "Remove leaves from all users"
+				"description": "Remove leaves from all users",
+				"title": "cmd.subtractLeaves.self.title"
 			}
 		},
 		"createInvite": {
@@ -585,7 +620,8 @@
 					"name": "The name of the invite code.",
 					"channel": "The channel for which the invite code is created. Uses the current channel by default."
 				},
-				"description": "Creates unique invite codes."
+				"description": "Creates unique invite codes.",
+				"title": "cmd.createInvite.self.title"
 			}
 		},
 		"inviteDetails": {
@@ -594,26 +630,30 @@
 				"args": {
 					"user": "The user for whom you want to show detailed invites."
 				},
-				"description": "Shows details about where your invites are from."
+				"description": "Shows details about where your invites are from.",
+				"title": "cmd.inviteDetails.self.title"
 			},
 			"noInviteCodes": "You don't have any invite codes yet."
 		},
 		"getBot": {
 			"title": "Add InviteManager to your server",
 			"self": {
-				"description": "Get an invite link for the bot."
+				"description": "Get an invite link for the bot.",
+				"title": "cmd.getBot.self.title"
 			}
 		},
 		"prefix": {
 			"title": "The current prefix is {{{ prefix }}}",
 			"self": {
-				"description": "Shows the current prefix of the bot."
+				"description": "Shows the current prefix of the bot.",
+				"title": "cmd.prefix.self.title"
 			}
 		},
 		"support": {
 			"server": "Support server",
 			"self": {
-				"description": "Get an invite link to our support server."
+				"description": "Get an invite link to our support server.",
+				"title": "cmd.support.self.title"
 			}
 		},
 		"premium": {
@@ -649,7 +689,8 @@
 				"description": "Info about premium version of InviteManager.",
 				"args": {
 					"action": "The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server."
-				}
+				},
+				"title": "cmd.premium.self.title"
 			},
 			"activate": {
 				"title": "Activate premium on this server",
@@ -681,7 +722,8 @@
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
 			"currentlyActive": "You currently have an active premium subscription!",
 			"self": {
-				"description": "Try the premium version of InviteManager for free for a limited duration."
+				"description": "Try the premium version of InviteManager for free for a limited duration.",
+				"title": "cmd.tryPremium.self.title"
 			}
 		},
 		"export": {
@@ -691,7 +733,8 @@
 				"args": {
 					"type": "The type of export you want."
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "Export data of InviteManager to a csv sheet.",
+				"title": "cmd.export.self.title"
 			}
 		},
 		"makeMentionable": {
@@ -700,7 +743,8 @@
 				"args": {
 					"role": "The role that you want to mention."
 				},
-				"description": "Make a role mentionable for 60 seconds or until it was used."
+				"description": "Make a role mentionable for 60 seconds or until it was used.",
+				"title": "cmd.makeMentionable.self.title"
 			}
 		},
 		"mentionRole": {
@@ -709,7 +753,8 @@
 				"args": {
 					"role": "The role that you want to mention."
 				},
-				"description": "Mention an unmentionable role."
+				"description": "Mention an unmentionable role.",
+				"title": "cmd.mentionRole.self.title"
 			},
 			"roleTooHigh": "The mentioned role is above my highest role, so I can't change it."
 		},
@@ -723,7 +768,8 @@
 					"member": "Member to warn.",
 					"reason": "Why was the member was warned."
 				},
-				"description": "Warn a member."
+				"description": "Warn a member.",
+				"title": "cmd.warn.self.title"
 			}
 		},
 		"inviteCodeConfig": {
@@ -734,7 +780,8 @@
 					"value": "The new value of the setting.",
 					"inviteCode": "The invite code for which you want to change the settings."
 				},
-				"description": "Show and change the config of invite codes of the server."
+				"description": "Show and change the config of invite codes of the server.",
+				"title": "cmd.inviteCodeConfig.self.title"
 			},
 			"title": "Invite Code Config",
 			"text": "Set configs for individual invite codes.",
@@ -766,7 +813,8 @@
 					"cmd": "The command to configure permissions for.",
 					"role": "The role which should be granted or denied access to the command."
 				},
-				"description": "Configure permissions to use commands."
+				"description": "Configure permissions to use commands.",
+				"title": "cmd.permissions.self.title"
 			},
 			"adminsCanUseAll": "Keep in mind that *Server Administrators* can *always* use *all* commands",
 			"added": "{{{ role }}} can now use {{{ cmds }}}",
@@ -792,7 +840,8 @@
 					"type": "The type of chart to display.",
 					"duration": "The duration period for the chart."
 				},
-				"description": "Shows graphs about various stats on this server."
+				"description": "Shows graphs about various stats on this server.",
+				"title": "cmd.graph.self.title"
 			}
 		},
 		"unban": {
@@ -802,7 +851,9 @@
 				"args": {
 					"user": "The user that should be unbanned.",
 					"reason": "The reason why this user is unbanned."
-				}
+				},
+				"title": "cmd.unban.self.title",
+				"description": "cmd.unban.self.description"
 			},
 			"done": "User has been unbanned."
 		},
@@ -814,7 +865,9 @@
 					"user": "The user that should be muted.",
 					"muteDuration": "The duration for which the user should be muted.",
 					"reason": "The reason why this user is muted."
-				}
+				},
+				"title": "cmd.mute.self.title",
+				"description": "cmd.mute.self.description"
 			},
 			"done": "User muted!",
 			"canNotMute": "Cannot mute user!"
@@ -824,7 +877,9 @@
 			"self": {
 				"args": {
 					"user": "The user that should be unmuted."
-				}
+				},
+				"title": "cmd.unmute.self.title",
+				"description": "cmd.unmute.self.description"
 			},
 			"canNotUnmute": "Cannot unmute that user.",
 			"done": "User has been unmuted."
@@ -835,7 +890,8 @@
 					"maxTextLength": "All messages shorter than this will be deleted.",
 					"numberOfMessages": "Number of messages that will be searched."
 				},
-				"description": "Clear short messages"
+				"description": "Clear short messages",
+				"title": "cmd.cleanShort.self.title"
 			}
 		},
 		"cleanText": {
@@ -843,7 +899,9 @@
 				"args": {
 					"text": "All messages containing this word will be deleted.",
 					"numberOfMessages": "Number of messages that will be searched."
-				}
+				},
+				"title": "cmd.cleanText.self.title",
+				"description": "cmd.cleanText.self.description"
 			}
 		},
 		"interactiveConfig": {
@@ -892,29 +950,56 @@
 			"more": {
 				"title": "More",
 				"description": "Show more entries"
+			},
+			"self": {
+				"title": "cmd.interactiveConfig.self.title",
+				"description": "cmd.interactiveConfig.self.description"
 			}
 		},
 		"credits": {
 			"developers": "Developers",
 			"moderators": "Moderators",
 			"staff": "Staff",
-			"translators": "Translators"
+			"translators": "Translators",
+			"self": {
+				"title": "cmd.credits.self.title",
+				"description": "cmd.credits.self.description"
+			}
 		},
 		"unhoist": {
 			"title": "Unhoist users",
 			"starting": "Starting unhoist process...",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n"
+			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
+			"self": {
+				"title": "cmd.unhoist.self.title",
+				"description": "cmd.unhoist.self.description"
+			}
 		},
 		"caseView": {
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}."
+			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
+			"self": {
+				"args": {
+					"caseNumber": "cmd.caseView.self.args.caseNumber"
+				},
+				"title": "cmd.caseView.self.title",
+				"description": "cmd.caseView.self.description"
+			}
 		},
 		"caseDelete": {
 			"title": "Case #{{ id }}",
 			"notFound": "Case not found",
-			"done": "Case deleted"
+			"done": "Case deleted",
+			"self": {
+				"args": {
+					"caseNumber": "cmd.caseDelete.self.args.caseNumber",
+					"reason": "cmd.caseDelete.self.args.reason"
+				},
+				"title": "cmd.caseDelete.self.title",
+				"description": "cmd.caseDelete.self.description"
+			}
 		},
 		"botConfig": {
 			"title": "Custom Bot Config",
@@ -951,7 +1036,55 @@
 					"key": "The bot config setting which you want to show/change.",
 					"value": "The new value of the setting."
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Show and change the config of the bot.",
+				"title": "cmd.botConfig.self.title"
+			}
+		},
+		"legacyInvites": {
+			"self": {
+				"args": {
+					"user": "cmd.legacyInvites.self.args.user"
+				},
+				"title": "cmd.legacyInvites.self.title",
+				"description": "cmd.legacyInvites.self.description"
+			}
+		},
+		"legacyLeaderboard": {
+			"self": {
+				"args": {
+					"page": "cmd.legacyLeaderboard.self.args.page",
+					"date": "cmd.legacyLeaderboard.self.args.date"
+				},
+				"title": "cmd.legacyLeaderboard.self.title",
+				"description": "cmd.legacyLeaderboard.self.description"
+			}
+		},
+		"removeInvites": {
+			"self": {
+				"args": {
+					"user": "cmd.removeInvites.self.args.user",
+					"amount": "cmd.removeInvites.self.args.amount",
+					"reason": "cmd.removeInvites.self.args.reason"
+				},
+				"title": "cmd.removeInvites.self.title",
+				"description": "cmd.removeInvites.self.description"
+			}
+		},
+		"ping": {
+			"self": {
+				"title": "cmd.ping.self.title",
+				"description": "cmd.ping.self.description"
+			}
+		},
+		"strike": {
+			"self": {
+				"args": {
+					"member": "cmd.strike.self.args.member",
+					"type": "cmd.strike.self.args.type",
+					"amount": "cmd.strike.self.args.amount"
+				},
+				"title": "cmd.strike.self.title",
+				"description": "cmd.strike.self.description"
 			}
 		}
 	},
@@ -1072,247 +1205,255 @@
 		},
 		"lang": {
 			"title": "Language",
-			"description": ""
+			"description": "settings.lang.description"
 		},
 		"prefix": {
 			"title": "Prefix",
-			"description": ""
+			"description": "settings.prefix.description"
 		},
 		"logChannel": {
 			"title": "Log Channel",
-			"description": ""
+			"description": "settings.logChannel.description"
 		},
 		"getUpdates": {
 			"title": "Get Updates",
-			"description": ""
+			"description": "settings.getUpdates.description"
 		},
 		"joinMessage": {
 			"title": "Message",
-			"description": ""
+			"description": "settings.joinMessage.description"
 		},
 		"joinMessageChannel": {
 			"title": "Message Channel",
-			"description": ""
+			"description": "settings.joinMessageChannel.description"
 		},
 		"rankAssignmentStyle": {
 			"title": "Assignment Style",
-			"description": ""
+			"description": "settings.rankAssignmentStyle.description"
 		},
 		"rankAnnouncementChannel": {
 			"title": "Announcement Channel",
-			"description": ""
+			"description": "settings.rankAnnouncementChannel.description"
 		},
 		"rankAnnouncementMessage": {
 			"title": "Announcement Message",
-			"description": ""
+			"description": "settings.rankAnnouncementMessage.description"
 		},
 		"leaveMessage": {
 			"title": "Message",
-			"description": ""
+			"description": "settings.leaveMessage.description"
 		},
 		"leaveMessageChannel": {
 			"title": "Message Channel",
-			"description": ""
+			"description": "settings.leaveMessageChannel.description"
 		},
 		"autoSubtractLeaves": {
 			"title": "Auto Subtract",
-			"description": ""
+			"description": "settings.autoSubtractLeaves.description"
 		},
 		"autoSubtractLeaveThreshold": {
 			"title": "Auto Subtract Threshold",
-			"description": ""
+			"description": "settings.autoSubtractLeaveThreshold.description"
 		},
 		"leaderboardStyle": {
 			"title": "Style",
-			"description": ""
+			"description": "settings.leaderboardStyle.description"
 		},
 		"hideLeftMembersFromLeaderboard": {
 			"title": "Hide left members",
-			"description": ""
+			"description": "settings.hideLeftMembersFromLeaderboard.description"
 		},
 		"autoSubtractFakes": {
 			"title": "Auto Subtract",
-			"description": ""
+			"description": "settings.autoSubtractFakes.description"
 		},
 		"captchaVerificationOnJoin": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.captchaVerificationOnJoin.description"
 		},
 		"captchaVerificationWelcomeMessage": {
 			"title": "Welcome Message",
-			"description": ""
+			"description": "settings.captchaVerificationWelcomeMessage.description"
 		},
 		"captchaVerificationSuccessMessage": {
 			"title": "Success Message",
-			"description": ""
+			"description": "settings.captchaVerificationSuccessMessage.description"
 		},
 		"captchaVerificationFailedMessage": {
 			"title": "Failed Message",
-			"description": ""
+			"description": "settings.captchaVerificationFailedMessage.description"
 		},
 		"captchaVerificationTimeout": {
 			"title": "Verification Timeout",
-			"description": ""
+			"description": "settings.captchaVerificationTimeout.description"
 		},
 		"captchaVerificationLogEnabled": {
 			"title": "Log Enabled",
-			"description": ""
+			"description": "settings.captchaVerificationLogEnabled.description"
 		},
 		"autoModEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModEnabled.description"
 		},
 		"autoModModeratedChannels": {
 			"title": "Moderated Channels",
-			"description": ""
+			"description": "settings.autoModModeratedChannels.description"
 		},
 		"autoModModeratedRoles": {
 			"title": "Moderated Roles",
-			"description": ""
+			"description": "settings.autoModModeratedRoles.description"
 		},
 		"autoModIgnoredChannels": {
 			"title": "Ignored Channels",
-			"description": ""
+			"description": "settings.autoModIgnoredChannels.description"
 		},
 		"autoModIgnoredRoles": {
 			"title": "Ignored Roles",
-			"description": ""
+			"description": "settings.autoModIgnoredRoles.description"
 		},
 		"mutedRole": {
 			"title": "Muted Role",
-			"description": ""
+			"description": "settings.mutedRole.description"
 		},
 		"autoModDisabledForOldMembers": {
 			"title": "Disabled for Old Members",
-			"description": ""
+			"description": "settings.autoModDisabledForOldMembers.description"
 		},
 		"autoModDisabledForOldMembersThreshold": {
 			"title": "Old Members Threshold",
-			"description": ""
+			"description": "settings.autoModDisabledForOldMembersThreshold.description"
 		},
 		"autoModLogEnabled": {
 			"title": "Log Enabled",
-			"description": ""
+			"description": "settings.autoModLogEnabled.description"
 		},
 		"modLogChannel": {
 			"title": "Log Channel",
-			"description": ""
+			"description": "settings.modLogChannel.description"
 		},
 		"autoModDeleteBotMessage": {
 			"title": "Delete Bot Messages",
-			"description": ""
+			"description": "settings.autoModDeleteBotMessage.description"
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
 			"title": "Delete Bot Message Timeout",
-			"description": ""
+			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description"
 		},
 		"modPunishmentBanDeleteMessage": {
 			"title": "Delete Ban Messages",
-			"description": ""
+			"description": "settings.modPunishmentBanDeleteMessage.description"
 		},
 		"modPunishmentKickDeleteMessage": {
 			"title": "Delete Kick Messages",
-			"description": ""
+			"description": "settings.modPunishmentKickDeleteMessage.description"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
 			"title": "Delete Softban Messages",
-			"description": ""
+			"description": "settings.modPunishmentSoftbanDeleteMessage.description"
 		},
 		"modPunishmentWarnDeleteMessage": {
 			"title": "Delete Warn Messages",
-			"description": ""
+			"description": "settings.modPunishmentWarnDeleteMessage.description"
 		},
 		"modPunishmentMuteDeleteMessage": {
 			"title": "Delete Mute Messages",
-			"description": ""
+			"description": "settings.modPunishmentMuteDeleteMessage.description"
 		},
 		"autoModInvitesEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModInvitesEnabled.description"
 		},
 		"autoModLinksEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModLinksEnabled.description"
 		},
 		"autoModLinksWhitelist": {
 			"title": "Whitelist",
-			"description": ""
+			"description": "settings.autoModLinksWhitelist.description"
 		},
 		"autoModLinksBlacklist": {
 			"title": "Blacklist",
-			"description": ""
+			"description": "settings.autoModLinksBlacklist.description"
 		},
 		"autoModLinksFollowRedirects": {
 			"title": "Follow Redirects",
-			"description": ""
+			"description": "settings.autoModLinksFollowRedirects.description"
 		},
 		"autoModWordsEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModWordsEnabled.description"
 		},
 		"autoModWordsBlacklist": {
 			"title": "Blacklist",
-			"description": ""
+			"description": "settings.autoModWordsBlacklist.description"
 		},
 		"autoModAllCapsEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModAllCapsEnabled.description"
 		},
 		"autoModAllCapsMinCharacters": {
 			"title": "Min. Characters",
-			"description": ""
+			"description": "settings.autoModAllCapsMinCharacters.description"
 		},
 		"autoModAllCapsPercentageCaps": {
 			"title": "Percentage CAPs",
-			"description": ""
+			"description": "settings.autoModAllCapsPercentageCaps.description"
 		},
 		"autoModDuplicateTextEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModDuplicateTextEnabled.description"
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
 			"title": "Timeframe in Seconds",
-			"description": ""
+			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description"
 		},
 		"autoModQuickMessagesEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModQuickMessagesEnabled.description"
 		},
 		"autoModQuickMessagesNumberOfMessages": {
 			"title": "# of Messages",
-			"description": ""
+			"description": "settings.autoModQuickMessagesNumberOfMessages.description"
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
 			"title": "Timeframe in Seconds",
-			"description": ""
+			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description"
 		},
 		"autoModMentionUsersEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModMentionUsersEnabled.description"
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
 			"title": "Max # of Mentions",
-			"description": ""
+			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description"
 		},
 		"autoModMentionRolesEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModMentionRolesEnabled.description"
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
 			"title": "Max # of Mentions",
-			"description": ""
+			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description"
 		},
 		"autoModEmojisEnabled": {
 			"title": "Enabled",
-			"description": ""
+			"description": "settings.autoModEmojisEnabled.description"
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
 			"title": "Max # of Emojis",
-			"description": ""
+			"description": "settings.autoModEmojisMaxNumberOfEmojis.description"
 		},
 		"autoModHoistEnabled": {
 			"title": "Dehoist Enabled",
-			"description": ""
+			"description": "settings.autoModHoistEnabled.description"
+		},
+		"channels": {
+			"title": "settings.channels.title",
+			"description": "settings.channels.description"
+		},
+		"ignoredChannels": {
+			"title": "settings.ignoredChannels.title",
+			"description": "settings.ignoredChannels.description"
 		}
 	}
 }
