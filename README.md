@@ -4,6 +4,11 @@
 
 This is the code repository for the InviteManager Discord Bot.
 
+## Docs
+
+- [Command reference](docs/Commands) that lists all available commands
+- [Settings](docs/Commands) reference for details about the `!config` command
+
 ## Requirements
 
 - NodeJS (tested using v10)

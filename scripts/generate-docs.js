@@ -133,7 +133,7 @@ child.on('close', () => {
 	outSettings += generateGroup([], settings);
 
 	outSettings += Object.keys(settingsInfo)
-		.map(key => settingsInfo[key].markdown)
+		.map(key => `<a name=${key}></a>\n\n` + settingsInfo[key].markdown)
 		.join('\n\n');
 
 	fs.writeFileSync('./docs/Settings.md', outSettings);
@@ -212,7 +212,7 @@ child.on('close', () => {
 				.replace(/>/g, '\\>');
 
 			outCmds +=
-				`<a href='#${cmd.name}'></a>\n` +
+				`<a name='${cmd.name}'></a>\n` +
 				`## ${t(`cmd.${cmd.name}.self.title`)}\n\n`;
 			outCmds += `${t(`cmd.${cmd.name}.self.description`)}\n\n`;
 			outCmds += `### Usage\n\n${usage}\n\n### Arguments\n\n${info}\n\n`;

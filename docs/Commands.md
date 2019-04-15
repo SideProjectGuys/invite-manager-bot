@@ -96,7 +96,7 @@ To get a list of available commands, do !help on your server.
 | [makeMentionable](#makeMentionable) | Make a role mentionable for 60 seconds or until it was used. | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Mention an unmentionable role.                               | !mentionRole \<role\>      |
 
-<a href='#addInvites'></a>
+<a name='addInvites'></a>
 
 ## cmd.addInvites.self.title
 
@@ -117,7 +117,7 @@ The amount of invites the user will get/lose. Use a negative (-) number to remov
 **\<reason\>**
 The reason for adding/removing the invites.
 
-<a href='#addRank'></a>
+<a name='addRank'></a>
 
 ## cmd.addRank.self.title
 
@@ -138,7 +138,7 @@ The amount of invites needed to reach the rank.
 **\<info\>**
 A description that users will see so they know more about this rank.
 
-<a href='#ban'></a>
+<a name='ban'></a>
 
 ## cmd.ban.self.title
 
@@ -159,7 +159,7 @@ User to ban.
 **\<reason\>**
 Why was the user banned.
 
-<a href='#botConfig'></a>
+<a name='botConfig'></a>
 
 ## cmd.botConfig.self.title
 
@@ -178,7 +178,7 @@ Use one of the following values: activityStatus, activityEnabled, activityType, 
 **\<value\>**
 The new value of the setting.
 
-<a href='#botInfo'></a>
+<a name='botInfo'></a>
 
 ## cmd.botInfo.self.title
 
@@ -190,7 +190,7 @@ Get general information about the bot.
 
 ### Arguments
 
-<a href='#caseDelete'></a>
+<a name='caseDelete'></a>
 
 ## cmd.caseDelete.self.title
 
@@ -208,7 +208,7 @@ cmd.caseDelete.self.args.caseNumber
 **\<reason\>**
 cmd.caseDelete.self.args.reason
 
-<a href='#caseView'></a>
+<a name='caseView'></a>
 
 ## cmd.caseView.self.title
 
@@ -223,7 +223,7 @@ cmd.caseView.self.description
 **\<caseNumber\>**
 cmd.caseView.self.args.caseNumber
 
-<a href='#check'></a>
+<a name='check'></a>
 
 ## cmd.check.self.title
 
@@ -238,7 +238,7 @@ Check violation and punishment history of a user.
 **\<user\>**
 User to check.
 
-<a href='#clean'></a>
+<a name='clean'></a>
 
 ## cmd.clean.self.title
 
@@ -257,7 +257,7 @@ Use one of the following values: images, links, mentions, bots, embeds, emojis, 
 **\<numberOfMessages\>**
 Number of messages that will be searched.
 
-<a href='#cleanShort'></a>
+<a name='cleanShort'></a>
 
 ## cmd.cleanShort.self.title
 
@@ -275,7 +275,7 @@ All messages shorter than this will be deleted.
 **\<numberOfMessages\>**
 Number of messages that will be searched.
 
-<a href='#cleanText'></a>
+<a name='cleanText'></a>
 
 ## cmd.cleanText.self.title
 
@@ -293,7 +293,7 @@ All messages containing this word will be deleted.
 **\<numberOfMessages\>**
 Number of messages that will be searched.
 
-<a href='#clearInvites'></a>
+<a name='clearInvites'></a>
 
 ## cmd.clearInvites.self.title
 
@@ -314,7 +314,7 @@ Add this flag to clear bonus invites aswell. Otherwise bonus invites are left un
 **\<user\>**
 The user to clear all invites from. If omitted clears all users.
 
-<a href='#config'></a>
+<a name='config'></a>
 
 ## cmd.config.self.title
 
@@ -333,7 +333,7 @@ Use one of the following values: prefix, lang, getUpdates, logChannel, channels,
 **\<value\>**
 The new value of the setting.
 
-<a href='#createInvite'></a>
+<a name='createInvite'></a>
 
 ## cmd.createInvite.self.title
 
@@ -351,7 +351,7 @@ The name of the invite code.
 **\<channel\>**
 The channel for which the invite code is created. Uses the current channel by default.
 
-<a href='#credits'></a>
+<a name='credits'></a>
 
 ## cmd.credits.self.title
 
@@ -363,7 +363,7 @@ cmd.credits.self.description
 
 ### Arguments
 
-<a href='#export'></a>
+<a name='export'></a>
 
 ## cmd.export.self.title
 
@@ -379,7 +379,7 @@ Export data of InviteManager to a csv sheet.
 The type of export you want.
 Use one of the following values: leaderboard
 
-<a href='#fake'></a>
+<a name='fake'></a>
 
 ## cmd.fake.self.title
 
@@ -394,7 +394,7 @@ Help find users trying to cheat.
 **\<page\>**
 Which page of the fake list to get.
 
-<a href='#getBot'></a>
+<a name='getBot'></a>
 
 ## cmd.getBot.self.title
 
@@ -406,7 +406,7 @@ Get an invite link for the bot.
 
 ### Arguments
 
-<a href='#graph'></a>
+<a name='graph'></a>
 
 ## cmd.graph.self.title
 
@@ -425,7 +425,7 @@ Use one of the following values: joins, leaves, usage
 **\<duration\>**
 The duration period for the chart.
 
-<a href='#help'></a>
+<a name='help'></a>
 
 ## cmd.help.self.title
 
@@ -440,7 +440,7 @@ Display help.
 **\<command\>**
 The command to get detailed information for.
 
-<a href='#info'></a>
+<a name='info'></a>
 
 ## cmd.info.self.title
 
@@ -462,7 +462,7 @@ Use one of the following values: bonus, members
 **\<page\>**
 What page of the details to show. You can also use the reactions to navigate.
 
-<a href='#interactiveConfig'></a>
+<a name='interactiveConfig'></a>
 
 ## cmd.interactiveConfig.self.title
 
@@ -474,7 +474,7 @@ cmd.interactiveConfig.self.description
 
 ### Arguments
 
-<a href='#inviteCodeConfig'></a>
+<a name='inviteCodeConfig'></a>
 
 ## cmd.inviteCodeConfig.self.title
 
@@ -496,7 +496,7 @@ The invite code for which you want to change the settings.
 **\<value\>**
 The new value of the setting.
 
-<a href='#inviteCodes'></a>
+<a name='inviteCodes'></a>
 
 ## cmd.inviteCodes.self.title
 
@@ -508,7 +508,7 @@ Get a list of all your invite codes
 
 ### Arguments
 
-<a href='#inviteDetails'></a>
+<a name='inviteDetails'></a>
 
 ## cmd.inviteDetails.self.title
 
@@ -523,7 +523,7 @@ Shows details about where your invites are from.
 **\<user\>**
 The user for whom you want to show detailed invites.
 
-<a href='#invites'></a>
+<a name='invites'></a>
 
 ## cmd.invites.self.title
 
@@ -538,7 +538,7 @@ Show personal invites.
 **\<user\>**
 The user for whom you want to show invites.
 
-<a href='#kick'></a>
+<a name='kick'></a>
 
 ## cmd.kick.self.title
 
@@ -556,7 +556,7 @@ Member to kick.
 **\<reason\>**
 Why the member was kicked.
 
-<a href='#leaderboard'></a>
+<a name='leaderboard'></a>
 
 ## cmd.leaderboard.self.title
 
@@ -577,7 +577,7 @@ The duration for which to calculate the leaderboard.
 **\<page\>**
 Which page of the leaderboard to get.
 
-<a href='#legacyInvites'></a>
+<a name='legacyInvites'></a>
 
 ## cmd.legacyInvites.self.title
 
@@ -592,7 +592,7 @@ cmd.legacyInvites.self.description
 **\<user\>**
 cmd.legacyInvites.self.args.user
 
-<a href='#legacyLeaderboard'></a>
+<a name='legacyLeaderboard'></a>
 
 ## cmd.legacyLeaderboard.self.title
 
@@ -610,7 +610,7 @@ cmd.legacyLeaderboard.self.args.page
 **\<date\>**
 cmd.legacyLeaderboard.self.args.date
 
-<a href='#makeMentionable'></a>
+<a name='makeMentionable'></a>
 
 ## cmd.makeMentionable.self.title
 
@@ -625,7 +625,7 @@ Make a role mentionable for 60 seconds or until it was used.
 **\<role\>**
 The role that you want to mention.
 
-<a href='#memberConfig'></a>
+<a name='memberConfig'></a>
 
 ## cmd.memberConfig.self.title
 
@@ -647,7 +647,7 @@ The member that the setting is shown/changed for.
 **\<value\>**
 The new value of the setting.
 
-<a href='#members'></a>
+<a name='members'></a>
 
 ## cmd.members.self.title
 
@@ -659,7 +659,7 @@ Show member count of current server.
 
 ### Arguments
 
-<a href='#mentionRole'></a>
+<a name='mentionRole'></a>
 
 ## cmd.mentionRole.self.title
 
@@ -674,7 +674,7 @@ Mention an unmentionable role.
 **\<role\>**
 The role that you want to mention.
 
-<a href='#mute'></a>
+<a name='mute'></a>
 
 ## cmd.mute.self.title
 
@@ -692,7 +692,7 @@ The user that should be muted.
 **\<reason\>**
 The reason why this user is muted.
 
-<a href='#permissions'></a>
+<a name='permissions'></a>
 
 ## cmd.permissions.self.title
 
@@ -710,7 +710,7 @@ The command to configure permissions for.
 **\<role\>**
 The role which should be granted or denied access to the command.
 
-<a href='#ping'></a>
+<a name='ping'></a>
 
 ## cmd.ping.self.title
 
@@ -722,7 +722,7 @@ cmd.ping.self.description
 
 ### Arguments
 
-<a href='#prefix'></a>
+<a name='prefix'></a>
 
 ## cmd.prefix.self.title
 
@@ -734,7 +734,7 @@ Shows the current prefix of the bot.
 
 ### Arguments
 
-<a href='#premium'></a>
+<a name='premium'></a>
 
 ## cmd.premium.self.title
 
@@ -750,7 +750,7 @@ Info about premium version of InviteManager.
 The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server.
 Use one of the following values: Check, Activate, Deactivate
 
-<a href='#punishmentConfig'></a>
+<a name='punishmentConfig'></a>
 
 ## cmd.punishmentConfig.self.title
 
@@ -772,7 +772,7 @@ Number of strikes for this punishment to be used.
 **\<args\>**
 Arguments passed to the punishment.
 
-<a href='#purge'></a>
+<a name='purge'></a>
 
 ## cmd.purge.self.title
 
@@ -790,7 +790,7 @@ How many messages should be deleted.
 **\<user\>**
 cmd.purge.self.args.user
 
-<a href='#purgeUntil'></a>
+<a name='purgeUntil'></a>
 
 ## cmd.purgeUntil.self.title
 
@@ -805,7 +805,7 @@ Purge messages in a channel up until a specified message.
 **\<messageID\>**
 Last message ID to be deleted.
 
-<a href='#ranks'></a>
+<a name='ranks'></a>
 
 ## cmd.ranks.self.title
 
@@ -817,7 +817,7 @@ Show all ranks.
 
 ### Arguments
 
-<a href='#removeInvites'></a>
+<a name='removeInvites'></a>
 
 ## cmd.removeInvites.self.title
 
@@ -838,7 +838,7 @@ cmd.removeInvites.self.args.amount
 **\<reason\>**
 cmd.removeInvites.self.args.reason
 
-<a href='#removeRank'></a>
+<a name='removeRank'></a>
 
 ## cmd.removeRank.self.title
 
@@ -853,7 +853,7 @@ Remove a rank.
 **\<rank\>**
 The for which you want to remove the rank.
 
-<a href='#restoreInvites'></a>
+<a name='restoreInvites'></a>
 
 ## cmd.restoreInvites.self.title
 
@@ -868,7 +868,7 @@ Restore all previously cleared invites.
 **\<user\>**
 The user to restore all invites to. If omitted restores invites for all users.
 
-<a href='#setup'></a>
+<a name='setup'></a>
 
 ## cmd.setup.self.title
 
@@ -880,7 +880,7 @@ Help with setting up the bot and checking for problems (e.g. missing permissions
 
 ### Arguments
 
-<a href='#softBan'></a>
+<a name='softBan'></a>
 
 ## cmd.softBan.self.title
 
@@ -901,7 +901,7 @@ User to ban.
 **\<reason\>**
 Why was the user banned.
 
-<a href='#strike'></a>
+<a name='strike'></a>
 
 ## cmd.strike.self.title
 
@@ -923,7 +923,7 @@ Use one of the following values: invites, links, words, allCaps, duplicateText, 
 **\<amount\>**
 cmd.strike.self.args.amount
 
-<a href='#strikeConfig'></a>
+<a name='strikeConfig'></a>
 
 ## cmd.strikeConfig.self.title
 
@@ -942,7 +942,7 @@ Use one of the following values: invites, links, words, allCaps, duplicateText, 
 **\<strikes\>**
 Number of strikes.
 
-<a href='#subtractFakes'></a>
+<a name='subtractFakes'></a>
 
 ## cmd.subtractFakes.self.title
 
@@ -954,7 +954,7 @@ Remove fake invites from all users.
 
 ### Arguments
 
-<a href='#subtractLeaves'></a>
+<a name='subtractLeaves'></a>
 
 ## cmd.subtractLeaves.self.title
 
@@ -966,7 +966,7 @@ Remove leaves from all users
 
 ### Arguments
 
-<a href='#support'></a>
+<a name='support'></a>
 
 ## cmd.support.self.title
 
@@ -978,7 +978,7 @@ Get an invite link to our support server.
 
 ### Arguments
 
-<a href='#tryPremium'></a>
+<a name='tryPremium'></a>
 
 ## cmd.tryPremium.self.title
 
@@ -990,7 +990,7 @@ Try the premium version of InviteManager for free for a limited duration.
 
 ### Arguments
 
-<a href='#unban'></a>
+<a name='unban'></a>
 
 ## cmd.unban.self.title
 
@@ -1008,7 +1008,7 @@ The user that should be unbanned.
 **\<reason\>**
 The reason why this user is unbanned.
 
-<a href='#unhoist'></a>
+<a name='unhoist'></a>
 
 ## cmd.unhoist.self.title
 
@@ -1020,7 +1020,7 @@ cmd.unhoist.self.description
 
 ### Arguments
 
-<a href='#unmute'></a>
+<a name='unmute'></a>
 
 ## cmd.unmute.self.title
 
@@ -1035,7 +1035,7 @@ cmd.unmute.self.description
 **\<user\>**
 The user that should be unmuted.
 
-<a href='#warn'></a>
+<a name='warn'></a>
 
 ## cmd.warn.self.title
 

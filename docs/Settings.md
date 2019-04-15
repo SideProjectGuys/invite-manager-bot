@@ -156,6 +156,8 @@ There are many config options that can be set. You don't have to set all of them
 | [Max # of Emojis](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
 | [Dehoist Enabled](#automodhoistenabled)            | settings.autoModHoistEnabled.description            |
 
+<a name=prefix></a>
+
 ## Prefix
 
 settings.prefix.description
@@ -172,6 +174,8 @@ Examples:
 `!config prefix +`
 
 `!config prefix >`
+
+<a name=lang></a>
 
 ## Language
 
@@ -190,6 +194,8 @@ Example:
 
 `!config lang cs`
 
+<a name=logChannel></a>
+
 ## Log Channel
 
 settings.logChannel.description
@@ -204,6 +210,8 @@ Reset to default:
 Examples:
 
 `!config logChannel #channel`
+
+<a name=getUpdates></a>
 
 ## Get Updates
 
@@ -224,6 +232,8 @@ Disable:
 
 `!config getUpdates false`
 
+<a name=channels></a>
+
 ## settings.channels.title
 
 settings.channels.description
@@ -234,6 +244,8 @@ Default: ``
 
 Reset to default:
 `!config channels default`
+
+<a name=ignoredChannels></a>
 
 ## settings.ignoredChannels.title
 
@@ -246,6 +258,8 @@ Default: ``
 Reset to default:
 `!config ignoredChannels default`
 
+<a name=joinMessage></a>
+
 ## Message
 
 settings.joinMessage.description
@@ -256,6 +270,8 @@ Default: `{memberMention} **joined**; Invited by **{inviterName}** (**{numInvite
 
 Reset to default:
 `!config joinMessage default`
+
+<a name=joinMessageChannel></a>
 
 ## Message Channel
 
@@ -274,6 +290,8 @@ Examples:
 
 `!config joinMessageChannel #joins`
 
+<a name=leaveMessage></a>
+
 ## Message
 
 settings.leaveMessage.description
@@ -290,6 +308,8 @@ Examples:
 `!config leaveMessage`
 
 `!config leaveMessage`
+
+<a name=leaveMessageChannel></a>
 
 ## Message Channel
 
@@ -308,6 +328,8 @@ Examples:
 
 `!config leaveMessageChannel #leaves`
 
+<a name=leaderboardStyle></a>
+
 ## Style
 
 settings.leaderboardStyle.description
@@ -324,6 +346,8 @@ Possible values: `normal`, `table`, `mentions`
 Example:
 
 `!config leaderboardStyle normal`
+
+<a name=hideLeftMembersFromLeaderboard></a>
 
 ## Hide left members
 
@@ -344,6 +368,8 @@ Disable:
 
 `!config hideLeftMembersFromLeaderboard false`
 
+<a name=autoSubtractFakes></a>
+
 ## Auto Subtract
 
 settings.autoSubtractFakes.description
@@ -362,6 +388,8 @@ Enable:
 Disable:
 
 `!config autoSubtractFakes false`
+
+<a name=autoSubtractLeaves></a>
 
 ## Auto Subtract
 
@@ -382,6 +410,8 @@ Disable:
 
 `!config autoSubtractLeaves false`
 
+<a name=autoSubtractLeaveThreshold></a>
+
 ## Auto Subtract Threshold
 
 settings.autoSubtractLeaveThreshold.description
@@ -398,6 +428,8 @@ Examples:
 `!config autoSubtractLeaveThreshold 60`
 
 `!config autoSubtractLeaveThreshold 3600`
+
+<a name=rankAssignmentStyle></a>
 
 ## Assignment Style
 
@@ -416,6 +448,8 @@ Example:
 
 `!config rankAssignmentStyle all`
 
+<a name=rankAnnouncementChannel></a>
+
 ## Announcement Channel
 
 settings.rankAnnouncementChannel.description
@@ -433,6 +467,8 @@ Examples:
 
 `!config rankAnnouncementChannel`
 
+<a name=rankAnnouncementMessage></a>
+
 ## Announcement Message
 
 settings.rankAnnouncementMessage.description
@@ -449,6 +485,8 @@ Examples:
 `!config rankAnnouncementMessage`
 
 `!config rankAnnouncementMessage`
+
+<a name=captchaVerificationOnJoin></a>
 
 ## Enabled
 
@@ -469,6 +507,8 @@ Disable:
 
 `!config captchaVerificationOnJoin false`
 
+<a name=captchaVerificationWelcomeMessage></a>
+
 ## Welcome Message
 
 settings.captchaVerificationWelcomeMessage.description
@@ -483,6 +523,8 @@ Reset to default:
 Examples:
 
 `!config captchaVerificationWelcomeMessage Welcome, please enter the captcha below!`
+
+<a name=captchaVerificationSuccessMessage></a>
 
 ## Success Message
 
@@ -499,6 +541,8 @@ Examples:
 
 `!config captchaVerificationSuccessMessage Thanks for entering the captcha, enjoy our server!`
 
+<a name=captchaVerificationFailedMessage></a>
+
 ## Failed Message
 
 settings.captchaVerificationFailedMessage.description
@@ -513,6 +557,8 @@ Reset to default:
 Examples:
 
 `!config captchaVerificationFailedMessage Looks like you are not human :(. You can join again and try again later if this was a mistake!`
+
+<a name=captchaVerificationTimeout></a>
 
 ## Verification Timeout
 
@@ -530,6 +576,8 @@ Examples:
 `!config captchaVerificationTimeout 60`
 
 `!config captchaVerificationTimeout 600`
+
+<a name=captchaVerificationLogEnabled></a>
 
 ## Log Enabled
 
@@ -550,6 +598,8 @@ Disable:
 
 `!config captchaVerificationLogEnabled false`
 
+<a name=autoModEnabled></a>
+
 ## Enabled
 
 settings.autoModEnabled.description
@@ -569,6 +619,8 @@ Disable:
 
 `!config autoModEnabled false`
 
+<a name=autoModModeratedChannels></a>
+
 ## Moderated Channels
 
 settings.autoModModeratedChannels.description
@@ -585,6 +637,8 @@ Examples:
 `!config autoModModeratedChannels #general`
 
 `!config autoModModeratedChannels #support,#help`
+
+<a name=autoModModeratedRoles></a>
 
 ## Moderated Roles
 
@@ -603,6 +657,8 @@ Examples:
 
 `!config autoModModeratedRoles @Newbies,@Starters`
 
+<a name=autoModIgnoredChannels></a>
+
 ## Ignored Channels
 
 settings.autoModIgnoredChannels.description
@@ -619,6 +675,8 @@ Examples:
 `!config autoModIgnoredChannels #general`
 
 `!config autoModIgnoredChannels #off-topic,#nsfw`
+
+<a name=autoModIgnoredRoles></a>
 
 ## Ignored Roles
 
@@ -637,6 +695,8 @@ Examples:
 
 `!config autoModIgnoredRoles @Moderators,@Staff`
 
+<a name=mutedRole></a>
+
 ## Muted Role
 
 settings.mutedRole.description
@@ -651,6 +711,8 @@ Reset to default:
 Examples:
 
 `!config mutedRole @muted`
+
+<a name=autoModDisabledForOldMembers></a>
 
 ## Disabled for Old Members
 
@@ -671,6 +733,8 @@ Disable:
 
 `!config autoModDisabledForOldMembers false`
 
+<a name=autoModDisabledForOldMembersThreshold></a>
+
 ## Old Members Threshold
 
 settings.autoModDisabledForOldMembersThreshold.description
@@ -687,6 +751,8 @@ Examples:
 `!config autoModDisabledForOldMembersThreshold 604800` (1 week)``
 
 `!config autoModDisabledForOldMembersThreshold 2419200` (1 month)``
+
+<a name=autoModLogEnabled></a>
 
 ## Log Enabled
 
@@ -707,6 +773,8 @@ Disable:
 
 `!config autoModLogEnabled false`
 
+<a name=modLogChannel></a>
+
 ## Log Channel
 
 settings.modLogChannel.description
@@ -723,6 +791,8 @@ Examples:
 `!config modLogChannel #channel`
 
 `!config modLogChannel #logs`
+
+<a name=autoModDeleteBotMessage></a>
 
 ## Delete Bot Messages
 
@@ -743,6 +813,8 @@ Disable:
 
 `!config autoModDeleteBotMessage false`
 
+<a name=autoModDeleteBotMessageTimeoutInSeconds></a>
+
 ## Delete Bot Message Timeout
 
 settings.autoModDeleteBotMessageTimeoutInSeconds.description
@@ -759,6 +831,8 @@ Examples:
 `!config autoModDeleteBotMessageTimeoutInSeconds 5`
 
 `!config autoModDeleteBotMessageTimeoutInSeconds 10`
+
+<a name=modPunishmentBanDeleteMessage></a>
 
 ## Delete Ban Messages
 
@@ -779,6 +853,8 @@ Disable:
 
 `!config modPunishmentBanDeleteMessage false`
 
+<a name=modPunishmentKickDeleteMessage></a>
+
 ## Delete Kick Messages
 
 settings.modPunishmentKickDeleteMessage.description
@@ -797,6 +873,8 @@ Enable:
 Disable:
 
 `!config modPunishmentKickDeleteMessage false`
+
+<a name=modPunishmentSoftbanDeleteMessage></a>
 
 ## Delete Softban Messages
 
@@ -817,6 +895,8 @@ Disable:
 
 `!config modPunishmentSoftbanDeleteMessage false`
 
+<a name=modPunishmentWarnDeleteMessage></a>
+
 ## Delete Warn Messages
 
 settings.modPunishmentWarnDeleteMessage.description
@@ -835,6 +915,8 @@ Enable:
 Disable:
 
 `!config modPunishmentWarnDeleteMessage false`
+
+<a name=modPunishmentMuteDeleteMessage></a>
 
 ## Delete Mute Messages
 
@@ -855,6 +937,8 @@ Disable:
 
 `!config modPunishmentMuteDeleteMessage false`
 
+<a name=autoModInvitesEnabled></a>
+
 ## Enabled
 
 settings.autoModInvitesEnabled.description
@@ -873,6 +957,8 @@ Enable:
 Disable:
 
 `!config autoModInvitesEnabled false`
+
+<a name=autoModLinksEnabled></a>
 
 ## Enabled
 
@@ -893,6 +979,8 @@ Disable:
 
 `!config autoModLinksEnabled false`
 
+<a name=autoModLinksWhitelist></a>
+
 ## Whitelist
 
 settings.autoModLinksWhitelist.description
@@ -910,6 +998,8 @@ Examples:
 
 `!config autoModLinksWhitelist youtube.com,twitch.com`
 
+<a name=autoModLinksBlacklist></a>
+
 ## Blacklist
 
 settings.autoModLinksBlacklist.description
@@ -926,6 +1016,8 @@ Examples:
 `!config autoModLinksBlacklist google.com`
 
 `!config autoModLinksBlacklist twitch.com,youtube.com`
+
+<a name=autoModLinksFollowRedirects></a>
 
 ## Follow Redirects
 
@@ -946,6 +1038,8 @@ Disable:
 
 `!config autoModLinksFollowRedirects false`
 
+<a name=autoModWordsEnabled></a>
+
 ## Enabled
 
 settings.autoModWordsEnabled.description
@@ -965,6 +1059,8 @@ Disable:
 
 `!config autoModWordsEnabled false`
 
+<a name=autoModWordsBlacklist></a>
+
 ## Blacklist
 
 settings.autoModWordsBlacklist.description
@@ -981,6 +1077,8 @@ Examples:
 `!config autoModWordsBlacklist gay`
 
 `!config autoModWordsBlacklist stupid,fuck`
+
+<a name=autoModAllCapsEnabled></a>
 
 ## Enabled
 
@@ -1001,6 +1099,8 @@ Disable:
 
 `!config autoModAllCapsEnabled false`
 
+<a name=autoModAllCapsMinCharacters></a>
+
 ## Min. Characters
 
 settings.autoModAllCapsMinCharacters.description
@@ -1018,6 +1118,8 @@ Examples:
 
 `!config autoModAllCapsMinCharacters 15`
 
+<a name=autoModAllCapsPercentageCaps></a>
+
 ## Percentage CAPs
 
 settings.autoModAllCapsPercentageCaps.description
@@ -1034,6 +1136,8 @@ Examples:
 `!config autoModAllCapsPercentageCaps 50`
 
 `!config autoModAllCapsPercentageCaps 90`
+
+<a name=autoModDuplicateTextEnabled></a>
 
 ## Enabled
 
@@ -1054,6 +1158,8 @@ Disable:
 
 `!config autoModDuplicateTextEnabled false`
 
+<a name=autoModDuplicateTextTimeframeInSeconds></a>
+
 ## Timeframe in Seconds
 
 settings.autoModDuplicateTextTimeframeInSeconds.description
@@ -1070,6 +1176,8 @@ Examples:
 `!config autoModDuplicateTextTimeframeInSeconds 5`
 
 `!config autoModDuplicateTextTimeframeInSeconds 20`
+
+<a name=autoModQuickMessagesEnabled></a>
 
 ## Enabled
 
@@ -1090,6 +1198,8 @@ Disable:
 
 `!config autoModQuickMessagesEnabled false`
 
+<a name=autoModQuickMessagesNumberOfMessages></a>
+
 ## # of Messages
 
 settings.autoModQuickMessagesNumberOfMessages.description
@@ -1107,6 +1217,8 @@ Examples:
 
 `!config autoModQuickMessagesNumberOfMessages 10`
 
+<a name=autoModQuickMessagesTimeframeInSeconds></a>
+
 ## Timeframe in Seconds
 
 settings.autoModQuickMessagesTimeframeInSeconds.description
@@ -1123,6 +1235,8 @@ Examples:
 `!config autoModQuickMessagesTimeframeInSeconds 2`
 
 `!config autoModQuickMessagesTimeframeInSeconds 10`
+
+<a name=autoModMentionUsersEnabled></a>
 
 ## Enabled
 
@@ -1143,6 +1257,8 @@ Disable:
 
 `!config autoModMentionUsersEnabled false`
 
+<a name=autoModMentionUsersMaxNumberOfMentions></a>
+
 ## Max # of Mentions
 
 settings.autoModMentionUsersMaxNumberOfMentions.description
@@ -1159,6 +1275,8 @@ Examples:
 `!config autoModMentionUsersMaxNumberOfMentions 2`
 
 `!config autoModMentionUsersMaxNumberOfMentions 5`
+
+<a name=autoModMentionRolesEnabled></a>
 
 ## Enabled
 
@@ -1179,6 +1297,8 @@ Disable:
 
 `!config autoModMentionRolesEnabled false`
 
+<a name=autoModMentionRolesMaxNumberOfMentions></a>
+
 ## Max # of Mentions
 
 settings.autoModMentionRolesMaxNumberOfMentions.description
@@ -1195,6 +1315,8 @@ Examples:
 `!config autoModMentionRolesMaxNumberOfMentions 2`
 
 `!config autoModMentionRolesMaxNumberOfMentions 5`
+
+<a name=autoModEmojisEnabled></a>
 
 ## Enabled
 
@@ -1215,6 +1337,8 @@ Disable:
 
 `!config autoModEmojisEnabled false`
 
+<a name=autoModEmojisMaxNumberOfEmojis></a>
+
 ## Max # of Emojis
 
 settings.autoModEmojisMaxNumberOfEmojis.description
@@ -1231,6 +1355,8 @@ Examples:
 `!config autoModEmojisMaxNumberOfEmojis 5`
 
 `!config autoModEmojisMaxNumberOfEmojis 10`
+
+<a name=autoModHoistEnabled></a>
 
 ## Dehoist Enabled
 
