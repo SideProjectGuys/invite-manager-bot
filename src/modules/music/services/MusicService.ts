@@ -152,7 +152,7 @@ export class MusicService {
 			`${baseUrl}/loadtracks?identifier=${encodeURIComponent(url)}`,
 			{
 				headers: {
-					Authorization: '8Z3Je8gIu53QVFZr1v*qgtneX@eTqv!^',
+					Authorization: this.nodes[0].password,
 					Accept: 'application/json'
 				}
 			}
