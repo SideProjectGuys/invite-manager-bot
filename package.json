@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "6.0.14",
+	"version": "6.0.16",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -8,7 +8,8 @@
 		"build": "tsc",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"test/**/*.js\"",
-		"nxv": "node ./scripts/npm-exact-versions.js"
+		"nxv": "node ./scripts/npm-exact-versions.js",
+		"docs": "node scripts/generate-docs.js"
 	},
 	"husky": {
 		"hooks": {
