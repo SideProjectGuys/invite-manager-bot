@@ -20,7 +20,7 @@ export default class extends Command {
 		flags: {},
 		{ settings, t }: Context
 	): Promise<any> {
-		this.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.prefix.title', {
 				prefix: settings.prefix

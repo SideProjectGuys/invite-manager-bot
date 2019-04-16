@@ -42,34 +42,38 @@ export default class extends Command {
 
 		switch (type) {
 			case ExportType.leaderboard:
-				this.sendReply(message, embed).then(async (msg: Message) => {
-					if (type === 'leaderboard') {
-						let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
+				const msg = await this.sendReply(message, embed);
+				if (!msg) {
+					return;
+				}
 
-						const { keys, invs } = await this.client.invs.generateLeaderboard(
-							guild
-						);
-						keys.forEach(id => {
-							const i = invs[id];
-							csv +=
-								`${i.id},` +
-								`"${i.name.replace(/"/g, '\\"')}",` +
-								`${i.total},` +
-								`${i.regular},` +
-								`${i.custom},` +
-								`${i.fakes},` +
-								`${i.leaves},` +
-								`\n`;
-						});
+				if (type === 'leaderboard') {
+					let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-						return message.channel
-							.createMessage('', {
-								file: Buffer.from(csv),
-								name: 'InviteManagerExport.csv'
-							})
-							.then(() => msg.delete());
-					}
-				});
+					const { keys, invs } = await this.client.invs.generateLeaderboard(
+						guild
+					);
+					keys.forEach(id => {
+						const i = invs[id];
+						csv +=
+							`${i.id},` +
+							`"${i.name.replace(/"/g, '\\"')}",` +
+							`${i.total},` +
+							`${i.regular},` +
+							`${i.custom},` +
+							`${i.fakes},` +
+							`${i.leaves},` +
+							`\n`;
+					});
+
+					return message.channel
+						.createMessage('', {
+							file: Buffer.from(csv),
+							name: 'InviteManagerExport.csv'
+						})
+						.then(() => msg.delete().catch(() => undefined))
+						.catch(() => undefined);
+				}
 				break;
 
 			default:

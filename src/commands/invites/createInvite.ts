@@ -76,7 +76,7 @@ export default class extends Command {
 			name
 		);
 
-		this.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,

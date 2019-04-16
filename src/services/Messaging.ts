@@ -151,8 +151,6 @@ export class MessagingService {
 				.createMessage({ embed: e })
 				.then(resolve)
 				.catch(error => {
-					console.error(error);
-
 					const content = convertEmbedToPlain(e);
 
 					if (error.code !== 50013) {
@@ -170,8 +168,15 @@ export class MessagingService {
 						.then(resolve)
 						.catch(err => {
 							if (!fallbackUser) {
-								console.error(err);
-								return reject(err);
+								withScope(scope => {
+									if (target instanceof TextChannel) {
+										scope.setUser({ id: target.guild.id });
+									}
+									scope.setExtra('message', embed);
+									scope.setExtra('content', content);
+									captureException(err);
+								});
+								return undefined;
 							}
 
 							fallbackUser
@@ -193,13 +198,30 @@ export class MessagingService {
 										.createMessage(msg)
 										.then(resolve)
 										.catch(err2 => {
-											console.error(err2);
-											return reject(err2);
+											withScope(scope => {
+												if (target instanceof TextChannel) {
+													scope.setUser({ id: target.guild.id });
+												}
+												scope.setExtra('message', embed);
+												scope.setExtra('content', content);
+												scope.setExtra('fallbackUser', fallbackUser.id);
+												scope.setExtra('dmMessage', msg);
+												captureException(err2);
+											});
+											return undefined;
 										});
 								})
 								.catch(err2 => {
-									console.log(err2);
-									return reject(err2);
+									withScope(scope => {
+										if (target instanceof TextChannel) {
+											scope.setUser({ id: target.guild.id });
+										}
+										scope.setExtra('message', embed);
+										scope.setExtra('content', content);
+										scope.setExtra('fallbackUser', fallbackUser.id);
+										captureException(err2);
+									});
+									return undefined;
 								});
 						});
 				});
@@ -443,6 +465,10 @@ export class MessagingService {
 		} else {
 			author = prevMsg.author;
 			prevMsg = await this.sendEmbed(prevMsg.channel, embed, prevMsg.author);
+			// If we don't have a message we probably don't have permission
+			if (!prevMsg) {
+				return;
+			}
 		}
 
 		// Don't paginate for sudo messages

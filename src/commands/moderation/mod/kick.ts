@@ -80,8 +80,7 @@ export default class extends Command {
 		}
 
 		const response = await this.sendReply(message, embed);
-
-		if (settings.modPunishmentKickDeleteMessage) {
+		if (response && settings.modPunishmentKickDeleteMessage) {
 			const func = () => {
 				message.delete().catch(() => undefined);
 				response.delete().catch(() => undefined);

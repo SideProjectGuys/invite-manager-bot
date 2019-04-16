@@ -66,6 +66,9 @@ export default class extends Command {
 		message.delete().catch(() => undefined);
 
 		const msg = await this.sendReply(message, embed);
+		if (!msg) {
+			return;
+		}
 
 		for (let i = 0; i < this.choices.length; i++) {
 			msg.addReaction(this.choices[i]).catch(() => undefined);
