@@ -273,7 +273,8 @@ export enum Lang {
 	ru = 'ru',
 	sr = 'sr',
 	sv = 'sv',
-	ur_PK = 'ur_PK'
+	ur_PK = 'ur_PK',
+	ja = 'ja'
 }
 
 export enum LeaderboardStyle {

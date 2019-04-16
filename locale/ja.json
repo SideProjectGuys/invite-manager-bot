@@ -1,0 +1,1257 @@
+{
+	"arguments": {
+		"missingRequired": "必要な引数`{{ name }}`がありません。\n{{{ usage }}}\n{{{ help }}}",
+		"enum": {
+			"validValues": "次の値のどれかを使用してください:{{{ values }}}",
+			"invalid": "不正な値です。"
+		},
+		"user": {
+			"notFound": "ユーザーが見つかりませんでした。",
+			"multiple": "複数の一致するユーザーが見つかりました。{{{ user }}}"
+		},
+		"number": {
+			"invalid": "不正な数です。"
+		},
+		"invalid": "`{{ arg }}`の無効な値：{{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"command": {
+			"notFound": "コマンドが見つかりませんでした。",
+			"multiple": "複数の一致するコマンドが見つかりました。{{{commands}}}"
+		},
+		"channel": {
+			"notFound": "チャンネルが見つかりませんでした。",
+			"multiple": "複数のチャンネルが見つかりました。{{{ channels }}}"
+		},
+		"role": {
+			"notFound": "役職は見つかりませんでした。",
+			"multiple": "複数の役職が見つかりました。 {{{ roles }}}"
+		},
+		"boolean": {
+			"invalid": "有効な Yes / No の値ではありません。"
+		},
+		"member": {
+			"notFound": "メンバーが見つかりませんでした。",
+			"multiple": "複数のメンバーが見つかりました。{{{members}}}"
+		}
+	},
+	"bot": {
+		"supportDiscord": {
+			"title": "Discordサポート"
+		},
+		"invite": {
+			"title": "BOTをあなたのサーバーに追加する"
+		},
+		"website": {
+			"title": "BOTのウェブサイト"
+		},
+		"patreon": {
+			"title": "Patreon"
+		}
+	},
+	"cmd": {
+		"error": "コマンドの実行中にエラーが発生しました。これを開発者に報告してください。\n{{{ error }}}",
+		"addInvites": {
+			"zero": "招待を0件追加しても意味がありません...",
+			"amount": {
+				"positive": "** {{amount}} **が{{{member}}}の招待を追加しました。現在の招待数は** {{totalInvites}} **です。",
+				"negative": "** {{amount}} **が{{{member}}}の招待を削除しました。現在の招待数は** {{totalInvites}} **です。"
+			},
+			"self": {
+				"args": {
+					"user": "そのユーザーはボーナスの招待数を受け取る、または失うでしょう。",
+					"amount": "ユーザーが取得、又は失う可能性のある招待の数。招待を削除する場合は``-``を用います。",
+					"reason": "招待数を追加(又は削除)した理由。"
+				},
+				"description": "メンバーに招待を追加(又は削除)します。"
+			}
+		},
+		"addRank": {
+			"updated": "ランク{{{role}}}が更新されました：{{invites}}招待数が必要になり、次の説明があります：{{description}}",
+			"created": "ランク役職が追加されました: {{{ role }}} 必要な招待数は{{ invites }}で、次の説明を追加しました: {{ description }}",
+			"roleTooHigh": "この役職{{{ role }}}は私の役職({{{ myRole }}})より上にあるため、メンバーが役職を獲得しても割り当てることができません。",
+			"self": {
+				"args": {
+					"role": "このランクに到達したときにユーザーが受け取る役職。",
+					"invites": "ランクに到達するために必要な招待の数。",
+					"info": "ユーザーがこのランクについて知るために表示される説明。"
+				},
+				"description": "新しいランクを追加する。"
+			}
+		},
+		"ban": {
+			"error": "このユーザーを禁止するエラーがありました。\n{{ error }}",
+			"done": "ユーザーはBANされました。",
+			"canNotBan": "私はこのメンバーをBANすることができません。",
+			"self": {
+				"args": {
+					"user": "ユーザーをBANする。",
+					"deleteMessageDays": "過去のチャットログをどれだけ削除するか（日数）。",
+					"reason": "ユーザーがBANされた理由。"
+				},
+				"description": "サーバーからメンバーをBANします。"
+			},
+			"missingPermissions": "このコマンドを使用するには、 'メンバーをBAN'権限が必要です。"
+		},
+		"botInfo": {
+			"version": "バージョン",
+			"uptime": "稼働時間",
+			"guilds": "導入サーバー数",
+			"members": "総メンバー数",
+			"shards": {
+				"current": "現在のシャード数",
+				"total": "総シャード数"
+			},
+			"self": {
+				"description": "BOTに関する基本的な情報を入手してください。"
+			},
+			"premium": {
+				"title": "プレミアム",
+				"active": "このサーバーでは**使用可能なプレミアム**を利用しています。 ",
+				"none": "このサーバーはプレミアムを**持っていません**",
+				"custom": "カスタム版のBOTを使用しています。"
+			}
+		},
+		"check": {
+			"strikes": {
+				"title": "警告",
+				"entry": "＃{{id}} - {{violation}}が原因で{{date}}に{{amount}}つの警告を受けました。",
+				"total": "警告回数",
+				"totalText": "{{{amount}}}回の違反で{{{total}}}の警告を受けました。"
+			},
+			"punishments": {
+				"title": "罰",
+				"entry": "{{ punishment }}理由:{{ amount }} 回の警告があったため - {{ date }}",
+				"total": "罰を受けた数",
+				"totalText": "{{{ amount }}}回の罰。"
+			},
+			"noHistory": "ユーザーには履歴がありません。",
+			"self": {
+				"args": {
+					"user": "ユーザーを確認する。"
+				},
+				"description": "ユーザーの違反と罰の回数を確認してください。"
+			}
+		},
+		"clean": {
+			"invalidQuantity": "メッセージを削除するためには、正の値を指定しなければいけません。",
+			"error": "エラー",
+			"title": "削除されたメッセージ",
+			"text": "{{ amount }}のメッセージを削除しました。\nこのメッセージは5秒後に自動的に削除されます。",
+			"self": {
+				"description": "特定のチャットタイプを削除します。",
+				"args": {
+					"quantity": "削除するメッセージ数。",
+					"member": "誰のメッセージを削除するか。",
+					"type": "削除するメッセージの種類",
+					"numberOfMessages": "削除されるメッセージの数"
+				}
+			}
+		},
+		"clearInvites": {
+			"done": "ユーザーの招待数を{{ amount }} クリアしました。",
+			"self": {
+				"args": {
+					"clearBonus": "ボーナスの招待数を削除したい場合は `true`を、そうでなければ` false`（デフォルト）を入力してください。",
+					"user": "招待数をすべて削除する。省略された場合、すべてのメンバーが対象になります。"
+				},
+				"description": "サーバー(ユーザー)の招待を削除します。",
+				"flags": {
+					"date": "招待の開始日を指定する必要があります。 デフォルトは今日です。",
+					"clearBonus": "これを追加すると、ボーナスの招待数もクリアされます。省略した場合、ボーナスの招待状はそのまま残ります。"
+				}
+			}
+		},
+		"config": {
+			"title": "あなたの設定",
+			"text": "これはあなたのサーバーのすべての設定です。\n一つの設定をする場合、`{{ prefix }}config <key>を使用し、\nまた、複数の引数を使用する設定は、`{{ prefix }}config <key> <value>` で、設定することができます。 ",
+			"canNotClear": "設定の**{{ key }}**はクリアできません。デフォルトに戻すには、`config **{{ key }}** defult`が使用できます。",
+			"notSet": "これらの設定は設定されていません。",
+			"current": {
+				"title": "現在の値",
+				"text": "この設定は現在設定されています。\n変更するには `{{prefix}} config {{key}} <value>`を使います。\nデフォルトに戻すには `{{prefix}} config {{key}} default`を使います。",
+				"notSet": "この設定は現在**設定されていません**。\n設定するには `{{prefix}} config {{key}} <value>`を使います。",
+				"clear": "設定をクリアするには `{{prefix}} config {{key}} none`を使用してください。"
+			},
+			"previous": {
+				"title": "前の値"
+			},
+			"new": {
+				"title": "新しい値"
+			},
+			"sameValue": "この設定には既に値が設定されています。",
+			"changed": {
+				"text": "この設定は変更されました。\n再度変更するには `{{prefix}} config {{key}} <value>`を使用してください。\nデフォルトに戻すには `{{prefix}} config {{key}} default`を使います。"
+			},
+			"preview": {
+				"title": "プレビュー",
+				"nextMessage": "<See next message>"
+			},
+			"none": "なし",
+			"invalid": {
+				"mustBeTextChannel": "そのチャンネルはテキストチャンネルではありません。",
+				"canNotReadMessages": "そのチャンネルでの、**メッセージを読む**権限がありません。",
+				"canNotSendMessages": "そのチャンネルでの、**メッセージを送信する**権限がありません。",
+				"canNotSendEmbeds": "そのチャンネルでの、**埋め込みリンク**権限がありません。"
+			},
+			"self": {
+				"args": {
+					"key": "表示/変更したい設定。",
+					"value": "設定の新しい値"
+				},
+				"description": "サーバーの設定を表示および変更します。"
+			}
+		},
+		"fake": {
+			"title": "偽の招待",
+			"none": "これまでに発見された偽の招待はありません。",
+			"noneSinceJoin": "このサーバーにボットが追加されて以来、偽の招待はありません。",
+			"join": {
+				"entry": {
+					"text": "**{{ name }}** が参加しました **{{ times }} 回**, 招待者:",
+					"multi": "**{{ name }}** (**{{ times }}** 回)",
+					"single": "**{{ 名前 }}**"
+				}
+			},
+			"self": {
+				"args": {
+					"page": "偽の招待リストのどのページを取得するか。"
+				},
+				"description": "騙そうとしているユーザーを見つけるのに役立ちます。"
+			}
+		},
+		"help": {
+			"text": "これはあなたが使用できるコマンドのリストです。 特定のコマンドに関するより詳しい情報は `{{prefix}} help <command>`（例: `{{prefix}} help add-ranks`）を使うことで得られます。",
+			"command": {
+				"title": "コマンド"
+			},
+			"description": {
+				"title": "説明"
+			},
+			"usage": {
+				"title": "使用方法"
+			},
+			"aliases": {
+				"title": "別名"
+			},
+			"links": "リンク",
+			"missingPermissions": "BOTには現在、次の権限がありません：{{{value}}}",
+			"self": {
+				"args": {
+					"command": "詳細情報を取得するためのコマンド。"
+				},
+				"description": "ヘルプを表示する。"
+			}
+		},
+		"info": {
+			"lastJoined": {
+				"notInGuild": "ユーザーはあなたのサーバーに存在しません",
+				"title": "最後に参加した"
+			},
+			"invites": {
+				"title": "招待",
+				"text": "**{{ total }}** (全体の招待数:**{{ regular }}** , ボーナス招待数:**{{ custom }}** , 偽の招待数:**{{ fake }}** , 退出数:**{{ leave }}** )",
+				"clear": {
+					"title": "招待を削除しました。",
+					"text": "**{{ total }}** (全体の招待数:**{{ regular }}** , ボーナスの招待数:**{{ custom }}** )"
+				}
+			},
+			"joined": {
+				"title": "参加しました",
+				"text": "{{ amount }} 回"
+			},
+			"created": {
+				"title": "作成されました"
+			},
+			"joins": {
+				"title": "参加する",
+				"entry": {
+					"text": "{{ total }} 回 {{ time }}, 招待者:",
+					"invite": "{{{ member }}} ({{ times }} 回)"
+				},
+				"more": "さらに{{amount}}人が参加しました。",
+				"unknown": "不明（これは新メンバーにのみ有効です）"
+			},
+			"regularInvites": {
+				"title": "正規の招待",
+				"entry": "使用コード: {{ code }} 使用回数: {{ uses }} - 作成日 {{ createdAt }}",
+				"more": "さらに別の{{amount}}招待コード",
+				"none": "このメンバーはこれまでに誰も招待していません"
+			},
+			"bonusInvites": {
+				"title": "ボーナス招待",
+				"entry": "{{ amount }} 作成者: {{{ creator }}} - {{ date }}, 理由: {{ reason }}",
+				"more": "さらに{{amount}}追加のボーナス招待",
+				"none": "このメンバーには、これまでのところボーナス招待がありません",
+				"noReason": "理由なし",
+				"details": "詳細は{{{cmd}}}を使用してください。"
+			},
+			"invitedMembers": {
+				"title": "招待メンバー",
+				"more": "さらに{{amount}}人の招待メンバー",
+				"none": "このメンバーはこれまでに他の誰も招待していません",
+				"details": "詳細は{{{cmd}}}を使用してください。"
+			},
+			"self": {
+				"args": {
+					"user": "追加情報を見たいユーザー。",
+					"details": "メンバーに関する特定の詳細のみを要求します。",
+					"page": "表示する詳細のどのページ。 リアクションを使って移動することもできます。"
+				},
+				"description": "特定のメンバーに関する情報を表示します。"
+			}
+		},
+		"inviteCodes": {
+			"title": "サーバー{{guild}}に次のコードがあります。",
+			"noCodes": "利用可能な招待コードはありません。 作成方法はサーバーのスタッフにお尋ねください。",
+			"recommendedCode": {
+				"title": "おすすめの招待コード",
+				"none": "期間が永久の招待コードを作成してください。"
+			},
+			"permanent": {
+				"title": "恒久",
+				"text": "これらの招待は期限が切れません。",
+				"entry": "**回数**: {{ uses }}\n**最大年齢**: {{ maxAge }}\n**最大使用回数**: {{ maxUses }}\n**チャンネル**: {{{ channel }}}"
+			},
+			"temporary": {
+				"title": "一時的",
+				"text": "これらの招待は一定期間後に期限が切れます。",
+				"entry": "**使用数**: {{ uses }}\n**最大年齢**: {{ maxAge }}\n**最大使用回数**: {{ maxUses }}\n**チャンネル**: {{{ channel }}}\n**有効期限**: {{ expires }}"
+			},
+			"dmSent": "あなたのすべての招待コードをあなたにDMを送りました。",
+			"self": {
+				"description": "すべての招待コードの一覧を取得する"
+			}
+		},
+		"invites": {
+			"amount": {
+				"self": "あなたの招待数は{{ total }} です! (全体の招待数:{{ regular }} , ボーナス招待数:{{ custom }} , 偽の招待数:{{ fake }}, 退出数:{{ leave }})",
+				"other": "{{{ target }}} has {{ total }}回招待しています！ (全体の招待数:{{ regular }} . ボーナス招待数:{{ custom }} , 偽の招待数:{{ fake }} , 退出数:{{ leave }})"
+			},
+			"nextRank": {
+				"self": "あなたは **{{ nextRankName }}**に上がるために**{{ nextRankPointsDiff }}**回の招待が必要です！",
+				"other": "{{{ target }}}は **{{ nextRankName }}**に上がるために**{{ nextRankPointsDiff }}**回の招待が必要です！"
+			},
+			"highestRank": {
+				"self": "おめでとうございます、あなたは最高ランクを獲得しました！",
+				"other": "{{{ target }}}は最高ランクを所持しています！"
+			},
+			"self": {
+				"args": {
+					"user": "表示したいユーザーを招待します。"
+				},
+				"description": "Show personal invites."
+			}
+		},
+		"kick": {
+			"missingPermissions": "メンバーを蹴るには`メンバーをキック`権限が必要です",
+			"canNotKick": "このユーザーを蹴ることはできません。",
+			"done": "ユーザーをキックしました。",
+			"error": "このユーザーを蹴っているときにエラーが発生しました。\n{{ error }}",
+			"self": {
+				"args": {
+					"member": "メンバーをキックする",
+					"reason": "メンバーが蹴られた理由"
+				},
+				"description": "サーバーからメンバーを蹴ります。"
+			}
+		},
+		"leaderboard": {
+			"title": "リーダーボード",
+			"invalidDate": "無効な日付：{{date}}",
+			"noInvites": "招待がありません！",
+			"from": "{{{from}}}からの招待",
+			"comparedTo": "{{{to}}}と比較した変更",
+			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - 招待数:**{{ total }}**  (全体の招待数**{{ regular }}** , ボーナス招待:**{{ custom }}** , 偽の招待数:**{{ fake }}** , 退出数:**{{ leave }}**)",
+			"col": {
+				"change": "変更",
+				"name": "名前",
+				"total": "T",
+				"regular": "R",
+				"custom": "B",
+				"fake": "F",
+				"leave": "L"
+			},
+			"legend": "`T` = 合計\n`R` = 全体の招待数\r\n`B` = ボーナス招待数\r\n`F` = 偽の招待数\r\n`L` = 退出数",
+			"self": {
+				"args": {
+					"page": "リーダーボードのどのページを取得するか。",
+					"date": "リーダーボードが表示されている日付と時間。",
+					"duration": "リーダーボードを計算する期間。"
+				},
+				"description": "招待が最も多いメンバーを表示します。",
+				"flags": {
+					"compare": "現在のリーダーボード順位が比較される日付"
+				}
+			}
+		},
+		"memberConfig": {
+			"title": "メンバー設定",
+			"text": "以下は利用可能なすべてのメンバー設定です。\n\n<key>設定を持つユーザを見るには `{{prefix}} memberConfig <key>`を使ってください。\n単一の `@ user`の設定を見るには` {{prefix}} memberConfig <key>@ user `を使います。\n`{{prefix}} memberConfig <key> @user <value>`を使って設定` `を` @ user`の <key>から<value>``に設定します",
+			"canNotClear": "メンバー設定** {{key}} **はクリアできません。 デフォルト値にリセットするためには、 `memberConfig {{key}} default`を使うことができます。",
+			"keys": {
+				"title": "有効なメンバー設定キー"
+			},
+			"notSet": "このメンバー設定は現在どのメンバーにも設定されていません",
+			"current": {
+				"title": "現在の値",
+				"text": "このメンバー設定は現在設定されています。\n\n変更するには `{{prefix}} memberConfig {{key}} {{username}} <value>`を使います。\nデフォルトにリセットするには `{{prefix}} memberConfig {{key}} {{username}} default`を使います。\nクリアするには、 `{{prefix}} memberConfig {{key}} {{username}} none \\`を使用してください。",
+				"notSet": "このメンバー設定は現在**設定されていません**。\n\n設定するには `{{prefix}} memberConfig {{key}} {{username}}<value>`を使います。"
+			},
+			"previous": {
+				"title": "前の値"
+			},
+			"new": {
+				"title": "新しい値"
+			},
+			"sameValue": "このメンバー設定はすでにその値に設定されています",
+			"changed": {
+				"text": "このメンバー設定は変更されました。\n\n再度変更するには `{{prefix}} memberConfig {{key}} {{username}} <value>`を使用してください。\nデフォルトにリセットするには `{{prefix}} memberConfig {{key}} {{username}} none`を使います。"
+			},
+			"none": "なし",
+			"self": {
+				"args": {
+					"key": "表示/変更したいメンバー構成設定。",
+					"user": "設定が表示/変更されたメンバー。",
+					"value": "設定の新しい値"
+				},
+				"description": "サーバーのメンバーの設定を表示および変更します。"
+			}
+		},
+		"members": {
+			"members": "メンバーの数",
+			"online": "オンラインの数",
+			"humans": "人間の数",
+			"bots": "BOTの数",
+			"joined": {
+				"day": "過去24時間以内に参加",
+				"week": "過去1週間以内に参加",
+				"month": "過去1ヶ月以内に参加"
+			},
+			"self": {
+				"description": "現在のサーバーのメンバー数を表示します。"
+			}
+		},
+		"punishmentConfig": {
+			"title": "罰の設定",
+			"text": "{{strikes}}警告は{{punishment}}で処罰されます",
+			"self": {
+				"args": {
+					"punishment": "使用する罰の種類",
+					"strikes": "この罰が適用されるための警告の数。",
+					"args": "議論は罰に渡された。"
+				},
+				"description": "一定量の警告に達したときに罰を設定します。"
+			},
+			"unusedPunishment": "使用されていない罰",
+			"deletedText": "メンバーはもう罰を受け取ることはありません{{punishment}}"
+		},
+		"purge": {
+			"invalidQuantity": "きれいにするためにメッセージ引数を指定しなければなりません",
+			"error": "エラー",
+			"title": "削除されたメッセージ",
+			"text": "{{amount}}件のメッセージを削除しました。\nこのメッセージは5秒以内に削除されます。",
+			"self": {
+				"args": {
+					"quantity": "削除するメッセージ数。",
+					"member": "ユーザーのメッセージが削除されました"
+				},
+				"description": "チャネル内のメッセージを削除します。"
+			}
+		},
+		"purgeUntil": {
+			"title": "メッセージを削除",
+			"none": "削除できるメッセージがありませんでした。",
+			"msgNotFound": "最近の100個のメッセージにメッセージIDが見つかりませんでした。",
+			"error": "エラー",
+			"text": "{{amount}}件のメッセージを削除しました。\nこのメッセージは5秒以内に削除されます。",
+			"self": {
+				"args": {
+					"messageID": "最後のメッセージIDは削除されました。"
+				},
+				"description": "指定されたメッセージまでチャネル内のメッセージを削除します。"
+			}
+		},
+		"ranks": {
+			"none": "ランクはまだ作成されていません。",
+			"entry": "{{{ role }}}: **招待数:{{ numInvites }} ** {{ description }}",
+			"title": "ランク",
+			"self": {
+				"description": "すべてのランクを見る"
+			}
+		},
+		"removeRank": {
+			"rankNotFound": "ランク{{{role}}}は存在しません。",
+			"done": "ランク{{{role}}}は削除されました。",
+			"self": {
+				"args": {
+					"rank": "ランクを削除したい対象です。"
+				},
+				"description": "ランクを外します。"
+			}
+		},
+		"restoreInvites": {
+			"done": "復元された招待",
+			"self": {
+				"args": {
+					"user": "ユーザーのすべての招待を復元する。 省略すると、すべてのユーザーの招待が復元されます。"
+				},
+				"description": "以前にクリアした招待状をすべて復元します。"
+			}
+		},
+		"setup": {
+			"title": "InviteManagerを設定する",
+			"text": "ボットを招待した後、すべての招待は自動的に追跡されます。",
+			"joinLeave": {
+				"title": "参加と退出のメッセージチャンネルを設定する",
+				"text": "自分のチャンネルの1つにjoinメッセージを表示したり、メッセージを残したい場合は、 `!config joinMessageChannel＃channel`または`!config leaveMessageChannel＃channel`を実行してそのチャンネルを設定する必要があります。 ボットがそれらのチャンネルに書き込み権限を持っていることを確認してください。"
+			},
+			"prefix": {
+				"title": "接頭辞を変更する",
+				"text": "接頭辞を変更するには、 `!config prefix !`を実行します。\n\nボットのプレフィックスがわからない場合は、 `@InviteManager config prefix`を使って見つけることができます。"
+			},
+			"faq": {
+				"title": "よくある質問",
+				"text": "ボットの設定に関する完全なガイドはここにあります：https://docs.invitemanager.co/bot/"
+			},
+			"help": {
+				"title": "ヘルプ",
+				"text": "助けが必要な場合やフィードバックがある場合は、 `!feedback`コマンドを使用するか、またはdiscordサポートサーバーに参加してください:{{{link}}}"
+			},
+			"premium": {
+				"title": "プレミアム",
+				"text": "このボットの開発を支援したいのなら、Patreonで私たちを支援することができます：{{{link}}}\n\nTierによっては、追加機能がいくつかあります。"
+			},
+			"manageGuild": {
+				"title": "権限がありません：サーバーの管理",
+				"text": "ボットには「サーバーの管理」権限がありません。 この権限は、ユーザーの招待を読むために必要です。 この許可がないと、参加メッセージは機能しません。"
+			},
+			"manageRoles": {
+				"title": "権限がありません：ロールの管理",
+				"text": "ボットには「役職の管理」権限がありません。 この権限は、役職をユーザーに割り当てるために必要です。 この許可がないと、メンバーは自動昇格できません。"
+			},
+			"viewAuditLogs": {
+				"title": "権限がありません：サーバーログの表示",
+				"text": "ボットには「サーバーログの表示」権限がありません。 この許可により、ボットは招待状をよりよく追跡することができます。"
+			},
+			"self": {
+				"description": "ボットの設定や問題の確認（権限の不足など）を手助けする"
+			}
+		},
+		"softBan": {
+			"missingPermissions": "このコマンドを使用するには、 'メンバーをBAN'許可が必要です。",
+			"canNotSoftBan": "このユーザーをソフトBANすることはできません。",
+			"done": "ユーザーは正常にソフトBANされました..",
+			"error": "このユーザーをBANするエラーがありました。\n{{ error }}",
+			"unBanError": "ユーザーはBANされていましたが、BANを解除できなかった。\n{{error}}",
+			"self": {
+				"args": {
+					"user": "メンバーをBANする",
+					"deleteMessageDays": "過去のメッセージをどれだけ削除するか（日数）。",
+					"reason": "ユーザーがBANされた理由"
+				},
+				"description": "サーバーからメンバーをBANしてから自動的にBAN解除します。"
+			}
+		},
+		"subtractFakes": {
+			"done": "偽の招待を削除しました！",
+			"none": "偽の招待は見つかりませんでした。",
+			"self": {
+				"description": "すべてのユーザーから偽の招待を削除します。"
+			}
+		},
+		"strikeConfig": {
+			"title": "警告設定",
+			"text": "ユーザーに警告{{strikes}}を実行します。理由:{{violation}}",
+			"self": {
+				"args": {
+					"violation": "違反のタイプ",
+					"strikes": "警告の数"
+				},
+				"description": "さまざまな違反に対して受け取った警告を設定します。"
+			},
+			"deletedText": "ルール{{violation}}に違反したメンバーは警告を受けなくなります。",
+			"unusedViolations": "未使用の違反"
+		},
+		"subtractLeaves": {
+			"done": "退出履歴を削除します。",
+			"none": "退出履歴は見つかりませんでした",
+			"self": {
+				"description": "すべてのユーザーの退出履歴を削除します。"
+			}
+		},
+		"createInvite": {
+			"done": "{{{channel}}}の招待リンク** {{{code}}} ** ** ** {{name}} **を作成しました。",
+			"self": {
+				"args": {
+					"name": "招待リンクの名前。",
+					"channel": "招待コードが作成されたチャンネル。 デフォルトで現在のチャンネルを使用します。"
+				},
+				"description": "永久の招待コードを作成します。"
+			}
+		},
+		"inviteDetails": {
+			"entry": "** {{uses}} **から{{{code}}} - 作成日** {{createdAt}} **",
+			"self": {
+				"args": {
+					"user": "詳細な招待状を見たいユーザー。"
+				},
+				"description": "招待状の送信元に関する詳細が表示されます。"
+			},
+			"noInviteCodes": "招待リンクはまだありません。"
+		},
+		"getBot": {
+			"title": "あなたのサーバーにInviteManagerを追加する",
+			"self": {
+				"description": "ボットへの招待リンクを入手できます。"
+			}
+		},
+		"prefix": {
+			"title": "現在のプレフィックスは{{{prefix}}}です",
+			"self": {
+				"description": "ボットの現在のプレフィックスを表示します。"
+			}
+		},
+		"support": {
+			"server": "サポートサーバー",
+			"self": {
+				"description": "サポートサーバーへの招待リンクを入手してください。"
+			}
+		},
+		"premium": {
+			"noPremium": {
+				"title": "あなたは現在プレミアム版を利用していません",
+				"text": "プレミアムTierを購入することで、ボットの開発を手助けし、また追加機能を入手することができます。"
+			},
+			"feature": {
+				"servers": {
+					"title": "プレミアム機能：最大5台のサーバー",
+					"text": "プレミアムを取得したら、選択した最大5台のサーバーで有効にすることができ、いつでもこれら5台のサーバーを変更できます。"
+				},
+				"embeds": {
+					"title": "プレミアム機能：埋め込み式の参加メッセージ",
+					"text": "あなたはあなたのサーバーの参加メッセージに埋め込みメッセージを使うことができて、ずっとメッセージを残すことができます。\n[ここでいくつかの例を参照してください]（{{{link}}}）"
+				},
+				"export": {
+					"title": "プレミアム機能：履歴のエクスポート",
+					"text": "あなたが私たちのボットを招待してからあなたはあなたのサーバーで起こったすべての参加履歴と退出履歴をエクスポートすることができます。"
+				},
+				"patreon": {
+					"title": "Patreonでプレミアムを購入した場合",
+					"text": "{{{cmd}}}を実行してPatreonの契約書を検証して有効にします。"
+				}
+			},
+			"premium": {
+				"title": "InviteManagerプレミアム",
+				"text": "プレミアム登録は他の{{date}}に有効です。\n\n{{{limit}}}サーバーでプレミアムを有効にしました。\n{{{guildList}}}\n\n[プレミアムで何ができますか？]（{{{link}}}）",
+				"deactivate": "このサーバーで{{{cmd}}}を使用して無効にしてください。",
+				"activate": "このサーバーでアクティブにするには{{{cmd}}}を使用してください"
+			},
+			"self": {
+				"description": "InviteManagerのプレミアムバージョンに関する情報。",
+				"args": {
+					"action": "プレミアム情報はありません。 あなたのプレミアムステータスをチェックするために `check`。 このサーバーにプレミアムを使用するには `activate`してください。"
+				}
+			},
+			"activate": {
+				"title": "このサーバーでプレミアムを有効にする",
+				"currentlyActive": "このサーバーでは既にプレミアム登録が有効になっています。",
+				"done": "このサーバーのプレミアムは正常に有効化されました。",
+				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
+				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
+				"customBot": "カスタムボットを使用しています。 カスタムボットには常にプレミアムがあります。"
+			},
+			"deactivate": {
+				"title": "このサーバーのプレミアムを無効にする",
+				"done": "このサーバーのプレミアムは無効になりました。",
+				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
+				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
+				"customBot": "カスタムボットを使用しています。 カスタムボットには常にプレミアムがあります。"
+			},
+			"check": {
+				"title": "プレミアム購読を確認する",
+				"notFound": "あなたのアカウントにはプレミアム登録が関連付けられていません。\n\nPatreonを使用してプレミアムを取得した場合は、DiscordアカウントをPatreonにリンクして報酬を集めるようにしてから、もう一度このコマンドを実行してください。",
+				"declined": "使用料の支払いが拒否されました。Patreonを確認してください。",
+				"done": "あなたは{{{valid}}}まで有効なプレミアム購読を有効にしています。\n\n詳細については{{{cmd}}}を使用してください。"
+			}
+		},
+		"tryPremium": {
+			"title": "InviteManager - プレミアムを試す",
+			"text": "{{duration}}のプレミアム機能を試すことができます。 これは一度だけできます。 今すぐテストしますか？",
+			"prompt": "** yes **または** no **で返信してください。",
+			"started": "あなたはあなたのトライアルを始めました！ 残り時間を確認するには、 `{{prefix}} premium`を使用します。",
+			"alreadyUsed": "あなたはすでに無料のプレミアムトライアルを使っています！ あなたはこのボットが好きなら、プレミアムの購入を検討してください。",
+			"currentlyActive": "あなたは現在アクティブなプレミアム購読をしています！",
+			"self": {
+				"description": "プレミアム版のInviteManagerを期間限定で無料でお試しください。"
+			}
+		},
+		"export": {
+			"title": "InviteManager - エクスポート",
+			"preparing": "ファイルを準備しています...お待ちください...",
+			"self": {
+				"args": {
+					"type": "必要なエクスポートの種類。"
+				},
+				"description": "InviteManagerのデータをcsvシートにエクスポートします。"
+			}
+		},
+		"makeMentionable": {
+			"alreadyDone": "{{{role}}}はすでにメンションできるようにされています。",
+			"self": {
+				"args": {
+					"role": "あなたがメンションしたい役割。"
+				},
+				"description": "役割を60秒間またはそれが使用されるまでメンション可能にします。"
+			}
+		},
+		"mentionRole": {
+			"alreadyDone": "{{{role}}}はすでにメンションされています。",
+			"self": {
+				"args": {
+					"role": "あなたが言及したいメンション。"
+				},
+				"description": "メンションできない役職についてメンションしてください。"
+			},
+			"roleTooHigh": "メンションされている役職は私の最高の役職を上回っているので、変更することはできません。"
+		},
+		"warn": {
+			"text": "サーバー{{guild}}について警告を受けました\n{{text}}",
+			"canNotDm": "ユーザーはDMを受信できませんでした。\n{{error}}",
+			"canNotWarn": "このユーザーには警告できません。",
+			"done": "ユーザーは正常に警告されました。",
+			"self": {
+				"args": {
+					"member": "メンバーに警告する",
+					"reason": "メンバーが警告された理由。"
+				},
+				"description": "メンバーに警告する"
+			}
+		},
+		"inviteCodeConfig": {
+			"self": {
+				"args": {
+					"key": "表示/変更したい設定。",
+					"code": "設定が変更された招待コード。",
+					"value": "新しい設定値",
+					"inviteCode": "招待リンクの設定を変更する。"
+				},
+				"description": "サーバーの招待リンクの設定を表示、変更します。"
+			},
+			"title": "招待リンク設定",
+			"text": "個々の招待リンクの設定をします。",
+			"keys": {
+				"title": "有効な招待リンク設定キー"
+			},
+			"notSet": "この招待リンク設定は現在どの招待リンクにも設定されていません",
+			"current": {
+				"title": "現在の値",
+				"text": "この招待リンク設定は現在設定されています。\n\n変更するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使ってください。\nデフォルトに戻すには `{{prefix}} inviteCodeConfig {{key}} {{code}} default`を使います。\nクリアするには、 `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\`を使用してください。}}",
+				"notSet": "この招待コード設定は現在**設定されていません**。\n\n設定するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使います。",
+				"clear": "クリアするには `{{prefix}} inviteCodeConfig {{key}} {{code}} none`を使います。"
+			},
+			"changed": {
+				"text": "この招待コードの設定が変更されました。\n\n再度変更するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使用してください。\nデフォルトにリセットするには `{{prefix}} inviteCodeConfig {{key}} {{code}} none`を使います。"
+			},
+			"previous": {
+				"title": "前の値"
+			},
+			"new": {
+				"title": "新しい値"
+			},
+			"sameValue": "この招待リンク設定は既にその値に設定されています。",
+			"none": "なし"
+		},
+		"permissions": {
+			"self": {
+				"args": {
+					"cmd": "権限を設定するためのコマンド。",
+					"role": "コマンドへのアクセスを許可または拒否する役職。"
+				},
+				"description": "コマンドを使用するための権限を設定します。"
+			},
+			"adminsCanUseAll": "* 管理者は* すべての *コマンドを*いつも*使用できます。",
+			"added": "{{{role}}}は{{{cmds}}}を使えるようになりました",
+			"adminOnly": "このコマンドは管理者だけが使用できます。",
+			"everyone": "このコマンドは誰でも使用できます",
+			"removed": "{{{role}}}は{{{cmds}}}を使用できなくなりました"
+		},
+		"graph": {
+			"joins": {
+				"title": "ユーザーが参加",
+				"text": "このチャートはあなたのサーバーに参加しているユーザーの数を示しています。"
+			},
+			"leaves": {
+				"title": "ユーザーが退出",
+				"text": "このチャートはサーバーから抜けたユーザーの数を示しています。"
+			},
+			"usage": {
+				"title": "コマンドの使い方",
+				"text": "このチャートは、このサーバーでのInviteManagerコマンドの使用グラフを示しています。"
+			},
+			"self": {
+				"args": {
+					"type": "表示するチャートの種類。",
+					"duration": "チャートの期間。"
+				},
+				"description": "このサーバー上のさまざまな統計グラフを表示します。"
+			}
+		},
+		"unban": {
+			"missingPermissions": "このコマンドを使用するには、 'メンバーをBAN'権限が必要です。",
+			"canNotUnban": "このメンバーをBANすることはできません。",
+			"self": {
+				"args": {
+					"user": "BANを解除すべきユーザー。",
+					"reason": "このユーザーのBANが解除された理由。"
+				}
+			},
+			"done": "ユーザーのBANが解除されました。"
+		},
+		"mute": {
+			"missingRole": "ミュート用の役職が設定されていないか存在しません。",
+			"error": "この人のミュート中にエラーが発生しました。",
+			"self": {
+				"args": {
+					"user": "ミュートする必要があるユーザー。",
+					"muteDuration": "ユーザーがミュートされる期間。",
+					"reason": "このユーザーがミュートされている理由"
+				}
+			},
+			"done": "ユーザーがミュートされました！",
+			"canNotMute": "ユーザーをミュートできません！"
+		},
+		"unmute": {
+			"missingRole": "ミュート用の役職が設定されていないか存在しません。",
+			"self": {
+				"args": {
+					"user": "ミュートを解除する必要があるユーザー。"
+				}
+			},
+			"canNotUnmute": "そのユーザーのミュートを解除することはできません。",
+			"done": "ユーザーのミュートが解除されました。"
+		},
+		"cleanShort": {
+			"self": {
+				"args": {
+					"maxTextLength": "これより短いメッセージはすべて削除されます。",
+					"numberOfMessages": "削除されるメッセージの数"
+				},
+				"description": "短いメッセージを消去する"
+			}
+		},
+		"cleanText": {
+			"self": {
+				"args": {
+					"text": "この単語を含むすべてのメッセージが削除されます。",
+					"numberOfMessages": "検索されるメッセージの数"
+				}
+			}
+		},
+		"interactiveConfig": {
+			"welcome": "リアクションを使用して、利用可能なオプションの1つを選択してください。",
+			"none": "なし",
+			"change": "**現在の値**\n{{{current}}}\n\n**可能な値**\n{{{possible}}}",
+			"new": "新しい値を入力してください。",
+			"values": {
+				"boolean": "`Yes`または`No`で答えてください。",
+				"string": "任意のテキスト",
+				"channel": "任意のチャンネル、例えば：#general",
+				"role": "任意の役職、例えば@Admin",
+				"number": "いずれかの番号",
+				"channel[]": "チャンネルのリスト、例えば：#general＃bot-commands",
+				"role[]": "役職のリスト、例えば：@Admin @Mod",
+				"string[]": "単語のリスト、例えば： \"スペースのある単語\""
+			},
+			"list": {
+				"add": {
+					"title": "追加",
+					"text": "リストに新しい値を追加してください。"
+				},
+				"remove": {
+					"title": "削除",
+					"text": "リストから既存の値を削除します。"
+				},
+				"set": {
+					"title": "セット",
+					"text": "リスト全体をスペース区切りの値で設定します。"
+				},
+				"clear": {
+					"title": "クリア",
+					"text": "すべての値の一覧全体を消去します。"
+				}
+			},
+			"current": {
+				"title": "現在の値"
+			},
+			"possible": {
+				"title": "可能な値"
+			},
+			"remove": "削除する値または値のリストを入力してください。",
+			"add": "追加する値または値のリストを入力してください。",
+			"set": "リストの新しい値を入力してください。",
+			"removeEmpty": "リストはすでに空です。",
+			"more": {
+				"title": "もっと",
+				"description": "もっとエントリーを見る"
+			}
+		},
+		"credits": {
+			"developers": "開発者",
+			"moderators": "モデレーター",
+			"staff": "スタッフ",
+			"translators": "翻訳者"
+		},
+		"unhoist": {
+			"title": "解除ユーザー",
+			"starting": "解除プロセスを開始しています...",
+			"processing": "バッチを処理しています... {{current}} / {{total}}",
+			"done": "**完成しました！**\n\n**変更：{{changed}} **\n無視されました：{{ignored}}\n"
+		},
+		"caseView": {
+			"title": "ケース #{{ ID }}",
+			"notFound": "ケースが見つかりません",
+			"strike": "{{{member}}}が{{{amount}}}の規則{{{violation}}} {{{date}}}に違反したとして警告を受けました。"
+		},
+		"caseDelete": {
+			"title": "ケース #{{ ID }}",
+			"notFound": "ケースが見つかりません",
+			"done": "ケースを削除しました"
+		},
+		"botConfig": {
+			"title": "カスタムボット設定",
+			"text": "以下はあなたのボットの全ての設定です。\n一つの設定を見るには `{{prefix}} botConfig<key>`を使います\n`{{prefix}} botConfig <key> <value>`を使って設定できます。",
+			"customOnly": "**このコマンドはカスタムボットでのみ利用可能です。**\nサーバーの設定を探しているなら、 `{{prefix}} config`コマンドを使ってください。\n\n独自のカスタムボットを入手する方法については、{{patreon}}をご覧ください。{{{patreon}}}",
+			"canNotClear": "構成設定** {{key}} **はクリアできません。 デフォルト値にリセットするために `{{prefix}} botConfig {{key}} default`を使うことができます。",
+			"notSet": "これらの設定は設定されていません",
+			"current": {
+				"title": "現在の値",
+				"text": "この設定は現在設定されています。\n変更するには `{{prefix}} botConfig {{key}} <value>`を使います。\nデフォルトにリセットするには `{{prefix}} botConfig {{key}} default`を使います。",
+				"notSet": "この設定は現在**設定されていません**。\n設定するには `{{prefix}} config {{key}} <value>`を使います。",
+				"clear": "クリアするには `{{prefix}} botConfig {{key}} none`を使用してください。"
+			},
+			"previous": {
+				"title": "前の値"
+			},
+			"new": {
+				"title": "新しい値"
+			},
+			"sameValue": "この設定には既に値が設定されています。",
+			"changed": {
+				"text": "この設定は変更されました。\n再度変更するには `{{prefix}} botConfig {{key}} <value>`を使用してください。\nデフォルトにリセットするには `{{prefix}} botConfig {{key}} default`を使います。"
+			},
+			"preview": {
+				"title": "プレビュー",
+				"nextMessage": "次のメッセージ"
+			},
+			"none": "なし",
+			"invalid": {
+				"twitchOnly": "Discordはストリーミングアクティビティのtwitch.tvのURLのみをサポートします。"
+			},
+			"self": {
+				"args": {
+					"key": "表示/変更したい設定。",
+					"value": "設定の新しい値"
+				},
+				"description": "BOTの設定を表示および変更します。"
+			}
+		}
+	},
+	"permissions": {
+		"adminOnly": "このコマンドを使用する権限がありません。\nこのコマンドを使用できるのは**管理者**のみです。",
+		"premiumOnly": "このコマンドはプレミアムメンバーにのみ利用可能です。",
+		"createInviteCode": "期間制招待を作成",
+		"manageGuild": "サーバーの管理",
+		"viewAuditLogs": "サーバーログの表示",
+		"manageRoles": "役職の管理",
+		"role": "このコマンドを使用する権限がありません。\n次のいずれかの役職が必要です。{{{roles}}}",
+		"rateLimit": "ちょっと待って！ {{cooldown}}秒間待ってからもう一度お試しください。"
+	},
+	"prompt": {
+		"canceled": "キャンセルしました。"
+	},
+	"messages": {
+		"unknownInviter": "未知の",
+		"joinVanityUrl": "<@ {{id}}>は一時的な招待を使用してサーバーに参加しました。",
+		"joinUnknownInviter": "<@ {{id}}>がどのようにサーバーに参加したのかわかりません。",
+		"leaveUnknownInviter": "{{tag}}はサーバーを退出しましたが、誰が招待したのかわかりませんでした。"
+	},
+	"captcha": {
+		"invalid": "Chaptchaが一致しませんでした。もう一度お試しください。"
+	},
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退出の埋め込みメッセージはプレミアム限定機能です！",
+	"moderation": {
+		"strikes": {
+			"dm": "** {{guild}} **の** {{type}} **規則に違反したとして** {{amount}} **回の警告を受けました"
+		},
+		"punishments": {
+			"dm": {
+				"warn": "** {{guild}} **で**警告**を受けています",
+				"mute": "** {{guild}} **で**ミュート**されました",
+				"kick": "あなたは** {{guild}} **から**キック**されました**",
+				"ban": "あなたは** {{guild}} **から**BAN**されました**"
+			}
+		}
+	},
+	"settings": {
+		"groups": {
+			"general": {
+				"title": "総合",
+				"description": "プレフィックスや言語などの一般的なボット設定。"
+			},
+			"invites": {
+				"title": "招待",
+				"description": "チャンネルやメッセージなどの関連設定を設定します。",
+				"joins": {
+					"title": "参加",
+					"description": "参加メッセージなど、参加に関連する設定。"
+				},
+				"leaves": {
+					"title": "退出",
+					"description": "メッセージを残すなどの関連設定を設定します。"
+				},
+				"leaderboard": {
+					"title": "リーダーボード",
+					"description": "ビジュアルスタイルなどのLeaderboardの設定。"
+				},
+				"fakes": {
+					"title": "偽",
+					"description": "偽の招待に関する設定"
+				},
+				"ranks": {
+					"title": "ランク",
+					"description": "関連設定をランク付けします。"
+				}
+			},
+			"moderation": {
+				"title": "管理",
+				"description": "管理と自動的なシステム管理の設定",
+				"general": {
+					"description": "総合",
+					"title": "設定.グループ.管理.総合.タイトル"
+				},
+				"captcha": {
+					"description": "Captcha",
+					"title": "設定.グループ.管理.Captcha.タイトル"
+				},
+				"logging": {
+					"description": "ログ",
+					"title": "設定.グループ.管理.ログ.タイトル"
+				},
+				"invites": {
+					"description": "招待",
+					"title": "設定.グループ.管理.招待.タイトル"
+				},
+				"links": {
+					"description": "リンク",
+					"title": "設定.グループ.管理.リンク.タイトル"
+				},
+				"bannedWords": {
+					"description": "禁止されている単語",
+					"title": "設定.グループ.管理.禁止ワード.タイトル"
+				},
+				"caps": {
+					"description": "煽り",
+					"title": "設定.グループ.管理.煽り.タイトル"
+				},
+				"duplicate": {
+					"description": "重複メッセージ",
+					"title": "設定.グループ.管理.重複.タイトル"
+				},
+				"spam": {
+					"description": "スパム",
+					"title": "設定.グループ.管理.スパム.タイトル"
+				},
+				"mentions": {
+					"description": "メンション",
+					"title": "設定.グループ.管理.メンション.タイトル"
+				},
+				"emojis": {
+					"description": "絵文字",
+					"title": "設定.グループ.管理.絵文字.タイトル"
+				}
+			}
+		},
+		"lang": {
+			"title": "言語"
+		},
+		"prefix": {
+			"title": "接頭辞"
+		},
+		"logChannel": {
+			"title": "ログチャンネル"
+		},
+		"getUpdates": {
+			"title": "アップデート情報を手に入れる"
+		},
+		"joinMessage": {
+			"title": "メッセージ"
+		},
+		"joinMessageChannel": {
+			"title": "メッセージチャンネル"
+		},
+		"rankAssignmentStyle": {
+			"title": "割り当てスタイル"
+		},
+		"rankAnnouncementChannel": {
+			"title": "お知らせチャンネル"
+		},
+		"rankAnnouncementMessage": {
+			"title": "お知らせメッセージ"
+		},
+		"leaveMessage": {
+			"title": "メッセージ"
+		},
+		"leaveMessageChannel": {
+			"title": "メッセージチャンネル"
+		},
+		"autoSubtractLeaves": {
+			"title": "自動減算"
+		},
+		"autoSubtractLeaveThreshold": {
+			"title": "自動減算しきい値"
+		},
+		"leaderboardStyle": {
+			"title": "スタイル"
+		},
+		"hideLeftMembersFromLeaderboard": {
+			"title": "退出メンバーを隠す"
+		},
+		"autoSubtractFakes": {
+			"title": "自動減算"
+		},
+		"captchaVerificationOnJoin": {
+			"title": "有効"
+		},
+		"captchaVerificationWelcomeMessage": {
+			"title": "参加メッセージ"
+		},
+		"captchaVerificationSuccessMessage": {
+			"title": "成功メッセージ"
+		},
+		"captchaVerificationFailedMessage": {
+			"title": "失敗メッセージ"
+		},
+		"captchaVerificationTimeout": {
+			"title": "認証タイムアウト"
+		},
+		"captchaVerificationLogEnabled": {
+			"title": "ログが有効化されました"
+		},
+		"autoModEnabled": {
+			"title": "有効"
+		},
+		"autoModModeratedChannels": {
+			"title": "管理チャンネル"
+		},
+		"autoModModeratedRoles": {
+			"title": "管理役職"
+		},
+		"autoModIgnoredChannels": {
+			"title": "無視されるチャンネル"
+		},
+		"autoModIgnoredRoles": {
+			"title": "無視される役職"
+		},
+		"mutedRole": {
+			"title": "ミュート役職"
+		},
+		"autoModDisabledForOldMembers": {
+			"title": "古いメンバーには無効"
+		},
+		"autoModDisabledForOldMembersThreshold": {
+			"title": "古いメンバーのしきい値"
+		},
+		"autoModLogEnabled": {
+			"title": "ログが有効化されました"
+		},
+		"modLogChannel": {
+			"title": "ログチャンネル"
+		},
+		"autoModDeleteBotMessage": {
+			"title": "BOTのメッセージを削除"
+		},
+		"autoModDeleteBotMessageTimeoutInSeconds": {
+			"title": "ボットメッセージタイムアウトの削除"
+		},
+		"modPunishmentBanDeleteMessage": {
+			"title": "BANメッセージを削除"
+		},
+		"modPunishmentKickDeleteMessage": {
+			"title": "キックメッセージを削除"
+		},
+		"modPunishmentSoftbanDeleteMessage": {
+			"title": "ソフトBANメッセージを削除"
+		},
+		"modPunishmentWarnDeleteMessage": {
+			"title": "警告メッセージを削除"
+		},
+		"modPunishmentMuteDeleteMessage": {
+			"title": "ミュートメッセージを削除"
+		},
+		"autoModInvitesEnabled": {
+			"title": "有効"
+		},
+		"autoModLinksEnabled": {
+			"title": "有効"
+		},
+		"autoModLinksWhitelist": {
+			"title": "ホワイトリスト"
+		},
+		"autoModLinksBlacklist": {
+			"title": "ブラックリスト"
+		},
+		"autoModLinksFollowRedirects": {
+			"title": "リダイレクトをフォローする"
+		},
+		"autoModWordsEnabled": {
+			"title": "有効"
+		},
+		"autoModWordsBlacklist": {
+			"title": "ブラックリスト"
+		},
+		"autoModAllCapsEnabled": {
+			"title": "有効"
+		},
+		"autoModAllCapsMinCharacters": {
+			"title": "最小文字"
+		},
+		"autoModAllCapsPercentageCaps": {
+			"title": "煽りのパーセント"
+		},
+		"autoModDuplicateTextEnabled": {
+			"title": "有効化"
+		},
+		"autoModDuplicateTextTimeframeInSeconds": {
+			"title": "秒単位のタイムフレーム"
+		},
+		"autoModQuickMessagesEnabled": {
+			"title": "有効"
+		},
+		"autoModQuickMessagesNumberOfMessages": {
+			"title": "#のメッセージ数"
+		},
+		"autoModQuickMessagesTimeframeInSeconds": {
+			"title": "秒単位のタイムフレーム"
+		},
+		"autoModMentionUsersEnabled": {
+			"title": "有効"
+		},
+		"autoModMentionUsersMaxNumberOfMentions": {
+			"title": "メンション"
+		},
+		"autoModMentionRolesEnabled": {
+			"title": "有効"
+		},
+		"autoModMentionRolesMaxNumberOfMentions": {
+			"title": "メンション"
+		},
+		"autoModEmojisEnabled": {
+			"title": "有効"
+		},
+		"autoModEmojisMaxNumberOfEmojis": {
+			"title": "絵文字の最大数"
+		},
+		"autoModHoistEnabled": {
+			"title": "デホイストが有効"
+		}
+	}
+}

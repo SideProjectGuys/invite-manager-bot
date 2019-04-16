@@ -18,7 +18,7 @@
 			"multiple": "Multiple matching commands found. {{{ commands }}}"
 		},
 		"channel": {
-			"notFound": "Channel not found.",
+			"notFound": "Kanal nicht gefunden.",
 			"multiple": "Multiple matching channels found. {{{ channels }}}"
 		},
 		"role": {
@@ -29,7 +29,7 @@
 			"invalid": "Kein gültiger ja/nein Wert."
 		},
 		"member": {
-			"notFound": "Member was not found.",
+			"notFound": "Nutzer nicht gefunden.",
 			"multiple": "Multiple matching members found. {{{ members }}}"
 		}
 	},
@@ -89,7 +89,7 @@
 				},
 				"description": "Bannt ein Mitglied vom Server."
 			},
-			"missingPermissions": "I need the `Ban Members` permission to use this command."
+			"missingPermissions": "Ich benötige die 'Mitglieder bannen' Berechtigung, um diesen Befehl auszuführen."
 		},
 		"botInfo": {
 			"version": "Version",
@@ -105,9 +105,9 @@
 			},
 			"premium": {
 				"title": "Premium",
-				"active": "This server has an **active premium** subscription.",
-				"none": "This server currently **does not** have premium.",
-				"custom": "You are using a custom version of the bot!"
+				"active": "Dieser Server hat ein **aktives Premium** Abonnement.",
+				"none": "Dieser Server hat **kein** aktives Premium Abonnement.",
+				"custom": "Du benutzt eine eigene Version des Bots!"
 			}
 		},
 		"check": {
@@ -187,10 +187,10 @@
 			},
 			"none": "Keine",
 			"invalid": {
-				"mustBeTextChannel": "That channel is not a text channel.",
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel."
+				"mustBeTextChannel": "Dieser Kanal ist kein Textkanal.",
+				"canNotReadMessages": "Ich habe keine **Nachrichten lesen** Berechtigungen in diesem Kanal.",
+				"canNotSendMessages": "Ich habe keine **Nachrichten versenden** Berechtigungen in diesem Kanal.",
+				"canNotSendEmbeds": "Ich habe keine **Links einbetten** Berechtigungen in diesem Kanal."
 			},
 			"self": {
 				"args": {
@@ -281,7 +281,7 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "Dieses Mitglied hat bisher keine Boni erhalten",
-				"noReason": "No reason",
+				"noReason": "Kein Grund",
 				"details": "Use {{{ cmd }}} for details."
 			},
 			"invitedMembers": {
@@ -308,7 +308,7 @@
 			},
 			"permanent": {
 				"title": "Permanent",
-				"text": "These invites don't expire.",
+				"text": "Diese Einladungen laufen nicht ab.",
 				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}"
 			},
 			"temporary": {
@@ -331,8 +331,8 @@
 				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
 			},
 			"highestRank": {
-				"self": "Congratulations, you currently have the highest rank!",
-				"other": "{{{ target }}} currently has the highest rank!"
+				"self": "Glückwunsch, du hast aktuell den höchsten Rang!",
+				"other": "{{{ target }}} hat aktuell den höchsten Rang!"
 			},
 			"self": {
 				"args": {
@@ -364,13 +364,13 @@
 			"col": {
 				"change": "Ändern",
 				"name": "Namen",
-				"total": "T",
+				"total": "G",
 				"regular": "R",
 				"custom": "B",
 				"fake": "F",
-				"leave": "L"
+				"leave": "V"
 			},
-			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
+			"legend": "`G` = Gesamt\n`R` = Regulär\r\n`B` = Bonus\r\n`F` = Fake\r\n`V` = Verlassen",
 			"self": {
 				"args": {
 					"page": "Welche seite des Leaderboards aufgerufen werden soll.",
@@ -384,11 +384,11 @@
 			}
 		},
 		"memberConfig": {
-			"title": "Member Config",
+			"title": "Mitglieder Konfiguration",
 			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
 			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
 			"keys": {
-				"title": "Valid member config keys"
+				"title": "Gültige Mitglieder-Konfigurationsschlüssel"
 			},
 			"notSet": "This member config settings is currently not set for any members",
 			"current": {
@@ -402,7 +402,7 @@
 			"new": {
 				"title": "Neuen Wert"
 			},
-			"sameValue": "This member config is already set to that value",
+			"sameValue": "Die Konfiguration diese Mitgliedes ist bereits auf diesen Wert eingestellt",
 			"changed": {
 				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
@@ -499,14 +499,14 @@
 		},
 		"setup": {
 			"title": "Einrichten InviteManager",
-			"text": "After inviting the bot, all invites will be tracked automatically.",
+			"text": "Nach dem Einladen diese Bots werden alle Einladungen automatisch zugeordnet.",
 			"joinLeave": {
 				"title": "Setzen Sie Join und lassen Sie Message Chann",
 				"text": "If you want to display join and or leave messages in one of your channels, you have to configure that channel by doing `!config joinMessageChannel #channel` or `!config leaveMessageChannel #channel`. Make sure the bot has write permissions in those channels!"
 			},
 			"prefix": {
 				"title": "Das Präfix ändern",
-				"text": "You can change the prefix by doing `!config prefix !`\n\nIf you don't know the bots prefix, you can find it using `@InviteManager config prefix`."
+				"text": "Du kannst den Präfix ändern, indem du den Befehl `!config prefix !` Nutzt.\nWenn du den aktuellen Präfix nicht kennst kannst du ihn herausfinden, indem du den Befehl `@InviteManager config prefix` Nutzt."
 			},
 			"faq": {
 				"title": "Fragen und antworten und noch mehr",
