@@ -400,7 +400,15 @@ export default class extends Command {
 			let timeOut: NodeJS.Timer;
 
 			const func = async (userMsg: Message, emoji: Emoji, userId: string) => {
-				if (userMsg.author.id === authorId) {
+				if (emoji && userId === authorId) {
+					clearTimeout(timeOut);
+					this.client.removeListener('messageCreate', func);
+					this.client.removeListener('messageReactionAdd', func);
+
+					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
+
+					resolve();
+				} else if (userMsg.author && userMsg.author.id === authorId) {
 					const newRawVal = userMsg.content;
 
 					await userMsg.delete().catch(() => undefined);
@@ -422,14 +430,6 @@ export default class extends Command {
 					this.client.removeListener('messageReactionAdd', func);
 
 					resolve(fromDbValue(key, toDbValue(key, newVal)));
-				} else if (emoji && userId === authorId) {
-					clearTimeout(timeOut);
-					this.client.removeListener('messageCreate', func);
-					this.client.removeListener('messageReactionAdd', func);
-
-					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
-
-					resolve();
 				}
 			};
 
