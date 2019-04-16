@@ -1158,114 +1158,114 @@
 				"title": "Moderation",
 				"description": "Moderation and auto moderation settings.",
 				"general": {
-					"description": "General",
-					"title": "settings.groups.moderation.general.title"
+					"title": "General",
+					"description": "settings.groups.moderation.general.title"
 				},
 				"captcha": {
-					"description": "Captcha",
-					"title": "settings.groups.moderation.captcha.title"
+					"title": "Captcha",
+					"description": "Settings related to the captcha-on-join"
 				},
 				"logging": {
-					"description": "Logging",
-					"title": "settings.groups.moderation.logging.title"
+					"title": "Logging",
+					"description": "Logging settings of various moderation commands and actions"
 				},
 				"invites": {
-					"description": "Invites",
-					"title": "settings.groups.moderation.invites.title"
+					"title": "Invites",
+					"description": "Automatically remove Discord invite links."
 				},
 				"links": {
-					"description": "Links",
-					"title": "settings.groups.moderation.links.title"
+					"title": "Links",
+					"description": "Automatically remove links."
 				},
 				"bannedWords": {
-					"description": "Banned Words",
-					"title": "settings.groups.moderation.bannedWords.title"
+					"title": "Banned Words",
+					"description": "Ban specific words."
 				},
 				"caps": {
-					"description": "Caps",
-					"title": "settings.groups.moderation.caps.title"
+					"title": "Caps",
+					"description": "Prevent spamming with CAPS LOCK ON"
 				},
 				"duplicate": {
-					"description": "Duplicate Messages",
-					"title": "settings.groups.moderation.duplicate.title"
+					"title": "Duplicate Messages",
+					"description": "Automatically remove duplicate messages."
 				},
 				"spam": {
-					"description": "Spam",
-					"title": "settings.groups.moderation.spam.title"
+					"title": "Spam",
+					"description": "Prevent users from spamming messages."
 				},
 				"mentions": {
-					"description": "Mentions",
-					"title": "settings.groups.moderation.mentions.title"
+					"title": "Mentions",
+					"description": "Automatically remove messages with too many mentions."
 				},
 				"emojis": {
-					"description": "Emojis",
-					"title": "settings.groups.moderation.emojis.title"
+					"title": "Emojis",
+					"description": "Automatically remove message with too many emojis."
 				}
 			}
 		},
 		"lang": {
 			"title": "Language",
-			"description": "settings.lang.description"
+			"description": "The language of the bot"
 		},
 		"prefix": {
 			"title": "Prefix",
-			"description": "settings.prefix.description"
+			"description": "The prefix used to trigger bot commands."
 		},
 		"logChannel": {
 			"title": "Log Channel",
-			"description": "settings.logChannel.description"
+			"description": "The channel where bot actions are logged."
 		},
 		"getUpdates": {
 			"title": "Get Updates",
-			"description": "settings.getUpdates.description"
+			"description": "Enable to receive development updates about InviteManager."
 		},
 		"joinMessage": {
 			"title": "Message",
-			"description": "settings.joinMessage.description"
+			"description": "The message sent when someone joins the server."
 		},
 		"joinMessageChannel": {
 			"title": "Message Channel",
-			"description": "settings.joinMessageChannel.description"
+			"description": "The channel that the message on join is sent to."
 		},
 		"rankAssignmentStyle": {
 			"title": "Assignment Style",
-			"description": "settings.rankAssignmentStyle.description"
+			"description": "How ranks are rewarded to users."
 		},
 		"rankAnnouncementChannel": {
 			"title": "Announcement Channel",
-			"description": "settings.rankAnnouncementChannel.description"
+			"description": "The channel where users receiving a new rank are announced."
 		},
 		"rankAnnouncementMessage": {
 			"title": "Announcement Message",
-			"description": "settings.rankAnnouncementMessage.description"
+			"description": "The message that is sent when a user receives a new rank."
 		},
 		"leaveMessage": {
 			"title": "Message",
-			"description": "settings.leaveMessage.description"
+			"description": "The message sent when someone leaves the server."
 		},
 		"leaveMessageChannel": {
 			"title": "Message Channel",
-			"description": "settings.leaveMessageChannel.description"
+			"description": "The channel that the leave message is sent to."
 		},
 		"autoSubtractLeaves": {
 			"title": "Auto Subtract",
-			"description": "settings.autoSubtractLeaves.description"
+			"description": "Automatically remove invites from the inviter when the invited user leaves."
 		},
 		"autoSubtractLeaveThreshold": {
 			"title": "Auto Subtract Threshold",
-			"description": "settings.autoSubtractLeaveThreshold.description"
+			"description": "The time in seconds for which a user has to stay in the server for the invite to count."
 		},
 		"leaderboardStyle": {
 			"title": "Style",
-			"description": "settings.leaderboardStyle.description"
+			"description": "The display style of the leaderboard."
 		},
 		"hideLeftMembersFromLeaderboard": {
 			"title": "Hide left members",
-			"description": "settings.hideLeftMembersFromLeaderboard.description"
+			"description": "Hide members that left the server from the leaderboard."
 		},
 		"autoSubtractFakes": {
 			"title": "Auto Subtract",
-			"description": "settings.autoSubtractFakes.description"
+			"description": "Automatically subtract fake invites."
 		},
 		"captchaVerificationOnJoin": {
 			"title": "Enabled",
