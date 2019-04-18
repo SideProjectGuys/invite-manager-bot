@@ -29,7 +29,7 @@ export class RabbitMqService {
 			return;
 		}
 
-		this.qCmdsName = `shard-${this.shard}-bot`;
+		this.qCmdsName = `shard-${this.shard}`;
 		conn.createChannel().then(async channel => {
 			this.channelCmds = channel;
 
@@ -43,12 +43,6 @@ export class RabbitMqService {
 			});
 
 			await channel.bindQueue(this.qCmdsName, 'shards', '');
-
-			await channel.assertExchange(`shard-${this.shard}`, 'fanout', {
-				durable: true
-			});
-
-			await channel.bindQueue(this.qCmdsName, `shard-${this.shard}`, '');
 		});
 	}
 
