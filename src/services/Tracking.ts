@@ -80,22 +80,22 @@ export class TrackingService {
 					return;
 				}
 
-				// Filter any guilds that have the pro tracker
-				if (this.client.disabledGuilds.has(guild.id)) {
-					setTimeout(func, 0);
-					return;
+				// Filter any guilds that have the pro bot
+				if (!this.client.disabledGuilds.has(guild.id)) {
+					// Insert data into db
+					await this.insertGuildData(guild);
+
+					console.log(
+						'EVENT(clientReady): Updated invite count for ' + guild.name
+					);
 				}
-
-				// Insert data into db
-				await this.insertGuildData(guild);
-
-				console.log(
-					'EVENT(clientReady): Updated invite count for ' + guild.name
-				);
 
 				this.readyGuilds++;
 				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
-				if (this.readyGuilds % 10 === 0) {
+				if (
+					this.readyGuilds % 10 === 0 ||
+					this.readyGuilds === this.totalGuilds
+				) {
 					this.client.rabbitmq.sendStatusToManager();
 				}
 
