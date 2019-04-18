@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "6.0.16",
+	"version": "6.0.17",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
