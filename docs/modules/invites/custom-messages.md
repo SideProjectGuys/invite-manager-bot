@@ -8,11 +8,15 @@ description: You can customise the join and leave messages with a number of para
 
 You can set a custom join or leave message by setting the config:
 
-`!config joinMessage This is your custom join message! It will be posted every time someone joins your server.`
+```
+!config joinMessage This is your custom join message! It will be posted every time someone joins your server.
+```
 
 or
 
-`!config leaveMessage This is your custom leave message! It will be posted every time someone leaves your server.`
+```
+!config leaveMessage This is your custom leave message! It will be posted every time someone leaves your server.
+```
 
 A message like that obviously doesn't make sense. You should personalise it with information about the new member, inviter or the server. Please see the list below for all available placeholders.
 
@@ -26,13 +30,10 @@ we can easily do that by replacing all the names and the number with placeholder
 
 So you can now do `!config joinMessage <message from above>` to set the message. Our bot will automatically replace the placeholders every time someone joins.
 
-{% hint style="info" %}
-Premium users can also use embeds in their join and leave messages.
-{% endhint %}
+> [!NOTE|style:flat]
+> Premium users can also use embeds in their join and leave messages. [More info here](modules/invites/examples.md)
 
-Please see the examples page to see what kind of messages you can make!
-
-{% page-ref page="join-message-examples.md" %}
+Please see the [examples page](modules/invites/examples.md) to see what kind of messages you can make!
 
 ### Placeholders
 
