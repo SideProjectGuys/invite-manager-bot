@@ -4,20 +4,7 @@ const path = require('path');
 const i18n = require('i18n');
 
 i18n.configure({
-	locales: [
-		'en',
-		'de',
-		'el',
-		'en',
-		'es',
-		'fr',
-		'it',
-		'lt',
-		'nl',
-		'pt',
-		'ro',
-		'sr'
-	],
+	locales: ['en'],
 	defaultLocale: 'en',
 	directory: __dirname + '/../locale',
 	objectNotation: true
@@ -25,39 +12,6 @@ i18n.configure({
 
 const t = (key, replacements) =>
 	i18n.__({ locale: 'en', phrase: key }, replacements);
-
-function generateText(key, obj) {
-	let text = `## ${t(`settings.${key}.title`)}\n\n`;
-	text += `${t(`settings.${key}.description`)}\n\n`;
-	text += `Type: \`${obj.type}\`\n\n`;
-	text += `Default: \`${obj.defaultValue}\`\n\n`;
-	text += `Reset to default:\n\`!config ${key} default\`\n\n`;
-	if (obj.type === 'Boolean') {
-		text += `Enable:\n\n`;
-		text += `\`!config ${key} true\`\n\n`;
-		text += `Disable:\n\n`;
-		text += `\`!config ${key} false\`\n\n`;
-	} else {
-		if (obj.possibleValues) {
-			text += `Possible values: ${obj.possibleValues
-				.map(v => `\`${v}\``)
-				.join(', ')}\n\n`;
-			text += `Example:\n\n`;
-			text += `\`!config ${key} ${obj.possibleValues[0]}\`\n\n`;
-		}
-		if (obj.exampleValues) {
-			text += `Examples:\n\n`;
-			obj.exampleValues.forEach(ex => {
-				text += `\`!config ${key} ${ex}\`\n\n`;
-			});
-		}
-	}
-	if (obj.premiumInfo) {
-		text += `{% hint style="info" %} ${obj.premiumInfo} {% endhint %}`;
-	}
-
-	return text;
-}
 
 function generateGroup(path, group) {
 	let out = '';
@@ -105,7 +59,35 @@ child.on('close', () => {
 	const settings = {};
 	Object.keys(settingsInfo).forEach(key => {
 		const info = settingsInfo[key];
-		info.markdown = generateText(key, info);
+		let text = `---\n## ${t(`settings.${key}.title`)}\n\n`;
+		text += `${t(`settings.${key}.description`)}\n\n`;
+		text += `Type: \`${info.type}\`\n\n`;
+		text += `Default: \`${info.defaultValue}\`\n\n`;
+		text += `Reset to default:\n\`!config ${key} default\`\n\n`;
+		if (info.type === 'Boolean') {
+			text += `Enable:\n\n`;
+			text += `\`!config ${key} true\`\n\n`;
+			text += `Disable:\n\n`;
+			text += `\`!config ${key} false\`\n\n`;
+		} else {
+			if (info.possibleValues) {
+				text += `Possible values: ${info.possibleValues
+					.map(v => `\`${v}\``)
+					.join(', ')}\n\n`;
+				text += `Example:\n\n`;
+				text += `\`!config ${key} ${info.possibleValues[0]}\`\n\n`;
+			}
+			if (info.exampleValues) {
+				text += `Examples:\n\n`;
+				info.exampleValues.forEach(ex => {
+					text += `\`!config ${key} ${ex}\`\n\n`;
+				});
+			}
+		}
+		if (info.premiumInfo) {
+			text += `{% hint style="info" %} ${info.premiumInfo} {% endhint %}`;
+		}
+		info.markdown = text;
 
 		let curr = settings;
 		info.grouping.forEach(grp => {
@@ -141,6 +123,17 @@ child.on('close', () => {
 	// Generate command docs
 	const cmds = [];
 	const cmdDir = path.resolve(__dirname, '../bin/commands/');
+	const fakeClient = {
+		msg: {
+			createEmbed: () => {},
+			sendReply: () => {},
+			sendEmbed: () => {},
+			showPaginated: () => {}
+		},
+		cmds: {
+			commands: cmds
+		}
+	};
 	const loadRecursive = dir =>
 		fs.readdirSync(dir).forEach(fileName => {
 			const file = dir + '/' + fileName;
@@ -157,14 +150,7 @@ child.on('close', () => {
 			const clazz = require(file);
 			if (clazz.default) {
 				const constr = clazz.default;
-				const inst = new constr({
-					msg: {
-						createEmbed: () => {},
-						sendReply: () => {},
-						sendEmbed: () => {},
-						showPaginated: () => {}
-					}
-				});
+				const inst = new constr(fakeClient);
 				cmds.push(inst);
 			}
 		});
@@ -202,21 +188,47 @@ child.on('close', () => {
 	cmds
 		.sort((a, b) => a.name.localeCompare(b.name))
 		.forEach(cmd => {
-			const usage = cmd.usage
-				.replace('{prefix}', '!')
-				.replace(/</g, '\\<')
-				.replace(/>/g, '\\>');
-			const info = cmd
-				.getInfo({ t })
-				.replace(/</g, '\\<')
-				.replace(/>/g, '\\>');
+			const usage = cmd.usage.replace('{prefix}', '!');
+			const info = cmd.getInfo2({ t });
+
+			let infoText = '### Arguments\n\n';
+			infoText += `| Argument | Required | Description |\n|---|---|---|\n`;
+			infoText += info.args
+				.map(
+					arg =>
+						`| ${arg.name} | ${arg.required ? 'Yes' : ' '} | ${
+							arg.description
+						} |`
+				)
+				.join('\n');
+			infoText += '\n\n';
+			infoText += '### Flags\n\n';
+			infoText += `| Flag | Short | Description |\n|---|---|---|\n`;
+			infoText += info.flags
+				.map(
+					flag =>
+						`| --${flag.name} | ${flag.short ? '-' + flag.short : ' '} | ${
+							flag.description
+						} |`
+				)
+				.join('\n');
+			infoText += '\n\n';
+			infoText += '### Examples\n\n';
+			infoText += generateExamples(cmd);
 
 			outCmds +=
 				`<a name='${cmd.name}'></a>\n` +
-				`## ${t(`cmd.${cmd.name}.self.title`)}\n\n`;
+				`\n---\n\n## ${t(`cmd.${cmd.name}.self.title`)}\n\n`;
 			outCmds += `${t(`cmd.${cmd.name}.self.description`)}\n\n`;
-			outCmds += `### Usage\n\n${usage}\n\n### Arguments\n\n${info}\n\n`;
+			outCmds +=
+				'### Usage\n\n```text\n' + usage + '\n```' + `\n\n${infoText}\n\n`;
 		});
 
-	fs.writeFileSync('./docs/Commands.md', outCmds);
+	fs.writeFileSync('./docs/getting-started/commands.md', outCmds);
 });
+
+function generateExamples(cmd) {
+	const examples = [];
+	cmd.args.forEach(arg => {});
+	return examples;
+}

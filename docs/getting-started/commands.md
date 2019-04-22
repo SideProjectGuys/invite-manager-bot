@@ -98,26 +98,35 @@ To get a list of available commands, do !help on your server.
 
 <a name='addInvites'></a>
 
+---
+
 ## cmd.addInvites.self.title
 
 Adds/Removes invites to/from a member.
 
 ### Usage
 
-!addInvites \<user\> \<amount\> [reason]
+```text
+!addInvites <user> <amount> [reason]
+```
 
 ### Arguments
 
-**\<user\>**
-The user that will receive/lose the bonus invites.
+| Argument | Required | Description                                                                                |
+| -------- | -------- | ------------------------------------------------------------------------------------------ |
+| user     | Yes      | The user that will receive/lose the bonus invites.                                         |
+| amount   | Yes      | The amount of invites the user will get/lose. Use a negative (-) number to remove invites. |
+| reason   |          | The reason for adding/removing the invites.                                                |
 
-**\<amount\>**
-The amount of invites the user will get/lose. Use a negative (-) number to remove invites.
+### Flags
 
-**\<reason\>**
-The reason for adding/removing the invites.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='addRank'></a>
+
+---
 
 ## cmd.addRank.self.title
 
@@ -125,20 +134,27 @@ Add a new rank.
 
 ### Usage
 
-!addRank \<role\> \<invites\> [info]
+```text
+!addRank <role> <invites> [info]
+```
 
 ### Arguments
 
-**\<role\>**
-The role which the user will receive when reaching this rank.
+| Argument | Required | Description                                                          |
+| -------- | -------- | -------------------------------------------------------------------- |
+| role     | Yes      | The role which the user will receive when reaching this rank.        |
+| invites  | Yes      | The amount of invites needed to reach the rank.                      |
+| info     |          | A description that users will see so they know more about this rank. |
 
-**\<invites\>**
-The amount of invites needed to reach the rank.
+### Flags
 
-**\<info\>**
-A description that users will see so they know more about this rank.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='ban'></a>
+
+---
 
 ## cmd.ban.self.title
 
@@ -146,20 +162,26 @@ Ban a member from the server.
 
 ### Usage
 
-!ban [-d value|--deleteMessageDays=value] \<user\> [reason]
+```text
+!ban [-d value|--deleteMessageDays=value] <user> [reason]
+```
 
 ### Arguments
 
-**--deleteMessageDays**
-cmd.ban.self.flags.deleteMessageDays
+| Argument | Required | Description              |
+| -------- | -------- | ------------------------ |
+| user     | Yes      | User to ban.             |
+| reason   |          | Why was the user banned. |
 
-**\<user\>**
-User to ban.
+### Flags
 
-**\<reason\>**
-Why was the user banned.
+| Flag                | Short | Description                          |
+| ------------------- | ----- | ------------------------------------ |
+| --deleteMessageDays | -d    | cmd.ban.self.flags.deleteMessageDays |
 
 <a name='botConfig'></a>
+
+---
 
 ## cmd.botConfig.self.title
 
@@ -167,18 +189,26 @@ Show and change the config of the bot.
 
 ### Usage
 
-!botConfig [key][value]
+```text
+!botConfig [key] [value]
+```
 
 ### Arguments
 
-**\<key\>**
-The bot config setting which you want to show/change.
-Use one of the following values: activityStatus, activityEnabled, activityType, activityMessage, activityUrl, embedDefaultColor
+| Argument | Required | Description                                           |
+| -------- | -------- | ----------------------------------------------------- |
+| key      |          | The bot config setting which you want to show/change. |
+| value    |          | The new value of the setting.                         |
 
-**\<value\>**
-The new value of the setting.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='botInfo'></a>
+
+---
 
 ## cmd.botInfo.self.title
 
@@ -186,11 +216,25 @@ Get general information about the bot.
 
 ### Usage
 
+```text
 !botInfo
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='caseDelete'></a>
+
+---
 
 ## cmd.caseDelete.self.title
 
@@ -198,17 +242,26 @@ cmd.caseDelete.self.description
 
 ### Usage
 
-!caseDelete \<caseNumber\> [reason]
+```text
+!caseDelete <caseNumber> [reason]
+```
 
 ### Arguments
 
-**\<caseNumber\>**
-cmd.caseDelete.self.args.caseNumber
+| Argument   | Required | Description                         |
+| ---------- | -------- | ----------------------------------- |
+| caseNumber | Yes      | cmd.caseDelete.self.args.caseNumber |
+| reason     |          | cmd.caseDelete.self.args.reason     |
 
-**\<reason\>**
-cmd.caseDelete.self.args.reason
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='caseView'></a>
+
+---
 
 ## cmd.caseView.self.title
 
@@ -216,14 +269,25 @@ cmd.caseView.self.description
 
 ### Usage
 
-!caseView \<caseNumber\>
+```text
+!caseView <caseNumber>
+```
 
 ### Arguments
 
-**\<caseNumber\>**
-cmd.caseView.self.args.caseNumber
+| Argument   | Required | Description                       |
+| ---------- | -------- | --------------------------------- |
+| caseNumber | Yes      | cmd.caseView.self.args.caseNumber |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='check'></a>
+
+---
 
 ## cmd.check.self.title
 
@@ -231,14 +295,25 @@ Check violation and punishment history of a user.
 
 ### Usage
 
-!check \<user\>
+```text
+!check <user>
+```
 
 ### Arguments
 
-**\<user\>**
-User to check.
+| Argument | Required | Description    |
+| -------- | -------- | -------------- |
+| user     | Yes      | User to check. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='clean'></a>
+
+---
 
 ## cmd.clean.self.title
 
@@ -246,18 +321,26 @@ Clean a channel of certain message types.
 
 ### Usage
 
-!clean \<type\> [numberOfMessages]
+```text
+!clean <type> [numberOfMessages]
+```
 
 ### Arguments
 
-**\<type\>**
-The type of messages that will be deleted.
-Use one of the following values: images, links, mentions, bots, embeds, emojis, reacted, reactions
+| Argument         | Required | Description                                |
+| ---------------- | -------- | ------------------------------------------ |
+| type             | Yes      | The type of messages that will be deleted. |
+| numberOfMessages |          | Number of messages that will be searched.  |
 
-**\<numberOfMessages\>**
-Number of messages that will be searched.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='cleanShort'></a>
+
+---
 
 ## cmd.cleanShort.self.title
 
@@ -265,17 +348,26 @@ Clear short messages
 
 ### Usage
 
-!cleanShort \<maxTextLength\> [numberOfMessages]
+```text
+!cleanShort <maxTextLength> [numberOfMessages]
+```
 
 ### Arguments
 
-**\<maxTextLength\>**
-All messages shorter than this will be deleted.
+| Argument         | Required | Description                                     |
+| ---------------- | -------- | ----------------------------------------------- |
+| maxTextLength    | Yes      | All messages shorter than this will be deleted. |
+| numberOfMessages |          | Number of messages that will be searched.       |
 
-**\<numberOfMessages\>**
-Number of messages that will be searched.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='cleanText'></a>
+
+---
 
 ## cmd.cleanText.self.title
 
@@ -283,17 +375,26 @@ cmd.cleanText.self.description
 
 ### Usage
 
-!cleanText \<text\> [numberOfMessages]
+```text
+!cleanText <text> [numberOfMessages]
+```
 
 ### Arguments
 
-**\<text\>**
-All messages containing this word will be deleted.
+| Argument         | Required | Description                                        |
+| ---------------- | -------- | -------------------------------------------------- |
+| text             | Yes      | All messages containing this word will be deleted. |
+| numberOfMessages |          | Number of messages that will be searched.          |
 
-**\<numberOfMessages\>**
-Number of messages that will be searched.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='clearInvites'></a>
+
+---
 
 ## cmd.clearInvites.self.title
 
@@ -301,20 +402,26 @@ Clear invites of the server/a user.
 
 ### Usage
 
-!clearInvites [-d value|--date=value][-cb|--clearbonus] [user]
+```text
+!clearInvites [-d value|--date=value] [-cb|--clearBonus] [user]
+```
 
 ### Arguments
 
-**--date**
-The date start at which invites should be counted. Default is today.
+| Argument | Required | Description                                                      |
+| -------- | -------- | ---------------------------------------------------------------- |
+| user     |          | The user to clear all invites from. If omitted clears all users. |
 
-**--clearBonus**
-Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched.
+### Flags
 
-**\<user\>**
-The user to clear all invites from. If omitted clears all users.
+| Flag         | Short | Description                                                                              |
+| ------------ | ----- | ---------------------------------------------------------------------------------------- |
+| --date       | -d    | The date start at which invites should be counted. Default is today.                     |
+| --clearBonus | -cb   | Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched. |
 
 <a name='config'></a>
+
+---
 
 ## cmd.config.self.title
 
@@ -322,18 +429,26 @@ Show and change the config of the server.
 
 ### Usage
 
-!config [key][value]
+```text
+!config [key] [value]
+```
 
 ### Arguments
 
-**\<key\>**
-The config setting which you want to show/change.
-Use one of the following values: prefix, lang, getUpdates, logChannel, channels, ignoredChannels, joinMessage, joinMessageChannel, leaveMessage, leaveMessageChannel, leaderboardStyle, hideLeftMembersFromLeaderboard, autoSubtractFakes, autoSubtractLeaves, autoSubtractLeaveThreshold, rankAssignmentStyle, rankAnnouncementChannel, rankAnnouncementMessage, mutedRole, captchaVerificationOnJoin, captchaVerificationWelcomeMessage, captchaVerificationSuccessMessage, captchaVerificationFailedMessage, captchaVerificationTimeout, captchaVerificationLogEnabled, modLogChannel, modPunishmentBanDeleteMessage, modPunishmentKickDeleteMessage, modPunishmentSoftbanDeleteMessage, modPunishmentWarnDeleteMessage, modPunishmentMuteDeleteMessage, autoModEnabled, autoModModeratedChannels, autoModModeratedRoles, autoModIgnoredChannels, autoModIgnoredRoles, autoModDeleteBotMessage, autoModDeleteBotMessageTimeoutInSeconds, autoModLogEnabled, autoModDisabledForOldMembers, autoModDisabledForOldMembersThreshold, autoModInvitesEnabled, autoModLinksEnabled, autoModLinksWhitelist, autoModLinksBlacklist, autoModLinksFollowRedirects, autoModWordsEnabled, autoModWordsBlacklist, autoModAllCapsEnabled, autoModAllCapsMinCharacters, autoModAllCapsPercentageCaps, autoModDuplicateTextEnabled, autoModDuplicateTextTimeframeInSeconds, autoModQuickMessagesEnabled, autoModQuickMessagesNumberOfMessages, autoModQuickMessagesTimeframeInSeconds, autoModMentionUsersEnabled, autoModMentionUsersMaxNumberOfMentions, autoModMentionRolesEnabled, autoModMentionRolesMaxNumberOfMentions, autoModEmojisEnabled, autoModEmojisMaxNumberOfEmojis, autoModHoistEnabled
+| Argument | Required | Description                                       |
+| -------- | -------- | ------------------------------------------------- |
+| key      |          | The config setting which you want to show/change. |
+| value    |          | The new value of the setting.                     |
 
-**\<value\>**
-The new value of the setting.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='createInvite'></a>
+
+---
 
 ## cmd.createInvite.self.title
 
@@ -341,17 +456,26 @@ Creates unique invite codes.
 
 ### Usage
 
-!createInvite \<name\> [channel]
+```text
+!createInvite <name> [channel]
+```
 
 ### Arguments
 
-**\<name\>**
-The name of the invite code.
+| Argument | Required | Description                                                                            |
+| -------- | -------- | -------------------------------------------------------------------------------------- |
+| name     | Yes      | The name of the invite code.                                                           |
+| channel  |          | The channel for which the invite code is created. Uses the current channel by default. |
 
-**\<channel\>**
-The channel for which the invite code is created. Uses the current channel by default.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='credits'></a>
+
+---
 
 ## cmd.credits.self.title
 
@@ -359,11 +483,25 @@ cmd.credits.self.description
 
 ### Usage
 
+```text
 !credits
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='export'></a>
+
+---
 
 ## cmd.export.self.title
 
@@ -371,15 +509,25 @@ Export data of InviteManager to a csv sheet.
 
 ### Usage
 
-!export \<type\>
+```text
+!export <type>
+```
 
 ### Arguments
 
-**\<type\>**
-The type of export you want.
-Use one of the following values: leaderboard
+| Argument | Required | Description                  |
+| -------- | -------- | ---------------------------- |
+| type     | Yes      | The type of export you want. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='fake'></a>
+
+---
 
 ## cmd.fake.self.title
 
@@ -387,14 +535,25 @@ Help find users trying to cheat.
 
 ### Usage
 
+```text
 !fake [page]
+```
 
 ### Arguments
 
-**\<page\>**
-Which page of the fake list to get.
+| Argument | Required | Description                         |
+| -------- | -------- | ----------------------------------- |
+| page     |          | Which page of the fake list to get. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='getBot'></a>
+
+---
 
 ## cmd.getBot.self.title
 
@@ -402,11 +561,25 @@ Get an invite link for the bot.
 
 ### Usage
 
+```text
 !getBot
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='graph'></a>
+
+---
 
 ## cmd.graph.self.title
 
@@ -414,18 +587,26 @@ Shows graphs about various stats on this server.
 
 ### Usage
 
-!graph \<type\> [duration]
+```text
+!graph <type> [duration]
+```
 
 ### Arguments
 
-**\<type\>**
-The type of chart to display.
-Use one of the following values: joins, leaves, usage
+| Argument | Required | Description                        |
+| -------- | -------- | ---------------------------------- |
+| type     | Yes      | The type of chart to display.      |
+| duration |          | The duration period for the chart. |
 
-**\<duration\>**
-The duration period for the chart.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='help'></a>
+
+---
 
 ## cmd.help.self.title
 
@@ -433,14 +614,25 @@ Display help.
 
 ### Usage
 
+```text
 !help [command]
+```
 
 ### Arguments
 
-**\<command\>**
-The command to get detailed information for.
+| Argument | Required | Description                                  |
+| -------- | -------- | -------------------------------------------- |
+| command  |          | The command to get detailed information for. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='info'></a>
+
+---
 
 ## cmd.info.self.title
 
@@ -448,21 +640,27 @@ Show info about a specific member.
 
 ### Usage
 
-!info \<user\> [details][page]
+```text
+!info <user> [details] [page]
+```
 
 ### Arguments
 
-**\<user\>**
-The user for whom you want to see additional info.
+| Argument | Required | Description                                                                   |
+| -------- | -------- | ----------------------------------------------------------------------------- |
+| user     | Yes      | The user for whom you want to see additional info.                            |
+| details  |          | Request only specific details about a member.                                 |
+| page     |          | What page of the details to show. You can also use the reactions to navigate. |
 
-**\<details\>**
-Request only specific details about a member.
-Use one of the following values: bonus, members
+### Flags
 
-**\<page\>**
-What page of the details to show. You can also use the reactions to navigate.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='interactiveConfig'></a>
+
+---
 
 ## cmd.interactiveConfig.self.title
 
@@ -470,11 +668,25 @@ cmd.interactiveConfig.self.description
 
 ### Usage
 
+```text
 !interactiveConfig
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='inviteCodeConfig'></a>
+
+---
 
 ## cmd.inviteCodeConfig.self.title
 
@@ -482,21 +694,27 @@ Show and change the config of invite codes of the server.
 
 ### Usage
 
-!inviteCodeConfig [key][invitecode] [value]
+```text
+!inviteCodeConfig [key] [inviteCode] [value]
+```
 
 ### Arguments
 
-**\<key\>**
-The config setting which you want to show/change.
-Use one of the following values: name, roles
+| Argument   | Required | Description                                                |
+| ---------- | -------- | ---------------------------------------------------------- |
+| key        |          | The config setting which you want to show/change.          |
+| inviteCode |          | The invite code for which you want to change the settings. |
+| value      |          | The new value of the setting.                              |
 
-**\<inviteCode\>**
-The invite code for which you want to change the settings.
+### Flags
 
-**\<value\>**
-The new value of the setting.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='inviteCodes'></a>
+
+---
 
 ## cmd.inviteCodes.self.title
 
@@ -504,11 +722,25 @@ Get a list of all your invite codes
 
 ### Usage
 
+```text
 !inviteCodes
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='inviteDetails'></a>
+
+---
 
 ## cmd.inviteDetails.self.title
 
@@ -516,14 +748,25 @@ Shows details about where your invites are from.
 
 ### Usage
 
+```text
 !inviteDetails [user]
+```
 
 ### Arguments
 
-**\<user\>**
-The user for whom you want to show detailed invites.
+| Argument | Required | Description                                          |
+| -------- | -------- | ---------------------------------------------------- |
+| user     |          | The user for whom you want to show detailed invites. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='invites'></a>
+
+---
 
 ## cmd.invites.self.title
 
@@ -531,14 +774,25 @@ Show personal invites.
 
 ### Usage
 
+```text
 !invites [user]
+```
 
 ### Arguments
 
-**\<user\>**
-The user for whom you want to show invites.
+| Argument | Required | Description                                 |
+| -------- | -------- | ------------------------------------------- |
+| user     |          | The user for whom you want to show invites. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='kick'></a>
+
+---
 
 ## cmd.kick.self.title
 
@@ -546,17 +800,26 @@ Kick a member from the server.
 
 ### Usage
 
-!kick \<member\> [reason]
+```text
+!kick <member> [reason]
+```
 
 ### Arguments
 
-**\<member\>**
-Member to kick.
+| Argument | Required | Description                |
+| -------- | -------- | -------------------------- |
+| member   | Yes      | Member to kick.            |
+| reason   |          | Why the member was kicked. |
 
-**\<reason\>**
-Why the member was kicked.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='leaderboard'></a>
+
+---
 
 ## cmd.leaderboard.self.title
 
@@ -564,20 +827,26 @@ Show members with most invites.
 
 ### Usage
 
-!leaderboard [-c value|--compare=value][duration] [page]
+```text
+!leaderboard [-c value|--compare=value] [duration] [page]
+```
 
 ### Arguments
 
-**--compare**
-The date to which the current leaderboard standings are compared to
+| Argument | Required | Description                                          |
+| -------- | -------- | ---------------------------------------------------- |
+| duration |          | The duration for which to calculate the leaderboard. |
+| page     |          | Which page of the leaderboard to get.                |
 
-**\<duration\>**
-The duration for which to calculate the leaderboard.
+### Flags
 
-**\<page\>**
-Which page of the leaderboard to get.
+| Flag      | Short | Description                                                         |
+| --------- | ----- | ------------------------------------------------------------------- |
+| --compare | -c    | The date to which the current leaderboard standings are compared to |
 
 <a name='legacyInvites'></a>
+
+---
 
 ## cmd.legacyInvites.self.title
 
@@ -585,14 +854,25 @@ cmd.legacyInvites.self.description
 
 ### Usage
 
+```text
 !legacyInvites [user]
+```
 
 ### Arguments
 
-**\<user\>**
-cmd.legacyInvites.self.args.user
+| Argument | Required | Description                      |
+| -------- | -------- | -------------------------------- |
+| user     |          | cmd.legacyInvites.self.args.user |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='legacyLeaderboard'></a>
+
+---
 
 ## cmd.legacyLeaderboard.self.title
 
@@ -600,17 +880,26 @@ cmd.legacyLeaderboard.self.description
 
 ### Usage
 
-!legacyLeaderboard [page][date]
+```text
+!legacyLeaderboard [page] [date]
+```
 
 ### Arguments
 
-**\<page\>**
-cmd.legacyLeaderboard.self.args.page
+| Argument | Required | Description                          |
+| -------- | -------- | ------------------------------------ |
+| page     |          | cmd.legacyLeaderboard.self.args.page |
+| date     |          | cmd.legacyLeaderboard.self.args.date |
 
-**\<date\>**
-cmd.legacyLeaderboard.self.args.date
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='makeMentionable'></a>
+
+---
 
 ## cmd.makeMentionable.self.title
 
@@ -618,14 +907,25 @@ Make a role mentionable for 60 seconds or until it was used.
 
 ### Usage
 
-!makeMentionable \<role\>
+```text
+!makeMentionable <role>
+```
 
 ### Arguments
 
-**\<role\>**
-The role that you want to mention.
+| Argument | Required | Description                        |
+| -------- | -------- | ---------------------------------- |
+| role     | Yes      | The role that you want to mention. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='memberConfig'></a>
+
+---
 
 ## cmd.memberConfig.self.title
 
@@ -633,21 +933,27 @@ Show and change the config of members of the server.
 
 ### Usage
 
-!memberConfig [key][user] [value]
+```text
+!memberConfig [key] [user] [value]
+```
 
 ### Arguments
 
-**\<key\>**
-The member config setting which you want to show/change.
-Use one of the following values: hideFromLeaderboard
+| Argument | Required | Description                                              |
+| -------- | -------- | -------------------------------------------------------- |
+| key      |          | The member config setting which you want to show/change. |
+| user     |          | The member that the setting is shown/changed for.        |
+| value    |          | The new value of the setting.                            |
 
-**\<user\>**
-The member that the setting is shown/changed for.
+### Flags
 
-**\<value\>**
-The new value of the setting.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='members'></a>
+
+---
 
 ## cmd.members.self.title
 
@@ -655,11 +961,25 @@ Show member count of current server.
 
 ### Usage
 
+```text
 !members
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='mentionRole'></a>
+
+---
 
 ## cmd.mentionRole.self.title
 
@@ -667,14 +987,25 @@ Mention an unmentionable role.
 
 ### Usage
 
-!mentionRole \<role\>
+```text
+!mentionRole <role>
+```
 
 ### Arguments
 
-**\<role\>**
-The role that you want to mention.
+| Argument | Required | Description                        |
+| -------- | -------- | ---------------------------------- |
+| role     | Yes      | The role that you want to mention. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='mute'></a>
+
+---
 
 ## cmd.mute.self.title
 
@@ -682,17 +1013,26 @@ cmd.mute.self.description
 
 ### Usage
 
-!mute \<user\> [reason]
+```text
+!mute <user> [reason]
+```
 
 ### Arguments
 
-**\<user\>**
-The user that should be muted.
+| Argument | Required | Description                        |
+| -------- | -------- | ---------------------------------- |
+| user     | Yes      | The user that should be muted.     |
+| reason   |          | The reason why this user is muted. |
 
-**\<reason\>**
-The reason why this user is muted.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='permissions'></a>
+
+---
 
 ## cmd.permissions.self.title
 
@@ -700,17 +1040,26 @@ Configure permissions to use commands.
 
 ### Usage
 
-!permissions [cmd][role]
+```text
+!permissions [cmd] [role]
+```
 
 ### Arguments
 
-**\<cmd\>**
-The command to configure permissions for.
+| Argument | Required | Description                                                       |
+| -------- | -------- | ----------------------------------------------------------------- |
+| cmd      |          | The command to configure permissions for.                         |
+| role     |          | The role which should be granted or denied access to the command. |
 
-**\<role\>**
-The role which should be granted or denied access to the command.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='ping'></a>
+
+---
 
 ## cmd.ping.self.title
 
@@ -718,11 +1067,25 @@ cmd.ping.self.description
 
 ### Usage
 
+```text
 !ping
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='prefix'></a>
+
+---
 
 ## cmd.prefix.self.title
 
@@ -730,11 +1093,25 @@ Shows the current prefix of the bot.
 
 ### Usage
 
+```text
 !prefix
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='premium'></a>
+
+---
 
 ## cmd.premium.self.title
 
@@ -742,15 +1119,25 @@ Info about premium version of InviteManager.
 
 ### Usage
 
+```text
 !premium [action]
+```
 
 ### Arguments
 
-**\<action\>**
-The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server.
-Use one of the following values: Check, Activate, Deactivate
+| Argument | Required | Description                                                                                                                         |
+| -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| action   |          | The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='punishmentConfig'></a>
+
+---
 
 ## cmd.punishmentConfig.self.title
 
@@ -758,21 +1145,27 @@ Configure punishments when reaching a certain amount of strikes.
 
 ### Usage
 
-!punishmentConfig [punishment][strikes] [args]
+```text
+!punishmentConfig [punishment] [strikes] [args]
+```
 
 ### Arguments
 
-**\<punishment\>**
-Type of punishment to use.
-Use one of the following values: ban, kick, softban, warn, mute
+| Argument   | Required | Description                                       |
+| ---------- | -------- | ------------------------------------------------- |
+| punishment |          | Type of punishment to use.                        |
+| strikes    |          | Number of strikes for this punishment to be used. |
+| args       |          | Arguments passed to the punishment.               |
 
-**\<strikes\>**
-Number of strikes for this punishment to be used.
+### Flags
 
-**\<args\>**
-Arguments passed to the punishment.
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='purge'></a>
+
+---
 
 ## cmd.purge.self.title
 
@@ -780,17 +1173,26 @@ Purge messages in a channel.
 
 ### Usage
 
-!purge \<quantity\> [user]
+```text
+!purge <quantity> [user]
+```
 
 ### Arguments
 
-**\<quantity\>**
-How many messages should be deleted.
+| Argument | Required | Description                          |
+| -------- | -------- | ------------------------------------ |
+| quantity | Yes      | How many messages should be deleted. |
+| user     |          | cmd.purge.self.args.user             |
 
-**\<user\>**
-cmd.purge.self.args.user
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='purgeUntil'></a>
+
+---
 
 ## cmd.purgeUntil.self.title
 
@@ -798,14 +1200,25 @@ Purge messages in a channel up until a specified message.
 
 ### Usage
 
-!purgeUntil \<messageID\>
+```text
+!purgeUntil <messageID>
+```
 
 ### Arguments
 
-**\<messageID\>**
-Last message ID to be deleted.
+| Argument  | Required | Description                    |
+| --------- | -------- | ------------------------------ |
+| messageID | Yes      | Last message ID to be deleted. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='ranks'></a>
+
+---
 
 ## cmd.ranks.self.title
 
@@ -813,11 +1226,25 @@ Show all ranks.
 
 ### Usage
 
+```text
 !ranks
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='removeInvites'></a>
+
+---
 
 ## cmd.removeInvites.self.title
 
@@ -825,20 +1252,27 @@ cmd.removeInvites.self.description
 
 ### Usage
 
-!removeInvites \<user\> \<amount\> [reason]
+```text
+!removeInvites <user> <amount> [reason]
+```
 
 ### Arguments
 
-**\<user\>**
-cmd.removeInvites.self.args.user
+| Argument | Required | Description                        |
+| -------- | -------- | ---------------------------------- |
+| user     | Yes      | cmd.removeInvites.self.args.user   |
+| amount   | Yes      | cmd.removeInvites.self.args.amount |
+| reason   |          | cmd.removeInvites.self.args.reason |
 
-**\<amount\>**
-cmd.removeInvites.self.args.amount
+### Flags
 
-**\<reason\>**
-cmd.removeInvites.self.args.reason
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='removeRank'></a>
+
+---
 
 ## cmd.removeRank.self.title
 
@@ -846,14 +1280,25 @@ Remove a rank.
 
 ### Usage
 
+```text
 !removeRank [rank]
+```
 
 ### Arguments
 
-**\<rank\>**
-The for which you want to remove the rank.
+| Argument | Required | Description                                |
+| -------- | -------- | ------------------------------------------ |
+| rank     |          | The for which you want to remove the rank. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='restoreInvites'></a>
+
+---
 
 ## cmd.restoreInvites.self.title
 
@@ -861,14 +1306,25 @@ Restore all previously cleared invites.
 
 ### Usage
 
+```text
 !restoreInvites [user]
+```
 
 ### Arguments
 
-**\<user\>**
-The user to restore all invites to. If omitted restores invites for all users.
+| Argument | Required | Description                                                                    |
+| -------- | -------- | ------------------------------------------------------------------------------ |
+| user     |          | The user to restore all invites to. If omitted restores invites for all users. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='setup'></a>
+
+---
 
 ## cmd.setup.self.title
 
@@ -876,11 +1332,25 @@ Help with setting up the bot and checking for problems (e.g. missing permissions
 
 ### Usage
 
+```text
 !setup
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='softBan'></a>
+
+---
 
 ## cmd.softBan.self.title
 
@@ -888,20 +1358,26 @@ Ban and then automatically unban a member from the server.
 
 ### Usage
 
-!softBan [-d value|--deleteMessageDays=value] \<user\> [reason]
+```text
+!softBan [-d value|--deleteMessageDays=value] <user> [reason]
+```
 
 ### Arguments
 
-**--deleteMessageDays**
-cmd.softBan.self.flags.deleteMessageDays
+| Argument | Required | Description              |
+| -------- | -------- | ------------------------ |
+| user     | Yes      | User to ban.             |
+| reason   |          | Why was the user banned. |
 
-**\<user\>**
-User to ban.
+### Flags
 
-**\<reason\>**
-Why was the user banned.
+| Flag                | Short | Description                              |
+| ------------------- | ----- | ---------------------------------------- |
+| --deleteMessageDays | -d    | cmd.softBan.self.flags.deleteMessageDays |
 
 <a name='strike'></a>
+
+---
 
 ## cmd.strike.self.title
 
@@ -909,21 +1385,27 @@ cmd.strike.self.description
 
 ### Usage
 
-!strike \<member\> \<type\> \<amount\>
+```text
+!strike <member> <type> <amount>
+```
 
 ### Arguments
 
-**\<member\>**
-cmd.strike.self.args.member
+| Argument | Required | Description                 |
+| -------- | -------- | --------------------------- |
+| member   | Yes      | cmd.strike.self.args.member |
+| type     | Yes      | cmd.strike.self.args.type   |
+| amount   | Yes      | cmd.strike.self.args.amount |
 
-**\<type\>**
-cmd.strike.self.args.type
-Use one of the following values: invites, links, words, allCaps, duplicateText, quickMessages, mentionUsers, mentionRoles, emojis, hoist
+### Flags
 
-**\<amount\>**
-cmd.strike.self.args.amount
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='strikeConfig'></a>
+
+---
 
 ## cmd.strikeConfig.self.title
 
@@ -931,18 +1413,26 @@ Configure strikes received for various violations.
 
 ### Usage
 
-!strikeConfig [violation][strikes]
+```text
+!strikeConfig [violation] [strikes]
+```
 
 ### Arguments
 
-**\<violation\>**
-Violation type.
-Use one of the following values: invites, links, words, allCaps, duplicateText, quickMessages, mentionUsers, mentionRoles, emojis, hoist
+| Argument  | Required | Description        |
+| --------- | -------- | ------------------ |
+| violation |          | Violation type.    |
+| strikes   |          | Number of strikes. |
 
-**\<strikes\>**
-Number of strikes.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='subtractFakes'></a>
+
+---
 
 ## cmd.subtractFakes.self.title
 
@@ -950,11 +1440,25 @@ Remove fake invites from all users.
 
 ### Usage
 
+```text
 !subtractFakes
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='subtractLeaves'></a>
+
+---
 
 ## cmd.subtractLeaves.self.title
 
@@ -962,11 +1466,25 @@ Remove leaves from all users
 
 ### Usage
 
+```text
 !subtractLeaves
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='support'></a>
+
+---
 
 ## cmd.support.self.title
 
@@ -974,11 +1492,25 @@ Get an invite link to our support server.
 
 ### Usage
 
+```text
 !support
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='tryPremium'></a>
+
+---
 
 ## cmd.tryPremium.self.title
 
@@ -986,11 +1518,25 @@ Try the premium version of InviteManager for free for a limited duration.
 
 ### Usage
 
+```text
 !tryPremium
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='unban'></a>
+
+---
 
 ## cmd.unban.self.title
 
@@ -998,17 +1544,26 @@ cmd.unban.self.description
 
 ### Usage
 
-!unban \<user\> [reason]
+```text
+!unban <user> [reason]
+```
 
 ### Arguments
 
-**\<user\>**
-The user that should be unbanned.
+| Argument | Required | Description                           |
+| -------- | -------- | ------------------------------------- |
+| user     | Yes      | The user that should be unbanned.     |
+| reason   |          | The reason why this user is unbanned. |
 
-**\<reason\>**
-The reason why this user is unbanned.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='unhoist'></a>
+
+---
 
 ## cmd.unhoist.self.title
 
@@ -1016,11 +1571,25 @@ cmd.unhoist.self.description
 
 ### Usage
 
+```text
 !unhoist
+```
 
 ### Arguments
 
+| Argument | Required | Description |
+| -------- | -------- | ----------- |
+
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
+
 <a name='unmute'></a>
+
+---
 
 ## cmd.unmute.self.title
 
@@ -1028,14 +1597,25 @@ cmd.unmute.self.description
 
 ### Usage
 
-!unmute \<user\>
+```text
+!unmute <user>
+```
 
 ### Arguments
 
-**\<user\>**
-The user that should be unmuted.
+| Argument | Required | Description                      |
+| -------- | -------- | -------------------------------- |
+| user     | Yes      | The user that should be unmuted. |
+
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+
 
 <a name='warn'></a>
+
+---
 
 ## cmd.warn.self.title
 
@@ -1043,12 +1623,19 @@ Warn a member.
 
 ### Usage
 
-!warn \<member\> [reason]
+```text
+!warn <member> [reason]
+```
 
 ### Arguments
 
-**\<member\>**
-Member to warn.
+| Argument | Required | Description                    |
+| -------- | -------- | ------------------------------ |
+| member   | Yes      | Member to warn.                |
+| reason   |          | Why was the member was warned. |
 
-**\<reason\>**
-Why was the member was warned.
+### Flags
+
+| Flag | Short | Description |
+| ---- | ----- | ----------- |
+

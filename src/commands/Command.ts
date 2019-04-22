@@ -19,10 +19,24 @@ export interface Arg {
 	rest?: boolean;
 }
 
+interface ArgInfo {
+	name: string;
+	required: boolean;
+	description: string;
+	help?: string;
+}
+
 export interface Flag {
 	name: string;
 	resolver: Resolver | ResolverConstructor;
 	short?: string;
+}
+
+interface FlagInfo {
+	name: string;
+	short?: string;
+	description: string;
+	help?: string;
 }
 
 export interface CommandOptions {
@@ -134,6 +148,40 @@ export abstract class Command {
 			info += `**<${arg.name}>**\n${descr}\n` + (help ? `${help}\n\n` : '\n');
 		}
 		return info;
+	}
+
+	public getInfo2(context: Context) {
+		const res: { args: ArgInfo[]; flags: FlagInfo[] } = { args: [], flags: [] };
+
+		for (let i = 0; i < this.flags.length; i++) {
+			const flag = this.flags[i];
+			const flagInfo: FlagInfo = {
+				name: flag.name,
+				short: flag.short,
+				description: context.t(`cmd.${this.name}.self.flags.${flag.name}`)
+			};
+			const help = this.flagResolvers.get(flag.name).getHelp(context);
+			if (help) {
+				flagInfo.help = help;
+			}
+			res.flags.push(flagInfo);
+		}
+
+		for (let i = 0; i < this.args.length; i++) {
+			const arg = this.args[i];
+			const argInfo: ArgInfo = {
+				name: arg.name,
+				required: arg.required,
+				description: context.t(`cmd.${this.name}.self.args.${arg.name}`)
+			};
+			const help = this.resolvers[i].getHelp(context);
+			if (help) {
+				argInfo.help = help;
+			}
+			res.args.push(argInfo);
+		}
+
+		return res;
 	}
 
 	public abstract action(
