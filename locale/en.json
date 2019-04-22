@@ -15,7 +15,8 @@
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"command": {
 			"notFound": "Command not found.",
-			"multiple": "Multiple matching commands found. {{{ commands }}}"
+			"multiple": "Multiple matching commands found. {{{ commands }}}",
+			"validValues": "Use one of the following commands: {{{ values }}}"
 		},
 		"channel": {
 			"notFound": "Channel not found.",
@@ -905,7 +906,7 @@
 			}
 		},
 		"interactiveConfig": {
-			"welcome": "Use the reactions to pick one of the available options.",
+			"welcome": "Use the reactions to pick one of the available options.\nUse {{{ prev }}} and {{{ next }}} if there is more than one page.\nUse {{{ up }}} to go up a menu.\nUse {{{ cancel }}} to exit the menu.",
 			"none": "<None>",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"new": "Enter a new value:",
@@ -936,12 +937,6 @@
 					"title": "Clear",
 					"text": "Clear the whole list of all values."
 				}
-			},
-			"current": {
-				"title": "Current value"
-			},
-			"possible": {
-				"title": "Possible values"
 			},
 			"remove": "Enter a value or a list of values to remove.",
 			"add": "Enter a value or list of values to add.",
@@ -1448,12 +1443,12 @@
 			"description": "settings.autoModHoistEnabled.description"
 		},
 		"channels": {
-			"title": "settings.channels.title",
-			"description": "settings.channels.description"
+			"title": "Command channels",
+			"description": "The channels in which the bot will react to commands."
 		},
 		"ignoredChannels": {
-			"title": "settings.ignoredChannels.title",
-			"description": "settings.ignoredChannels.description"
+			"title": "Ignored channels",
+			"description": "The channels in which the bot will ignore commands."
 		}
 	}
 }
