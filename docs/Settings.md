@@ -6,57 +6,57 @@ There are many config options that can be set. You don't have to set all of them
 
 ### General
 
-| Setting                                            | Description                          |
-| -------------------------------------------------- | ------------------------------------ |
-| [Prefix](#prefix)                                  | settings.prefix.description          |
-| [Language](#lang)                                  | settings.lang.description            |
-| [Log Channel](#logchannel)                         | settings.logChannel.description      |
-| [Get Updates](#getupdates)                         | settings.getUpdates.description      |
-| [settings.channels.title](#channels)               | settings.channels.description        |
-| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description |
+| Setting                                            | Description                                                |
+| -------------------------------------------------- | ---------------------------------------------------------- |
+| [Prefix](#prefix)                                  | The prefix used to trigger bot commands.                   |
+| [Language](#lang)                                  | The language of the bot                                    |
+| [Log Channel](#logchannel)                         | The channel where bot actions are logged.                  |
+| [Get Updates](#getupdates)                         | Enable to receive development updates about InviteManager. |
+| [settings.channels.title](#channels)               | settings.channels.description                              |
+| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description                       |
 
 ### Invites
 
 #### Joins
 
-| Setting                                | Description                             |
-| -------------------------------------- | --------------------------------------- |
-| [Message](#joinmessage)                | settings.joinMessage.description        |
-| [Message Channel](#joinmessagechannel) | settings.joinMessageChannel.description |
+| Setting                                | Description                                      |
+| -------------------------------------- | ------------------------------------------------ |
+| [Message](#joinmessage)                | The message sent when someone joins the server.  |
+| [Message Channel](#joinmessagechannel) | The channel that the message on join is sent to. |
 
 #### Leaves
 
-| Setting                                                | Description                                     |
-| ------------------------------------------------------ | ----------------------------------------------- |
-| [Message](#leavemessage)                               | settings.leaveMessage.description               |
-| [Message Channel](#leavemessagechannel)                | settings.leaveMessageChannel.description        |
-| [Auto Subtract](#autosubtractleaves)                   | settings.autoSubtractLeaves.description         |
-| [Auto Subtract Threshold](#autosubtractleavethreshold) | settings.autoSubtractLeaveThreshold.description |
+| Setting                                                | Description                                                                             |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [Message](#leavemessage)                               | The message sent when someone leaves the server.                                        |
+| [Message Channel](#leavemessagechannel)                | The channel that the leave message is sent to.                                          |
+| [Auto Subtract](#autosubtractleaves)                   | Automatically remove invites from the inviter when the invited user leaves.             |
+| [Auto Subtract Threshold](#autosubtractleavethreshold) | The time in seconds for which a user has to stay in the server for the invite to count. |
 
 #### Leaderboard
 
-| Setting                                              | Description                                         |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| [Style](#leaderboardstyle)                           | settings.leaderboardStyle.description               |
-| [Hide left members](#hideleftmembersfromleaderboard) | settings.hideLeftMembersFromLeaderboard.description |
+| Setting                                              | Description                                             |
+| ---------------------------------------------------- | ------------------------------------------------------- |
+| [Style](#leaderboardstyle)                           | The display style of the leaderboard.                   |
+| [Hide left members](#hideleftmembersfromleaderboard) | Hide members that left the server from the leaderboard. |
 
 #### Fakes
 
-| Setting                             | Description                            |
-| ----------------------------------- | -------------------------------------- |
-| [Auto Subtract](#autosubtractfakes) | settings.autoSubtractFakes.description |
+| Setting                             | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| [Auto Subtract](#autosubtractfakes) | Automatically subtract fake invites. |
 
 #### Ranks
 
-| Setting                                          | Description                                  |
-| ------------------------------------------------ | -------------------------------------------- |
-| [Assignment Style](#rankassignmentstyle)         | settings.rankAssignmentStyle.description     |
-| [Announcement Channel](#rankannouncementchannel) | settings.rankAnnouncementChannel.description |
-| [Announcement Message](#rankannouncementmessage) | settings.rankAnnouncementMessage.description |
+| Setting                                          | Description                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| [Assignment Style](#rankassignmentstyle)         | How ranks are rewarded to users.                            |
+| [Announcement Channel](#rankannouncementchannel) | The channel where users receiving a new rank are announced. |
+| [Announcement Message](#rankannouncementmessage) | The message that is sent when a user receives a new rank.   |
 
 ### Moderation
 
-#### settings.groups.moderation.captcha.title
+#### Captcha
 
 | Setting                                               | Description                                            |
 | ----------------------------------------------------- | ------------------------------------------------------ |
@@ -67,7 +67,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Verification Timeout](#captchaverificationtimeout)   | settings.captchaVerificationTimeout.description        |
 | [Log Enabled](#captchaverificationlogenabled)         | settings.captchaVerificationLogEnabled.description     |
 
-#### settings.groups.moderation.general.title
+#### General
 
 | Setting                                                         | Description                                                |
 | --------------------------------------------------------------- | ---------------------------------------------------------- |
@@ -80,7 +80,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Disabled for Old Members](#automoddisabledforoldmembers)       | settings.autoModDisabledForOldMembers.description          |
 | [Old Members Threshold](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
 
-#### settings.groups.moderation.logging.title
+#### Logging
 
 | Setting                                                                | Description                                                  |
 | ---------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -94,13 +94,13 @@ There are many config options that can be set. You don't have to set all of them
 | [Delete Warn Messages](#modpunishmentwarndeletemessage)                | settings.modPunishmentWarnDeleteMessage.description          |
 | [Delete Mute Messages](#modpunishmentmutedeletemessage)                | settings.modPunishmentMuteDeleteMessage.description          |
 
-#### settings.groups.moderation.invites.title
+#### Invites
 
 | Setting                           | Description                                |
 | --------------------------------- | ------------------------------------------ |
 | [Enabled](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
 
-#### settings.groups.moderation.links.title
+#### Links
 
 | Setting                                          | Description                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
@@ -109,14 +109,14 @@ There are many config options that can be set. You don't have to set all of them
 | [Blacklist](#automodlinksblacklist)              | settings.autoModLinksBlacklist.description       |
 | [Follow Redirects](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
 
-#### settings.groups.moderation.bannedWords.title
+#### Banned Words
 
 | Setting                             | Description                                |
 | ----------------------------------- | ------------------------------------------ |
 | [Enabled](#automodwordsenabled)     | settings.autoModWordsEnabled.description   |
 | [Blacklist](#automodwordsblacklist) | settings.autoModWordsBlacklist.description |
 
-#### settings.groups.moderation.caps.title
+#### Caps
 
 | Setting                                          | Description                                       |
 | ------------------------------------------------ | ------------------------------------------------- |
@@ -124,14 +124,14 @@ There are many config options that can be set. You don't have to set all of them
 | [Min. Characters](#automodallcapsmincharacters)  | settings.autoModAllCapsMinCharacters.description  |
 | [Percentage CAPs](#automodallcapspercentagecaps) | settings.autoModAllCapsPercentageCaps.description |
 
-#### settings.groups.moderation.duplicate.title
+#### Duplicate Messages
 
 | Setting                                                         | Description                                                 |
 | --------------------------------------------------------------- | ----------------------------------------------------------- |
 | [Enabled](#automodduplicatetextenabled)                         | settings.autoModDuplicateTextEnabled.description            |
 | [Timeframe in Seconds](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
 
-#### settings.groups.moderation.spam.title
+#### Spam
 
 | Setting                                                         | Description                                                 |
 | --------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -139,7 +139,7 @@ There are many config options that can be set. You don't have to set all of them
 | [# of Messages](#automodquickmessagesnumberofmessages)          | settings.autoModQuickMessagesNumberOfMessages.description   |
 | [Timeframe in Seconds](#automodquickmessagestimeframeinseconds) | settings.autoModQuickMessagesTimeframeInSeconds.description |
 
-#### settings.groups.moderation.mentions.title
+#### Mentions
 
 | Setting                                                      | Description                                                 |
 | ------------------------------------------------------------ | ----------------------------------------------------------- |
@@ -148,7 +148,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Enabled](#automodmentionrolesenabled)                       | settings.autoModMentionRolesEnabled.description             |
 | [Max # of Mentions](#automodmentionrolesmaxnumberofmentions) | settings.autoModMentionRolesMaxNumberOfMentions.description |
 
-#### settings.groups.moderation.emojis.title
+#### Emojis
 
 | Setting                                            | Description                                         |
 | -------------------------------------------------- | --------------------------------------------------- |
@@ -160,7 +160,7 @@ There are many config options that can be set. You don't have to set all of them
 
 ## Prefix
 
-settings.prefix.description
+The prefix used to trigger bot commands.
 
 Type: `String`
 
@@ -179,7 +179,7 @@ Examples:
 
 ## Language
 
-settings.lang.description
+The language of the bot
 
 Type: `Enum<Lang>`
 
@@ -188,7 +188,7 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `cs`, `de`, `en`, `es`, `fr`, `hu`, `it`, `nl`, `pt_BR`, `pt`, `ro`, `ru`, `sr`, `sv`, `ur_PK`
+Possible values: `cs`, `de`, `en`, `es`, `fr`, `hu`, `it`, `nl`, `pt_BR`, `pt`, `ro`, `ru`, `sr`, `sv`, `ur_PK`, `ja`
 
 Example:
 
@@ -198,7 +198,7 @@ Example:
 
 ## Log Channel
 
-settings.logChannel.description
+The channel where bot actions are logged.
 
 Type: `Channel`
 
@@ -215,7 +215,7 @@ Examples:
 
 ## Get Updates
 
-settings.getUpdates.description
+Enable to receive development updates about InviteManager.
 
 Type: `Boolean`
 
@@ -262,7 +262,7 @@ Reset to default:
 
 ## Message
 
-settings.joinMessage.description
+The message sent when someone joins the server.
 
 Type: `String`
 
@@ -275,7 +275,7 @@ Reset to default:
 
 ## Message Channel
 
-settings.joinMessageChannel.description
+The channel that the message on join is sent to.
 
 Type: `Channel`
 
@@ -294,7 +294,7 @@ Examples:
 
 ## Message
 
-settings.leaveMessage.description
+The message sent when someone leaves the server.
 
 Type: `String`
 
@@ -313,7 +313,7 @@ Examples:
 
 ## Message Channel
 
-settings.leaveMessageChannel.description
+The channel that the leave message is sent to.
 
 Type: `Channel`
 
@@ -332,7 +332,7 @@ Examples:
 
 ## Style
 
-settings.leaderboardStyle.description
+The display style of the leaderboard.
 
 Type: `Enum<LeaderboardStyle>`
 
@@ -351,7 +351,7 @@ Example:
 
 ## Hide left members
 
-settings.hideLeftMembersFromLeaderboard.description
+Hide members that left the server from the leaderboard.
 
 Type: `Boolean`
 
@@ -372,7 +372,7 @@ Disable:
 
 ## Auto Subtract
 
-settings.autoSubtractFakes.description
+Automatically subtract fake invites.
 
 Type: `Boolean`
 
@@ -393,7 +393,7 @@ Disable:
 
 ## Auto Subtract
 
-settings.autoSubtractLeaves.description
+Automatically remove invites from the inviter when the invited user leaves.
 
 Type: `Boolean`
 
@@ -414,7 +414,7 @@ Disable:
 
 ## Auto Subtract Threshold
 
-settings.autoSubtractLeaveThreshold.description
+The time in seconds for which a user has to stay in the server for the invite to count.
 
 Type: `Number`
 
@@ -433,7 +433,7 @@ Examples:
 
 ## Assignment Style
 
-settings.rankAssignmentStyle.description
+How ranks are rewarded to users.
 
 Type: `Enum<RankAssignmentStyle>`
 
@@ -452,7 +452,7 @@ Example:
 
 ## Announcement Channel
 
-settings.rankAnnouncementChannel.description
+The channel where users receiving a new rank are announced.
 
 Type: `Channel`
 
@@ -471,7 +471,7 @@ Examples:
 
 ## Announcement Message
 
-settings.rankAnnouncementMessage.description
+The message that is sent when a user receives a new rank.
 
 Type: `String`
 
