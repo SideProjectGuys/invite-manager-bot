@@ -30,4 +30,8 @@ export class EnumResolver extends Resolver {
 			values: [...this.values.values()].join(', ')
 		});
 	}
+
+	public getExamples(rest: boolean): string[] {
+		return [...this.values.values()].sort((a, b) => a.localeCompare(b));
+	}
 }

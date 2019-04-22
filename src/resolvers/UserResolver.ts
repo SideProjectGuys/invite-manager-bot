@@ -121,4 +121,17 @@ export class UserResolver extends Resolver {
 
 		return user;
 	}
+
+	public getType() {
+		return 'User';
+	}
+
+	public getExamples(rest: boolean): string[] {
+		return [
+			`@User`,
+			`User`,
+			'User#1234',
+			rest ? 'User with a space' : '"User with a space"'
+		];
+	}
 }

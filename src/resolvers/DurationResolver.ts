@@ -36,4 +36,8 @@ export class DurationResolver extends Resolver {
 
 		return moment.duration(seconds, 'second');
 	}
+
+	public getType() {
+		return 'Duration';
+	}
 }

@@ -20,4 +20,12 @@ export class BooleanResolver extends Resolver {
 		}
 		throw Error(t('arguments.boolean.invalid'));
 	}
+
+	public getType() {
+		return 'Boolean';
+	}
+
+	public getExamples(rest: boolean): string[] {
+		return ['yes', 'no'];
+	}
 }

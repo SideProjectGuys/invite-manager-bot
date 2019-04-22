@@ -23,4 +23,8 @@ export class InviteCodeResolver extends Resolver {
 
 		return inv;
 	}
+
+	public getType() {
+		return 'Invite code';
+	}
 }

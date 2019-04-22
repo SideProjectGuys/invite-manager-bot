@@ -21,9 +21,11 @@ export interface Arg {
 
 interface ArgInfo {
 	name: string;
+	type: string;
 	required: boolean;
 	description: string;
 	help?: string;
+	examples: string[];
 }
 
 export interface Flag {
@@ -34,9 +36,11 @@ export interface Flag {
 
 interface FlagInfo {
 	name: string;
+	type: string;
 	short?: string;
 	description: string;
 	help?: string;
+	examples: string[];
 }
 
 export interface CommandOptions {
@@ -151,37 +155,35 @@ export abstract class Command {
 	}
 
 	public getInfo2(context: Context) {
-		const res: { args: ArgInfo[]; flags: FlagInfo[] } = { args: [], flags: [] };
+		const ret: { args: ArgInfo[]; flags: FlagInfo[] } = { args: [], flags: [] };
 
 		for (let i = 0; i < this.flags.length; i++) {
 			const flag = this.flags[i];
-			const flagInfo: FlagInfo = {
+			const res = this.flagResolvers.get(flag.name);
+			ret.flags.push({
 				name: flag.name,
+				type: res.getType(),
 				short: flag.short,
-				description: context.t(`cmd.${this.name}.self.flags.${flag.name}`)
-			};
-			const help = this.flagResolvers.get(flag.name).getHelp(context);
-			if (help) {
-				flagInfo.help = help;
-			}
-			res.flags.push(flagInfo);
+				description: context.t(`cmd.${this.name}.self.flags.${flag.name}`),
+				help: res.getHelp(context),
+				examples: res.getExamples(false)
+			});
 		}
 
 		for (let i = 0; i < this.args.length; i++) {
 			const arg = this.args[i];
-			const argInfo: ArgInfo = {
+			const res = this.resolvers[i];
+			ret.args.push({
 				name: arg.name,
+				type: res.getType(),
 				required: arg.required,
-				description: context.t(`cmd.${this.name}.self.args.${arg.name}`)
-			};
-			const help = this.resolvers[i].getHelp(context);
-			if (help) {
-				argInfo.help = help;
-			}
-			res.args.push(argInfo);
+				description: context.t(`cmd.${this.name}.self.args.${arg.name}`),
+				examples: res.getExamples(arg.rest),
+				help: res.getHelp(context)
+			});
 		}
 
-		return res;
+		return ret;
 	}
 
 	public abstract action(

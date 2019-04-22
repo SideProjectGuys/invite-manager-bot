@@ -46,4 +46,16 @@ export class ChannelResolver extends Resolver {
 
 		return channel;
 	}
+
+	public getType() {
+		return 'Channel';
+	}
+
+	public getExamples(rest: boolean): string[] {
+		return [
+			`#general`,
+			`general`,
+			rest ? 'Channel with a space' : '"Channel with a space"'
+		];
+	}
 }

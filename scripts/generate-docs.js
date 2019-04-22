@@ -118,7 +118,7 @@ child.on('close', () => {
 		.map(key => `<a name=${key}></a>\n\n` + settingsInfo[key].markdown)
 		.join('\n\n');
 
-	fs.writeFileSync('./docs/Settings.md', outSettings);
+	fs.writeFileSync('./docs/getting-started/settings.md', outSettings);
 
 	// Generate command docs
 	const cmds = [];
@@ -174,12 +174,13 @@ child.on('close', () => {
 		outCmds += groupCmds
 			.map(
 				cmd =>
-					`| [${cmd.name}](#${cmd.name}) | ${t(
-						`cmd.${cmd.name}.self.description`
-					)} | ${cmd.usage
+					`| [${cmd.name}](#${cmd.name}) ` +
+					`| ${t(`cmd.${cmd.name}.self.description`)} | ` +
+					`${cmd.usage
 						.replace('{prefix}', '!')
 						.replace(/</g, '\\<')
-						.replace(/>/g, '\\>')}`
+						.replace(/>/g, '\\>')
+						.replace(/\|/g, '\\|')} |`
 			)
 			.join('\n');
 		outCmds += '\n\n';
@@ -192,13 +193,12 @@ child.on('close', () => {
 			const info = cmd.getInfo2({ t });
 
 			let infoText = '### Arguments\n\n';
-			infoText += `| Argument | Required | Description |\n|---|---|---|\n`;
+			infoText += `| Argument | Type | Required | Description |\n|---|---|---|---|\n`;
 			infoText += info.args
 				.map(
-					arg =>
-						`| ${arg.name} | ${arg.required ? 'Yes' : ' '} | ${
-							arg.description
-						} |`
+					(arg, i) =>
+						`| ${arg.name} | ${arg.type} | ${arg.required ? 'Yes' : ' '} ` +
+						`| ${arg.description}`
 				)
 				.join('\n');
 			infoText += '\n\n';
@@ -207,18 +207,15 @@ child.on('close', () => {
 			infoText += info.flags
 				.map(
 					flag =>
-						`| --${flag.name} | ${flag.short ? '-' + flag.short : ' '} | ${
-							flag.description
-						} |`
+						`| --${flag.name} | ${flag.short ? '-' + flag.short : ' '} ` +
+						`| ${flag.description} |`
 				)
 				.join('\n');
 			infoText += '\n\n';
 			infoText += '### Examples\n\n';
-			infoText += generateExamples(cmd);
+			infoText += generateExamples(cmd, info).join('  \n') + '\n\n';
 
-			outCmds +=
-				`<a name='${cmd.name}'></a>\n` +
-				`\n---\n\n## ${t(`cmd.${cmd.name}.self.title`)}\n\n`;
+			outCmds += `<a name='${cmd.name}'></a>\n\n---\n\n## !${cmd.name}\n\n`;
 			outCmds += `${t(`cmd.${cmd.name}.self.description`)}\n\n`;
 			outCmds +=
 				'### Usage\n\n```text\n' + usage + '\n```' + `\n\n${infoText}\n\n`;
@@ -227,8 +224,43 @@ child.on('close', () => {
 	fs.writeFileSync('./docs/getting-started/commands.md', outCmds);
 });
 
-function generateExamples(cmd) {
+function generateExamples(cmd, info) {
 	const examples = [];
-	cmd.args.forEach(arg => {});
+	let pre = '```text\n' + `!${cmd.name} `;
+	for (let i = 0; i < info.args.length; i++) {
+		const arg = info.args[i];
+		if (!arg.required && (i === 0 || info.args[i - 1].examples.length === 0)) {
+			examples.push(pre + '\n```');
+		}
+		const exs = arg.examples;
+		exs.forEach(ex => examples.push(pre + ex + '\n```'));
+		pre += `${exs.length > 0 ? exs[0] : arg.name} `;
+	}
+	if (
+		info.args.length === 0 ||
+		info.args[info.args.length - 1].examples.length === 0
+	) {
+		examples.push(pre + '\n```');
+	}
+	if (examples.length > 0) {
+		const ex = examples[0];
+		for (let i = 0; i < info.flags.length; i++) {
+			const flag = info.flags[i];
+			examples.push(
+				ex.replace(
+					cmd.name + ' ',
+					`${cmd.name} --${flag.name}=${flag.examples[0]} `
+				)
+			);
+			if (flag.short) {
+				examples.push(
+					ex.replace(
+						cmd.name + ' ',
+						`${cmd.name} -${flag.short} ${flag.examples[0]} `
+					)
+				);
+			}
+		}
+	}
 	return examples;
 }

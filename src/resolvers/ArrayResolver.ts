@@ -62,4 +62,8 @@ export class ArrayResolver extends Resolver {
 			splits.map(s => this.resolver.resolve(s, context, previous))
 		);
 	}
+
+	public getType() {
+		return `Array<${this.resolver.getType()}>`;
+	}
 }

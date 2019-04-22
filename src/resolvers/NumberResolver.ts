@@ -15,4 +15,12 @@ export class NumberResolver extends Resolver {
 
 		return val;
 	}
+
+	public getType() {
+		return 'Number';
+	}
+
+	public getExamples(rest: boolean): string[] {
+		return [`2`, `42`];
+	}
 }

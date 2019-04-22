@@ -6,57 +6,57 @@ There are many config options that can be set. You don't have to set all of them
 
 ### General
 
-| Setting                                            | Description                          |
-| -------------------------------------------------- | ------------------------------------ |
-| [Prefix](#prefix)                                  | settings.prefix.description          |
-| [Language](#lang)                                  | settings.lang.description            |
-| [Log Channel](#logchannel)                         | settings.logChannel.description      |
-| [Get Updates](#getupdates)                         | settings.getUpdates.description      |
-| [settings.channels.title](#channels)               | settings.channels.description        |
-| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description |
+| Setting                                            | Description                                                |
+| -------------------------------------------------- | ---------------------------------------------------------- |
+| [Prefix](#prefix)                                  | The prefix used to trigger bot commands.                   |
+| [Language](#lang)                                  | The language of the bot                                    |
+| [Log Channel](#logchannel)                         | The channel where bot actions are logged.                  |
+| [Get Updates](#getupdates)                         | Enable to receive development updates about InviteManager. |
+| [settings.channels.title](#channels)               | settings.channels.description                              |
+| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description                       |
 
 ### Invites
 
 #### Joins
 
-| Setting                                | Description                             |
-| -------------------------------------- | --------------------------------------- |
-| [Message](#joinmessage)                | settings.joinMessage.description        |
-| [Message Channel](#joinmessagechannel) | settings.joinMessageChannel.description |
+| Setting                                | Description                                      |
+| -------------------------------------- | ------------------------------------------------ |
+| [Message](#joinmessage)                | The message sent when someone joins the server.  |
+| [Message Channel](#joinmessagechannel) | The channel that the message on join is sent to. |
 
 #### Leaves
 
-| Setting                                                | Description                                     |
-| ------------------------------------------------------ | ----------------------------------------------- |
-| [Message](#leavemessage)                               | settings.leaveMessage.description               |
-| [Message Channel](#leavemessagechannel)                | settings.leaveMessageChannel.description        |
-| [Auto Subtract](#autosubtractleaves)                   | settings.autoSubtractLeaves.description         |
-| [Auto Subtract Threshold](#autosubtractleavethreshold) | settings.autoSubtractLeaveThreshold.description |
+| Setting                                                | Description                                                                             |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [Message](#leavemessage)                               | The message sent when someone leaves the server.                                        |
+| [Message Channel](#leavemessagechannel)                | The channel that the leave message is sent to.                                          |
+| [Auto Subtract](#autosubtractleaves)                   | Automatically remove invites from the inviter when the invited user leaves.             |
+| [Auto Subtract Threshold](#autosubtractleavethreshold) | The time in seconds for which a user has to stay in the server for the invite to count. |
 
 #### Leaderboard
 
-| Setting                                              | Description                                         |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| [Style](#leaderboardstyle)                           | settings.leaderboardStyle.description               |
-| [Hide left members](#hideleftmembersfromleaderboard) | settings.hideLeftMembersFromLeaderboard.description |
+| Setting                                              | Description                                             |
+| ---------------------------------------------------- | ------------------------------------------------------- |
+| [Style](#leaderboardstyle)                           | The display style of the leaderboard.                   |
+| [Hide left members](#hideleftmembersfromleaderboard) | Hide members that left the server from the leaderboard. |
 
 #### Fakes
 
-| Setting                             | Description                            |
-| ----------------------------------- | -------------------------------------- |
-| [Auto Subtract](#autosubtractfakes) | settings.autoSubtractFakes.description |
+| Setting                             | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| [Auto Subtract](#autosubtractfakes) | Automatically subtract fake invites. |
 
 #### Ranks
 
-| Setting                                          | Description                                  |
-| ------------------------------------------------ | -------------------------------------------- |
-| [Assignment Style](#rankassignmentstyle)         | settings.rankAssignmentStyle.description     |
-| [Announcement Channel](#rankannouncementchannel) | settings.rankAnnouncementChannel.description |
-| [Announcement Message](#rankannouncementmessage) | settings.rankAnnouncementMessage.description |
+| Setting                                          | Description                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| [Assignment Style](#rankassignmentstyle)         | How ranks are rewarded to users.                            |
+| [Announcement Channel](#rankannouncementchannel) | The channel where users receiving a new rank are announced. |
+| [Announcement Message](#rankannouncementmessage) | The message that is sent when a user receives a new rank.   |
 
 ### Moderation
 
-#### settings.groups.moderation.captcha.title
+#### Captcha
 
 | Setting                                               | Description                                            |
 | ----------------------------------------------------- | ------------------------------------------------------ |
@@ -67,7 +67,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Verification Timeout](#captchaverificationtimeout)   | settings.captchaVerificationTimeout.description        |
 | [Log Enabled](#captchaverificationlogenabled)         | settings.captchaVerificationLogEnabled.description     |
 
-#### settings.groups.moderation.general.title
+#### General
 
 | Setting                                                         | Description                                                |
 | --------------------------------------------------------------- | ---------------------------------------------------------- |
@@ -80,7 +80,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Disabled for Old Members](#automoddisabledforoldmembers)       | settings.autoModDisabledForOldMembers.description          |
 | [Old Members Threshold](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
 
-#### settings.groups.moderation.logging.title
+#### Logging
 
 | Setting                                                                | Description                                                  |
 | ---------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -94,13 +94,13 @@ There are many config options that can be set. You don't have to set all of them
 | [Delete Warn Messages](#modpunishmentwarndeletemessage)                | settings.modPunishmentWarnDeleteMessage.description          |
 | [Delete Mute Messages](#modpunishmentmutedeletemessage)                | settings.modPunishmentMuteDeleteMessage.description          |
 
-#### settings.groups.moderation.invites.title
+#### Invites
 
 | Setting                           | Description                                |
 | --------------------------------- | ------------------------------------------ |
 | [Enabled](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
 
-#### settings.groups.moderation.links.title
+#### Links
 
 | Setting                                          | Description                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
@@ -109,14 +109,14 @@ There are many config options that can be set. You don't have to set all of them
 | [Blacklist](#automodlinksblacklist)              | settings.autoModLinksBlacklist.description       |
 | [Follow Redirects](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
 
-#### settings.groups.moderation.bannedWords.title
+#### Banned Words
 
 | Setting                             | Description                                |
 | ----------------------------------- | ------------------------------------------ |
 | [Enabled](#automodwordsenabled)     | settings.autoModWordsEnabled.description   |
 | [Blacklist](#automodwordsblacklist) | settings.autoModWordsBlacklist.description |
 
-#### settings.groups.moderation.caps.title
+#### Caps
 
 | Setting                                          | Description                                       |
 | ------------------------------------------------ | ------------------------------------------------- |
@@ -124,14 +124,14 @@ There are many config options that can be set. You don't have to set all of them
 | [Min. Characters](#automodallcapsmincharacters)  | settings.autoModAllCapsMinCharacters.description  |
 | [Percentage CAPs](#automodallcapspercentagecaps) | settings.autoModAllCapsPercentageCaps.description |
 
-#### settings.groups.moderation.duplicate.title
+#### Duplicate Messages
 
 | Setting                                                         | Description                                                 |
 | --------------------------------------------------------------- | ----------------------------------------------------------- |
 | [Enabled](#automodduplicatetextenabled)                         | settings.autoModDuplicateTextEnabled.description            |
 | [Timeframe in Seconds](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
 
-#### settings.groups.moderation.spam.title
+#### Spam
 
 | Setting                                                         | Description                                                 |
 | --------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -139,7 +139,7 @@ There are many config options that can be set. You don't have to set all of them
 | [# of Messages](#automodquickmessagesnumberofmessages)          | settings.autoModQuickMessagesNumberOfMessages.description   |
 | [Timeframe in Seconds](#automodquickmessagestimeframeinseconds) | settings.autoModQuickMessagesTimeframeInSeconds.description |
 
-#### settings.groups.moderation.mentions.title
+#### Mentions
 
 | Setting                                                      | Description                                                 |
 | ------------------------------------------------------------ | ----------------------------------------------------------- |
@@ -148,7 +148,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Enabled](#automodmentionrolesenabled)                       | settings.autoModMentionRolesEnabled.description             |
 | [Max # of Mentions](#automodmentionrolesmaxnumberofmentions) | settings.autoModMentionRolesMaxNumberOfMentions.description |
 
-#### settings.groups.moderation.emojis.title
+#### Emojis
 
 | Setting                                            | Description                                         |
 | -------------------------------------------------- | --------------------------------------------------- |
@@ -158,9 +158,11 @@ There are many config options that can be set. You don't have to set all of them
 
 <a name=prefix></a>
 
+---
+
 ## Prefix
 
-settings.prefix.description
+The prefix used to trigger bot commands.
 
 Type: `String`
 
@@ -177,9 +179,11 @@ Examples:
 
 <a name=lang></a>
 
+---
+
 ## Language
 
-settings.lang.description
+The language of the bot
 
 Type: `Enum<Lang>`
 
@@ -188,7 +192,7 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `cs`, `de`, `en`, `es`, `fr`, `hu`, `it`, `nl`, `pt_BR`, `pt`, `ro`, `ru`, `sr`, `sv`, `ur_PK`
+Possible values: `cs`, `de`, `en`, `es`, `fr`, `hu`, `it`, `nl`, `pt_BR`, `pt`, `ro`, `ru`, `sr`, `sv`, `ur_PK`, `ja`
 
 Example:
 
@@ -196,9 +200,11 @@ Example:
 
 <a name=logChannel></a>
 
+---
+
 ## Log Channel
 
-settings.logChannel.description
+The channel where bot actions are logged.
 
 Type: `Channel`
 
@@ -213,9 +219,11 @@ Examples:
 
 <a name=getUpdates></a>
 
+---
+
 ## Get Updates
 
-settings.getUpdates.description
+Enable to receive development updates about InviteManager.
 
 Type: `Boolean`
 
@@ -234,6 +242,8 @@ Disable:
 
 <a name=channels></a>
 
+---
+
 ## settings.channels.title
 
 settings.channels.description
@@ -246,6 +256,8 @@ Reset to default:
 `!config channels default`
 
 <a name=ignoredChannels></a>
+
+---
 
 ## settings.ignoredChannels.title
 
@@ -260,9 +272,11 @@ Reset to default:
 
 <a name=joinMessage></a>
 
+---
+
 ## Message
 
-settings.joinMessage.description
+The message sent when someone joins the server.
 
 Type: `String`
 
@@ -273,9 +287,11 @@ Reset to default:
 
 <a name=joinMessageChannel></a>
 
+---
+
 ## Message Channel
 
-settings.joinMessageChannel.description
+The channel that the message on join is sent to.
 
 Type: `Channel`
 
@@ -292,9 +308,11 @@ Examples:
 
 <a name=leaveMessage></a>
 
+---
+
 ## Message
 
-settings.leaveMessage.description
+The message sent when someone leaves the server.
 
 Type: `String`
 
@@ -311,9 +329,11 @@ Examples:
 
 <a name=leaveMessageChannel></a>
 
+---
+
 ## Message Channel
 
-settings.leaveMessageChannel.description
+The channel that the leave message is sent to.
 
 Type: `Channel`
 
@@ -330,9 +350,11 @@ Examples:
 
 <a name=leaderboardStyle></a>
 
+---
+
 ## Style
 
-settings.leaderboardStyle.description
+The display style of the leaderboard.
 
 Type: `Enum<LeaderboardStyle>`
 
@@ -349,9 +371,11 @@ Example:
 
 <a name=hideLeftMembersFromLeaderboard></a>
 
+---
+
 ## Hide left members
 
-settings.hideLeftMembersFromLeaderboard.description
+Hide members that left the server from the leaderboard.
 
 Type: `Boolean`
 
@@ -370,9 +394,11 @@ Disable:
 
 <a name=autoSubtractFakes></a>
 
+---
+
 ## Auto Subtract
 
-settings.autoSubtractFakes.description
+Automatically subtract fake invites.
 
 Type: `Boolean`
 
@@ -391,9 +417,11 @@ Disable:
 
 <a name=autoSubtractLeaves></a>
 
+---
+
 ## Auto Subtract
 
-settings.autoSubtractLeaves.description
+Automatically remove invites from the inviter when the invited user leaves.
 
 Type: `Boolean`
 
@@ -412,9 +440,11 @@ Disable:
 
 <a name=autoSubtractLeaveThreshold></a>
 
+---
+
 ## Auto Subtract Threshold
 
-settings.autoSubtractLeaveThreshold.description
+The time in seconds for which a user has to stay in the server for the invite to count.
 
 Type: `Number`
 
@@ -431,9 +461,11 @@ Examples:
 
 <a name=rankAssignmentStyle></a>
 
+---
+
 ## Assignment Style
 
-settings.rankAssignmentStyle.description
+How ranks are rewarded to users.
 
 Type: `Enum<RankAssignmentStyle>`
 
@@ -450,9 +482,11 @@ Example:
 
 <a name=rankAnnouncementChannel></a>
 
+---
+
 ## Announcement Channel
 
-settings.rankAnnouncementChannel.description
+The channel where users receiving a new rank are announced.
 
 Type: `Channel`
 
@@ -469,9 +503,11 @@ Examples:
 
 <a name=rankAnnouncementMessage></a>
 
+---
+
 ## Announcement Message
 
-settings.rankAnnouncementMessage.description
+The message that is sent when a user receives a new rank.
 
 Type: `String`
 
@@ -487,6 +523,8 @@ Examples:
 `!config rankAnnouncementMessage`
 
 <a name=captchaVerificationOnJoin></a>
+
+---
 
 ## Enabled
 
@@ -509,6 +547,8 @@ Disable:
 
 <a name=captchaVerificationWelcomeMessage></a>
 
+---
+
 ## Welcome Message
 
 settings.captchaVerificationWelcomeMessage.description
@@ -525,6 +565,8 @@ Examples:
 `!config captchaVerificationWelcomeMessage Welcome, please enter the captcha below!`
 
 <a name=captchaVerificationSuccessMessage></a>
+
+---
 
 ## Success Message
 
@@ -543,6 +585,8 @@ Examples:
 
 <a name=captchaVerificationFailedMessage></a>
 
+---
+
 ## Failed Message
 
 settings.captchaVerificationFailedMessage.description
@@ -559,6 +603,8 @@ Examples:
 `!config captchaVerificationFailedMessage Looks like you are not human :(. You can join again and try again later if this was a mistake!`
 
 <a name=captchaVerificationTimeout></a>
+
+---
 
 ## Verification Timeout
 
@@ -578,6 +624,8 @@ Examples:
 `!config captchaVerificationTimeout 600`
 
 <a name=captchaVerificationLogEnabled></a>
+
+---
 
 ## Log Enabled
 
@@ -600,6 +648,8 @@ Disable:
 
 <a name=autoModEnabled></a>
 
+---
+
 ## Enabled
 
 settings.autoModEnabled.description
@@ -621,6 +671,8 @@ Disable:
 
 <a name=autoModModeratedChannels></a>
 
+---
+
 ## Moderated Channels
 
 settings.autoModModeratedChannels.description
@@ -639,6 +691,8 @@ Examples:
 `!config autoModModeratedChannels #support,#help`
 
 <a name=autoModModeratedRoles></a>
+
+---
 
 ## Moderated Roles
 
@@ -659,6 +713,8 @@ Examples:
 
 <a name=autoModIgnoredChannels></a>
 
+---
+
 ## Ignored Channels
 
 settings.autoModIgnoredChannels.description
@@ -677,6 +733,8 @@ Examples:
 `!config autoModIgnoredChannels #off-topic,#nsfw`
 
 <a name=autoModIgnoredRoles></a>
+
+---
 
 ## Ignored Roles
 
@@ -697,6 +755,8 @@ Examples:
 
 <a name=mutedRole></a>
 
+---
+
 ## Muted Role
 
 settings.mutedRole.description
@@ -713,6 +773,8 @@ Examples:
 `!config mutedRole @muted`
 
 <a name=autoModDisabledForOldMembers></a>
+
+---
 
 ## Disabled for Old Members
 
@@ -735,6 +797,8 @@ Disable:
 
 <a name=autoModDisabledForOldMembersThreshold></a>
 
+---
+
 ## Old Members Threshold
 
 settings.autoModDisabledForOldMembersThreshold.description
@@ -753,6 +817,8 @@ Examples:
 `!config autoModDisabledForOldMembersThreshold 2419200` (1 month)``
 
 <a name=autoModLogEnabled></a>
+
+---
 
 ## Log Enabled
 
@@ -775,6 +841,8 @@ Disable:
 
 <a name=modLogChannel></a>
 
+---
+
 ## Log Channel
 
 settings.modLogChannel.description
@@ -793,6 +861,8 @@ Examples:
 `!config modLogChannel #logs`
 
 <a name=autoModDeleteBotMessage></a>
+
+---
 
 ## Delete Bot Messages
 
@@ -815,6 +885,8 @@ Disable:
 
 <a name=autoModDeleteBotMessageTimeoutInSeconds></a>
 
+---
+
 ## Delete Bot Message Timeout
 
 settings.autoModDeleteBotMessageTimeoutInSeconds.description
@@ -833,6 +905,8 @@ Examples:
 `!config autoModDeleteBotMessageTimeoutInSeconds 10`
 
 <a name=modPunishmentBanDeleteMessage></a>
+
+---
 
 ## Delete Ban Messages
 
@@ -855,6 +929,8 @@ Disable:
 
 <a name=modPunishmentKickDeleteMessage></a>
 
+---
+
 ## Delete Kick Messages
 
 settings.modPunishmentKickDeleteMessage.description
@@ -875,6 +951,8 @@ Disable:
 `!config modPunishmentKickDeleteMessage false`
 
 <a name=modPunishmentSoftbanDeleteMessage></a>
+
+---
 
 ## Delete Softban Messages
 
@@ -897,6 +975,8 @@ Disable:
 
 <a name=modPunishmentWarnDeleteMessage></a>
 
+---
+
 ## Delete Warn Messages
 
 settings.modPunishmentWarnDeleteMessage.description
@@ -917,6 +997,8 @@ Disable:
 `!config modPunishmentWarnDeleteMessage false`
 
 <a name=modPunishmentMuteDeleteMessage></a>
+
+---
 
 ## Delete Mute Messages
 
@@ -939,6 +1021,8 @@ Disable:
 
 <a name=autoModInvitesEnabled></a>
 
+---
+
 ## Enabled
 
 settings.autoModInvitesEnabled.description
@@ -959,6 +1043,8 @@ Disable:
 `!config autoModInvitesEnabled false`
 
 <a name=autoModLinksEnabled></a>
+
+---
 
 ## Enabled
 
@@ -981,6 +1067,8 @@ Disable:
 
 <a name=autoModLinksWhitelist></a>
 
+---
+
 ## Whitelist
 
 settings.autoModLinksWhitelist.description
@@ -1000,6 +1088,8 @@ Examples:
 
 <a name=autoModLinksBlacklist></a>
 
+---
+
 ## Blacklist
 
 settings.autoModLinksBlacklist.description
@@ -1018,6 +1108,8 @@ Examples:
 `!config autoModLinksBlacklist twitch.com,youtube.com`
 
 <a name=autoModLinksFollowRedirects></a>
+
+---
 
 ## Follow Redirects
 
@@ -1040,6 +1132,8 @@ Disable:
 
 <a name=autoModWordsEnabled></a>
 
+---
+
 ## Enabled
 
 settings.autoModWordsEnabled.description
@@ -1061,6 +1155,8 @@ Disable:
 
 <a name=autoModWordsBlacklist></a>
 
+---
+
 ## Blacklist
 
 settings.autoModWordsBlacklist.description
@@ -1079,6 +1175,8 @@ Examples:
 `!config autoModWordsBlacklist stupid,fuck`
 
 <a name=autoModAllCapsEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1101,6 +1199,8 @@ Disable:
 
 <a name=autoModAllCapsMinCharacters></a>
 
+---
+
 ## Min. Characters
 
 settings.autoModAllCapsMinCharacters.description
@@ -1120,6 +1220,8 @@ Examples:
 
 <a name=autoModAllCapsPercentageCaps></a>
 
+---
+
 ## Percentage CAPs
 
 settings.autoModAllCapsPercentageCaps.description
@@ -1138,6 +1240,8 @@ Examples:
 `!config autoModAllCapsPercentageCaps 90`
 
 <a name=autoModDuplicateTextEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1160,6 +1264,8 @@ Disable:
 
 <a name=autoModDuplicateTextTimeframeInSeconds></a>
 
+---
+
 ## Timeframe in Seconds
 
 settings.autoModDuplicateTextTimeframeInSeconds.description
@@ -1178,6 +1284,8 @@ Examples:
 `!config autoModDuplicateTextTimeframeInSeconds 20`
 
 <a name=autoModQuickMessagesEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1200,6 +1308,8 @@ Disable:
 
 <a name=autoModQuickMessagesNumberOfMessages></a>
 
+---
+
 ## # of Messages
 
 settings.autoModQuickMessagesNumberOfMessages.description
@@ -1219,6 +1329,8 @@ Examples:
 
 <a name=autoModQuickMessagesTimeframeInSeconds></a>
 
+---
+
 ## Timeframe in Seconds
 
 settings.autoModQuickMessagesTimeframeInSeconds.description
@@ -1237,6 +1349,8 @@ Examples:
 `!config autoModQuickMessagesTimeframeInSeconds 10`
 
 <a name=autoModMentionUsersEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1259,6 +1373,8 @@ Disable:
 
 <a name=autoModMentionUsersMaxNumberOfMentions></a>
 
+---
+
 ## Max # of Mentions
 
 settings.autoModMentionUsersMaxNumberOfMentions.description
@@ -1277,6 +1393,8 @@ Examples:
 `!config autoModMentionUsersMaxNumberOfMentions 5`
 
 <a name=autoModMentionRolesEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1299,6 +1417,8 @@ Disable:
 
 <a name=autoModMentionRolesMaxNumberOfMentions></a>
 
+---
+
 ## Max # of Mentions
 
 settings.autoModMentionRolesMaxNumberOfMentions.description
@@ -1317,6 +1437,8 @@ Examples:
 `!config autoModMentionRolesMaxNumberOfMentions 5`
 
 <a name=autoModEmojisEnabled></a>
+
+---
 
 ## Enabled
 
@@ -1339,6 +1461,8 @@ Disable:
 
 <a name=autoModEmojisMaxNumberOfEmojis></a>
 
+---
+
 ## Max # of Emojis
 
 settings.autoModEmojisMaxNumberOfEmojis.description
@@ -1357,6 +1481,8 @@ Examples:
 `!config autoModEmojisMaxNumberOfEmojis 10`
 
 <a name=autoModHoistEnabled></a>
+
+---
 
 ## Dehoist Enabled
 

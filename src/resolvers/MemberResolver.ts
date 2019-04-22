@@ -48,4 +48,8 @@ export class MemberResolver extends Resolver {
 
 		return member;
 	}
+
+	public getType() {
+		return 'Member';
+	}
 }

@@ -32,4 +32,10 @@ export class CommandResolver extends Resolver {
 			return cmd;
 		}
 	}
+
+	public getExamples(rest: boolean): string[] {
+		return this.client.cmds.commands
+			.map(cmd => cmd.name)
+			.sort((a, b) => a.localeCompare(b));
+	}
 }

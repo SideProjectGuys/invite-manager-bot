@@ -12,4 +12,8 @@ export class DateResolver extends Resolver {
 
 		return moment(value);
 	}
+
+	public getType() {
+		return 'Date';
+	}
 }

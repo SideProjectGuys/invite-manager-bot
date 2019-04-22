@@ -56,4 +56,12 @@ export class RoleResolver extends Resolver {
 
 		return role;
 	}
+
+	public getType() {
+		return 'Role';
+	}
+
+	public getExamples(rest: boolean) {
+		return [`@Role`, `Role`, rest ? 'Role with space' : '"Role with space"'];
+	}
 }
