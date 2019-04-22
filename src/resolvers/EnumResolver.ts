@@ -27,7 +27,7 @@ export class EnumResolver extends Resolver {
 
 	public getHelp({ t }: Context) {
 		return t('arguments.enum.validValues', {
-			values: [...this.values.values()].join(', ')
+			values: [...this.values.values()].map(v => '`' + v + '`').join(', ')
 		});
 	}
 }
