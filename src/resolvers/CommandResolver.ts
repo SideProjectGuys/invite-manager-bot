@@ -14,14 +14,14 @@ export class CommandResolver extends Resolver {
 		);
 
 		if (cmds.length === 0) {
-			throw Error(t('arguments.command.notFound'));
+			throw Error(t(`resolvers.${this.getType()}.notFound`));
 		} else if (cmds.length === 1) {
 			return cmds[0];
 		} else {
 			const cmd = cmds.find(c => c.name.length - name.length === 0);
 			if (!cmd) {
 				throw Error(
-					t('arguments.command.multiple', {
+					t(`resolvers.${this.getType()}.multiple`, {
 						commands: cmds
 							.slice(0, 10)
 							.map(c => `\`${c.name}\``)
@@ -31,11 +31,5 @@ export class CommandResolver extends Resolver {
 			}
 			return cmd;
 		}
-	}
-
-	public getExamples(rest: boolean): string[] {
-		return this.client.cmds.commands
-			.map(cmd => cmd.name)
-			.sort((a, b) => a.localeCompare(b));
 	}
 }

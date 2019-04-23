@@ -24,7 +24,8 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true
+			strict: true,
+			extraExamples: ['!createInvite reddit', '!createInvite website #welcome']
 		});
 	}
 

@@ -35,7 +35,7 @@ export class UserResolver extends Resolver {
 				}));
 			}
 			if (!user) {
-				throw Error(t('arguments.user.notFound'));
+				throw Error(t(`resolvers.${this.getType()}.notFound`));
 			}
 		} else {
 			const fullName = value.toLowerCase();
@@ -106,10 +106,10 @@ export class UserResolver extends Resolver {
 			if (users.length === 1) {
 				user = users[0];
 			} else if (users.length === 0) {
-				throw Error(t('arguments.user.notFound'));
+				throw Error(t(`resolvers.${this.getType()}.notFound`));
 			} else {
 				throw Error(
-					t('arguments.user.multiple', {
+					t(`resolvers.${this.getType()}.multiple`, {
 						users: users
 							.slice(0, 10)
 							.map(u => `\`${u.username}#${u.discriminator}\``)
@@ -120,18 +120,5 @@ export class UserResolver extends Resolver {
 		}
 
 		return user;
-	}
-
-	public getType() {
-		return 'User';
-	}
-
-	public getExamples(rest: boolean): string[] {
-		return [
-			`@User`,
-			`User`,
-			'User#1234',
-			rest ? 'User with a space' : '"User with a space"'
-		];
 	}
 }

@@ -25,7 +25,6 @@ interface ArgInfo {
 	required: boolean;
 	description: string;
 	help?: string;
-	examples: string[];
 }
 
 export interface Flag {
@@ -40,7 +39,6 @@ interface FlagInfo {
 	short?: string;
 	description: string;
 	help?: string;
-	examples: string[];
 }
 
 export interface CommandOptions {
@@ -52,6 +50,7 @@ export interface CommandOptions {
 	strict?: boolean;
 	guildOnly: boolean;
 	premiumOnly?: boolean;
+	extraExamples?: string[];
 }
 
 export type TranslateFunc = (
@@ -85,6 +84,8 @@ export abstract class Command {
 	public guildOnly: boolean;
 	public premiumOnly?: boolean;
 
+	public extraExamples: string[] = [];
+
 	protected createEmbed: CreateEmbedFunc;
 	protected sendReply: SendReplyFunc;
 	protected sendEmbed: SendEmbedFunc;
@@ -100,6 +101,9 @@ export abstract class Command {
 		this.strict = props.strict;
 		this.guildOnly = props.guildOnly;
 		this.premiumOnly = props.premiumOnly;
+		if (props.extraExamples) {
+			this.extraExamples = props.extraExamples;
+		}
 
 		this.usage = `{prefix}${this.name} `;
 
@@ -162,11 +166,10 @@ export abstract class Command {
 			const res = this.flagResolvers.get(flag.name);
 			ret.flags.push({
 				name: flag.name,
-				type: res.getType(),
+				type: context.t(`resolvers.${res.getType()}.type`),
 				short: flag.short,
 				description: context.t(`cmd.${this.name}.self.flags.${flag.name}`),
-				help: res.getHelp(context),
-				examples: res.getExamples(false)
+				help: res.getHelp(context)
 			});
 		}
 
@@ -175,10 +178,9 @@ export abstract class Command {
 			const res = this.resolvers[i];
 			ret.args.push({
 				name: arg.name,
-				type: res.getType(),
+				type: context.t(`resolvers.${res.getType()}.type`),
 				required: arg.required,
 				description: context.t(`cmd.${this.name}.self.args.${arg.name}`),
-				examples: res.getExamples(arg.rest),
 				help: res.getHelp(context)
 			});
 		}

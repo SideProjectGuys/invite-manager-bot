@@ -17,7 +17,7 @@ export class ChannelResolver extends Resolver {
 			const id = value.match(channelRegex)[1];
 			channel = guild.channels.get(id);
 			if (!channel) {
-				throw Error(t('arguments.channel.notFound'));
+				throw Error(t(`resolvers.${this.getType()}.notFound`));
 			}
 		} else {
 			const name = value.toLowerCase();
@@ -30,10 +30,10 @@ export class ChannelResolver extends Resolver {
 				channel = channels[0];
 			} else {
 				if (channels.length === 0) {
-					throw Error(t('arguments.channel.notFound'));
+					throw Error(t(`resolvers.${this.getType()}.notFound`));
 				} else {
 					throw Error(
-						t('arguments.channel.multiple', {
+						t(`resolvers.${this.getType()}.multiple`, {
 							channels: channels
 								.slice(0, 10)
 								.map(c => `\`${c.name}\``)
@@ -45,17 +45,5 @@ export class ChannelResolver extends Resolver {
 		}
 
 		return channel;
-	}
-
-	public getType() {
-		return 'Channel';
-	}
-
-	public getExamples(rest: boolean): string[] {
-		return [
-			`#general`,
-			`general`,
-			rest ? 'Channel with a space' : '"Channel with a space"'
-		];
 	}
 }

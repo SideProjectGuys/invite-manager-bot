@@ -161,6 +161,45 @@ child.on('close', () => {
 	outCmds +=
 		'To get a list of available commands, do !help on your server.\n\n';
 
+	outCmds +=
+		'## Arguments & Flags\n\nMost commands accept arguments and/or flags.  \n' +
+		'According to the **Type** of the argument or flag you can provide different values.\n\n';
+
+	outCmds += '### Number\n\nThis arguments expects a number\n\n';
+	outCmds +=
+		'### Text\n\nThis arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.  \n' +
+		`**If the text is the last argument you don't have to use quotes.**\n\n`;
+
+	outCmds +=
+		'### Invite Code\n\nThis arguments expects a Discord Invite Code.  \n' +
+		'**You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.**\n\n';
+
+	outCmds +=
+		'### Enum\n\nThis arguments expects a value from a specific set of valid values.  \n' +
+		'**Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.**\n\n';
+
+	outCmds +=
+		'### User\n\nThis arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n' +
+		'- Mention the user: `@Valandur`\n' +
+		'- Use their ID: `102785693046026240`\n' +
+		'- Use their name: `Valandur`\n' +
+		'- Use their name and discriminator: `Valandur#3581`\n' +
+		'- Use quotes if their name has a space: `"Valandur with a space"`\n\n';
+
+	outCmds +=
+		'### Role\n\nThis arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n' +
+		'- Mention the role: `@Admin`\n' +
+		'- Use the ID: `102785693046026240`\n' +
+		'- Use the name: `Admin`\n' +
+		'- Use quotes if the name has a space: `"Admin with a space"`\n\n';
+
+	outCmds +=
+		'### Channel\n\nThis arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n' +
+		'- Mention the channel: `#general`\n' +
+		'- Use the ID: `409846838129197057`\n' +
+		'- Use the name: `general`\n' +
+		'- Use quotes if the name has a space: `"general with a space"`\n\n';
+
 	outCmds += '## Overview\n\n';
 	Object.keys(CommandGroup).forEach(group => {
 		const groupCmds = cmds
@@ -192,75 +231,67 @@ child.on('close', () => {
 			const usage = cmd.usage.replace('{prefix}', '!');
 			const info = cmd.getInfo2({ t });
 
-			let infoText = '### Arguments\n\n';
-			infoText += `| Argument | Type | Required | Description |\n|---|---|---|---|\n`;
-			infoText += info.args
-				.map(
-					(arg, i) =>
-						`| ${arg.name} | ${arg.type} | ${arg.required ? 'Yes' : ' '} ` +
-						`| ${arg.description}`
-				)
-				.join('\n');
-			infoText += '\n\n';
-			infoText += '### Flags\n\n';
-			infoText += `| Flag | Short | Description |\n|---|---|---|\n`;
-			infoText += info.flags
-				.map(
-					flag =>
-						`| --${flag.name} | ${flag.short ? '-' + flag.short : ' '} ` +
-						`| ${flag.description} |`
-				)
-				.join('\n');
-			infoText += '\n\n';
-			infoText += '### Examples\n\n';
-			infoText += generateExamples(cmd, info).join('  \n') + '\n\n';
-
 			outCmds += `<a name='${cmd.name}'></a>\n\n---\n\n## !${cmd.name}\n\n`;
+
+			if (cmd.name.startsWith('legacy')) {
+				outCmds +=
+					'> [!WARNING|style:flat]\n' +
+					'> This command has been deprecated and will be removed soon, please avoid using it.\n\n';
+			}
+
 			outCmds += `${t(`cmd.${cmd.name}.self.description`)}\n\n`;
-			outCmds +=
-				'### Usage\n\n```text\n' + usage + '\n```' + `\n\n${infoText}\n\n`;
+			outCmds += '### Usage\n\n```text\n' + usage + '\n```\n\n';
+
+			if (cmd.aliases.length > 0) {
+				outCmds += '### Aliases\n\n';
+				outCmds += cmd.aliases.map(a => `- \`!${a}\``).join('\n') + '\n\n';
+			}
+
+			if (info.args.length > 0) {
+				outCmds += '### Arguments\n\n';
+				outCmds += `| Argument | Type | Required | Description | Details |\n|---|---|---|---|---|\n`;
+				outCmds += info.args
+					.map(
+						(arg, i) =>
+							`| ${arg.name} ` +
+							`| [${arg.type}](#${arg.type.replace(/ /g, '')}) ` +
+							`| ${arg.required ? 'Yes' : 'No'} ` +
+							`| ${arg.description}` +
+							`| ${arg.help || ''} |`
+					)
+					.join('\n');
+				outCmds += '\n\n';
+			}
+
+			if (info.flags.length > 0) {
+				outCmds += '### Flags\n\n';
+				outCmds += `| Flag | Short | Type | Description |\n|---|---|---|---|\n`;
+				// &#x2011; is the non-breaking hyphen character
+				outCmds += info.flags
+					.map(
+						flag =>
+							`| &#x2011;&#x2011;${flag.name} ` +
+							`| ${flag.short ? '&#x2011;' + flag.short : ' '} ` +
+							`| [${flag.type}](#${flag.type.replace(/ /g, '')}) ` +
+							`| ${flag.description} |`
+					)
+					.join('\n');
+				outCmds += '\n\n';
+			}
+
+			outCmds += '### Examples\n\n';
+			outCmds += generateExamples(cmd).join('  \n') + '\n\n';
 		});
 
 	fs.writeFileSync('./docs/getting-started/commands.md', outCmds);
 });
 
-function generateExamples(cmd, info) {
+function generateExamples(cmd) {
 	const examples = [];
-	let pre = '```text\n' + `!${cmd.name} `;
-	for (let i = 0; i < info.args.length; i++) {
-		const arg = info.args[i];
-		if (!arg.required && (i === 0 || info.args[i - 1].examples.length === 0)) {
-			examples.push(pre + '\n```');
-		}
-		const exs = arg.examples;
-		exs.forEach(ex => examples.push(pre + ex + '\n```'));
-		pre += `${exs.length > 0 ? exs[0] : arg.name} `;
+	if (!cmd.args.some(a => a.required)) {
+		examples.push('```text\n' + `!${cmd.name}` + '\n```\n');
 	}
-	if (
-		info.args.length === 0 ||
-		info.args[info.args.length - 1].examples.length === 0
-	) {
-		examples.push(pre + '\n```');
-	}
-	if (examples.length > 0) {
-		const ex = examples[0];
-		for (let i = 0; i < info.flags.length; i++) {
-			const flag = info.flags[i];
-			examples.push(
-				ex.replace(
-					cmd.name + ' ',
-					`${cmd.name} --${flag.name}=${flag.examples[0]} `
-				)
-			);
-			if (flag.short) {
-				examples.push(
-					ex.replace(
-						cmd.name + ' ',
-						`${cmd.name} -${flag.short} ${flag.examples[0]} `
-					)
-				);
-			}
-		}
-	}
-	return examples;
+	return examples.concat(
+		cmd.extraExamples.map(e => '```text\n' + e + '\n```\n')
+	);
 }

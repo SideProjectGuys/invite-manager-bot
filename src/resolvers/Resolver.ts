@@ -18,15 +18,11 @@ export abstract class Resolver {
 		previous: any[]
 	): Promise<any>;
 
+	public getType() {
+		return this.constructor.name.replace('Resolver', '').toLowerCase();
+	}
+
 	public getHelp(context: Context, previous?: any[]): string {
 		return;
-	}
-
-	public getType(): string {
-		return '';
-	}
-
-	public getExamples(rest: boolean): string[] {
-		return [];
 	}
 }

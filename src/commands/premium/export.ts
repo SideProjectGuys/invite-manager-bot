@@ -24,7 +24,8 @@ export default class extends Command {
 			group: CommandGroup.Premium,
 			guildOnly: true,
 			strict: true,
-			premiumOnly: true
+			premiumOnly: true,
+			extraExamples: ['!export leaderboard']
 		});
 	}
 

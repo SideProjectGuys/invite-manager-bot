@@ -18,14 +18,6 @@ export class BooleanResolver extends Resolver {
 		if (fs.has(value)) {
 			return false;
 		}
-		throw Error(t('arguments.boolean.invalid'));
-	}
-
-	public getType() {
-		return 'Boolean';
-	}
-
-	public getExamples(rest: boolean): string[] {
-		return ['yes', 'no'];
+		throw Error(t(`resolvers.${this.getType()}.invalid`));
 	}
 }

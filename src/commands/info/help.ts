@@ -17,7 +17,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Info,
-			guildOnly: false
+			guildOnly: false,
+			extraExamples: ['!help addRank']
 		});
 	}
 
