@@ -6,14 +6,14 @@ There are many config options that can be set. You don't have to set all of them
 
 ### General
 
-| Setting                                            | Description                                                |
-| -------------------------------------------------- | ---------------------------------------------------------- |
-| [Prefix](#prefix)                                  | The prefix used to trigger bot commands.                   |
-| [Language](#lang)                                  | The language of the bot                                    |
-| [Log Channel](#logchannel)                         | The channel where bot actions are logged.                  |
-| [Get Updates](#getupdates)                         | Enable to receive development updates about InviteManager. |
-| [settings.channels.title](#channels)               | settings.channels.description                              |
-| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description                       |
+| Setting                              | Description                                                |
+| ------------------------------------ | ---------------------------------------------------------- |
+| [Prefix](#prefix)                    | The prefix used to trigger bot commands.                   |
+| [Language](#lang)                    | The language of the bot                                    |
+| [Log Channel](#logchannel)           | The channel where bot actions are logged.                  |
+| [Get Updates](#getupdates)           | Enable to receive development updates about InviteManager. |
+| [Command channels](#channels)        | The channels in which the bot will react to commands.      |
+| [Ignored channels](#ignoredchannels) | The channels in which the bot will ignore commands.        |
 
 ### Invites
 
@@ -244,9 +244,9 @@ Disable:
 
 ---
 
-## settings.channels.title
+## Command channels
 
-settings.channels.description
+The channels in which the bot will react to commands.
 
 Type: `Channel[]`
 
@@ -259,9 +259,9 @@ Reset to default:
 
 ---
 
-## settings.ignoredChannels.title
+## Ignored channels
 
-settings.ignoredChannels.description
+The channels in which the bot will ignore commands.
 
 Type: `Channel[]`
 

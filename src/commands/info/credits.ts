@@ -28,7 +28,8 @@ const translators: string[] = [
 	'Mennoplays',
 	'RMG | RoHellowtf💤',
 	'Thę_Olaoleo',
-	'Izmoqwy'
+	'Izmoqwy',
+	'サロにぃ/Saroniii'
 ];
 
 export default class extends Command {

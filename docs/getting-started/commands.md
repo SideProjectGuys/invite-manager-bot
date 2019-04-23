@@ -768,9 +768,9 @@ Display help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                  | Details |
-| -------- | ------------------- | -------- | -------------------------------------------- | ------- |
-| command  | [Command](#Command) | No       | The command to get detailed information for. |         |
+| Argument | Type                | Required | Description                                  | Details                       |
+| -------- | ------------------- | -------- | -------------------------------------------- | ----------------------------- |
+| command  | [Command](#Command) | No       | The command to get detailed information for. | resolvers.command.validValues |
 
 ### Examples
 
@@ -1305,10 +1305,10 @@ Configure permissions to use commands.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                       | Details |
-| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ------- |
-| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         |         |
-| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |         |
+| Argument | Type                | Required | Description                                                       | Details                       |
+| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ----------------------------- |
+| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | resolvers.command.validValues |
+| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                               |
 
 ### Examples
 

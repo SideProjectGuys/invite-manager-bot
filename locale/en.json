@@ -1045,7 +1045,8 @@
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
 			"notFound": "Command not found.",
-			"type": "Command"
+			"type": "Command",
+			"validValues": "resolvers.command.validValues"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1255,8 +1256,8 @@
 			"title": "Welcome Message"
 		},
 		"channels": {
-			"description": "settings.channels.description",
-			"title": "settings.channels.title"
+			"title": "Command channels",
+			"description": "The channels in which the bot will react to commands."
 		},
 		"getUpdates": {
 			"description": "Enable to receive development updates about InviteManager.",
@@ -1345,8 +1346,8 @@
 			"title": "Hide left members"
 		},
 		"ignoredChannels": {
-			"description": "settings.ignoredChannels.description",
-			"title": "settings.ignoredChannels.title"
+			"title": "Ignored channels",
+			"description": "The channels in which the bot will ignore commands."
 		},
 		"joinMessage": {
 			"description": "The message sent when someone joins the server.",
