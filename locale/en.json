@@ -1,38 +1,4 @@
 {
-	"arguments": {
-		"boolean": {
-			"invalid": "Not a valid yes/no value."
-		},
-		"channel": {
-			"multiple": "Multiple matching channels found. {{{ channels }}}",
-			"notFound": "Channel not found."
-		},
-		"command": {
-			"multiple": "Multiple matching commands found. {{{ commands }}}",
-			"notFound": "Command not found."
-		},
-		"enum": {
-			"invalid": "Not a valid value.",
-			"validValues": "Use one of the following values: {{{ values }}}"
-		},
-		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
-		"member": {
-			"multiple": "Multiple matching members found. {{{ members }}}",
-			"notFound": "Member was not found."
-		},
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
-		"number": {
-			"invalid": "Not a valid number."
-		},
-		"role": {
-			"multiple": "Multiple matching roles found. {{{ roles }}}",
-			"notFound": "Role was not found."
-		},
-		"user": {
-			"multiple": "Multiple matching users found. {{{ users }}}",
-			"notFound": "User was not found."
-		}
-	},
 	"bot": {
 		"invite": {
 			"title": "Add bot to your server"
@@ -1065,6 +1031,63 @@
 	},
 	"prompt": {
 		"canceled": "Canceled"
+	},
+	"resolvers": {
+		"boolean": {
+			"invalid": "Not a valid yes/no value.",
+			"type": "Boolean"
+		},
+		"channel": {
+			"multiple": "Multiple matching channels found. {{{ channels }}}",
+			"notFound": "Channel not found.",
+			"type": "Channel"
+		},
+		"command": {
+			"multiple": "Multiple matching commands found. {{{ commands }}}",
+			"notFound": "Command not found.",
+			"type": "Command"
+		},
+		"enum": {
+			"invalid": "Not a valid value.",
+			"validValues": "Use one of the following values: {{{ values }}}",
+			"type": "Enum"
+		},
+		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"member": {
+			"multiple": "Multiple matching members found. {{{ members }}}",
+			"notFound": "Member was not found.",
+			"type": "Member"
+		},
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"number": {
+			"invalid": "Not a valid number.",
+			"type": "Number"
+		},
+		"role": {
+			"multiple": "Multiple matching roles found. {{{ roles }}}",
+			"notFound": "Role was not found.",
+			"type": "Role"
+		},
+		"user": {
+			"multiple": "Multiple matching users found. {{{ users }}}",
+			"notFound": "User was not found.",
+			"type": "User"
+		},
+		"string": {
+			"type": "Text"
+		},
+		"settingsvalue": {
+			"type": "Value"
+		},
+		"date": {
+			"type": "Date"
+		},
+		"duration": {
+			"type": "Duration"
+		},
+		"invitecode": {
+			"type": "Invite Code"
+		}
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
