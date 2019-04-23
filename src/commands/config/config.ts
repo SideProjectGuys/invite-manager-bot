@@ -48,7 +48,7 @@ export default class extends Command {
 			const cmd = this.client.cmds.commands.find(
 				c => c.name === BotCommand.interactiveConfig
 			);
-			return async () => await cmd.action(message, [], {}, context);
+			return cmd.action(message, [], {}, context);
 		}
 
 		const oldVal = settings[key];

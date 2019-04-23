@@ -32,6 +32,9 @@ export default class extends Command {
 		});
 
 		const msg = await this.sendReply(message, embed);
+		if (!msg) {
+			return;
+		}
 
 		let changed = 0;
 		let ignored = 0;

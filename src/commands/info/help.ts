@@ -17,7 +17,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Info,
-			guildOnly: false
+			guildOnly: false,
+			extraExamples: ['!help addRank']
 		});
 	}
 
@@ -36,7 +37,7 @@ export default class extends Command {
 			const cmd = {
 				...command,
 				usage: command.usage.replace('{prefix}', prefix),
-				info: command.getInfo(context)
+				info: command.getInfo(context).substr(0, 900)
 			};
 
 			embed.fields.push({

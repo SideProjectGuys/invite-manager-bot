@@ -69,8 +69,7 @@ export default class extends Command {
 		}
 
 		const response = await this.sendReply(message, embed);
-
-		if (settings.modPunishmentBanDeleteMessage) {
+		if (response && settings.modPunishmentBanDeleteMessage) {
 			const func = () => {
 				message.delete().catch(() => undefined);
 				response.delete().catch(() => undefined);

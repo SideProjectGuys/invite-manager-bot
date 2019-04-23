@@ -72,7 +72,9 @@ export default class extends Command {
 		}
 
 		const response = await this.sendReply(message, embed);
-		const func = () => response.delete().catch(() => undefined);
-		setTimeout(func, 5000);
+		if (response) {
+			const func = () => response.delete().catch(() => undefined);
+			setTimeout(func, 5000);
+		}
 	}
 }

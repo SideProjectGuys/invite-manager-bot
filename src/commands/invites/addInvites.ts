@@ -6,6 +6,9 @@ import { customInvites, LogAction, members } from '../../sequelize';
 import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
+const BIGINT_MAX_VALUE = 9223372036854775807;
+const BIGINT_MIN_VALUE = -9223372036854775808;
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -30,7 +33,11 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true
+			strict: true,
+			extraExamples: [
+				'!addInvites @User 5',
+				'!addInvites "Name with space" -30 Removed for cheating'
+			]
 		});
 	}
 
@@ -42,6 +49,12 @@ export default class extends Command {
 	): Promise<any> {
 		if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
+		}
+		if (amount > BIGINT_MAX_VALUE) {
+			return this.sendReply(message, t('cmd.addInvites.numberTooLarge'));
+		}
+		if (amount < BIGINT_MIN_VALUE) {
+			return this.sendReply(message, t('cmd.addInvites.numberTooSmall'));
 		}
 
 		const invites = await this.client.invs.getInviteCounts(guild.id, user.id);
