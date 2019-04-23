@@ -1,16 +1,17 @@
 - Getting Started
 
   - [Quick Start](getting-started/quick-start.md)
-  - [Features](getting-started/features.md)
   - [FAQs](getting-started/faq.md)
   - [Commands](getting-started/commands.md)
   - [Configs](getting-started/settings.md)
   - [Alpha Bot](getting-started/alpha.md)
+  - [Pro Bot](getting-started/pro.md)
 
 - Premium
 
   - [Features](premium/features.md)
   - [Tiers](premium/tiers.md)
+  - [Setting Up Pro](premium/setting-up.md)
 
 - Modules
 

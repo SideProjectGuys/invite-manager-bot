@@ -14,7 +14,7 @@ While our bot is on your server, we track every invite that happens on your serv
 
 ### Moderation
 
-Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out "strikes" to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.
+Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](modules/moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out "strikes" to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.
 
 ## Premium Features
 

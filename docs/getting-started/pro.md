@@ -1,6 +1,6 @@
 # InviteManager Pro
 
-The InviteManager Pro bot is available to our [premium subscribers](../premium/tiers.md#pricing) with the \$5/month tier or higher.
+The InviteManager Pro bot is available to our [premium subscribers](/premium/tiers.md#pricing) with the \$5/month tier or higher.
 
 InviteManager Pro is hosted on a different server and is therefore not affected by downtimes of the main bot.
 

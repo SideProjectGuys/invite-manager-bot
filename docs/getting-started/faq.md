@@ -28,9 +28,7 @@ or
 
 `!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
 
-There are many placeholders available. You can see the full list on the "Custom Messages" page.
-
-{% page-ref page="../invites/custom-messages/" %}
+There are many placeholders available. You can see the full list on the "[Custom Messages](modules/invites/custom-messages.md?id=placeholders)" page.
 
 ## What are "Ranks" and how can I use them?
 
