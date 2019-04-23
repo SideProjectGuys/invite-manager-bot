@@ -19,7 +19,7 @@ If you prefer, you can also pay with **Paypal** or **Cryptocurrencies**.
   - The bot has an orange logo and the name "InviteManager Pro"
   - Runs on separate servers and is not affected by downtimes of our main bot
 - Embed styling of join and leave messages, as well as rank promotion announcements
-  - [See examples](https://docs.invitemanager.co/bot/custom-messages/join-message-examples)
+  - [See examples](modules/invites/custom-messages.md)
 - Access to export command that allows you to export data as a csv file. Currently available:
   - leaderboard export
   - more will come soon \(contact us if you need something specific\)
