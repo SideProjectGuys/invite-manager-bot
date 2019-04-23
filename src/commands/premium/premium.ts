@@ -31,7 +31,12 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Premium,
-			guildOnly: false
+			guildOnly: false,
+			extraExamples: [
+				'!premium check',
+				'!premium activate',
+				'!premium deactivate'
+			]
 		});
 	}
 

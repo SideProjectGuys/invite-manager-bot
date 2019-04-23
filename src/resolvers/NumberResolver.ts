@@ -10,7 +10,7 @@ export class NumberResolver extends Resolver {
 
 		const val = parseFloat(value);
 		if (isNaN(val) || !isFinite(val)) {
-			throw Error(t('arguments.number.invalid'));
+			throw Error(t(`resolvers.${this.getType()}.invalid`));
 		}
 
 		return val;
