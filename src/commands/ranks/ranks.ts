@@ -1,15 +1,24 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
+import { NumberResolver } from '../../resolvers';
 import { ranks } from '../../sequelize';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
+
+const RANKS_PER_PAGE = 10;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.ranks,
 			aliases: ['show-ranks', 'showRanks'],
+			args: [
+				{
+					name: 'page',
+					resolver: NumberResolver
+				}
+			],
 			group: CommandGroup.Ranks,
 			guildOnly: true
 		});
@@ -17,7 +26,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: any[],
+		[_page]: [number],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
@@ -29,25 +38,30 @@ export default class extends Command {
 			raw: true
 		});
 
-		let output = '';
-
 		if (rs.length === 0) {
 			return this.sendReply(message, t('cmd.ranks.none'));
-		} else {
-			rs.forEach(r => {
-				output +=
-					t('cmd.ranks.entry', {
-						role: `<@&${r.roleId}>`,
-						numInvites: r.numInvites,
-						description: r.description
-					}) + '\n';
-			});
-			const embed = this.createEmbed({
-				title: t('cmd.ranks.title'),
-				description: output
-			});
-
-			return this.sendReply(message, embed);
 		}
+
+		const maxPage = Math.ceil(rs.length / RANKS_PER_PAGE);
+		const startPage = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
+		this.showPaginated(message, startPage, maxPage, page => {
+			let description = '';
+
+			rs.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach(
+				rank => {
+					description +=
+						t('cmd.ranks.entry', {
+							role: `<@&${rank.roleId}>`,
+							numInvites: rank.numInvites,
+							description: rank.description
+						}) + '\n';
+				}
+			);
+
+			return this.createEmbed({
+				title: t('cmd.ranks.title'),
+				description
+			});
+		});
 	}
 }

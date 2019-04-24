@@ -59,11 +59,15 @@ export default class extends Command {
 				myRole = gRole;
 			}
 		});
+
 		// Check if we are higher then the role we want to assign
-		if (myRole.position < role.position) {
+		if (!myRole || myRole.position < role.position) {
 			return this.sendReply(
 				message,
-				t('cmd.addRank.roleTooHigh', { role: role.name, myRole: myRole.name })
+				t('cmd.addRank.roleTooHigh', {
+					role: role.name,
+					myRole: myRole ? myRole.name : '<None>'
+				})
 			);
 		}
 
