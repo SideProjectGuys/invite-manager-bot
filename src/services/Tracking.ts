@@ -872,6 +872,7 @@ export class TrackingService {
 		promises.push(
 			channels.bulkCreate(
 				newInviteCodes
+					.filter(i => !!i.channel)
 					.map(i => guild.channels.get(i.channel.id))
 					.filter(
 						(c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i
