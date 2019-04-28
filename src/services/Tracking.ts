@@ -28,7 +28,7 @@ export class TrackingService {
 	private client: IMClient;
 
 	public pendingGuilds: Set<string> = new Set();
-	public initialPendingGuilds: number;
+	public initialPendingGuilds: number = 0;
 
 	private inviteStore: {
 		[guildId: string]: { [code: string]: { uses: number; maxUses: number } };
