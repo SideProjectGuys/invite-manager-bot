@@ -4,7 +4,8 @@ import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
-import { Medium, RaveDJ } from './RaveDJ';
+import { RaveDJ } from './RaveDJ';
+import { Medium } from './types';
 
 interface Info extends BaseInfo {
 	artist: string;

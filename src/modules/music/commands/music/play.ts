@@ -52,10 +52,7 @@ export default class extends Command {
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
-			this.sendReply(
-				message,
-				'Please join a voice channel before using this command'
-			);
+			this.sendReply(message, t('music.voiceChannelRequired'));
 			return;
 		}
 

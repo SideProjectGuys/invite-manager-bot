@@ -43,10 +43,7 @@ export default class extends Command {
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
-			this.sendReply(
-				message,
-				'Please join a voice channel before using this command'
-			);
+			this.sendReply(message, t('music.voiceChannelRequired'));
 			return;
 		}
 
@@ -62,7 +59,9 @@ export default class extends Command {
 		if (!musicPlatform.supportsSearch) {
 			this.sendReply(
 				message,
-				`Search is not supported on platform ${musicPlatform.getType()}`
+				t('cmd.search.notSupported', {
+					platform: musicPlatform.getType()
+				})
 			);
 			return;
 		}
@@ -75,23 +74,23 @@ export default class extends Command {
 				icon_url: message.author.avatarURL
 			},
 			color: 6737151, // lightblue
-			title: `Search for ${searchTerm}`,
+			title: t('cmd.search.title', { term: searchTerm }),
 			fields: items.map((item, index) => item.toSearchEntry(index + 1))
 		});
 
 		for (let i = 0; i < this.choices.length; i++) {
-			msg.addReaction(this.choices[i]);
+			msg.addReaction(this.choices[i]).catch(() => undefined);
 		}
 
-		msg.addReaction(this.cancel);
+		msg.addReaction(this.cancel).catch(() => undefined);
 
 		const choice = await this.awaitChoice(message.author.id, msg);
 		if (choice === null) {
 			return;
 		}
 
-		msg.delete();
-		message.delete();
+		msg.delete().catch(() => undefined);
+		message.delete().catch(() => undefined);
 
 		const musicItem = items[choice];
 
@@ -139,13 +138,13 @@ export default class extends Command {
 				this.client.removeListener('messageReactionAdd', func);
 
 				if (emoji.name === this.cancel) {
-					await msg.delete();
+					await msg.delete().catch(() => undefined);
 					resolve(null);
 					return;
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				await resp.removeReaction(emoji.name, userId);
+				await resp.removeReaction(emoji.name, userId).catch(() => undefined);
 
 				resolve(id);
 			};
@@ -155,7 +154,7 @@ export default class extends Command {
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				msg.delete();
+				msg.delete().catch(() => undefined);
 
 				resolve(undefined);
 			};

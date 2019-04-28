@@ -25,7 +25,7 @@ export default class extends Command {
 		const queue = conn.getQueue();
 
 		if (!nowPlaying) {
-			this.sendReply(message, 'I am currently not playing any music');
+			this.sendReply(message, t('cmd.queue.empty'));
 			return;
 		}
 

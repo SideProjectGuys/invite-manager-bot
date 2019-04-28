@@ -23,7 +23,7 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
-			this.sendReply(message, 'I am currently not playing any music');
+			this.sendReply(message, t('music.notPlaying'));
 			return;
 		}
 
@@ -34,7 +34,9 @@ export default class extends Command {
 		if (!musicPlatform.supportsRewind) {
 			this.sendReply(
 				message,
-				`Rewind is not supported on platform ${musicPlatform.getType()}`
+				t('cmd.rewind.notSupported', {
+					platform: musicPlatform.getType()
+				})
 			);
 			return;
 		}

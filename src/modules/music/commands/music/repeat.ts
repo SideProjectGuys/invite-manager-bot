@@ -22,16 +22,16 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isConnected()) {
-			this.sendReply(message, 'I am currently not playing any music');
+			this.sendReply(message, t('music.notConnected'));
 			return;
 		}
 
 		conn.setRepeat(!conn.isRepeating());
 
 		if (conn.isRepeating()) {
-			this.sendReply(message, 'Your playlist is now set to repeat');
+			this.sendReply(message, t('cmd.repeat.enabled'));
 		} else {
-			this.sendReply(message, `Your songs won't repeat anymore`);
+			this.sendReply(message, t('cmd.repeat.disabled'));
 		}
 	}
 }
