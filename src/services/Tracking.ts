@@ -391,34 +391,34 @@ export class TrackingService {
 			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
 
-		// Check if it's a valid channel
-		if (joinChannelId && !joinChannel) {
-			console.error(
-				`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
-			);
+		if (joinChannelId) {
+			// Check if it's a valid channel
+			if (!joinChannel) {
+				console.error(
+					`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
+				);
 
-			// Reset the channel
-			this.client.cache.settings.setOne(
-				guild.id,
-				SettingsKey.joinMessageChannel,
-				null
-			);
-		}
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
+			} else if (!(joinChannel instanceof TextChannel)) {
+				// Someone set a non-text channel as join channel
+				console.error(
+					`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
+				);
 
-		// Someone set a non-text channel as join channel
-		if (!(joinChannel instanceof TextChannel)) {
-			console.error(
-				`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
-			);
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
 
-			// Reset the channel
-			this.client.cache.settings.setOne(
-				guild.id,
-				SettingsKey.joinMessageChannel,
-				null
-			);
-
-			joinChannel = undefined;
+				joinChannel = undefined;
+			}
 		}
 
 		// Auto remove leaves if enabled
