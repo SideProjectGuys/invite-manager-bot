@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Message } from 'eris';
 import moment from 'moment';
+import sequelize = require('sequelize');
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -8,8 +9,7 @@ import { EnumResolver } from '../../../../framework/resolvers';
 import {
 	guilds,
 	premiumSubscriptionGuilds,
-	premiumSubscriptions,
-	sequelize
+	premiumSubscriptions
 } from '../../../../sequelize';
 import {
 	BotCommand,
@@ -36,7 +36,12 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Premium,
-			guildOnly: false
+			guildOnly: false,
+			extraExamples: [
+				'!premium check',
+				'!premium activate',
+				'!premium deactivate'
+			]
 		});
 	}
 

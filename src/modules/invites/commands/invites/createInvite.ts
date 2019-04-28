@@ -31,7 +31,8 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true
+			strict: true,
+			extraExamples: ['!createInvite reddit', '!createInvite website #welcome']
 		});
 	}
 
@@ -83,7 +84,7 @@ export default class extends Command {
 			name
 		);
 
-		this.sendReply(
+		return this.sendReply(
 			message,
 			t('cmd.createInvite.done', {
 				code: `https://discord.gg/${inv.code}`,

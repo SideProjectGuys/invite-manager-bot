@@ -26,8 +26,8 @@ const INVITE_CREATE = 40;
 export class TrackingService {
 	private client: IMClient;
 
-	public readyGuilds: number = 0;
-	public totalGuilds: number = 0;
+	public pendingGuilds: Set<string> = new Set();
+	public initialPendingGuilds: number = 0;
 
 	private inviteStore: {
 		[guildId: string]: { [code: string]: { uses: number; maxUses: number } };
@@ -58,6 +58,7 @@ export class TrackingService {
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
 		allGuilds.forEach(guild => {
+			this.pendingGuilds.add(guild.id);
 			this.inviteStore[guild.id] = {};
 		});
 
@@ -70,31 +71,38 @@ export class TrackingService {
 				})
 		);
 
-		this.totalGuilds = allGuilds.length;
+		this.initialPendingGuilds = allGuilds.length;
 		for (let j = 0; j < GUILDS_IN_PARALLEL; j++) {
 			const func = async () => {
 				const guild = allGuilds.shift();
 
 				if (!guild) {
+					if (allGuilds.length) {
+						console.error(
+							'Guild in pending list was null but list is not empty'
+						);
+					}
 					return;
 				}
 
-				// Filter any guilds that have the pro tracker
-				if (this.client.disabledGuilds.has(guild.id)) {
-					setTimeout(func, 0);
-					return;
+				// Filter any guilds that have the pro bot
+				if (!this.client.disabledGuilds.has(guild.id)) {
+					// Insert data into db
+					await this.insertGuildData(guild);
+
+					console.log(
+						'EVENT(clientReady): Updated invite count for ' + guild.name
+					);
 				}
 
-				// Insert data into db
-				await this.insertGuildData(guild);
-
-				console.log(
-					'EVENT(clientReady): Updated invite count for ' + guild.name
-				);
-
-				this.readyGuilds++;
-				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
-				if (this.readyGuilds % 10 === 0) {
+				this.pendingGuilds.delete(guild.id);
+				if (
+					this.pendingGuilds.size % 50 === 0 ||
+					this.pendingGuilds.size === 0
+				) {
+					console.log(
+						`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`
+					);
 					this.client.rabbitmq.sendStatusToManager();
 				}
 
@@ -382,34 +390,34 @@ export class TrackingService {
 			? (guild.channels.get(joinChannelId) as TextChannel)
 			: undefined;
 
-		// Check if it's a valid channel
-		if (joinChannelId && !joinChannel) {
-			console.error(
-				`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
-			);
+		if (joinChannelId) {
+			// Check if it's a valid channel
+			if (!joinChannel) {
+				console.error(
+					`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
+				);
 
-			// Reset the channel
-			this.client.cache.settings.setOne(
-				guild.id,
-				SettingsKey.joinMessageChannel,
-				null
-			);
-		}
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
+			} else if (!(joinChannel instanceof TextChannel)) {
+				// Someone set a non-text channel as join channel
+				console.error(
+					`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
+				);
 
-		// Someone set a non-text channel as join channel
-		if (!(joinChannel instanceof TextChannel)) {
-			console.error(
-				`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
-			);
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
 
-			// Reset the channel
-			this.client.cache.settings.setOne(
-				guild.id,
-				SettingsKey.joinMessageChannel,
-				null
-			);
-
-			joinChannel = undefined;
+				joinChannel = undefined;
+			}
 		}
 
 		// Auto remove leaves if enabled
@@ -863,6 +871,7 @@ export class TrackingService {
 		promises.push(
 			channels.bulkCreate(
 				newInviteCodes
+					.filter(i => !!i.channel)
 					.map(i => guild.channels.get(i.channel.id))
 					.filter(
 						(c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i

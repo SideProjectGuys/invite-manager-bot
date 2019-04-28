@@ -21,7 +21,8 @@ export default class extends Command {
 			],
 			group: CommandGroup.Moderation,
 			strict: true,
-			guildOnly: true
+			guildOnly: true,
+			extraExamples: ['!check @User', '!check "User with space"']
 		});
 	}
 

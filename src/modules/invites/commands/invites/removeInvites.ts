@@ -33,7 +33,12 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true
+			strict: true,
+			extraExamples: [
+				'!removeInvites @User 5',
+				'!removeInvites "User with space" 23 Removed for cheating',
+				'!removeInvites @User -6 Added for apologizing'
+			]
 		});
 	}
 

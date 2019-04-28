@@ -28,7 +28,8 @@ export default class extends Command {
 			],
 			group: CommandGroup.Moderation,
 			strict: true,
-			guildOnly: true
+			guildOnly: true,
+			extraExamples: ['!caseDelete 5434 User apologized']
 		});
 	}
 

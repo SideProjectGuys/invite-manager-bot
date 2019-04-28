@@ -25,10 +25,26 @@ export interface Arg {
 	rest?: boolean;
 }
 
+interface ArgInfo {
+	name: string;
+	type: string;
+	required: boolean;
+	description: string;
+	help?: string;
+}
+
 export interface Flag {
 	name: string;
 	resolver: Resolver | ResolverConstructor;
 	short?: string;
+}
+
+interface FlagInfo {
+	name: string;
+	type: string;
+	short?: string;
+	description: string;
+	help?: string;
 }
 
 export interface CommandOptions {
@@ -40,6 +56,7 @@ export interface CommandOptions {
 	strict?: boolean;
 	guildOnly: boolean;
 	premiumOnly?: boolean;
+	extraExamples?: string[];
 }
 
 export type TranslateFunc = (
@@ -73,6 +90,8 @@ export abstract class Command {
 	public guildOnly: boolean;
 	public premiumOnly?: boolean;
 
+	public extraExamples: string[] = [];
+
 	protected createEmbed: CreateEmbedFunc;
 	protected sendReply: SendReplyFunc;
 	protected sendEmbed: SendEmbedFunc;
@@ -88,6 +107,9 @@ export abstract class Command {
 		this.strict = props.strict;
 		this.guildOnly = props.guildOnly;
 		this.premiumOnly = props.premiumOnly;
+		if (props.extraExamples) {
+			this.extraExamples = props.extraExamples;
+		}
 
 		this.usage = `{prefix}${this.name} `;
 
@@ -140,6 +162,36 @@ export abstract class Command {
 			info += `**<${arg.name}>**\n${descr}\n` + (help ? `${help}\n\n` : '\n');
 		}
 		return info;
+	}
+
+	public getInfo2(context: Context) {
+		const ret: { args: ArgInfo[]; flags: FlagInfo[] } = { args: [], flags: [] };
+
+		for (let i = 0; i < this.flags.length; i++) {
+			const flag = this.flags[i];
+			const res = this.flagResolvers.get(flag.name);
+			ret.flags.push({
+				name: flag.name,
+				type: context.t(`resolvers.${res.getType()}.type`),
+				short: flag.short,
+				description: context.t(`cmd.${this.name}.self.flags.${flag.name}`),
+				help: res.getHelp(context)
+			});
+		}
+
+		for (let i = 0; i < this.args.length; i++) {
+			const arg = this.args[i];
+			const res = this.resolvers[i];
+			ret.args.push({
+				name: arg.name,
+				type: context.t(`resolvers.${res.getType()}.type`),
+				required: arg.required,
+				description: context.t(`cmd.${this.name}.self.args.${arg.name}`),
+				help: res.getHelp(context)
+			});
+		}
+
+		return ret;
 	}
 
 	public abstract action(

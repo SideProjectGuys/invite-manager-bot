@@ -25,9 +25,9 @@ export default class extends Command {
 					resolver: NumberResolver
 				}
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			guildOnly: true,
+			extraExamples: ['!fake 4']
 		});
 	}
 

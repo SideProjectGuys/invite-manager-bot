@@ -22,12 +22,15 @@ export class EnumResolver extends Resolver {
 		if (this.values.has(val)) {
 			return this.values.get(val);
 		}
-		throw Error(t('arguments.enum.invalid'));
+		throw Error(t(`resolvers.${this.getType()}.invalid`));
 	}
 
 	public getHelp({ t }: Context) {
-		return t('arguments.enum.validValues', {
-			values: [...this.values.values()].join(', ')
+		return t(`resolvers.${this.getType()}.validValues`, {
+			values: [...this.values.values()]
+				.sort((a, b) => a.localeCompare(b))
+				.map(v => '`' + v + '`')
+				.join(', ')
 		});
 	}
 }

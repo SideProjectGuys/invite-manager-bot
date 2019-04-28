@@ -20,7 +20,7 @@ export class MemberResolver extends Resolver {
 				member = await guild.getRESTMember(id).then(() => undefined);
 			}
 			if (!member) {
-				throw Error(t('arguments.member.notFound'));
+				throw Error(t(`resolvers.${this.getType()}.notFound`));
 			}
 		} else {
 			const name = value.toLowerCase();
@@ -32,10 +32,10 @@ export class MemberResolver extends Resolver {
 				member = members[0];
 			} else {
 				if (members.length === 0) {
-					throw Error(t('arguments.member.notFound'));
+					throw Error(t(`resolvers.${this.getType()}.notFound`));
 				} else {
 					throw Error(
-						t('arguments.member.multiple', {
+						t(`resolvers.${this.getType()}.multiple`, {
 							members: members
 								.slice(0, 10)
 								.map(m => `\`${m.username}#${m.discriminator}\``)

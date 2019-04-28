@@ -3,12 +3,7 @@ import { Emoji, Message, TextChannel } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { SettingsValueResolver } from '../../../../framework/resolvers';
-import {
-	Lang,
-	LeaderboardStyle,
-	RankAssignmentStyle,
-	SettingsKey
-} from '../../../../sequelize';
+import { SettingsKey } from '../../../../sequelize';
 import {
 	beautify,
 	fromDbValue,
@@ -66,6 +61,9 @@ export default class extends Command {
 		message.delete().catch(() => undefined);
 
 		const msg = await this.sendReply(message, embed);
+		if (!msg) {
+			return;
+		}
 
 		for (let i = 0; i < this.choices.length; i++) {
 			msg.addReaction(this.choices[i]).catch(() => undefined);
@@ -229,7 +227,7 @@ export default class extends Command {
 			? info.possibleValues.map(v => '`' + v + '`').join(', ')
 			: context.t(`cmd.interactiveConfig.values.${info.type.toLowerCase()}`);
 
-		let error = '';
+		let error: string = null;
 		do {
 			const val = context.settings[key];
 			const current = beautify(key, val);
@@ -240,33 +238,36 @@ export default class extends Command {
 
 			const description =
 				context.t(`settings.${key}.description`) +
-				`\n\n${text}\n\n**${error}**`;
+				`\n\n${text}\n\n${error ? '```diff\n- ' + error + '```\n\n' : ''}`;
 
 			if (isList) {
+				const listOptions = [
+					{
+						title: context.t('cmd.interactiveConfig.list.add.title'),
+						description: context.t('cmd.interactiveConfig.list.add.text')
+					},
+					{
+						title: context.t('cmd.interactiveConfig.list.remove.title'),
+						description: context.t('cmd.interactiveConfig.list.remove.text')
+					},
+					{
+						title: context.t('cmd.interactiveConfig.list.set.title'),
+						description: context.t('cmd.interactiveConfig.list.set.text')
+					},
+					{
+						title: context.t('cmd.interactiveConfig.list.clear.title'),
+						description: context.t('cmd.interactiveConfig.list.clear.text')
+					}
+				];
+
 				const choice = await this.showMenu(
 					context,
 					msg,
 					authorId,
 					title,
 					description,
-					[
-						{
-							title: context.t('cmd.interactiveConfig.list.add.title'),
-							description: context.t('cmd.interactiveConfig.list.add.text')
-						},
-						{
-							title: context.t('cmd.interactiveConfig.list.remove.title'),
-							description: context.t('cmd.interactiveConfig.list.remove.text')
-						},
-						{
-							title: context.t('cmd.interactiveConfig.list.set.title'),
-							description: context.t('cmd.interactiveConfig.list.set.text')
-						},
-						{
-							title: context.t('cmd.interactiveConfig.list.clear.title'),
-							description: context.t('cmd.interactiveConfig.list.clear.text')
-						}
-					]
+					listOptions,
+					false
 				);
 				if (choice === undefined) {
 					// Quit menu
@@ -281,6 +282,7 @@ export default class extends Command {
 					return 'up';
 				}
 
+				error = null;
 				let newVal = undefined;
 				if (choice === 0) {
 					// Add item
@@ -291,22 +293,36 @@ export default class extends Command {
 					});
 					await msg.edit({ embed });
 
-					const rawNewVal = await this.parseInput(context, authorId, msg, key);
+					try {
+						const rawNewVal = await this.parseInput(
+							context,
+							authorId,
+							msg,
+							key
+						);
+						if (typeof rawNewVal !== 'undefined') {
+							error = this.validate(key, rawNewVal, context);
+							if (error) {
+								continue;
+							}
 
-					if (typeof rawNewVal !== 'undefined') {
-						newVal = (val as string[])
-							.concat(rawNewVal)
-							.filter((v, i, list) => list.indexOf(v) === i);
-					} else {
-						newVal = val;
+							newVal = (val as string[])
+								.concat(fromDbValue(key, toDbValue(key, rawNewVal)))
+								.filter((v, i, list) => list.indexOf(v) === i);
+						}
+					} catch (err) {
+						error = err.message;
+						continue;
 					}
 				} else if (choice === 1) {
+					// Remove item
+
+					// Check empty
 					if ((val as string[]).length === 0) {
 						error = context.t('cmd.interactiveConfig.removeEmpty');
 						continue;
 					}
 
-					// Remove item
 					const embed = this.createEmbed({
 						title,
 						description:
@@ -317,12 +333,21 @@ export default class extends Command {
 					});
 					await msg.edit({ embed });
 
-					const rawNewVal = await this.parseInput(context, authorId, msg, key);
-
-					if (typeof rawNewVal !== 'undefined') {
-						newVal = (val as string[]).filter(v => rawNewVal.indexOf(v) === -1);
-					} else {
-						newVal = val;
+					try {
+						const rawNewVal = await this.parseInput(
+							context,
+							authorId,
+							msg,
+							key
+						);
+						if (typeof rawNewVal !== 'undefined') {
+							newVal = (val as string[]).filter(
+								v => rawNewVal.indexOf(v) === -1
+							);
+						}
+					} catch (err) {
+						error = err.message;
+						continue;
 					}
 				} else if (choice === 2) {
 					// Set list
@@ -333,12 +358,23 @@ export default class extends Command {
 					});
 					await msg.edit({ embed });
 
-					const rawNewVal = await this.parseInput(context, authorId, msg, key);
+					try {
+						const rawNewVal = await this.parseInput(
+							context,
+							authorId,
+							msg,
+							key
+						);
+						if (typeof rawNewVal !== 'undefined') {
+							error = this.validate(key, rawNewVal, context);
+							if (error) {
+								continue;
+							}
 
-					if (typeof rawNewVal !== 'undefined') {
-						newVal = rawNewVal;
-					} else {
-						newVal = val;
+							newVal = rawNewVal;
+						}
+					} catch (err) {
+						error = err.message;
 					}
 				} else if (choice === 3) {
 					// Clear list
@@ -346,17 +382,11 @@ export default class extends Command {
 				}
 
 				if (typeof newVal !== 'undefined') {
-					const err = this.validate(key, newVal, context);
-					if (err) {
-						error = err;
-					} else {
-						error = '';
-						await this.client.cache.settings.setOne(
-							context.guild.id,
-							key,
-							newVal
-						);
-					}
+					await this.client.cache.settings.setOne(
+						context.guild.id,
+						key,
+						newVal
+					);
 				}
 			} else {
 				// Change a non-list setting
@@ -367,23 +397,26 @@ export default class extends Command {
 				});
 				await msg.edit({ embed });
 
-				const newVal = await this.parseInput(context, authorId, msg, key);
+				try {
+					const rawNewVal = await this.parseInput(context, authorId, msg, key);
 
-				if (typeof newVal === 'undefined') {
-					return 'up';
-				}
+					if (typeof rawNewVal === 'undefined') {
+						return 'up';
+					}
 
-				const err = this.validate(key, newVal, context);
-				if (err) {
-					embed.description = err;
-					await msg.edit({ embed });
-				} else {
+					error = this.validate(key, rawNewVal, context);
+					if (error) {
+						continue;
+					}
+
 					await this.client.cache.settings.setOne(
 						context.guild.id,
 						key,
-						newVal
+						rawNewVal
 					);
 					return 'up';
+				} catch (err) {
+					error = err.message;
 				}
 			}
 		} while (true);
@@ -399,36 +432,19 @@ export default class extends Command {
 			let timeOut: NodeJS.Timer;
 
 			const func = async (userMsg: Message, emoji: Emoji, userId: string) => {
-				if (userMsg.author.id === authorId) {
-					const newRawVal = userMsg.content;
+				clearTimeout(timeOut);
+				this.client.removeListener('messageCreate', func);
+				this.client.removeListener('messageReactionAdd', func);
 
-					await userMsg.delete().catch(() => undefined);
-
-					let newVal: any;
-
-					try {
-						newVal = await new SettingsValueResolver(
-							this.client,
-							settingsInfo
-						).resolve(newRawVal, context, [key]);
-					} catch (err) {
-						reject(err.message);
-						return;
-					}
-
-					clearTimeout(timeOut);
-					this.client.removeListener('messageCreate', func);
-					this.client.removeListener('messageReactionAdd', func);
-
-					resolve(fromDbValue(key, toDbValue(key, newVal)));
-				} else if (emoji && userId === authorId) {
-					clearTimeout(timeOut);
-					this.client.removeListener('messageCreate', func);
-					this.client.removeListener('messageReactionAdd', func);
-
+				if (emoji && userId === authorId) {
 					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
-
 					resolve();
+				} else if (userMsg.author && userMsg.author.id === authorId) {
+					await userMsg.delete().catch(() => undefined);
+					new SettingsValueResolver(this.client, settingsInfo)
+						.resolve(userMsg.content, context, [key])
+						.then(v => resolve(v))
+						.catch(err => reject(err));
 				}
 			};
 
@@ -452,12 +468,25 @@ export default class extends Command {
 		authorId: string,
 		title: string,
 		description: string,
-		items: { title: string; description: string }[]
+		items: { title: string; description: string }[],
+		showWelcome: boolean = true
 	) {
 		const t = context.t;
+
+		let welcomeText = '';
+		if (showWelcome) {
+			welcomeText =
+				t('cmd.interactiveConfig.welcome', {
+					prev: this.prev,
+					next: this.next,
+					up: this.up,
+					cancel: this.cancel
+				}) + '\n\n';
+		}
+
 		const embed = this.createEmbed({
 			title,
-			description: t('cmd.interactiveConfig.welcome') + '\n\n' + description,
+			description: welcomeText + description,
 			fields: items.map((item, i) => ({
 				name: `${i + 1}. ${item.title}`,
 				value:
@@ -549,40 +578,27 @@ export default class extends Command {
 
 		const info = settingsInfo[key];
 
-		if (info.type === 'Channel') {
-			const channel = value as TextChannel;
-			if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
-				return t('cmd.config.channel.canNotReadMessages');
+		if (info.type === 'Channel' || info.type === 'Channel[]') {
+			let channels = value as TextChannel[];
+			if (info.type === 'Channel') {
+				channels = [value as TextChannel];
 			}
-			if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
-				return t('cmd.config.channel.canNotSendMessages');
-			}
-			if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
-				return t('cmd.config.channel.canNotSendEmbeds');
-			}
-		}
-		if (key === SettingsKey.lang) {
-			if (!Lang[value]) {
-				const langs = Object.keys(Lang)
-					.map(k => `**${k}**`)
-					.join(', ');
-				return t('cmd.config.invalid.lang', { value, langs });
-			}
-		}
-		if (key === SettingsKey.leaderboardStyle) {
-			if (!LeaderboardStyle[value]) {
-				const styles = Object.keys(LeaderboardStyle)
-					.map(k => `**${k}**`)
-					.join(', ');
-				return t('cmd.config.invalid.leaderboardStyle', { value, styles });
-			}
-		}
-		if (key === SettingsKey.rankAssignmentStyle) {
-			if (!RankAssignmentStyle[value]) {
-				const styles = Object.keys(RankAssignmentStyle)
-					.map(k => `**${k}**`)
-					.join(', ');
-				return t('cmd.config.invalid.rankAssignmentStyle', { value, styles });
+
+			console.log(channels);
+
+			for (const channel of channels) {
+				if (!(channel instanceof TextChannel)) {
+					return t('cmd.config.invalid.mustBeTextChannel');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
+					return t('cmd.config.invalid.canNotReadMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
+					return t('cmd.config.invalid.canNotSendMessages');
+				}
+				if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
+					return t('cmd.config.invalid.canNotSendEmbeds');
+				}
 			}
 		}
 

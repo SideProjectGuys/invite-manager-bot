@@ -40,6 +40,10 @@ export class ModerationService {
 	private client: IMClient;
 	private messageCache: Map<string, MiniMessage[]>;
 
+	public getMessageCacheSize() {
+		return this.messageCache.size;
+	}
+
 	private strikeFunctions: {
 		[key in ViolationType]: (
 			message: Message,
@@ -772,7 +776,7 @@ export class ModerationService {
 			return;
 		}
 		const reply = await this.client.msg.sendReply(message, embed);
-		if (settings.autoModDeleteBotMessage) {
+		if (reply && settings.autoModDeleteBotMessage) {
 			setTimeout(
 				() => reply.delete().catch(() => undefined),
 				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
