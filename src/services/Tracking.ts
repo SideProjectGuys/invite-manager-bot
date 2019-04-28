@@ -27,7 +27,7 @@ const INVITE_CREATE = 40;
 export class TrackingService {
 	private client: IMClient;
 
-	public pendingGuilds: Set<string>;
+	public pendingGuilds: Set<string> = new Set();
 	public initialPendingGuilds: number;
 
 	private inviteStore: {
