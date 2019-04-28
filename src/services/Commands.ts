@@ -143,7 +143,19 @@ export class CommandsService {
 				return;
 			}
 
-			content = matches[2];
+			content = matches[2].trim();
+
+			if (content === '') {
+				// If the content is an empty string then the user just mentioned the
+				// bot, so we'll print the prefix to help them out.
+				this.client.msg.sendReply(
+					message,
+					t('bot.mentionHelp', {
+						prefix: sets.prefix
+					})
+				);
+				return;
+			}
 		} else if (guild) {
 			// Exit if we're in guild chat and we can't recognize a command
 			return;

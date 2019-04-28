@@ -11,7 +11,8 @@
 		},
 		"website": {
 			"title": "Bot website"
-		}
+		},
+		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
 	},
 	"captcha": {
 		"invalid": "Captcha didn't match, please try again."
