@@ -85,7 +85,8 @@ export class RabbitMqService {
 			tracking: {
 				pendingGuilds: [...this.client.tracking.pendingGuilds.values()],
 				initialPendingGuilds: this.client.tracking.initialPendingGuilds
-			}
+			},
+			cache: this.getCacheSizes()
 		});
 	}
 
@@ -127,28 +128,7 @@ export class RabbitMqService {
 				break;
 
 			case ShardCommand.CACHE:
-				let channelCount =
-					this.client.groupChannels.size + this.client.privateChannels.size;
-				let roleCount = 0;
-
-				this.client.guilds.forEach(g => {
-					channelCount += g.channels.size;
-					roleCount += g.roles.size;
-				});
-
-				sendResponse({
-					guilds: this.client.guilds.size,
-					users: this.client.users.size,
-					channels: channelCount,
-					roles: roleCount,
-					settings: this.client.cache.settings.getSize(),
-					premium: this.client.cache.premium.getSize(),
-					permissions: this.client.cache.permissions.getSize(),
-					strikes: this.client.cache.strikes.getSize(),
-					punishments: this.client.cache.punishments.getSize(),
-					inviteCodes: this.client.cache.inviteCodes.getSize(),
-					members: this.client.cache.members.getSize()
-				});
+				sendResponse(this.getCacheSizes());
 				break;
 
 			case ShardCommand.DIAGNOSE:
@@ -313,5 +293,31 @@ export class RabbitMqService {
 			default:
 				console.error(`UNKNOWN COMMAND: ${cmd}`);
 		}
+	}
+
+	private getCacheSizes() {
+		let channelCount =
+			this.client.groupChannels.size + this.client.privateChannels.size;
+		let roleCount = 0;
+
+		this.client.guilds.forEach(g => {
+			channelCount += g.channels.size;
+			roleCount += g.roles.size;
+		});
+
+		return {
+			guilds: this.client.guilds.size,
+			users: this.client.users.size,
+			channels: channelCount,
+			roles: roleCount,
+			settings: this.client.cache.settings.getSize(),
+			premium: this.client.cache.premium.getSize(),
+			permissions: this.client.cache.permissions.getSize(),
+			strikes: this.client.cache.strikes.getSize(),
+			punishments: this.client.cache.punishments.getSize(),
+			inviteCodes: this.client.cache.inviteCodes.getSize(),
+			members: this.client.cache.members.getSize(),
+			messages: this.client.mod.getMessageCacheSize()
+		};
 	}
 }

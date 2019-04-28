@@ -40,6 +40,10 @@ export class ModerationService {
 	private client: IMClient;
 	private messageCache: Map<string, MiniMessage[]>;
 
+	public getMessageCacheSize() {
+		return this.messageCache.size;
+	}
+
 	private strikeFunctions: {
 		[key in ViolationType]: (
 			message: Message,
