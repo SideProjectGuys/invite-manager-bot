@@ -1,11 +1,11 @@
-import { Guild, Message, VoiceChannel } from 'eris';
+import { Guild, VoiceChannel } from 'eris';
 
 import { AnnouncementVoice } from '../../../sequelize';
 import { SettingsObject } from '../../../settings';
 import { LavaPlayer, MusicQueue, MusicQueueItem } from '../../../types';
 import { MusicService } from '../services/MusicService';
 
-const DEFAULT_VOL_FADE_TIME = 1.5;
+const DEFAULT_DIM_VOLUME_FACTOR = 0.2;
 const IGNORED_ANNOUNCEMENT_WORDS = [
 	/official/gi,
 	/originals?/gi,
@@ -22,7 +22,6 @@ export class MusicConnection {
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
 	private player: LavaPlayer;
-	private nowPlayingMessage: Message;
 	private volume: number = 100;
 	private doPlayNext: boolean = true;
 	private speaking: Set<string> = new Set();
@@ -86,8 +85,6 @@ export class MusicConnection {
 		if (!this.isPlaying()) {
 			this.playNext();
 		}
-
-		this.updateNowPlayingMessage();
 	}
 
 	public pause() {
@@ -122,15 +119,8 @@ export class MusicConnection {
 	}
 
 	public setVolume(volume: number) {
-		this.cancelFadeVolume();
-
 		this.volume = volume;
 		this.player.setVolume(volume);
-	}
-
-	public fadeVolume(volume: number) {
-		this.volume = volume;
-		this.fadeVolumeTo(volume);
 	}
 
 	public getNowPlaying() {
@@ -145,10 +135,6 @@ export class MusicConnection {
 		return this.musicQueueCache.queue;
 	}
 
-	public setNowPlayingMessage(message: Message) {
-		this.nowPlayingMessage = message;
-	}
-
 	private stopSpeakingTimeout: NodeJS.Timer;
 	public async connect(channel: VoiceChannel) {
 		if (this.player) {
@@ -157,29 +143,33 @@ export class MusicConnection {
 			this.settings = await this.service.client.cache.settings.get(
 				this.guild.id
 			);
+			this.volume = this.settings.musicVolume;
 
 			this.voiceChannel = channel;
 			this.player = (await channel.join({})) as LavaPlayer;
 			this.player.setVolume(this.volume);
+			this.player.on('warn', error => console.error(error));
 			this.player.on('error', error => console.error(error));
 			this.player.on('speakingStart', this.onSpeakingStart);
 			this.player.on('speakingStop', this.onSpeakingEnd);
 			this.player.on('end', this.onStreamEnd);
+			this.player.on('reconnect', () => {
+				console.error(`Reconnected lavalink player for guild ${this.guild.id}`);
+			});
+			this.player.on('disconnect', () => {
+				console.error(`Player disconnected for guild ${this.guild.id}`);
+				this.player = null;
+			});
 		}
 	}
 
 	private onSpeakingStart(userId: string) {
-		console.log(`User ${userId} started speaking`);
 		if (this.settings.fadeMusicOnTalk && this.speaking.size === 0) {
 			if (this.stopSpeakingTimeout) {
 				clearTimeout(this.stopSpeakingTimeout);
 				this.stopSpeakingTimeout = null;
 			} else {
-				this.cancelFadeVolume();
-				this.fadeVolumeTo(
-					0.2 * this.volume,
-					this.settings.fadeMusicStartDuration
-				);
+				this.player.setVolume(DEFAULT_DIM_VOLUME_FACTOR * this.volume);
 			}
 		}
 
@@ -192,7 +182,7 @@ export class MusicConnection {
 		if (this.settings.fadeMusicOnTalk && this.speaking.size === 0) {
 			const func = () => {
 				this.stopSpeakingTimeout = null;
-				this.fadeVolumeTo(this.volume);
+				this.player.setVolume(this.volume);
 			};
 			this.stopSpeakingTimeout = setTimeout(
 				func,
@@ -270,7 +260,6 @@ export class MusicConnection {
 			this.playStart = new Date().getTime() + 400; // This additional time is lavalink buffering
 			this.musicQueueCache.current = next;
 			this.player.play(tracks[0].track);
-			this.updateNowPlayingMessage();
 		}
 	}
 
@@ -278,37 +267,6 @@ export class MusicConnection {
 		const now = new Date().getTime();
 		this.playStart = now - offsetSeconds * 1000 + 200;
 		this.player.seek(offsetSeconds * 1000);
-	}
-
-	private fadeTimeouts: NodeJS.Timer[] = [];
-	private fadeVolumeTo(
-		newVolume: number,
-		fadeDuration: number = DEFAULT_VOL_FADE_TIME
-	) {
-		this.cancelFadeVolume();
-
-		const startVol = this.player.volume;
-		const diff = newVolume - startVol;
-		const step = diff / (fadeDuration * 10);
-		for (let i = 0; i < fadeDuration * 10; i++) {
-			const newVol = Math.max(0, Math.min(startVol + i * step, 2));
-			this.fadeTimeouts.push(
-				setTimeout(() => this.player.setVolume(newVol), i * 100)
-			);
-		}
-	}
-
-	private cancelFadeVolume() {
-		this.fadeTimeouts.forEach(t => clearTimeout(t));
-		this.fadeTimeouts = [];
-	}
-
-	private updateNowPlayingMessage() {
-		if (this.nowPlayingMessage) {
-			this.nowPlayingMessage.edit({
-				embed: this.service.createPlayingEmbed(null)
-			});
-		}
 	}
 
 	public disconnect() {

@@ -68,25 +68,20 @@ export class Youtube extends MusicPlatform {
 		searchTerm: string,
 		maxResults: number = 10
 	): Promise<Array<MusicItem>> {
+		const tracks = await this.service.resolveTracks(`ytsearch:${searchTerm}`);
 
-		const results = await ytSearch(searchTerm, {
-			limit: maxResults,
-			type: 'video'
+		return tracks.slice(0, maxResults).map(track => {
+			const id = track.info.identifier;
+			console.log(track.info.author);
+			return new YoutubeMusicItem(this, {
+				id: id,
+				title: track.info.title,
+				link: `https://youtube.com/watch?v=${id}`,
+				imageUrl: `https://img.youtube.com/vi/${id}/default.jpg`,
+				channel: track.info.author,
+				duration: track.info.length / 1000
+			});
 		});
-
-		return results.map(
-			(result: any) => {
-				const id = result.link.split('=')[1];
-				return new YoutubeMusicItem(this, {
-					id: id,
-					title: result.title,
-					link: `https://youtube.com/watch?v=${id}`,
-					imageUrl: result.thumbnail,
-					channel: result.channel,
-					duration: result.duration
-				});
-			}
-		);
 	}
 
 	public parseYoutubeDuration(PT: string) {

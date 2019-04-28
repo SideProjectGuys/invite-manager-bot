@@ -24,6 +24,7 @@ export default class extends Command {
 				{
 					name: 'link',
 					resolver: StringResolver,
+					required: true,
 					rest: true
 				}
 			],

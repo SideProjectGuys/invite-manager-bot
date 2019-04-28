@@ -228,6 +228,7 @@ export interface LavaPlayer extends VoiceConnection {
 
 	on(event: 'debug' | 'warn', listener: (message: string) => void): this;
 	on(event: 'error' | 'disconnect', listener: (err: Error) => void): this;
+	on(event: 'reconnect', listener: () => void): this;
 	on(event: 'pong', listener: (latency: number) => void): this;
 	on(event: 'speakingStart', listener: (userID: string) => void): this;
 	on(event: 'speakingStop', listener: (userID: string) => void): this;

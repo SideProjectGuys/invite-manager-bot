@@ -30,7 +30,7 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
-			this.sendReply(message, t('cmd.music.notPlaying'));
+			this.sendReply(message, t('music.notPlaying'));
 			return;
 		}
 

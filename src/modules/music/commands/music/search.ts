@@ -156,7 +156,7 @@ export default class extends Command {
 
 				msg.delete().catch(() => undefined);
 
-				resolve(undefined);
+				resolve(null);
 			};
 
 			timeOut = setTimeout(timeOutFunc, 60000);

@@ -56,7 +56,8 @@ export class MusicService {
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
 			numShards: 1,
 			userId: this.client.user.id,
-			defaultRegion: 'eu'
+			defaultRegion: 'eu',
+			failoverLimit: 2
 		});
 	}
 
@@ -148,7 +149,7 @@ export class MusicService {
 
 	public async resolveTracks(url: string) {
 		const baseUrl = `http://${this.nodes[0].host}:${this.nodes[0].port}`;
-		const res = await axios.get<{ tracks: LavaTrack[] }>(
+		const { data } = await axios.get<{ tracks: LavaTrack[] }>(
 			`${baseUrl}/loadtracks?identifier=${encodeURIComponent(url)}`,
 			{
 				headers: {
@@ -157,6 +158,6 @@ export class MusicService {
 				}
 			}
 		);
-		return res.data.tracks;
+		return data.tracks;
 	}
 }

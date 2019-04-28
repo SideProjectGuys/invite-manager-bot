@@ -36,7 +36,7 @@
 		"chartjs-plugin-datalabels": "0.6.0",
 		"dblapi.js": "2.3.0",
 		"eris": "github:abalabahaha/eris#dev",
-		"eris-lavalink": "1.0.2",
+		"eris-lavalink": "github:SideProjectGuys/eris-lavalink#dev",
 		"erlpack": "github:discordapp/erlpack",
 		"eventemitter3": "3.1.0",
 		"i18n": "0.8.3",

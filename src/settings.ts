@@ -566,11 +566,6 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		grouping: [SettingsGroup.music, SettingsGroup.general],
 		defaultValue: true
 	},
-	fadeMusicStartDuration: {
-		type: 'Number',
-		grouping: [SettingsGroup.music, SettingsGroup.general],
-		defaultValue: 0.7
-	},
 	fadeMusicEndDelay: {
 		type: 'Number',
 		grouping: [SettingsGroup.music, SettingsGroup.general],

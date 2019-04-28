@@ -1553,5 +1553,8 @@
 			"title": "settings.fadeMusicEndDelay.title",
 			"description": "settings.fadeMusicEndDelay.description"
 		}
+	},
+	"arguments": {
+		"invalid": "arguments.invalid"
 	}
 }
