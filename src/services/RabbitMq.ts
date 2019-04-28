@@ -80,9 +80,12 @@ export class RabbitMqService {
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			connected: this.client.gatewayConnected,
-			readyGuilds: this.client.tracking.readyGuilds,
-			totalGuilds: this.client.tracking.totalGuilds,
-			error: err ? err.message : null
+			guilds: this.client.guilds.size,
+			error: err ? err.message : null,
+			tracking: {
+				pendingGuilds: [...this.client.tracking.pendingGuilds.values()],
+				initialPendingGuilds: this.client.tracking.initialPendingGuilds
+			}
 		});
 	}
 

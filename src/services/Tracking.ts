@@ -27,8 +27,8 @@ const INVITE_CREATE = 40;
 export class TrackingService {
 	private client: IMClient;
 
-	public readyGuilds: number = 0;
-	public totalGuilds: number = 0;
+	public pendingGuilds: Set<string>;
+	public initialPendingGuilds: number;
 
 	private inviteStore: {
 		[guildId: string]: { [code: string]: { uses: number; maxUses: number } };
@@ -59,6 +59,7 @@ export class TrackingService {
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
 		allGuilds.forEach(guild => {
+			this.pendingGuilds.add(guild.id);
 			this.inviteStore[guild.id] = {};
 		});
 
@@ -71,12 +72,17 @@ export class TrackingService {
 				})
 		);
 
-		this.totalGuilds = allGuilds.length;
+		this.initialPendingGuilds = allGuilds.length;
 		for (let j = 0; j < GUILDS_IN_PARALLEL; j++) {
 			const func = async () => {
 				const guild = allGuilds.shift();
 
 				if (!guild) {
+					if (allGuilds.length) {
+						console.error(
+							'Guild in pending list was null but list is not empty'
+						);
+					}
 					return;
 				}
 
@@ -90,12 +96,14 @@ export class TrackingService {
 					);
 				}
 
-				this.readyGuilds++;
-				console.log(`Ready: ${this.readyGuilds}/${this.totalGuilds}`);
+				this.pendingGuilds.delete(guild.id);
 				if (
-					this.readyGuilds % 10 === 0 ||
-					this.readyGuilds === this.totalGuilds
+					this.pendingGuilds.size % 50 === 0 ||
+					this.pendingGuilds.size === 0
 				) {
+					console.log(
+						`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`
+					);
 					this.client.rabbitmq.sendStatusToManager();
 				}
 
