@@ -10,7 +10,8 @@ export default class extends Command {
 			name: MusicCommand.repeat,
 			aliases: ['loop'],
 			group: CommandGroup.Music,
-			guildOnly: true
+			guildOnly: true,
+			premiumOnly: true
 		});
 	}
 

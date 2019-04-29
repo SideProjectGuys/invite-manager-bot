@@ -11,7 +11,8 @@ export default class extends Command {
 			name: MusicCommand.rewind,
 			aliases: ['replay'],
 			group: CommandGroup.Music,
-			guildOnly: true
+			guildOnly: true,
+			premiumOnly: true
 		});
 	}
 

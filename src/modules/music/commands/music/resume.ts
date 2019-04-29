@@ -10,7 +10,8 @@ export default class extends Command {
 			name: MusicCommand.resume,
 			aliases: ['start'],
 			group: CommandGroup.Music,
-			guildOnly: true
+			guildOnly: true,
+			premiumOnly: true
 		});
 	}
 
