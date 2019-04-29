@@ -31,21 +31,15 @@ export default class extends Command {
 
 		this.sendReply(message, {
 			author: {
-				name: `${nowPlaying.user.username}#${nowPlaying.user.discriminator}`,
-				icon_url: nowPlaying.user.avatarURL
+				name: `${nowPlaying.author.username}#${
+					nowPlaying.author.discriminator
+				}`,
+				icon_url: nowPlaying.author.avatarURL
 			},
-			description: `${this.client.music.formatTime(
-				conn.getPlayTime()
-			)}/${this.client.music.formatTime(nowPlaying.duration)} played`,
-			thumbnail: { url: nowPlaying.imageURL },
-			color: 255, // blue
+			description: nowPlaying.toQueueEntry().value,
+			thumbnail: { url: nowPlaying.imageUrl },
 			title: nowPlaying.title,
-			fields: queue.map(item => ({
-				name: `${item.title}`,
-				value: `Added by: ${
-					item.user.username
-				} | Duration: ${this.client.music.formatTime(item.duration)}`
-			}))
+			fields: queue.map(item => item.toQueueEntry())
 		});
 	}
 }

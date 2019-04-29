@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { User } from 'eris';
 
-import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
+import { MusicPlatformTypes } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -15,7 +15,8 @@ interface RadioInfo extends BaseInfo {
 
 export class TuneInMusicItem extends MusicItem {
 	protected platform: TuneInRadio;
-	private description: string;
+
+	public description: string;
 
 	public constructor(platform: MusicPlatform, info: RadioInfo) {
 		super(platform, info);
@@ -30,19 +31,16 @@ export class TuneInMusicItem extends MusicItem {
 		};
 	}
 
-	public async toQueueItem(author: User): Promise<MusicQueueItem> {
+	public async getStreamUrl() {
 		const res = await axios.get(`${RADIO_TIME_URL}${this.id}`);
+		return res.data.body[0].url;
+	}
 
-		return {
-			id: this.id,
-			title: this.title,
-			imageURL: this.imageUrl,
-			user: author,
-			link: this.link,
-			platform: MusicPlatformTypes.YouTube,
-			getStreamUrl: async () => res.data.body[0].url,
-			duration: 0,
-			extras: []
-		};
+	public getProgress(time: number) {
+		return '```\n' + this.platform.service.formatTime(time) + '\n```';
+	}
+
+	public clone(): TuneInMusicItem {
+		return new TuneInMusicItem(this.platform, this);
 	}
 }

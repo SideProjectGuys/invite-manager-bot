@@ -35,9 +35,7 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform: MusicPlatform = this.client.music.platforms.get(
-			conn.getNowPlaying().platform
-		);
+		const musicPlatform: MusicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsSeek) {
 			this.sendReply(

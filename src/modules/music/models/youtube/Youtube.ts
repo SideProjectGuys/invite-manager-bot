@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { URLSearchParams } from 'url';
 import ytdl from 'ytdl-core';
 
 import { IMClient } from '../../../../client';
@@ -8,7 +6,6 @@ import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { YoutubeMusicItem } from './YoutubeMusicItem';
-const ytSearch = require('scrape-youtube');
 
 interface YoutubeVideo {
 	id: string;
@@ -41,6 +38,9 @@ export class Youtube extends MusicPlatform {
 	}
 
 	public isPlatformUrl(url: string): boolean {
+		if (!url) {
+			return false;
+		}
 		return url.startsWith('https://youtube.com/');
 	}
 
@@ -72,7 +72,6 @@ export class Youtube extends MusicPlatform {
 
 		return tracks.slice(0, maxResults).map(track => {
 			const id = track.info.identifier;
-			console.log(track.info.author);
 			return new YoutubeMusicItem(this, {
 				id: id,
 				title: track.info.title,

@@ -1,6 +1,3 @@
-import { User } from 'eris';
-
-import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -13,6 +10,7 @@ interface VideoInfo extends BaseInfo {
 
 export class YoutubeMusicItem extends MusicItem {
 	protected platform: Youtube;
+
 	public channel: string;
 	public duration: number;
 
@@ -23,30 +21,55 @@ export class YoutubeMusicItem extends MusicItem {
 		this.channel = info.channel;
 	}
 
-	public toSearchEntry(index: number): { name: string; value: string } {
+	public toSearchEntry(index: number) {
 		return {
-			name: `\`${index}\`: ${this.title} **${this.platform.service.formatTime(this.duration)}**`,
+			name: `\`${index}\`: ${this.title} **${this.platform.service.formatTime(
+				this.duration
+			)}**`,
 			value: `Uploader: ${this.channel}`
 		};
 	}
+	public toQueueEntry() {
+		const obj = super.toQueueEntry();
+		const time = this.platform.service.formatTime(this.duration);
+		obj.value += ` | Duration: ${time}`;
+		return obj;
+	}
 
-	public async toQueueItem(author: User): Promise<MusicQueueItem> {
-		return {
-			id: this.id,
-			title: this.title,
-			imageURL: this.imageUrl,
-			user: author,
-			link: this.link,
-			platform: MusicPlatformTypes.YouTube,
-			getStreamUrl: async () => this.link,
-			duration: this.duration,
-			extras: [
-				{
-					name: 'Duration',
-					value: this.platform.service.formatTime(this.duration)
-				},
-				{ name: 'Channel', value: this.channel }
-			]
-		};
+	public async getStreamUrl() {
+		return this.link;
+	}
+
+	public toEmbed() {
+		const base = super.toEmbed();
+		base.fields = base.fields.concat([
+			{
+				name: 'Duration',
+				value: this.platform.service.formatTime(this.duration)
+			},
+			{ name: 'Channel', value: this.channel }
+		]);
+		return base;
+	}
+
+	public getProgress(time: number) {
+		const progress = Math.max(
+			0,
+			Math.min(30, Math.round(30 * (time / this.duration)))
+		);
+		return (
+			'```\n[' +
+			'='.repeat(progress) +
+			' '.repeat(30 - progress) +
+			'] ' +
+			this.platform.service.formatTime(time) +
+			' / ' +
+			this.platform.service.formatTime(this.duration) +
+			'\n```'
+		);
+	}
+
+	public clone(): YoutubeMusicItem {
+		return new YoutubeMusicItem(this.platform, this);
 	}
 }

@@ -20,6 +20,9 @@ export class Soundcloud extends MusicPlatform {
 	}
 
 	public isPlatformUrl(url: string): boolean {
+		if (!url) {
+			return false;
+		}
 		return url.startsWith('https://soundcloud.com');
 	}
 

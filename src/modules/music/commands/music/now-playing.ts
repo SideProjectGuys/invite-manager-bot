@@ -1,4 +1,4 @@
-import { Guild, Message } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -6,6 +6,7 @@ import { BooleanResolver } from '../../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../../types';
 
 const PIN_UPDATE_INTERVAL = 5000;
+const PREMIUM_PIN_UPDATE_INTERVAL = 2000;
 
 export default class extends Command {
 	private timerMap: Map<string, NodeJS.Timer> = new Map();
@@ -30,9 +31,19 @@ export default class extends Command {
 		message: Message,
 		args: any[],
 		{ pin }: { pin: boolean },
-		{ guild }: Context
+		{ guild, t, isPremium }: Context
 	): Promise<any> {
-		let embed = await this.createPlayingEmbed(guild);
+		const conn = await this.client.music.getMusicConnection(guild);
+
+		let item = conn.getNowPlaying();
+		const embed = this.client.music.createPlayingEmbed(item);
+		if (!pin && item) {
+			embed.fields.push({
+				name: t('cmd.nowPlaying.playTime'),
+				value: item.getProgress(conn.getPlayTime())
+			});
+		}
+
 		const msg = await this.sendEmbed(message.channel, embed);
 
 		if (pin) {
@@ -41,43 +52,39 @@ export default class extends Command {
 				clearInterval(timer);
 			}
 
+			let msg2: Message = null;
 			const func = async () => {
-				embed = await this.createPlayingEmbed(guild);
-				await msg.edit({ embed });
+				const oldId = item ? item.id : null;
+				item = conn.getNowPlaying();
+				const newId = item ? item.id : null;
+
+				if (oldId !== newId) {
+					await msg.edit({ embed: this.client.music.createPlayingEmbed(item) });
+				}
+
+				if (item) {
+					const progress = item.getProgress(conn.getPlayTime());
+					const progressEmbed = this.createEmbed({ description: progress });
+
+					if (msg2) {
+						await msg2.edit({ embed: progressEmbed });
+					} else {
+						msg2 = await this.sendEmbed(message.channel, progressEmbed);
+					}
+				} else {
+					if (msg2) {
+						await msg2.delete().catch(() => undefined);
+						msg2 = null;
+					}
+				}
 			};
 
-			this.timerMap.set(guild.id, setInterval(func, PIN_UPDATE_INTERVAL));
+			const interval = isPremium
+				? PREMIUM_PIN_UPDATE_INTERVAL
+				: PIN_UPDATE_INTERVAL;
+
+			func();
+			this.timerMap.set(guild.id, setInterval(func, interval));
 		}
-	}
-
-	private async createPlayingEmbed(guild: Guild) {
-		const conn = await this.client.music.getMusicConnection(guild);
-
-		const item = conn.getNowPlaying();
-		if (!item) {
-			return this.client.music.createPlayingEmbed(item);
-		}
-
-		const time = conn.getPlayTime();
-		const progress = Math.max(
-			0,
-			Math.min(30, Math.round(30 * (time / item.duration)))
-		);
-
-		const embed = this.client.music.createPlayingEmbed(item);
-		embed.fields.push({
-			name: 'Play time',
-			value:
-				'```\n[' +
-				'='.repeat(progress) +
-				' '.repeat(30 - progress) +
-				'] ' +
-				this.client.music.formatTime(time) +
-				' / ' +
-				this.client.music.formatTime(item.duration) +
-				'\n```'
-		});
-
-		return embed;
 	}
 }

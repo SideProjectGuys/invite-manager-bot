@@ -10,9 +10,9 @@ import {
 import {
 	CommandGroup,
 	MusicCommand,
-	MusicPlatformTypes,
-	MusicQueueItem
+	MusicPlatformTypes
 } from '../../../../types';
+import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
@@ -73,26 +73,21 @@ export default class extends Command {
 			musicPlatform = this.client.music.platforms.getForLink(link);
 		}
 
-		let item: MusicQueueItem;
+		let item: MusicItem;
 		if (musicPlatform) {
-			const musicItem = await musicPlatform.getByLink(link);
-			if (musicItem) {
-				item = await musicItem.toQueueItem(message.author);
-			}
+			item = await musicPlatform.getByLink(link);
 		} else {
 			musicPlatform = this.client.music.platforms.get(
 				MusicPlatformTypes.YouTube
 			);
 			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
-				const musicItem = items[0];
-				if (musicItem) {
-					item = await musicItem.toQueueItem(message.author);
-				}
+				item = items[0];
 			}
 		}
 
 		if (item) {
+			item.setAuthor(message.author);
 			const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
 			conn.play(item, voiceChannel, next);

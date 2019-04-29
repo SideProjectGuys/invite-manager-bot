@@ -37,9 +37,7 @@ export default class extends Command {
 			return;
 		}
 
-		const musicPlatform: MusicPlatform = this.client.music.platforms.get(
-			conn.getNowPlaying().platform
-		);
+		const musicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsLyrics) {
 			this.sendReply(
@@ -58,7 +56,9 @@ export default class extends Command {
 		if (!live) {
 			this.sendReply(
 				message,
-				lyrics.map(l => `${l.start}: ${l.text}`).join('\n')
+				lyrics
+					.map(l => `${this.client.music.formatTime(l.start)}: ${l.text}`)
+					.join('\n')
 			);
 			return;
 		}

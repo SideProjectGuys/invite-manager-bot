@@ -1,6 +1,3 @@
-import { User } from 'eris';
-
-import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -15,7 +12,7 @@ interface Info extends BaseInfo {
 export class IHeartMusicItem extends MusicItem {
 	protected platform: IHeartRadio;
 
-	private station: any;
+	public station: any;
 
 	public constructor(platform: MusicPlatform, info: Info) {
 		super(platform, info);
@@ -30,33 +27,37 @@ export class IHeartMusicItem extends MusicItem {
 		};
 	}
 
-	public async toQueueItem(author: User): Promise<MusicQueueItem> {
-		return {
-			id: this.id,
-			title: this.title,
-			imageURL: this.imageUrl,
-			user: author,
-			link: this.link,
-			platform: MusicPlatformTypes.iHeartRADIO,
-			duration: 0,
-			getStreamUrl: async () => iheart.streamURL(this.station),
-			extras: [
-				{
-					name: 'Air',
-					value: `${this.station.frequency} ${this.station.band}`,
-					inline: true
-				},
-				{
-					name: 'Location',
-					value: `${this.station.city}, ${this.station.state}`,
-					inline: true
-				},
-				{
-					name: 'Description',
-					value: this.station.description,
-					inline: false
-				}
-			]
-		};
+	public getStreamUrl() {
+		return iheart.streamURL(this.station);
+	}
+
+	public toEmbed() {
+		const base = super.toEmbed();
+		base.fields = base.fields.concat([
+			{
+				name: 'Air',
+				value: `${this.station.frequency} ${this.station.band}`,
+				inline: true
+			},
+			{
+				name: 'Location',
+				value: `${this.station.city}, ${this.station.state}`,
+				inline: true
+			},
+			{
+				name: 'Description',
+				value: this.station.description,
+				inline: false
+			}
+		]);
+		return base;
+	}
+
+	public getProgress(time: number) {
+		return '```\n' + this.platform.service.formatTime(time) + '\n```';
+	}
+
+	public clone(): IHeartMusicItem {
+		return new IHeartMusicItem(this.platform, this);
 	}
 }

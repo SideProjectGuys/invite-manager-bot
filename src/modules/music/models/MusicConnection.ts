@@ -2,8 +2,10 @@ import { Guild, VoiceChannel } from 'eris';
 
 import { AnnouncementVoice } from '../../../sequelize';
 import { SettingsObject } from '../../../settings';
-import { LavaPlayer, MusicQueue, MusicQueueItem } from '../../../types';
+import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../../types';
 import { MusicService } from '../services/MusicService';
+
+import { MusicItem } from './MusicItem';
 
 const DEFAULT_DIM_VOLUME_FACTOR = 0.2;
 const IGNORED_ANNOUNCEMENT_WORDS = [
@@ -28,7 +30,6 @@ export class MusicConnection {
 	private repeat: boolean;
 	private doneCallback: () => void;
 	private playStart: number = 0;
-	private pauseStart: number = 0;
 
 	public constructor(
 		service: MusicService,
@@ -62,10 +63,14 @@ export class MusicConnection {
 	}
 
 	public async play(
-		item: MusicQueueItem,
+		item: MusicItem,
 		voiceChannel?: VoiceChannel,
 		next?: boolean
 	) {
+		if (!item.author) {
+			throw new Error(`No author on music item ${item.toString()}`);
+		}
+
 		if (voiceChannel) {
 			await this.connect(voiceChannel);
 		} else if (!this.player) {
@@ -89,15 +94,12 @@ export class MusicConnection {
 
 	public pause() {
 		if (!this.player.paused) {
-			this.pauseStart = new Date().getTime();
 			this.player.pause();
 		}
 	}
 
 	public resume() {
 		if (this.player.paused) {
-			this.playStart += new Date().getTime() - this.pauseStart;
-			this.pauseStart = 0;
 			this.player.resume();
 		}
 	}
@@ -106,8 +108,8 @@ export class MusicConnection {
 		this.seek(0);
 	}
 
-	public async skip() {
-		this.playNext();
+	public async skip(amount: number = 1) {
+		this.playNext(amount - 1);
 	}
 
 	public isRepeating() {
@@ -118,6 +120,9 @@ export class MusicConnection {
 		this.repeat = repeat;
 	}
 
+	public getVolume() {
+		return this.volume;
+	}
 	public setVolume(volume: number) {
 		this.volume = volume;
 		this.player.setVolume(volume);
@@ -152,6 +157,7 @@ export class MusicConnection {
 			this.player.on('error', error => console.error(error));
 			this.player.on('speakingStart', this.onSpeakingStart);
 			this.player.on('speakingStop', this.onSpeakingEnd);
+			this.player.on('stateUpdate', this.onStateUpdate);
 			this.player.on('end', this.onStreamEnd);
 			this.player.on('reconnect', () => {
 				console.error(`Reconnected lavalink player for guild ${this.guild.id}`);
@@ -161,6 +167,10 @@ export class MusicConnection {
 				this.player = null;
 			});
 		}
+	}
+
+	private onStateUpdate({ position }: LavaPlayerState) {
+		this.playStart = new Date().getTime() - position;
 	}
 
 	private onSpeakingStart(userId: string) {
@@ -199,7 +209,7 @@ export class MusicConnection {
 		}
 
 		if (this.repeat && this.musicQueueCache.current) {
-			this.musicQueueCache.queue.push({ ...this.musicQueueCache.current });
+			this.musicQueueCache.queue.push(this.musicQueueCache.current.clone());
 		}
 
 		this.musicQueueCache.current = null;
@@ -237,11 +247,20 @@ export class MusicConnection {
 		});
 	}
 
-	private async playNext() {
+	private preparingNext: boolean = false;
+	private async playNext(skip: number = 0) {
+		if (this.preparingNext) {
+			return;
+		}
+
+		this.preparingNext = true;
+
+		for (let i = 0; i < skip; i++) {
+			this.musicQueueCache.queue.shift();
+		}
+
 		const next = this.musicQueueCache.queue.shift();
 		if (next) {
-			console.log(next);
-
 			let sanitizedTitle = next.title;
 			IGNORED_ANNOUNCEMENT_WORDS.forEach(
 				word => (sanitizedTitle = sanitizedTitle.replace(word, ''))
@@ -251,16 +270,20 @@ export class MusicConnection {
 				await this.playAnnouncement(
 					this.settings.announcementVoice,
 					'Playing: ' + sanitizedTitle
-				);
+				).catch(() => undefined);
 			}
 
-			const stream = await next.getStreamUrl();
-			const tracks = await this.service.resolveTracks(stream);
+			const stream = await next.getStreamUrl().catch(() => undefined);
+			const tracks = await this.service.resolveTracks(stream).catch(() => []);
 
 			this.playStart = new Date().getTime() + 400; // This additional time is lavalink buffering
 			this.musicQueueCache.current = next;
 			this.player.play(tracks[0].track);
+		} else if (this.musicQueueCache.current) {
+			this.player.stop();
 		}
+
+		this.preparingNext = false;
 	}
 
 	public async seek(offsetSeconds: number) {

@@ -17,6 +17,9 @@ export class IHeartRadio extends MusicPlatform {
 	}
 
 	public isPlatformUrl(url: string): boolean {
+		if (!url) {
+			return false;
+		}
 		return url.startsWith('iheart');
 	}
 

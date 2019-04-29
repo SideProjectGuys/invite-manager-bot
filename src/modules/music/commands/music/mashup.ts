@@ -42,6 +42,10 @@ export default class extends Command {
 		}
 
 		const [link1, link2] = videos.split(' ');
+		if (!link2) {
+			this.sendReply(message, t('cmd.mashup.missingSecondVideo'));
+			return;
+		}
 		const platform1 = this.client.music.platforms.getForLink(link1);
 		const platform2 = this.client.music.platforms.getForLink(link2);
 

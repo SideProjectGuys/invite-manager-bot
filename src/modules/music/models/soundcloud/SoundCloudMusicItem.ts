@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { User } from 'eris';
 
-import { MusicPlatformTypes, MusicQueueItem } from '../../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -15,9 +13,10 @@ interface Info extends BaseInfo {
 
 export class SoundcloudMusicItem extends MusicItem {
 	protected platform: Soundcloud;
-	private artist: string;
-	private audioUrl: string;
-	private duration: number;
+
+	public artist: string;
+	public audioUrl: string;
+	public duration: number;
 
 	public constructor(platform: MusicPlatform, info: Info) {
 		super(platform, info);
@@ -33,27 +32,48 @@ export class SoundcloudMusicItem extends MusicItem {
 			value: `Uploader: ${this.artist}`
 		};
 	}
+	public toQueueEntry() {
+		const obj = super.toQueueEntry();
+		const time = this.platform.service.formatTime(this.duration);
+		obj.value += ` | Duration: ${time}`;
+		return obj;
+	}
 
-	public async toQueueItem(author: User): Promise<MusicQueueItem> {
-		// Resolve redirect
+	public async getStreamUrl() {
 		const redir = await axios.get(this.audioUrl);
+		return redir.request.res.responseUrl;
+	}
 
-		return {
-			id: this.id,
-			title: this.title,
-			imageURL: this.imageUrl,
-			user: author,
-			link: this.link,
-			platform: MusicPlatformTypes.SoundCloud,
-			getStreamUrl: async () => redir.request.res.responseUrl,
-			duration: this.duration,
-			extras: [
-				{
-					name: 'Duration',
-					value: this.platform.service.formatTime(this.duration / 1000)
-				},
-				{ name: 'Artist', value: this.artist }
-			]
-		};
+	public toEmbed() {
+		const base = super.toEmbed();
+		base.fields = base.fields.concat([
+			{
+				name: 'Duration',
+				value: this.platform.service.formatTime(this.duration / 1000)
+			},
+			{ name: 'Artist', value: this.artist }
+		]);
+		return base;
+	}
+
+	public getProgress(time: number) {
+		const progress = Math.max(
+			0,
+			Math.min(30, Math.round(30 * (time / this.duration)))
+		);
+		return (
+			'```\n[' +
+			'='.repeat(progress) +
+			' '.repeat(30 - progress) +
+			'] ' +
+			this.platform.service.formatTime(time) +
+			' / ' +
+			this.platform.service.formatTime(this.duration) +
+			'\n```'
+		);
+	}
+
+	public clone(): SoundcloudMusicItem {
+		return new SoundcloudMusicItem(this.platform, this);
 	}
 }

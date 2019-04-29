@@ -2,6 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
+import { NumberResolver } from '../../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../../types';
 
 export default class extends Command {
@@ -9,6 +10,13 @@ export default class extends Command {
 		super(client, {
 			name: MusicCommand.skip,
 			aliases: ['next'],
+			args: [
+				{
+					name: 'amount',
+					required: false,
+					resolver: new NumberResolver(client, 1)
+				}
+			],
 			group: CommandGroup.Music,
 			guildOnly: true
 		});
@@ -16,7 +24,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		args: any[],
+		[amount]: [number],
 		flags: {},
 		{ t, guild }: Context
 	): Promise<any> {
@@ -26,6 +34,6 @@ export default class extends Command {
 			return;
 		}
 
-		conn.skip();
+		conn.skip(amount || 0);
 	}
 }

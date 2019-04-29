@@ -34,8 +34,11 @@ export default class extends Command {
 			return;
 		}
 
-		conn.setVolume(volume);
-
-		this.sendReply(message, `Changed volume to ${volume}`);
+		if (volume) {
+			conn.setVolume(volume);
+			this.sendReply(message, `Changed volume to ${volume}`);
+		} else {
+			this.sendReply(message, `Volume is set to ${conn.getVolume()}`);
+		}
 	}
 }

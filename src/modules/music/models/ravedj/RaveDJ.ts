@@ -24,6 +24,9 @@ export class RaveDJ extends MusicPlatform {
 	}
 
 	public isPlatformUrl(url: string): boolean {
+		if (!url) {
+			return false;
+		}
 		return url.startsWith('https://rave.dj');
 	}
 
@@ -47,18 +50,23 @@ export class RaveDJ extends MusicPlatform {
 	public async getByLink(link: string): Promise<MusicItem> {
 		const id = link.substr(link.indexOf('.dj/') + 4);
 
-		const res = await axios.get<RaveDjResponse>(
-			`https://api.red.wemesh.ca/ravedj/${id}`,
-			{
-				headers: {
-					authorization: `bearer ${this.idToken}`,
-					'client-version': '5.0',
-					'wemesh-api-version': '5.0',
-					'wemesh-platform': 'Android',
-					'content-type': 'application/json'
-				}
+		const url = `https://api.red.wemesh.ca/ravedj/${id}`;
+		const opts = {
+			headers: {
+				authorization: `bearer ${this.idToken}`,
+				'client-version': '5.0',
+				'wemesh-api-version': '5.0',
+				'wemesh-platform': 'Android',
+				'content-type': 'application/json'
 			}
-		);
+		};
+
+		const res = await axios.get<RaveDjResponse>(url, opts).catch(async err => {
+			if (err.code === 401) {
+				await this.getIdToken();
+			}
+			return axios.get<RaveDjResponse>(url, opts);
+		});
 
 		const data: Data = res.data.data;
 
@@ -111,7 +119,12 @@ export class RaveDJ extends MusicPlatform {
 			}
 		};
 
-		const { data } = await axios(options);
+		const { data } = await axios(options).catch(async err => {
+			if (err.code === 401) {
+				await this.getIdToken();
+			}
+			return axios(options);
+		});
 		return data.data.id;
 	}
 }

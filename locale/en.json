@@ -1029,7 +1029,8 @@
 				"flags": {
 					"pin": "cmd.nowPlaying.self.flags.pin"
 				}
-			}
+			},
+			"playTime": "cmd.nowPlaying.playTime"
 		},
 		"pause": {
 			"self": {
@@ -1051,12 +1052,15 @@
 		"queue": {
 			"self": {
 				"description": "cmd.queue.self.description"
-			}
+			},
+			"empty": "cmd.queue.empty"
 		},
 		"repeat": {
 			"self": {
 				"description": "cmd.repeat.self.description"
-			}
+			},
+			"enabled": "cmd.repeat.enabled",
+			"disabled": "cmd.repeat.disabled"
 		},
 		"resume": {
 			"self": {
@@ -1077,7 +1081,9 @@
 				"args": {
 					"search": "cmd.search.self.args.search"
 				}
-			}
+			},
+			"title": "cmd.search.title",
+			"noResults": "cmd.search.noResults"
 		},
 		"seek": {
 			"self": {
@@ -1555,6 +1561,11 @@
 		}
 	},
 	"arguments": {
-		"invalid": "arguments.invalid"
+		"invalid": "arguments.invalid",
+		"missingRequired": "arguments.missingRequired"
+	},
+	"music": {
+		"notPlaying": "music.notPlaying",
+		"notConnected": "music.notConnected"
 	}
 }

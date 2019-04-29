@@ -1,12 +1,13 @@
 import axios from 'axios';
-import { Guild, VoiceConnection, VoiceConnectionManager } from 'eris';
+import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
 import { AnnouncementVoice } from '../../../sequelize';
-import { LavaTrack, MusicQueueItem } from '../../../types';
+import { LavaTrack } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
+import { MusicItem } from '../models/MusicItem';
 
 import { MusicPlatformService } from './MusicPlatformService';
 
@@ -38,9 +39,11 @@ export class MusicService {
 	private nodes: MusicNode[];
 
 	public platforms: MusicPlatformService;
-
-	public oldConns: VoiceConnectionManager<VoiceConnection>;
 	private musicConnections: Map<string, MusicConnection>;
+
+	public getMusicConnectionGuildIds() {
+		return [...this.musicConnections.keys()];
+	}
 
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -52,7 +55,6 @@ export class MusicService {
 	}
 
 	public async init() {
-		this.oldConns = this.client.voiceConnections;
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
 			numShards: 1,
 			userId: this.client.user.id,
@@ -70,30 +72,24 @@ export class MusicService {
 		return conn;
 	}
 
-	public createPlayingEmbed(item: MusicQueueItem) {
+	public createPlayingEmbed(item: MusicItem) {
 		if (!item) {
 			return this.client.msg.createEmbed({
-				author: { name: 'InvMan Music', icon_url: this.client.user.avatarURL },
-				color: 255, // blue
+				author: null,
 				title: 'Not playing',
 				fields: []
 			});
 		}
 
-		return this.client.msg.createEmbed({
-			author: {
-				name: `${item.user.username}#${item.user.discriminator}`,
-				icon_url: item.user.avatarURL
-			},
-			url: item.link,
-			image: { url: item.imageURL },
-			color: 255, // blue
-			title: item.title,
-			fields: [...item.extras]
-		});
+		const embed = this.client.msg.createEmbed(item.toEmbed());
+		embed.author = {
+			name: `${item.author.username}#${item.author.discriminator}`,
+			icon_url: item.author.avatarURL
+		};
+		return embed;
 	}
 
-	public async getLyrics(item: MusicQueueItem) {
+	public async getLyrics(item: MusicItem) {
 		const { data } = await axios.get(
 			`http://video.google.com/timedtext?lang=en&v=${item.id}`
 		);
@@ -132,13 +128,17 @@ export class MusicService {
 		const h = Math.floor(timeInSeconds / 3600);
 		const m = Math.floor((timeInSeconds - 3600 * h) / 60);
 		const s = Math.floor(timeInSeconds - h * 3600 - m * 60);
-		return (
-			h.toString().padStart(2, '0') +
-			':' +
-			m.toString().padStart(2, '0') +
-			':' +
-			s.toString().padStart(2, '0')
-		);
+
+		const durationParts = [];
+
+		if (h > 0) {
+			durationParts.push(h.toString().padStart(2, '0'));
+		}
+
+		durationParts.push(m.toString().padStart(2, '0'));
+		durationParts.push(s.toString().padStart(2, '0'));
+
+		return durationParts.join(':');
 	}
 
 	public async getAnnouncementUrl(voice: AnnouncementVoice, message: string) {

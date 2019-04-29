@@ -118,7 +118,7 @@ export class MessagingService {
 				? this.createEmbed({ description: embed })
 				: embed;
 
-		e.fields = e.fields.filter(field => field.value);
+		e.fields = e.fields.filter(field => field && field.value);
 
 		return new Promise<Message>((resolve, reject) => {
 			target

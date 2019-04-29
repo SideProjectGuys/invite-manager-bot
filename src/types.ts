@@ -1,5 +1,7 @@
 import { VoiceConnection, VoiceConnectionManager } from 'eris';
 
+import { MusicItem } from './modules/music/models/MusicItem';
+
 export enum BotType {
 	regular = 'regular',
 	pro = 'pro',
@@ -167,20 +169,8 @@ export enum ChannelType {
 }
 
 export interface MusicQueue {
-	current: MusicQueueItem;
-	queue: MusicQueueItem[];
-}
-
-export interface MusicQueueItem {
-	id: string;
-	title: string;
-	link?: string;
-	platform: MusicPlatformTypes;
-	duration: number | null;
-	user: BasicUser;
-	imageURL: string;
-	extras: { name: string; value: string; inline?: boolean }[];
-	getStreamUrl: () => Promise<string>;
+	current: MusicItem;
+	queue: MusicItem[];
 }
 
 export enum MusicPlatformTypes {
@@ -212,12 +202,17 @@ export interface LavaPlayerManager extends VoiceConnectionManager<LavaPlayer> {}
 
 export interface MusicServiceInterface extends LavaPlayerManager {}
 
+export interface LavaPlayerState {
+	position: number;
+	time: number;
+}
+
 export interface LavaPlayer extends VoiceConnection {
 	node: string;
 	hostname: string;
 	manager: LavaPlayerManager | null;
 	track: string | null;
-	state: { position: number; time: number };
+	state: LavaPlayerState;
 
 	play: (track: string) => void;
 	stop: () => void;
@@ -232,6 +227,7 @@ export interface LavaPlayer extends VoiceConnection {
 	on(event: 'pong', listener: (latency: number) => void): this;
 	on(event: 'speakingStart', listener: (userID: string) => void): this;
 	on(event: 'speakingStop', listener: (userID: string) => void): this;
+	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
 	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
 }
 

@@ -86,6 +86,9 @@ export class RabbitMqService {
 				pendingGuilds: [...this.client.tracking.pendingGuilds.values()],
 				initialPendingGuilds: this.client.tracking.initialPendingGuilds
 			},
+			music: {
+				connections: this.client.music.getMusicConnectionGuildIds()
+			},
 			cache: this.getCacheSizes()
 		});
 	}

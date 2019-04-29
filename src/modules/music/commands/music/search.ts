@@ -6,8 +6,7 @@ import { EnumResolver, StringResolver } from '../../../../framework/resolvers';
 import {
 	CommandGroup,
 	MusicCommand,
-	MusicPlatformTypes,
-	MusicQueueItem
+	MusicPlatformTypes
 } from '../../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
 
@@ -20,6 +19,7 @@ export default class extends Command {
 				{
 					name: 'search',
 					resolver: StringResolver,
+					required: true,
 					rest: true
 				}
 			],
@@ -68,17 +68,21 @@ export default class extends Command {
 
 		const items = await musicPlatform.search(searchTerm);
 
+		if (items.length === 0) {
+			this.sendReply(message, t('cmd.search.noResults'));
+			return;
+		}
+
 		const msg = await this.sendReply(message, {
 			author: {
 				name: `${message.author.username}#${message.author.discriminator}`,
 				icon_url: message.author.avatarURL
 			},
-			color: 6737151, // lightblue
 			title: t('cmd.search.title', { term: searchTerm }),
 			fields: items.map((item, index) => item.toSearchEntry(index + 1))
 		});
 
-		for (let i = 0; i < this.choices.length; i++) {
+		for (let i = 0; i < Math.min(items.length, this.choices.length); i++) {
 			msg.addReaction(this.choices[i]).catch(() => undefined);
 		}
 
@@ -93,23 +97,18 @@ export default class extends Command {
 		message.delete().catch(() => undefined);
 
 		const musicItem = items[choice];
-
-		const queueItem: MusicQueueItem = await musicItem.toQueueItem(
-			message.author
-		);
+		musicItem.setAuthor(message.author);
 
 		const conn = await this.client.music.getMusicConnection(guild);
 
 		const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
-		conn.play(queueItem, voiceChannel);
+		conn.play(musicItem, voiceChannel);
 
 		this.sendEmbed(
 			message.channel,
-			this.client.music.createPlayingEmbed(queueItem)
+			this.client.music.createPlayingEmbed(musicItem)
 		);
-
-		// this.client.music.disconnect(guild);
 	}
 
 	private cancel: string = '❌';
