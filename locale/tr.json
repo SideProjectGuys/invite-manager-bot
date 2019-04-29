@@ -11,10 +11,11 @@
 		},
 		"website": {
 			"title": "Botun sitesi"
-		}
+		},
+		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captca eşleşmedi, lütfen tekrar deneyin."
 	},
 	"cmd": {
 		"addInvites": {
@@ -809,7 +810,10 @@
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
 			"none": "No ranks have been created yet.",
 			"self": {
-				"description": "Show all ranks."
+				"description": "Show all ranks.",
+				"args": {
+					"page": "cmd.ranks.self.args.page"
+				}
 			},
 			"title": "Ranks"
 		},
@@ -997,6 +1001,113 @@
 				"description": "Warn a member."
 			},
 			"text": "You have been warned on server {{ guild }}\n{{ text }}"
+		},
+		"disconnect": {
+			"self": {
+				"description": "cmd.disconnect.self.description"
+			}
+		},
+		"lyrics": {
+			"self": {
+				"description": "cmd.lyrics.self.description",
+				"flags": {
+					"live": "cmd.lyrics.self.flags.live"
+				}
+			}
+		},
+		"mashup": {
+			"self": {
+				"description": "cmd.mashup.self.description",
+				"args": {
+					"videos": "cmd.mashup.self.args.videos"
+				}
+			}
+		},
+		"nowPlaying": {
+			"self": {
+				"description": "cmd.nowPlaying.self.description",
+				"flags": {
+					"pin": "cmd.nowPlaying.self.flags.pin"
+				}
+			},
+			"playTime": "cmd.nowPlaying.playTime"
+		},
+		"pause": {
+			"self": {
+				"description": "cmd.pause.self.description"
+			}
+		},
+		"play": {
+			"self": {
+				"description": "cmd.play.self.description",
+				"flags": {
+					"platform": "cmd.play.self.flags.platform",
+					"next": "cmd.play.self.flags.next"
+				},
+				"args": {
+					"link": "cmd.play.self.args.link"
+				}
+			}
+		},
+		"queue": {
+			"self": {
+				"description": "cmd.queue.self.description"
+			},
+			"empty": "cmd.queue.empty"
+		},
+		"repeat": {
+			"self": {
+				"description": "cmd.repeat.self.description"
+			},
+			"enabled": "cmd.repeat.enabled",
+			"disabled": "cmd.repeat.disabled"
+		},
+		"resume": {
+			"self": {
+				"description": "cmd.resume.self.description"
+			}
+		},
+		"rewind": {
+			"self": {
+				"description": "cmd.rewind.self.description"
+			}
+		},
+		"search": {
+			"self": {
+				"description": "cmd.search.self.description",
+				"flags": {
+					"platform": "cmd.search.self.flags.platform"
+				},
+				"args": {
+					"search": "cmd.search.self.args.search"
+				}
+			},
+			"title": "cmd.search.title",
+			"noResults": "cmd.search.noResults"
+		},
+		"seek": {
+			"self": {
+				"description": "cmd.seek.self.description",
+				"args": {
+					"duration": "cmd.seek.self.args.duration"
+				}
+			}
+		},
+		"skip": {
+			"self": {
+				"description": "cmd.skip.self.description",
+				"args": {
+					"amount": "cmd.skip.self.args.amount"
+				}
+			}
+		},
+		"volume": {
+			"self": {
+				"description": "cmd.volume.self.description",
+				"args": {
+					"volume": "cmd.volume.self.args.volume"
+				}
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM",
@@ -1045,7 +1156,8 @@
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
 			"notFound": "Command not found.",
-			"type": "Command"
+			"type": "Command",
+			"validValues": "resolvers.command.validValues"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1255,8 +1367,8 @@
 			"title": "Welcome Message"
 		},
 		"channels": {
-			"description": "settings.channels.description",
-			"title": "settings.channels.title"
+			"title": "Command channels",
+			"description": "The channels in which the bot will react to commands."
 		},
 		"getUpdates": {
 			"description": "Enable to receive development updates about InviteManager.",
@@ -1338,6 +1450,12 @@
 					"title": "Spam"
 				},
 				"title": "Moderation"
+			},
+			"music": {
+				"title": "settings.groups.music.title",
+				"general": {
+					"title": "settings.groups.music.general.title"
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1345,8 +1463,8 @@
 			"title": "Hide left members"
 		},
 		"ignoredChannels": {
-			"description": "settings.ignoredChannels.description",
-			"title": "settings.ignoredChannels.title"
+			"title": "Ignored channels",
+			"description": "The channels in which the bot will ignore commands."
 		},
 		"joinMessage": {
 			"description": "The message sent when someone joins the server.",
@@ -1419,6 +1537,38 @@
 		"rankAssignmentStyle": {
 			"description": "How ranks are rewarded to users.",
 			"title": "Assignment Style"
+		},
+		"musicVolume": {
+			"title": "settings.musicVolume.title",
+			"description": "settings.musicVolume.description"
+		},
+		"announceNextSong": {
+			"title": "settings.announceNextSong.title",
+			"description": "settings.announceNextSong.description"
+		},
+		"announcementVoice": {
+			"title": "settings.announcementVoice.title",
+			"description": "settings.announcementVoice.description"
+		},
+		"fadeMusicOnTalk": {
+			"title": "settings.fadeMusicOnTalk.title",
+			"description": "settings.fadeMusicOnTalk.description"
+		},
+		"fadeMusicStartDuration": {
+			"title": "settings.fadeMusicStartDuration.title",
+			"description": "settings.fadeMusicStartDuration.description"
+		},
+		"fadeMusicEndDelay": {
+			"title": "settings.fadeMusicEndDelay.title",
+			"description": "settings.fadeMusicEndDelay.description"
 		}
+	},
+	"arguments": {
+		"invalid": "arguments.invalid",
+		"missingRequired": "arguments.missingRequired"
+	},
+	"music": {
+		"notPlaying": "music.notPlaying",
+		"notConnected": "music.notConnected"
 	}
 }

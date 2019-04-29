@@ -1,6 +1,7 @@
 import { Channel, Role } from 'eris';
 
 import {
+	AnnouncementVoice,
 	BotSettingsKey,
 	BotSettingsObject,
 	InviteCodeSettingsKey,
@@ -24,6 +25,7 @@ export type InternalSettingsTypes =
 	| 'Enum<LeaderboardStyle>'
 	| 'Enum<RankAssignmentStyle>'
 	| 'Enum<Lang>'
+	| 'Enum<AnnouncementVoice>'
 	| 'Enum<ActivityStatus>'
 	| 'Enum<ActivityType>';
 
@@ -54,6 +56,7 @@ export enum SettingsGroup {
 	spam = 'spam',
 	mentions = 'mentions',
 	emojis = 'emojis',
+	music = 'music',
 	bot = 'bot'
 }
 
@@ -144,6 +147,15 @@ export type SettingsObject = {
 	autoModEmojisMaxNumberOfEmojis: number;
 
 	autoModHoistEnabled: boolean;
+
+	musicVolume: number;
+
+	announceNextSong: boolean;
+	announcementVoice: AnnouncementVoice;
+
+	fadeMusicOnTalk: boolean;
+	fadeMusicStartDuration: number;
+	fadeMusicEndDelay: number;
 };
 
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
@@ -530,6 +542,34 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 		type: 'Boolean',
 		grouping: [SettingsGroup.moderation, SettingsGroup.emojis],
 		defaultValue: true
+	},
+
+	musicVolume: {
+		type: 'Number',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 100
+	},
+
+	announceNextSong: {
+		type: 'Boolean',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: true
+	},
+	announcementVoice: {
+		type: 'Enum<AnnouncementVoice>',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 'Joanna'
+	},
+
+	fadeMusicOnTalk: {
+		type: 'Boolean',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: true
+	},
+	fadeMusicEndDelay: {
+		type: 'Number',
+		grouping: [SettingsGroup.music, SettingsGroup.general],
+		defaultValue: 1.0
 	}
 };
 

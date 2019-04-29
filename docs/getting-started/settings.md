@@ -156,6 +156,18 @@ There are many config options that can be set. You don't have to set all of them
 | [Max # of Emojis](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
 | [Dehoist Enabled](#automodhoistenabled)            | settings.autoModHoistEnabled.description            |
 
+### settings.groups.music.title
+
+#### settings.groups.music.general.title
+
+| Setting                                                | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [settings.musicVolume.title](#musicvolume)             | settings.musicVolume.description       |
+| [settings.announceNextSong.title](#announcenextsong)   | settings.announceNextSong.description  |
+| [settings.announcementVoice.title](#announcementvoice) | settings.announcementVoice.description |
+| [settings.fadeMusicOnTalk.title](#fademusicontalk)     | settings.fadeMusicOnTalk.description   |
+| [settings.fadeMusicEndDelay.title](#fademusicenddelay) | settings.fadeMusicEndDelay.description |
+
 <a name=prefix></a>
 
 ---
@@ -1502,3 +1514,94 @@ Enable:
 Disable:
 
 `!config autoModHoistEnabled false`
+
+<a name=musicVolume></a>
+
+---
+
+## settings.musicVolume.title
+
+settings.musicVolume.description
+
+Type: `Number`
+
+Default: `100`
+
+Reset to default:
+`!config musicVolume default`
+
+<a name=announceNextSong></a>
+
+---
+
+## settings.announceNextSong.title
+
+settings.announceNextSong.description
+
+Type: `Boolean`
+
+Default: `true`
+
+Reset to default:
+`!config announceNextSong default`
+
+Enable:
+
+`!config announceNextSong true`
+
+Disable:
+
+`!config announceNextSong false`
+
+<a name=announcementVoice></a>
+
+---
+
+## settings.announcementVoice.title
+
+settings.announcementVoice.description
+
+Type: `Enum<AnnouncementVoice>`
+
+Default: `Joanna`
+
+Reset to default:
+`!config announcementVoice default`
+
+<a name=fadeMusicOnTalk></a>
+
+---
+
+## settings.fadeMusicOnTalk.title
+
+settings.fadeMusicOnTalk.description
+
+Type: `Boolean`
+
+Default: `true`
+
+Reset to default:
+`!config fadeMusicOnTalk default`
+
+Enable:
+
+`!config fadeMusicOnTalk true`
+
+Disable:
+
+`!config fadeMusicOnTalk false`
+
+<a name=fadeMusicEndDelay></a>
+
+---
+
+## settings.fadeMusicEndDelay.title
+
+settings.fadeMusicEndDelay.description
+
+Type: `Number`
+
+Default: `1`
+
+Reset to default:
+`!config fadeMusicEndDelay default`
