@@ -3,7 +3,7 @@ import { Embed, Message } from 'eris';
 import { IMClient } from '../../client';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import { botSettings, BotSettingsKey, LogAction } from '../../sequelize';
-import { beautify, botSettingsInfo, canClear } from '../../settings';
+import { beautify, botSettingsInfo } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -59,11 +59,11 @@ export default class extends Command {
 
 			const configs: { [x: string]: string[] } = {};
 			Object.keys(botSettingsInfo).forEach((k: BotSettingsKey) => {
-				const info = botSettingsInfo[k];
-				if (!configs[info.grouping[0]]) {
-					configs[info.grouping[0]] = [];
+				const inf = botSettingsInfo[k];
+				if (!configs[inf.grouping[0]]) {
+					configs[inf.grouping[0]] = [];
 				}
-				configs[info.grouping[0]].push('`' + k + '`');
+				configs[inf.grouping[0]].push('`' + k + '`');
 			});
 
 			Object.keys(configs).forEach(group => {
@@ -74,6 +74,7 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
+		const info = botSettingsInfo[key];
 		const oldVal = settings[key];
 		embed.title = key;
 
@@ -86,7 +87,7 @@ export default class extends Command {
 					key
 				});
 
-				if (canClear(key)) {
+				if (info.clearable) {
 					embed.description +=
 						'\n' +
 						t('cmd.botConfig.current.clear', {
@@ -97,7 +98,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.botConfig.current.title'),
-					value: beautify(key, oldVal)
+					value: beautify(info, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.botConfig.current.notSet', {
@@ -110,7 +111,7 @@ export default class extends Command {
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
-			if (!canClear(key)) {
+			if (!info.clearable) {
 				return this.sendReply(
 					message,
 					t('cmd.botConfig.canNotClear', { prefix, key })
@@ -144,7 +145,7 @@ export default class extends Command {
 			embed.description = t('cmd.botConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.botConfig.current.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -161,13 +162,13 @@ export default class extends Command {
 		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.botConfig.previous.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.botConfig.new.title'),
-			value: value !== null ? beautify(key, value) : t('cmd.botConfig.none')
+			value: value !== null ? beautify(info, value) : t('cmd.botConfig.none')
 		});
 
 		// Do any post processing, such as example messages

@@ -1,10 +1,5 @@
 import { memberSettings, MemberSettingsKey } from '../sequelize';
-import {
-	fromDbValue,
-	memberDefaultSettings,
-	MemberSettingsObject,
-	toDbValue
-} from '../settings';
+import { memberDefaultSettings, MemberSettingsObject } from '../settings';
 
 import { Cache } from './Cache';
 
@@ -26,19 +21,7 @@ export class MemberSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set => {
-			if (set.value === null) {
-				return;
-			}
-
-			let memberSets = map.get(set.memberId);
-			if (!memberSets) {
-				memberSets = { ...memberDefaultSettings };
-				map.set(set.memberId, memberSets);
-			}
-			memberSets[set.key] = fromDbValue(set.key, set.value);
-		});
-
+		sets.forEach(set => map.set(set.memberId, set.value));
 		return map;
 	}
 
@@ -55,35 +38,31 @@ export class MemberSettingsCache extends Cache<
 		value: MemberSettingsObject[K]
 	) {
 		const guildSet = await this.get(guildId);
-		const dbVal = toDbValue(key, value);
-		const val = fromDbValue(key, dbVal);
 
 		let set = guildSet.get(userId);
 		if (!set) {
 			set = { ...memberDefaultSettings };
+			guildSet.set(userId, set);
 		}
 
 		// Check if the value changed
-		if (set[key] !== val) {
+		if (set[key] !== value) {
+			set[key] = value;
 			memberSettings.bulkCreate(
 				[
 					{
 						id: null,
 						memberId: userId,
 						guildId,
-						key,
-						value: dbVal
+						value: set
 					}
 				],
 				{
 					updateOnDuplicate: ['value', 'updatedAt']
 				}
 			);
-
-			set[key] = val;
-			guildSet.set(userId, set);
 		}
 
-		return val;
+		return value;
 	}
 }

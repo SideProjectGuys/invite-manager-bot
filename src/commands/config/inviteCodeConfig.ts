@@ -7,7 +7,7 @@ import {
 	SettingsValueResolver
 } from '../../resolvers';
 import { InviteCodeSettingsKey, LogAction } from '../../sequelize';
-import { beautify, canClear, inviteCodeSettingsInfo } from '../../settings';
+import { beautify, inviteCodeSettingsInfo } from '../../settings';
 import { BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -63,13 +63,15 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
+		const info = inviteCodeSettingsInfo[key];
+
 		if (!inv) {
 			const allSets = await this.client.cache.inviteCodes.get(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, invCode) =>
 					embed.fields.push({
 						name: invCode,
-						value: beautify(key, set[key])
+						value: beautify(info, set[key])
 					})
 				);
 			} else {
@@ -102,7 +104,7 @@ export default class extends Command {
 					key
 				});
 
-				if (canClear(key)) {
+				if (info.clearable) {
 					embed.description +=
 						'\n' +
 						t('cmd.inviteCodeConfig.current.clear', {
@@ -113,7 +115,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: beautify(key, oldVal)
+					value: beautify(info, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
@@ -126,7 +128,7 @@ export default class extends Command {
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
-			if (!canClear(key)) {
+			if (!info.clearable) {
 				return this.sendReply(
 					message,
 					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })
@@ -142,13 +144,18 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.inviteCodes.setOne(inv, key, value);
+		value = await this.client.cache.inviteCodes.setOne(
+			inv.guild.id,
+			inv.code,
+			key,
+			value
+		);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.current.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -165,14 +172,14 @@ export default class extends Command {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.previous.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.inviteCodeConfig.new.title'),
 			value:
-				value !== null ? beautify(key, value) : t('cmd.inviteCodeConfig.none')
+				value !== null ? beautify(info, value) : t('cmd.inviteCodeConfig.none')
 		});
 
 		// Do any post processing, such as example messages

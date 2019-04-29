@@ -8,7 +8,7 @@ import {
 	LogAction,
 	SettingsKey
 } from '../../sequelize';
-import { beautify, canClear, settingsInfo } from '../../settings';
+import { beautify, settingsInfo } from '../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -51,6 +51,7 @@ export default class extends Command {
 			return cmd.action(message, [], {}, context);
 		}
 
+		const info = settingsInfo[key];
 		const oldVal = settings[key];
 		embed.title = key;
 
@@ -63,7 +64,7 @@ export default class extends Command {
 					key
 				});
 
-				if (canClear(key)) {
+				if (info.clearable) {
 					embed.description +=
 						'\n' +
 						t('cmd.config.current.clear', {
@@ -74,7 +75,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
-					value: beautify(key, oldVal)
+					value: beautify(info, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.config.current.notSet', {
@@ -87,7 +88,7 @@ export default class extends Command {
 
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
-			if (!canClear(key)) {
+			if (!info.clearable) {
 				return this.sendReply(
 					message,
 					t('cmd.config.canNotClear', { prefix, key })
@@ -109,7 +110,7 @@ export default class extends Command {
 			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
 				name: t('cmd.config.current.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -126,13 +127,13 @@ export default class extends Command {
 		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.config.new.title'),
-			value: value !== null ? beautify(key, value) : t('cmd.config.none')
+			value: value !== null ? beautify(info, value) : t('cmd.config.none')
 		});
 
 		// Do any post processing, such as example messages

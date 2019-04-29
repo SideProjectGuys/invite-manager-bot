@@ -72,7 +72,8 @@ export default class extends Command {
 		});
 
 		await this.client.cache.inviteCodes.setOne(
-			inv,
+			inv.guild.id,
+			inv.code,
 			InviteCodeSettingsKey.name,
 			name
 		);

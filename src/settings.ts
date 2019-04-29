@@ -1,8 +1,9 @@
 import { Channel, Role } from 'eris';
 
 import {
+	ActivityStatus,
+	ActivityType,
 	BotSettingsKey,
-	BotSettingsObject,
 	InviteCodeSettingsKey,
 	Lang,
 	LeaderboardStyle,
@@ -34,6 +35,7 @@ export interface SettingsInfo {
 	exampleValues?: string[];
 	possibleValues?: string[];
 	hasPremiumInfo?: boolean;
+	clearable?: boolean;
 }
 
 export enum SettingsGroup {
@@ -60,7 +62,7 @@ export enum SettingsGroup {
 // ------------------------------------
 // Settings
 // ------------------------------------
-export type SettingsObject = {
+export interface SettingsObject {
 	prefix: string;
 	lang: Lang;
 	logChannel: string;
@@ -144,7 +146,7 @@ export type SettingsObject = {
 	autoModEmojisMaxNumberOfEmojis: number;
 
 	autoModHoistEnabled: boolean;
-};
+}
 
 export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	prefix: {
@@ -534,16 +536,18 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 };
 
 export const defaultSettings: SettingsObject = {} as any;
-Object.keys(settingsInfo).forEach(
-	(k: SettingsKey) => (defaultSettings[k] = settingsInfo[k].defaultValue)
-);
+Object.keys(settingsInfo).forEach((k: SettingsKey) => {
+	const info = settingsInfo[k];
+	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
+	defaultSettings[k] = settingsInfo[k].defaultValue;
+});
 
 // ------------------------------------
 // Member Settings
 // ------------------------------------
-export type MemberSettingsObject = {
+export interface MemberSettingsObject {
 	hideFromLeaderboard: boolean;
-};
+}
 
 export const memberSettingsInfo: { [k in MemberSettingsKey]: SettingsInfo } = {
 	hideFromLeaderboard: {
@@ -554,18 +558,19 @@ export const memberSettingsInfo: { [k in MemberSettingsKey]: SettingsInfo } = {
 };
 
 export const memberDefaultSettings: MemberSettingsObject = {} as any;
-Object.keys(memberSettingsInfo).forEach(
-	(k: MemberSettingsKey) =>
-		(memberDefaultSettings[k] = memberSettingsInfo[k].defaultValue)
-);
+Object.keys(memberSettingsInfo).forEach((k: MemberSettingsKey) => {
+	const info = memberSettingsInfo[k];
+	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
+	memberDefaultSettings[k] = memberSettingsInfo[k].defaultValue;
+});
 
 // ------------------------------------
 // Invite Code Settings
 // ------------------------------------
-export type InviteCodeSettingsObject = {
+export interface InviteCodeSettingsObject {
 	name: string;
 	roles: string[];
-};
+}
 
 export const inviteCodeSettingsInfo: {
 	[k in InviteCodeSettingsKey]: SettingsInfo
@@ -583,14 +588,25 @@ export const inviteCodeSettingsInfo: {
 };
 
 export const inviteCodeDefaultSettings: InviteCodeSettingsObject = {} as any;
-Object.keys(inviteCodeSettingsInfo).forEach(
-	(k: InviteCodeSettingsKey) =>
-		(inviteCodeDefaultSettings[k] = inviteCodeSettingsInfo[k].defaultValue)
-);
+Object.keys(inviteCodeSettingsInfo).forEach((k: InviteCodeSettingsKey) => {
+	const info = inviteCodeSettingsInfo[k];
+	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
+	inviteCodeDefaultSettings[k] = inviteCodeSettingsInfo[k].defaultValue;
+});
 
 // ------------------------------------
 // Bot Settings
 // ------------------------------------
+export interface BotSettingsObject {
+	name: string[];
+	activityStatus: ActivityStatus;
+	activityEnabled: boolean;
+	activityType: ActivityType;
+	activityMessage: string;
+	activityUrl: string;
+	embedDefaultColor: string;
+}
+
 export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
 	activityStatus: {
 		type: 'Enum<ActivityStatus>',
@@ -625,34 +641,16 @@ export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
 };
 
 export const botDefaultSettings: BotSettingsObject = {} as any;
-Object.keys(botSettingsInfo).forEach(
-	(k: BotSettingsKey) =>
-		(botDefaultSettings[k] = botSettingsInfo[k].defaultValue)
-);
+Object.keys(botSettingsInfo).forEach((k: BotSettingsKey) => {
+	const info = botSettingsInfo[k];
+	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
+	botDefaultSettings[k] = info.defaultValue;
+});
 
 // ------------------------------------
 // Functions
 // ------------------------------------
-type AllKeys =
-	| SettingsKey
-	| MemberSettingsKey
-	| InviteCodeSettingsKey
-	| BotSettingsKey;
-export const allSettingsInfo = {
-	...settingsInfo,
-	...memberSettingsInfo,
-	...inviteCodeSettingsInfo,
-	...botSettingsInfo
-};
-
-export function canClear<K extends AllKeys>(key: K) {
-	const info = allSettingsInfo[key];
-	return info.type.endsWith('[]') || info.defaultValue === null;
-}
-
-export function toDbValue<K extends AllKeys>(key: K, value: any): string {
-	const info = allSettingsInfo[key];
-
+export function toDbValue(info: SettingsInfo, value: any): any {
 	if (value === 'default') {
 		return _toDbValue(info.type, info.defaultValue);
 	}
@@ -686,45 +684,18 @@ function _toDbValue(type: string, value: any): string {
 	} else if (type.endsWith('[]')) {
 		const subType = type.substring(0, type.length - 2);
 		return value && value.length > 0
-			? value.map((v: any) => _toDbValue(subType, v)).join(',')
+			? value.map((v: any) => _toDbValue(subType, v))
 			: null;
 	}
 
 	return value;
 }
 
-export function fromDbValue<K extends AllKeys>(key: K, value: string): any {
-	const info = allSettingsInfo[key];
-	return _fromDbValue(info.type, value);
-}
-function _fromDbValue(type: string, value: string): any {
-	// Handle lists first because we don't want to return null for those
-	if (type.endsWith('[]')) {
-		const subType = type.substring(0, type.length - 2);
-		return value && value.length > 0
-			? value.split(',').map(s => _fromDbValue(subType, s))
-			: [];
-	}
-
-	if (value === undefined || value === null) {
-		return null;
-	}
-
-	if (type === 'Boolean') {
-		return value === 'true';
-	} else if (type === 'Number') {
-		return parseInt(value, 10);
-	}
-
-	return value;
-}
-
-export function beautify<K extends AllKeys>(key: K, value: any) {
+export function beautify(info: SettingsInfo, value: any) {
 	if (typeof value === 'undefined' || value === null) {
 		return null;
 	}
 
-	const info = allSettingsInfo[key];
 	switch (info.type) {
 		case 'Boolean':
 			return value ? 'True' : 'False';

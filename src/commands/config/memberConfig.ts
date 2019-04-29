@@ -7,12 +7,7 @@ import {
 	UserResolver
 } from '../../resolvers';
 import { LogAction, MemberSettingsKey } from '../../sequelize';
-import {
-	beautify,
-	canClear,
-	fromDbValue,
-	memberSettingsInfo
-} from '../../settings';
+import { beautify, memberSettingsInfo } from '../../settings';
 import { BasicUser, BotCommand, CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
@@ -65,13 +60,15 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
+		const info = memberSettingsInfo[key];
+
 		if (!user) {
 			const allSets = await this.client.cache.members.get(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set: any) =>
 					embed.fields.push({
 						name: set.memberName,
-						value: fromDbValue(set.key, set.value)
+						value: beautify(set.key, set.value)
 					})
 				);
 			} else {
@@ -96,7 +93,7 @@ export default class extends Command {
 					key
 				});
 
-				if (canClear(key)) {
+				if (info.clearable) {
 					embed.description +=
 						'\n' +
 						t('cmd.inviteCodeConfig.current.clear', {
@@ -107,7 +104,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: beautify(key, oldVal)
+					value: beautify(info, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.memberConfig.current.notSet', {
@@ -119,7 +116,7 @@ export default class extends Command {
 		}
 
 		if (value === null) {
-			if (!canClear(key)) {
+			if (!info.clearable) {
 				this.sendReply(
 					message,
 					t('cmd.memberConfig.canNotClear', { prefix, key })
@@ -146,7 +143,7 @@ export default class extends Command {
 			embed.description = t('cmd.memberConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.memberConfig.current.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -163,13 +160,13 @@ export default class extends Command {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.memberConfig.previous.title'),
-				value: beautify(key, oldVal)
+				value: beautify(info, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.memberConfig.new.title'),
-			value: value !== null ? beautify(key, value) : t('cmd.memberConfig.none')
+			value: value !== null ? beautify(info, value) : t('cmd.memberConfig.none')
 		});
 
 		// Do any post processing, such as example messages
