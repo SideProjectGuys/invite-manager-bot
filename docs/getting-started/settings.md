@@ -160,14 +160,13 @@ There are many config options that can be set. You don't have to set all of them
 
 #### settings.groups.music.general.title
 
-| Setting                                                          | Description                                 |
-| ---------------------------------------------------------------- | ------------------------------------------- |
-| [settings.musicVolume.title](#musicvolume)                       | settings.musicVolume.description            |
-| [settings.announceNextSong.title](#announcenextsong)             | settings.announceNextSong.description       |
-| [settings.announcementVoice.title](#announcementvoice)           | settings.announcementVoice.description      |
-| [settings.fadeMusicOnTalk.title](#fademusicontalk)               | settings.fadeMusicOnTalk.description        |
-| [settings.fadeMusicStartDuration.title](#fademusicstartduration) | settings.fadeMusicStartDuration.description |
-| [settings.fadeMusicEndDelay.title](#fademusicenddelay)           | settings.fadeMusicEndDelay.description      |
+| Setting                                                | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [settings.musicVolume.title](#musicvolume)             | settings.musicVolume.description       |
+| [settings.announceNextSong.title](#announcenextsong)   | settings.announceNextSong.description  |
+| [settings.announcementVoice.title](#announcementvoice) | settings.announcementVoice.description |
+| [settings.fadeMusicOnTalk.title](#fademusicontalk)     | settings.fadeMusicOnTalk.description   |
+| [settings.fadeMusicEndDelay.title](#fademusicenddelay) | settings.fadeMusicEndDelay.description |
 
 <a name=prefix></a>
 
@@ -1591,21 +1590,6 @@ Enable:
 Disable:
 
 `!config fadeMusicOnTalk false`
-
-<a name=fadeMusicStartDuration></a>
-
----
-
-## settings.fadeMusicStartDuration.title
-
-settings.fadeMusicStartDuration.description
-
-Type: `Number`
-
-Default: `0.7`
-
-Reset to default:
-`!config fadeMusicStartDuration default`
 
 <a name=fadeMusicEndDelay></a>
 

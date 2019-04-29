@@ -429,7 +429,7 @@ export class CommandsService {
 				if (typeof val === typeof undefined && arg.required) {
 					this.client.msg.sendReply(
 						message,
-						t('arguments.missingRequired', {
+						t('resolvers.missingRequired', {
 							name: arg.name,
 							usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
 							help: resolver.getHelp(context, args)
@@ -442,7 +442,7 @@ export class CommandsService {
 			} catch (e) {
 				this.client.msg.sendReply(
 					message,
-					t('arguments.invalid', {
+					t('resolvers.invalid', {
 						name: arg.name,
 						usage: '`' + cmd.usage.replace('{prefix}', sets.prefix) + '`',
 						arg: arg.name,

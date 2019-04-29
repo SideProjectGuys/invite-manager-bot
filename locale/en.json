@@ -1095,7 +1095,10 @@
 		},
 		"skip": {
 			"self": {
-				"description": "cmd.skip.self.description"
+				"description": "cmd.skip.self.description",
+				"args": {
+					"amount": "cmd.skip.self.args.amount"
+				}
 			}
 		},
 		"volume": {
