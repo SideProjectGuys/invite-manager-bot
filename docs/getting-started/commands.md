@@ -81,7 +81,7 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | Command                   | Description     | Usage                                |
 | ------------------------- | --------------- | ------------------------------------ |
 | [addRank](#addRank)       | Add a new rank. | !addRank \<role\> \<invites\> [info] |
-| [ranks](#ranks)           | Show all ranks. | !ranks                               |
+| [ranks](#ranks)           | Show all ranks. | !ranks [page]                        |
 | [removeRank](#removeRank) | Remove a rank.  | !removeRank [rank]                   |
 
 ### Config
@@ -139,6 +139,25 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | [unhoist](#unhoist)                   | cmd.unhoist.self.description                                     | !unhoist                                                         |
 | [unmute](#unmute)                     | cmd.unmute.self.description                                      | !unmute \<user\>                                                 |
 | [warn](#warn)                         | Warn a member.                                                   | !warn \<member\> [reason]                                        |
+
+### Music
+
+| Command                   | Description                     | Usage                                                 |
+| ------------------------- | ------------------------------- | ----------------------------------------------------- |
+| [disconnect](#disconnect) | cmd.disconnect.self.description | !disconnect                                           |
+| [lyrics](#lyrics)         | cmd.lyrics.self.description     | !lyrics [-l\|--live]                                  |
+| [mashup](#mashup)         | cmd.mashup.self.description     | !mashup \<videos\>                                    |
+| [nowPlaying](#nowPlaying) | cmd.nowPlaying.self.description | !nowPlaying [-p\|--pin]                               |
+| [pause](#pause)           | cmd.pause.self.description      | !pause                                                |
+| [play](#play)             | cmd.play.self.description       | !play [-p value\|--platform=value][-n\|--next] [link] |
+| [queue](#queue)           | cmd.queue.self.description      | !queue                                                |
+| [repeat](#repeat)         | cmd.repeat.self.description     | !repeat                                               |
+| [resume](#resume)         | cmd.resume.self.description     | !resume                                               |
+| [rewind](#rewind)         | cmd.rewind.self.description     | !rewind                                               |
+| [search](#search)         | cmd.search.self.description     | !search [-p value\|--platform=value][search]          |
+| [seek](#seek)             | cmd.seek.self.description       | !seek [duration]                                      |
+| [skip](#skip)             | cmd.skip.self.description       | !skip                                                 |
+| [volume](#volume)         | cmd.volume.self.description     | !volume [volume]                                      |
 
 ### Other
 
@@ -557,10 +576,10 @@ Show and change the config of the server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| -------- | --------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | The config setting which you want to show/change. | Use one of the following values: `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Value](#Value) | No       | The new value of the setting.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Argument | Type            | Required | Description                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| -------- | --------------- | -------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | The config setting which you want to show/change. | Use one of the following values: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `fadeMusicStartDuration`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
+| value    | [Value](#Value) | No       | The new value of the setting.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ### Examples
 
@@ -621,6 +640,26 @@ cmd.credits.self.description
 
 ```text
 !credits
+```
+
+<a name='disconnect'></a>
+
+---
+
+## !disconnect
+
+cmd.disconnect.self.description
+
+### Usage
+
+```text
+!disconnect
+```
+
+### Examples
+
+```text
+!disconnect
 ```
 
 <a name='export'></a>
@@ -1132,6 +1171,32 @@ cmd.legacyLeaderboard.self.description
 !legacyLeaderboard
 ```
 
+<a name='lyrics'></a>
+
+---
+
+## !lyrics
+
+cmd.lyrics.self.description
+
+### Usage
+
+```text
+!lyrics [-l|--live]
+```
+
+### Flags
+
+| Flag                 | Short     | Type                | Description                |
+| -------------------- | --------- | ------------------- | -------------------------- |
+| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | cmd.lyrics.self.flags.live |
+
+### Examples
+
+```text
+!lyrics
+```
+
 <a name='makeMentionable'></a>
 
 ---
@@ -1166,6 +1231,28 @@ Make a role mentionable for 60 seconds or until it was used.
 ```text
 !makeMentionable "Role with space"
 ```
+
+<a name='mashup'></a>
+
+---
+
+## !mashup
+
+cmd.mashup.self.description
+
+### Usage
+
+```text
+!mashup <videos>
+```
+
+### Arguments
+
+| Argument | Type          | Required | Description                 | Details |
+| -------- | ------------- | -------- | --------------------------- | ------- |
+| videos   | [Text](#Text) | Yes      | cmd.mashup.self.args.videos |         |
+
+### Examples
 
 <a name='memberConfig'></a>
 
@@ -1284,6 +1371,61 @@ cmd.mute.self.description
 
 ### Examples
 
+<a name='nowPlaying'></a>
+
+---
+
+## !nowPlaying
+
+cmd.nowPlaying.self.description
+
+### Usage
+
+```text
+!nowPlaying [-p|--pin]
+```
+
+### Aliases
+
+- `!np`
+- `!now-playing`
+
+### Flags
+
+| Flag                | Short     | Type                | Description                   |
+| ------------------- | --------- | ------------------- | ----------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | cmd.nowPlaying.self.flags.pin |
+
+### Examples
+
+```text
+!nowPlaying
+```
+
+<a name='pause'></a>
+
+---
+
+## !pause
+
+cmd.pause.self.description
+
+### Usage
+
+```text
+!pause
+```
+
+### Aliases
+
+- `!stop`
+
+### Examples
+
+```text
+!pause
+```
+
 <a name='permissions'></a>
 
 ---
@@ -1301,7 +1443,6 @@ Configure permissions to use commands.
 ### Aliases
 
 - `!perms`
-- `!p`
 
 ### Arguments
 
@@ -1334,6 +1475,43 @@ cmd.ping.self.description
 
 ```text
 !ping
+```
+
+<a name='play'></a>
+
+---
+
+## !play
+
+cmd.play.self.description
+
+### Usage
+
+```text
+!play [-p value|--platform=value] [-n|--next] [link]
+```
+
+### Aliases
+
+- `!p`
+
+### Arguments
+
+| Argument | Type          | Required | Description             | Details |
+| -------- | ------------- | -------- | ----------------------- | ------- |
+| link     | [Text](#Text) | No       | cmd.play.self.args.link |         |
+
+### Flags
+
+| Flag                     | Short     | Type                | Description                  |
+| ------------------------ | --------- | ------------------- | ---------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | cmd.play.self.flags.platform |
+| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | cmd.play.self.flags.next     |
+
+### Examples
+
+```text
+!play
 ```
 
 <a name='prefix'></a>
@@ -1487,6 +1665,26 @@ Purge messages in a channel up until a specified message.
 
 ### Examples
 
+<a name='queue'></a>
+
+---
+
+## !queue
+
+cmd.queue.self.description
+
+### Usage
+
+```text
+!queue
+```
+
+### Examples
+
+```text
+!queue
+```
+
 <a name='ranks'></a>
 
 ---
@@ -1498,13 +1696,19 @@ Show all ranks.
 ### Usage
 
 ```text
-!ranks
+!ranks [page]
 ```
 
 ### Aliases
 
 - `!show-ranks`
 - `!showranks`
+
+### Arguments
+
+| Argument | Type              | Required | Description              | Details |
+| -------- | ----------------- | -------- | ------------------------ | ------- |
+| page     | [Number](#Number) | No       | cmd.ranks.self.args.page |         |
 
 ### Examples
 
@@ -1590,6 +1794,30 @@ Remove a rank.
 !removeRank "Role with space"
 ```
 
+<a name='repeat'></a>
+
+---
+
+## !repeat
+
+cmd.repeat.self.description
+
+### Usage
+
+```text
+!repeat
+```
+
+### Aliases
+
+- `!loop`
+
+### Examples
+
+```text
+!repeat
+```
+
 <a name='restoreInvites'></a>
 
 ---
@@ -1630,6 +1858,112 @@ Restore all previously cleared invites.
 !restoreInvites "User with space"
 ```
 
+<a name='resume'></a>
+
+---
+
+## !resume
+
+cmd.resume.self.description
+
+### Usage
+
+```text
+!resume
+```
+
+### Aliases
+
+- `!start`
+
+### Examples
+
+```text
+!resume
+```
+
+<a name='rewind'></a>
+
+---
+
+## !rewind
+
+cmd.rewind.self.description
+
+### Usage
+
+```text
+!rewind
+```
+
+### Aliases
+
+- `!replay`
+
+### Examples
+
+```text
+!rewind
+```
+
+<a name='search'></a>
+
+---
+
+## !search
+
+cmd.search.self.description
+
+### Usage
+
+```text
+!search [-p value|--platform=value] [search]
+```
+
+### Arguments
+
+| Argument | Type          | Required | Description                 | Details |
+| -------- | ------------- | -------- | --------------------------- | ------- |
+| search   | [Text](#Text) | No       | cmd.search.self.args.search |         |
+
+### Flags
+
+| Flag                     | Short     | Type          | Description                    |
+| ------------------------ | --------- | ------------- | ------------------------------ |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | cmd.search.self.flags.platform |
+
+### Examples
+
+```text
+!search
+```
+
+<a name='seek'></a>
+
+---
+
+## !seek
+
+cmd.seek.self.description
+
+### Usage
+
+```text
+!seek [duration]
+```
+
+### Arguments
+
+| Argument | Type              | Required | Description                 | Details |
+| -------- | ----------------- | -------- | --------------------------- | ------- |
+| duration | [Number](#Number) | No       | cmd.seek.self.args.duration |         |
+
+### Examples
+
+```text
+!seek
+```
+
 <a name='setup'></a>
 
 ---
@@ -1655,6 +1989,26 @@ Help with setting up the bot and checking for problems (e.g. missing permissions
 
 ```text
 !setup
+```
+
+<a name='skip'></a>
+
+---
+
+## !skip
+
+cmd.skip.self.description
+
+### Usage
+
+```text
+!skip
+```
+
+### Examples
+
+```text
+!skip
 ```
 
 <a name='softBan'></a>
@@ -1910,6 +2264,32 @@ cmd.unmute.self.description
 | user     | [Member](#Member) | Yes      | The user that should be unmuted. |         |
 
 ### Examples
+
+<a name='volume'></a>
+
+---
+
+## !volume
+
+cmd.volume.self.description
+
+### Usage
+
+```text
+!volume [volume]
+```
+
+### Arguments
+
+| Argument | Type              | Required | Description                 | Details |
+| -------- | ----------------- | -------- | --------------------------- | ------- |
+| volume   | [Number](#Number) | No       | cmd.volume.self.args.volume |         |
+
+### Examples
+
+```text
+!volume
+```
 
 <a name='warn'></a>
 

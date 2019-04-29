@@ -122,7 +122,7 @@ child.on('close', () => {
 
 	// Generate command docs
 	const cmds = [];
-	const cmdDir = path.resolve(__dirname, '../bin/commands/');
+	const cmdDir = path.resolve(__dirname, '../bin/modules/');
 	const fakeClient = {
 		msg: {
 			createEmbed: () => {},
@@ -150,6 +150,11 @@ child.on('close', () => {
 			const clazz = require(file);
 			if (clazz.default) {
 				const constr = clazz.default;
+				const parent = Object.getPrototypeOf(constr);
+				if (!parent || parent.name !== 'Command') {
+					return;
+				}
+
 				const inst = new constr(fakeClient);
 				cmds.push(inst);
 			}

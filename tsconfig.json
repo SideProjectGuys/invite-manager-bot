@@ -6,7 +6,7 @@
 		"esModuleInterop": true,
 		"module": "commonjs",
 		"target": "es2017",
-		"lib": ["es2017", "es2018"],
+		"lib": ["es2017", "es2018", "esnext"],
 		"sourceMap": true,
 		"removeComments": false,
 		"experimentalDecorators": true,
