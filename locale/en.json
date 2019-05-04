@@ -967,7 +967,8 @@
 					"user": "The user that should be unbanned."
 				},
 				"description": "cmd.unban.self.description"
-			}
+			},
+			"error": "cmd.unban.error"
 		},
 		"unhoist": {
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
@@ -1115,7 +1116,8 @@
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown"
+		"unknownInviter": "Unknown",
+		"joinServerWidget": "messages.joinServerWidget"
 	},
 	"moderation": {
 		"punishments": {
@@ -1123,7 +1125,9 @@
 				"ban": "You have been **banned** from **{{ guild }}**",
 				"kick": "You have been **kicked** from **{{ guild }}**",
 				"mute": "You have been **muted** in **{{ guild }}**",
-				"warn": "You have been **warned** in **{{ guild }}**"
+				"warn": "You have been **warned** in **{{ guild }}**",
+				"reason": "moderation.punishments.dm.reason",
+				"amount": "moderation.punishments.dm.amount"
 			}
 		},
 		"strikes": {
@@ -1454,8 +1458,10 @@
 			"music": {
 				"title": "settings.groups.music.title",
 				"general": {
-					"title": "settings.groups.music.general.title"
-				}
+					"title": "settings.groups.music.general.title",
+					"description": "settings.groups.music.general.description"
+				},
+				"description": "settings.groups.music.description"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
