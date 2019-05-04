@@ -1575,6 +1575,7 @@
 	},
 	"music": {
 		"notPlaying": "music.notPlaying",
-		"notConnected": "music.notConnected"
+		"notConnected": "music.notConnected",
+		"voiceChannelRequired": "music.voiceChannelRequired"
 	}
 }
