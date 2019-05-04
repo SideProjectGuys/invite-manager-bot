@@ -31,7 +31,8 @@
 				},
 				"description": "Adds/Removes invites to/from a member."
 			},
-			"zero": "Adding zero invites doesn't really make sense..."
+			"zero": "Adding zero invites doesn't really make sense...",
+			"numberTooLarge": "cmd.addInvites.numberTooLarge"
 		},
 		"addRank": {
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
@@ -1577,5 +1578,9 @@
 		"notPlaying": "music.notPlaying",
 		"notConnected": "music.notConnected",
 		"voiceChannelRequired": "music.voiceChannelRequired"
+	},
+	"roles": {
+		"shouldHave": "roles.shouldHave",
+		"shouldNotHave": "roles.shouldNotHave"
 	}
 }
