@@ -69,7 +69,7 @@ export class YoutubeMusicItem extends MusicItem {
 		);
 	}
 
-	public clone(): YoutubeMusicItem {
+	protected doClone(): YoutubeMusicItem {
 		return new YoutubeMusicItem(this.platform, this);
 	}
 }

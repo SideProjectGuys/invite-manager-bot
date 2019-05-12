@@ -59,7 +59,13 @@ export abstract class MusicItem {
 	}
 	public abstract getProgress(time: number): string;
 
-	public abstract clone(): MusicItem;
+	public clone(): MusicItem {
+		const item = this.doClone();
+		item.setAuthor(this.author);
+		return item;
+	}
+	protected abstract doClone(): MusicItem;
+
 	public toString() {
 		return this.platform.getType() + ':' + this.id;
 	}
