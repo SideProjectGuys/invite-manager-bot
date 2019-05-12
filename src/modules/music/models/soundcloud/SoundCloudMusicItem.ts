@@ -73,7 +73,7 @@ export class SoundcloudMusicItem extends MusicItem {
 		);
 	}
 
-	public clone(): SoundcloudMusicItem {
+	protected doClone(): SoundcloudMusicItem {
 		return new SoundcloudMusicItem(this.platform, this);
 	}
 }

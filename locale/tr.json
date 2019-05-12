@@ -31,7 +31,8 @@
 				},
 				"description": "Adds/Removes invites to/from a member."
 			},
-			"zero": "Adding zero invites doesn't really make sense..."
+			"zero": "Adding zero invites doesn't really make sense...",
+			"numberTooLarge": "cmd.addInvites.numberTooLarge"
 		},
 		"addRank": {
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
@@ -125,10 +126,10 @@
 			"notFound": "Case not found",
 			"self": {
 				"args": {
-					"caseNumber": "cmd.caseDelete.self.args.caseNumber",
-					"reason": "cmd.caseDelete.self.args.reason"
+					"caseNumber": "Case number",
+					"reason": "The reason for removing the case."
 				},
-				"description": "cmd.caseDelete.self.description"
+				"description": "Delete a specific case."
 			},
 			"title": "Case #{{ id }}"
 		},
@@ -136,9 +137,9 @@
 			"notFound": "Case not found",
 			"self": {
 				"args": {
-					"caseNumber": "cmd.caseView.self.args.caseNumber"
+					"caseNumber": "Case number"
 				},
-				"description": "cmd.caseView.self.description"
+				"description": "View info about a specific case."
 			},
 			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
 			"title": "Case #{{ id }}"
@@ -194,7 +195,7 @@
 					"numberOfMessages": "Number of messages that will be searched.",
 					"text": "All messages containing this word will be deleted."
 				},
-				"description": "cmd.cleanText.self.description"
+				"description": "Delete messages containing certain keywords."
 			}
 		},
 		"clearInvites": {
@@ -223,10 +224,10 @@
 				"title": "Current Value"
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotReadMessages": "Bu kanalda **mesajları okuma** yetkim yok.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"mustBeTextChannel": "Bu kanal bir yazı kanalı değil."
 			},
 			"new": {
 				"title": "New Value"
@@ -443,7 +444,7 @@
 			"remove": "Enter a value or a list of values to remove.",
 			"removeEmpty": "The list is already empty.",
 			"self": {
-				"description": "cmd.interactiveConfig.self.description"
+				"description": "Interactive Config"
 			},
 			"set": "Enter the new values for the list.",
 			"values": {
@@ -589,18 +590,18 @@
 		"legacyInvites": {
 			"self": {
 				"args": {
-					"user": "cmd.legacyInvites.self.args.user"
+					"user": "DEPRECATED - this command will be removed soon."
 				},
-				"description": "cmd.legacyInvites.self.description"
+				"description": "DEPRECATED - this command will be removed soon."
 			}
 		},
 		"legacyLeaderboard": {
 			"self": {
 				"args": {
-					"date": "cmd.legacyLeaderboard.self.args.date",
-					"page": "cmd.legacyLeaderboard.self.args.page"
+					"date": "DEPRECATED - this command will be removed soon.",
+					"page": "DEPRECATED - this command will be removed soon."
 				},
-				"description": "cmd.legacyLeaderboard.self.description"
+				"description": "DEPRECATED - this command will be removed soon."
 			}
 		},
 		"makeMentionable": {
@@ -680,7 +681,7 @@
 					"reason": "The reason why this user is muted.",
 					"user": "The user that should be muted."
 				},
-				"description": "cmd.mute.self.description"
+				"description": "Mute a user"
 			}
 		},
 		"permissions": {
@@ -699,7 +700,7 @@
 		},
 		"ping": {
 			"self": {
-				"description": "cmd.ping.self.description"
+				"description": "Ping the bot"
 			}
 		},
 		"prefix": {
@@ -906,11 +907,11 @@
 		"strike": {
 			"self": {
 				"args": {
-					"amount": "cmd.strike.self.args.amount",
-					"member": "cmd.strike.self.args.member",
-					"type": "cmd.strike.self.args.type"
+					"amount": "The amount of strikes to be added",
+					"member": "The member receiving the strikes",
+					"type": "The type of the violation"
 				},
-				"description": "cmd.strike.self.description"
+				"description": "Add strikes to a user"
 			}
 		},
 		"strikeConfig": {
@@ -966,14 +967,15 @@
 					"reason": "The reason why this user is unbanned.",
 					"user": "The user that should be unbanned."
 				},
-				"description": "cmd.unban.self.description"
-			}
+				"description": "Unban a user"
+			},
+			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
 			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"self": {
-				"description": "cmd.unhoist.self.description"
+				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
 			},
 			"starting": "Starting unhoist process...",
 			"title": "Unhoist users"
@@ -986,7 +988,7 @@
 				"args": {
 					"user": "The user that should be unmuted."
 				},
-				"description": "cmd.unmute.self.description"
+				"description": "Unmute a user"
 			}
 		},
 		"warn": {
@@ -1004,118 +1006,119 @@
 		},
 		"disconnect": {
 			"self": {
-				"description": "cmd.disconnect.self.description"
+				"description": "Disconnect the bot from the current voice channel."
 			}
 		},
 		"lyrics": {
 			"self": {
-				"description": "cmd.lyrics.self.description",
+				"description": "Show lyrics of the currently playing song.",
 				"flags": {
-					"live": "cmd.lyrics.self.flags.live"
+					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
 			}
 		},
 		"mashup": {
 			"self": {
-				"description": "cmd.mashup.self.description",
+				"description": "Create a mashup of 2 songs.",
 				"args": {
-					"videos": "cmd.mashup.self.args.videos"
+					"videos": "The videos that should be mashed together."
 				}
 			}
 		},
 		"nowPlaying": {
 			"self": {
-				"description": "cmd.nowPlaying.self.description",
+				"description": "Shows information about the currently playing song",
 				"flags": {
-					"pin": "cmd.nowPlaying.self.flags.pin"
+					"pin": "Pin the now playing message and update it automatically whenever a new song plays."
 				}
 			},
-			"playTime": "cmd.nowPlaying.playTime"
+			"playTime": "Playtime"
 		},
 		"pause": {
 			"self": {
-				"description": "cmd.pause.self.description"
+				"description": "Pause the current song."
 			}
 		},
 		"play": {
 			"self": {
-				"description": "cmd.play.self.description",
+				"description": "Play the song if the queue is empty, otherwise it will add the song to the end of the queue.",
 				"flags": {
-					"platform": "cmd.play.self.flags.platform",
-					"next": "cmd.play.self.flags.next"
+					"platform": "Select the platform where you want the song to be played.",
+					"next": "If set, it will play this song next instead of adding it to the end of the queue."
 				},
 				"args": {
-					"link": "cmd.play.self.args.link"
+					"link": "The link to a specific song or a search term."
 				}
 			}
 		},
 		"queue": {
 			"self": {
-				"description": "cmd.queue.self.description"
+				"description": "Display the songs in the queue."
 			},
-			"empty": "cmd.queue.empty"
+			"empty": "Queue is currently empty. Use the play command to add songs to it."
 		},
 		"repeat": {
 			"self": {
-				"description": "cmd.repeat.self.description"
+				"description": "Set the song to be played on repeat."
 			},
-			"enabled": "cmd.repeat.enabled",
-			"disabled": "cmd.repeat.disabled"
+			"enabled": "This song will now play on repeat.",
+			"disabled": "This song will not be played on repeat anymore."
 		},
 		"resume": {
 			"self": {
-				"description": "cmd.resume.self.description"
+				"description": "Resume the current song."
 			}
 		},
 		"rewind": {
 			"self": {
-				"description": "cmd.rewind.self.description"
+				"description": "Rewind the song and start from the beginning."
 			}
 		},
 		"search": {
 			"self": {
-				"description": "cmd.search.self.description",
+				"description": "Search for the search term and let you chose one of the results.",
 				"flags": {
-					"platform": "cmd.search.self.flags.platform"
+					"platform": "Select the platform where you want the song to be played."
 				},
 				"args": {
-					"search": "cmd.search.self.args.search"
+					"search": "The search term"
 				}
 			},
-			"title": "cmd.search.title",
-			"noResults": "cmd.search.noResults"
+			"title": "Results for {{ term }}",
+			"noResults": "No results found!"
 		},
 		"seek": {
 			"self": {
-				"description": "cmd.seek.self.description",
+				"description": "Skip to a specific part of the song.",
 				"args": {
-					"duration": "cmd.seek.self.args.duration"
+					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
 			}
 		},
 		"skip": {
 			"self": {
-				"description": "cmd.skip.self.description",
+				"description": "Skip the current song and play the next song in the queue.",
 				"args": {
-					"amount": "cmd.skip.self.args.amount"
+					"amount": "How many songs will be skipped."
 				}
 			}
 		},
 		"volume": {
 			"self": {
-				"description": "cmd.volume.self.description",
+				"description": "Set the volume if an argument is passed, or show the current volume.",
 				"args": {
-					"volume": "cmd.volume.self.args.volume"
+					"volume": "The value the volume will be set to."
 				}
 			}
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "JOIN_LEAVE_EMBEDS_IS_PREMIUM",
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
 	"messages": {
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown"
+		"unknownInviter": "Unknown",
+		"joinServerWidget": "The user joined using a server widget."
 	},
 	"moderation": {
 		"punishments": {
@@ -1123,7 +1126,9 @@
 				"ban": "You have been **banned** from **{{ guild }}**",
 				"kick": "You have been **kicked** from **{{ guild }}**",
 				"mute": "You have been **muted** in **{{ guild }}**",
-				"warn": "You have been **warned** in **{{ guild }}**"
+				"warn": "You have been **warned** in **{{ guild }}**",
+				"reason": "Reason: {{ reason }}",
+				"amount": "Amount: {{ amount }}"
 			}
 		},
 		"strikes": {
@@ -1157,7 +1162,7 @@
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
 			"notFound": "Command not found.",
 			"type": "Command",
-			"validValues": "resolvers.command.validValues"
+			"validValues": "Use one of the following values: {{{ values }}}"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1323,11 +1328,11 @@
 			"title": "Timeframe in Seconds"
 		},
 		"autoModWordsBlacklist": {
-			"description": "settings.autoModWordsBlacklist.description",
+			"description": "A list of words that are banned.",
 			"title": "Kara liste"
 		},
 		"autoModWordsEnabled": {
-			"description": "settings.autoModWordsEnabled.description",
+			"description": "Whether or not blacklisted words will be automoderated.",
 			"title": "Enabled"
 		},
 		"autoSubtractFakes": {
@@ -1343,27 +1348,27 @@
 			"title": "Auto Subtract Threshold"
 		},
 		"captchaVerificationFailedMessage": {
-			"description": "settings.captchaVerificationFailedMessage.description",
+			"description": "The message sent to the user if he enters an invalid captcha.",
 			"title": "Failed Message"
 		},
 		"captchaVerificationLogEnabled": {
-			"description": "settings.captchaVerificationLogEnabled.description",
+			"description": "Whether or not verification attempts will be logged.",
 			"title": "Log Enabled"
 		},
 		"captchaVerificationOnJoin": {
-			"description": "settings.captchaVerificationOnJoin.description",
+			"description": "Whether or not captcha verification is enabled.",
 			"title": "Enabled"
 		},
 		"captchaVerificationSuccessMessage": {
-			"description": "settings.captchaVerificationSuccessMessage.description",
+			"description": "The welcome message that will be sent to the user after he successfully verifies.",
 			"title": "Success Message"
 		},
 		"captchaVerificationTimeout": {
-			"description": "settings.captchaVerificationTimeout.description",
+			"description": "The time within which the captcha has to be entered successfully.",
 			"title": "Verification Timeout"
 		},
 		"captchaVerificationWelcomeMessage": {
-			"description": "settings.captchaVerificationWelcomeMessage.description",
+			"description": "The message a user will get after joining a server and instructing them to enter the captcha.",
 			"title": "Welcome Message"
 		},
 		"channels": {
@@ -1452,10 +1457,12 @@
 				"title": "Moderation"
 			},
 			"music": {
-				"title": "settings.groups.music.title",
+				"title": "Music",
 				"general": {
-					"title": "settings.groups.music.general.title"
-				}
+					"title": "Music",
+					"description": "General Music Settings"
+				},
+				"description": "Music Settings"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1495,27 +1502,27 @@
 			"title": "Log Channel"
 		},
 		"modLogChannel": {
-			"description": "settings.modLogChannel.description",
-			"title": "Log Channel"
+			"description": "The channel where moderation logs will be posted in.",
+			"title": "Mod Log Channel"
 		},
 		"modPunishmentBanDeleteMessage": {
-			"description": "settings.modPunishmentBanDeleteMessage.description",
+			"description": "Whether or not \"Ban\" pushment messages will be deleted automatically.",
 			"title": "Delete Ban Messages"
 		},
 		"modPunishmentKickDeleteMessage": {
-			"description": "settings.modPunishmentKickDeleteMessage.description",
+			"description": "Whether or not \"Kick\" pushment messages will be deleted automatically.",
 			"title": "Delete Kick Messages"
 		},
 		"modPunishmentMuteDeleteMessage": {
-			"description": "settings.modPunishmentMuteDeleteMessage.description",
+			"description": "Whether or not \"Mute\" pushment messages will be deleted automatically.",
 			"title": "Delete Mute Messages"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
-			"description": "settings.modPunishmentSoftbanDeleteMessage.description",
+			"description": "Whether or not \"Softban\" pushment messages will be deleted automatically.",
 			"title": "Delete Softban Messages"
 		},
 		"modPunishmentWarnDeleteMessage": {
-			"description": "settings.modPunishmentWarnDeleteMessage.description",
+			"description": "Whether or not \"Warn\" pushment messages will be deleted automatically.",
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
@@ -1539,36 +1546,42 @@
 			"title": "Assignment Style"
 		},
 		"musicVolume": {
-			"title": "settings.musicVolume.title",
-			"description": "settings.musicVolume.description"
+			"title": "Music Volume",
+			"description": "The default volume that is set when the bot joins a voice channel."
 		},
 		"announceNextSong": {
-			"title": "settings.announceNextSong.title",
-			"description": "settings.announceNextSong.description"
+			"title": "Announce Next Song",
+			"description": "Whether or not the next song should be announced in the voice channel."
 		},
 		"announcementVoice": {
-			"title": "settings.announcementVoice.title",
-			"description": "settings.announcementVoice.description"
+			"title": "Announcement Voice",
+			"description": "The voice used in the next song announcements."
 		},
 		"fadeMusicOnTalk": {
-			"title": "settings.fadeMusicOnTalk.title",
-			"description": "settings.fadeMusicOnTalk.description"
+			"title": "Fade Music On Talk",
+			"description": "If enabled, the music will fade down while people are talking."
 		},
 		"fadeMusicStartDuration": {
-			"title": "settings.fadeMusicStartDuration.title",
-			"description": "settings.fadeMusicStartDuration.description"
+			"title": "Fade Music Start Duration",
+			"description": "The duration during which the fade will happen (eg. 1 second)"
 		},
 		"fadeMusicEndDelay": {
-			"title": "settings.fadeMusicEndDelay.title",
-			"description": "settings.fadeMusicEndDelay.description"
+			"title": "Fade Music End Delay",
+			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
 		}
 	},
 	"arguments": {
-		"invalid": "arguments.invalid",
-		"missingRequired": "arguments.missingRequired"
+		"invalid": "The arguments you provided are invalid.",
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
-		"notPlaying": "music.notPlaying",
-		"notConnected": "music.notConnected"
+		"notPlaying": "There is currently no music being played!",
+		"notConnected": "The bot is not connected to a voice channel!",
+		"voiceChannelRequired": "You need to be in a voice channel to use that command!"
+	},
+	"roles": {
+		"shouldHave": "The user should have the roles {{{ shouldHave }}}, but I can't assign them.",
+		"shouldNotHave": "The user should not have the roles {{{ shouldNotHave }}}, but I can't take them away.",
+		"dangerous": "The roles {{{ dangerous }}} are potentially dangerous to assign because they include important permissions."
 	}
 }

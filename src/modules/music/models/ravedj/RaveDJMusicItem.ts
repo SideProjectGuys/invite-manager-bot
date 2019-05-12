@@ -85,7 +85,7 @@ export class RaveDJMusicItem extends MusicItem {
 		);
 	}
 
-	public clone(): RaveDJMusicItem {
+	protected doClone(): RaveDJMusicItem {
 		return new RaveDJMusicItem(this.platform, this);
 	}
 }

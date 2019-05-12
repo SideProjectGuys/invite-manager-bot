@@ -57,7 +57,7 @@ export class IHeartMusicItem extends MusicItem {
 		return '```\n' + this.platform.service.formatTime(time) + '\n```';
 	}
 
-	public clone(): IHeartMusicItem {
+	protected doClone(): IHeartMusicItem {
 		return new IHeartMusicItem(this.platform, this);
 	}
 }

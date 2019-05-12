@@ -14,7 +14,8 @@ export default class extends Command {
 			args: [
 				{
 					name: 'rank',
-					resolver: RoleResolver
+					resolver: RoleResolver,
+					required: true
 				}
 			],
 			group: CommandGroup.Ranks,

@@ -40,7 +40,7 @@ export class TuneInMusicItem extends MusicItem {
 		return '```\n' + this.platform.service.formatTime(time) + '\n```';
 	}
 
-	public clone(): TuneInMusicItem {
+	protected doClone(): TuneInMusicItem {
 		return new TuneInMusicItem(this.platform, this);
 	}
 }

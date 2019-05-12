@@ -29,6 +29,7 @@ export class MusicConnection {
 	private speaking: Set<string> = new Set();
 	private repeat: boolean;
 	private doneCallback: () => void;
+	private lastUpdate: number = 0;
 	private playStart: number = 0;
 
 	public constructor(
@@ -42,6 +43,7 @@ export class MusicConnection {
 
 		this.onSpeakingStart = this.onSpeakingStart.bind(this);
 		this.onSpeakingEnd = this.onSpeakingEnd.bind(this);
+		this.onStateUpdate = this.onStateUpdate.bind(this);
 		this.onStreamEnd = this.onStreamEnd.bind(this);
 	}
 
@@ -133,7 +135,11 @@ export class MusicConnection {
 	}
 
 	public getPlayTime() {
-		return (new Date().getTime() - this.playStart) / 1000;
+		const time =
+			this.player && this.player.paused
+				? this.lastUpdate
+				: new Date().getTime();
+		return (time - this.playStart) / 1000;
 	}
 
 	public getQueue() {
@@ -169,8 +175,9 @@ export class MusicConnection {
 		}
 	}
 
-	private onStateUpdate({ position }: LavaPlayerState) {
-		this.playStart = new Date().getTime() - position;
+	private onStateUpdate(data: LavaPlayerState) {
+		this.lastUpdate = new Date().getTime();
+		this.playStart = this.lastUpdate - data.position;
 	}
 
 	private onSpeakingStart(userId: string) {
@@ -277,6 +284,8 @@ export class MusicConnection {
 			const tracks = await this.service.resolveTracks(stream).catch(() => []);
 
 			this.playStart = new Date().getTime() + 400; // This additional time is lavalink buffering
+			this.player.playing = true;
+			this.player.paused = false;
 			this.musicQueueCache.current = next;
 			this.player.play(tracks[0].track);
 		} else if (this.musicQueueCache.current) {
