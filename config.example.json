@@ -18,7 +18,10 @@
 			"guild": "",
 			"channel": ""
 		},
-		"apiKey": "",
+		"apiAuth": {
+			"username": "",
+			"password": ""
+		},
 		"dblToken": null,
 		"music": {
 			"pollyUrl": "",

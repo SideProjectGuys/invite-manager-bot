@@ -213,12 +213,11 @@ export default class extends Command {
 			} else if (action === Action.Check) {
 				embed.title = t('cmd.premium.check.title');
 
-				const apiKey = this.client.config.bot.apiKey;
 				const userId = message.author.id;
 				const res = await axios
-					.get(
-						`http://invitemanager.co/check/patreon/?apiKey=${apiKey}&userId=${userId}`
-					)
+					.get(`https://api.invman.gg/patreon/check/?userId=${userId}`, {
+						auth: this.client.config.bot.apiAuth
+					})
 					.catch(() => undefined);
 
 				if (!res) {
