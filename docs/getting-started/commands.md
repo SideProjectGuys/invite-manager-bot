@@ -69,8 +69,8 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | [inviteDetails](#inviteDetails)         | Shows details about where your invites are from. | !inviteDetails [user]                                            |
 | [invites](#invites)                     | Show personal invites.                           | !invites [user]                                                  |
 | [leaderboard](#leaderboard)             | Show members with most invites.                  | !leaderboard [-c value\|--compare=value][duration] [page]        |
-| [legacyInvites](#legacyInvites)         | cmd.legacyInvites.self.description               | !legacyInvites [user]                                            |
-| [legacyLeaderboard](#legacyLeaderboard) | cmd.legacyLeaderboard.self.description           | !legacyLeaderboard [page][date]                                  |
+| [legacyInvites](#legacyInvites)         | DEPRECATED - this command will be removed soon.  | !legacyInvites [user]                                            |
+| [legacyLeaderboard](#legacyLeaderboard) | DEPRECATED - this command will be removed soon.  | !legacyLeaderboard [page][date]                                  |
 | [removeInvites](#removeInvites)         | cmd.removeInvites.self.description               | !removeInvites \<user\> \<amount\> [reason]                      |
 | [restoreInvites](#restoreInvites)       | Restore all previously cleared invites.          | !restoreInvites [user]                                           |
 | [subtractFakes](#subtractFakes)         | Remove fake invites from all users.              | !subtractFakes                                                   |
@@ -90,7 +90,7 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
 | [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
 | [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | cmd.interactiveConfig.self.description                    | !interactiveConfig                          |
+| [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Show and change the config of members of the server.      | !memberConfig [key][user] [value]           |
 | [permissions](#permissions)             | Configure permissions to use commands.                    | !permissions [cmd][role]                    |
@@ -104,7 +104,7 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
 | [members](#members) | Show member count of current server.                                              | !members        |
-| [ping](#ping)       | cmd.ping.self.description                                                         | !ping           |
+| [ping](#ping)       | Ping the bot                                                                      | !ping           |
 | [prefix](#prefix)   | Shows the current prefix of the bot.                                              | !prefix         |
 | [setup](#setup)     | Help with setting up the bot and checking for problems (e.g. missing permissions) | !setup          |
 | [support](#support) | Get an invite link to our support server.                                         | !support        |
@@ -119,45 +119,45 @@ This arguments expects a Discord Channel. You can use any of the following metho
 
 ### Moderation
 
-| Command                               | Description                                                      | Usage                                                            |
-| ------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Ban a member from the server.                                    | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | cmd.caseDelete.self.description                                  | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | cmd.caseView.self.description                                    | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Check violation and punishment history of a user.                | !check \<user\>                                                  |
-| [clean](#clean)                       | Clean a channel of certain message types.                        | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Clear short messages                                             | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | cmd.cleanText.self.description                                   | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Kick a member from the server.                                   | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | cmd.mute.self.description                                        | !mute \<user\> [reason]                                          |
-| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes. | !punishmentConfig [punishment][strikes] [args]                   |
-| [purgeUntil](#purgeUntil)             | Purge messages in a channel up until a specified message.        | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | Ban and then automatically unban a member from the server.       | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | cmd.strike.self.description                                      | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | Configure strikes received for various violations.               | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | cmd.unban.self.description                                       | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | cmd.unhoist.self.description                                     | !unhoist                                                         |
-| [unmute](#unmute)                     | cmd.unmute.self.description                                      | !unmute \<user\>                                                 |
-| [warn](#warn)                         | Warn a member.                                                   | !warn \<member\> [reason]                                        |
+| Command                               | Description                                                                                                                                   | Usage                                                            |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [ban](#ban)                           | Ban a member from the server.                                                                                                                 | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
+| [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
+| [mute](#mute)                         | Mute a user                                                                                                                                   | !mute \<user\> [reason]                                          |
+| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
+| [purgeUntil](#purgeUntil)             | Purge messages in a channel up until a specified message.                                                                                     | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | Ban and then automatically unban a member from the server.                                                                                    | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | Add strikes to a user                                                                                                                         | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | Configure strikes received for various violations.                                                                                            | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | Unban a user                                                                                                                                  | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list. | !unhoist                                                         |
+| [unmute](#unmute)                     | Unmute a user                                                                                                                                 | !unmute \<user\>                                                 |
+| [warn](#warn)                         | Warn a member.                                                                                                                                | !warn \<member\> [reason]                                        |
 
 ### Music
 
-| Command                   | Description                     | Usage                                                   |
-| ------------------------- | ------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | cmd.disconnect.self.description | !disconnect                                             |
-| [lyrics](#lyrics)         | cmd.lyrics.self.description     | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | cmd.mashup.self.description     | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | cmd.nowPlaying.self.description | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | cmd.pause.self.description      | !pause                                                  |
-| [play](#play)             | cmd.play.self.description       | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | cmd.queue.self.description      | !queue                                                  |
-| [repeat](#repeat)         | cmd.repeat.self.description     | !repeat                                                 |
-| [resume](#resume)         | cmd.resume.self.description     | !resume                                                 |
-| [rewind](#rewind)         | cmd.rewind.self.description     | !rewind                                                 |
-| [search](#search)         | cmd.search.self.description     | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | cmd.seek.self.description       | !seek [duration]                                        |
-| [skip](#skip)             | cmd.skip.self.description       | !skip [amount]                                          |
-| [volume](#volume)         | cmd.volume.self.description     | !volume [volume]                                        |
+| Command                   | Description                                                                                  | Usage                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | Disconnect the bot from the current voice channel.                                           | !disconnect                                             |
+| [lyrics](#lyrics)         | Show lyrics of the currently playing song.                                                   | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | Create a mashup of 2 songs.                                                                  | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | Shows information about the currently playing song                                           | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | Pause the current song.                                                                      | !pause                                                  |
+| [play](#play)             | Play the song if the queue is empty, otherwise it will add the song to the end of the queue. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | Display the songs in the queue.                                                              | !queue                                                  |
+| [repeat](#repeat)         | Set the song to be played on repeat.                                                         | !repeat                                                 |
+| [resume](#resume)         | Resume the current song.                                                                     | !resume                                                 |
+| [rewind](#rewind)         | Rewind the song and start from the beginning.                                                | !rewind                                                 |
+| [search](#search)         | Search for the search term and let you chose one of the results.                             | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | Skip to a specific part of the song.                                                         | !seek [duration]                                        |
+| [skip](#skip)             | Skip the current song and play the next song in the queue.                                   | !skip [amount]                                          |
+| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.                         | !volume [volume]                                        |
 
 ### Other
 
@@ -333,7 +333,7 @@ Get general information about the bot.
 
 ## !caseDelete
 
-cmd.caseDelete.self.description
+Delete a specific case.
 
 ### Usage
 
@@ -349,10 +349,10 @@ cmd.caseDelete.self.description
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                         | Details |
-| ---------- | ----------------- | -------- | ----------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | cmd.caseDelete.self.args.caseNumber |         |
-| reason     | [Text](#Text)     | No       | cmd.caseDelete.self.args.reason     |         |
+| Argument   | Type              | Required | Description                       | Details |
+| ---------- | ----------------- | -------- | --------------------------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
+| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
 
 ### Examples
 
@@ -366,7 +366,7 @@ cmd.caseDelete.self.description
 
 ## !caseView
 
-cmd.caseView.self.description
+View info about a specific case.
 
 ### Usage
 
@@ -382,9 +382,9 @@ cmd.caseView.self.description
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | cmd.caseView.self.args.caseNumber |         |
+| Argument   | Type              | Required | Description | Details |
+| ---------- | ----------------- | -------- | ----------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | Case number |         |
 
 ### Examples
 
@@ -488,7 +488,7 @@ Clear short messages
 
 ## !cleanText
 
-cmd.cleanText.self.description
+Delete messages containing certain keywords.
 
 ### Usage
 
@@ -648,7 +648,7 @@ cmd.credits.self.description
 
 ## !disconnect
 
-cmd.disconnect.self.description
+Disconnect the bot from the current voice channel.
 
 ### Usage
 
@@ -807,9 +807,9 @@ Display help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                  | Details                       |
-| -------- | ------------------- | -------- | -------------------------------------------- | ----------------------------- |
-| command  | [Command](#Command) | No       | The command to get detailed information for. | resolvers.command.validValues |
+| Argument | Type                | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------- | ------------------- | -------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [Command](#Command) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `legacyInvites`, `legacyLeaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -875,7 +875,7 @@ Show info about a specific member.
 
 ## !interactiveConfig
 
-cmd.interactiveConfig.self.description
+Interactive Config
 
 ### Usage
 
@@ -1111,7 +1111,7 @@ Show members with most invites.
 > [!WARNING|style:flat]
 > This command has been deprecated and will be removed soon, please avoid using it.
 
-cmd.legacyInvites.self.description
+DEPRECATED - this command will be removed soon.
 
 ### Usage
 
@@ -1125,9 +1125,9 @@ cmd.legacyInvites.self.description
 
 ### Arguments
 
-| Argument | Type          | Required | Description                      | Details |
-| -------- | ------------- | -------- | -------------------------------- | ------- |
-| user     | [User](#User) | No       | cmd.legacyInvites.self.args.user |         |
+| Argument | Type          | Required | Description                                     | Details |
+| -------- | ------------- | -------- | ----------------------------------------------- | ------- |
+| user     | [User](#User) | No       | DEPRECATED - this command will be removed soon. |         |
 
 ### Examples
 
@@ -1144,7 +1144,7 @@ cmd.legacyInvites.self.description
 > [!WARNING|style:flat]
 > This command has been deprecated and will be removed soon, please avoid using it.
 
-cmd.legacyLeaderboard.self.description
+DEPRECATED - this command will be removed soon.
 
 ### Usage
 
@@ -1160,10 +1160,10 @@ cmd.legacyLeaderboard.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                          | Details |
-| -------- | ----------------- | -------- | ------------------------------------ | ------- |
-| page     | [Number](#Number) | No       | cmd.legacyLeaderboard.self.args.page |         |
-| date     | [Text](#Text)     | No       | cmd.legacyLeaderboard.self.args.date |         |
+| Argument | Type              | Required | Description                                     | Details |
+| -------- | ----------------- | -------- | ----------------------------------------------- | ------- |
+| page     | [Number](#Number) | No       | DEPRECATED - this command will be removed soon. |         |
+| date     | [Text](#Text)     | No       | DEPRECATED - this command will be removed soon. |         |
 
 ### Examples
 
@@ -1177,7 +1177,7 @@ cmd.legacyLeaderboard.self.description
 
 ## !lyrics
 
-cmd.lyrics.self.description
+Show lyrics of the currently playing song.
 
 ### Usage
 
@@ -1187,9 +1187,9 @@ cmd.lyrics.self.description
 
 ### Flags
 
-| Flag                 | Short     | Type                | Description                |
-| -------------------- | --------- | ------------------- | -------------------------- |
-| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | cmd.lyrics.self.flags.live |
+| Flag                 | Short     | Type                | Description                                                          |
+| -------------------- | --------- | ------------------- | -------------------------------------------------------------------- |
+| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | If set, then the lyrics will sync with the current time of the song. |
 
 ### Examples
 
@@ -1238,7 +1238,7 @@ Make a role mentionable for 60 seconds or until it was used.
 
 ## !mashup
 
-cmd.mashup.self.description
+Create a mashup of 2 songs.
 
 ### Usage
 
@@ -1248,9 +1248,9 @@ cmd.mashup.self.description
 
 ### Arguments
 
-| Argument | Type          | Required | Description                 | Details |
-| -------- | ------------- | -------- | --------------------------- | ------- |
-| videos   | [Text](#Text) | Yes      | cmd.mashup.self.args.videos |         |
+| Argument | Type          | Required | Description                                | Details |
+| -------- | ------------- | -------- | ------------------------------------------ | ------- |
+| videos   | [Text](#Text) | Yes      | The videos that should be mashed together. |         |
 
 ### Examples
 
@@ -1354,7 +1354,7 @@ Mention an unmentionable role.
 
 ## !mute
 
-cmd.mute.self.description
+Mute a user
 
 ### Usage
 
@@ -1377,7 +1377,7 @@ cmd.mute.self.description
 
 ## !nowPlaying
 
-cmd.nowPlaying.self.description
+Shows information about the currently playing song
 
 ### Usage
 
@@ -1392,9 +1392,9 @@ cmd.nowPlaying.self.description
 
 ### Flags
 
-| Flag                | Short     | Type                | Description                   |
-| ------------------- | --------- | ------------------- | ----------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | cmd.nowPlaying.self.flags.pin |
+| Flag                | Short     | Type                | Description                                                                        |
+| ------------------- | --------- | ------------------- | ---------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Pin the now playing message and update it automatically whenever a new song plays. |
 
 ### Examples
 
@@ -1408,7 +1408,7 @@ cmd.nowPlaying.self.description
 
 ## !pause
 
-cmd.pause.self.description
+Pause the current song.
 
 ### Usage
 
@@ -1446,10 +1446,10 @@ Configure permissions to use commands.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                       | Details                       |
-| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ----------------------------- |
-| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | resolvers.command.validValues |
-| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                               |
+| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `legacyInvites`, `legacyLeaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ### Examples
 
@@ -1463,7 +1463,7 @@ Configure permissions to use commands.
 
 ## !ping
 
-cmd.ping.self.description
+Ping the bot
 
 ### Usage
 
@@ -1483,7 +1483,7 @@ cmd.ping.self.description
 
 ## !play
 
-cmd.play.self.description
+Play the song if the queue is empty, otherwise it will add the song to the end of the queue.
 
 ### Usage
 
@@ -1497,16 +1497,16 @@ cmd.play.self.description
 
 ### Arguments
 
-| Argument | Type          | Required | Description             | Details |
-| -------- | ------------- | -------- | ----------------------- | ------- |
-| link     | [Text](#Text) | Yes      | cmd.play.self.args.link |         |
+| Argument | Type          | Required | Description                                   | Details |
+| -------- | ------------- | -------- | --------------------------------------------- | ------- |
+| link     | [Text](#Text) | Yes      | The link to a specific song or a search term. |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                | Description                  |
-| ------------------------ | --------- | ------------------- | ---------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | cmd.play.self.flags.platform |
-| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | cmd.play.self.flags.next     |
+| Flag                     | Short     | Type                | Description                                                                       |
+| ------------------------ | --------- | ------------------- | --------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Select the platform where you want the song to be played.                         |
+| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | If set, it will play this song next instead of adding it to the end of the queue. |
 
 ### Examples
 
@@ -1667,7 +1667,7 @@ Purge messages in a channel up until a specified message.
 
 ## !queue
 
-cmd.queue.self.description
+Display the songs in the queue.
 
 ### Usage
 
@@ -1796,7 +1796,7 @@ Remove a rank.
 
 ## !repeat
 
-cmd.repeat.self.description
+Set the song to be played on repeat.
 
 ### Usage
 
@@ -1860,7 +1860,7 @@ Restore all previously cleared invites.
 
 ## !resume
 
-cmd.resume.self.description
+Resume the current song.
 
 ### Usage
 
@@ -1884,7 +1884,7 @@ cmd.resume.self.description
 
 ## !rewind
 
-cmd.rewind.self.description
+Rewind the song and start from the beginning.
 
 ### Usage
 
@@ -1908,7 +1908,7 @@ cmd.rewind.self.description
 
 ## !search
 
-cmd.search.self.description
+Search for the search term and let you chose one of the results.
 
 ### Usage
 
@@ -1918,15 +1918,15 @@ cmd.search.self.description
 
 ### Arguments
 
-| Argument | Type          | Required | Description                 | Details |
-| -------- | ------------- | -------- | --------------------------- | ------- |
-| search   | [Text](#Text) | Yes      | cmd.search.self.args.search |         |
+| Argument | Type          | Required | Description     | Details |
+| -------- | ------------- | -------- | --------------- | ------- |
+| search   | [Text](#Text) | Yes      | The search term |         |
 
 ### Flags
 
-| Flag                     | Short     | Type          | Description                    |
-| ------------------------ | --------- | ------------- | ------------------------------ |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | cmd.search.self.flags.platform |
+| Flag                     | Short     | Type          | Description                                               |
+| ------------------------ | --------- | ------------- | --------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | Select the platform where you want the song to be played. |
 
 ### Examples
 
@@ -1936,7 +1936,7 @@ cmd.search.self.description
 
 ## !seek
 
-cmd.seek.self.description
+Skip to a specific part of the song.
 
 ### Usage
 
@@ -1946,9 +1946,9 @@ cmd.seek.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                 | Details |
-| -------- | ----------------- | -------- | --------------------------- | ------- |
-| duration | [Number](#Number) | No       | cmd.seek.self.args.duration |         |
+| Argument | Type              | Required | Description                                                                | Details |
+| -------- | ----------------- | -------- | -------------------------------------------------------------------------- | ------- |
+| duration | [Number](#Number) | No       | The position the song will be skipped to (from the beginning, in seconds). |         |
 
 ### Examples
 
@@ -1989,7 +1989,7 @@ Help with setting up the bot and checking for problems (e.g. missing permissions
 
 ## !skip
 
-cmd.skip.self.description
+Skip the current song and play the next song in the queue.
 
 ### Usage
 
@@ -2003,9 +2003,9 @@ cmd.skip.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description               | Details |
-| -------- | ----------------- | -------- | ------------------------- | ------- |
-| amount   | [Number](#Number) | No       | cmd.skip.self.args.amount |         |
+| Argument | Type              | Required | Description                     | Details |
+| -------- | ----------------- | -------- | ------------------------------- | ------- |
+| amount   | [Number](#Number) | No       | How many songs will be skipped. |         |
 
 ### Examples
 
@@ -2052,7 +2052,7 @@ Ban and then automatically unban a member from the server.
 
 ## !strike
 
-cmd.strike.self.description
+Add strikes to a user
 
 ### Usage
 
@@ -2062,11 +2062,11 @@ cmd.strike.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                 | Details                                                                                                                                                      |
-| -------- | ----------------- | -------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| member   | [Member](#Member) | Yes      | cmd.strike.self.args.member |                                                                                                                                                              |
-| type     | [Enum](#Enum)     | Yes      | cmd.strike.self.args.type   | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
-| amount   | [Number](#Number) | Yes      | cmd.strike.self.args.amount |                                                                                                                                                              |
+| Argument | Type              | Required | Description                       | Details                                                                                                                                                      |
+| -------- | ----------------- | -------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| member   | [Member](#Member) | Yes      | The member receiving the strikes  |                                                                                                                                                              |
+| type     | [Enum](#Enum)     | Yes      | The type of the violation         | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
+| amount   | [Number](#Number) | Yes      | The amount of strikes to be added |                                                                                                                                                              |
 
 ### Examples
 
@@ -2204,7 +2204,7 @@ Try the premium version of InviteManager for free for a limited duration.
 
 ## !unban
 
-cmd.unban.self.description
+Unban a user
 
 ### Usage
 
@@ -2227,7 +2227,7 @@ cmd.unban.self.description
 
 ## !unhoist
 
-cmd.unhoist.self.description
+Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list.
 
 ### Usage
 
@@ -2251,7 +2251,7 @@ cmd.unhoist.self.description
 
 ## !unmute
 
-cmd.unmute.self.description
+Unmute a user
 
 ### Usage
 
@@ -2273,7 +2273,7 @@ cmd.unmute.self.description
 
 ## !volume
 
-cmd.volume.self.description
+Set the volume if an argument is passed, or show the current volume.
 
 ### Usage
 
@@ -2283,9 +2283,9 @@ cmd.volume.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                 | Details |
-| -------- | ----------------- | -------- | --------------------------- | ------- |
-| volume   | [Number](#Number) | No       | cmd.volume.self.args.volume |         |
+| Argument | Type              | Required | Description                          | Details |
+| -------- | ----------------- | -------- | ------------------------------------ | ------- |
+| volume   | [Number](#Number) | No       | The value the volume will be set to. |         |
 
 ### Examples
 
