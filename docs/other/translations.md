@@ -21,4 +21,4 @@ To change the language you can use the command `!config lang en` . Replace "en" 
 
 ## Help
 
-If you would like to help us with the translations of an existing language, or add a completely new language, please join our [support server on discord](https://discord.gg/x3NGUSX) and tell the staff you would like to help translate the bot.
+If you would like to help us with the translations of an existing language, or add a completely new language, please contact our staff in our [support server on discord](https://discord.gg/x3NGUSX) and sign up to our [Transifex Project](https://www.transifex.com/sideprojectguys/invitemanager-bot/).
