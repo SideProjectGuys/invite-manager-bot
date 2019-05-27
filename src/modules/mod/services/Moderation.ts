@@ -693,7 +693,7 @@ export class ModerationService {
 		const strike = strikesCache.find(s => s.type === type);
 		const amount = strike ? strike.amount : 0;
 
-		const newName = NAME_DEHOIST_PREFIX + ' ' + name;
+		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
 		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
 		this.logViolationModAction(guild, member.user, type, amount, [

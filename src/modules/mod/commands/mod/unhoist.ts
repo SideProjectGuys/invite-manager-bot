@@ -94,7 +94,7 @@ export default class extends Command {
 					continue;
 				}
 
-				const newName = NAME_DEHOIST_PREFIX + ' ' + name;
+				const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
 				await guild
 					.editMember(member.user.id, { nick: newName }, 'Unhoist command')
 					.then(() => changed++)
