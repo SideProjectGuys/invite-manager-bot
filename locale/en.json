@@ -972,7 +972,7 @@
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
+			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\nErrored: {{ errored }}\n",
 			"processing": "Processing batches... {{ current }}/{{ total }}",
 			"self": {
 				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
