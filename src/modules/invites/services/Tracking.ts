@@ -168,7 +168,6 @@ export class TrackingService {
 					guildId: role.guild.id
 				}
 			});
-
 			await roles.destroy({
 				where: {
 					id: role.id,
