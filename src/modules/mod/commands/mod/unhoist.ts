@@ -26,8 +26,8 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		let lastId: string = undefined;
-		const batches = Math.ceil(guild.memberCount / 1000);
+		const total = guild.memberCount;
+		const batches = Math.ceil(total / 1000);
 
 		const embed = this.createEmbed({
 			title: t('cmd.unhoist.title'),
@@ -39,28 +39,42 @@ export default class extends Command {
 			return;
 		}
 
+		let processed = 0;
 		let changed = 0;
-		let ignored = 0;
+		let excluded = 0;
 		let errored = 0;
-		for (let i = 0; i < batches; i++) {
-			embed.description = t('cmd.unhoist.processing', {
-				current: i + 1,
-				total: batches
-			});
-			await msg.edit({ embed });
+		let lastId: string = undefined;
 
+		embed.description = t('cmd.unhoist.processing', {
+			total,
+			processed,
+			changed,
+			excluded,
+			errored
+		});
+		await msg.edit({ embed });
+
+		for (let i = 0; i < batches; i++) {
 			const members = await guild.getRESTMembers(1000, lastId);
-			lastId = members[members.length - 1].id;
+			lastId = members[members.length - 1].user.id;
 
 			for (const member of members) {
-				// Ignore missing members?
-				if (!member) {
-					continue;
+				processed++;
+
+				if (processed % 500 === 0) {
+					embed.description = t('cmd.unhoist.processing', {
+						total,
+						processed,
+						changed,
+						excluded,
+						errored
+					});
+					await msg.edit({ embed });
 				}
 
 				// Ignore bots
 				if (member.bot) {
-					ignored++;
+					excluded++;
 					continue;
 				}
 
@@ -74,7 +88,7 @@ export default class extends Command {
 							r => member.roles.indexOf(r) >= 0
 						)
 					) {
-						ignored++;
+						excluded++;
 						continue;
 					}
 				}
@@ -84,7 +98,7 @@ export default class extends Command {
 					settings.autoModIgnoredRoles &&
 					settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
 				) {
-					ignored++;
+					excluded++;
 					continue;
 				}
 
@@ -102,7 +116,13 @@ export default class extends Command {
 			}
 		}
 
-		embed.description = t('cmd.unhoist.done', { changed, ignored, errored });
+		embed.description = t('cmd.unhoist.done', {
+			total,
+			processed,
+			changed,
+			excluded,
+			errored
+		});
 		await msg.edit({ embed });
 	}
 }
