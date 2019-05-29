@@ -1110,6 +1110,9 @@
 					"volume": "The value the volume will be set to."
 				}
 			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
