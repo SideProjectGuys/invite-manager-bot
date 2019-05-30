@@ -558,7 +558,8 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	announcementVoice: {
 		type: 'Enum<AnnouncementVoice>',
 		grouping: [SettingsGroup.music, SettingsGroup.general],
-		defaultValue: 'Joanna'
+		defaultValue: 'Joanna',
+		possibleValues: Object.values(AnnouncementVoice)
 	},
 
 	fadeMusicOnTalk: {
@@ -635,7 +636,8 @@ export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
 	activityStatus: {
 		type: 'Enum<ActivityStatus>',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
-		defaultValue: 'online'
+		defaultValue: 'online',
+		possibleValues: Object.values(ActivityStatus)
 	},
 	activityEnabled: {
 		type: 'Boolean',
@@ -645,7 +647,8 @@ export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
 	activityType: {
 		type: 'Enum<ActivityType>',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
-		defaultValue: 'playing'
+		defaultValue: 'playing',
+		possibleValues: Object.values(ActivityType)
 	},
 	activityMessage: {
 		type: 'String',
