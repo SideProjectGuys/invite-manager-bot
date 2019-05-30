@@ -1,0 +1,30 @@
+import { Message } from 'eris';
+
+import { IMClient } from '../../../../client';
+import { Command, Context } from '../../../../framework/commands/Command';
+import { BotCommand, CommandGroup } from '../../../../types';
+
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: BotCommand.ping,
+			aliases: [],
+			group: CommandGroup.Info,
+			guildOnly: false
+		});
+	}
+
+	public async action(
+		message: Message,
+		args: any[],
+		flags: {},
+		context: Context
+	): Promise<any> {
+		const msg = await message.channel
+			.createMessage('Pong!')
+			.catch(() => undefined);
+		if (msg) {
+			msg.edit(`Pong! (${(msg.createdAt - message.createdAt).toFixed(0)}ms)`);
+		}
+	}
+}

@@ -262,7 +262,15 @@ export enum SettingsKey {
 	autoModEmojisEnabled = 'autoModEmojisEnabled',
 	autoModEmojisMaxNumberOfEmojis = 'autoModEmojisMaxNumberOfEmojis',
 
-	autoModHoistEnabled = 'autoModHoistEnabled'
+	autoModHoistEnabled = 'autoModHoistEnabled',
+
+	musicVolume = 'musicVolume',
+
+	announceNextSong = 'announceNextSong',
+	announcementVoice = 'announcementVoice',
+
+	fadeMusicOnTalk = 'fadeMusicOnTalk',
+	fadeMusicEndDelay = 'fadeMusicEndDelay'
 }
 
 export enum Lang {
@@ -293,6 +301,17 @@ export enum LeaderboardStyle {
 export enum RankAssignmentStyle {
 	all = 'all',
 	highest = 'highest'
+}
+
+export enum AnnouncementVoice {
+	Joanna = 'Joanna',
+	Salli = 'Salli',
+	Kendra = 'Kendra',
+	Kimberly = 'Kimberly',
+	Ivy = 'Ivy',
+	Matthew = 'Matthew',
+	Justin = 'Justin',
+	Joey = 'Joey'
 }
 
 export interface SettingAttributes extends BaseAttributes {
@@ -1185,7 +1204,6 @@ members.hasMany(punishments, { foreignKey: 'creatorId' });
 // ------------------------------------
 // Scheduled Actions
 // ------------------------------------
-
 export enum ScheduledActionType {
 	unmute = 'unmute'
 }
@@ -1222,7 +1240,6 @@ guilds.hasMany(scheduledActions);
 // ------------------------------------
 // Reports
 // ------------------------------------
-
 export enum ReportType {
 	fraud = 'fraud'
 }
@@ -1255,7 +1272,6 @@ guilds.hasMany(reports);
 // ------------------------------------
 // DB Stats
 // ------------------------------------
-
 export interface DBStatsAttributes extends BaseAttributes {
 	key: string;
 	value: number;
@@ -1273,9 +1289,41 @@ export const dbStats = sequelize.define<DBStatsInstance, DBStatsAttributes>(
 );
 
 // ------------------------------------
+// Music History
+// ------------------------------------
+export interface MusicHistoryAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	memberId: string;
+	sourcePlatform: string;
+	sourceLink: string;
+	skippedAt: number;
+}
+export interface MusicHistoryInstance
+	extends Sequelize.Instance<MusicHistoryAttributes>,
+		MusicHistoryAttributes {}
+
+export const musicHistory = sequelize.define<
+	MusicHistoryInstance,
+	MusicHistoryAttributes
+>('musicHistory', {
+	id: { type: Sequelize.INTEGER, primaryKey: true },
+	guildId: Sequelize.STRING(32),
+	memberId: Sequelize.STRING(32),
+	sourcePlatform: Sequelize.STRING,
+	sourceLink: Sequelize.STRING,
+	skippedAt: Sequelize.INTEGER
+});
+
+musicHistory.belongsTo(guilds);
+guilds.hasMany(musicHistory);
+
+musicHistory.belongsTo(members);
+members.hasMany(musicHistory);
+
+// ------------------------------------
 // BotSettings
 // ------------------------------------
-
 export enum BotSettingsKey {
 	activityStatus = 'activityStatus',
 	activityEnabled = 'activityEnabled',
@@ -1312,4 +1360,35 @@ export const botSettings = sequelize.define<
 >('botSettings', {
 	id: { type: Sequelize.STRING(32), primaryKey: true },
 	value: Sequelize.JSON
+});
+
+// ------------------------------------
+// MusicNodes
+// ------------------------------------
+export interface MusicNodeAttributes extends BaseAttributes {
+	id: number;
+	host: string;
+	port: number;
+	region: string;
+	password: string;
+	isRegular: boolean;
+	isPremium: boolean;
+	isCustom: boolean;
+}
+export interface MusicNodeInstance
+	extends Sequelize.Instance<MusicNodeAttributes>,
+		MusicNodeAttributes {}
+
+export const musicNodes = sequelize.define<
+	MusicNodeInstance,
+	MusicNodeAttributes
+>('musicNodes', {
+	id: { type: Sequelize.INTEGER, primaryKey: true },
+	host: Sequelize.STRING(255),
+	port: Sequelize.INTEGER,
+	region: Sequelize.STRING(16),
+	password: Sequelize.STRING(255),
+	isRegular: Sequelize.BOOLEAN,
+	isPremium: Sequelize.BOOLEAN,
+	isCustom: Sequelize.BOOLEAN
 });

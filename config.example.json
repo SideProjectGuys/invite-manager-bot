@@ -18,8 +18,22 @@
 			"guild": "",
 			"channel": ""
 		},
-		"apiKey": "",
-		"dblToken": null
+		"apiAuth": {
+			"username": "",
+			"password": ""
+		},
+		"dblToken": null,
+		"music": {
+			"pollyUrl": "",
+			"nodes": [
+				{
+					"host": "",
+					"port": 0,
+					"region": "",
+					"password": ""
+				}
+			]
+		}
 	},
 	"rabbitmq": {
 		"hostname": "localhost",

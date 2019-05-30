@@ -58,14 +58,14 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Captcha
 
-| Setting                                               | Description                                            |
-| ----------------------------------------------------- | ------------------------------------------------------ |
-| [Enabled](#captchaverificationonjoin)                 | settings.captchaVerificationOnJoin.description         |
-| [Welcome Message](#captchaverificationwelcomemessage) | settings.captchaVerificationWelcomeMessage.description |
-| [Success Message](#captchaverificationsuccessmessage) | settings.captchaVerificationSuccessMessage.description |
-| [Failed Message](#captchaverificationfailedmessage)   | settings.captchaVerificationFailedMessage.description  |
-| [Verification Timeout](#captchaverificationtimeout)   | settings.captchaVerificationTimeout.description        |
-| [Log Enabled](#captchaverificationlogenabled)         | settings.captchaVerificationLogEnabled.description     |
+| Setting                                               | Description                                                                                   |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| [Enabled](#captchaverificationonjoin)                 | Whether or not captcha verification is enabled.                                               |
+| [Welcome Message](#captchaverificationwelcomemessage) | The message a user will get after joining a server and instructing them to enter the captcha. |
+| [Success Message](#captchaverificationsuccessmessage) | The welcome message that will be sent to the user after he successfully verifies.             |
+| [Failed Message](#captchaverificationfailedmessage)   | The message sent to the user if he enters an invalid captcha.                                 |
+| [Verification Timeout](#captchaverificationtimeout)   | The time within which the captcha has to be entered successfully.                             |
+| [Log Enabled](#captchaverificationlogenabled)         | Whether or not verification attempts will be logged.                                          |
 
 #### General
 
@@ -82,17 +82,17 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Logging
 
-| Setting                                                                | Description                                                  |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Log Enabled](#automodlogenabled)                                      | settings.autoModLogEnabled.description                       |
-| [Log Channel](#modlogchannel)                                          | settings.modLogChannel.description                           |
-| [Delete Bot Messages](#automoddeletebotmessage)                        | settings.autoModDeleteBotMessage.description                 |
-| [Delete Bot Message Timeout](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description |
-| [Delete Ban Messages](#modpunishmentbandeletemessage)                  | settings.modPunishmentBanDeleteMessage.description           |
-| [Delete Kick Messages](#modpunishmentkickdeletemessage)                | settings.modPunishmentKickDeleteMessage.description          |
-| [Delete Softban Messages](#modpunishmentsoftbandeletemessage)          | settings.modPunishmentSoftbanDeleteMessage.description       |
-| [Delete Warn Messages](#modpunishmentwarndeletemessage)                | settings.modPunishmentWarnDeleteMessage.description          |
-| [Delete Mute Messages](#modpunishmentmutedeletemessage)                | settings.modPunishmentMuteDeleteMessage.description          |
+| Setting                                                                | Description                                                               |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [Log Enabled](#automodlogenabled)                                      | settings.autoModLogEnabled.description                                    |
+| [Mod Log Channel](#modlogchannel)                                      | The channel where moderation logs will be posted in.                      |
+| [Delete Bot Messages](#automoddeletebotmessage)                        | settings.autoModDeleteBotMessage.description                              |
+| [Delete Bot Message Timeout](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description              |
+| [Delete Ban Messages](#modpunishmentbandeletemessage)                  | Whether or not "Ban" pushment messages will be deleted automatically.     |
+| [Delete Kick Messages](#modpunishmentkickdeletemessage)                | Whether or not "Kick" pushment messages will be deleted automatically.    |
+| [Delete Softban Messages](#modpunishmentsoftbandeletemessage)          | Whether or not "Softban" pushment messages will be deleted automatically. |
+| [Delete Warn Messages](#modpunishmentwarndeletemessage)                | Whether or not "Warn" pushment messages will be deleted automatically.    |
+| [Delete Mute Messages](#modpunishmentmutedeletemessage)                | Whether or not "Mute" pushment messages will be deleted automatically.    |
 
 #### Invites
 
@@ -111,10 +111,10 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Banned Words
 
-| Setting                             | Description                                |
-| ----------------------------------- | ------------------------------------------ |
-| [Enabled](#automodwordsenabled)     | settings.autoModWordsEnabled.description   |
-| [Blacklist](#automodwordsblacklist) | settings.autoModWordsBlacklist.description |
+| Setting                             | Description                                             |
+| ----------------------------------- | ------------------------------------------------------- |
+| [Enabled](#automodwordsenabled)     | Whether or not blacklisted words will be automoderated. |
+| [Blacklist](#automodwordsblacklist) | A list of words that are banned.                        |
 
 #### Caps
 
@@ -155,6 +155,18 @@ There are many config options that can be set. You don't have to set all of them
 | [Enabled](#automodemojisenabled)                   | settings.autoModEmojisEnabled.description           |
 | [Max # of Emojis](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
 | [Dehoist Enabled](#automodhoistenabled)            | settings.autoModHoistEnabled.description            |
+
+### Music
+
+#### Music
+
+| Setting                                    | Description                                                                               |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [Music Volume](#musicvolume)               | The default volume that is set when the bot joins a voice channel.                        |
+| [Announce Next Song](#announcenextsong)    | Whether or not the next song should be announced in the voice channel.                    |
+| [Announcement Voice](#announcementvoice)   | The voice used in the next song announcements.                                            |
+| [Fade Music On Talk](#fademusicontalk)     | If enabled, the music will fade down while people are talking.                            |
+| [Fade Music End Delay](#fademusicenddelay) | The delay of how many seconds noone has to speak for the volume to return back to normal. |
 
 <a name=prefix></a>
 
@@ -528,7 +540,7 @@ Examples:
 
 ## Enabled
 
-settings.captchaVerificationOnJoin.description
+Whether or not captcha verification is enabled.
 
 Type: `Boolean`
 
@@ -551,7 +563,7 @@ Disable:
 
 ## Welcome Message
 
-settings.captchaVerificationWelcomeMessage.description
+The message a user will get after joining a server and instructing them to enter the captcha.
 
 Type: `String`
 
@@ -570,7 +582,7 @@ Examples:
 
 ## Success Message
 
-settings.captchaVerificationSuccessMessage.description
+The welcome message that will be sent to the user after he successfully verifies.
 
 Type: `String`
 
@@ -589,7 +601,7 @@ Examples:
 
 ## Failed Message
 
-settings.captchaVerificationFailedMessage.description
+The message sent to the user if he enters an invalid captcha.
 
 Type: `String`
 
@@ -608,7 +620,7 @@ Examples:
 
 ## Verification Timeout
 
-settings.captchaVerificationTimeout.description
+The time within which the captcha has to be entered successfully.
 
 Type: `Number`
 
@@ -629,7 +641,7 @@ Examples:
 
 ## Log Enabled
 
-settings.captchaVerificationLogEnabled.description
+Whether or not verification attempts will be logged.
 
 Type: `Boolean`
 
@@ -843,9 +855,9 @@ Disable:
 
 ---
 
-## Log Channel
+## Mod Log Channel
 
-settings.modLogChannel.description
+The channel where moderation logs will be posted in.
 
 Type: `Channel`
 
@@ -910,7 +922,7 @@ Examples:
 
 ## Delete Ban Messages
 
-settings.modPunishmentBanDeleteMessage.description
+Whether or not "Ban" pushment messages will be deleted automatically.
 
 Type: `Boolean`
 
@@ -933,7 +945,7 @@ Disable:
 
 ## Delete Kick Messages
 
-settings.modPunishmentKickDeleteMessage.description
+Whether or not "Kick" pushment messages will be deleted automatically.
 
 Type: `Boolean`
 
@@ -956,7 +968,7 @@ Disable:
 
 ## Delete Softban Messages
 
-settings.modPunishmentSoftbanDeleteMessage.description
+Whether or not "Softban" pushment messages will be deleted automatically.
 
 Type: `Boolean`
 
@@ -979,7 +991,7 @@ Disable:
 
 ## Delete Warn Messages
 
-settings.modPunishmentWarnDeleteMessage.description
+Whether or not "Warn" pushment messages will be deleted automatically.
 
 Type: `Boolean`
 
@@ -1002,7 +1014,7 @@ Disable:
 
 ## Delete Mute Messages
 
-settings.modPunishmentMuteDeleteMessage.description
+Whether or not "Mute" pushment messages will be deleted automatically.
 
 Type: `Boolean`
 
@@ -1136,7 +1148,7 @@ Disable:
 
 ## Enabled
 
-settings.autoModWordsEnabled.description
+Whether or not blacklisted words will be automoderated.
 
 Type: `Boolean`
 
@@ -1159,7 +1171,7 @@ Disable:
 
 ## Blacklist
 
-settings.autoModWordsBlacklist.description
+A list of words that are banned.
 
 Type: `String[]`
 
@@ -1502,3 +1514,94 @@ Enable:
 Disable:
 
 `!config autoModHoistEnabled false`
+
+<a name=musicVolume></a>
+
+---
+
+## Music Volume
+
+The default volume that is set when the bot joins a voice channel.
+
+Type: `Number`
+
+Default: `100`
+
+Reset to default:
+`!config musicVolume default`
+
+<a name=announceNextSong></a>
+
+---
+
+## Announce Next Song
+
+Whether or not the next song should be announced in the voice channel.
+
+Type: `Boolean`
+
+Default: `true`
+
+Reset to default:
+`!config announceNextSong default`
+
+Enable:
+
+`!config announceNextSong true`
+
+Disable:
+
+`!config announceNextSong false`
+
+<a name=announcementVoice></a>
+
+---
+
+## Announcement Voice
+
+The voice used in the next song announcements.
+
+Type: `Enum<AnnouncementVoice>`
+
+Default: `Joanna`
+
+Reset to default:
+`!config announcementVoice default`
+
+<a name=fadeMusicOnTalk></a>
+
+---
+
+## Fade Music On Talk
+
+If enabled, the music will fade down while people are talking.
+
+Type: `Boolean`
+
+Default: `true`
+
+Reset to default:
+`!config fadeMusicOnTalk default`
+
+Enable:
+
+`!config fadeMusicOnTalk true`
+
+Disable:
+
+`!config fadeMusicOnTalk false`
+
+<a name=fadeMusicEndDelay></a>
+
+---
+
+## Fade Music End Delay
+
+The delay of how many seconds noone has to speak for the volume to return back to normal.
+
+Type: `Number`
+
+Default: `1`
+
+Reset to default:
+`!config fadeMusicEndDelay default`
