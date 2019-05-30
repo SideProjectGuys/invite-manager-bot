@@ -400,11 +400,17 @@ export class InvitesService {
 
 		const hidden = (await memberSettings.findAll({
 			attributes: ['memberId'],
-			where: {
-				guildId,
-				key: MemberSettingsKey.hideFromLeaderboard,
-				value: 'true'
-			},
+			where: sequelize.and(
+				sequelize.where(sequelize.col('guildId'), guildId),
+				sequelize.where(
+					sequelize.fn(
+						'JSON_EXTRACT',
+						sequelize.col('value'),
+						'$.hideFromLeaderboard'
+					),
+					'true'
+				)
+			),
 			raw: true
 		})).map(i => i.memberId);
 
