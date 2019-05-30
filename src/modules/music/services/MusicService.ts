@@ -61,7 +61,10 @@ export class MusicService {
 				: this.client.type === BotType.pro
 				? 'isPremium'
 				: 'isRegular';
-		this.nodes = await musicNodes.findAll({ where: { [typeFilter]: true } });
+		this.nodes = await musicNodes.findAll({
+			where: { [typeFilter]: true },
+			raw: true
+		});
 
 		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
