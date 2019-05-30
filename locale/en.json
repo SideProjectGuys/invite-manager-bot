@@ -1116,7 +1116,10 @@
 			}
 		},
 		"fixRanks": {
-			"done": "Done fixing ranks."
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",

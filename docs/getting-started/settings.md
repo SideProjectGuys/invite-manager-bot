@@ -1568,6 +1568,12 @@ Default: `Joanna`
 Reset to default:
 `!config announcementVoice default`
 
+Possible values: `Joanna`, `Salli`, `Kendra`, `Kimberly`, `Ivy`, `Matthew`, `Justin`, `Joey`
+
+Example:
+
+`!config announcementVoice Joanna`
+
 <a name=fadeMusicOnTalk></a>
 
 ---
