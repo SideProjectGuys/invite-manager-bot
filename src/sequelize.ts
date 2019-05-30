@@ -1,5 +1,12 @@
 import Sequelize from 'sequelize';
 
+import {
+	BotSettingsObject,
+	InviteCodeSettingsObject,
+	MemberSettingsObject,
+	SettingsObject
+} from './settings';
+
 const config = require('../config.json');
 
 export const sequelize = new Sequelize({
@@ -310,8 +317,7 @@ export enum AnnouncementVoice {
 export interface SettingAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
-	key: SettingsKey;
-	value: string;
+	value: SettingsObject;
 }
 export interface SettingInstance
 	extends Sequelize.Instance<SettingAttributes>,
@@ -323,9 +329,8 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 	'setting',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		key: Sequelize.ENUM(Object.values(SettingsKey)),
-		value: Sequelize.TEXT,
-		guildId: Sequelize.STRING(32)
+		guildId: Sequelize.STRING(32),
+		value: Sequelize.JSON
 	},
 	{
 		timestamps: true,
@@ -333,7 +338,7 @@ export const settings = sequelize.define<SettingInstance, SettingAttributes>(
 		indexes: [
 			{
 				unique: true,
-				fields: ['guildId', 'key']
+				fields: ['guildId']
 			}
 		]
 	}
@@ -352,8 +357,7 @@ export interface MemberSettingsAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
 	memberId: string;
-	key: MemberSettingsKey;
-	value: string;
+	value: MemberSettingsObject;
 }
 export interface MemberSettingsInstance
 	extends Sequelize.Instance<MemberSettingsAttributes>,
@@ -369,10 +373,9 @@ export const memberSettings = sequelize.define<
 	'memberSettings',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		key: Sequelize.ENUM(Object.values(MemberSettingsKey)),
-		value: Sequelize.TEXT,
 		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32)
+		memberId: Sequelize.STRING(32),
+		value: Sequelize.JSON
 	},
 	{
 		timestamps: true,
@@ -380,7 +383,7 @@ export const memberSettings = sequelize.define<
 		indexes: [
 			{
 				unique: true,
-				fields: ['guildId', 'memberId', 'key']
+				fields: ['guildId', 'memberId']
 			}
 		]
 	}
@@ -468,8 +471,7 @@ export interface InviteCodeSettingsAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
 	inviteCode: string;
-	key: InviteCodeSettingsKey;
-	value: string;
+	value: InviteCodeSettingsObject;
 }
 export interface InviteCodeSettingsInstance
 	extends Sequelize.Instance<InviteCodeSettingsAttributes>,
@@ -485,10 +487,9 @@ export const inviteCodeSettings = sequelize.define<
 	'inviteCodeSettings',
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		key: Sequelize.ENUM(Object.values(InviteCodeSettingsKey)),
-		value: Sequelize.TEXT,
 		guildId: Sequelize.STRING(32),
-		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin'
+		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		value: Sequelize.JSON
 	},
 	{
 		timestamps: true,
@@ -1344,15 +1345,6 @@ export enum ActivityType {
 	listening = 'listening',
 	watching = 'watching'
 }
-
-export type BotSettingsObject = {
-	activityStatus: ActivityStatus;
-	activityEnabled: boolean;
-	activityType: ActivityType;
-	activityMessage: string;
-	activityUrl: string;
-	embedDefaultColor: string;
-};
 
 export interface BotSettingsAttributes extends BaseAttributes {
 	id: string;

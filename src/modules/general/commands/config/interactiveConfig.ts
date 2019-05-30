@@ -6,15 +6,15 @@ import { SettingsValueResolver } from '../../../../framework/resolvers';
 import { SettingsKey } from '../../../../sequelize';
 import {
 	beautify,
-	fromDbValue,
 	SettingsGroup,
 	settingsInfo,
+	SettingsInfo,
 	toDbValue
 } from '../../../../settings';
 import { BotCommand, CommandGroup, Permissions } from '../../../../types';
 
 interface ConfigMenu {
-	items: SettingsKey[];
+	items: [SettingsKey, SettingsInfo][];
 	subMenus: SettingsGroup[];
 }
 
@@ -94,7 +94,7 @@ export default class extends Command {
 			.forEach((key: SettingsKey) => {
 				const info = settingsInfo[key];
 				if (info.grouping.length === path.length) {
-					menu.items.push(key);
+					menu.items.push([key, settingsInfo[key]]);
 				} else {
 					const group = info.grouping[path.length];
 					if (!menu.subMenus.includes(group)) {
@@ -135,9 +135,9 @@ export default class extends Command {
 				.concat(
 					menu.items.map(item => ({
 						type: 'key',
-						value: item as string,
-						title: t(`settings.${item}.title`),
-						description: beautify(item, context.settings[item])
+						value: item[0],
+						title: t(`settings.${item[0]}.title`),
+						description: beautify(item[1], context.settings[item[0]])
 					}))
 				);
 
@@ -230,7 +230,7 @@ export default class extends Command {
 		let error: string = null;
 		do {
 			const val = context.settings[key];
-			const current = beautify(key, val);
+			const current = beautify(info, val);
 			const text = context.t('cmd.interactiveConfig.change', {
 				current,
 				possible
@@ -307,7 +307,7 @@ export default class extends Command {
 							}
 
 							newVal = (val as string[])
-								.concat(fromDbValue(key, toDbValue(key, rawNewVal)))
+								.concat(toDbValue(info, rawNewVal))
 								.filter((v, i, list) => list.indexOf(v) === i);
 						}
 					} catch (err) {
@@ -371,7 +371,7 @@ export default class extends Command {
 								continue;
 							}
 
-							newVal = rawNewVal;
+							newVal = toDbValue(info, rawNewVal);
 						}
 					} catch (err) {
 						error = err.message;
@@ -409,10 +409,12 @@ export default class extends Command {
 						continue;
 					}
 
+					const newValue = toDbValue(info, rawNewVal);
+
 					await this.client.cache.settings.setOne(
 						context.guild.id,
 						key,
-						rawNewVal
+						newValue
 					);
 					return 'up';
 				} catch (err) {
@@ -583,8 +585,6 @@ export default class extends Command {
 			if (info.type === 'Channel') {
 				channels = [value as TextChannel];
 			}
-
-			console.log(channels);
 
 			for (const channel of channels) {
 				if (!(channel instanceof TextChannel)) {

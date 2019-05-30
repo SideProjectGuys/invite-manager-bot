@@ -1,10 +1,5 @@
 import { settings, SettingsKey } from '../../sequelize';
-import {
-	defaultSettings,
-	fromDbValue,
-	SettingsObject,
-	toDbValue
-} from '../../settings';
+import { defaultSettings, SettingsObject } from '../../settings';
 
 import { Cache } from './Cache';
 
@@ -14,12 +9,8 @@ export class SettingsCache extends Cache<SettingsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<SettingsObject> {
-		const sets = await settings.findAll({ where: { guildId } });
-
-		const obj: SettingsObject = { ...defaultSettings };
-		sets.forEach(set => (obj[set.key] = fromDbValue(set.key, set.value)));
-
-		return obj;
+		const set = await settings.findOne({ where: { guildId } });
+		return set && set.value ? set.value : { ...defaultSettings };
 	}
 
 	public async setOne<K extends SettingsKey>(
@@ -27,31 +18,27 @@ export class SettingsCache extends Cache<SettingsObject> {
 		key: K,
 		value: SettingsObject[K]
 	): Promise<SettingsObject[K]> {
-		const cfg = await this.get(guildId);
-		const dbVal = toDbValue(key, value);
-		const val = fromDbValue(key, dbVal);
+		const set = await this.get(guildId);
 
 		// Check if the value changed
-		if (cfg[key] !== val) {
+		if (set[key] !== value) {
+			set[key] = value;
+
 			// Save into DB
 			settings.bulkCreate(
 				[
 					{
 						id: null,
 						guildId,
-						key,
-						value: dbVal
+						value: set
 					}
 				],
 				{
 					updateOnDuplicate: ['value', 'updatedAt']
 				}
 			);
-
-			cfg[key] = val;
-			this.cache.set(guildId, cfg);
 		}
 
-		return val;
+		return value;
 	}
 }
