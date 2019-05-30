@@ -202,6 +202,12 @@ export class RabbitMqService {
 
 			case ShardCommand.FLUSH_CACHE:
 				Object.values(this.client.cache).forEach(c => c.flush(guildId));
+				sendResponse({});
+				break;
+
+			case ShardCommand.RELOAD_MUSIC_NODES:
+				this.client.music.init();
+				sendResponse({});
 				break;
 
 			case ShardCommand.LEAVE_GUILD:

@@ -3,8 +3,8 @@ import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
-import { AnnouncementVoice } from '../../../sequelize';
-import { LavaTrack } from '../../../types';
+import { AnnouncementVoice, musicNodes } from '../../../sequelize';
+import { BotType, LavaTrack } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
@@ -36,7 +36,7 @@ interface MusicNode {
 export class MusicService {
 	public client: IMClient;
 	public cache: MusicCache;
-	private nodes: MusicNode[];
+	private nodes: MusicNode[] = [];
 
 	public platforms: MusicPlatformService;
 	private musicConnections: Map<string, MusicConnection>;
@@ -47,14 +47,23 @@ export class MusicService {
 
 	public constructor(client: IMClient) {
 		this.client = client;
-		this.nodes = client.config.bot.music.nodes;
-
 		this.cache = client.cache.music;
+
 		this.platforms = new MusicPlatformService(client);
 		this.musicConnections = new Map();
 	}
 
 	public async init() {
+		// Load nodes from database
+		const typeFilter =
+			this.client.type === BotType.custom
+				? 'isCustom'
+				: this.client.type === BotType.pro
+				? 'isPro'
+				: 'isRegular';
+		this.nodes = await musicNodes.findAll({ where: { [typeFilter]: true } });
+
+		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
 			numShards: 1,
 			userId: this.client.user.id,

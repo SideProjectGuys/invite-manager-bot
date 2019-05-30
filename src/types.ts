@@ -56,7 +56,8 @@ export enum ShardCommand {
 	OWNER_DM = 'OWNER_DM',
 	USER_DM = 'USER_DM',
 	LEAVE_GUILD = 'LEAVE_GUILD',
-	STATUS = 'STATUS'
+	STATUS = 'STATUS',
+	RELOAD_MUSIC_NODES = 'RELOAD_MUSIC_NODES'
 }
 
 export enum ChartType {
@@ -111,6 +112,7 @@ export enum InvitesCommand {
 	subtractLeaves = 'subtractLeaves',
 
 	addRank = 'addRank',
+	fixRanks = 'fixRanks',
 	ranks = 'ranks',
 	removeRank = 'removeRank',
 

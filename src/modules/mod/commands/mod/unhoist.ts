@@ -3,7 +3,10 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { CommandGroup, ModerationCommand } from '../../../../types';
-import { NAME_HOIST_REGEX } from '../../services/Moderation';
+import {
+	NAME_DEHOIST_PREFIX,
+	NAME_HOIST_REGEX
+} from '../../services/Moderation';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -23,8 +26,8 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		let lastId: string = undefined;
-		const batches = Math.ceil(guild.memberCount / 1000);
+		const total = guild.memberCount;
+		const batches = Math.ceil(total / 1000);
 
 		const embed = this.createEmbed({
 			title: t('cmd.unhoist.title'),
@@ -36,28 +39,43 @@ export default class extends Command {
 			return;
 		}
 
+		let processed = 0;
 		let changed = 0;
-		let ignored = 0;
+		let excluded = 0;
+		let errored = 0;
+		let lastId: string = undefined;
+
+		embed.description = t('cmd.unhoist.processing', {
+			total,
+			processed,
+			changed,
+			excluded,
+			errored
+		});
+		await msg.edit({ embed });
+
 		for (let i = 0; i < batches; i++) {
-			embed.description = t('cmd.unhoist.processing', {
-				current: i + 1,
-				total: batches
-			});
-			await msg.edit({ embed });
-
 			const members = await guild.getRESTMembers(1000, lastId);
-			lastId = members[members.length - 1].id;
+			lastId = members[members.length - 1].user.id;
 
-			members.forEach(member => {
-				// Ignore missing members?
-				if (!member) {
-					return;
+			for (const member of members) {
+				processed++;
+
+				if (processed % 500 === 0) {
+					embed.description = t('cmd.unhoist.processing', {
+						total,
+						processed,
+						changed,
+						excluded,
+						errored
+					});
+					await msg.edit({ embed });
 				}
 
 				// Ignore bots
 				if (member.bot) {
-					ignored++;
-					return;
+					excluded++;
+					continue;
 				}
 
 				// If moderated roles are set then only moderate those roles
@@ -70,8 +88,8 @@ export default class extends Command {
 							r => member.roles.indexOf(r) >= 0
 						)
 					) {
-						ignored++;
-						return;
+						excluded++;
+						continue;
 					}
 				}
 
@@ -80,26 +98,31 @@ export default class extends Command {
 					settings.autoModIgnoredRoles &&
 					settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
 				) {
-					ignored++;
-					return;
+					excluded++;
+					continue;
 				}
 
 				const name = member.nick ? member.nick : member.username;
 
 				if (!NAME_HOIST_REGEX.test(name)) {
-					return;
+					continue;
 				}
 
-				const newName = '▼ ' + name;
-				guild
-					.editMember(member.user.id, { nick: newName }, 'Dehoist command')
-					.catch(() => undefined);
-
-				changed++;
-			});
+				const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
+				await guild
+					.editMember(member.user.id, { nick: newName }, 'Unhoist command')
+					.then(() => changed++)
+					.catch(() => errored++);
+			}
 		}
 
-		embed.description = t('cmd.unhoist.done', { changed, ignored });
+		embed.description = t('cmd.unhoist.done', {
+			total,
+			processed,
+			changed,
+			excluded,
+			errored
+		});
 		await msg.edit({ embed });
 	}
 }

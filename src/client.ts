@@ -25,15 +25,17 @@ import { MusicCache } from './modules/music/cache/MusicCache';
 import { MusicService } from './modules/music/services/MusicService';
 import {
 	botSettings,
-	BotSettingsObject,
 	dbStats,
 	guilds,
 	LogAction,
-	SettingAttributes,
 	settings,
 	SettingsKey
 } from './sequelize';
-import { botDefaultSettings, defaultSettings, toDbValue } from './settings';
+import {
+	botDefaultSettings,
+	BotSettingsObject,
+	defaultSettings
+} from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 const config = require('../config.json');
@@ -328,23 +330,23 @@ export class IMClient extends Client {
 			});
 
 			const defChannel = await this.getDefaultChannel(guild);
-			const newSets = {
+			const newSettings = {
 				...defaultSettings,
 				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
 			};
 
-			const sets: SettingAttributes[] = Object.keys(newSets)
-				.filter((key: SettingsKey) => newSets[key] !== null)
-				.map((key: SettingsKey) => ({
-					id: null,
-					key,
-					value: toDbValue(key, newSets[key]),
-					guildId: guild.id
-				}));
-
-			await settings.bulkCreate(sets, {
-				ignoreDuplicates: true
-			});
+			await settings.bulkCreate(
+				[
+					{
+						id: null,
+						guildId: guild.id,
+						value: newSettings
+					}
+				],
+				{
+					ignoreDuplicates: true
+				}
+			);
 		} else if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(

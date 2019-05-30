@@ -10,6 +10,8 @@ export abstract class Cache<CachedObject> {
 	protected cache: Map<string, CachedObject> = new Map();
 	protected cacheTime: Map<string, moment.Moment> = new Map();
 
+	private pending: Map<string, Promise<CachedObject>> = new Map();
+
 	// Constructor
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -27,7 +29,16 @@ export abstract class Cache<CachedObject> {
 			}
 		}
 
-		const obj = await this._get(key);
+		// Check if we're already waiting for this cache update
+		const res = this.pending.get(key);
+		if (res) {
+			return await res;
+		}
+
+		// Update the cache, and save it as pending so other requests can use it
+		const promise = this._get(key).finally(() => this.pending.delete(key));
+		this.pending.set(key, promise);
+		const obj = await promise;
 
 		this.cache.set(key, obj);
 		this.cacheTime.set(key, moment().add(maxCacheDuration));

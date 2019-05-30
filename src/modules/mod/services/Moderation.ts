@@ -682,18 +682,18 @@ export class ModerationService {
 			return;
 		}
 
-		const type = ViolationType.hoist;
-		const strikesCache = await this.client.cache.strikes.get(guild.id);
-		const strike = strikesCache.find(s => s.type === type);
-		const amount = strike ? strike.amount : 0;
-
 		const name = member.nick ? member.nick : member.username;
 
 		if (!NAME_HOIST_REGEX.test(name)) {
 			return;
 		}
 
-		const newName = '▼ ' + name;
+		const type = ViolationType.hoist;
+		const strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strike = strikesCache.find(s => s.type === type);
+		const amount = strike ? strike.amount : 0;
+
+		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
 		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
 		this.logViolationModAction(guild, member.user, type, amount, [

@@ -32,7 +32,8 @@
 				"description": "Adds/Removes invites to/from a member."
 			},
 			"zero": "Adding zero invites doesn't really make sense...",
-			"numberTooLarge": "cmd.addInvites.numberTooLarge"
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
@@ -62,7 +63,8 @@
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
-			}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
 			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
@@ -178,7 +180,8 @@
 				"description": "Clean a channel of certain message types."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages"
+			"title": "Deleted Messages",
+			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
 			"self": {
@@ -491,7 +494,8 @@
 				"description": "Show and change the config of invite codes of the server."
 			},
 			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config"
+			"title": "Invite Code Config",
+			"noneSet": "No configs set!"
 		},
 		"inviteCodes": {
 			"dmSent": "I sent you a DM with all your invite codes.",
@@ -972,8 +976,8 @@
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
-			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
+			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
 			"self": {
 				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
 			},
@@ -1109,6 +1113,12 @@
 				"args": {
 					"volume": "The value the volume will be set to."
 				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},

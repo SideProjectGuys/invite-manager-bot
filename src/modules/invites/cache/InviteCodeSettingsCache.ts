@@ -1,14 +1,9 @@
-import { Invite } from 'eris';
-
+import { Cache } from '../../../framework/cache/Cache';
 import { inviteCodeSettings, InviteCodeSettingsKey } from '../../../sequelize';
 import {
-	fromDbValue,
 	inviteCodeDefaultSettings,
-	InviteCodeSettingsObject,
-	toDbValue
+	InviteCodeSettingsObject
 } from '../../../settings';
-
-import { Cache } from '../../../framework/cache/Cache';
 
 export class InviteCodeSettingsCache extends Cache<
 	Map<string, InviteCodeSettingsObject>
@@ -28,19 +23,7 @@ export class InviteCodeSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set => {
-			if (set.value === null) {
-				return;
-			}
-
-			let invSets = map.get(set.inviteCode);
-			if (!invSets) {
-				invSets = { ...inviteCodeDefaultSettings };
-				map.set(set.inviteCode, invSets);
-			}
-			invSets[set.key] = fromDbValue(set.key, set.value);
-		});
-
+		sets.forEach(set => map.set(set.inviteCode, set.value));
 		return map;
 	}
 
@@ -51,40 +34,36 @@ export class InviteCodeSettingsCache extends Cache<
 	}
 
 	public async setOne<K extends InviteCodeSettingsKey>(
-		invite: Invite,
+		guildId: string,
+		inviteCode: string,
 		key: K,
 		value: InviteCodeSettingsObject[K]
 	) {
-		const guildSet = await this.get(invite.guild.id);
-		const dbVal = toDbValue(key, value);
-		const val = fromDbValue(key, dbVal);
+		const guildSet = await this.get(guildId);
 
-		let set = guildSet.get(invite.code);
+		let set = guildSet.get(inviteCode);
 		if (!set) {
 			set = { ...inviteCodeDefaultSettings };
+			guildSet.set(inviteCode, set);
 		}
 
 		// Check if the value changed
-		if (set[key] !== val) {
+		if (set[key] !== value) {
 			inviteCodeSettings.bulkCreate(
 				[
 					{
 						id: null,
-						inviteCode: invite.code,
-						guildId: invite.guild.id,
-						key,
-						value: dbVal
+						inviteCode,
+						guildId,
+						value: set
 					}
 				],
 				{
 					updateOnDuplicate: ['value', 'updatedAt']
 				}
 			);
-
-			set[key] = val;
-			guildSet.set(invite.code, set);
 		}
 
-		return val;
+		return value;
 	}
 }
