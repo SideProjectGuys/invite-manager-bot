@@ -23,14 +23,16 @@ export class InviteCodeSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set => map.set(set.inviteCode, set.value));
+		sets.forEach(set =>
+			map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value })
+		);
 		return map;
 	}
 
 	public async getOne(guildId: string, invCode: string) {
 		const guildSets = await this.get(guildId);
 		const set = guildSets.get(invCode);
-		return set ? set : { ...inviteCodeDefaultSettings };
+		return { ...inviteCodeDefaultSettings, ...set };
 	}
 
 	public async setOne<K extends InviteCodeSettingsKey>(

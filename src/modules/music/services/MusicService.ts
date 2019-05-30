@@ -59,7 +59,7 @@ export class MusicService {
 			this.client.type === BotType.custom
 				? 'isCustom'
 				: this.client.type === BotType.pro
-				? 'isPro'
+				? 'isPremium'
 				: 'isRegular';
 		this.nodes = await musicNodes.findAll({ where: { [typeFilter]: true } });
 

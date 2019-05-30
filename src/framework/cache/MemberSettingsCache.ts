@@ -21,14 +21,16 @@ export class MemberSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set => map.set(set.memberId, set.value));
+		sets.forEach(set =>
+			map.set(set.memberId, { ...memberDefaultSettings, ...set.value })
+		);
 		return map;
 	}
 
 	public async getOne(guildId: string, memberId: string) {
 		const guildSets = await this.get(guildId);
 		const set = guildSets.get(memberId);
-		return set ? set : { ...memberDefaultSettings };
+		return { ...memberDefaultSettings, ...set };
 	}
 
 	public async setOne<K extends MemberSettingsKey>(
