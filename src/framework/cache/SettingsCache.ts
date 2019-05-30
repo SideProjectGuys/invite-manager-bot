@@ -10,7 +10,7 @@ export class SettingsCache extends Cache<SettingsObject> {
 
 	protected async _get(guildId: string): Promise<SettingsObject> {
 		const set = await settings.findOne({ where: { guildId } });
-		return set && set.value ? set.value : { ...defaultSettings };
+		return { ...defaultSettings, ...(set ? set.value : null) };
 	}
 
 	public async setOne<K extends SettingsKey>(
