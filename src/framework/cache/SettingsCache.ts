@@ -1,5 +1,10 @@
 import { settings, SettingsKey } from '../../sequelize';
-import { defaultSettings, SettingsObject } from '../../settings';
+import {
+	defaultSettings,
+	settingsInfo,
+	SettingsObject,
+	toDbValue
+} from '../../settings';
 
 import { Cache } from './Cache';
 
@@ -19,10 +24,11 @@ export class SettingsCache extends Cache<SettingsObject> {
 		value: SettingsObject[K]
 	): Promise<SettingsObject[K]> {
 		const set = await this.get(guildId);
+		const dbVal = toDbValue(settingsInfo[key], value);
 
 		// Check if the value changed
-		if (set[key] !== value) {
-			set[key] = value;
+		if (set[key] !== dbVal) {
+			set[key] = dbVal;
 
 			// Save into DB
 			settings.bulkCreate(
@@ -39,6 +45,6 @@ export class SettingsCache extends Cache<SettingsObject> {
 			);
 		}
 
-		return value;
+		return dbVal;
 	}
 }

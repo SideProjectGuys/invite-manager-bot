@@ -2,7 +2,9 @@ import { Cache } from '../../../framework/cache/Cache';
 import { inviteCodeSettings, InviteCodeSettingsKey } from '../../../sequelize';
 import {
 	inviteCodeDefaultSettings,
-	InviteCodeSettingsObject
+	inviteCodeSettingsInfo,
+	InviteCodeSettingsObject,
+	toDbValue
 } from '../../../settings';
 
 export class InviteCodeSettingsCache extends Cache<
@@ -42,6 +44,7 @@ export class InviteCodeSettingsCache extends Cache<
 		value: InviteCodeSettingsObject[K]
 	) {
 		const guildSet = await this.get(guildId);
+		const dbVal = toDbValue(inviteCodeSettingsInfo[key], value);
 
 		let set = guildSet.get(inviteCode);
 		if (!set) {
@@ -50,7 +53,9 @@ export class InviteCodeSettingsCache extends Cache<
 		}
 
 		// Check if the value changed
-		if (set[key] !== value) {
+		if (set[key] !== dbVal) {
+			set[key] = dbVal;
+
 			inviteCodeSettings.bulkCreate(
 				[
 					{
@@ -66,6 +71,6 @@ export class InviteCodeSettingsCache extends Cache<
 			);
 		}
 
-		return value;
+		return dbVal;
 	}
 }

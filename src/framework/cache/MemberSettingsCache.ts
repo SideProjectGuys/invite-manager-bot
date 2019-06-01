@@ -1,5 +1,10 @@
 import { memberSettings, MemberSettingsKey } from '../../sequelize';
-import { memberDefaultSettings, MemberSettingsObject } from '../../settings';
+import {
+	memberDefaultSettings,
+	memberSettingsInfo,
+	MemberSettingsObject,
+	toDbValue
+} from '../../settings';
 
 import { Cache } from './Cache';
 
@@ -40,6 +45,7 @@ export class MemberSettingsCache extends Cache<
 		value: MemberSettingsObject[K]
 	) {
 		const guildSet = await this.get(guildId);
+		const dbVal = toDbValue(memberSettingsInfo[key], value);
 
 		let set = guildSet.get(userId);
 		if (!set) {
@@ -48,7 +54,9 @@ export class MemberSettingsCache extends Cache<
 		}
 
 		// Check if the value changed
-		if (set[key] !== value) {
+		if (set[key] !== dbVal) {
+			set[key] = dbVal;
+
 			memberSettings.bulkCreate(
 				[
 					{
@@ -64,6 +72,6 @@ export class MemberSettingsCache extends Cache<
 			);
 		}
 
-		return value;
+		return dbVal;
 	}
 }
