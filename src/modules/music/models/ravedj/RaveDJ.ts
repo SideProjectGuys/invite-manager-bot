@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { IMClient } from '../../../../client';
 import { MusicPlatformTypes } from '../../../../types';
@@ -106,7 +106,7 @@ export class RaveDJ extends MusicPlatform {
 			]
 		};
 
-		const options = {
+		const options: AxiosRequestConfig = {
 			method: 'POST',
 			url: 'https://api.red.wemesh.ca/ravedj',
 			data: requestObject,
