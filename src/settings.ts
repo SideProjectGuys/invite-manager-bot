@@ -722,8 +722,6 @@ function _toDbValue(type: string, value: any): string {
 		} else {
 			return (value as Role).id;
 		}
-	} else if (type === 'Boolean') {
-		return value ? 'true' : 'false';
 	} else if (type.endsWith('[]')) {
 		const subType = type.substring(0, type.length - 2);
 		return value && value.length > 0
