@@ -482,7 +482,7 @@ export class InvitesService {
 	}
 
 	public async fillJoinLeaveTemplate(
-		template: any,
+		template: string,
 		guild: Guild,
 		member: Member,
 		{ invite, inviter, invites }: JoinLeaveTemplateData
