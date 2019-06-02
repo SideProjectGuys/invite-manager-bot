@@ -1,4 +1,4 @@
-import * as amqplib from 'amqplib';
+import { Channel, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
@@ -14,56 +14,61 @@ interface ShardMessage {
 
 export class RabbitMqService {
 	private client: IMClient;
+	private conn: Connection;
 	private shard: string;
 
-	private qCmdsName: string;
-	private channelCmds: amqplib.Channel;
+	private qName: string;
+	private channel: Channel;
 
-	public constructor(client: IMClient, conn: amqplib.Connection) {
+	public constructor(client: IMClient, conn: Connection) {
 		this.client = client;
 		this.shard = client.config.rabbitmq.prefix
 			? client.config.rabbitmq.prefix
 			: this.client.shardId;
 
-		if (!conn) {
-			return;
-		}
-
-		this.qCmdsName = `shard-${this.shard}`;
-		conn.createChannel().then(async channel => {
-			this.channelCmds = channel;
-
-			await channel.assertQueue(this.qCmdsName, {
-				durable: false,
-				autoDelete: true
-			});
-
-			await channel.assertExchange('shards', 'fanout', {
-				durable: true
-			});
-
-			await channel.bindQueue(this.qCmdsName, 'shards', '');
-		});
+		this.conn = conn;
 	}
 
 	public async init() {
-		if (!this.channelCmds) {
+		await this.initChannel();
+	}
+
+	private async initChannel() {
+		if (!this.conn) {
 			return;
 		}
 
-		await this.channelCmds.prefetch(5);
-		this.channelCmds.consume(this.qCmdsName, msg => this.onShardCommand(msg), {
+		this.qName = `shard-${this.shard}`;
+		this.channel = await this.conn.createChannel();
+		this.channel.on('error', async err => {
+			console.error(err);
+			await this.initChannel();
+		});
+
+		await this.channel.assertQueue(this.qName, {
+			durable: false,
+			autoDelete: true
+		});
+
+		await this.channel.assertExchange('shards', 'fanout', {
+			durable: true
+		});
+
+		await this.channel.bindQueue(this.qName, 'shards', '');
+
+		await this.channel.prefetch(5);
+		this.channel.consume(this.qName, msg => this.onShardCommand(msg), {
 			noAck: false
 		});
 	}
 
 	public async sendToManager(message: { id: string; [x: string]: any }) {
-		if (!this.channelCmds) {
+		if (!this.channel) {
 			console.log('Send message to RabbitMQ', message);
 			return;
 		}
 
-		this.channelCmds.sendToQueue(
+		this.channel.sendToQueue(
 			'manager',
 			Buffer.from(
 				JSON.stringify({
@@ -93,7 +98,7 @@ export class RabbitMqService {
 		});
 	}
 
-	private async onShardCommand(msg: amqplib.Message) {
+	private async onShardCommand(msg: MQMessage) {
 		const content = JSON.parse(msg.content.toString()) as ShardMessage;
 		const cmd = content.cmd;
 
@@ -102,7 +107,7 @@ export class RabbitMqService {
 
 		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
-		this.channelCmds.ack(msg, false);
+		this.channel.ack(msg, false);
 
 		const sendResponse = (message: { [x: string]: any }) =>
 			this.sendToManager({
