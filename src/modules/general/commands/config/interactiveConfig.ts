@@ -542,7 +542,12 @@ export default class extends Command {
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				await resp.removeReaction(emoji.name, userId).catch(() => undefined);
+				await this.client.removeMessageReaction(
+					resp.channel.id,
+					resp.id,
+					emoji.name,
+					userId
+				);
 
 				if (emoji.name === this.prev) {
 					resolve('prev');
