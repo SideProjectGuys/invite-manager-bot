@@ -53,6 +53,10 @@ export default class extends Command {
 		const item = conn.getNowPlaying();
 
 		const lyrics = await this.client.music.getLyrics(item);
+		if (lyrics.length === 0) {
+			this.sendReply(message, t('cmd.lyrics.notFound'));
+			return;
+		}
 
 		if (!live) {
 			this.sendReply(

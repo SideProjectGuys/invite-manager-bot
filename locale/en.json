@@ -1019,7 +1019,9 @@
 				"flags": {
 					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
-			}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
 			"self": {

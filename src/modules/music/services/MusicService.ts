@@ -107,16 +107,21 @@ export class MusicService {
 		);
 
 		const lyrics: { start: number; dur: number; text: string }[] = [];
-		const doc = new xmldoc.XmlDocument(data);
-		doc.children.forEach((txt: XmlElement) => {
-			lyrics.push({
-				start: Number(txt.attr.start),
-				dur: Number(txt.attr.dur),
-				text: this.decodeHTMLEntities(txt.val)
-			});
-		});
+		try {
+			const doc = new xmldoc.XmlDocument(data);
 
-		return lyrics;
+			doc.children.forEach((txt: XmlElement) => {
+				lyrics.push({
+					start: Number(txt.attr.start),
+					dur: Number(txt.attr.dur),
+					text: this.decodeHTMLEntities(txt.val)
+				});
+			});
+
+			return lyrics;
+		} catch (error) {
+			return [];
+		}
 	}
 
 	private decodeHTMLEntities(str: string) {
