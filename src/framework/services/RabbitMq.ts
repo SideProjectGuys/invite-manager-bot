@@ -19,6 +19,7 @@ export class RabbitMqService {
 
 	private qName: string;
 	private channel: Channel;
+	private msgQueue: any[];
 
 	public constructor(client: IMClient, conn: Connection) {
 		this.client = client;
@@ -27,6 +28,7 @@ export class RabbitMqService {
 			: this.client.shardId;
 
 		this.conn = conn;
+		this.msgQueue = [];
 	}
 
 	public async init() {
@@ -45,6 +47,10 @@ export class RabbitMqService {
 			await this.initChannel();
 		});
 
+		while (this.msgQueue.length > 0) {
+			await this.sendToManager(this.msgQueue.pop(), true);
+		}
+
 		await this.channel.assertQueue(this.qName, {
 			durable: false,
 			autoDelete: true
@@ -62,9 +68,19 @@ export class RabbitMqService {
 		});
 	}
 
-	public async sendToManager(message: { id: string; [x: string]: any }) {
-		if (!this.channel) {
+	public async sendToManager(
+		message: { id: string; [x: string]: any },
+		isResend: boolean = false
+	) {
+		if (!this.conn) {
 			console.log('Send message to RabbitMQ', message);
+			return;
+		}
+
+		if (!this.channel) {
+			if (!isResend) {
+				this.msgQueue.push(message);
+			}
 			return;
 		}
 
