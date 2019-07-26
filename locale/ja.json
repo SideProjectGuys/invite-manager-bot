@@ -12,7 +12,7 @@
 		"website": {
 			"title": "BOTのウェブサイト"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "今のPrefixは、`{{{ prefix }}}`です。\n\n`{{{ prefix }}}`helpを使ってヘルプを確認しましょう！\n"
 	},
 	"captcha": {
 		"invalid": "Chaptchaが一致しませんでした。もう一度お試しください。"
@@ -32,7 +32,8 @@
 				"description": "メンバーに招待を追加(又は削除)します。"
 			},
 			"zero": "招待を0件追加しても意味がありません...",
-			"numberTooLarge": "cmd.addInvites.numberTooLarge"
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
 			"created": "ランク役職が追加されました: {{{ role }}} 必要な招待数は{{ invites }}で、次の説明を追加しました: {{ description }}",
@@ -62,7 +63,8 @@
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
-			}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
 			"canNotClear": "構成設定** {{key}} **はクリアできません。 デフォルト値にリセットするために `{{prefix}} botConfig {{key}} default`を使うことができます。",
@@ -126,10 +128,10 @@
 			"notFound": "ケースが見つかりません",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "ケース番号",
+					"reason": "そのケースを削除した理由"
 				},
-				"description": "Delete a specific case."
+				"description": "指定したケースを削除します。"
 			},
 			"title": "ケース #{{ ID }}"
 		},
@@ -137,9 +139,9 @@
 			"notFound": "ケースが見つかりません",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "ケース番号"
 				},
-				"description": "View info about a specific case."
+				"description": "特定のケースに関する情報を表示します。"
 			},
 			"strike": "{{{member}}}が{{{amount}}}の規則{{{violation}}} {{{date}}}に違反したとして警告を受けました。",
 			"title": "ケース #{{ ID }}"
@@ -178,7 +180,8 @@
 				"description": "特定のチャットタイプを削除します。"
 			},
 			"text": "{{ amount }}のメッセージを削除しました。\nこのメッセージは5秒後に自動的に削除されます。",
-			"title": "削除されたメッセージ"
+			"title": "削除されたメッセージ",
+			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
 			"self": {
@@ -195,7 +198,7 @@
 					"numberOfMessages": "検索されるメッセージの数",
 					"text": "この単語を含むすべてのメッセージが削除されます。"
 				},
-				"description": "Delete messages containing certain keywords."
+				"description": "指定のキーワードを含むメッセージを削除します。"
 			}
 		},
 		"clearInvites": {
@@ -266,7 +269,7 @@
 			"developers": "開発者",
 			"moderators": "モデレーター",
 			"self": {
-				"description": "cmd.credits.self.description"
+				"description": "Show developers and contributors of the bot."
 			},
 			"staff": "スタッフ",
 			"translators": "翻訳者"
@@ -444,7 +447,7 @@
 			"remove": "削除する値または値のリストを入力してください。",
 			"removeEmpty": "リストはすでに空です。",
 			"self": {
-				"description": "Interactive Config"
+				"description": "対話型の設定"
 			},
 			"set": "リストの新しい値を入力してください。",
 			"values": {
@@ -466,7 +469,7 @@
 			"current": {
 				"clear": "クリアするには `{{prefix}} inviteCodeConfig {{key}} {{code}} none`を使います。",
 				"notSet": "この招待コード設定は現在**設定されていません**。\n\n設定するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使います。",
-				"text": "この招待リンク設定は現在設定されています。\n\n変更するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使ってください。\nデフォルトに戻すには `{{prefix}} inviteCodeConfig {{key}} {{code}} default`を使います。\nクリアするには、 `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\`を使用してください。}}",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
 				"title": "現在の値"
 			},
 			"keys": {
@@ -491,7 +494,8 @@
 				"description": "サーバーの招待リンクの設定を表示、変更します。"
 			},
 			"text": "個々の招待リンクの設定をします。",
-			"title": "招待リンク設定"
+			"title": "招待リンク設定",
+			"noneSet": "No configs set!"
 		},
 		"inviteCodes": {
 			"dmSent": "あなたのすべての招待コードをあなたにDMを送りました。",
@@ -590,18 +594,18 @@
 		"legacyInvites": {
 			"self": {
 				"args": {
-					"user": "DEPRECATED - this command will be removed soon."
+					"user": "非推奨 - このコマンドはまもなく削除されます。"
 				},
-				"description": "DEPRECATED - this command will be removed soon."
+				"description": "非推奨 - このコマンドはまもなく削除されます。"
 			}
 		},
 		"legacyLeaderboard": {
 			"self": {
 				"args": {
-					"date": "DEPRECATED - this command will be removed soon.",
-					"page": "DEPRECATED - this command will be removed soon."
+					"date": "非推奨 - このコマンドはまもなく削除されます。",
+					"page": "非推奨 - このコマンドはまもなく削除されます。"
 				},
-				"description": "DEPRECATED - this command will be removed soon."
+				"description": "非推奨 - このコマンドはまもなく削除されます。"
 			}
 		},
 		"makeMentionable": {
@@ -620,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "このメンバー設定は現在**設定されていません**。\n\n設定するには `{{prefix}} memberConfig {{key}} {{username}}<value>`を使います。",
-				"text": "このメンバー設定は現在設定されています。\n\n変更するには `{{prefix}} memberConfig {{key}} {{username}} <value>`を使います。\nデフォルトにリセットするには `{{prefix}} memberConfig {{key}} {{username}} default`を使います。\nクリアするには、 `{{prefix}} memberConfig {{key}} {{username}} none \\`を使用してください。",
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
 				"title": "現在の値"
 			},
 			"keys": {
@@ -681,7 +685,7 @@
 					"reason": "このユーザーがミュートされている理由",
 					"user": "ミュートする必要があるユーザー。"
 				},
-				"description": "Mute a user"
+				"description": "ユーザーをミュートする"
 			}
 		},
 		"permissions": {
@@ -700,7 +704,7 @@
 		},
 		"ping": {
 			"self": {
-				"description": "Ping the bot"
+				"description": "ボットをピング"
 			}
 		},
 		"prefix": {
@@ -907,11 +911,11 @@
 		"strike": {
 			"self": {
 				"args": {
-					"amount": "The amount of strikes to be added",
-					"member": "The member receiving the strikes",
-					"type": "The type of the violation"
+					"amount": "追加するストライクの量",
+					"member": "メンバーがストライキを受けました。",
+					"type": "違反の種類"
 				},
-				"description": "Add strikes to a user"
+				"description": "ユーザーにストライクを追加する"
 			}
 		},
 		"strikeConfig": {
@@ -967,15 +971,15 @@
 					"reason": "このユーザーのBANが解除された理由。",
 					"user": "BANを解除すべきユーザー。"
 				},
-				"description": "Unban a user"
+				"description": "ユーザーのBANを解除する"
 			},
-			"error": "Could not unban user because of the following error:\n{{{ error }}}"
+			"error": "次のエラーのため、ユーザーのBANを解除できませんでした:{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**完成しました！**\n\n**変更：{{changed}} **\n無視されました：{{ignored}}\n",
-			"processing": "バッチを処理しています... {{current}} / {{total}}",
+			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
+			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
 			"self": {
-				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
+				"description": "すべてのメンバーの前にその名前の前に特殊文字を付けて文字を追加すると、メンバーリストの最後にそれらが表示されます。"
 			},
 			"starting": "解除プロセスを開始しています...",
 			"title": "解除ユーザー"
@@ -988,7 +992,7 @@
 				"args": {
 					"user": "ミュートを解除する必要があるユーザー。"
 				},
-				"description": "Unmute a user"
+				"description": "ユーザーのミュートを解除する"
 			}
 		},
 		"warn": {
@@ -1006,119 +1010,127 @@
 		},
 		"disconnect": {
 			"self": {
-				"description": "Disconnect the bot from the current voice channel."
+				"description": "現在の音声チャンネルからボットを退出させます。"
 			}
 		},
 		"lyrics": {
 			"self": {
-				"description": "Show lyrics of the currently playing song.",
+				"description": "現在再生中の曲の歌詞を表示します。",
 				"flags": {
-					"live": "If set, then the lyrics will sync with the current time of the song."
+					"live": "設定すると、歌詞はその曲の現在時刻と同期します。"
 				}
-			}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
 			"self": {
-				"description": "Create a mashup of 2 songs.",
+				"description": "2つの曲のマッシュアップを作成します。",
 				"args": {
-					"videos": "The videos that should be mashed together."
+					"videos": "ビデオを一緒にマッシュアップする必要があります"
 				}
 			}
 		},
 		"nowPlaying": {
 			"self": {
-				"description": "Shows information about the currently playing song",
+				"description": "現在再生されている曲の情報を表示しています。",
 				"flags": {
-					"pin": "Pin the now playing message and update it automatically whenever a new song plays."
+					"pin": "現在再生中のメッセージを固定して、新しい曲が再生されるたびに自動的に更新します。"
 				}
 			},
-			"playTime": "Playtime"
+			"playTime": "再生時間"
 		},
 		"pause": {
 			"self": {
-				"description": "Pause the current song."
+				"description": "現在の曲を一時停止します。"
 			}
 		},
 		"play": {
 			"self": {
-				"description": "Play the song if the queue is empty, otherwise it will add the song to the end of the queue.",
+				"description": "キューが空の場合は曲を再生し、それ以外の場合はキューの最後に曲を追加します。",
 				"flags": {
-					"platform": "Select the platform where you want the song to be played.",
-					"next": "If set, it will play this song next instead of adding it to the end of the queue."
+					"platform": "曲を再生するプラットフォームを選択してください。",
+					"next": "設定されている場合、キューの最後に追加するのではなく、次にこの曲を再生します。"
 				},
 				"args": {
-					"link": "The link to a specific song or a search term."
+					"link": "特定の曲または検索語へのリンク。"
 				}
 			}
 		},
 		"queue": {
 			"self": {
-				"description": "Display the songs in the queue."
+				"description": "キュー内の曲を表示します。"
 			},
-			"empty": "Queue is currently empty. Use the play command to add songs to it."
+			"empty": "キューは現在空です。 playコマンドを使って曲を追加してください。"
 		},
 		"repeat": {
 			"self": {
-				"description": "Set the song to be played on repeat."
+				"description": "繰り返し再生する曲を設定します。"
 			},
-			"enabled": "This song will now play on repeat.",
-			"disabled": "This song will not be played on repeat anymore."
+			"enabled": "この曲は繰り返し再生されます。",
+			"disabled": "この曲は繰り返し再生されません。"
 		},
 		"resume": {
 			"self": {
-				"description": "Resume the current song."
+				"description": "現在の曲を再開します。"
 			}
 		},
 		"rewind": {
 			"self": {
-				"description": "Rewind the song and start from the beginning."
+				"description": "曲を巻き戻して最初から始めます。"
 			}
 		},
 		"search": {
 			"self": {
-				"description": "Search for the search term and let you chose one of the results.",
+				"description": "検索語を検索して、結果の1つを選択させます。",
 				"flags": {
-					"platform": "Select the platform where you want the song to be played."
+					"platform": "曲を再生するプラットフォームを選択してください。"
 				},
 				"args": {
-					"search": "The search term"
+					"search": "検索語"
 				}
 			},
-			"title": "Results for {{ term }}",
-			"noResults": "No results found!"
+			"title": "{{ term }}の検索結果",
+			"noResults": "結果が見つかりません！"
 		},
 		"seek": {
 			"self": {
-				"description": "Skip to a specific part of the song.",
+				"description": "曲の特定の部分にスキップします。",
 				"args": {
-					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
+					"duration": "曲がスキップされる位置（最初から秒単位）"
 				}
 			}
 		},
 		"skip": {
 			"self": {
-				"description": "Skip the current song and play the next song in the queue.",
+				"description": "現在の曲をスキップして、キュー内の次の曲を再生します。",
 				"args": {
-					"amount": "How many songs will be skipped."
+					"amount": "いくつの曲がスキップされます。"
 				}
 			}
 		},
 		"volume": {
 			"self": {
-				"description": "Set the volume if an argument is passed, or show the current volume.",
+				"description": "引数が渡された場合は音量を設定するか、現在の音量を表示します。",
 				"args": {
-					"volume": "The value the volume will be set to."
+					"volume": "音量が設定される値。"
 				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
 	"messages": {
 		"joinUnknownInviter": "<@ {{id}}>がどのようにサーバーに参加したのかわかりません。",
 		"joinVanityUrl": "<@ {{id}}>は一時的な招待を使用してサーバーに参加しました。",
 		"leaveUnknownInviter": "{{tag}}はサーバーを退出しましたが、誰が招待したのかわかりませんでした。",
 		"unknownInviter": "未知の",
-		"joinServerWidget": "The user joined using a server widget."
+		"joinServerWidget": "ユーザーがサーバーウィジェットを使用して参加しました。"
 	},
 	"moderation": {
 		"punishments": {
@@ -1127,8 +1139,8 @@
 				"kick": "あなたは** {{guild}} **から**キック**されました**",
 				"mute": "** {{guild}} **で**ミュート**されました",
 				"warn": "** {{guild}} **で**警告**を受けています",
-				"reason": "Reason: {{ reason }}",
-				"amount": "Amount: {{ amount }}"
+				"reason": "理由: {{ reason }}",
+				"amount": "数: {{ amount }}"
 			}
 		},
 		"strikes": {
@@ -1150,60 +1162,60 @@
 	},
 	"resolvers": {
 		"boolean": {
-			"invalid": "Not a valid yes/no value.",
-			"type": "Boolean"
+			"invalid": "有効なyes / noではありません。",
+			"type": "ブール値"
 		},
 		"channel": {
-			"multiple": "Multiple matching channels found. {{{ channels }}}",
-			"notFound": "Channel not found.",
-			"type": "Channel"
+			"multiple": "複数の一致するチャンネルが見つかりました。{{{ channels }}}",
+			"notFound": "チャンネルが見つかりませんでした。",
+			"type": "チャンネル"
 		},
 		"command": {
-			"multiple": "Multiple matching commands found. {{{ commands }}}",
-			"notFound": "Command not found.",
-			"type": "Command",
-			"validValues": "Use one of the following values: {{{ values }}}"
+			"multiple": "複数のコマンドが見つかりました。{{{ commands }}}",
+			"notFound": "コマンドが見つかりませんでした。",
+			"type": "コマンド",
+			"validValues": "以下のいずれかの値を使用:{{{ values }}}"
 		},
 		"enum": {
-			"invalid": "Not a valid value.",
-			"validValues": "Use one of the following values: {{{ values }}}",
-			"type": "Enum"
+			"invalid": "不正な値です。",
+			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
+			"type": "列挙型"
 		},
-		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"invalid": "`{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}の値が無効です",
 		"member": {
-			"multiple": "Multiple matching members found. {{{ members }}}",
-			"notFound": "Member was not found.",
-			"type": "Member"
+			"multiple": "複数のメンバーが見つかりました。{{{members}}}",
+			"notFound": "メンバーが見つかりませんでした。",
+			"type": "メンバー"
 		},
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"missingRequired": "必要な引数`{{ name }}`がありません。\n{{{ usage }}}\n{{{ help }}}",
 		"number": {
-			"invalid": "Not a valid number.",
-			"type": "Number"
+			"invalid": "不正な数です。",
+			"type": "番号"
 		},
 		"role": {
-			"multiple": "Multiple matching roles found. {{{ roles }}}",
-			"notFound": "Role was not found.",
-			"type": "Role"
+			"multiple": "複数の役職が見つかりました。 {{{ roles }}}",
+			"notFound": "役職は見つかりませんでした。",
+			"type": "役職"
 		},
 		"user": {
-			"multiple": "Multiple matching users found. {{{ users }}}",
-			"notFound": "User was not found.",
-			"type": "User"
+			"multiple": "複数の一致するユーザーが見つかりました。{{{ user }}}",
+			"notFound": "ユーザーが見つかりませんでした。",
+			"type": "ユーザー"
 		},
 		"string": {
-			"type": "Text"
+			"type": "テキスト"
 		},
 		"settingsvalue": {
-			"type": "Value"
+			"type": "値"
 		},
 		"date": {
-			"type": "Date"
+			"type": "日付"
 		},
 		"duration": {
-			"type": "Duration"
+			"type": "期間"
 		},
 		"invitecode": {
-			"type": "Invite Code"
+			"type": "招待コード"
 		}
 	},
 	"settings": {
@@ -1328,55 +1340,55 @@
 			"title": "秒単位のタイムフレーム"
 		},
 		"autoModWordsBlacklist": {
-			"description": "A list of words that are banned.",
+			"description": "禁止されている単語のリスト。",
 			"title": "ブラックリスト"
 		},
 		"autoModWordsEnabled": {
-			"description": "Whether or not blacklisted words will be automoderated.",
+			"description": "ブラックリストに載っている単語を自動対応するかどうか",
 			"title": "有効"
 		},
 		"autoSubtractFakes": {
-			"description": "Automatically subtract fake invites.",
+			"description": "自動的に偽の招待を差し引きます。",
 			"title": "自動減算"
 		},
 		"autoSubtractLeaves": {
-			"description": "Automatically remove invites from the inviter when the invited user leaves.",
+			"description": "招待ユーザーが退出したときに招待者から招待状を自動的に削除します。",
 			"title": "自動減算"
 		},
 		"autoSubtractLeaveThreshold": {
-			"description": "The time in seconds for which a user has to stay in the server for the invite to count.",
+			"description": "招待を数えるためにユーザーがサーバーに留まる必要がある時間（秒）。",
 			"title": "自動減算しきい値"
 		},
 		"captchaVerificationFailedMessage": {
-			"description": "The message sent to the user if he enters an invalid captcha.",
+			"description": "ユーザーが無効なキャプチャを入力した場合にメッセージがユーザーに送信されます。",
 			"title": "失敗メッセージ"
 		},
 		"captchaVerificationLogEnabled": {
-			"description": "Whether or not verification attempts will be logged.",
+			"description": "検証の試行がログに記録されるかどうか。",
 			"title": "ログが有効化されました"
 		},
 		"captchaVerificationOnJoin": {
-			"description": "Whether or not captcha verification is enabled.",
+			"description": "キャプチャ検証が有効かどうか。",
 			"title": "有効"
 		},
 		"captchaVerificationSuccessMessage": {
-			"description": "The welcome message that will be sent to the user after he successfully verifies.",
+			"description": "ユーザーが正常に確認した後にユーザーに送信されるウェルカムメッセージ。",
 			"title": "成功メッセージ"
 		},
 		"captchaVerificationTimeout": {
-			"description": "The time within which the captcha has to be entered successfully.",
+			"description": "キャプチャが正常に入力されなければならない時間。",
 			"title": "認証タイムアウト"
 		},
 		"captchaVerificationWelcomeMessage": {
-			"description": "The message a user will get after joining a server and instructing them to enter the captcha.",
+			"description": "ユーザーがサーバーに参加してキャプチャに入るように指示した後に表示されるメッセージ。",
 			"title": "参加メッセージ"
 		},
 		"channels": {
-			"title": "Command channels",
-			"description": "The channels in which the bot will react to commands."
+			"title": "コマンドチャンネル",
+			"description": "ボットがコマンドに反応するチャンネル。"
 		},
 		"getUpdates": {
-			"description": "Enable to receive development updates about InviteManager.",
+			"description": "InviteManagerに関する開発の最新情報を受け取ることができるようにします。",
 			"title": "アップデート情報を手に入れる"
 		},
 		"groups": {
@@ -1410,119 +1422,119 @@
 			},
 			"moderation": {
 				"bannedWords": {
-					"description": "Ban specific words.",
-					"title": "Banned Words"
+					"description": "特定の言葉を禁止する。",
+					"title": "禁止された単語"
 				},
 				"caps": {
-					"description": "Prevent spamming with CAPS LOCK ON",
-					"title": "Caps"
+					"description": "CAPS LOCK ONでスパムを防ぎます。",
+					"title": "キャップ"
 				},
 				"captcha": {
-					"description": "Settings related to the captcha-on-join",
+					"description": "CAPTCHA-ON-JOINに関する設定",
 					"title": "Captcha"
 				},
 				"description": "管理と自動的なシステム管理の設定",
 				"duplicate": {
-					"description": "Automatically remove duplicate messages.",
-					"title": "Duplicate Messages"
+					"description": "自動的に重複メッセージを削除します。",
+					"title": "重複メッセージ"
 				},
 				"emojis": {
-					"description": "Automatically remove message with too many emojis.",
-					"title": "Emojis"
+					"description": "Automatically remove messages with too many emojis.",
+					"title": "絵文字"
 				},
 				"general": {
 					"description": "settings.groups.moderation.general.title",
-					"title": "General"
+					"title": "総合"
 				},
 				"invites": {
-					"description": "Automatically remove Discord invite links.",
-					"title": "Invites"
+					"description": "自動的に招待リンクを削除します。",
+					"title": "招待"
 				},
 				"links": {
-					"description": "Automatically remove links.",
-					"title": "Links"
+					"description": "自動的にリンクを削除します。",
+					"title": "リンク"
 				},
 				"logging": {
-					"description": "Logging settings of various moderation commands and actions",
-					"title": "Logging"
+					"description": "さまざまなモデレーションコマンドおよびアクションのログ設定",
+					"title": "ログを記録する"
 				},
 				"mentions": {
-					"description": "Automatically remove messages with too many mentions.",
-					"title": "Mentions"
+					"description": "自動的に多くのメンションがついたメッセージを削除します。",
+					"title": "メンション"
 				},
 				"spam": {
-					"description": "Prevent users from spamming messages.",
-					"title": "Spam"
+					"description": "ユーザーがメッセージスパムするのを防ぎます。",
+					"title": "スパム"
 				},
 				"title": "管理"
 			},
 			"music": {
-				"title": "Music",
+				"title": "音楽",
 				"general": {
-					"title": "Music",
-					"description": "General Music Settings"
+					"title": "音楽",
+					"description": "総合的な音楽の設定"
 				},
-				"description": "Music Settings"
+				"description": "音楽の設定"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
-			"description": "Hide members that left the server from the leaderboard.",
+			"description": "リーダーボードからサーバーを離れたメンバーを非表示にします。",
 			"title": "退出メンバーを隠す"
 		},
 		"ignoredChannels": {
-			"title": "Ignored channels",
-			"description": "The channels in which the bot will ignore commands."
+			"title": "無視されるチャンネル",
+			"description": "ボットがコマンドを無視するチャンネル。"
 		},
 		"joinMessage": {
-			"description": "The message sent when someone joins the server.",
+			"description": "サーバーに参加したときに送信されるメッセージ。",
 			"title": "メッセージ"
 		},
 		"joinMessageChannel": {
-			"description": "The channel that the message on join is sent to.",
+			"description": "参加時のメッセージが送信されるチャンネル。",
 			"title": "メッセージチャンネル"
 		},
 		"lang": {
-			"description": "The language of the bot",
+			"description": "BOTの言語",
 			"title": "言語"
 		},
 		"leaderboardStyle": {
-			"description": "The display style of the leaderboard.",
+			"description": "リーダーボードの表示スタイル。",
 			"title": "スタイル"
 		},
 		"leaveMessage": {
-			"description": "The message sent when someone leaves the server.",
+			"description": "サーバーを離れたときに送信されるメッセージ。",
 			"title": "メッセージ"
 		},
 		"leaveMessageChannel": {
-			"description": "The channel that the leave message is sent to.",
+			"description": "退出メッセージが送信されるチャンネル。",
 			"title": "メッセージチャンネル"
 		},
 		"logChannel": {
-			"description": "The channel where bot actions are logged.",
+			"description": "ボットアクションが記録されるチャンネル。",
 			"title": "ログチャンネル"
 		},
 		"modLogChannel": {
-			"description": "The channel where moderation logs will be posted in.",
-			"title": "Mod Log Channel"
+			"description": "モデレーションログが記録されるチャンネル。",
+			"title": "MODログチャンネル"
 		},
 		"modPunishmentBanDeleteMessage": {
-			"description": "Whether or not \"Ban\" pushment messages will be deleted automatically.",
+			"description": "「禁止」プッシュメッセージを自動的に削除するかどうか。",
 			"title": "BANメッセージを削除"
 		},
 		"modPunishmentKickDeleteMessage": {
-			"description": "Whether or not \"Kick\" pushment messages will be deleted automatically.",
+			"description": "「キック」プッシュメッセージが自動的に削除されるかどうか。",
 			"title": "キックメッセージを削除"
 		},
 		"modPunishmentMuteDeleteMessage": {
-			"description": "Whether or not \"Mute\" pushment messages will be deleted automatically.",
+			"description": "「ミュート」プッシュメッセージが自動的に削除されるかどうか。",
 			"title": "ミュートメッセージを削除"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
-			"description": "Whether or not \"Softban\" pushment messages will be deleted automatically.",
+			"description": "「Softban」プッシュメッセージが自動的に削除されるかどうか。",
 			"title": "ソフトBANメッセージを削除"
 		},
 		"modPunishmentWarnDeleteMessage": {
-			"description": "Whether or not \"Warn\" pushment messages will be deleted automatically.",
+			"description": "「警告」プッシュメッセージを自動的に削除するかどうか。",
 			"title": "警告メッセージを削除"
 		},
 		"mutedRole": {
@@ -1530,58 +1542,58 @@
 			"title": "ミュート役職"
 		},
 		"prefix": {
-			"description": "The prefix used to trigger bot commands.",
+			"description": "ボットコマンドを呼びだすために使用されるプレフィックス。",
 			"title": "接頭辞"
 		},
 		"rankAnnouncementChannel": {
-			"description": "The channel where users receiving a new rank are announced.",
+			"description": "ユーザーが新しいランクを獲得したときにアナウンスするチャンネル。",
 			"title": "お知らせチャンネル"
 		},
 		"rankAnnouncementMessage": {
-			"description": "The message that is sent when a user receives a new rank.",
+			"description": "ユーザーが新しいランクを受け取ったときに送信されるメッセージ。",
 			"title": "お知らせメッセージ"
 		},
 		"rankAssignmentStyle": {
-			"description": "How ranks are rewarded to users.",
+			"description": "ランクはユーザーにどのように与えられますか。",
 			"title": "割り当てスタイル"
 		},
 		"musicVolume": {
-			"title": "Music Volume",
-			"description": "The default volume that is set when the bot joins a voice channel."
+			"title": "音楽の音量",
+			"description": "ボットが音声チャネルに参加したときに設定されるデフォルトの音量。"
 		},
 		"announceNextSong": {
-			"title": "Announce Next Song",
-			"description": "Whether or not the next song should be announced in the voice channel."
+			"title": "次の曲をアナウンスする",
+			"description": "次の曲を音声チャンネルでアナウンスするかどうか。"
 		},
 		"announcementVoice": {
-			"title": "Announcement Voice",
-			"description": "The voice used in the next song announcements."
+			"title": "アナウンスの声",
+			"description": "次の曲の発表で使われる声。"
 		},
 		"fadeMusicOnTalk": {
-			"title": "Fade Music On Talk",
-			"description": "If enabled, the music will fade down while people are talking."
+			"title": "トークで音楽をフェード",
+			"description": "有効にすると、人々が話している間、音楽は消えます。"
 		},
 		"fadeMusicStartDuration": {
-			"title": "Fade Music Start Duration",
-			"description": "The duration during which the fade will happen (eg. 1 second)"
+			"title": "フェードミュージックの開始時間",
+			"description": "フェードが発生する期間（例：1秒）"
 		},
 		"fadeMusicEndDelay": {
-			"title": "Fade Music End Delay",
-			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+			"title": "ミュージックのフェードが終了するまでの時間",
+			"description": "音量が正常に戻るまでに誰も話していない秒数の遅延。"
 		}
 	},
 	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
+		"invalid": "指定した引数が無効です。",
+		"missingRequired": "必要な引数`{{ name }}`がありません。\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
-		"notPlaying": "There is currently no music being played!",
-		"notConnected": "The bot is not connected to a voice channel!",
-		"voiceChannelRequired": "You need to be in a voice channel to use that command!"
+		"notPlaying": "現在再生中の音楽はありません。",
+		"notConnected": "BOTは音声チャンネルに接続されていません！",
+		"voiceChannelRequired": "そのコマンドを使うには音声チャンネルにいる必要があります。"
 	},
 	"roles": {
-		"shouldHave": "The user should have the roles {{{ shouldHave }}}, but I can't assign them.",
-		"shouldNotHave": "The user should not have the roles {{{ shouldNotHave }}}, but I can't take them away.",
-		"dangerous": "The roles {{{ dangerous }}} are potentially dangerous to assign because they include important permissions."
+		"shouldHave": "ユーザーは役職{{{ shouldHave }}}を持つべきですが、私はそれらを割り当てることができません。",
+		"shouldNotHave": "ユーザーは役職{{{ shouldNotHave }}}を持つべきではありませんが、私はそれらを奪うことはできません。",
+		"dangerous": "ロール{{{ dangerous }}}には重要な権限が含まれているため、割り当てるのは危険です。"
 	}
 }

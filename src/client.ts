@@ -118,7 +118,6 @@ export class IMClient extends Client {
 
 	public constructor(
 		version: string,
-		conn: amqplib.Connection,
 		token: string,
 		shardId: number,
 		shardCount: number,
@@ -169,7 +168,7 @@ export class IMClient extends Client {
 
 		this.shardId = shardId;
 		this.shardCount = shardCount;
-		this.rabbitmq = new RabbitMqService(this, conn);
+		this.rabbitmq = new RabbitMqService(this);
 
 		this.msg = new MessagingService(this);
 		this.mod = new ModerationService(this);

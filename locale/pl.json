@@ -7,7 +7,7 @@
 			"title": "Patreon"
 		},
 		"supportDiscord": {
-			"title": "Serwer wsparcia"
+			"title": "Serwer Discord"
 		},
 		"website": {
 			"title": "Strona bota"
@@ -20,19 +20,20 @@
 	"cmd": {
 		"addInvites": {
 			"amount": {
-				"negative": "Odebrano **{{ amount }}** zaproszeń od {{{ member }}}, aktualnie posiada: **{{ totalInvites }}** zaproszeń.",
+				"negative": "Zabrano **{{ amount }}** zaproszeń od {{{ member }}}, aktualnie posiada: **{{ totalInvites }}** zaproszeń.",
 				"positive": "Dodano **{{ amount }}** zaproszeń dla {{{ member }}}, aktualnie posiada: **{{ totalInvites }}** zaproszeń."
 			},
 			"self": {
 				"args": {
 					"amount": "Ilość zaproszeń, które użytkownik otrzyma/straci. Użyj liczby ujemnej (-), aby usunąć zaproszenia.",
 					"reason": "Powód dodania/usunięcia zaproszeń.",
-					"user": "Użytkownik, który otrzyma/straci zaproszenia do premii."
+					"user": "Użytkownik, który otrzyma/straci bonusowe zaproszenia."
 				},
 				"description": "Dodaje/Usuwa zaproszenia dla/od członka."
 			},
 			"zero": "Dodanie zero zaproszeń kompletne nie ma sensu ...",
-			"numberTooLarge": "cmd.addInvites.numberTooLarge"
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
 			"created": "Dodano rangę {{{ role }}}, która wymaga {{ invites }} zaproszeń i ma następujący opis: {{ description }}",
@@ -43,7 +44,7 @@
 					"invites": "Ilość zaproszeń potrzebnych do osiągnięcia rangi.",
 					"role": "Rola, którą użytkownik otrzyma po osiągnięciu tej rangi."
 				},
-				"description": "Dodaj nową pozycję."
+				"description": "Dodaj nową rangę."
 			},
 			"updated": "Ranga {{{ role }}} zaaktualizowana: Teraz potrzebuje {{ invites }} zaproszeń i ma następujący opis: {{ description }}"
 		},
@@ -51,7 +52,7 @@
 			"canNotBan": "Nie mogę zbanować tego użytkownika.",
 			"done": "Użytkownik został pomyślnie zbanowany.",
 			"error": "Wystąpił błąd podczas banowania tego użytkownika:\n{{ error }}",
-			"missingPermissions": "Potrzebuję pozwolenia `Ban Members`, aby użyć tego polecenia.",
+			"missingPermissions": "Potrzebuję pozwolenia na `Ban Members`, aby użyć tego polecenia.",
 			"self": {
 				"args": {
 					"deleteMessageDays": "Jak daleko wstecz wiadomości będą usunięte (w dniach).",
@@ -62,7 +63,8 @@
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
-			}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
 			"canNotClear": "Ustawienia konfiguracji **{{ key }}** nie można usunąć. Możesz użyć `{{ prefix }}botConfig {{ key }} default`, aby przywrócić domyślną wartość.",
@@ -115,8 +117,8 @@
 				"description": "Uzyskaj ogólne informacje o bocie."
 			},
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "Obecny kawałek",
+				"total": "Wszystkie kawałki"
 			},
 			"uptime": "Czas działania",
 			"version": "Wersja"
@@ -126,10 +128,10 @@
 			"notFound": "Sprawa nie znaleziona",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Numer sprawy",
+					"reason": "Powód usunięcia sprawy."
 				},
-				"description": "Delete a specific case."
+				"description": "Usuń określoną sprawę."
 			},
 			"title": "Sprawa #{{ id }}"
 		},
@@ -137,9 +139,9 @@
 			"notFound": "Sprawa nie znaleziona",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Numer sprawy"
 				},
-				"description": "View info about a specific case."
+				"description": "Wyświetl informacje o określonej sprawie."
 			},
 			"strike": "{{{ member }}} otrzymał {{{ amount }}} strzałów za naruszanie {{{ violation }}} zasady {{{ date }}}.",
 			"title": "Sprawa #{{ id }}"
@@ -178,7 +180,8 @@
 				"description": "Wyczyść kanał niektórych typów wiadomości."
 			},
 			"text": "Usunięto {{ amount }} wiadomości.\nTa wiadomość zostanie usunięta w ciągu 5 sekund.",
-			"title": "Usunięte wiadomości"
+			"title": "Usunięte wiadomości",
+			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
 			"self": {
@@ -195,7 +198,7 @@
 					"numberOfMessages": "Liczba wiadomości, które będą wyszukiwane.",
 					"text": "Wszystkie wiadomości zawierające to słowo zostaną usunięte."
 				},
-				"description": "Delete messages containing certain keywords."
+				"description": "Usuń wiadomości zawierające określone słowa kluczowe."
 			}
 		},
 		"clearInvites": {
@@ -220,265 +223,265 @@
 			"current": {
 				"clear": "Użyj `{{ prefix }}config {{ key }} none` żeby to wyczyścić.",
 				"notSet": "Ta konfiguracja jest obecnie ** nie** ustawiona.\nUżyj `{{ prefix }}config {{ key }} <value>`  żeby ją ustawić.",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
+				"text": "Ta konfiguracja jest obecnie ustawiona.\nUżyj `{{ prefix }}config {{ key }} <value>` by ją zmienić.\nUżyj `{{ prefix }}config {{ key }} default` by ją zresetować.",
 				"title": "Bieżąca wartość"
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"canNotReadMessages": "Nie mam pozwolenia do **czytania wiadomości** na tym kanale.",
+				"canNotSendEmbeds": "Nie mam pozwolenia do **embed links** na tym kanale.",
+				"canNotSendMessages": "Nie mam pozwolenia do **wysyłania wiadomości** na tym kanale.",
+				"mustBeTextChannel": "Ten kanał to nie kanał tekstowy."
 			},
 			"new": {
 				"title": "Nowa wartość"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Żaden",
+			"notSet": "Te ustawienia nie są ustawione",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Podgląd"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Poprzednia wartość"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Ta konfiguracja jest już ustawiona na tę wartość.",
 			"self": {
 				"args": {
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "Ustawienie konfiguracyjne, które chcesz pokazać/zmienić.",
+					"value": "Nowa wartość ustawienia."
 				},
-				"description": "Show and change the config of the server."
+				"description": "Pokaż i zmień konfigurację serwera."
 			},
-			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-			"title": "Your config settings"
+			"text": "Poniżej znajdują się wszystkie ustawienia konfiguracji twojego serwera.\nUżyj `{{ prefix }}config <key> ` żeby zobaczyć pojedyncze ustawienie.\nUżyj `{{ prefix }}config <key> <value>`, żeby ustawić konfigurację dla  <key> i <value>",
+			"title": "Twoje ustawienia konfiguracji"
 		},
 		"createInvite": {
-			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
+			"done": "Utworzono kod zaproszenia  **{{{ code }}}** nazwane **{{ name }}** dla kanału {{{ channel }}}.",
 			"self": {
 				"args": {
-					"channel": "The channel for which the invite code is created. Uses the current channel by default.",
-					"name": "The name of the invite code."
+					"channel": "Kanał, dla którego tworzony jest kod zaproszenia. Domyślnie używa bieżącego kanału.",
+					"name": "Nazwa kodu zaproszenia."
 				},
-				"description": "Creates unique invite codes."
+				"description": "Tworzy unikalne kody zaproszeń."
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "Deweloperzy",
+			"moderators": "Moderatorzy",
 			"self": {
-				"description": "cmd.credits.self.description"
+				"description": "Show developers and contributors of the bot."
 			},
-			"staff": "Staff",
-			"translators": "Translators"
+			"staff": "Personel",
+			"translators": "Tłumacze"
 		},
-		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
+		"error": "Wystąpił błąd wykonując tą komende. Proszę zgłoś to do dewelopera:\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "Proszę czekać. Przygotowywujemy plik.",
 			"self": {
 				"args": {
-					"type": "The type of export you want."
+					"type": "Rodzaj pliku, który eksportujesz."
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "Eksportuj dane  InviteManager do arkusza CSV."
 			},
-			"title": "InviteManager - Export"
+			"title": "InviteManager - Eksport"
 		},
 		"fake": {
 			"join": {
 				"entry": {
-					"multi": "**{{ name }}** (**{{ times }}** times)",
+					"multi": "**{{ name }}** (**{{ times }}** razy)",
 					"single": "**{{ name }}**",
-					"text": "**{{ name }}** joined **{{ times }} times**, invited by:"
+					"text": "**{{ name }}** dołącza **{{ times }} raz/y**. Zaproszony przez:"
 				}
 			},
-			"none": "No fake invites detected so far.",
-			"noneSinceJoin": "There have been no fake invites since the bot has been added to this server.",
+			"none": "Dotychczas nie wykryto fałszywych zaproszeń.",
+			"noneSinceJoin": "Nie było fałszywych zaproszeń od czasu, aż bot został dodany do tego serwera.",
 			"self": {
 				"args": {
-					"page": "Which page of the fake list to get."
+					"page": "Którą stronę fałszywej listy chcesz zobaczyć?"
 				},
-				"description": "Help find users trying to cheat."
+				"description": "Pomóż znaleźć użytkowników próbujących oszukiwać."
 			},
-			"title": "Fake invites"
+			"title": "Fałszywe zaproszenia"
 		},
 		"getBot": {
 			"self": {
-				"description": "Get an invite link for the bot."
+				"description": "Uzyskaj link zaproszenia dla bota."
 			},
-			"title": "Add InviteManager to your server"
+			"title": "Dodaj bota **InviteManager** na Twój serwer"
 		},
 		"graph": {
 			"joins": {
-				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"text": "Ten wykres pokazuje liczbę użytkowników dołączających do twojego serwera.",
+				"title": "Na serwer dołącza"
 			},
 			"leaves": {
-				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"text": "Ten wykres pokazuje liczbę użytkowników opuszczających twój serwer.",
+				"title": "Serwer opuszcza"
 			},
 			"self": {
 				"args": {
-					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"duration": "Okres trwania wykresu.",
+					"type": "Typ wykresu do wyświetlenia."
 				},
-				"description": "Shows graphs about various stats on this server."
+				"description": "Pokazuje wykresy dotyczące różnych statystyk na tym serwerze."
 			},
 			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+				"text": "Ten wykres przedstawia użycie poleceń InviteManager na tym serwerze.",
+				"title": "Użycie komendy"
 			}
 		},
 		"help": {
 			"aliases": {
-				"title": "Aliases"
+				"title": "Aliasy"
 			},
 			"command": {
-				"title": "Command"
+				"title": "Komenda"
 			},
 			"description": {
-				"title": "Description"
+				"title": "Opis"
 			},
-			"links": "Links",
-			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
+			"links": "Linki",
+			"missingPermissions": "Bot nie ma tej/tych permisji {{{ value }}}",
 			"self": {
 				"args": {
-					"command": "The command to get detailed information for."
+					"command": "Polecenie, dla którego uzyskać szczegółowe informacje."
 				},
-				"description": "Display help."
+				"description": "Pokaż pomoc"
 			},
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
+			"text": "To jest lista poleceń, których możesz użyć. Możesz uzyskać więcej informacji na temat konkretnego polecenia, używając `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
 			"usage": {
-				"title": "Usage"
+				"title": "Użycie"
 			}
 		},
 		"info": {
 			"bonusInvites": {
-				"details": "Use {{{ cmd }}} for details.",
-				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "This member has received no bonuses so far",
-				"noReason": "No reason",
-				"title": "Bonus invites"
+				"details": "użyj {{{ cmd }}}, aby poznać szczegóły",
+				"entry": "{{ amount }} od {{{ creator }}} - {{date}}, powód: {{ reason }}",
+				"more": "Plus kolejne {{ amount }} więcej bonusowych zaproszeń",
+				"none": "Ten członek nie otrzymał dotychczas żadnych bonusów",
+				"noReason": "Bez powodu",
+				"title": "Bonusowe zaproszenia"
 			},
 			"created": {
-				"title": "Created"
+				"title": "Stworzony"
 			},
 			"invitedMembers": {
-				"details": "Use {{{ cmd }}} for details.",
-				"more": "Plus another {{ amount }} more invited members",
-				"none": "This member has not invited anyone else so far",
-				"title": "Invited members"
+				"details": "użyj {{{ cmd }}}, aby poznać szczegóły",
+				"more": "Plus kolejne {{ amount }} więcej zaproszonych członków",
+				"none": "Ten członek do tej pory nie zaprosił nikogo innego",
+				"title": "Zaproszeni użytkownicy"
 			},
 			"invites": {
 				"clear": {
 					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)",
-					"title": "Cleared invites"
+					"title": "Wyczyszczone zaproszenia"
 				},
 				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
-				"title": "Invites"
+				"title": "Zaproszenia"
 			},
 			"joined": {
-				"text": "{{ amount }} times",
-				"title": "Joined"
+				"text": "{{ amount }} razy",
+				"title": "Dołączył"
 			},
 			"joins": {
 				"entry": {
 					"invite": "{{{ member }}} ({{ times }} times)",
-					"text": "{{ total }} times {{ time }}, invited by:"
+					"text": "{{ total }} razy {{ time }}, zaproszony przez:"
 				},
-				"more": "Plus another {{ amount }} more joins",
-				"title": "Joins",
-				"unknown": "unknown (this only works for new members)"
+				"more": "Plus kolejne {{amount}} więcej dołączeń",
+				"title": "Dołącza",
+				"unknown": "nieznany (działa tylko dla nowych członków)"
 			},
 			"lastJoined": {
-				"notInGuild": "User is not part of your guild",
-				"title": "Last joined"
+				"notInGuild": "Użytkownik nie jest częścią twojego serwera",
+				"title": "Ostatnio dołączył"
 			},
 			"regularInvites": {
-				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
-				"more": "Plus another {{ amount }} more invite codes",
-				"none": "This member has not invited anyone so far",
-				"title": "Regular invites"
+				"entry": "{{uses}} z kodu {{code}} - stworzony {{createdAt}}",
+				"more": "Plus kolejne {{amount}} więcej kodów zaproszeń",
+				"none": "Ten członek do tej pory nie zaprosił nikogo",
+				"title": "Regularne zaproszenia"
 			},
 			"self": {
 				"args": {
-					"details": "Request only specific details about a member.",
-					"page": "What page of the details to show. You can also use the reactions to navigate.",
-					"user": "The user for whom you want to see additional info."
+					"details": "Poproś tylko o szczegółowe informacje na temat członka.",
+					"page": "Jaka strona szczegółów do pokazania. Możesz także użyć reakcji do nawigacji.",
+					"user": "Użytkownik, dla którego chcesz zobaczyć dodatkowe informacje."
 				},
-				"description": "Show info about a specific member."
+				"description": "Pokaż informacje o określonym członku."
 			}
 		},
 		"interactiveConfig": {
-			"add": "Enter a value or list of values to add.",
-			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"add": "Wprowadź wartość lub listę wartości, które chcesz dodać.",
+			"change": "**Obecna wartość**\n{{{ current }}}\n\n**Możliwe wartości**\n{{{ possible }}}",
 			"current": {
-				"title": "Current value"
+				"title": "Bieżąca wartość"
 			},
 			"list": {
 				"add": {
-					"text": "Add a new value to the list.",
-					"title": "Add"
+					"text": "Dodaj nową wartość do listy.",
+					"title": "Dodaj"
 				},
 				"clear": {
-					"text": "Clear the whole list of all values.",
-					"title": "Clear"
+					"text": "Wyczyść całą listę wszystkich wartości.",
+					"title": "Wyczyść"
 				},
 				"remove": {
-					"text": "Remove an existing value from the list.",
-					"title": "Remove"
+					"text": "Usuń istniejącą wartość z listy.",
+					"title": "Usuń"
 				},
 				"set": {
-					"text": "Set the whole list using space separated values.",
-					"title": "Set"
+					"text": "Ustaw całą listę za pomocą wartości oddzielonych spacjami.",
+					"title": "Ustaw"
 				}
 			},
 			"more": {
-				"description": "Show more entries",
-				"title": "More"
+				"description": "Pokaż więcej wpisów",
+				"title": "Więcej"
 			},
-			"new": "Enter a new value:",
+			"new": "Wprowadź nową wartość:",
 			"none": "<None>",
 			"possible": {
-				"title": "Possible values"
+				"title": "Możliwa wartość"
 			},
-			"remove": "Enter a value or a list of values to remove.",
-			"removeEmpty": "The list is already empty.",
+			"remove": "Wprowadź wartość lub listę wartości do usunięcia.",
+			"removeEmpty": "Lista jest już pusta.",
 			"self": {
-				"description": "Interactive Config"
+				"description": "Interaktywna konfiguracja"
 			},
-			"set": "Enter the new values for the list.",
+			"set": "Wprowadź nowe wartości listy.",
 			"values": {
-				"boolean": "`Yes` or `No`",
-				"channel": "Any channel, for example: #general",
-				"channel[]": "A list of channels, for example: #general #bot-commands",
-				"number": "Any number",
-				"role": "Any role, for example: @Admin",
-				"role[]": "A list of roles, for example: @Admin @Mod",
-				"string": "Any text",
-				"string[]": "A list of words, for example: word another \"word with space\""
+				"boolean": "`Tak` lub `Nie`",
+				"channel": "Dowolny kanał, na przykład: #general",
+				"channel[]": "Lista kanałów, na przykład: #general #bot-commands",
+				"number": "Jakikolwiek numer",
+				"role": "Jakakolwiek rola, na przykład @Admin",
+				"role[]": "Lista ról, na przykład: @Admin @Mod ",
+				"string": "Jakikolwiek tekst",
+				"string[]": "Lista słów, na przykład: słowo inne „słowo ze spacją”"
 			},
-			"welcome": "Use the reactions to pick one of the available options."
+			"welcome": "Użyj reakcji, aby wybrać jedną z dostępnych opcji."
 		},
 		"inviteCodeConfig": {
 			"changed": {
-				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
+				"text": "Ta konfiguracja kodu zaproszenia została zmieniona.\n\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` by zmienić to ponownie.\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` by zresetować go do domyślnego."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
+				"clear": "Użyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` żeby to wyczyścić.",
 				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
-				"title": "Current Value"
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
+				"title": "Obecna wartość"
 			},
 			"keys": {
 				"title": "Valid invite code config keys"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nowa wartość"
 			},
-			"none": "None",
+			"none": "Nic",
 			"notSet": "This invite code config is currently not set for any invite code",
 			"previous": {
-				"title": "Previous Value"
+				"title": "Poprzednia wartość"
 			},
 			"sameValue": "This invite code config is already set to that value",
 			"self": {
@@ -491,7 +494,8 @@
 				"description": "Show and change the config of invite codes of the server."
 			},
 			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config"
+			"title": "Invite Code Config",
+			"noneSet": "No configs set!"
 		},
 		"inviteCodes": {
 			"dmSent": "I sent you a DM with all your invite codes.",
@@ -620,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
 				"title": "Current Value"
 			},
 			"keys": {
@@ -972,8 +976,8 @@
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
-			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
+			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
 			"self": {
 				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
 			},
@@ -1015,7 +1019,9 @@
 				"flags": {
 					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
-			}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
 			"self": {
@@ -1109,6 +1115,12 @@
 				"args": {
 					"volume": "The value the volume will be set to."
 				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},
@@ -1427,7 +1439,7 @@
 					"title": "Duplicate Messages"
 				},
 				"emojis": {
-					"description": "Automatically remove message with too many emojis.",
+					"description": "Automatically remove messages with too many emojis.",
 					"title": "Emojis"
 				},
 				"general": {

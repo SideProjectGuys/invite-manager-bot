@@ -1,4 +1,4 @@
-import { Channel, Connection, Message as MQMessage } from 'amqplib';
+import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../client';
@@ -15,23 +15,46 @@ interface ShardMessage {
 export class RabbitMqService {
 	private client: IMClient;
 	private conn: Connection;
+	private connRetry: number = 0;
 	private shard: string;
 
 	private qName: string;
 	private channel: Channel;
+	private channelRetry: number = 0;
 	private msgQueue: any[];
 
-	public constructor(client: IMClient, conn: Connection) {
+	public constructor(client: IMClient) {
 		this.client = client;
 		this.shard = client.config.rabbitmq.prefix
 			? client.config.rabbitmq.prefix
 			: this.client.shardId;
 
-		this.conn = conn;
 		this.msgQueue = [];
 	}
 
 	public async init() {
+		this.conn = await connect(this.client.config.rabbitmq);
+		this.conn.on('close', async err => {
+			this.connRetry++;
+			console.error(err);
+
+			if (this.connRetry <= 1) {
+				this.init();
+			} else {
+				setTimeout(() => this.init(), this.connRetry * 30);
+			}
+		});
+		this.conn.on('error', async err => {
+			this.connRetry++;
+			console.error(err);
+
+			if (this.connRetry <= 1) {
+				this.init();
+			} else {
+				setTimeout(() => this.init(), this.connRetry * 30);
+			}
+		});
+
 		await this.initChannel();
 	}
 
@@ -40,10 +63,28 @@ export class RabbitMqService {
 			return;
 		}
 
+		this.connRetry = 0;
 		this.qName = `shard-${this.shard}`;
 		this.channel = await this.conn.createChannel();
 		this.channel.on('error', async err => {
+			this.channelRetry++;
 			console.error(err);
+
+			if (this.connRetry <= 1) {
+				this.initChannel();
+			} else {
+				setTimeout(() => this.initChannel(), this.channelRetry * 30);
+			}
+		});
+		this.channel.on('close', async err => {
+			this.channelRetry++;
+			console.error(err);
+
+			if (this.connRetry <= 1) {
+				await this.channel.close();
+			} else {
+				setTimeout(() => this.channel.close(), this.channelRetry * 30);
+			}
 			await this.initChannel();
 		});
 

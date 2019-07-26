@@ -25,14 +25,14 @@ export default class extends Command {
 	): Promise<any> {
 		const allRoles = await guild.getRESTRoles();
 		const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
-		const oldRankIds = allRanks
+		const oldRoleIds = allRanks
 			.filter(rank => !allRoles.some(r => r.id === rank.roleId))
-			.map(r => r.id);
+			.map(r => r.roleId);
 		await ranks.destroy({
-			where: { guildId: guild.id, roleId: oldRankIds }
+			where: { guildId: guild.id, roleId: oldRoleIds }
 		});
 		await roles.destroy({
-			where: { guildId: guild.id, id: oldRankIds }
+			where: { guildId: guild.id, id: oldRoleIds }
 		});
 
 		return this.sendReply(message, t('cmd.fixRanks.done'));
