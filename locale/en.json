@@ -269,7 +269,7 @@
 			"developers": "Developers",
 			"moderators": "Moderators",
 			"self": {
-				"description": "cmd.credits.self.description"
+				"description": "Show developers and contributors of the bot."
 			},
 			"staff": "Staff",
 			"translators": "Translators"
@@ -469,7 +469,7 @@
 			"current": {
 				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
 				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
 				"title": "Current Value"
 			},
 			"keys": {
@@ -624,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
 				"title": "Current Value"
 			},
 			"keys": {
@@ -1439,7 +1439,7 @@
 					"title": "Duplicate Messages"
 				},
 				"emojis": {
-					"description": "Automatically remove message with too many emojis.",
+					"description": "Automatically remove messages with too many emojis.",
 					"title": "Emojis"
 				},
 				"general": {
