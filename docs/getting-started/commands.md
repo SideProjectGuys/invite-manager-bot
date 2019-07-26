@@ -58,23 +58,21 @@ This arguments expects a Discord Channel. You can use any of the following metho
 
 ### Invites
 
-| Command                                 | Description                                      | Usage                                                            |
-| --------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)               | Adds/Removes invites to/from a member.           | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)           | Clear invites of the server/a user.              | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)           | Creates unique invite codes.                     | !createInvite \<name\> [channel]                                 |
-| [fake](#fake)                           | Help find users trying to cheat.                 | !fake [page]                                                     |
-| [info](#info)                           | Show info about a specific member.               | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)             | Get a list of all your invite codes              | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)         | Shows details about where your invites are from. | !inviteDetails [user]                                            |
-| [invites](#invites)                     | Show personal invites.                           | !invites [user]                                                  |
-| [leaderboard](#leaderboard)             | Show members with most invites.                  | !leaderboard [-c value\|--compare=value][duration] [page]        |
-| [legacyInvites](#legacyInvites)         | DEPRECATED - this command will be removed soon.  | !legacyInvites [user]                                            |
-| [legacyLeaderboard](#legacyLeaderboard) | DEPRECATED - this command will be removed soon.  | !legacyLeaderboard [page][date]                                  |
-| [removeInvites](#removeInvites)         | cmd.removeInvites.self.description               | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites)       | Restore all previously cleared invites.          | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)         | Remove fake invites from all users.              | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves)       | Remove leaves from all users                     | !subtractLeaves                                                  |
+| Command                           | Description                                      | Usage                                                            |
+| --------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | Adds/Removes invites to/from a member.           | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | Clear invites of the server/a user.              | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | Creates unique invite codes.                     | !createInvite \<name\> [channel]                                 |
+| [fake](#fake)                     | Help find users trying to cheat.                 | !fake [page]                                                     |
+| [info](#info)                     | Show info about a specific member.               | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | Get a list of all your invite codes              | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | Shows details about where your invites are from. | !inviteDetails [user]                                            |
+| [invites](#invites)               | Show personal invites.                           | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | Show members with most invites.                  | !leaderboard [-c value\|--compare=value][duration] [page]        |
+| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description               | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | Restore all previously cleared invites.          | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | Remove fake invites from all users.              | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | Remove leaves from all users                     | !subtractLeaves                                                  |
 
 ### Ranks
 
@@ -101,7 +99,7 @@ This arguments expects a Discord Channel. You can use any of the following metho
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
 | [botInfo](#botInfo) | Get general information about the bot.                                            | !botInfo        |
-| [credits](#credits) | cmd.credits.self.description                                                      | !credits        |
+| [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
 | [members](#members) | Show member count of current server.                                              | !members        |
@@ -629,7 +627,7 @@ Creates unique invite codes.
 
 ## !credits
 
-cmd.credits.self.description
+Show developers and contributors of the bot.
 
 ### Usage
 
@@ -832,9 +830,9 @@ Display help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------- | ------------------- | -------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Command](#Command) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `legacyInvites`, `legacyLeaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type                | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------- | ------------------- | -------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [Command](#Command) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -1127,75 +1125,6 @@ Show members with most invites.
 !leaderboard 30d 6
 ```
 
-<a name='legacyInvites'></a>
-
----
-
-## !legacyInvites
-
-> [!WARNING|style:flat]
-> This command has been deprecated and will be removed soon, please avoid using it.
-
-DEPRECATED - this command will be removed soon.
-
-### Usage
-
-```text
-!legacyInvites [user]
-```
-
-### Aliases
-
-- `!legacy-invites`
-
-### Arguments
-
-| Argument | Type          | Required | Description                                     | Details |
-| -------- | ------------- | -------- | ----------------------------------------------- | ------- |
-| user     | [User](#User) | No       | DEPRECATED - this command will be removed soon. |         |
-
-### Examples
-
-```text
-!legacyInvites
-```
-
-<a name='legacyLeaderboard'></a>
-
----
-
-## !legacyLeaderboard
-
-> [!WARNING|style:flat]
-> This command has been deprecated and will be removed soon, please avoid using it.
-
-DEPRECATED - this command will be removed soon.
-
-### Usage
-
-```text
-!legacyLeaderboard [page] [date]
-```
-
-### Aliases
-
-- `!legacy-leaderboard`
-- `!legacytop`
-- `!legacy-top`
-
-### Arguments
-
-| Argument | Type              | Required | Description                                     | Details |
-| -------- | ----------------- | -------- | ----------------------------------------------- | ------- |
-| page     | [Number](#Number) | No       | DEPRECATED - this command will be removed soon. |         |
-| date     | [Text](#Text)     | No       | DEPRECATED - this command will be removed soon. |         |
-
-### Examples
-
-```text
-!legacyLeaderboard
-```
-
 <a name='lyrics'></a>
 
 ---
@@ -1471,10 +1400,10 @@ Configure permissions to use commands.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `legacyInvites`, `legacyLeaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ### Examples
 
