@@ -44,6 +44,11 @@ export class RabbitMqService {
 		this.channel = await this.conn.createChannel();
 		this.channel.on('error', async err => {
 			console.error(err);
+			await this.channel.close();
+			await this.initChannel();
+		});
+		this.channel.on('close', async err => {
+			console.error(err);
 			await this.initChannel();
 		});
 
