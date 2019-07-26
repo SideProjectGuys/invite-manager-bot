@@ -32,7 +32,8 @@
 				"description": "Adds/Removes invites to/from a member."
 			},
 			"zero": "Adicionar zero convites realmente não faz muito sentido.",
-			"numberTooLarge": "cmd.addInvites.numberTooLarge"
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
@@ -62,7 +63,8 @@
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
-			}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
 			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
@@ -178,7 +180,8 @@
 				"description": "Clean a channel of certain message types."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages"
+			"title": "Deleted Messages",
+			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
 			"self": {
@@ -266,7 +269,7 @@
 			"developers": "Developers",
 			"moderators": "Moderators",
 			"self": {
-				"description": "cmd.credits.self.description"
+				"description": "Show developers and contributors of the bot."
 			},
 			"staff": "Staff",
 			"translators": "Translators"
@@ -466,7 +469,7 @@
 			"current": {
 				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
 				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
 				"title": "Current Value"
 			},
 			"keys": {
@@ -491,7 +494,8 @@
 				"description": "Show and change the config of invite codes of the server."
 			},
 			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config"
+			"title": "Invite Code Config",
+			"noneSet": "No configs set!"
 		},
 		"inviteCodes": {
 			"dmSent": "Enviei-lhe uma DM com todos os códigos de seu convites.",
@@ -620,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
 				"title": "Valor atual"
 			},
 			"keys": {
@@ -972,8 +976,8 @@
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
-			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
+			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
 			"self": {
 				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
 			},
@@ -1015,7 +1019,9 @@
 				"flags": {
 					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
-			}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
 			"self": {
@@ -1109,6 +1115,12 @@
 				"args": {
 					"volume": "The value the volume will be set to."
 				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},
@@ -1427,7 +1439,7 @@
 					"title": "Duplicate Messages"
 				},
 				"emojis": {
-					"description": "Automatically remove message with too many emojis.",
+					"description": "Automatically remove messages with too many emojis.",
 					"title": "Emojis"
 				},
 				"general": {

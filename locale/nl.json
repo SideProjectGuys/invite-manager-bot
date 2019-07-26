@@ -12,7 +12,7 @@
 		"website": {
 			"title": "Bot website"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "Mijn huidige prefix is `{{{ prefix }}}`\n\nGebruik `{{{ prefix }}}help` voor meer hulp."
 	},
 	"captcha": {
 		"invalid": "Captcha verificatie kwam niet overeen, probeer het opnieuw."
@@ -32,7 +32,8 @@
 				"description": "Voeg toe/verwijder invites van een gebruiker."
 			},
 			"zero": "0 invites geven heeft niet veel zin...",
-			"numberTooLarge": "cmd.addInvites.numberTooLarge"
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
 			"created": "Rank {{{ role }}} toegevoegd  en heeft {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}",
@@ -62,7 +63,8 @@
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
-			}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
 			"canNotClear": "De configuratie setting **{{ key }}** kan niet verwijdert worden. Je kan `{{ prefix }}botConfig {{ key }} default` doen om het te resetten naar de standaard waarde.",
@@ -75,39 +77,39 @@
 				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nUse `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
 				"title": "Huidige Waarde"
 			},
-			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"customOnly": "**Dit commmando is alleen beschikbaar voor custom bots.**\nAls je op zoek bent naar je server configuratie, gebruik dan het `{{ prefix }}config` commando.\n\nZie onze patreon pagina om meer te leren hoe je je eigen custom bot kan krijgen: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord ondersteunt alleen twitch.tv linkjes voor de streaming activiteit."
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nieuwe waarde"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Geen",
+			"notSet": "Deze instellingen zijn niet gezet",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Voorbeeld"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Vorige Waarde"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Deze configuratie is al gezet naar die waarde.",
 			"self": {
 				"args": {
-					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "De bot configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de setting."
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Zie en verander de configuratie van de bot."
 			},
-			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"text": "Hieronder staan alle bot configuraties van jouw bot.\nGebruik `{{ prefix }}botConfig <key>` om een enkele waarde te zien\nGebruik `{{ prefix }}botConfig <key> <value>` om de configuratie <key> naar <value> te zetten",
+			"title": "Custom Bot Configuratie"
 		},
 		"botInfo": {
 			"guilds": "Servers",
 			"members": "Leden",
 			"premium": {
 				"active": "Op deze server staat de betaalde bot **actief**.",
-				"custom": "You are using a custom version of the bot!",
+				"custom": "Je gebruikt een aangepaste versie van de bot!",
 				"none": "Op deze server staat de betaalde bot **niet actief**.",
 				"title": "Betaalde versie"
 			},
@@ -150,7 +152,7 @@
 				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}",
 				"title": "Straffen",
 				"total": "Totale straffen",
-				"totalText": "{{{ amount }}} punishments."
+				"totalText": "{{{ amount }}} straffen."
 			},
 			"self": {
 				"args": {
@@ -178,12 +180,13 @@
 				"description": "Maak een kanaal schoon van verschillende soorten berichten."
 			},
 			"text": "{{ amount }} berichten verwijderd.\nDit bericht wordt verwijderd in 5 seconden.",
-			"title": "Verwijderde Berichten"
+			"title": "Verwijderde Berichten",
+			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "All messages shorter than this will be deleted.",
+					"maxTextLength": "Alle berichten die korter zijn dan deze worden verwijderd.",
 					"numberOfMessages": "Number of messages that will be searched."
 				},
 				"description": "Clear short messages"
@@ -266,7 +269,7 @@
 			"developers": "Developers",
 			"moderators": "Moderators",
 			"self": {
-				"description": "cmd.credits.self.description"
+				"description": "Show developers and contributors of the bot."
 			},
 			"staff": "Staff",
 			"translators": "Translators"
@@ -466,7 +469,7 @@
 			"current": {
 				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
 				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.}}",
+				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
 				"title": "Current Value"
 			},
 			"keys": {
@@ -491,7 +494,8 @@
 				"description": "Show and change the config of invite codes of the server."
 			},
 			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config"
+			"title": "Invite Code Config",
+			"noneSet": "No configs set!"
 		},
 		"inviteCodes": {
 			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
@@ -620,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.}}",
+				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
 				"title": "Huidige Waarde"
 			},
 			"keys": {
@@ -972,8 +976,8 @@
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\n**Changed: {{ changed }}**\nIgnored: {{ ignored }}\n",
-			"processing": "Processing batches... {{ current }}/{{ total }}",
+			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
+			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
 			"self": {
 				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
 			},
@@ -1015,7 +1019,9 @@
 				"flags": {
 					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
-			}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
 			"self": {
@@ -1109,6 +1115,12 @@
 				"args": {
 					"volume": "The value the volume will be set to."
 				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},
@@ -1427,7 +1439,7 @@
 					"title": "Duplicate Messages"
 				},
 				"emojis": {
-					"description": "Automatically remove message with too many emojis.",
+					"description": "Automatically remove messages with too many emojis.",
 					"title": "Emojis"
 				},
 				"general": {
