@@ -165,6 +165,10 @@ export class MusicService {
 	}
 
 	public async resolveTracks(url: string) {
+		if (this.nodes.length === 0) {
+			throw new Error('There are currently no music nodes available');
+		}
+
 		const baseUrl = `http://${this.nodes[0].host}:${this.nodes[0].port}`;
 		const { data } = await axios.get<{ tracks: LavaTrack[] }>(
 			`${baseUrl}/loadtracks?identifier=${encodeURIComponent(url)}`,

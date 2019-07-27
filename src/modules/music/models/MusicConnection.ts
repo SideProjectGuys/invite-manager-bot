@@ -283,7 +283,14 @@ export class MusicConnection {
 			const stream = await next.getStreamUrl().catch(() => undefined);
 			const tracks = await this.service.resolveTracks(stream).catch(() => []);
 
-			this.playStart = new Date().getTime() + 400; // This additional time is lavalink buffering
+			if (tracks.length === 0) {
+				this.preparingNext = false;
+				this.playNext();
+				return;
+			}
+
+			// +400 is the additional time lavalink is buffering, we sync up later so it's no that important
+			this.playStart = new Date().getTime() + 400;
 			this.player.playing = true;
 			this.player.paused = false;
 			this.musicQueueCache.current = next;

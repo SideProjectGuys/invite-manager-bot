@@ -11,13 +11,26 @@
 		/>
 		<link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
 	</head>
+
 	<body>
+		<nav>
+			<a href="/" style="display: flex; align-items: center;">
+				<img
+					src="assets/globe.png"
+					width="20"
+					height="20"
+					style="margin-right: 4px;"
+				/>
+				Language
+			</a>
+		</nav>
 		<div id="app"></div>
 		<script>
 			window.$docsify = {
 				themeColor: '#6ab7eb',
 				coverpage: false,
 				loadSidebar: true,
+				relativePath: true,
 				maxLevel: 2,
 				name: 'Invite Manager',
 				repo: 'https://github.com/SideProjectGuys/invite-manager-bot',

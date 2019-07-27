@@ -42,18 +42,20 @@ const config = require('../config.json');
 
 i18n.configure({
 	locales: [
-		'en',
+		'cs',
 		'de',
-		'el',
 		'en',
 		'es',
 		'fr',
 		'it',
-		'lt',
+		'ja',
 		'nl',
+		'pl',
 		'pt',
+		'pt_BR',
 		'ro',
-		'sr'
+		'ru',
+		'tr'
 	],
 	defaultLocale: 'en',
 	// syncFiles: true,
@@ -231,7 +233,7 @@ export class IMClient extends Client {
 			}
 		);
 
-		const gs = await guilds.findAll({
+		const bannedGuilds = await guilds.findAll({
 			where: {
 				id: this.guilds.map(g => g.id),
 				banReason: { [Op.not]: null }
@@ -241,10 +243,10 @@ export class IMClient extends Client {
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async guild => {
-			const dbGuild = gs.find(g => g.id === guild.id);
+			const bannedGuild = bannedGuilds.find(g => g.id === guild.id);
 
 			// Check if the guild was banned
-			if (dbGuild) {
+			if (bannedGuild) {
 				const dmChannel = await this.getDMChannel(guild.ownerID);
 				await dmChannel
 					.createMessage(
