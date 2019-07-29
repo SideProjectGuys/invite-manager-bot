@@ -151,7 +151,7 @@ export class TrackingService {
 
 		if (!role) {
 			const allRoles = await guild.getRESTRoles();
-			const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
+			const allRanks = await this.client.cache.ranks.get(guild.id);
 			const oldRankIds = allRanks
 				.filter(rank => !allRoles.some(r => r.id === rank.roleId))
 				.map(r => r.id);

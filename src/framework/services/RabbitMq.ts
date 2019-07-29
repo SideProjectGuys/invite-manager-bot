@@ -381,6 +381,7 @@ export class RabbitMqService {
 			users: this.client.users.size,
 			channels: channelCount,
 			roles: roleCount,
+			ranks: this.client.cache.ranks.getSize(),
 			settings: this.client.cache.settings.getSize(),
 			premium: this.client.cache.premium.getSize(),
 			permissions: this.client.cache.permissions.getSize(),
