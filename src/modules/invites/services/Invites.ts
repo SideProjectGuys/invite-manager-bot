@@ -15,7 +15,6 @@ import {
 	MemberSettingsKey,
 	RankAssignmentStyle,
 	RankInstance,
-	ranks,
 	sequelize,
 	SettingsKey
 } from '../../../sequelize';

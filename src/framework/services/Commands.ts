@@ -483,7 +483,7 @@ export class CommandsService {
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			this.client.dbQueue.addCommandUsage(
+			/*this.client.dbQueue.addCommandUsage(
 				{
 					id: null,
 					guildId: guild.id,
@@ -506,7 +506,7 @@ export class CommandsService {
 					name: message.author.username,
 					discriminator: message.author.discriminator
 				}
-			);
+			);*/
 		}
 	}
 }
