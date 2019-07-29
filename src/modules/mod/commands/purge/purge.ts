@@ -44,7 +44,7 @@ export default class extends Command {
 			messages = (await message.channel.getMessages(
 				Math.min(quantity, 100),
 				message.id
-			)).filter((a: Message) => a.author.id === user.id);
+			)).filter((a: Message) => a.author && a.author.id === user.id);
 		} else {
 			messages = await message.channel.getMessages(
 				Math.min(quantity, 100),
