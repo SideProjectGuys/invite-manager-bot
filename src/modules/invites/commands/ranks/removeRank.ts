@@ -46,6 +46,8 @@ export default class extends Command {
 				roleId: role.id
 			});
 
+			this.client.cache.ranks.flush(guild.id);
+
 			return this.sendReply(
 				message,
 				t('cmd.removeRank.done', { role: `<@&${role.id}>` })

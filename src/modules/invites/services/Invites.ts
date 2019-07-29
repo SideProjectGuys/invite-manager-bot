@@ -891,12 +891,7 @@ export class InvitesService {
 		const settings = await this.client.cache.settings.get(guild.id);
 		const style = settings.rankAssignmentStyle;
 
-		const allRanks = await ranks.findAll({
-			where: {
-				guildId: guild.id
-			},
-			raw: true
-		});
+		const allRanks = await this.client.cache.ranks.get(guild.id);
 
 		// Return early if we don't have any ranks so we do not
 		// get any permission issues for MANAGE_ROLES
