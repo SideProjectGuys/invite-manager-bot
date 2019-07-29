@@ -118,6 +118,8 @@ export default class extends Command {
 			}
 		);
 
+		this.client.cache.ranks.flush(guild.id);
+
 		if (!isNew) {
 			return this.sendReply(
 				message,

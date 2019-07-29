@@ -35,6 +35,8 @@ export default class extends Command {
 			where: { guildId: guild.id, id: oldRoleIds }
 		});
 
+		this.client.cache.ranks.flush(guild.id);
+
 		return this.sendReply(message, t('cmd.fixRanks.done'));
 	}
 }

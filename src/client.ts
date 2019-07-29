@@ -37,6 +37,7 @@ import {
 	defaultSettings
 } from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
+import { RanksCache } from './modules/invites/cache/RanksCache';
 
 const config = require('../config.json');
 
@@ -81,6 +82,7 @@ export class IMClient extends Client {
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
+		ranks: RanksCache;
 		members: MemberSettingsCache;
 		permissions: PermissionsCache;
 		premium: PremiumCache;
@@ -158,6 +160,7 @@ export class IMClient extends Client {
 
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
+			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),
 			permissions: new PermissionsCache(this),
 			premium: new PremiumCache(this),
