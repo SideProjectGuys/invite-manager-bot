@@ -71,18 +71,6 @@ export default class extends Command {
 			}
 		);
 
-		await inviteCodes.update(
-			{
-				clearedAmount: sequelize.col('uses') as any
-			},
-			{
-				where: {
-					guildId: guild.id,
-					inviterId: memberId ? memberId : { [Op.ne]: null }
-				}
-			}
-		);
-
 		await joins.update(
 			{
 				cleared: true
@@ -99,23 +87,23 @@ export default class extends Command {
 			}
 		);
 
-		await customInvites.update(
-			{
-				cleared: false
-			},
-			{
-				where: {
-					guildId: guild.id,
-					...(memberId && { memberId })
-				}
-			}
-		);
-
 		if (clearBonus) {
 			// Clear invites
 			await customInvites.update(
 				{
 					cleared: true
+				},
+				{
+					where: {
+						guildId: guild.id,
+						...(memberId && { memberId })
+					}
+				}
+			);
+		} else {
+			await customInvites.update(
+				{
+					cleared: false
 				},
 				{
 					where: {
