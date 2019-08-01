@@ -57,19 +57,15 @@ export default class extends Command {
 		{ date, clearBonus }: { date: Moment; clearBonus: boolean },
 		{ guild, t }: Context
 	): Promise<any> {
-		const memberId = user ? user.id : undefined;
+		const embed = this.createEmbed({
+			title: t('cmd.leaderboard.title'),
+			description:
+				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
+				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
+		});
+		return this.sendReply(message, embed);
 
-		await inviteCodes.update(
-			{
-				clearedAmount: sequelize.col('uses') as any
-			},
-			{
-				where: {
-					guildId: guild.id,
-					inviterId: memberId ? memberId : { [Op.ne]: null }
-				}
-			}
-		);
+		/*const memberId = user ? user.id : undefined;
 
 		await inviteCodes.update(
 			{
@@ -99,23 +95,23 @@ export default class extends Command {
 			}
 		);
 
-		await customInvites.update(
-			{
-				cleared: false
-			},
-			{
-				where: {
-					guildId: guild.id,
-					...(memberId && { memberId })
-				}
-			}
-		);
-
 		if (clearBonus) {
 			// Clear invites
 			await customInvites.update(
 				{
 					cleared: true
+				},
+				{
+					where: {
+						guildId: guild.id,
+						...(memberId && { memberId })
+					}
+				}
+			);
+		} else {
+			await customInvites.update(
+				{
+					cleared: false
 				},
 				{
 					where: {
@@ -131,6 +127,6 @@ export default class extends Command {
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.sendReply(message, t('cmd.clearInvites.done'));
+		return this.sendReply(message, t('cmd.clearInvites.done'));*/
 	}
 }

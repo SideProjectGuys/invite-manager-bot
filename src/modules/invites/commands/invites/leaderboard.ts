@@ -49,7 +49,15 @@ export default class extends Command {
 		{ compare }: { compare: moment.Duration },
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		const from = duration
+		const embed = this.createEmbed({
+			title: t('cmd.leaderboard.title'),
+			description:
+				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
+				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
+		});
+		return this.sendReply(message, embed);
+
+		/*const from = duration
 			? moment().subtract(duration)
 			: moment(guild.createdAt);
 		const comp = compare
@@ -195,6 +203,6 @@ export default class extends Command {
 				title: t('cmd.leaderboard.title'),
 				description: str
 			});
-		});
+		});*/
 	}
 }
