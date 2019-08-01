@@ -51,7 +51,15 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		if (amount === 0) {
+		const embed = this.createEmbed({
+			title: user.username,
+			description:
+				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
+				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
+		});
+		return this.sendReply(message, embed);
+
+		/*if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
 		if (amount > BIGINT_MAX_VALUE) {
@@ -149,6 +157,6 @@ export default class extends Command {
 
 		embed.description = descr;
 
-		return this.sendReply(message, embed);
+		return this.sendReply(message, embed);*/
 	}
 }
