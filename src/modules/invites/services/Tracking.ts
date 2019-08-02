@@ -37,13 +37,14 @@ export class TrackingService {
 	public constructor(client: IMClient) {
 		this.client = client;
 
+		client.on('ready', this.onClientReady.bind(this));
 		client.on('guildRoleCreate', this.onGuildRoleCreate.bind(this));
 		client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
-	public async init() {
+	private async onClientReady() {
 		// Save all guilds, sort descending by member count
 		// (Guilds with more members are more likely to get a join)
 		const allGuilds = [...this.client.guilds.values()].sort(

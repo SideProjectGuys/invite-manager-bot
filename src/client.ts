@@ -1,4 +1,3 @@
-import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
@@ -15,6 +14,7 @@ import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
+import { RanksCache } from './modules/invites/cache/RanksCache';
 import { CaptchaService } from './modules/invites/services/Captcha';
 import { InvitesService } from './modules/invites/services/Invites';
 import { TrackingService } from './modules/invites/services/Tracking';
@@ -37,7 +37,6 @@ import {
 	defaultSettings
 } from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
-import { RanksCache } from './modules/invites/cache/RanksCache';
 
 const config = require('../config.json');
 
@@ -73,9 +72,19 @@ i18n.configure({
 	}
 });
 
+export interface ClientOptions {
+	version: string;
+	token: string;
+	shardId: number;
+	shardCount: number;
+	customId: string;
+	flags: string[];
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+	public flags: string[];
 	public type: BotType;
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
@@ -120,13 +129,14 @@ export class IMClient extends Client {
 
 	private dbl: DBL;
 
-	public constructor(
-		version: string,
-		token: string,
-		shardId: number,
-		shardCount: number,
-		_prefix: string
-	) {
+	public constructor({
+		version,
+		token,
+		shardId,
+		shardCount,
+		customId,
+		flags
+	}: ClientOptions) {
 		super(token, {
 			disableEveryone: true,
 			firstShardID: shardId - 1,
@@ -154,9 +164,8 @@ export class IMClient extends Client {
 		this.version = version;
 		this.config = config;
 		this.type = config.bot.type;
-		if (_prefix) {
-			this.config.rabbitmq.prefix = _prefix;
-		}
+		this.config.customId = customId;
+		this.flags = flags;
 
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
@@ -183,6 +192,10 @@ export class IMClient extends Client {
 		this.invs = new InvitesService(this);
 		this.tracking = new TrackingService(this);
 		this.music = new MusicService(this);
+
+		// Services
+		this.rabbitmq.init();
+		this.cmds.init();
 
 		this.disabledGuilds = new Set();
 
@@ -299,12 +312,6 @@ export class IMClient extends Client {
 			}
 		});
 
-		// Services (don't await in case they take long)
-		this.cmds.init();
-		this.tracking.init();
-		this.rabbitmq.init();
-		this.music.init();
-
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
 			this.dbl = new DBL(this.config.bot.dblToken, this);
@@ -387,7 +394,7 @@ export class IMClient extends Client {
 						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
-			setTimeout(() => guild.leave(), 60000);
+			setTimeout(() => guild.leave(), 5 * 60 * 1000);
 			return;
 		}
 

@@ -28,7 +28,9 @@ export class CommandsService {
 		this.commands = [];
 		this.cmdMap = new Map();
 		this.commandCalls = new Map();
+	}
 
+	public async init() {
 		console.log(`Loading commands...`);
 
 		// Load all commands
@@ -84,10 +86,6 @@ export class CommandsService {
 
 		// Attach events
 		this.client.on('messageCreate', this.onMessage.bind(this));
-	}
-
-	public async init() {
-		// NOP
 	}
 
 	public async onMessage(message: Message) {
