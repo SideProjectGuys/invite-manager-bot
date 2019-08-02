@@ -282,9 +282,7 @@ export class IMClient extends Client {
 						await dmChannel
 							.createMessage(
 								'Hi!' +
-									`Thanks for inviting me to your server \`${
-										guild.name
-									}\`!\n\n` +
+									`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 									'I am the pro version of InviteManager, and only available to people ' +
 									'that support me on Patreon with the pro tier.\n\n' +
 									'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
@@ -315,7 +313,7 @@ export class IMClient extends Client {
 		this.setActivity();
 		this.activityInterval = setInterval(
 			() => this.setActivity(),
-			60 * 60 * 1000
+			20 * 60 * 1000
 		);
 	}
 
