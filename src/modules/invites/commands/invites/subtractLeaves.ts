@@ -34,6 +34,8 @@ export default class extends Command {
 			}
 		);
 
+		this.client.cache.invites.flush(guild.id);
+
 		return this.sendReply(message, t('cmd.subtractLeaves.done'));
 	}
 }

@@ -421,8 +421,9 @@ export class TrackingService {
 		}
 
 		// Auto remove leaves if enabled
+		let removedLeaves = 0;
 		if (sets.autoSubtractLeaves) {
-			await joins.update(
+			[removedLeaves] = await joins.update(
 				{
 					invalidatedReason: null
 				},
@@ -494,8 +495,9 @@ export class TrackingService {
 		}
 
 		// Auto remove fakes if enabled
+		let newFakes = 0;
 		if (sets.autoSubtractFakes) {
-			await joins.update(
+			[newFakes] = await joins.update(
 				{
 					invalidatedReason: JoinInvalidatedReason.fake
 				},
@@ -506,8 +508,7 @@ export class TrackingService {
 						},
 						guildId: guild.id,
 						memberId: member.id,
-						invalidatedReason: null,
-						exactMatchCode: join.exactMatchCode
+						invalidatedReason: null
 					}
 				}
 			);
@@ -542,10 +543,23 @@ export class TrackingService {
 			return;
 		}
 
-		const invites = await this.client.invs.getInviteCounts(
+		const invitesCached = this.client.cache.invites.hasOne(
 			guild.id,
 			invite.inviter.id
 		);
+
+		const invites = await this.client.cache.invites.getOne(
+			guild.id,
+			invite.inviter.id
+		);
+
+		if (invitesCached) {
+			invites.regular++;
+			invites.fake -= newFakes;
+			invites.leave += removedLeaves;
+			invites.total =
+				invites.regular + invites.custom + invites.fake + invites.leave;
+		}
 
 		// Add any roles for this invite code
 		const invCodeSettings = await this.client.cache.inviteCodes.getOne(
@@ -588,10 +602,10 @@ export class TrackingService {
 				joinMessageFormat,
 				guild,
 				member,
+				invites,
 				{
 					invite,
-					inviter: inviter || { user: invite.inviter },
-					invites
+					inviter: inviter || { user: invite.inviter }
 				}
 			);
 
@@ -762,22 +776,33 @@ export class TrackingService {
 		}
 
 		// Auto remove leaves if enabled (and if we know the inviter)
+		let newLeaves = 0;
 		if (inviterId && sets.autoSubtractLeaves) {
 			const threshold = Number(sets.autoSubtractLeaveThreshold);
 			const timeDiff = moment
 				.utc(join.createdAt)
 				.diff(moment.utc(leave.createdAt), 's');
+
 			if (timeDiff < threshold) {
-				await joins.update(
+				[newLeaves] = await joins.update(
 					{
 						invalidatedReason: JoinInvalidatedReason.leave
 					},
 					{
-						where: { id: join.id }
+						where: {
+							id: join.id,
+							invalidatedReason: null
+						}
 					}
 				);
 			}
 		}
+
+		const invites = await this.client.cache.invites.getOne(guild.id, inviterId);
+
+		invites.leave -= newLeaves;
+		invites.total =
+			invites.regular + invites.custom + invites.fake + invites.leave;
 
 		const leaveMessageFormat = sets.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
@@ -785,6 +810,7 @@ export class TrackingService {
 				leaveMessageFormat,
 				guild,
 				member,
+				invites,
 				{
 					invite: {
 						code: inviteCode,

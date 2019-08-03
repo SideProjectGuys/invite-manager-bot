@@ -81,6 +81,12 @@ export default class extends Command {
 			}
 		);
 
+		if (memberId) {
+			this.client.cache.invites.flushOne(guild.id, memberId);
+		} else {
+			this.client.cache.invites.flush(guild.id);
+		}
+
 		this.client.logAction(guild, message, LogAction.restoreInvites, {
 			...(memberId && { targetId: memberId })
 		});
