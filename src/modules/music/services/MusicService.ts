@@ -51,9 +51,15 @@ export class MusicService {
 
 		this.platforms = new MusicPlatformService(client);
 		this.musicConnections = new Map();
+
+		this.client.on('ready', this.onClientReady.bind(this));
 	}
 
-	public async init() {
+	private async onClientReady() {
+		await this.loadMusicNodes();
+	}
+
+	public async loadMusicNodes() {
 		// Load nodes from database
 		const typeFilter =
 			this.client.type === BotType.custom

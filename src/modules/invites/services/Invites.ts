@@ -40,7 +40,6 @@ type InvCacheType = {
 export interface JoinLeaveTemplateData {
 	invite: BasicInvite;
 	inviter: BasicMember;
-	invites?: InviteCounts;
 }
 
 export interface InviteCounts {
@@ -103,7 +102,6 @@ export class InvitesService {
 			where: {
 				guildId: guildId,
 				memberId: memberId,
-				generatedReason: null,
 				cleared: false
 			},
 			raw: true
@@ -213,7 +211,6 @@ export class InvitesService {
 			],
 			where: {
 				guildId: guildId,
-				generatedReason: null,
 				cleared: false
 			},
 			include: [
@@ -454,31 +451,9 @@ export class InvitesService {
 		template: string,
 		guild: Guild,
 		member: Member,
-		{ invite, inviter, invites }: JoinLeaveTemplateData
+		invites: InviteCounts,
+		{ invite, inviter }: JoinLeaveTemplateData
 	): Promise<string | Embed> {
-		if (!invites) {
-			if (
-				template.indexOf('{numInvites}') >= 0 ||
-				template.indexOf('{numRegularInvites}') >= 0 ||
-				template.indexOf('{numBonusInvites}') >= 0 ||
-				template.indexOf('{numFakeInvites}') >= 0 ||
-				template.indexOf('{numLeaveInvites}') >= 0
-			) {
-				invites = await this.client.invs.getInviteCounts(
-					guild.id,
-					inviter.user.id
-				);
-			} else {
-				invites = {
-					custom: 0,
-					fake: 0,
-					leave: 0,
-					regular: 0,
-					total: 0
-				};
-			}
-		}
-
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
 			numJoins = await joins.count({

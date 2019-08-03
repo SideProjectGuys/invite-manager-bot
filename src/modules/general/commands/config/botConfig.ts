@@ -130,7 +130,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		this.client.settings[key] = value;
+		(this.client.settings[key] as any) = value;
 		await botSettings.bulkCreate(
 			[
 				{

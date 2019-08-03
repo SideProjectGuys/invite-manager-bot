@@ -1,12 +1,11 @@
-import moment from 'moment';
+import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../client';
-
-const maxCacheDuration = moment.duration(6, 'h');
 
 export abstract class Cache<CachedObject> {
 	protected client: IMClient;
 
+	protected maxCacheDuration: Duration = moment.duration(6, 'h');
 	protected cache: Map<string, CachedObject> = new Map();
 	protected cacheTime: Map<string, moment.Moment> = new Map();
 
@@ -41,7 +40,7 @@ export abstract class Cache<CachedObject> {
 		const obj = await promise;
 
 		this.cache.set(key, obj);
-		this.cacheTime.set(key, moment().add(maxCacheDuration));
+		this.cacheTime.set(key, moment().add(this.maxCacheDuration));
 
 		return obj;
 	}
@@ -50,8 +49,13 @@ export abstract class Cache<CachedObject> {
 
 	public async set(key: string, value: CachedObject): Promise<CachedObject> {
 		this.cache.set(key, value);
-		this.cacheTime.set(key, moment().add(maxCacheDuration));
+		this.cacheTime.set(key, moment().add(this.maxCacheDuration));
 		return value;
+	}
+
+	public has(key: string) {
+		const time = this.cacheTime.get(key);
+		return time && time.isAfter(moment()) && this.cache.has(key);
 	}
 
 	public flush(key: string) {

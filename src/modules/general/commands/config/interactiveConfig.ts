@@ -14,7 +14,7 @@ import {
 import { BotCommand, CommandGroup, Permissions } from '../../../../types';
 
 interface ConfigMenu {
-	items: [SettingsKey, SettingsInfo][];
+	items: [SettingsKey, SettingsInfo<any>][];
 	subMenus: SettingsGroup[];
 }
 

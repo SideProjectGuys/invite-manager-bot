@@ -25,14 +25,18 @@ export class RabbitMqService {
 
 	public constructor(client: IMClient) {
 		this.client = client;
-		this.shard = client.config.rabbitmq.prefix
-			? client.config.rabbitmq.prefix
+		this.shard = client.config.customId
+			? client.config.customId
 			: this.client.shardId;
 
 		this.msgQueue = [];
 	}
 
 	public async init() {
+		if (this.client.flags.includes('--no-rabbitmq')) {
+			return;
+		}
+
 		this.conn = await connect(this.client.config.rabbitmq);
 		this.conn.on('close', async err => {
 			this.connRetry++;
@@ -268,7 +272,7 @@ export class RabbitMqService {
 				break;
 
 			case ShardCommand.RELOAD_MUSIC_NODES:
-				this.client.music.init();
+				this.client.music.loadMusicNodes();
 				sendResponse({});
 				break;
 

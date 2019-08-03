@@ -40,7 +40,6 @@ export interface MemberInstance
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	// TODO: get custom invites via creatorId
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
-	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
 	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
 		PremiumSubscriptionInstance
@@ -85,7 +84,6 @@ export interface GuildInstance
 	getCustomInvites: Sequelize.HasManyGetAssociationsMixin<CustomInviteInstance>;
 	getRanks: Sequelize.HasManyGetAssociationsMixin<RankInstance>;
 	getCommandUsage: Sequelize.HasManyGetAssociationsMixin<CommandUsageInstance>;
-	getPresences: Sequelize.HasManyGetAssociationsMixin<PresenceInstance>;
 	getLogs: Sequelize.HasManyGetAssociationsMixin<LogInstance>;
 	getPremiumSubscriptions: Sequelize.HasManyGetAssociationsMixin<
 		PremiumSubscriptionInstance
@@ -715,110 +713,6 @@ guilds.hasMany(ranks);
 
 ranks.belongsTo(roles);
 roles.hasMany(ranks);
-
-// ------------------------------------
-// Presences
-// ------------------------------------
-export enum PresenceStatus {
-	online = 'online',
-	offline = 'offline',
-	idle = 'idle',
-	dnd = 'dnd'
-}
-
-export enum GameType {
-	playing = 0,
-	streaming = 1,
-	listening = 2
-}
-
-export interface PresenceAttributes extends BaseAttributes {
-	id: number;
-	status: PresenceStatus;
-	type: GameType;
-	guildId: string;
-	memberId: string;
-}
-export interface PresenceInstance
-	extends Sequelize.Instance<PresenceAttributes>,
-		PresenceAttributes {
-	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
-	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
-}
-
-export const presences = sequelize.define<PresenceInstance, PresenceAttributes>(
-	'presence',
-	{
-		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		status: Sequelize.ENUM(Object.values(PresenceStatus)),
-		type: Sequelize.TINYINT,
-		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32)
-	},
-	{
-		timestamps: true,
-		paranoid: true
-	}
-);
-
-presences.belongsTo(guilds);
-guilds.hasMany(presences);
-
-presences.belongsTo(members);
-members.hasMany(presences);
-
-// ------------------------------------
-// MessageActivity
-// ------------------------------------
-export interface MessageActivityAttributes extends BaseAttributes {
-	id: number;
-	guildId: string;
-	channelId: string;
-	memberId: string;
-	amount: number | Sequelize.literal;
-	timestamp: Date | number | string | Sequelize.fn;
-}
-export interface MessageActivityInstance
-	extends Sequelize.Instance<MessageActivityAttributes>,
-		MessageActivityAttributes {
-	getGuild: Sequelize.BelongsToGetAssociationMixin<GuildInstance>;
-	getChannel: Sequelize.BelongsToGetAssociationMixin<ChannelInstance>;
-	getMember: Sequelize.BelongsToGetAssociationMixin<MemberInstance>;
-}
-
-export const messageActivities = sequelize.define<
-	MessageActivityInstance,
-	MessageActivityAttributes
->(
-	'messageActivity',
-	{
-		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		amount: Sequelize.INTEGER,
-		timestamp: Sequelize.DATE,
-		guildId: Sequelize.STRING(32),
-		memberId: Sequelize.STRING(32),
-		channelId: Sequelize.STRING(32)
-	},
-	{
-		timestamps: true,
-		paranoid: true,
-		indexes: [
-			{
-				unique: true,
-				fields: ['guildId', 'channelId', 'memberId', 'timestamp']
-			}
-		]
-	}
-);
-
-messageActivities.belongsTo(guilds);
-guilds.hasMany(messageActivities);
-
-messageActivities.belongsTo(channels);
-channels.hasMany(messageActivities);
-
-messageActivities.belongsTo(members);
-members.hasMany(messageActivities);
 
 // ------------------------------------
 // Logs

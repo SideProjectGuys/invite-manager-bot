@@ -30,10 +30,10 @@ export type InternalSettingsTypes =
 	| 'Enum<ActivityStatus>'
 	| 'Enum<ActivityType>';
 
-export interface SettingsInfo {
+export interface SettingsInfo<T> {
 	type: InternalSettingsTypes;
 	grouping: SettingsGroup[];
-	defaultValue: any;
+	defaultValue: T;
 	exampleValues?: string[];
 	possibleValues?: string[];
 	hasPremiumInfo?: boolean;
@@ -160,7 +160,9 @@ export interface SettingsObject {
 	fadeMusicEndDelay: number;
 }
 
-export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
+export const settingsInfo: {
+	[k in SettingsKey]: SettingsInfo<SettingsObject[k]>;
+} = {
 	prefix: {
 		type: 'String',
 		grouping: [SettingsGroup.general],
@@ -560,7 +562,7 @@ export const settingsInfo: { [k in SettingsKey]: SettingsInfo } = {
 	announcementVoice: {
 		type: 'Enum<AnnouncementVoice>',
 		grouping: [SettingsGroup.music, SettingsGroup.general],
-		defaultValue: 'Joanna',
+		defaultValue: AnnouncementVoice.Joanna,
 		possibleValues: Object.values(AnnouncementVoice)
 	},
 
@@ -580,18 +582,20 @@ export const defaultSettings: SettingsObject = {} as any;
 Object.keys(settingsInfo).forEach((k: SettingsKey) => {
 	const info = settingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	defaultSettings[k] = settingsInfo[k].defaultValue;
+	(defaultSettings[k] as any) = settingsInfo[k].defaultValue;
 });
 
 // ------------------------------------
 // Member Settings
 // ------------------------------------
 export interface MemberSettingsObject {
-	hideFromLeaderboard: boolean;
+	[MemberSettingsKey.hideFromLeaderboard]: boolean;
 }
 
-export const memberSettingsInfo: { [k in MemberSettingsKey]: SettingsInfo } = {
-	hideFromLeaderboard: {
+export const memberSettingsInfo: {
+	[k in MemberSettingsKey]: SettingsInfo<MemberSettingsObject[k]>;
+} = {
+	[MemberSettingsKey.hideFromLeaderboard]: {
 		type: 'Boolean',
 		grouping: [SettingsGroup.invites],
 		defaultValue: false
@@ -602,26 +606,26 @@ export const memberDefaultSettings: MemberSettingsObject = {} as any;
 Object.keys(memberSettingsInfo).forEach((k: MemberSettingsKey) => {
 	const info = memberSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	memberDefaultSettings[k] = memberSettingsInfo[k].defaultValue;
+	(memberDefaultSettings[k] as any) = memberSettingsInfo[k].defaultValue;
 });
 
 // ------------------------------------
 // Invite Code Settings
 // ------------------------------------
 export interface InviteCodeSettingsObject {
-	name: string;
-	roles: string[];
+	[InviteCodeSettingsKey.name]: string;
+	[InviteCodeSettingsKey.roles]: string[];
 }
 
 export const inviteCodeSettingsInfo: {
-	[k in InviteCodeSettingsKey]: SettingsInfo
+	[k in InviteCodeSettingsKey]: SettingsInfo<InviteCodeSettingsObject[k]>;
 } = {
-	name: {
+	[InviteCodeSettingsKey.name]: {
 		type: 'String',
 		grouping: [SettingsGroup.invites],
 		defaultValue: null
 	},
-	roles: {
+	[InviteCodeSettingsKey.roles]: {
 		type: 'Role[]',
 		grouping: [SettingsGroup.invites],
 		defaultValue: []
@@ -632,51 +636,54 @@ export const inviteCodeDefaultSettings: InviteCodeSettingsObject = {} as any;
 Object.keys(inviteCodeSettingsInfo).forEach((k: InviteCodeSettingsKey) => {
 	const info = inviteCodeSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	inviteCodeDefaultSettings[k] = inviteCodeSettingsInfo[k].defaultValue;
+	(inviteCodeDefaultSettings[k] as any) = inviteCodeSettingsInfo[
+		k
+	].defaultValue;
 });
 
 // ------------------------------------
 // Bot Settings
 // ------------------------------------
 export interface BotSettingsObject {
-	name: string[];
-	activityStatus: ActivityStatus;
-	activityEnabled: boolean;
-	activityType: ActivityType;
-	activityMessage: string;
-	activityUrl: string;
-	embedDefaultColor: string;
+	[BotSettingsKey.activityStatus]: ActivityStatus;
+	[BotSettingsKey.activityEnabled]: boolean;
+	[BotSettingsKey.activityType]: ActivityType;
+	[BotSettingsKey.activityMessage]: string;
+	[BotSettingsKey.activityUrl]: string;
+	[BotSettingsKey.embedDefaultColor]: string;
 }
 
-export const botSettingsInfo: { [k in BotSettingsKey]: SettingsInfo } = {
-	activityStatus: {
+export const botSettingsInfo: {
+	[k in BotSettingsKey]: SettingsInfo<BotSettingsObject[k]>;
+} = {
+	[BotSettingsKey.activityStatus]: {
 		type: 'Enum<ActivityStatus>',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
-		defaultValue: 'online',
+		defaultValue: ActivityStatus.online,
 		possibleValues: Object.values(ActivityStatus)
 	},
-	activityEnabled: {
+	[BotSettingsKey.activityEnabled]: {
 		type: 'Boolean',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
 		defaultValue: true
 	},
-	activityType: {
+	[BotSettingsKey.activityType]: {
 		type: 'Enum<ActivityType>',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
-		defaultValue: 'playing',
+		defaultValue: ActivityType.playing,
 		possibleValues: Object.values(ActivityType)
 	},
-	activityMessage: {
+	[BotSettingsKey.activityMessage]: {
 		type: 'String',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
 		defaultValue: null
 	},
-	activityUrl: {
+	[BotSettingsKey.activityUrl]: {
 		type: 'String',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
 		defaultValue: null
 	},
-	embedDefaultColor: {
+	[BotSettingsKey.embedDefaultColor]: {
 		type: 'String',
 		grouping: [SettingsGroup.bot, SettingsGroup.general],
 		defaultValue: null
@@ -687,13 +694,13 @@ export const botDefaultSettings: BotSettingsObject = {} as any;
 Object.keys(botSettingsInfo).forEach((k: BotSettingsKey) => {
 	const info = botSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	botDefaultSettings[k] = info.defaultValue;
+	(botDefaultSettings[k] as any) = info.defaultValue;
 });
 
 // ------------------------------------
 // Functions
 // ------------------------------------
-export function toDbValue(info: SettingsInfo, value: any): any {
+export function toDbValue(info: SettingsInfo<any>, value: any): any {
 	if (value === 'default') {
 		return _toDbValue(info.type, info.defaultValue);
 	}
@@ -732,7 +739,7 @@ function _toDbValue(type: string, value: any): string {
 	return value;
 }
 
-export function beautify(info: SettingsInfo, value: any) {
+export function beautify(info: SettingsInfo<any>, value: any) {
 	if (typeof value === 'undefined' || value === null) {
 		return null;
 	}
@@ -751,10 +758,10 @@ export function beautify(info: SettingsInfo, value: any) {
 			return `<#${value}>`;
 
 		case 'Channel[]':
-			return value.map((v: any) => `<#${v}>`).join(' ');
+			return value.map((v: string) => `<#${v}>`).join(' ');
 
 		case 'String[]':
-			return value.map((v: any) => '`' + v + '`').join(', ');
+			return value.map((v: string) => '`' + v + '`').join(', ');
 
 		default:
 			if (typeof value === 'string' && value.length > 1000) {

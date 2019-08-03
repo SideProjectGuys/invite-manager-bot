@@ -211,18 +211,18 @@ export default class extends Command {
 				guild,
 				member,
 				{
+					total: Math.round(Math.random() * 1000),
+					regular: Math.round(Math.random() * 1000),
+					custom: Math.round(Math.random() * 1000),
+					fake: Math.round(Math.random() * 1000),
+					leave: Math.round(Math.random() * 1000)
+				},
+				{
 					invite: {
 						code: 'tEsTcOdE',
 						channel: message.channel as TextChannel
 					},
-					inviter: me,
-					invites: {
-						total: Math.round(Math.random() * 1000),
-						regular: Math.round(Math.random() * 1000),
-						custom: Math.round(Math.random() * 1000),
-						fake: Math.round(Math.random() * 1000),
-						leave: Math.round(Math.random() * 1000)
-					}
+					inviter: me
 				}
 			);
 

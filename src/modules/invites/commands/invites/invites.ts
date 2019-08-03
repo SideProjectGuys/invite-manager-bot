@@ -29,18 +29,7 @@ export default class extends Command {
 		{ guild, t, me }: Context
 	): Promise<any> {
 		const target = user ? user : message.author;
-
-		const embed = this.createEmbed({
-			title: target.username,
-			description:
-				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
-				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
-		});
-		return this.sendReply(message, embed);
-
-		/*
-		const target = user ? user : message.author;
-		const invites = await this.client.invs.getInviteCounts(guild.id, target.id);
+		const invites = await this.client.cache.invites.getOne(guild.id, target.id);
 
 		let textMessage = '';
 		if (target.id === message.author.id) {
@@ -146,6 +135,6 @@ export default class extends Command {
 			description: textMessage
 		});
 
-		return this.sendReply(message, embed);*/
+		return this.sendReply(message, embed);
 	}
 }

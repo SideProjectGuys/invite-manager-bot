@@ -51,15 +51,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		const embed = this.createEmbed({
-			title: user.username,
-			description:
-				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
-				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
-		});
-		return this.sendReply(message, embed);
-
-		/*if (amount === 0) {
+		if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
 		if (amount > BIGINT_MAX_VALUE) {
@@ -69,7 +61,7 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.addInvites.numberTooSmall'));
 		}
 
-		const invites = await this.client.invs.getInviteCounts(guild.id, user.id);
+		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
 		await members.insertOrUpdate({
@@ -87,6 +79,10 @@ export default class extends Command {
 			reason,
 			cleared: false
 		});
+
+		// Update cache
+		invites.custom += amount;
+		invites.total += amount;
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {
 			customInviteId: createdInv.id,
@@ -157,6 +153,6 @@ export default class extends Command {
 
 		embed.description = descr;
 
-		return this.sendReply(message, embed);*/
+		return this.sendReply(message, embed);
 	}
 }

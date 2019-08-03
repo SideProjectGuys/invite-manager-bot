@@ -23,10 +23,13 @@ import {
 } from '.';
 
 export class SettingsValueResolver extends Resolver {
-	private infos: { [x: string]: SettingsInfo };
-	private resolvers: { [x in InternalSettingsTypes]: Resolver };
+	private infos: { [key: string]: SettingsInfo<any> };
+	private resolvers: { [key in InternalSettingsTypes]: Resolver };
 
-	public constructor(client: IMClient, infos: { [x: string]: SettingsInfo }) {
+	public constructor(
+		client: IMClient,
+		infos: { [x: string]: SettingsInfo<any> }
+	) {
 		super(client);
 
 		this.infos = infos;

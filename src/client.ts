@@ -1,4 +1,3 @@
-import * as amqplib from 'amqplib';
 import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
@@ -15,6 +14,8 @@ import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
+import { InvitesCache } from './modules/invites/cache/InvitesCache';
+import { RanksCache } from './modules/invites/cache/RanksCache';
 import { CaptchaService } from './modules/invites/services/Captcha';
 import { InvitesService } from './modules/invites/services/Invites';
 import { TrackingService } from './modules/invites/services/Tracking';
@@ -37,7 +38,6 @@ import {
 	defaultSettings
 } from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
-import { RanksCache } from './modules/invites/cache/RanksCache';
 
 const config = require('../config.json');
 
@@ -73,15 +73,26 @@ i18n.configure({
 	}
 });
 
+export interface ClientOptions {
+	version: string;
+	token: string;
+	shardId: number;
+	shardCount: number;
+	customId: string;
+	flags: string[];
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
+	public flags: string[];
 	public type: BotType;
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
 
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
+		invites: InvitesCache;
 		ranks: RanksCache;
 		members: MemberSettingsCache;
 		permissions: PermissionsCache;
@@ -120,13 +131,14 @@ export class IMClient extends Client {
 
 	private dbl: DBL;
 
-	public constructor(
-		version: string,
-		token: string,
-		shardId: number,
-		shardCount: number,
-		_prefix: string
-	) {
+	public constructor({
+		version,
+		token,
+		shardId,
+		shardCount,
+		customId,
+		flags
+	}: ClientOptions) {
 		super(token, {
 			disableEveryone: true,
 			firstShardID: shardId - 1,
@@ -154,12 +166,12 @@ export class IMClient extends Client {
 		this.version = version;
 		this.config = config;
 		this.type = config.bot.type;
-		if (_prefix) {
-			this.config.rabbitmq.prefix = _prefix;
-		}
+		this.config.customId = customId;
+		this.flags = flags;
 
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
+			invites: new InvitesCache(this),
 			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),
 			permissions: new PermissionsCache(this),
@@ -183,6 +195,10 @@ export class IMClient extends Client {
 		this.invs = new InvitesService(this);
 		this.tracking = new TrackingService(this);
 		this.music = new MusicService(this);
+
+		// Services
+		this.rabbitmq.init();
+		this.cmds.init();
 
 		this.disabledGuilds = new Set();
 
@@ -282,9 +298,7 @@ export class IMClient extends Client {
 						await dmChannel
 							.createMessage(
 								'Hi!' +
-									`Thanks for inviting me to your server \`${
-										guild.name
-									}\`!\n\n` +
+									`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 									'I am the pro version of InviteManager, and only available to people ' +
 									'that support me on Patreon with the pro tier.\n\n' +
 									'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
@@ -301,12 +315,6 @@ export class IMClient extends Client {
 			}
 		});
 
-		// Services (don't await in case they take long)
-		this.cmds.init();
-		this.tracking.init();
-		this.rabbitmq.init();
-		this.music.init();
-
 		// Setup discord bots api
 		if (this.config.bot.dblToken) {
 			this.dbl = new DBL(this.config.bot.dblToken, this);
@@ -315,7 +323,7 @@ export class IMClient extends Client {
 		this.setActivity();
 		this.activityInterval = setInterval(
 			() => this.setActivity(),
-			60 * 60 * 1000
+			20 * 60 * 1000
 		);
 	}
 
@@ -389,7 +397,7 @@ export class IMClient extends Client {
 						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
-			setTimeout(() => guild.leave(), 60000);
+			setTimeout(() => guild.leave(), 5 * 60 * 1000);
 			return;
 		}
 

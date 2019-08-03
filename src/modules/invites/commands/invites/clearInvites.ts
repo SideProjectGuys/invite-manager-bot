@@ -57,15 +57,7 @@ export default class extends Command {
 		{ date, clearBonus }: { date: Moment; clearBonus: boolean },
 		{ guild, t }: Context
 	): Promise<any> {
-		const embed = this.createEmbed({
-			title: t('cmd.leaderboard.title'),
-			description:
-				'Invite commands are currently disabled while we upgrade our servers.\n\n' +
-				'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
-		});
-		return this.sendReply(message, embed);
-
-		/*const memberId = user ? user.id : undefined;
+		const memberId = user ? user.id : undefined;
 
 		await inviteCodes.update(
 			{
@@ -122,11 +114,17 @@ export default class extends Command {
 			);
 		}
 
+		if (memberId) {
+			this.client.cache.invites.flushOne(guild.id, memberId);
+		} else {
+			this.client.cache.invites.flush(guild.id);
+		}
+
 		this.client.logAction(guild, message, LogAction.clearInvites, {
 			clearBonus,
 			...(memberId && { targetId: memberId })
 		});
 
-		return this.sendReply(message, t('cmd.clearInvites.done'));*/
+		return this.sendReply(message, t('cmd.clearInvites.done'));
 	}
 }
