@@ -1163,23 +1163,27 @@
 	"resolvers": {
 		"boolean": {
 			"invalid": "Not a valid yes/no value.",
-			"type": "Boolean"
+			"type": "Boolean",
+			"typeInfo": "resolvers.boolean.typeInfo"
 		},
 		"channel": {
 			"multiple": "Multiple matching channels found. {{{ channels }}}",
 			"notFound": "Channel not found.",
-			"type": "Channel"
+			"type": "Channel",
+			"typeInfo": "resolvers.channel.typeInfo"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
 			"notFound": "Command not found.",
 			"type": "Command",
-			"validValues": "Use one of the following values: {{{ values }}}"
+			"validValues": "Use one of the following values: {{{ values }}}",
+			"typeInfo": "resolvers.command.typeInfo"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"type": "Enum"
+			"type": "Enum",
+			"typeInfo": "resolvers.enum.typeInfo"
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1190,32 +1194,43 @@
 		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
 		"number": {
 			"invalid": "Not a valid number.",
-			"type": "Number"
+			"type": "Number",
+			"typeInfo": "resolvers.number.typeInfo"
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
 			"notFound": "Role was not found.",
-			"type": "Role"
+			"type": "Role",
+			"typeInfo": "resolvers.role.typeInfo"
 		},
 		"user": {
 			"multiple": "Multiple matching users found. {{{ users }}}",
 			"notFound": "User was not found.",
-			"type": "User"
+			"type": "User",
+			"typeInfo": "resolvers.user.typeInfo"
 		},
 		"string": {
-			"type": "Text"
+			"type": "Text",
+			"typeInfo": "resolvers.string.typeInfo"
 		},
 		"settingsvalue": {
 			"type": "Value"
 		},
 		"date": {
-			"type": "Date"
+			"type": "Date",
+			"typeInfo": "resolvers.date.typeInfo"
 		},
 		"duration": {
-			"type": "Duration"
+			"type": "Duration",
+			"typeInfo": "resolvers.duration.typeInfo"
 		},
 		"invitecode": {
-			"type": "Invite Code"
+			"type": "Invite Code",
+			"typeInfo": "resolvers.invitecode.typeInfo"
+		},
+		"text": {
+			"type": "resolvers.text.type",
+			"typeInfo": "resolvers.text.typeInfo"
 		}
 	},
 	"settings": {

@@ -10,7 +10,7 @@
 - [Nederlands](nl/README.md)
 - [Polski](pl/README.md)
 - [Português](pt/README.md)
-- [Português do Brasil](pt_BR/README.md)
+- [Português do Brasil](pt-BR/README.md)
 - [Română](ro/README.md)
 - [Pусский](ru/README.md)
 - [Türkçe](tr/README.md)

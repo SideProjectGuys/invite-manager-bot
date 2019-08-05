@@ -20,6 +20,20 @@ const locales = [
 	'tr'
 ];
 
+const argTypes = [
+	'boolean',
+	'number',
+	'enum',
+	'invitecode',
+	'user',
+	'role',
+	'channel',
+	'command',
+	'string',
+	'date',
+	'duration'
+];
+
 i18n.configure({
 	locales,
 	directory: __dirname + '/../locale',
@@ -37,6 +51,47 @@ let child = spawn(
 child.on('error', error => console.log(error));
 
 child.on('close', () => {
+	const cmds = [];
+	const cmdDir = path.resolve(__dirname, '../bin/modules/');
+	const fakeClient = {
+		msg: {
+			createEmbed: () => {},
+			sendReply: () => {},
+			sendEmbed: () => {},
+			showPaginated: () => {}
+		},
+		cmds: {
+			commands: cmds
+		}
+	};
+	const loadRecursive = dir =>
+		fs.readdirSync(dir).forEach(fileName => {
+			const file = dir + '/' + fileName;
+
+			if (fs.statSync(file).isDirectory()) {
+				loadRecursive(file);
+				return;
+			}
+
+			if (!fileName.endsWith('.js')) {
+				return;
+			}
+
+			const clazz = require(file);
+			if (clazz.default) {
+				const constr = clazz.default;
+				const parent = Object.getPrototypeOf(constr);
+				if (!parent || parent.name !== 'Command') {
+					return;
+				}
+
+				const inst = new constr(fakeClient);
+				cmds.push(inst);
+			}
+		});
+	loadRecursive(cmdDir);
+	console.log(`Loaded \x1b[32m${cmds.length}\x1b[0m commands!`);
+
 	locales.forEach(locale => {
 		const _t = (phrase, replacements) =>
 			i18n.__({ locale, phrase }, replacements);
@@ -154,50 +209,12 @@ child.on('close', () => {
 			.map(key => `<a name=${key}></a>\n\n` + settingsInfo[key].markdown)
 			.join('\n\n');
 
-		fs.writeFileSync(`./docs/${locale}/reference/settings.md`, outSettings);
+		fs.writeFileSync(
+			`./docs/${locale.replace('_', '-')}/reference/settings.md`,
+			outSettings
+		);
 
 		// Generate command docs
-		const cmds = [];
-		const cmdDir = path.resolve(__dirname, '../bin/modules/');
-		const fakeClient = {
-			msg: {
-				createEmbed: () => {},
-				sendReply: () => {},
-				sendEmbed: () => {},
-				showPaginated: () => {}
-			},
-			cmds: {
-				commands: cmds
-			}
-		};
-		const loadRecursive = dir =>
-			fs.readdirSync(dir).forEach(fileName => {
-				const file = dir + '/' + fileName;
-
-				if (fs.statSync(file).isDirectory()) {
-					loadRecursive(file);
-					return;
-				}
-
-				if (!fileName.endsWith('.js')) {
-					return;
-				}
-
-				const clazz = require(file);
-				if (clazz.default) {
-					const constr = clazz.default;
-					const parent = Object.getPrototypeOf(constr);
-					if (!parent || parent.name !== 'Command') {
-						return;
-					}
-
-					const inst = new constr(fakeClient);
-					cmds.push(inst);
-				}
-			});
-		loadRecursive(cmdDir);
-		console.log(`Loaded \x1b[32m${cmds.length}\x1b[0m commands!`);
-
 		let outCmds = '# Commands\n\n';
 		outCmds +=
 			'To get a list of available commands, do !help on your server.\n\n';
@@ -206,40 +223,11 @@ child.on('close', () => {
 			'## Arguments & Flags\n\nMost commands accept arguments and/or flags.  \n' +
 			'According to the **Type** of the argument or flag you can provide different values.\n\n';
 
-		outCmds += '### Number\n\nThis arguments expects a number\n\n';
-		outCmds +=
-			'### Text\n\nThis arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.  \n' +
-			`**If the text is the last argument you don't have to use quotes.**\n\n`;
-
-		outCmds +=
-			'### Invite Code\n\nThis arguments expects a Discord Invite Code.  \n' +
-			'**You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.**\n\n';
-
-		outCmds +=
-			'### Enum\n\nThis arguments expects a value from a specific set of valid values.  \n' +
-			'**Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.**\n\n';
-
-		outCmds +=
-			'### User\n\nThis arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n' +
-			'- Mention the user: `@Valandur`\n' +
-			'- Use their ID: `102785693046026240`\n' +
-			'- Use their name: `Valandur`\n' +
-			'- Use their name and discriminator: `Valandur#3581`\n' +
-			'- Use quotes if their name has a space: `"Valandur with a space"`\n\n';
-
-		outCmds +=
-			'### Role\n\nThis arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n' +
-			'- Mention the role: `@Admin`\n' +
-			'- Use the ID: `102785693046026240`\n' +
-			'- Use the name: `Admin`\n' +
-			'- Use quotes if the name has a space: `"Admin with a space"`\n\n';
-
-		outCmds +=
-			'### Channel\n\nThis arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n' +
-			'- Mention the channel: `#general`\n' +
-			'- Use the ID: `409846838129197057`\n' +
-			'- Use the name: `general`\n' +
-			'- Use quotes if the name has a space: `"general with a space"`\n\n';
+		argTypes.forEach(argType => {
+			const name = _t(`resolvers.${argType}.type`);
+			const info = _t(`resolvers.${argType}.typeInfo`);
+			outCmds += `### ${name}\n\n${info}\n\n`;
+		});
 
 		outCmds += '## Overview\n\n';
 		Object.keys(CommandGroup).forEach(group => {
@@ -324,6 +312,9 @@ child.on('close', () => {
 				outCmds += generateExamples(cmd).join('  \n') + '\n\n';
 			});
 
-		fs.writeFileSync(`./docs/${locale}/reference/commands.md`, outCmds);
+		fs.writeFileSync(
+			`./docs/${locale.replace('_', '-')}/reference/commands.md`,
+			outCmds
+		);
 	});
 });
