@@ -1163,23 +1163,27 @@
 	"resolvers": {
 		"boolean": {
 			"invalid": "有効なyes / noではありません。",
-			"type": "ブール値"
+			"type": "ブール値",
+			"typeInfo": "resolvers.boolean.typeInfo"
 		},
 		"channel": {
 			"multiple": "複数の一致するチャンネルが見つかりました。{{{ channels }}}",
 			"notFound": "チャンネルが見つかりませんでした。",
-			"type": "チャンネル"
+			"type": "チャンネル",
+			"typeInfo": "resolvers.channel.typeInfo"
 		},
 		"command": {
 			"multiple": "複数のコマンドが見つかりました。{{{ commands }}}",
 			"notFound": "コマンドが見つかりませんでした。",
 			"type": "コマンド",
-			"validValues": "以下のいずれかの値を使用:{{{ values }}}"
+			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
+			"typeInfo": "resolvers.command.typeInfo"
 		},
 		"enum": {
 			"invalid": "不正な値です。",
 			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
-			"type": "列挙型"
+			"type": "列挙型",
+			"typeInfo": "resolvers.enum.typeInfo"
 		},
 		"invalid": "`{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}の値が無効です",
 		"member": {
@@ -1190,32 +1194,43 @@
 		"missingRequired": "必要な引数`{{ name }}`がありません。\n{{{ usage }}}\n{{{ help }}}",
 		"number": {
 			"invalid": "不正な数です。",
-			"type": "番号"
+			"type": "番号",
+			"typeInfo": "resolvers.number.typeInfo"
 		},
 		"role": {
 			"multiple": "複数の役職が見つかりました。 {{{ roles }}}",
 			"notFound": "役職は見つかりませんでした。",
-			"type": "役職"
+			"type": "役職",
+			"typeInfo": "resolvers.role.typeInfo"
 		},
 		"user": {
 			"multiple": "複数の一致するユーザーが見つかりました。{{{ user }}}",
 			"notFound": "ユーザーが見つかりませんでした。",
-			"type": "ユーザー"
+			"type": "ユーザー",
+			"typeInfo": "resolvers.user.typeInfo"
 		},
 		"string": {
-			"type": "テキスト"
+			"type": "テキスト",
+			"typeInfo": "resolvers.string.typeInfo"
 		},
 		"settingsvalue": {
 			"type": "値"
 		},
 		"date": {
-			"type": "日付"
+			"type": "日付",
+			"typeInfo": "resolvers.date.typeInfo"
 		},
 		"duration": {
-			"type": "期間"
+			"type": "期間",
+			"typeInfo": "resolvers.duration.typeInfo"
 		},
 		"invitecode": {
-			"type": "招待コード"
+			"type": "招待コード",
+			"typeInfo": "resolvers.invitecode.typeInfo"
+		},
+		"text": {
+			"type": "resolvers.text.type",
+			"typeInfo": "resolvers.text.typeInfo"
 		}
 	},
 	"settings": {
