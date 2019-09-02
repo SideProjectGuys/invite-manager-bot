@@ -433,7 +433,7 @@ export const inviteCodes = sequelize.define<
 	'inviteCode',
 	{
 		code: {
-			type: Sequelize.STRING(16) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+			type: Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 			primaryKey: true
 		},
 		maxAge: Sequelize.INTEGER,
@@ -491,7 +491,7 @@ export const inviteCodeSettings = sequelize.define<
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		guildId: Sequelize.STRING(32),
-		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		inviteCode: Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		value: Sequelize.JSON
 	},
 	{
@@ -545,7 +545,8 @@ export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		possibleMatches:
 			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
-		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		exactMatchCode:
+			Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32),
 		invalidatedReason: Sequelize.ENUM(Object.values(JoinInvalidatedReason)),
