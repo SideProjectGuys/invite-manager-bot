@@ -5,16 +5,16 @@ import {
 	EmbedOptions,
 	Emoji,
 	Guild,
+	GuildChannel,
 	Message,
 	TextableChannel,
-	TextChannel,
 	User
 } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { PromptResult } from '../../types';
+import { Permissions, PromptResult } from '../../types';
 
 const upSymbol = '🔺';
 const downSymbol = '🔻';
@@ -120,85 +120,118 @@ export class MessagingService {
 
 		e.fields = e.fields.filter(field => field && field.value);
 
+		const content = convertEmbedToPlain(e);
+
 		return new Promise<Message>((resolve, reject) => {
-			target
-				.createMessage({ embed: e })
-				.then(resolve)
-				.catch(error => {
-					const content = convertEmbedToPlain(e);
+			// Fallback functions when sending message fails
+			const sendDM = (error?: any) => {
+				return fallbackUser
+					.getDMChannel()
+					.then(dmChannel => {
+						let msg =
+							'I encountered an error when trying to send a message. ' +
+							'Please report this to a developer:\n```' +
+							`${error.message}\n\n${error.message}\`\`\``;
 
-					if (error.code !== 50013) {
-						withScope(scope => {
-							if (target instanceof TextChannel) {
-								scope.setUser({ id: target.guild.id });
-							}
-							scope.setExtra('message', embed);
-							captureException(error);
-						});
-					}
+						if (error.code === 50013) {
+							const name = this.client.user.username;
+							msg =
+								`**${name} does not have permissions to post to that channel.\n` +
+								`Please allow ${name} to send messages in the <#${target.id}> channel.**\n\n`;
+						}
 
-					target
-						.createMessage(content)
-						.then(resolve)
-						.catch(err => {
-							if (!fallbackUser) {
+						return dmChannel
+							.createMessage(msg)
+							.then(resolve)
+							.catch(err2 => {
 								withScope(scope => {
-									if (target instanceof TextChannel) {
+									if (target instanceof GuildChannel) {
 										scope.setUser({ id: target.guild.id });
 									}
 									scope.setExtra('message', embed);
 									scope.setExtra('content', content);
-									captureException(err);
+									scope.setExtra('fallbackUser', fallbackUser.id);
+									scope.setExtra('dmMessage', msg);
+									captureException(err2);
 								});
 								return undefined;
+							});
+					})
+					.catch(err2 => {
+						withScope(scope => {
+							if (target instanceof GuildChannel) {
+								scope.setUser({ id: target.guild.id });
 							}
-
-							fallbackUser
-								.getDMChannel()
-								.then(dmChannel => {
-									let msg =
-										'I encountered an error when trying to send a message. ' +
-										'Please report this to a developer:\n```' +
-										`${error.message}\n\n${err.message}\`\`\``;
-
-									if (err.code === 50013) {
-										const name = this.client.user.username;
-										msg =
-											`**${name} does not have permissions to post to that channel.\n` +
-											`Please allow ${name} to send messages in that channel.**\n\n`;
-									}
-
-									dmChannel
-										.createMessage(msg)
-										.then(resolve)
-										.catch(err2 => {
-											withScope(scope => {
-												if (target instanceof TextChannel) {
-													scope.setUser({ id: target.guild.id });
-												}
-												scope.setExtra('message', embed);
-												scope.setExtra('content', content);
-												scope.setExtra('fallbackUser', fallbackUser.id);
-												scope.setExtra('dmMessage', msg);
-												captureException(err2);
-											});
-											return undefined;
-										});
-								})
-								.catch(err2 => {
-									withScope(scope => {
-										if (target instanceof TextChannel) {
-											scope.setUser({ id: target.guild.id });
-										}
-										scope.setExtra('message', embed);
-										scope.setExtra('content', content);
-										scope.setExtra('fallbackUser', fallbackUser.id);
-										captureException(err2);
-									});
-									return undefined;
-								});
+							scope.setExtra('message', embed);
+							scope.setExtra('content', content);
+							scope.setExtra('fallbackUser', fallbackUser.id);
+							captureException(err2);
 						});
-				});
+						return undefined;
+					});
+			};
+
+			const sendPlain = (error?: any) => {
+				return target
+					.createMessage(content)
+					.then(resolve)
+					.catch(err => {
+						withScope(scope => {
+							if (target instanceof GuildChannel) {
+								scope.setUser({ id: target.guild.id });
+							}
+							scope.setExtra('message', embed);
+							scope.setExtra('content', content);
+							captureException(err);
+						});
+
+						return fallbackUser ? sendDM(error) : undefined;
+					});
+			};
+
+			if (target instanceof GuildChannel) {
+				if (
+					!target
+						.permissionsOf(this.client.user.id)
+						.has(Permissions.SEND_MESSAGES)
+				) {
+					// If we don't have permission to send messages in the channel use fallback
+					return sendDM({ code: 50013 });
+				} else if (
+					!target
+						.permissionsOf(this.client.user.id)
+						.has(Permissions.EMBED_LINKS)
+				) {
+					// If we don't have permissions to embed links try plain content, then fallback
+					return sendPlain();
+				} else {
+					// Otherwise try embed, then plain content, then fallback
+					return target
+						.createMessage({ embed: e })
+						.then(resolve)
+						.catch(error => {
+							withScope(scope => {
+								scope.setUser({ id: target.guild.id });
+								scope.setExtra('message', embed);
+								captureException(error);
+							});
+
+							return sendPlain(error);
+						});
+				}
+			} else {
+				return target
+					.createMessage({ embed: e })
+					.then(resolve)
+					.catch(error => {
+						withScope(scope => {
+							scope.setExtra('message', embed);
+							captureException(error);
+						});
+
+						return sendPlain(error);
+					});
+			}
 		});
 	}
 
