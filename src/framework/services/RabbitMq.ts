@@ -37,29 +37,31 @@ export class RabbitMqService {
 			return;
 		}
 
-		this.conn = await connect(this.client.config.rabbitmq);
-		this.conn.on('close', async err => {
-			this.connRetry++;
-			console.error(err);
+		try {
+			this.conn = await connect(this.client.config.rabbitmq);
+			this.conn.on('close', async err => {
+				console.error(err);
+				this.conn = null;
 
-			if (this.connRetry <= 1) {
-				this.init();
-			} else {
 				setTimeout(() => this.init(), this.connRetry * 30);
-			}
-		});
-		this.conn.on('error', async err => {
-			this.connRetry++;
-			console.error(err);
+				this.connRetry++;
+			});
+			this.conn.on('error', async err => {
+				console.error(err);
+				this.conn = null;
 
-			if (this.connRetry <= 1) {
-				this.init();
-			} else {
 				setTimeout(() => this.init(), this.connRetry * 30);
-			}
-		});
+				this.connRetry++;
+			});
 
-		await this.initChannel();
+			await this.initChannel();
+		} catch (err) {
+			console.error(err);
+			this.conn = null;
+
+			setTimeout(() => this.init(), this.connRetry * 30);
+			this.connRetry++;
+		}
 	}
 
 	private async initChannel() {
@@ -69,48 +71,52 @@ export class RabbitMqService {
 
 		this.connRetry = 0;
 		this.qName = `shard-${this.shard}`;
-		this.channel = await this.conn.createChannel();
-		this.channel.on('error', async err => {
-			this.channelRetry++;
-			console.error(err);
 
-			if (this.connRetry <= 1) {
-				this.initChannel();
-			} else {
+		try {
+			this.channel = await this.conn.createChannel();
+			this.channel.on('error', async err => {
+				console.error(err);
+				this.channel = null;
+
 				setTimeout(() => this.initChannel(), this.channelRetry * 30);
+				this.channelRetry++;
+			});
+			this.channel.on('close', async err => {
+				console.error(err);
+				this.channel = null;
+
+				setTimeout(() => this.initChannel(), this.channelRetry * 30);
+				this.channelRetry++;
+			});
+
+			while (this.msgQueue.length > 0) {
+				await this.sendToManager(this.msgQueue.pop(), true);
 			}
-		});
-		this.channel.on('close', async err => {
-			this.channelRetry++;
+
+			await this.channel.assertQueue(this.qName, {
+				durable: false,
+				autoDelete: true
+			});
+
+			await this.channel.assertExchange('shards', 'fanout', {
+				durable: true
+			});
+
+			await this.channel.bindQueue(this.qName, 'shards', '');
+
+			await this.channel.prefetch(5);
+			this.channel.consume(this.qName, msg => this.onShardCommand(msg), {
+				noAck: false
+			});
+
+			this.channelRetry = 0;
+		} catch (err) {
 			console.error(err);
+			this.channel = null;
 
-			if (this.connRetry <= 1) {
-				await this.channel.close();
-			} else {
-				setTimeout(() => this.channel.close(), this.channelRetry * 30);
-			}
-			await this.initChannel();
-		});
-
-		while (this.msgQueue.length > 0) {
-			await this.sendToManager(this.msgQueue.pop(), true);
+			setTimeout(() => this.initChannel(), this.channelRetry * 30);
+			this.channelRetry++;
 		}
-
-		await this.channel.assertQueue(this.qName, {
-			durable: false,
-			autoDelete: true
-		});
-
-		await this.channel.assertExchange('shards', 'fanout', {
-			durable: true
-		});
-
-		await this.channel.bindQueue(this.qName, 'shards', '');
-
-		await this.channel.prefetch(5);
-		this.channel.consume(this.qName, msg => this.onShardCommand(msg), {
-			noAck: false
-		});
 	}
 
 	public async sendToManager(
