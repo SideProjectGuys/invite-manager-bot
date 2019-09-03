@@ -116,7 +116,7 @@ export default class extends Command {
 		}
 		// Promote the member if it's not a bot
 		// and if the member is still in the guild
-		if (member && !member.bot) {
+		if (member && !member.user.bot) {
 			const promoteInfo = await this.client.invs.promoteIfQualified(
 				guild,
 				member,

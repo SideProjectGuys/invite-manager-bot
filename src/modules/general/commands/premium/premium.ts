@@ -222,14 +222,14 @@ export default class extends Command {
 
 				if (!res) {
 					embed.description = t('cmd.premium.check.notFound');
-				} else if (res.data.declined_since) {
-					embed.description = t('cmd.premium.check.declined', {
-						since: res.data.declined_since
+				} else if (res.data.last_charge_status !== 'Paid') {
+					embed.description = t('cmd.premium.check.declined');
+				} else if (res.data.patron_status !== 'active_patron') {
+					embed.description = t('cmd.premium.check.paused', {
+						since: res.data.last_charge_date
 					});
-				} else if (res.data.is_paused) {
-					embed.description = t('cmd.premium.check.paused');
 				} else {
-					const day = moment(res.data.created_at).date();
+					const day = moment(res.data.last_charge_date).date();
 					const validUntil = moment()
 						.add(1, 'month')
 						.date(day)
@@ -241,7 +241,7 @@ export default class extends Command {
 					} else {
 						await premiumSubscriptions.create({
 							id: null,
-							amount: res.data.amount_cents / 100,
+							amount: res.data.currently_entitled_amount_cents / 100,
 							maxGuilds: 5,
 							isFreeTier: false,
 							memberId: userId,

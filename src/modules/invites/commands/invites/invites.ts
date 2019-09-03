@@ -59,7 +59,7 @@ export default class extends Command {
 				.catch(() => undefined);
 		}
 		// Only process if the user is still in the guild
-		if (targetMember && !targetMember.bot) {
+		if (targetMember && !targetMember.user.bot) {
 			const promoteInfo = await this.client.invs.promoteIfQualified(
 				guild,
 				targetMember,
