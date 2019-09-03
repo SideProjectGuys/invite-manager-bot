@@ -17,7 +17,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../../../sequelize';
-import { BasicMember } from '../../../types';
+import { BasicMember, Permissions } from '../../../types';
 import { deconstruct } from '../../../util';
 
 const GUILDS_IN_PARALLEL = 10;
@@ -203,6 +203,17 @@ export class TrackingService {
 			return;
 		}
 
+		// If we don't have manage server then what are we even doing here and why did you invite our bot
+		if (
+			!guild.members
+				.get(this.client.user.id)
+				.permission.has(Permissions.MANAGE_GUILD)
+		) {
+			console.error(
+				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id}`
+			);
+		}
+
 		let invs = await guild.getInvites().catch(() => [] as Invite[]);
 		const lastUpdate = this.inviteStoreUpdate[guild.id];
 		const newInvs = this.getInviteCounts(invs);
@@ -228,7 +239,9 @@ export class TrackingService {
 
 		if (
 			inviteCodesUsed.length === 0 &&
-			guild.members.get(this.client.user.id).permission.has('viewAuditLogs')
+			guild.members
+				.get(this.client.user.id)
+				.permission.has(Permissions.VIEW_AUDIT_LOGS)
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
