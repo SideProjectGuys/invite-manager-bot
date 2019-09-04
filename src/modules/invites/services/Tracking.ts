@@ -45,6 +45,10 @@ export class TrackingService {
 	}
 
 	private async onClientReady() {
+		if (this.client.hasStarted) {
+			return;
+		}
+
 		// Save all guilds, sort descending by member count
 		// (Guilds with more members are more likely to get a join)
 		const allGuilds = [...this.client.guilds.values()].sort(
