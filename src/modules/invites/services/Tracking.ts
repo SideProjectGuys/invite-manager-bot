@@ -210,8 +210,9 @@ export class TrackingService {
 				.permission.has(Permissions.MANAGE_GUILD)
 		) {
 			console.error(
-				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id}`
+				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON MEMBERADD`
 			);
+			return;
 		}
 
 		let invs = await guild.getInvites().catch(() => [] as Invite[]);
@@ -853,6 +854,17 @@ export class TrackingService {
 	}
 
 	public async insertGuildData(guild: Guild) {
+		if (
+			!guild.members
+				.get(this.client.user.id)
+				.permission.has(Permissions.MANAGE_GUILD)
+		) {
+			console.error(
+				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON INSERT`
+			);
+			return;
+		}
+
 		// Get the invites
 		const invs = await guild.getInvites().catch(() => [] as Invite[]);
 
