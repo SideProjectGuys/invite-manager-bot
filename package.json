@@ -35,7 +35,7 @@
 		"chartjs-node": "1.7.1",
 		"chartjs-plugin-datalabels": "0.6.0",
 		"dblapi.js": "2.3.0",
-		"eris": "github:abalabahaha/eris#0509d444813d49c320be3b38fd2e05f7d4ae2078",
+		"eris": "github:abalabahaha/eris#2423da106813b669f9f3580d5d437e91ba3cf55f",
 		"eris-lavalink": "github:SideProjectGuys/eris-lavalink#8e3156a968033c1f037b5424dd46aacb8af76436",
 		"erlpack": "github:discordapp/erlpack",
 		"eventemitter3": "4.0.0",
@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
-		"@types/node": "12.7.3",
+		"@types/node": "12.7.4",
 		"@types/sequelize": "4.28.4",
 		"@types/xmldoc": "1.1.4",
 		"docsify": "4.9.4",
