@@ -56,6 +56,10 @@ export class MusicService {
 	}
 
 	private async onClientReady() {
+		if (this.client.hasStarted) {
+			return;
+		}
+
 		await this.loadMusicNodes();
 	}
 
