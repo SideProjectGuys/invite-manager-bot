@@ -9,7 +9,11 @@ import {
 	inviteCodes,
 	members
 } from '../../../../sequelize';
-import { CommandGroup, InvitesCommand } from '../../../../types';
+import {
+	CommandGroup,
+	GuildPermission,
+	InvitesCommand
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -25,9 +29,10 @@ export default class extends Command {
 				'showInviteCode',
 				'show-invite-code'
 			],
-			// clientPermissions: ['MANAGE_GUILD'],
 			group: CommandGroup.Invites,
-			guildOnly: true
+			botPermissions: [GuildPermission.MANAGE_GUILD],
+			guildOnly: true,
+			defaultAdminOnly: false
 		});
 	}
 

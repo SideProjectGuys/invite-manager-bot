@@ -20,7 +20,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Ranks,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: ['!removeRank @Role', '!removeRank "Role with space"']
 		});
 	}

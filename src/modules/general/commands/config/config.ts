@@ -16,8 +16,8 @@ import { beautify, settingsInfo } from '../../../../settings';
 import {
 	BotCommand,
 	CommandGroup,
-	InvitesCommand,
-	Permissions
+	GuildPermission,
+	InvitesCommand
 } from '../../../../types';
 
 export default class extends Command {
@@ -38,7 +38,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Config,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 
@@ -176,13 +176,13 @@ export default class extends Command {
 				if (!(channel instanceof TextChannel)) {
 					return t('cmd.config.invalid.mustBeTextChannel');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.READ_MESSAGES)) {
 					return t('cmd.config.invalid.canNotReadMessages');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.SEND_MESSAGES)) {
 					return t('cmd.config.invalid.canNotSendMessages');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.EMBED_LINKS)) {
 					return t('cmd.config.invalid.canNotSendEmbeds');
 				}
 			}

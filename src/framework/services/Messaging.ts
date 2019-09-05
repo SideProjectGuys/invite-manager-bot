@@ -14,7 +14,7 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { Permissions, PromptResult } from '../../types';
+import { GuildPermission, PromptResult } from '../../types';
 
 const upSymbol = '🔺';
 const downSymbol = '🔻';
@@ -181,7 +181,7 @@ export class MessagingService {
 					target instanceof GuildChannel &&
 					!target
 						.permissionsOf(this.client.user.id)
-						.has(Permissions.SEND_MESSAGES)
+						.has(GuildPermission.SEND_MESSAGES)
 				) {
 					return sendDM({ code: 50013 });
 				}
@@ -209,7 +209,7 @@ export class MessagingService {
 					target instanceof GuildChannel &&
 					!target
 						.permissionsOf(this.client.user.id)
-						.has(Permissions.EMBED_LINKS)
+						.has(GuildPermission.EMBED_LINKS)
 				) {
 					return sendPlain();
 				}
@@ -336,6 +336,17 @@ export class MessagingService {
 		// Create embed for this page
 		const embed = render(page, maxPage);
 
+		let doPaginate = true;
+		if (prevMsg.channel instanceof GuildChannel) {
+			const perm = prevMsg.channel.permissionsOf(this.client.user.id);
+			if (
+				!perm.has(GuildPermission.ADD_REACTIONS) ||
+				!perm.has(GuildPermission.MANAGE_MESSAGES)
+			) {
+				doPaginate = false;
+			}
+		}
+
 		// Add page number if required
 		if (page > 0 || page < maxPage - 1) {
 			embed.description = embed.description + `\n\nPage ${page + 1}/${maxPage}`;
@@ -364,29 +375,30 @@ export class MessagingService {
 			return;
 		}
 
+		// Don't paginate if we don't have the permissions to add and remove reactions
+		if (!doPaginate) {
+			return;
+		}
+
 		if (page > 0) {
-			await prevMsg.addReaction(upSymbol).catch(() => undefined);
+			await prevMsg.addReaction(upSymbol);
 		} else {
 			const users = await prevMsg
 				.getReaction(upSymbol, 10)
 				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg
-					.removeReaction(upSymbol, this.client.user.id)
-					.catch(() => undefined);
+				prevMsg.removeReaction(upSymbol, this.client.user.id);
 			}
 		}
 
 		if (page < maxPage - 1) {
-			await prevMsg.addReaction(downSymbol).catch(() => undefined);
+			await prevMsg.addReaction(downSymbol);
 		} else {
 			const users = await prevMsg
 				.getReaction(downSymbol, 10)
 				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg
-					.removeReaction(downSymbol, this.client.user.id)
-					.catch(() => undefined);
+				prevMsg.removeReaction(downSymbol, this.client.user.id);
 			}
 		}
 
@@ -416,12 +428,8 @@ export class MessagingService {
 
 			const timeOut = () => {
 				this.client.removeListener('messageReactionAdd', func);
-				prevMsg
-					.removeReaction(upSymbol, this.client.user.id)
-					.catch(() => undefined);
-				prevMsg
-					.removeReaction(downSymbol, this.client.user.id)
-					.catch(() => undefined);
+				prevMsg.removeReaction(upSymbol, this.client.user.id);
+				prevMsg.removeReaction(downSymbol, this.client.user.id);
 			};
 
 			timer = setTimeout(timeOut, 15000);

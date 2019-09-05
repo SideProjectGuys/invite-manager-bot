@@ -11,7 +11,11 @@ import {
 	inviteCodes,
 	InviteCodeSettingsKey
 } from '../../../../sequelize';
-import { CommandGroup, InvitesCommand, Permissions } from '../../../../types';
+import {
+	CommandGroup,
+	GuildPermission,
+	InvitesCommand
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -30,8 +34,9 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Invites,
+			botPermissions: [GuildPermission.CREATE_INSTANT_INVITE],
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: ['!createInvite reddit', '!createInvite website #welcome']
 		});
 	}
@@ -44,8 +49,10 @@ export default class extends Command {
 	): Promise<any> {
 		const channel = _channel ? _channel : (message.channel as TextChannel);
 
-		if (!channel.permissionsOf(me.id).has(Permissions.CREATE_INSTANT_INVITE)) {
-			return this.sendReply(message, t('permissions.createInviteCode'));
+		if (
+			!channel.permissionsOf(me.id).has(GuildPermission.CREATE_INSTANT_INVITE)
+		) {
+			return this.sendReply(message, t('permissions.createInstantInvite'));
 		}
 
 		const inv = await channel.createInvite(

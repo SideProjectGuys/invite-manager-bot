@@ -12,7 +12,7 @@ export default class extends Command {
 			aliases: ['subtract-fakes', 'subfakes', 'sf'],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 

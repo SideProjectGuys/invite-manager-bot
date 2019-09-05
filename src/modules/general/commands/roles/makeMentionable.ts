@@ -19,7 +19,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Other,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: [
 				'!makeMentionable @Role',
 				'!makeMentionable "Role with space"'

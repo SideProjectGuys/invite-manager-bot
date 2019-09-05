@@ -13,7 +13,7 @@ export default class extends Command {
 			args: [],
 			group: CommandGroup.Ranks,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 

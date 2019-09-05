@@ -21,7 +21,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Other,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: ['!mentionRole @Role', '!mentionRole "Role with space"']
 		});
 	}

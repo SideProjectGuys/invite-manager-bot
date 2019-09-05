@@ -15,7 +15,7 @@ export default class extends Command {
 			aliases: ['dehoist'],
 			args: [],
 			group: CommandGroup.Moderation,
-			strict: true,
+			defaultAdminOnly: true,
 			guildOnly: true
 		});
 	}

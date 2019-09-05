@@ -17,7 +17,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../../../sequelize';
-import { BasicMember, Permissions } from '../../../types';
+import { BasicMember, GuildPermission } from '../../../types';
 import { deconstruct } from '../../../util';
 
 const GUILDS_IN_PARALLEL = 10;
@@ -211,7 +211,7 @@ export class TrackingService {
 		if (
 			!guild.members
 				.get(this.client.user.id)
-				.permission.has(Permissions.MANAGE_GUILD)
+				.permission.has(GuildPermission.MANAGE_GUILD)
 		) {
 			console.error(
 				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON MEMBERADD`
@@ -246,7 +246,7 @@ export class TrackingService {
 			inviteCodesUsed.length === 0 &&
 			guild.members
 				.get(this.client.user.id)
-				.permission.has(Permissions.VIEW_AUDIT_LOGS)
+				.permission.has(GuildPermission.VIEW_AUDIT_LOGS)
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
@@ -861,7 +861,7 @@ export class TrackingService {
 		if (
 			!guild.members
 				.get(this.client.user.id)
-				.permission.has(Permissions.MANAGE_GUILD)
+				.permission.has(GuildPermission.MANAGE_GUILD)
 		) {
 			console.error(
 				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON INSERT`

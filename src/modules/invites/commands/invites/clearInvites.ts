@@ -43,7 +43,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: [
 				'!clearInvites @User',
 				'!clearInvites -cb "User with space"'

@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import { BotCommand, CommandGroup, Permissions } from '../../../../types';
+import { BotCommand, CommandGroup, GuildPermission } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -11,7 +11,7 @@ export default class extends Command {
 			aliases: ['guide', 'test', 'testBot', 'test-bot'],
 			group: CommandGroup.Info,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 
@@ -57,21 +57,21 @@ export default class extends Command {
 			})
 		});
 
-		if (!me.permission.has(Permissions.MANAGE_GUILD)) {
+		if (!me.permission.has(GuildPermission.MANAGE_GUILD)) {
 			embed.fields.push({
 				name: t('cmd.setup.manageGuild.title'),
 				value: t('cmd.setup.manageGuild.text')
 			});
 		}
 
-		if (!me.permission.has(Permissions.MANAGE_ROLES)) {
+		if (!me.permission.has(GuildPermission.MANAGE_ROLES)) {
 			embed.fields.push({
 				name: t('cmd.setup.manageRoles.title'),
 				value: t('cmd.setup.manageRoles.text')
 			});
 		}
 
-		if (!me.permission.has(Permissions.VIEW_AUDIT_LOGS)) {
+		if (!me.permission.has(GuildPermission.VIEW_AUDIT_LOGS)) {
 			embed.fields.push({
 				name: t('cmd.setup.viewAuditLogs.title'),
 				value: t('cmd.setup.viewAuditLogs.text')

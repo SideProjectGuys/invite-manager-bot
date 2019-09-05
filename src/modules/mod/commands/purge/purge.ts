@@ -3,7 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver, UserResolver } from '../../../../framework/resolvers';
-import { BasicUser, ModerationCommand } from '../../../../types';
+import { BasicUser, CommandGroup, ModerationCommand } from '../../../../types';
 import { to } from '../../../../util';
 
 export default class extends Command {
@@ -22,7 +22,8 @@ export default class extends Command {
 					resolver: UserResolver
 				}
 			],
-			strict: true,
+			group: CommandGroup.Moderation,
+			defaultAdminOnly: true,
 			guildOnly: true
 		});
 	}

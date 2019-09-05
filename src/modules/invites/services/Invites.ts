@@ -18,7 +18,7 @@ import {
 	sequelize,
 	SettingsKey
 } from '../../../sequelize';
-import { BasicInvite, BasicMember, Permissions } from '../../../types';
+import { BasicInvite, BasicMember, GuildPermission } from '../../../types';
 
 type InvCacheType = {
 	[x: string]: {
@@ -648,7 +648,7 @@ export class InvitesService {
 			}
 		}
 
-		if (me.permission.has(Permissions.MANAGE_ROLES)) {
+		if (me.permission.has(GuildPermission.MANAGE_ROLES)) {
 			// No matter what the rank assignment style is
 			// we always want to remove any roles that we don't have
 			notReached
@@ -667,8 +667,8 @@ export class InvitesService {
 			// Filter dangerous roles
 			dangerous = reached.filter(
 				r =>
-					r.permissions.has(Permissions.ADMINISTRATOR) ||
-					r.permissions.has(Permissions.MANAGE_GUILD)
+					r.permissions.has(GuildPermission.ADMINISTRATOR) ||
+					r.permissions.has(GuildPermission.MANAGE_GUILD)
 			);
 			reached = reached.filter(r => dangerous.indexOf(r) === -1);
 

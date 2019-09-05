@@ -38,6 +38,7 @@ export default class extends Command {
 			name: BotCommand.credits,
 			aliases: [],
 			group: CommandGroup.Info,
+			defaultAdminOnly: false,
 			guildOnly: true
 		});
 	}

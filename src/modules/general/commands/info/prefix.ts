@@ -10,6 +10,7 @@ export default class extends Command {
 			name: BotCommand.prefix,
 			aliases: [],
 			group: CommandGroup.Info,
+			defaultAdminOnly: false,
 			guildOnly: true
 		});
 	}

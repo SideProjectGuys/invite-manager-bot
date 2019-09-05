@@ -36,7 +36,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Config,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 

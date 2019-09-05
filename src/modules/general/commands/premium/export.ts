@@ -23,7 +23,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Premium,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			premiumOnly: true,
 			extraExamples: ['!export leaderboard']
 		});

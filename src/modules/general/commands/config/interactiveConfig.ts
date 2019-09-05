@@ -11,7 +11,7 @@ import {
 	SettingsInfo,
 	toDbValue
 } from '../../../../settings';
-import { BotCommand, CommandGroup, Permissions } from '../../../../types';
+import { BotCommand, CommandGroup, GuildPermission } from '../../../../types';
 
 interface ConfigMenu {
 	items: [SettingsKey, SettingsInfo<any>][];
@@ -25,8 +25,12 @@ export default class extends Command {
 			aliases: ['ic'],
 			args: [],
 			group: CommandGroup.Config,
+			botPermissions: [
+				GuildPermission.ADD_REACTIONS,
+				GuildPermission.MANAGE_MESSAGES
+			],
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 
@@ -58,7 +62,7 @@ export default class extends Command {
 			description: 'Loading...'
 		});
 
-		message.delete().catch(() => undefined);
+		message.delete();
 
 		const msg = await this.sendReply(message, embed);
 		if (!msg) {
@@ -66,13 +70,13 @@ export default class extends Command {
 		}
 
 		for (let i = 0; i < this.choices.length; i++) {
-			msg.addReaction(this.choices[i]).catch(() => undefined);
+			msg.addReaction(this.choices[i]);
 		}
 
-		msg.addReaction(this.prev).catch(() => undefined);
-		msg.addReaction(this.next).catch(() => undefined);
-		msg.addReaction(this.up).catch(() => undefined);
-		msg.addReaction(this.cancel).catch(() => undefined);
+		msg.addReaction(this.prev);
+		msg.addReaction(this.next);
+		msg.addReaction(this.up);
+		msg.addReaction(this.cancel);
 
 		while (
 			(await this.showConfigMenu(context, message.author.id, msg, [])) === 'up'
@@ -439,10 +443,10 @@ export default class extends Command {
 				this.client.removeListener('messageReactionAdd', func);
 
 				if (emoji && userId === authorId) {
-					await msg.removeReaction(emoji.name, userId).catch(() => undefined);
+					await msg.removeReaction(emoji.name, userId);
 					resolve();
 				} else if (userMsg.author && userMsg.author.id === authorId) {
-					await userMsg.delete().catch(() => undefined);
+					await userMsg.delete();
 					new SettingsValueResolver(this.client, settingsInfo)
 						.resolve(userMsg.content, context, [key])
 						.then(v => resolve(v))
@@ -565,7 +569,7 @@ export default class extends Command {
 			const timeOutFunc = () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				msg.delete().catch(() => undefined);
+				msg.delete();
 
 				resolve(undefined);
 			};
@@ -595,13 +599,13 @@ export default class extends Command {
 				if (!(channel instanceof TextChannel)) {
 					return t('cmd.config.invalid.mustBeTextChannel');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.READ_MESSAGES)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.READ_MESSAGES)) {
 					return t('cmd.config.invalid.canNotReadMessages');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.SEND_MESSAGES)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.SEND_MESSAGES)) {
 					return t('cmd.config.invalid.canNotSendMessages');
 				}
-				if (!channel.permissionsOf(me.id).has(Permissions.EMBED_LINKS)) {
+				if (!channel.permissionsOf(me.id).has(GuildPermission.EMBED_LINKS)) {
 					return t('cmd.config.invalid.canNotSendEmbeds');
 				}
 			}
