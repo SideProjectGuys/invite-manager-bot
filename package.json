@@ -64,5 +64,8 @@
 		"tslint-config-prettier": "1.18.0",
 		"typescript": "3.6.2",
 		"typestrict": "1.0.2"
+	},
+	"engines": {
+		"node": ">=10.16.3 <12"
 	}
 }
