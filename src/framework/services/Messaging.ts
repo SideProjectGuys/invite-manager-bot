@@ -125,6 +125,10 @@ export class MessagingService {
 		return new Promise<Message>((resolve, reject) => {
 			// Fallback functions when sending message fails
 			const sendDM = (error?: any) => {
+				if (!fallbackUser) {
+					return undefined;
+				}
+
 				return fallbackUser
 					.getDMChannel()
 					.then(dmChannel => {
@@ -185,7 +189,7 @@ export class MessagingService {
 							captureException(err);
 						});
 
-						return fallbackUser ? sendDM(error) : undefined;
+						return sendDM(error);
 					});
 			};
 
