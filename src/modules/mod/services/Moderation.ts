@@ -34,7 +34,7 @@ interface MiniMessage {
 }
 
 export const NAME_DEHOIST_PREFIX = '▼';
-export const NAME_HOIST_REGEX = new RegExp(`^[^\\w${NAME_DEHOIST_PREFIX}]+`);
+export const NAME_HOIST_REGEX = /^[-.:,;|\/\\~!+*%$£€&()[\]{}°§<>?'"`^´¦@#¬]+/;
 
 export class ModerationService {
 	private client: IMClient;
