@@ -176,6 +176,16 @@ export class MessagingService {
 			};
 
 			const sendPlain = (error?: any) => {
+				// If we don't have permission to send messages try DM
+				if (
+					target instanceof GuildChannel &&
+					!target
+						.permissionsOf(this.client.user.id)
+						.has(Permissions.SEND_MESSAGES)
+				) {
+					return sendDM({ code: 50013 });
+				}
+
 				return target
 					.createMessage(content)
 					.then(resolve)
@@ -193,49 +203,34 @@ export class MessagingService {
 					});
 			};
 
-			if (target instanceof GuildChannel) {
+			const send = () => {
+				// If we don't have permissions to embed links try plain content
 				if (
-					!target
-						.permissionsOf(this.client.user.id)
-						.has(Permissions.SEND_MESSAGES)
-				) {
-					// If we don't have permission to send messages in the channel use fallback
-					return sendDM({ code: 50013 });
-				} else if (
+					target instanceof GuildChannel &&
 					!target
 						.permissionsOf(this.client.user.id)
 						.has(Permissions.EMBED_LINKS)
 				) {
-					// If we don't have permissions to embed links try plain content, then fallback
 					return sendPlain();
-				} else {
-					// Otherwise try embed, then plain content, then fallback
-					return target
-						.createMessage({ embed: e })
-						.then(resolve)
-						.catch(error => {
-							withScope(scope => {
-								scope.setUser({ id: target.guild.id });
-								scope.setExtra('message', embed);
-								captureException(error);
-							});
-
-							return sendPlain(error);
-						});
 				}
-			} else {
+
 				return target
 					.createMessage({ embed: e })
 					.then(resolve)
 					.catch(error => {
 						withScope(scope => {
+							if (target instanceof GuildChannel) {
+								scope.setUser({ id: target.guild.id });
+							}
 							scope.setExtra('message', embed);
 							captureException(error);
 						});
 
 						return sendPlain(error);
 					});
-			}
+			};
+
+			return send();
 		});
 	}
 
