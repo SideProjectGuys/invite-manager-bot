@@ -1,4 +1,4 @@
-import { Emoji, Message, TextChannel } from 'eris';
+import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -546,12 +546,18 @@ export default class extends Command {
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				await this.client.removeMessageReaction(
-					resp.channel.id,
-					resp.id,
-					emoji.name,
-					userId
-				);
+				if (
+					(resp.channel as GuildChannel)
+						.permissionsOf(this.client.user.id)
+						.has(Permissions.MANAGE_MESSAGES)
+				) {
+					await this.client.removeMessageReaction(
+						resp.channel.id,
+						resp.id,
+						emoji.name,
+						userId
+					);
+				}
 
 				if (emoji.name === this.prev) {
 					resolve('prev');
