@@ -312,5 +312,6 @@ export class MusicConnection {
 		this.player.stop();
 		this.voiceChannel.leave();
 		this.player = null;
+		this.service.removeConnection(this.guild);
 	}
 }
