@@ -37,7 +37,7 @@ import {
 	BotSettingsObject,
 	defaultSettings
 } from './settings';
-import { BotType, ChannelType, LavaPlayerManager } from './types';
+import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
 const config = require('../config.json');
 
@@ -119,6 +119,7 @@ export class IMClient extends Client {
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
+	public gatewayInfo: GatewayInfo;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 
@@ -598,10 +599,16 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
+	private async getGatewayInfo() {
+		return (await this.getBotGateway()) as GatewayInfo;
+	}
+
 	public async setActivity() {
 		if (this.dbl) {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
+
+		this.gatewayInfo = await this.getGatewayInfo();
 
 		const status = this.settings.activityStatus;
 
