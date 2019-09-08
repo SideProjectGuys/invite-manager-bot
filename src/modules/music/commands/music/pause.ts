@@ -11,6 +11,7 @@ export default class extends Command {
 			aliases: ['stop'],
 			group: CommandGroup.Music,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			premiumOnly: true
 		});
 	}

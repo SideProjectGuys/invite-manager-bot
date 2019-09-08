@@ -6,8 +6,8 @@ import { StringResolver, UserResolver } from '../../../../framework/resolvers';
 import {
 	BasicUser,
 	CommandGroup,
-	ModerationCommand,
-	Permissions
+	GuildPermission,
+	ModerationCommand
 } from '../../../../types';
 import { to } from '../../../../util';
 
@@ -29,7 +29,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			strict: true,
+			botPermissions: [GuildPermission.BAN_MEMBERS],
+			defaultAdminOnly: true,
 			guildOnly: true
 		});
 	}
@@ -42,30 +43,26 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetUser);
 
-		if (!me.permission.has(Permissions.BAN_MEMBERS)) {
-			embed.description = t('cmd.unban.missingPermissions');
+		const [error] = await to(guild.unbanMember(targetUser.id, reason));
+
+		if (error) {
+			embed.description = t('cmd.unban.error', { error });
 		} else {
-			const [error] = await to(guild.unbanMember(targetUser.id, reason));
+			const logEmbed = this.client.mod.createBasicEmbed(message.author);
 
-			if (error) {
-				embed.description = t('cmd.unban.error', { error });
-			} else {
-				const logEmbed = this.client.mod.createBasicEmbed(message.author);
+			const usr =
+				`${targetUser.username}#${targetUser.discriminator} ` +
+				`(${targetUser.id})`;
+			logEmbed.description += `**User**: ${usr}\n`;
+			logEmbed.description += `**Action**: unban\n`;
 
-				const usr =
-					`${targetUser.username}#${targetUser.discriminator} ` +
-					`(${targetUser.id})`;
-				logEmbed.description += `**User**: ${usr}\n`;
-				logEmbed.description += `**Action**: unban\n`;
+			logEmbed.fields.push({
+				name: 'Reason',
+				value: reason
+			});
+			this.client.logModAction(guild, logEmbed);
 
-				logEmbed.fields.push({
-					name: 'Reason',
-					value: reason
-				});
-				this.client.logModAction(guild, logEmbed);
-
-				embed.description = t('cmd.unban.done');
-			}
+			embed.description = t('cmd.unban.done');
 		}
 
 		const response = await this.sendReply(message, embed);

@@ -6,7 +6,7 @@ import { basename, resolve } from 'path';
 
 import { IMClient } from '../../client';
 import { defaultSettings } from '../../settings';
-import { Permissions } from '../../types';
+import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
 
@@ -273,7 +273,7 @@ export class CommandsService {
 
 			// Always allow admins
 			if (
-				!member.permission.has(Permissions.ADMINISTRATOR) &&
+				!member.permission.has(GuildPermission.ADMINISTRATOR) &&
 				guild.ownerID !== member.id
 			) {
 				const perms = (await this.client.cache.permissions.get(guild.id))[
@@ -302,6 +302,22 @@ export class CommandsService {
 			me = guild.members.get(this.client.user.id);
 			if (!me) {
 				me = await guild.getRESTMember(this.client.user.id);
+			}
+
+			// Check command permissions
+			const missingPerms = cmd.botPermissions.filter(
+				p => !me.permission.has(p)
+			);
+			if (missingPerms.length > 0) {
+				this.client.msg.sendReply(
+					message,
+					t(`permissions.missing`, {
+						permissions: missingPerms
+							.map(p => '`' + t(`permissions.${p}`) + '`')
+							.join(', ')
+					})
+				);
+				return;
 			}
 		}
 

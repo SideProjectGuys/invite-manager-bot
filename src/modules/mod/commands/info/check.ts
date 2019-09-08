@@ -20,7 +20,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			strict: true,
+			defaultAdminOnly: true,
 			guildOnly: true,
 			extraExamples: ['!check @User', '!check "User with space"']
 		});

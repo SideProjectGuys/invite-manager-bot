@@ -10,6 +10,7 @@ export default class extends Command {
 			name: BotCommand.ping,
 			aliases: [],
 			group: CommandGroup.Info,
+			defaultAdminOnly: false,
 			guildOnly: false
 		});
 	}

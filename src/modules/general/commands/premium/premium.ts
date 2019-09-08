@@ -15,7 +15,7 @@ import {
 	BotCommand,
 	BotType,
 	CommandGroup,
-	Permissions
+	GuildPermission
 } from '../../../../types';
 
 enum Action {
@@ -37,6 +37,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Premium,
 			guildOnly: false,
+			defaultAdminOnly: true,
 			extraExamples: [
 				'!premium check',
 				'!premium activate',
@@ -158,8 +159,6 @@ export default class extends Command {
 					embed.description = t('cmd.premium.activate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.activate.noGuild');
-				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
-					embed.description = t('cmd.premium.premium.adminOnly');
 				} else if (isPremium) {
 					embed.description = t('cmd.premium.activate.currentlyActive');
 				} else if (!sub) {
@@ -194,7 +193,9 @@ export default class extends Command {
 					embed.description = t('cmd.premium.deactivate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (!message.member.permission.has(Permissions.ADMINISTRATOR)) {
+				} else if (
+					!message.member.permission.has(GuildPermission.ADMINISTRATOR)
+				) {
 					embed.description = t('cmd.premium.deactivate.adminOnly');
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');

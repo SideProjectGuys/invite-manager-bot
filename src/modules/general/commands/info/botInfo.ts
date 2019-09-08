@@ -11,6 +11,7 @@ export default class extends Command {
 			name: BotCommand.botInfo,
 			aliases: ['bot-info'],
 			group: CommandGroup.Info,
+			defaultAdminOnly: false,
 			guildOnly: true
 		});
 	}

@@ -39,6 +39,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			extraExamples: ['!leaderboard 1mo', '!leaderboard 30d 6']
 		});
 	}

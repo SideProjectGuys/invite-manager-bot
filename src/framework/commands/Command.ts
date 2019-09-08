@@ -1,10 +1,11 @@
-import { Guild, Member, Message } from 'eris';
+import { Guild, Member, Message, Permission } from 'eris';
 
 import { IMClient } from '../../client';
 import { SettingsObject } from '../../settings';
 import {
 	BotCommand,
 	CommandGroup,
+	GuildPermission,
 	InvitesCommand,
 	ModerationCommand,
 	MusicCommand
@@ -52,9 +53,10 @@ export interface CommandOptions {
 	aliases: string[];
 	args?: Arg[];
 	flags?: Flag[];
-	group?: CommandGroup;
-	strict?: boolean;
 	guildOnly: boolean;
+	group: CommandGroup;
+	defaultAdminOnly: boolean;
+	botPermissions?: GuildPermission[];
 	premiumOnly?: boolean;
 	extraExamples?: string[];
 }
@@ -86,8 +88,9 @@ export abstract class Command {
 
 	public usage: string;
 	public group: CommandGroup;
-	public strict?: boolean;
 	public guildOnly: boolean;
+	public botPermissions: GuildPermission[];
+	public strict?: boolean;
 	public premiumOnly?: boolean;
 
 	public extraExamples: string[] = [];
@@ -104,7 +107,8 @@ export abstract class Command {
 		this.args = props.args ? props.args : [];
 		this.flags = props.flags ? props.flags : [];
 		this.group = props.group;
-		this.strict = props.strict;
+		this.botPermissions = props.botPermissions ? props.botPermissions : [];
+		this.strict = props.defaultAdminOnly;
 		this.guildOnly = props.guildOnly;
 		this.premiumOnly = props.premiumOnly;
 		if (props.extraExamples) {

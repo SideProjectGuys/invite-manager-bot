@@ -16,7 +16,7 @@ export default class extends Command {
 			aliases: ['try', 'try-premium'],
 			group: CommandGroup.Premium,
 			guildOnly: true,
-			strict: true
+			defaultAdminOnly: true
 		});
 	}
 

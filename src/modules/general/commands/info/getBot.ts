@@ -10,6 +10,7 @@ export default class extends Command {
 			name: BotCommand.getBot,
 			aliases: ['get-bot', 'invite-bot', 'inviteBot'],
 			group: CommandGroup.Info,
+			defaultAdminOnly: false,
 			guildOnly: false
 		});
 	}

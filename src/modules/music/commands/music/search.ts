@@ -32,6 +32,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Music,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			premiumOnly: true
 		});
 	}

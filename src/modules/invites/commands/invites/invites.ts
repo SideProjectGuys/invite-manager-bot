@@ -18,6 +18,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			extraExamples: ['!invites @User', '!invites "User with space"']
 		});
 	}

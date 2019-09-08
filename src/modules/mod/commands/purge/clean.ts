@@ -19,7 +19,7 @@ enum CleanType {
 
 export default class extends Command {
 	public cleanFunctions: {
-		[k in CleanType]: (messages: Message[]) => Message[]
+		[k in CleanType]: (messages: Message[]) => Message[];
 	};
 
 	public constructor(client: IMClient) {
@@ -38,7 +38,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			strict: true,
+			defaultAdminOnly: true,
 			guildOnly: true
 		});
 

@@ -11,6 +11,7 @@ export default class extends Command {
 			aliases: [],
 			group: CommandGroup.Music,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			premiumOnly: true
 		});
 	}
@@ -32,9 +33,7 @@ export default class extends Command {
 
 		this.sendReply(message, {
 			author: {
-				name: `${nowPlaying.author.username}#${
-					nowPlaying.author.discriminator
-				}`,
+				name: `${nowPlaying.author.username}#${nowPlaying.author.discriminator}`,
 				icon_url: nowPlaying.author.avatarURL
 			},
 			description: nowPlaying.toQueueEntry().value,

@@ -25,7 +25,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Invites,
 			guildOnly: true,
-			strict: true,
+			defaultAdminOnly: true,
 			extraExamples: [
 				'!restoreInvites @User',
 				'!restoreInvites "User with space"'

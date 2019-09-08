@@ -26,6 +26,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Other,
 			guildOnly: true,
+			defaultAdminOnly: false,
 			extraExamples: ['!graph joins', '!graph leaves', '!graph usage']
 		});
 	}

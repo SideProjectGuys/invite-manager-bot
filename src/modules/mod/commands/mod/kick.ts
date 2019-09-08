@@ -9,8 +9,8 @@ import {
 import { punishments, PunishmentType } from '../../../../sequelize';
 import {
 	CommandGroup,
-	ModerationCommand,
-	Permissions
+	GuildPermission,
+	ModerationCommand
 } from '../../../../types';
 import { isPunishable, to } from '../../../../util';
 
@@ -32,7 +32,8 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			strict: true,
+			botPermissions: [GuildPermission.KICK_MEMBERS],
+			defaultAdminOnly: true,
 			guildOnly: true
 		});
 	}
@@ -45,9 +46,7 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
-		if (!me.permission.has(Permissions.KICK_MEMBERS)) {
-			embed.description = t('cmd.kick.missingPermissions');
-		} else if (isPunishable(guild, targetMember, message.member, me)) {
+		if (isPunishable(guild, targetMember, message.member, me)) {
 			await this.client.mod.informAboutPunishment(
 				targetMember,
 				PunishmentType.kick,

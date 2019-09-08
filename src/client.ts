@@ -397,7 +397,7 @@ export class IMClient extends Client {
 						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
-			setTimeout(() => guild.leave(), 5 * 60 * 1000);
+			setTimeout(() => guild.leave().catch(() => undefined), 5 * 60 * 1000);
 			return;
 		}
 
