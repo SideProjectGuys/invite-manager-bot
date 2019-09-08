@@ -549,7 +549,7 @@ export default class extends Command {
 				if (
 					(resp.channel as GuildChannel)
 						.permissionsOf(this.client.user.id)
-						.has(Permissions.MANAGE_MESSAGES)
+						.has(GuildPermission.MANAGE_MESSAGES)
 				) {
 					await this.client.removeMessageReaction(
 						resp.channel.id,
