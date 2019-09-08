@@ -207,9 +207,12 @@ export class MessagingService {
 				// If we don't have permissions to embed links try plain content
 				if (
 					target instanceof GuildChannel &&
-					!target
+					(!target
 						.permissionsOf(this.client.user.id)
-						.has(GuildPermission.EMBED_LINKS)
+						.has(GuildPermission.SEND_MESSAGES) ||
+						!target
+							.permissionsOf(this.client.user.id)
+							.has(GuildPermission.EMBED_LINKS))
 				) {
 					return sendPlain();
 				}
