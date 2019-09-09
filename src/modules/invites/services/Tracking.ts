@@ -435,6 +435,24 @@ export class TrackingService {
 				);
 
 				joinChannel = undefined;
+			} else if (
+				!joinChannel
+					.permissionsOf(this.client.user.id)
+					.has(GuildPermission.SEND_MESSAGES)
+			) {
+				// We don't have permission to send messages in the join channel
+				console.error(
+					`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`
+				);
+
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
+
+				joinChannel = undefined;
 			}
 		}
 
