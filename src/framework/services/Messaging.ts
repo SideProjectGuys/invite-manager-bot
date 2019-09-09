@@ -156,10 +156,10 @@ export class MessagingService {
 											target.permissionsOf(this.client.user.id).json
 										);
 									}
+									scope.setExtra('channel', target.id);
 									scope.setExtra('message', embed);
 									scope.setExtra('content', content);
 									scope.setExtra('fallbackUser', fallbackUser.id);
-									scope.setExtra('dmMessage', msg);
 									captureException(err2);
 								});
 								return undefined;
@@ -174,6 +174,7 @@ export class MessagingService {
 									target.permissionsOf(this.client.user.id).json
 								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
 							scope.setExtra('fallbackUser', fallbackUser.id);
@@ -206,6 +207,7 @@ export class MessagingService {
 									target.permissionsOf(this.client.user.id).json
 								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
 							captureException(err);
@@ -241,7 +243,9 @@ export class MessagingService {
 									target.permissionsOf(this.client.user.id).json
 								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
+							scope.setExtra('content', content);
 							captureException(error);
 						});
 
