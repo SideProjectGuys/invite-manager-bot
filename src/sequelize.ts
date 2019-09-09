@@ -273,11 +273,15 @@ export enum SettingsKey {
 
 export enum Lang {
 	// Active
+	ar = 'ar',
+	bg = 'bg',
 	cs = 'cs',
 	de = 'de',
+	el = 'el',
 	en = 'en',
 	es = 'es',
 	fr = 'fr',
+	id_ID = 'id_ID',
 	it = 'it',
 	ja = 'ja',
 	nl = 'nl',
@@ -292,7 +296,8 @@ export enum Lang {
 	ur_PK = 'ur_PK',
 	sv = 'sv',
 	sr = 'sr',
-	hu = 'hu'
+	hu = 'hu',
+	lt = 'lt'
 }
 
 export enum LeaderboardStyle {
@@ -433,7 +438,7 @@ export const inviteCodes = sequelize.define<
 	'inviteCode',
 	{
 		code: {
-			type: Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+			type: Sequelize.STRING(16) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 			primaryKey: true
 		},
 		maxAge: Sequelize.INTEGER,
@@ -491,7 +496,7 @@ export const inviteCodeSettings = sequelize.define<
 	{
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		guildId: Sequelize.STRING(32),
-		inviteCode: Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		inviteCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		value: Sequelize.JSON
 	},
 	{
@@ -545,8 +550,7 @@ export const joins = sequelize.define<JoinInstance, JoinAttributes>(
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		possibleMatches:
 			Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
-		exactMatchCode:
-			Sequelize.STRING(32) + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
+		exactMatchCode: Sequelize.STRING() + ' CHARSET utf8mb4 COLLATE utf8mb4_bin',
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32),
 		invalidatedReason: Sequelize.ENUM(Object.values(JoinInvalidatedReason)),
@@ -1283,7 +1287,7 @@ export const musicNodes = sequelize.define<
 	MusicNodeInstance,
 	MusicNodeAttributes
 >('musicNodes', {
-	id: { type: Sequelize.INTEGER, primaryKey: true },
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 	host: Sequelize.STRING(255),
 	port: Sequelize.INTEGER,
 	region: Sequelize.STRING(16),
@@ -1292,3 +1296,120 @@ export const musicNodes = sequelize.define<
 	isPremium: Sequelize.BOOLEAN,
 	isCustom: Sequelize.BOOLEAN
 });
+
+// ------------------------------------
+// Servers
+// ------------------------------------
+export interface ServerAttributes extends BaseAttributes {
+	name: string;
+	cpu: number;
+	ram: number;
+	fs: number;
+}
+export interface ServerInstance
+	extends Sequelize.Instance<ServerAttributes>,
+		ServerAttributes {}
+
+export const servers = sequelize.define<ServerInstance, ServerAttributes>(
+	'servers',
+	{
+		name: { type: Sequelize.STRING(255), primaryKey: true },
+		cpu: Sequelize.DOUBLE,
+		ram: Sequelize.DOUBLE,
+		fs: Sequelize.DOUBLE
+	}
+);
+
+// ------------------------------------
+// ServerStats
+// ------------------------------------
+export interface ServerStatAttributes extends BaseAttributes {
+	id: number;
+	serverName: string;
+	cpu: number;
+	ram: number;
+	fs: number;
+}
+export interface ServerStatInstance
+	extends Sequelize.Instance<ServerStatAttributes>,
+		ServerStatAttributes {}
+
+export const serverStats = sequelize.define<
+	ServerStatInstance,
+	ServerStatAttributes
+>('serverStats', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	serverName: Sequelize.STRING(255),
+	cpu: Sequelize.DOUBLE,
+	ram: Sequelize.DOUBLE,
+	fs: Sequelize.DOUBLE
+});
+
+serverStats.belongsTo(servers);
+servers.hasMany(serverStats);
+
+// ------------------------------------
+// Shards
+// ------------------------------------
+export interface ShardAttributes extends BaseAttributes {
+	id: string;
+	serverName: string;
+	version: string;
+	revision: string;
+}
+export interface ShardInstance
+	extends Sequelize.Instance<ShardAttributes>,
+		ShardAttributes {}
+
+export const shards = sequelize.define<ShardInstance, ShardAttributes>(
+	'shards',
+	{
+		id: { type: Sequelize.STRING(255), primaryKey: true },
+		serverName: Sequelize.STRING(255),
+		version: Sequelize.STRING(255),
+		revision: Sequelize.STRING(255)
+	}
+);
+
+shards.belongsTo(servers);
+servers.hasMany(shards);
+
+// ------------------------------------
+// ShardStats
+// ------------------------------------
+export interface ShardStatAttributes extends BaseAttributes {
+	id: number;
+	shardId: string;
+
+	status: string;
+	cpu: number;
+	ram: number;
+	uptime: number;
+
+	gateway: boolean;
+	guilds: number;
+	pendingGuilds: number;
+	musicConnections: number;
+}
+export interface ShardStatInstance
+	extends Sequelize.Instance<ShardStatAttributes>,
+		ShardStatAttributes {}
+
+export const shardStats = sequelize.define<
+	ShardStatInstance,
+	ShardStatAttributes
+>('shardStats', {
+	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+	shardId: Sequelize.STRING(255),
+	status: Sequelize.STRING(255),
+	cpu: Sequelize.DOUBLE,
+	ram: Sequelize.DOUBLE,
+	uptime: Sequelize.DOUBLE,
+	gateway: Sequelize.BOOLEAN,
+	guilds: Sequelize.INTEGER,
+	pendingGuilds: Sequelize.INTEGER,
+	musicConnections: Sequelize.INTEGER
+});
+
+shardStats.belongsTo(shards);
+shards.hasMany(shardStats);

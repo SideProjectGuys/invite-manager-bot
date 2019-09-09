@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "8.1.8",
+	"version": "8.2.0",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -50,6 +50,7 @@
 		"zlib-sync": "0.1.5"
 	},
 	"devDependencies": {
+		"@sentry/cli": "1.47.1",
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
 		"@types/node": "12.7.4",

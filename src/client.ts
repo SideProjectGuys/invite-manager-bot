@@ -37,9 +37,7 @@ import {
 	BotSettingsObject,
 	defaultSettings
 } from './settings';
-import { BotType, ChannelType, LavaPlayerManager } from './types';
-
-const config = require('../config.json');
+import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
 i18n.configure({
 	locales: [
@@ -76,10 +74,12 @@ i18n.configure({
 export interface ClientOptions {
 	version: string;
 	token: string;
+	type: BotType;
+	instance: string;
 	shardId: number;
 	shardCount: number;
-	customId: string;
 	flags: string[];
+	config: any;
 }
 
 export class IMClient extends Client {
@@ -87,6 +87,7 @@ export class IMClient extends Client {
 	public config: any;
 	public flags: string[];
 	public type: BotType;
+	public instance: string;
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
 
@@ -119,6 +120,7 @@ export class IMClient extends Client {
 
 	public startedAt: moment.Moment;
 	public gatewayConnected: boolean;
+	public gatewayInfo: GatewayInfo;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 
@@ -134,10 +136,12 @@ export class IMClient extends Client {
 	public constructor({
 		version,
 		token,
+		type,
+		instance,
 		shardId,
 		shardCount,
-		customId,
-		flags
+		flags,
+		config
 	}: ClientOptions) {
 		super(token, {
 			disableEveryone: true,
@@ -164,10 +168,12 @@ export class IMClient extends Client {
 		};
 
 		this.version = version;
-		this.config = config;
-		this.type = config.bot.type;
-		this.config.customId = customId;
+		this.type = type;
+		this.instance = instance;
+		this.shardId = shardId;
+		this.shardCount = shardCount;
 		this.flags = flags;
+		this.config = config;
 
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
@@ -182,11 +188,7 @@ export class IMClient extends Client {
 			music: new MusicCache(this)
 		};
 		this.dbQueue = new DBQueueService(this);
-
-		this.shardId = shardId;
-		this.shardCount = shardCount;
 		this.rabbitmq = new RabbitMqService(this);
-
 		this.msg = new MessagingService(this);
 		this.mod = new ModerationService(this);
 		this.scheduler = new SchedulerService(this);
@@ -274,7 +276,7 @@ export class IMClient extends Client {
 							'`!\n\n' +
 							'It looks like this guild was banned from using the InviteManager bot.\n' +
 							'If you believe this was a mistake please contact staff on our support server.\n\n' +
-							`${config.bot.links.support}\n\n` +
+							`${this.config.bot.links.support}\n\n` +
 							'I will be leaving your server now, thanks for having me!'
 					)
 					.catch(() => undefined);
@@ -365,7 +367,7 @@ export class IMClient extends Client {
 					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 						'It looks like this guild was banned from using the InviteManager bot.\n' +
 						'If you believe this was a mistake please contact staff on our support server.\n\n' +
-						`${config.bot.links.support}\n\n` +
+						`${this.config.bot.links.support}\n\n` +
 						'I will be leaving your server now, thanks for having me!'
 				)
 				.catch(() => undefined);
@@ -598,10 +600,16 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
+	private async getGatewayInfo() {
+		return (await this.getBotGateway()) as GatewayInfo;
+	}
+
 	public async setActivity() {
 		if (this.dbl) {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
+
+		this.gatewayInfo = await this.getGatewayInfo();
 
 		const status = this.settings.activityStatus;
 

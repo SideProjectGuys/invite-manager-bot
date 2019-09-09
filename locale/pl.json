@@ -32,8 +32,8 @@
 				"description": "Dodaje/Usuwa zaproszenia dla/od członka."
 			},
 			"zero": "Dodanie zero zaproszeń kompletne nie ma sensu ...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Liczba, którą wprowadziłeś, jest zbyt duża",
+			"numberTooSmall": "Liczba, którą wprowadziłeś, jest zbyt mała."
 		},
 		"addRank": {
 			"created": "Dodano rangę {{{ role }}}, która wymaga {{ invites }} zaproszeń i ma następujący opis: {{ description }}",
@@ -181,7 +181,7 @@
 			},
 			"text": "Usunięto {{ amount }} wiadomości.\nTa wiadomość zostanie usunięta w ciągu 5 sekund.",
 			"title": "Usunięte wiadomości",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"textReactions": "Usunięto {{ amount }} wiadomości posiadających reakcje"
 		},
 		"cleanShort": {
 			"self": {
@@ -269,7 +269,7 @@
 			"developers": "Deweloperzy",
 			"moderators": "Moderatorzy",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "Pokaż deweloperów i kontrybutorów bota."
 			},
 			"staff": "Personel",
 			"translators": "Tłumacze"
@@ -373,10 +373,10 @@
 			},
 			"invites": {
 				"clear": {
-					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)",
+					"text": "**{{ total }}** (**{{ regular }}** zwykłych, **{{ custom }}** bonusowych)",
 					"title": "Wyczyszczone zaproszenia"
 				},
-				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"text": "**{{ total }}** (**{{ regular }}** zwykłych, **{{ custom }}** bonusowych, **{{ fake }}** fałszywych, **{{ leave }}** opuściło)",
 				"title": "Zaproszenia"
 			},
 			"joined": {
@@ -385,7 +385,7 @@
 			},
 			"joins": {
 				"entry": {
-					"invite": "{{{ member }}} ({{ times }} times)",
+					"invite": "{{{ member }}} ({{ times }} razy)",
 					"text": "{{ total }} razy {{ time }}, zaproszony przez:"
 				},
 				"more": "Plus kolejne {{amount}} więcej dołączeń",
@@ -468,78 +468,78 @@
 			},
 			"current": {
 				"clear": "Użyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` żeby to wyczyścić.",
-				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
+				"notSet": "Ta konfiguracja kodu zaproszenia **nie** jest aktualnie ustawiona.\n\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` aby ją ustawić.",
+				"text": "Aktualnie konfiguracja kodu zaproszenia jest ustawiona.\n\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>`, aby ją zmienić.\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default`, aby zresetować do wartości domyślnej.\nUżyj `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\`, aby wyczyścić.",
 				"title": "Obecna wartość"
 			},
 			"keys": {
-				"title": "Valid invite code config keys"
+				"title": "Prawidłowe klucze konfiguracji kodu zaproszenia"
 			},
 			"new": {
 				"title": "Nowa wartość"
 			},
 			"none": "Nic",
-			"notSet": "This invite code config is currently not set for any invite code",
+			"notSet": "Ta konfiguracja kodu zaproszenia jest obecnie nie ustawiona na żaden kod zaproszenia",
 			"previous": {
 				"title": "Poprzednia wartość"
 			},
-			"sameValue": "This invite code config is already set to that value",
+			"sameValue": "Ta konfiguracja kodu zaproszenia jest obecnie ustawiona na tą wartość",
 			"self": {
 				"args": {
-					"code": "The invite code that the setting is changed for.",
-					"inviteCode": "The invite code for which you want to change the settings.",
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"code": "Kod zaproszenia który ustawienie jest zmienione dla.",
+					"inviteCode": "Kod zaproszenia dla którego chcesz zmienić ustawienia.",
+					"key": "Konfiguracja ustawienia jaką chcesz pokazać/zmienić.",
+					"value": "Nowa wartość ustawienia"
 				},
-				"description": "Show and change the config of invite codes of the server."
+				"description": "Pokaż i zmień konfiguracje kodu zaproszenia serwera."
 			},
-			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config",
-			"noneSet": "No configs set!"
+			"text": "Ustaw konfiguracje dla pojedynczych kodów zaproszenia",
+			"title": "Konfiguracja Kodu Zaproszenia",
+			"noneSet": "Brak ustawionych konfiguracji!"
 		},
 		"inviteCodes": {
-			"dmSent": "I sent you a DM with all your invite codes.",
-			"noCodes": "You don't have any active invite codes. Please ask the moderators of the server how to create one.",
+			"dmSent": "Wysłałem tobie wiadomość prywatną z wszystkimi twoimi kodami zaproszenia.",
+			"noCodes": "Nie masz żadnych aktywnych kodów zaproszeń. Zapytaj się moderatorów serwera jak stworzyć owy.",
 			"permanent": {
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}",
-				"text": "These invites don't expire.",
-				"title": "Permanent"
+				"entry": "**Użyć**: {{ uses }}\n**Maksymalny Czas**: {{ maxAge }}\n**Maksymalna ilość użyć**: {{ maxUses }}\n**Kanał**: {{{ channel }}}",
+				"text": "Te zaproszenia nie wygasają.",
+				"title": "Permamentnie"
 			},
 			"recommendedCode": {
-				"none": "Please create a permanent invite code.",
-				"title": "Recommended invite code"
+				"none": "Proszę stwórz permanentny kod zaproszenia",
+				"title": "Rekomendowany kod zaproszenia"
 			},
 			"self": {
-				"description": "Get a list of all your invite codes"
+				"description": "Zdobądź listę wszystkich twoich kodów zaproszeń"
 			},
 			"temporary": {
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}\r\n**Expires**: {{ expires }}",
-				"text": "These invites expire after a certain time.",
-				"title": "Temporary"
+				"entry": "**Użyć**: {{ uses }}\n**Maksymalny Czas**: {{ maxAge }}\n**Maksymalna ilość użyć**: {{ maxUses }}\n**Kanał**: {{{ channel }}}\n**Wygasa**: {{ expires }}",
+				"text": "Tę zaproszenia wygasają po wyznaczonym czasie.",
+				"title": "Tymczasowe"
 			},
-			"title": "You have the following codes on the server {{ guild }}"
+			"title": "Posiadasz następujące kody na serwerze {{ guild }}"
 		},
 		"inviteDetails": {
-			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
-			"noInviteCodes": "You don't have any invite codes yet.",
+			"entry": "**{{ uses }}** z {{{ code }}} - utworzono **{{ createdAt }}**",
+			"noInviteCodes": "Nie posiadasz żadnych kodów zaproszeń.",
 			"self": {
 				"args": {
-					"user": "The user for whom you want to show detailed invites."
+					"user": "Użytkownik kogo chcesz zobaczyć szczegółowo zaproszenia."
 				},
-				"description": "Shows details about where your invites are from."
+				"description": "Pokazuje szczegóły skąd są twoje zaproszenia."
 			}
 		},
 		"invites": {
 			"amount": {
-				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
-				"self": "You have {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)"
+				"other": "{{{ target }}} posiada {{ total }} zaproszeń! ({{ regular }} zwykłych, {{ custom }} bonusowych, {{ fake }} fałszywych, {{ leave }} opuściło)",
+				"self": "Posiadasz {{ total }} zaproszeń! ({{ regular }} zwykłych, {{ custom }} bonusowych, {{ fake }} fałszywych, {{ leave }} opuściło)"
 			},
 			"highestRank": {
-				"other": "{{{ target }}} currently has the highest rank!",
-				"self": "Congratulations, you currently have the highest rank!"
+				"other": "{{{ target }}} posiada obecnie najwyższą rangę!",
+				"self": "Masz obecnie najwyższą pozycję!"
 			},
 			"nextRank": {
-				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
+				"other": "{{{ target }}} potrzebuje ** {{ nextRankPointsDiff }} ** więcej zaproszeń do osiągnięcia ** {{ nextRankName }} ** rangi!",
 				"self": "You need **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
 			},
 			"self": {
@@ -1227,10 +1227,6 @@
 		"invitecode": {
 			"type": "Invite Code",
 			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
 		}
 	},
 	"settings": {

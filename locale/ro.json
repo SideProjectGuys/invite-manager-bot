@@ -7,15 +7,15 @@
 			"title": "Patreon"
 		},
 		"supportDiscord": {
-			"title": "Support Discord"
+			"title": "Susține Discord"
 		},
 		"website": {
 			"title": "Site-ul botului"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "Prefixul meu curent este `{{{ prefix }}}`\n\nFolosește `{{{ prefix }}}help` pentru mai multe informații."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captcha-ul este incorect, te rog încearcă din nou."
 	},
 	"cmd": {
 		"addInvites": {
@@ -25,41 +25,41 @@
 			},
 			"self": {
 				"args": {
-					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
-					"reason": "The reason for adding/removing the invites.",
-					"user": "The user that will receive/lose the bonus invites."
+					"amount": "Numărul de invitații user-ul o sa primească/piardă. Folosește un număr negativ (-) pentru a șterge invite-uri.",
+					"reason": "Motivul pentru adăugarea/ștergerea invitațiilor.",
+					"user": "Membrul care va primii/pierde invitațiile bonus."
 				},
-				"description": "Adds/Removes invites to/from a member."
+				"description": "Adaugă/Șterge invitațiile pentru un membru."
 			},
 			"zero": "Nu prea are sens sa adaugi 0 invitatii...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Numărul este prea mare.",
+			"numberTooSmall": "Numărul este prea mic."
 		},
 		"addRank": {
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
+			"created": "Rank-ul {{{ role }}} a fost adăugat, ce are nevoie de {{ invites }} invitații și are descrierea următoare: {{ description }}",
 			"roleTooHigh": "Gradul ***{{ role }}**  este mai sus decat al meu  (**{{ myRole }}**), deci nu il voi putea atribui membrilor care il castiga.",
 			"self": {
 				"args": {
-					"info": "A description that users will see so they know more about this rank.",
-					"invites": "The amount of invites needed to reach the rank.",
-					"role": "The role which the user will receive when reaching this rank."
+					"info": "O descriere pe care membrii o vor vedea pentru a afla mai multe despre acest rank.",
+					"invites": "Numărul de invitații necesar pentru a primii rank-ul.",
+					"role": "Rolul pe care membrul îl va primii când atinge acest rank."
 				},
-				"description": "Add a new rank."
+				"description": "Adaugă un rank nou."
 			},
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}"
+			"updated": "Rank-ul {{{ role }}} a fost actualizat: Acum este nevoie de {{ invites }} invitații și are următoarea descriere:: {{ description }}"
 		},
 		"ban": {
-			"canNotBan": "I cannot ban this user.",
-			"done": "The user was successfully banned.",
-			"error": "There was an error banning this user:\n{{ error }}",
-			"missingPermissions": "I need the `Ban Members` permission to use this command.",
+			"canNotBan": "Nu pot interzice acest membru.",
+			"done": "Acest membru a fost interzis cu succes.",
+			"error": "A aparut o eroare in interzicerea acestui user:\n{{ error }}",
+			"missingPermissions": "Am nevoie de permisiunea `Ban Members` pentru a folosii aceasta comanda.",
 			"self": {
 				"args": {
-					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned.",
-					"user": "User to ban."
+					"deleteMessageDays": "Cât de departe vor fi șterse mesajele (în zile).",
+					"reason": "De ce a fost acest membru interzis.",
+					"user": "Membrul pentru interzicere."
 				},
-				"description": "Ban a member from the server.",
+				"description": "Interzice un membru de pe acest server.",
 				"flags": {
 					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
 				}
@@ -67,7 +67,7 @@
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "Setarea  **{{ key }}** nu poate fi curățată. Poți folosi `{{ prefix }}botConfig {{ key }} default` pentru a-l reseta la valoarea implicită.",
 			"changed": {
 				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
 			},
@@ -1164,13 +1164,13 @@
 		"boolean": {
 			"invalid": "Not a valid yes/no value.",
 			"type": "Boolean",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "Multiple matching channels found. {{{ channels }}}",
 			"notFound": "Channel not found.",
 			"type": "Channel",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
@@ -1183,7 +1183,7 @@
 			"invalid": "Not a valid value.",
 			"validValues": "Use one of the following values: {{{ values }}}",
 			"type": "Enum",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1195,23 +1195,23 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
 			"notFound": "Role was not found.",
 			"type": "Role",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "Multiple matching users found. {{{ users }}}",
 			"notFound": "User was not found.",
 			"type": "User",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "Text",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "Value"
@@ -1226,11 +1226,7 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {
@@ -1578,37 +1574,37 @@
 		},
 		"announceNextSong": {
 			"title": "Announce Next Song",
-			"description": "Whether or not the next song should be announced in the voice channel."
+			"description": "Dacă următoarea melodie ar trebui să fie anunțată sau nu în canalul de voce."
 		},
 		"announcementVoice": {
-			"title": "Announcement Voice",
-			"description": "The voice used in the next song announcements."
+			"title": "Anunț vocal",
+			"description": "Vocea folosită în anunțurile melodiei următoare."
 		},
 		"fadeMusicOnTalk": {
 			"title": "Fade Music On Talk",
-			"description": "If enabled, the music will fade down while people are talking."
+			"description": "Dacă este activat, muzica se va estompa în timp ce oamenii vorbesc."
 		},
 		"fadeMusicStartDuration": {
-			"title": "Fade Music Start Duration",
-			"description": "The duration during which the fade will happen (eg. 1 second)"
+			"title": "Perioada de începere a muzicii estompate",
+			"description": "Durata în care se va întâmpla decolorarea (de ex. 1 secundă)"
 		},
 		"fadeMusicEndDelay": {
-			"title": "Fade Music End Delay",
-			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+			"title": "Sfârșitul întârziere muzicală",
+			"description": "Întârzierea a câte secunde nu trebuie să vorbească nimeni pentru ca volumul să revină la normal."
 		}
 	},
 	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
+		"invalid": "Argumentele furnizate nu sunt valide.",
+		"missingRequired": "Lipsește parametrul necesar `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
-		"notPlaying": "There is currently no music being played!",
-		"notConnected": "The bot is not connected to a voice channel!",
-		"voiceChannelRequired": "You need to be in a voice channel to use that command!"
+		"notPlaying": "Momentan nu se cântă muzică!",
+		"notConnected": "Botul nu este conectat la un canal vocal!",
+		"voiceChannelRequired": "Trebuie să fiți într-un canal vocal pentru a utiliza acea comandă!"
 	},
 	"roles": {
-		"shouldHave": "The user should have the roles {{{ shouldHave }}}, but I can't assign them.",
-		"shouldNotHave": "The user should not have the roles {{{ shouldNotHave }}}, but I can't take them away.",
-		"dangerous": "The roles {{{ dangerous }}} are potentially dangerous to assign because they include important permissions."
+		"shouldHave": "Utilizatorul ar trebui să aibă rolurile {{{ shouldHave }}}, dar nu le pot atribui.",
+		"shouldNotHave": "Utilizatorul nu ar trebui să aibă rolurile {{{ shouldNotHave }}}, dar nu le pot scoate.",
+		"dangerous": "Rolurile {{{ dangerous }}} sunt potențial periculoase pentru atribuire, deoarece includ permisiuni importante."
 	}
 }

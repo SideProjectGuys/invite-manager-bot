@@ -1,5 +1,6 @@
 import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../client';
 import { ShardCommand } from '../../types';
@@ -16,7 +17,6 @@ export class RabbitMqService {
 	private client: IMClient;
 	private conn: Connection;
 	private connRetry: number = 0;
-	private shard: string;
 
 	private qName: string;
 	private channel: Channel;
@@ -25,10 +25,6 @@ export class RabbitMqService {
 
 	public constructor(client: IMClient) {
 		this.client = client;
-		this.shard = client.config.customId
-			? client.config.customId
-			: this.client.shardId;
-
 		this.msgQueue = [];
 	}
 
@@ -70,7 +66,7 @@ export class RabbitMqService {
 		}
 
 		this.connRetry = 0;
-		this.qName = `shard-${this.shard}`;
+		this.qName = `shard-${this.client.instance}-${this.client.shardId}`;
 
 		try {
 			this.channel = await this.conn.createChannel();
@@ -139,7 +135,11 @@ export class RabbitMqService {
 			'manager',
 			Buffer.from(
 				JSON.stringify({
-					shard: this.shard,
+					timestamp: moment().unix(),
+					type: this.client.type,
+					instance: this.client.instance,
+					shardId: this.client.shardId,
+					shardCount: this.client.shardCount,
 					service: 'bot',
 					...message
 				})
@@ -152,6 +152,7 @@ export class RabbitMqService {
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			connected: this.client.gatewayConnected,
+			gateway: this.client.gatewayInfo,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
 			tracking: {
@@ -315,12 +316,11 @@ export class RabbitMqService {
 					sendResponse({ data });
 				};
 
+				const args = content.args ? content.args.join(' ') : '';
 				const fakeMsg = new Message(
 					{
 						id: content.id,
-						content: `<@!${this.client.user.id}>${
-							content.sudoCmd
-						} ${content.args.join(' ')}`,
+						content: `<@!${this.client.user.id}>${content.sudoCmd} ${args}`,
 						channel_id: channel.id,
 						author: this.client.users.get(content.authorId),
 						embeds: [],

@@ -264,7 +264,7 @@ export class TrackingService {
 						code: e.after.code,
 						channel: {
 							id: e.after.channel_id,
-							name: e.guild.channels.get(e.after.channel_id).name
+							name: (e.guild.channels.get(e.after.channel_id) || {}).name
 						},
 						guild: e.guild,
 						inviter: e.user,
@@ -425,6 +425,24 @@ export class TrackingService {
 				// Someone set a non-text channel as join channel
 				console.error(
 					`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
+				);
+
+				// Reset the channel
+				this.client.cache.settings.setOne(
+					guild.id,
+					SettingsKey.joinMessageChannel,
+					null
+				);
+
+				joinChannel = undefined;
+			} else if (
+				!joinChannel
+					.permissionsOf(this.client.user.id)
+					.has(GuildPermission.SEND_MESSAGES)
+			) {
+				// We don't have permission to send messages in the join channel
+				console.error(
+					`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`
 				);
 
 				// Reset the channel

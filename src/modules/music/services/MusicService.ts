@@ -94,6 +94,10 @@ export class MusicService {
 		return conn;
 	}
 
+	public async removeConnection(guild: Guild) {
+		this.musicConnections.delete(guild.id);
+	}
+
 	public createPlayingEmbed(item: MusicItem) {
 		if (!item) {
 			return this.client.msg.createEmbed({

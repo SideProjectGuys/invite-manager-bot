@@ -151,11 +151,15 @@ export class MessagingService {
 								withScope(scope => {
 									if (target instanceof GuildChannel) {
 										scope.setUser({ id: target.guild.id });
+										scope.setExtra(
+											'permissions',
+											target.permissionsOf(this.client.user.id).json
+										);
 									}
+									scope.setExtra('channel', target.id);
 									scope.setExtra('message', embed);
 									scope.setExtra('content', content);
 									scope.setExtra('fallbackUser', fallbackUser.id);
-									scope.setExtra('dmMessage', msg);
 									captureException(err2);
 								});
 								return undefined;
@@ -165,7 +169,12 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
 							scope.setExtra('fallbackUser', fallbackUser.id);
@@ -193,7 +202,12 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
 							captureException(err);
@@ -207,9 +221,12 @@ export class MessagingService {
 				// If we don't have permissions to embed links try plain content
 				if (
 					target instanceof GuildChannel &&
-					!target
+					(!target
 						.permissionsOf(this.client.user.id)
-						.has(GuildPermission.EMBED_LINKS)
+						.has(GuildPermission.SEND_MESSAGES) ||
+						!target
+							.permissionsOf(this.client.user.id)
+							.has(GuildPermission.EMBED_LINKS))
 				) {
 					return sendPlain();
 				}
@@ -221,8 +238,14 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
+							scope.setExtra('channel', target.id);
 							scope.setExtra('message', embed);
+							scope.setExtra('content', content);
 							captureException(error);
 						});
 

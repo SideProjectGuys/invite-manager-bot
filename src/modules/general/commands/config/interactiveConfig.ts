@@ -62,7 +62,14 @@ export default class extends Command {
 			description: 'Loading...'
 		});
 
-		message.delete();
+		if (
+			message.channel instanceof GuildChannel &&
+			message.channel
+				.permissionsOf(this.client.user.id)
+				.has(GuildPermission.MANAGE_MESSAGES)
+		) {
+			message.delete();
+		}
 
 		const msg = await this.sendReply(message, embed);
 		if (!msg) {

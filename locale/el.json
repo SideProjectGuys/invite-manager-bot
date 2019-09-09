@@ -901,42 +901,53 @@
 	},
 	"resolvers": {
 		"user": {
-			"type": "resolvers.user.type"
+			"type": "resolvers.user.type",
+			"typeInfo": "resolvers.user.typeInfo"
 		},
 		"number": {
-			"type": "resolvers.number.type"
+			"type": "resolvers.number.type",
+			"typeInfo": "resolvers.number.typeInfo"
 		},
 		"string": {
-			"type": "resolvers.string.type"
+			"type": "resolvers.string.type",
+			"typeInfo": "resolvers.string.typeInfo"
 		},
 		"role": {
-			"type": "resolvers.role.type"
+			"type": "resolvers.role.type",
+			"typeInfo": "resolvers.role.typeInfo"
 		},
 		"enum": {
 			"type": "resolvers.enum.type",
-			"validValues": "resolvers.enum.validValues"
+			"validValues": "resolvers.enum.validValues",
+			"typeInfo": "resolvers.enum.typeInfo"
 		},
 		"settingsvalue": {
 			"type": "resolvers.settingsvalue.type"
 		},
 		"date": {
-			"type": "resolvers.date.type"
+			"type": "resolvers.date.type",
+			"typeInfo": "resolvers.date.typeInfo"
 		},
 		"boolean": {
-			"type": "resolvers.boolean.type"
+			"type": "resolvers.boolean.type",
+			"typeInfo": "resolvers.boolean.typeInfo"
 		},
 		"channel": {
-			"type": "resolvers.channel.type"
+			"type": "resolvers.channel.type",
+			"typeInfo": "resolvers.channel.typeInfo"
 		},
 		"duration": {
-			"type": "resolvers.duration.type"
+			"type": "resolvers.duration.type",
+			"typeInfo": "resolvers.duration.typeInfo"
 		},
 		"command": {
 			"type": "resolvers.command.type",
-			"validValues": "resolvers.command.validValues"
+			"validValues": "resolvers.command.validValues",
+			"typeInfo": "resolvers.command.typeInfo"
 		},
 		"invitecode": {
-			"type": "resolvers.invitecode.type"
+			"type": "resolvers.invitecode.type",
+			"typeInfo": "resolvers.invitecode.typeInfo"
 		},
 		"member": {
 			"type": "resolvers.member.type"

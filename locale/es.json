@@ -1164,13 +1164,13 @@
 		"boolean": {
 			"invalid": "No es un valor Sí/No valido.",
 			"type": "Boolean",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "Se encontraron múltiples canales. {{{ channels }}}",
 			"notFound": "Canal no encontrado.",
 			"type": "Canal",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
@@ -1183,7 +1183,7 @@
 			"invalid": "No es un valor válido.",
 			"validValues": "Use one of the following values: {{{ values }}}",
 			"type": "Enum",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "Valor inválido para `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1195,23 +1195,23 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
 			"notFound": "Rol no encontrado.",
 			"type": "Rol",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "Multiple matching users found. {{{ users }}}",
 			"notFound": "User was not found.",
 			"type": "User",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "Text",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "Value"
@@ -1226,11 +1226,7 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {

@@ -48,14 +48,14 @@ export class ModerationService {
 		[key in ViolationType]: (
 			message: Message,
 			args: Arguments
-		) => Promise<boolean>
+		) => Promise<boolean>;
 	};
 	private punishmentFunctions: {
 		[key in PunishmentType]: (
 			member: Member,
 			amount: number,
 			args: Arguments
-		) => Promise<boolean>
+		) => Promise<boolean>;
 	};
 
 	public constructor(client: IMClient) {
@@ -133,6 +133,26 @@ export class ModerationService {
 			return;
 		}
 
+		// If moderated channels are set only moderate those channels
+		if (
+			settings.autoModModeratedChannels &&
+			settings.autoModModeratedChannels.length > 0
+		) {
+			if (
+				!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)
+			) {
+				return;
+			}
+		}
+
+		// Don't moderate ignored channels
+		if (
+			settings.autoModIgnoredChannels &&
+			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
+		) {
+			return;
+		}
+
 		let member = guild.members.get(message.author.id);
 		if (!member) {
 			member = await guild.getRESTMember(message.author.id);
@@ -160,26 +180,6 @@ export class ModerationService {
 		if (
 			settings.autoModIgnoredRoles &&
 			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-		) {
-			return;
-		}
-
-		// If moderated channels are set only moderate those channels
-		if (
-			settings.autoModModeratedChannels &&
-			settings.autoModModeratedChannels.length > 0
-		) {
-			if (
-				!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)
-			) {
-				return;
-			}
-		}
-
-		// Don't moderate ignored channels
-		if (
-			settings.autoModIgnoredChannels &&
-			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
 		) {
 			return;
 		}

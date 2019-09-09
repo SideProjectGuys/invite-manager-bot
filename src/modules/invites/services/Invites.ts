@@ -593,7 +593,7 @@ export class InvitesService {
 		let myRole: Role;
 		me.roles.forEach(r => {
 			const role = guild.roles.get(r);
-			if (!myRole || myRole.position < role.position) {
+			if (role && (!myRole || myRole.position < role.position)) {
 				myRole = role;
 			}
 		});

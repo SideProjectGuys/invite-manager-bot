@@ -4,11 +4,15 @@ const path = require('path');
 const i18n = require('i18n');
 
 const locales = [
+	'ar',
+	'bg',
 	'cs',
 	'de',
+	'el',
 	'en',
 	'es',
 	'fr',
+	'id_ID',
 	'it',
 	'ja',
 	'nl',
@@ -96,11 +100,11 @@ child.on('close', () => {
 		const _t = (phrase, replacements) =>
 			i18n.__({ locale, phrase }, replacements);
 
-		if (!fs.existsSync(`./docs/${locale}`)) {
-			fs.mkdirSync(`./docs/${locale}`);
+		if (!fs.existsSync(`./docs/${locale.replace('_', '-')}`)) {
+			fs.mkdirSync(`./docs/${locale.replace('_', '-')}`);
 		}
-		if (!fs.existsSync(`./docs/${locale}/reference/`)) {
-			fs.mkdirSync(`./docs/${locale}/reference/`);
+		if (!fs.existsSync(`./docs/${locale.replace('_', '-')}/reference/`)) {
+			fs.mkdirSync(`./docs/${locale.replace('_', '-')}/reference/`);
 		}
 
 		function generateGroup(path, group) {

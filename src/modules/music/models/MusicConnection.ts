@@ -171,6 +171,8 @@ export class MusicConnection {
 			this.player.on('disconnect', () => {
 				console.error(`Player disconnected for guild ${this.guild.id}`);
 				this.player = null;
+				this.voiceChannel.leave();
+				this.service.removeConnection(this.guild);
 			});
 		}
 	}
@@ -312,5 +314,6 @@ export class MusicConnection {
 		this.player.stop();
 		this.voiceChannel.leave();
 		this.player = null;
+		this.service.removeConnection(this.guild);
 	}
 }

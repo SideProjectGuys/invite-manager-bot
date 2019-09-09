@@ -1,5 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
-import { Member, Message, PrivateChannel, TextChannel } from 'eris';
+import { GuildChannel, Member, Message, PrivateChannel } from 'eris';
 import { readdirSync, statSync } from 'fs';
 import i18n from 'i18n';
 import { basename, resolve } from 'path';
@@ -101,7 +101,7 @@ export class CommandsService {
 		const start = Date.now();
 
 		const channel = message.channel;
-		const guild = (channel as TextChannel).guild;
+		const guild = (channel as GuildChannel).guild;
 
 		if (guild) {
 			// Check if this guild is disabled due to the pro bot
@@ -306,12 +306,14 @@ export class CommandsService {
 
 			// Check command permissions
 			const missingPerms = cmd.botPermissions.filter(
-				p => !me.permission.has(p)
+				p =>
+					!(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
 			);
 			if (missingPerms.length > 0) {
 				this.client.msg.sendReply(
 					message,
 					t(`permissions.missing`, {
+						channel: `<#${channel.id}>`,
 						permissions: missingPerms
 							.map(p => '`' + t(`permissions.${p}`) + '`')
 							.join(', ')
