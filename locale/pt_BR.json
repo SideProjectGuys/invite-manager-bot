@@ -12,10 +12,10 @@
 		"website": {
 			"title": "Website do bot"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "Meu prefixo é `{{{ prefix }}}` Use `{{{ prefix }}}`help para mais ajuda."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "A verificação não concedeu, por favor tente novamente."
 	},
 	"cmd": {
 		"addInvites": {
@@ -32,11 +32,11 @@
 				"description": "Adiciona/Remove convites para/de um membro."
 			},
 			"zero": "Adicionar zero convites não faz muito sentido...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "O número que você digitou é muito longo.",
+			"numberTooSmall": "O número que você digitou é muito curto."
 		},
 		"addRank": {
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
+			"created": "Adicionado o rank {{{ role }}} para consegui-lo necessita de {{ invites }} invites e veja a descrição para o cargo: {{ description }}",
 			"roleTooHigh": "O cargo {{{ role }}} é maior que o meu ({{{ myRole }}}), então eu não poderei dar ele para membros que ganharem isso.",
 			"self": {
 				"args": {
@@ -46,13 +46,13 @@
 				},
 				"description": "Adiciona um novo rank."
 			},
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}"
+			"updated": "O rank {{{ role }}} foi atualizado: Agora necessita de {{ invites }} invites e veja a descrição para o cargo: {{ description }}"
 		},
 		"ban": {
 			"canNotBan": "Eu não posso banir este usuário.",
 			"done": "O usuário foi banido com sucesso.",
 			"error": "Ocorreu um erro banindo este usuário:\n{{ error }}",
-			"missingPermissions": "I need the `Ban Members` permission to use this command.",
+			"missingPermissions": "Eu necessito a permissão `Banir membros` para usar esse comando.",
 			"self": {
 				"args": {
 					"deleteMessageDays": "Quantas mensagens deverão ser deletadas (em dias).",
@@ -67,50 +67,50 @@
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "A configuração **{{ key }}** não pode ser limpa. Você pode usar `{{ prefix }}botConfig {{ key }} default` para resetar para o valor normal.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+				"text": "A configuração foi atualizada. \nUse `{{ prefix }}botConfig {{ key }}<value>` para atualizar novamente. \nUse {{ prefix }}botConfig {{ key }} default` para resetar para o valor normal."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"clear": "Use `{{ prefix }}botConfig {{ key }} none` para limpar isto.",
+				"notSet": "Esse configuração atualmente **não** foi setada. \nUse `{{ prefix }}config {{key}} <value>` para setar isto.",
+				"text": "Essa configuração atualmente já está setada.\nUse `{{ prefix }}botConfig {{ key }} <value>`  para mudar isto.\nUse `{{ prefix }}botConfig {{ key }} default` para resetar para o valor normal.",
+				"title": "Valor atualmente"
 			},
-			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"customOnly": "**Este comando só está disponível para bots personalizados.\nSe você está procurando sua configuração de servidor, por favor use o comando `{{ prefixo }}config`.\n\nVisite nossa página patreon para saber mais sobre como você pode obter seu próprio bot personalizado: {{{patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord só suporta twitch.tv URLs para atividade de streaming."
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Novo valor"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "nenhum/nada",
+			"notSet": "estas configuraçôes não estão setadas",
 			"preview": {
-				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"nextMessage": "<See next message> Veja a próxima página.",
+				"title": "Pré-visualização"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Valor anterior."
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Está configuração já está setada neste valor.",
 			"self": {
 				"args": {
-					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "A config da configuração do bot que você deseja mostrar/alterar.",
+					"value": "O novo valor da configuração."
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Mostrar e alterar as configurações do bot."
 			},
 			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"title": "Customize as configurações do bot."
 		},
 		"botInfo": {
 			"guilds": "Guilds",
 			"members": "Membros",
 			"premium": {
-				"active": "This server has an **active premium** subscription.",
-				"custom": "You are using a custom version of the bot!",
-				"none": "This server currently **does not** have premium.",
+				"active": "Este servidor tem uma assinatura **premium** ativada.",
+				"custom": "Você está usando uma versão customizada/personalizada do bot!",
+				"none": "Este servidor atualmente **não*** tem a assinatura premium.",
 				"title": "Premium"
 			},
 			"self": {
@@ -124,26 +124,26 @@
 			"version": "Versão"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "case deletada.",
+			"notFound": "case não encontrada.",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Número da case.",
+					"reason": "A razão para remover o case."
 				},
-				"description": "Delete a specific case."
+				"description": "Elimine um case específico."
 			},
 			"title": "Case #{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "Case não encontrada.",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Número da case."
 				},
-				"description": "View info about a specific case."
+				"description": "Veja a informação de um determinado case."
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
+			"strike": "{{{ member }}} recebido {{{ amount }}} strikes por violar a  {{{ violation }}} regra {{{ date }}}.",
 			"title": "Case #{{ id }}"
 		},
 		"check": {
@@ -151,8 +151,8 @@
 			"punishments": {
 				"entry": "{{ punishment }} pois ele tinha {{ amount }} strikes {{ date }}",
 				"title": "Punições",
-				"total": "Punishments Total",
-				"totalText": "{{{ amount }}} punishments."
+				"total": "Total de punições.",
+				"totalText": "{{{ amount }}} punições."
 			},
 			"self": {
 				"args": {
@@ -161,26 +161,26 @@
 				"description": "Checa o histórico de violações e punimentos de um usuário."
 			},
 			"strikes": {
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
-				"title": "Strikes",
-				"total": "Strikes Total",
-				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
+				"entry": "#{{ id }} - recebido {{ amount }} strikes por violar a {{ violation }} regra {{ date }}.",
+				"title": "Strikes.",
+				"total": "Total de strikes.",
+				"totalText": "recebido {{{ total }}} strikes por {{{ amount }}} violar."
 			}
 		},
 		"clean": {
-			"error": "Error",
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"error": "Erro.",
+			"invalidQuantity": "Você deve especificar uma quantidade positiva de mensagens para limpar as mensagens.",
 			"self": {
 				"args": {
-					"member": "User whose messages get deleted.",
-					"numberOfMessages": "Number of messages that will be searched.",
-					"quantity": "How many messages should be deleted.",
-					"type": "The type of messages that will be deleted."
+					"member": "Usuário cujas mensagens são excluídas.",
+					"numberOfMessages": "Número de mensagens que serão pesquisadas.",
+					"quantity": "Quantas mensagens devem ser excluídas?",
+					"type": "O tipo de mensagens que serão excluídas."
 				},
-				"description": "Clean a channel of certain message types."
+				"description": "Limpar um canal de certo tipo de mensagens."
 			},
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages",
+			"text": "Forão deletadas {{ amount }} mensagens.\nEstá mensagem será deletada em 5 segundos.",
+			"title": "Mensagens deletadas.",
 			"textReactions": "Deleted {{ amount }} messages containing reactions."
 		},
 		"cleanShort": {
@@ -1164,13 +1164,13 @@
 		"boolean": {
 			"invalid": "Not a valid yes/no value.",
 			"type": "Boolean",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "Multiple matching channels found. {{{ channels }}}",
 			"notFound": "Channel not found.",
 			"type": "Channel",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
@@ -1183,7 +1183,7 @@
 			"invalid": "Not a valid value.",
 			"validValues": "Use one of the following values: {{{ values }}}",
 			"type": "Enum",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1195,23 +1195,23 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
 			"notFound": "Role was not found.",
 			"type": "Role",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "Multiple matching users found. {{{ users }}}",
 			"notFound": "User was not found.",
 			"type": "User",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "Text",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "Value"
@@ -1226,11 +1226,7 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {

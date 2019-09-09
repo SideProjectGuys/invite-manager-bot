@@ -32,8 +32,8 @@
 				"description": "Voeg toe/verwijder invites van een gebruiker."
 			},
 			"zero": "0 invites geven heeft niet veel zin...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Je opgegeven nummer is te groot.",
+			"numberTooSmall": "Je opgegeven nummer is te klein."
 		},
 		"addRank": {
 			"created": "Rank {{{ role }}} toegevoegd  en heeft {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}",
@@ -74,7 +74,7 @@
 			"current": {
 				"clear": "Gebruik `{{ prefix }}config {{ key }} none` om dit te verwijderen.",
 				"notSet": "Deze configuratie is nog **niet** gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen",
-				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nUse `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
+				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nGebruik `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
 				"title": "Huidige Waarde"
 			},
 			"customOnly": "**Dit commmando is alleen beschikbaar voor custom bots.**\nAls je op zoek bent naar je server configuratie, gebruik dan het `{{ prefix }}config` commando.\n\nZie onze patreon pagina om meer te leren hoe je je eigen custom bot kan krijgen: {{{ patreon }}}",
@@ -124,26 +124,26 @@
 			"version": "Versie"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Case verwijderd",
+			"notFound": "Case niet gevonden",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Case nummer",
+					"reason": "De reden voor het verwijderen van het geval."
 				},
-				"description": "Delete a specific case."
+				"description": "Verwijder een specifiek geval."
 			},
 			"title": "Case #{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "Geval niet gevonden",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Geval nummer"
 				},
-				"description": "View info about a specific case."
+				"description": "Bekijk meer informatie over een specifiek geval."
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
+			"strike": "{{{ member }}} heeft {{{ amount }}} strikes gekregen voor de {{{ violation }}} regel schenden {{{ date }}}.",
 			"title": "Case #{{ id }}"
 		},
 		"check": {
@@ -164,7 +164,7 @@
 				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}",
 				"title": "Waarschuwingen",
 				"total": "Totale waarschuwingen",
-				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
+				"totalText": "{{{ total }}} strikes ontvangen voor {{{ amount }}} schendingen."
 			}
 		},
 		"clean": {
@@ -181,24 +181,24 @@
 			},
 			"text": "{{ amount }} berichten verwijderd.\nDit bericht wordt verwijderd in 5 seconden.",
 			"title": "Verwijderde Berichten",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"textReactions": "{{ amount }} berichten verwijderd die reacties hadden."
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
 					"maxTextLength": "Alle berichten die korter zijn dan deze worden verwijderd.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"numberOfMessages": "Aantal berichten die worden gezocht."
 				},
-				"description": "Clear short messages"
+				"description": "Verwijder korte berichten"
 			}
 		},
 		"cleanText": {
 			"self": {
 				"args": {
-					"numberOfMessages": "Number of messages that will be searched.",
-					"text": "All messages containing this word will be deleted."
+					"numberOfMessages": "Aantal berichten die worden gezocht.",
+					"text": "Alle berichten met die woord worden verwijdert."
 				},
-				"description": "Delete messages containing certain keywords."
+				"description": "Verwijder berichten die een bepaald woord bevatten."
 			}
 		},
 		"clearInvites": {
@@ -218,7 +218,7 @@
 		"config": {
 			"canNotClear": "De configuratie setting **{{ key }}** can niet gecleared worden. Je kan `config {{ key }} default` gebruiken om het te resetten naar de standaard waarde.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
+				"text": "Deze configuratie is veranderd.\nGebruik `{{ prefix }}config {{ key }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}config {{ key }} default` om dit te resetten naar de standaard waarde."
 			},
 			"current": {
 				"clear": "Gebruik `{{ prefix }}config {{ key }} none` om dit te verwijderen.",
@@ -227,10 +227,10 @@
 				"title": "Huidige Waarde"
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"canNotReadMessages": "Ik heb de **berichten lezen** rechten niet in dat kanaal.",
+				"canNotSendEmbeds": "Ik heb de **ingesloten links** rechten niet in dat kanaal.",
+				"canNotSendMessages": "Ik heb de **berichten verzenden** rechten niet in dat kanaal.",
+				"mustBeTextChannel": "Dat kanaal is geen tekst kanaal."
 			},
 			"new": {
 				"title": "Nieuwe Waarde"
@@ -266,24 +266,24 @@
 			}
 		},
 		"credits": {
-			"developers": "Developers",
+			"developers": "Ontwikkelaars.",
 			"moderators": "Moderators",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "Zie de ontwikkelaars en de mensen die hebben helpen aan de bot."
 			},
 			"staff": "Staff",
-			"translators": "Translators"
+			"translators": "Vertalers"
 		},
-		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
+		"error": "Er is een error opgetreden tijdens het uitvoeren van dit commando. Rapporteer dit alsjeblieft naar een ontwikkelaar:\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "Wacht alsjeblieft terwijl we een bestand aan het maken zijn...",
 			"self": {
 				"args": {
-					"type": "The type of export you want."
+					"type": "De type export wat je wilt."
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "Exporteer data van InviteManager in een csv bestand."
 			},
-			"title": "InviteManager - Export"
+			"title": "InviteManager - Exporteer"
 		},
 		"fake": {
 			"join": {
@@ -311,23 +311,23 @@
 		},
 		"graph": {
 			"joins": {
-				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"text": "Deze grafiek laat zien hoeveel mensen je server gejoind zijn.",
+				"title": "Gebruikers die gejoind zijn"
 			},
 			"leaves": {
-				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"text": "Deze grafiek laat zien hoeveel mensen je server geleaved zijn.",
+				"title": "Gebruikers die de server vertalen hebben"
 			},
 			"self": {
 				"args": {
-					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"duration": "De tijdsduur voor de grafiek",
+					"type": "De type grafiek om te zien."
 				},
-				"description": "Shows graphs about various stats on this server."
+				"description": "Laat verschillende soorten grafieken zien van je server statistieken."
 			},
 			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+				"text": "Deze grafiek laat de hoeveelheid gebruikte commando's zien voor deze server.",
+				"title": "Commando gebruik"
 			}
 		},
 		"help": {
@@ -348,7 +348,7 @@
 				},
 				"description": "Zie help."
 			},
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
+			"text": "Dit is een lijst met commando's die je kan gebruiken. Je kan meer informatie krijgen over een commando door `{{ prefix }}help <command>` (Bijv. `{{ prefix }}help add-ranks`)",
 			"usage": {
 				"title": "Gebruik"
 			}
@@ -412,63 +412,63 @@
 			}
 		},
 		"interactiveConfig": {
-			"add": "Enter a value or list of values to add.",
-			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
+			"add": "Vul een waarde of lijst van waardes in om toe te voegen.",
+			"change": "**Huidige waarde**\n{{{ current }}}\n\n**Mogelijke waardes**\n{{{ possible }}}",
 			"current": {
-				"title": "Current value"
+				"title": "Huidige waarde"
 			},
 			"list": {
 				"add": {
-					"text": "Add a new value to the list.",
-					"title": "Add"
+					"text": "Voeg een nieuwe waarde toe aan de lijst.",
+					"title": "Toevoegen"
 				},
 				"clear": {
-					"text": "Clear the whole list of all values.",
-					"title": "Clear"
+					"text": "Maak de hele lijst van waardes schoon.",
+					"title": "Maak schoon"
 				},
 				"remove": {
-					"text": "Remove an existing value from the list.",
-					"title": "Remove"
+					"text": "Verwijder een bestaand waarde van de lijst.",
+					"title": "Verwijder"
 				},
 				"set": {
 					"text": "Set the whole list using space separated values.",
-					"title": "Set"
+					"title": "Verander"
 				}
 			},
 			"more": {
 				"description": "Show more entries",
-				"title": "More"
+				"title": "Meer"
 			},
-			"new": "Enter a new value:",
+			"new": "Vul een nieuwe waarde in:",
 			"none": "<None>",
 			"possible": {
-				"title": "Possible values"
+				"title": "Mogelijke waardes"
 			},
-			"remove": "Enter a value or a list of values to remove.",
-			"removeEmpty": "The list is already empty.",
+			"remove": "Vul een waarde of een lijst van waardes in om te verwijderen.",
+			"removeEmpty": "De lijst is al leeg.",
 			"self": {
-				"description": "Interactive Config"
+				"description": "Interactieve Configuratie"
 			},
-			"set": "Enter the new values for the list.",
+			"set": "Vul een nieuwe waarde in voor de lijst.",
 			"values": {
-				"boolean": "`Yes` or `No`",
-				"channel": "Any channel, for example: #general",
-				"channel[]": "A list of channels, for example: #general #bot-commands",
-				"number": "Any number",
-				"role": "Any role, for example: @Admin",
-				"role[]": "A list of roles, for example: @Admin @Mod",
-				"string": "Any text",
-				"string[]": "A list of words, for example: word another \"word with space\""
+				"boolean": "`Ja` of `Nee`",
+				"channel": "Ieder kanaal, bijvoorbeeld: #general",
+				"channel[]": "Een lijst van kanalen, bijvoorbeeld: #general #bot-commands",
+				"number": "Een nummer",
+				"role": "Een rol, bijvoorbeeld: @Admin",
+				"role[]": "Een lijst van rollen, bijvoorbeeld: @Admin @Mod",
+				"string": "Een tekst",
+				"string[]": "Een lijst van woorden, bijvoorbeeld: woord nog een \"woord met spatie\""
 			},
-			"welcome": "Use the reactions to pick one of the available options."
+			"welcome": "Gebruik de reacties om een van de mogelijke opties te kiezen."
 		},
 		"inviteCodeConfig": {
 			"changed": {
-				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
+				"text": "Deze invite code config is veranderd.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} 1` om het weer te veranderen.\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` om het te resetten naar de standaard."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
-				"notSet": "This invite code config is currently **not** set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to set it.",
+				"clear": "Gebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` om alles te verwijderen.",
+				"notSet": "Deze invite code configuratie is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` om dit te zetten.",
 				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
 				"title": "Current Value"
 			},
@@ -478,7 +478,7 @@
 			"new": {
 				"title": "New Value"
 			},
-			"none": "None",
+			"none": "Geen",
 			"notSet": "This invite code config is currently not set for any invite code",
 			"previous": {
 				"title": "Previous Value"
@@ -1164,13 +1164,13 @@
 		"boolean": {
 			"invalid": "Not a valid yes/no value.",
 			"type": "Boolean",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "Multiple matching channels found. {{{ channels }}}",
 			"notFound": "Channel not found.",
 			"type": "Channel",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
@@ -1183,7 +1183,7 @@
 			"invalid": "Not a valid value.",
 			"validValues": "Use one of the following values: {{{ values }}}",
 			"type": "Enum",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1195,23 +1195,23 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
 			"notFound": "Role was not found.",
 			"type": "Role",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "Multiple matching users found. {{{ users }}}",
 			"notFound": "User was not found.",
 			"type": "User",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "Text",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "Value"
@@ -1226,11 +1226,7 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {

@@ -1164,13 +1164,13 @@
 		"boolean": {
 			"invalid": "有効なyes / noではありません。",
 			"type": "ブール値",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "複数の一致するチャンネルが見つかりました。{{{ channels }}}",
 			"notFound": "チャンネルが見つかりませんでした。",
 			"type": "チャンネル",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "複数のコマンドが見つかりました。{{{ commands }}}",
@@ -1183,7 +1183,7 @@
 			"invalid": "不正な値です。",
 			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
 			"type": "列挙型",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "`{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}の値が無効です",
 		"member": {
@@ -1195,23 +1195,23 @@
 		"number": {
 			"invalid": "不正な数です。",
 			"type": "番号",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "複数の役職が見つかりました。 {{{ roles }}}",
 			"notFound": "役職は見つかりませんでした。",
 			"type": "役職",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "複数の一致するユーザーが見つかりました。{{{ user }}}",
 			"notFound": "ユーザーが見つかりませんでした。",
 			"type": "ユーザー",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "テキスト",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "値"
@@ -1226,11 +1226,7 @@
 		},
 		"invitecode": {
 			"type": "招待コード",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {

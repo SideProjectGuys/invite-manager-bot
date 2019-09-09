@@ -273,11 +273,15 @@ export enum SettingsKey {
 
 export enum Lang {
 	// Active
+	ar = 'ar',
+	bg = 'bg',
 	cs = 'cs',
 	de = 'de',
+	el = 'el',
 	en = 'en',
 	es = 'es',
 	fr = 'fr',
+	id_ID = 'id_ID',
 	it = 'it',
 	ja = 'ja',
 	nl = 'nl',
@@ -292,7 +296,8 @@ export enum Lang {
 	ur_PK = 'ur_PK',
 	sv = 'sv',
 	sr = 'sr',
-	hu = 'hu'
+	hu = 'hu',
+	lt = 'lt'
 }
 
 export enum LeaderboardStyle {

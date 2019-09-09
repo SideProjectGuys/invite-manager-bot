@@ -32,8 +32,8 @@
 				"description": "Ajoute/supprime des invitations d'un membre."
 			},
 			"zero": "Ajouter aucune invitation n'a aucun intérêt...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Le nombre que vous avez fourni est trop grand.",
+			"numberTooSmall": "Le nombre que vous avez fourni est trop petit."
 		},
 		"addRank": {
 			"created": "Rang {{{ role }}} ajouté, il nécessite {{ invites }} invitations.\nDescription: {{ description }}",
@@ -124,11 +124,11 @@
 			"version": "Version"
 		},
 		"caseDelete": {
-			"done": "Cas supprimée",
+			"done": "Cas supprimé",
 			"notFound": "Cas introuvable",
 			"self": {
 				"args": {
-					"caseNumber": "Cas numéro",
+					"caseNumber": "Numéro du cas",
 					"reason": "La raison de la suppression du cas."
 				},
 				"description": "Supprimer un cas spécifique."
@@ -139,7 +139,7 @@
 			"notFound": "Cas introuvable",
 			"self": {
 				"args": {
-					"caseNumber": "Cas numéro"
+					"caseNumber": "Numéro du cas"
 				},
 				"description": "Voir les informations sur un cas spécifique."
 			},
@@ -181,7 +181,7 @@
 			},
 			"text": "Messages {{ amount }} supprimés.\nCe message sera supprimé dans 5 secondes. ",
 			"title": "Messages supprimés",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"textReactions": "{{ amount }} messages supprimés contenant des réactions."
 		},
 		"cleanShort": {
 			"self": {
@@ -269,7 +269,7 @@
 			"developers": "Développeurs",
 			"moderators": "Modérateurs",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "Afficher les développeurs et les contributeurs du bot."
 			},
 			"staff": "Personnel",
 			"translators": "Traducteurs"
@@ -469,7 +469,7 @@
 			"current": {
 				"clear": "Utilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` pour effacer.",
 				"notSet": "Cette configuration n'est pas définie.\n\nUtilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` pour la définir.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
+				"text": "Cette configuration de code d'invitation est actuellement définie.\n\nUtilisez `{{prefix}} inviteCodeConfig {{clé}} {{code}}\" style = \"box-sizing: border-box; sélection de l'utilisateur: aucune; arrière-plan: rgba (133, 91, 213, 0,2); affichage: inline-block; padding-right: 6px; padding-left: 6px; hauteur de ligne: 18px; border-radius: 10px 0px 0px 10px; taille de police: 12px; vertical-align: text-top; couleur: hériter; curseur: pointeur; marge: 0px 2px; largeur minimale: 26px; text-align: center; \"> 1` pour le changer.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} default` pour le rétablir à la valeur par défaut.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\` pour le supprimer.\n\n\"class =\" o-link o-link - muet u-textAlign-center u-textDecoration-no espace \"style =\" marge: 0px; padding-top: 6px! important; padding-right: 0px; padding-bottom: 6px! important; padding-left: 0px; bordure: 0px non transparent; vertical-align: inherit; taille de la boîte: boîte à bordure; couleur de fond: transparent; texte-décoration: aucun; taille de police: 0.714rem! important; poids de la police: hériter; line-height: hériter; espacement des lettres: initial; style de police: hériter; text-align: center! important; display: block! important; couleur: rgb (130, 129, 129); transition: couleur 0,1 s atténuation, opacité 0,1 s atténuation, couleur d'arrière-plan 0,1 s atténuation; \">",
 				"title": "Valeur actuelle"
 			},
 			"keys": {
@@ -495,7 +495,7 @@
 			},
 			"text": "Set configs for individual invite codes.",
 			"title": "Invite Code Config",
-			"noneSet": "No configs set!"
+			"noneSet": "Aucune configuration définie !"
 		},
 		"inviteCodes": {
 			"dmSent": "Je vous ai envoyé un MP avec tous vos codes d'invitation.",
@@ -624,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "Cette configuration de membre n'est actuellement **pas** définie.\nUtilisez `{{ prefix }}memberConfig {{ key }} {{ username }}<value>` pour la définir.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
+				"text": "Cette configuration de membre est actuellement définie.\n\nUtilisez `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` pour la changer.\nUtilisez `{{ prefix }}memberConfig {{ key }} {{ username }} default` pour la réinitialiser.\nUtilisez `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` pour l'effacer.",
 				"title": "Valeur actuelle"
 			},
 			"keys": {
@@ -745,7 +745,7 @@
 					"title": "Fonction Premium: Exportation de l'historique"
 				},
 				"patreon": {
-					"text": "Exécutez {{{ cmd }}} pour valider et activer votre plegde Patreon.",
+					"text": "Exécutez {{{ cmd }}} pour valider et activer votre engagement Patreon.",
 					"title": "Si vous avez acheté le premium sur Patreon"
 				},
 				"servers": {
@@ -765,7 +765,7 @@
 			},
 			"self": {
 				"args": {
-					"action": "The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server."
+					"action": "L'action à faire. Aucune pour les infos premium. `check` pour vérifier votre statut premium. `activate` pour utiliser votre premium sur ce serveur."
 				},
 				"description": "Informations sur la version premium d'InviteManager."
 			}
@@ -976,8 +976,8 @@
 			"error": "Impossible d'unban l'utilisateur à cause de l'erreur suivante:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
-			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
+			"done": "**Terminé !**\n\nTraité : {{ processed }}\n**Changé : {{ changed }}**\nExclus : {{ excluded }}\nErronés : {{ errored }}",
+			"processing": "Traitement en cours, cela peut prendre un moment...\n\nTraité : {{ processed }}/{{ total }}\n**Changé : {{ changed }}**\nExclus : {{ excluded }}\nErronés : {{ errored }}",
 			"self": {
 				"description": "Ajoute un caractère spécial devant le nom de chaque membre, donc ils seront affichés en dernier de la liste des membres."
 			},
@@ -1020,8 +1020,8 @@
 					"live": "Si défini, les paroles seront synchronisées au temps actuel de la musique."
 				}
 			},
-			"notFound": "No lyrics found for this song!",
-			"notSupported": "The lyrics command is not supported on {{ platform }}."
+			"notFound": "Aucune parole trouvée pour cette chanson !",
+			"notSupported": "Les paroles ne sont pas supportées sur {{ platform }}."
 		},
 		"mashup": {
 			"self": {
@@ -1118,13 +1118,13 @@
 			}
 		},
 		"fixRanks": {
-			"done": "Done fixing ranks.",
+			"done": "Arrangement des grades terminer.",
 			"self": {
 				"description": "cmd.fixRanks.self.description"
 			}
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivées et de départs de type \"Embed\" est une fonction premium. Le premium n'a pas l'air d'être activé sur ce serveur. Merci de nous contacter pour en savoir plus sur comment acheter le premium.",
 	"messages": {
 		"joinUnknownInviter": "Je n'arrive pas à comprendre comment <@{{ id }}> a rejoint le serveur.",
 		"joinVanityUrl": "<@{{ id }}> a rejoint le server avec une invitation personnalisée.",
@@ -1227,10 +1227,6 @@
 		"invitecode": {
 			"type": "Code d'invitation",
 			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"text": {
-			"type": "resolvers.text.type",
-			"typeInfo": "resolvers.text.typeInfo"
 		}
 	},
 	"settings": {
@@ -1359,7 +1355,7 @@
 			"title": "Liste noire"
 		},
 		"autoModWordsEnabled": {
-			"description": "Whether or not blacklisted words will be automoderated.",
+			"description": "Que les mots de la liste noire soient ou non automatisés.",
 			"title": "Activé"
 		},
 		"autoSubtractFakes": {
@@ -1379,11 +1375,11 @@
 			"title": "Message d’échec"
 		},
 		"captchaVerificationLogEnabled": {
-			"description": "Whether or not verification attempts will be logged.",
+			"description": "Whether or not verification attempts will be logged",
 			"title": "Logs"
 		},
 		"captchaVerificationOnJoin": {
-			"description": "Whether or not captcha verification is enabled.",
+			"description": "Si la vérification captcha est activée ou non.",
 			"title": "Activé"
 		},
 		"captchaVerificationSuccessMessage": {
@@ -1454,7 +1450,7 @@
 					"title": "Messages doublons"
 				},
 				"emojis": {
-					"description": "Automatically remove messages with too many emojis.",
+					"description": "Retire automatiquement les messages avec trop d'emojis.",
 					"title": "Emojis"
 				},
 				"general": {
@@ -1470,7 +1466,7 @@
 					"title": "Liens"
 				},
 				"logging": {
-					"description": "Logging settings of various moderation commands and actions",
+					"description": "Enregistrement des paramètres des commandes de modération et des actions effectuées",
 					"title": "Logger"
 				},
 				"mentions": {
@@ -1533,23 +1529,23 @@
 			"title": "Salon des journaux de modération"
 		},
 		"modPunishmentBanDeleteMessage": {
-			"description": "Whether or not \"Ban\" pushment messages will be deleted automatically.",
+			"description": "Si oui ou non les messages après un ban seront automatiquement supprimés.",
 			"title": "Supprimer les messages de bannissement"
 		},
 		"modPunishmentKickDeleteMessage": {
-			"description": "Whether or not \"Kick\" pushment messages will be deleted automatically.",
+			"description": "Si oui ou non les messages après un kick seront automatiquement supprimés.",
 			"title": "Supprimer les messages d'expulsion"
 		},
 		"modPunishmentMuteDeleteMessage": {
-			"description": "Whether or not \"Mute\" pushment messages will be deleted automatically.",
+			"description": "Si oui ou non les messages après un mute seront automatiquement supprimés.",
 			"title": "Supprimer les messages de mute"
 		},
 		"modPunishmentSoftbanDeleteMessage": {
-			"description": "Whether or not \"Softban\" pushment messages will be deleted automatically.",
+			"description": "Si oui ou non les messages après un softban seront automatiquement supprimés.",
 			"title": "Supprime les messages de Softban"
 		},
 		"modPunishmentWarnDeleteMessage": {
-			"description": "Whether or not \"Warn\" pushment messages will be deleted automatically.",
+			"description": "Si oui ou non les messages après un warn seront automatiquement supprimés.",
 			"title": "Supprimer les messages d'avertissement"
 		},
 		"mutedRole": {
@@ -1570,7 +1566,7 @@
 		},
 		"rankAssignmentStyle": {
 			"description": "Comment les rangs sont donnés aux utilisateurs.",
-			"title": "Assignment Style"
+			"title": "Style d'assignement"
 		},
 		"musicVolume": {
 			"title": "Volume de la musique",
@@ -1578,7 +1574,7 @@
 		},
 		"announceNextSong": {
 			"title": "Annonce la musique suivante",
-			"description": "Whether or not the next song should be announced in the voice channel."
+			"description": "Si oui ou non la chanson suivante sera annoncée dans le salon vocal."
 		},
 		"announcementVoice": {
 			"title": "Voix d'annonce",
@@ -1594,7 +1590,7 @@
 		},
 		"fadeMusicEndDelay": {
 			"title": "Fin du délai de baisse du volume",
-			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+			"description": "Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale."
 		}
 	},
 	"arguments": {
