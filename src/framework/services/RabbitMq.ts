@@ -25,9 +25,9 @@ export class RabbitMqService {
 
 	public constructor(client: IMClient) {
 		this.client = client;
-		this.shard = client.config.customId
-			? client.config.customId
-			: this.client.shardId;
+
+		const prefix = client.config.customId ? `${client.config.customId}-` : '';
+		this.shard = `${prefix}${this.client.shardId}`;
 
 		this.msgQueue = [];
 	}
