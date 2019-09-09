@@ -264,7 +264,7 @@ export class TrackingService {
 						code: e.after.code,
 						channel: {
 							id: e.after.channel_id,
-							name: e.guild.channels.get(e.after.channel_id).name
+							name: (e.guild.channels.get(e.after.channel_id) || {}).name
 						},
 						guild: e.guild,
 						inviter: e.user,
