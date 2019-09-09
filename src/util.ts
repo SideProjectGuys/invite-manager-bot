@@ -4,6 +4,7 @@ import {
 	Message,
 	MessageContent,
 	MessageFile,
+	Permission,
 	Role,
 	TextChannel
 } from 'eris';
@@ -22,6 +23,10 @@ export class FakeChannel extends TextChannel {
 			this.listener(content);
 		}
 		return new Promise(resolve => resolve());
+	}
+
+	public permissionsOf(memberID: string): Permission {
+		return new Permission(0b1111111111111111111110111111111, 0);
 	}
 }
 

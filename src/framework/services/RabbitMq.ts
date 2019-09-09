@@ -316,12 +316,11 @@ export class RabbitMqService {
 					sendResponse({ data });
 				};
 
+				const args = content.args ? content.args.join(' ') : '';
 				const fakeMsg = new Message(
 					{
 						id: content.id,
-						content: `<@!${this.client.user.id}>${
-							content.sudoCmd
-						} ${content.args.join(' ')}`,
+						content: `<@!${this.client.user.id}>${content.sudoCmd} ${args}`,
 						channel_id: channel.id,
 						author: this.client.users.get(content.authorId),
 						embeds: [],
