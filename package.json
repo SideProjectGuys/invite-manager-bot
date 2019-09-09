@@ -50,6 +50,7 @@
 		"zlib-sync": "0.1.5"
 	},
 	"devDependencies": {
+		"@sentry/cli": "1.47.1",
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
 		"@types/node": "12.7.4",
