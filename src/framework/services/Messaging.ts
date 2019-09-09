@@ -151,6 +151,10 @@ export class MessagingService {
 								withScope(scope => {
 									if (target instanceof GuildChannel) {
 										scope.setUser({ id: target.guild.id });
+										scope.setExtra(
+											'permissions',
+											target.permissionsOf(this.client.user.id).json
+										);
 									}
 									scope.setExtra('message', embed);
 									scope.setExtra('content', content);
@@ -165,6 +169,10 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
@@ -193,6 +201,10 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
 							scope.setExtra('message', embed);
 							scope.setExtra('content', content);
@@ -224,6 +236,10 @@ export class MessagingService {
 						withScope(scope => {
 							if (target instanceof GuildChannel) {
 								scope.setUser({ id: target.guild.id });
+								scope.setExtra(
+									'permissions',
+									target.permissionsOf(this.client.user.id).json
+								);
 							}
 							scope.setExtra('message', embed);
 							captureException(error);
