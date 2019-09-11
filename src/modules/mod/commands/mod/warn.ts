@@ -6,7 +6,7 @@ import {
 	MemberResolver,
 	StringResolver
 } from '../../../../framework/resolvers';
-import { punishments, PunishmentType } from '../../../../sequelize';
+import { members, punishments, PunishmentType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 import { isPunishable } from '../../../../util';
 
@@ -48,6 +48,13 @@ export default class extends Command {
 				settings,
 				{ reason }
 			);
+
+			// Make sure member exists in DB
+			await members.insertOrUpdate({
+				id: targetMember.user.id,
+				name: targetMember.user.username,
+				discriminator: targetMember.user.discriminator
+			});
 
 			const punishment = await punishments.create({
 				id: null,
