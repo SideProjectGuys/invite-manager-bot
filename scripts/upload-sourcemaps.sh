@@ -1,9 +1,18 @@
 #!/bin/sh
+set -e
+
 if [ ! -f "node_modules/.bin/sentry-cli" ]; then
 	echo "Installing local sentry..."
 	npm install @sentry/cli
 fi
 
+echo "Switching to master"
+git checkout master
+
+echo "Running build"
+npm run build
+
 echo "Release version (x.x.x): "
 read VERSION
-node_modules/.bin/sentry-cli releases -o sideprojectguys -p bot-development files $VERSION upload-sourcemaps ./bin
+node_modules/.bin/sentry-cli releases -o sideprojectguys -p bot files $VERSION upload-sourcemaps ./bin
+node_modules/.bin/sentry-cli releases -o sideprojectguys set-commits --auto $VERSION
