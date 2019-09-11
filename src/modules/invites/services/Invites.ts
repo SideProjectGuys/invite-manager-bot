@@ -454,6 +454,10 @@ export class InvitesService {
 		invites: InviteCounts,
 		{ invite, inviter }: JoinLeaveTemplateData
 	): Promise<string | Embed> {
+		if (typeof template !== 'string') {
+			template = JSON.stringify(template);
+		}
+
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
 			numJoins = await joins.count({
