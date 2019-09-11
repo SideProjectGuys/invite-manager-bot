@@ -364,7 +364,8 @@ export class MessagingService {
 			const perm = prevMsg.channel.permissionsOf(this.client.user.id);
 			if (
 				!perm.has(GuildPermission.ADD_REACTIONS) ||
-				!perm.has(GuildPermission.MANAGE_MESSAGES)
+				!perm.has(GuildPermission.MANAGE_MESSAGES) ||
+				!perm.has(GuildPermission.READ_MESSAGE_HISTORY)
 			) {
 				doPaginate = false;
 			}
