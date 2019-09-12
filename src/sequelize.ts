@@ -6,6 +6,7 @@ import {
 	MemberSettingsObject,
 	SettingsObject
 } from './settings';
+import { BotType } from './types';
 
 const config = require('../config.json');
 
@@ -1304,6 +1305,7 @@ export const musicNodes = sequelize.define<
 // Servers
 // ------------------------------------
 export interface ServerAttributes extends BaseAttributes {
+	id: number;
 	name: string;
 	cpu: number;
 	ram: number;
@@ -1316,10 +1318,14 @@ export interface ServerInstance
 export const servers = sequelize.define<ServerInstance, ServerAttributes>(
 	'servers',
 	{
-		name: { type: Sequelize.STRING(255), primaryKey: true },
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		name: Sequelize.STRING(255),
 		cpu: Sequelize.DOUBLE,
 		ram: Sequelize.DOUBLE,
 		fs: Sequelize.DOUBLE
+	},
+	{
+		indexes: [{ fields: ['name'], unique: true }]
 	}
 );
 
@@ -1328,7 +1334,7 @@ export const servers = sequelize.define<ServerInstance, ServerAttributes>(
 // ------------------------------------
 export interface ServerStatAttributes extends BaseAttributes {
 	id: number;
-	serverName: string;
+	serverId: number;
 	cpu: number;
 	ram: number;
 	fs: number;
@@ -1342,7 +1348,7 @@ export const serverStats = sequelize.define<
 	ServerStatAttributes
 >('serverStats', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	serverName: Sequelize.STRING(255),
+	serverId: Sequelize.INTEGER,
 	cpu: Sequelize.DOUBLE,
 	ram: Sequelize.DOUBLE,
 	fs: Sequelize.DOUBLE
@@ -1352,37 +1358,75 @@ serverStats.belongsTo(servers);
 servers.hasMany(serverStats);
 
 // ------------------------------------
+// Instances
+// ------------------------------------
+export interface InstanceAttributes extends BaseAttributes {
+	id: number;
+	type: BotType;
+	name: string;
+	shardCount: number;
+}
+export interface InstanceInstance
+	extends Sequelize.Instance<InstanceAttributes>,
+		InstanceAttributes {}
+
+export const instances = sequelize.define<InstanceInstance, InstanceAttributes>(
+	'instances',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		type: Sequelize.ENUM(Object.values(BotType)),
+		name: Sequelize.STRING(255),
+		shardCount: Sequelize.INTEGER
+	},
+	{
+		indexes: [{ fields: ['name'], unique: true }]
+	}
+);
+
+// ------------------------------------
 // Shards
 // ------------------------------------
 export interface ShardAttributes extends BaseAttributes {
-	id: string;
-	serverName: string;
+	id: number;
+	instanceId: number;
+	shardId: number;
+	serverId: number;
 	version: string;
 	revision: string;
 }
 export interface ShardInstance
 	extends Sequelize.Instance<ShardAttributes>,
-		ShardAttributes {}
+		ShardAttributes {
+	getInstance: Sequelize.BelongsToGetAssociationMixin<InstanceInstance>;
+}
 
 export const shards = sequelize.define<ShardInstance, ShardAttributes>(
 	'shards',
 	{
-		id: { type: Sequelize.STRING(255), primaryKey: true },
-		serverName: Sequelize.STRING(255),
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		instanceId: Sequelize.INTEGER,
+		shardId: Sequelize.INTEGER,
+		serverId: Sequelize.INTEGER,
 		version: Sequelize.STRING(255),
 		revision: Sequelize.STRING(255)
+	},
+	{
+		indexes: [{ fields: ['instanceId', 'shardId'], unique: true }]
 	}
 );
 
 shards.belongsTo(servers);
 servers.hasMany(shards);
 
+shards.belongsTo(instances);
+instances.hasMany(shards);
+
 // ------------------------------------
 // ShardStats
 // ------------------------------------
 export interface ShardStatAttributes extends BaseAttributes {
 	id: number;
-	shardId: string;
+	shardId: number;
 
 	status: string;
 	cpu: number;
@@ -1396,14 +1440,16 @@ export interface ShardStatAttributes extends BaseAttributes {
 }
 export interface ShardStatInstance
 	extends Sequelize.Instance<ShardStatAttributes>,
-		ShardStatAttributes {}
+		ShardStatAttributes {
+	getShard: Sequelize.BelongsToGetAssociationMixin<ShardInstance>;
+}
 
 export const shardStats = sequelize.define<
 	ShardStatInstance,
 	ShardStatAttributes
 >('shardStats', {
 	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	shardId: Sequelize.STRING(255),
+	shardId: Sequelize.INTEGER,
 	status: Sequelize.STRING(255),
 	cpu: Sequelize.DOUBLE,
 	ram: Sequelize.DOUBLE,
