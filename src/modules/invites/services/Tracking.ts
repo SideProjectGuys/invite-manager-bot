@@ -108,7 +108,7 @@ export class TrackingService {
 					console.log(
 						`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`
 					);
-					this.client.rabbitmq.sendStatusToManager();
+					await this.client.rabbitmq.sendStatusToManager();
 				}
 
 				setTimeout(func, 0);
@@ -416,7 +416,7 @@ export class TrackingService {
 				);
 
 				// Reset the channel
-				this.client.cache.settings.setOne(
+				await this.client.cache.settings.setOne(
 					guild.id,
 					SettingsKey.joinMessageChannel,
 					null
@@ -428,7 +428,7 @@ export class TrackingService {
 				);
 
 				// Reset the channel
-				this.client.cache.settings.setOne(
+				await this.client.cache.settings.setOne(
 					guild.id,
 					SettingsKey.joinMessageChannel,
 					null
@@ -446,7 +446,7 @@ export class TrackingService {
 				);
 
 				// Reset the channel
-				this.client.cache.settings.setOne(
+				await this.client.cache.settings.setOne(
 					guild.id,
 					SettingsKey.joinMessageChannel,
 					null
@@ -485,7 +485,7 @@ export class TrackingService {
 							{ id: member.id }
 						)
 					)
-					.catch(err => {
+					.catch(async err => {
 						// Missing permissions
 						if (
 							err.code === 50001 ||
@@ -493,7 +493,7 @@ export class TrackingService {
 							err.code === 50013
 						) {
 							// Reset the channel
-							this.client.cache.settings.setOne(
+							await this.client.cache.settings.setOne(
 								guild.id,
 								SettingsKey.joinMessageChannel,
 								null
@@ -511,7 +511,7 @@ export class TrackingService {
 							{ id: member.id }
 						)
 					)
-					.catch(err => {
+					.catch(async err => {
 						// Missing permissions
 						if (
 							err.code === 50001 ||
@@ -519,7 +519,7 @@ export class TrackingService {
 							err.code === 50013
 						) {
 							// Reset the channel
-							this.client.cache.settings.setOne(
+							await this.client.cache.settings.setOne(
 								guild.id,
 								SettingsKey.joinMessageChannel,
 								null
@@ -560,7 +560,7 @@ export class TrackingService {
 							{ id: member.id }
 						)
 					)
-					.catch(err => {
+					.catch(async err => {
 						// Missing permissions
 						if (
 							err.code === 50001 ||
@@ -568,7 +568,7 @@ export class TrackingService {
 							err.code === 50013
 						) {
 							// Reset the channel
-							this.client.cache.settings.setOne(
+							await this.client.cache.settings.setOne(
 								guild.id,
 								SettingsKey.joinMessageChannel,
 								null
@@ -647,11 +647,11 @@ export class TrackingService {
 
 			await joinChannel
 				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
-				.catch(err => {
+				.catch(async err => {
 					// Missing permissions
 					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 						// Reset the channel
-						this.client.cache.settings.setOne(
+						await this.client.cache.settings.setOne(
 							guild.id,
 							SettingsKey.joinMessageChannel,
 							null
@@ -745,7 +745,7 @@ export class TrackingService {
 					`message channel ${leaveChannelId}`
 			);
 			// Reset the channel
-			this.client.cache.settings.setOne(
+			await this.client.cache.settings.setOne(
 				guild.id,
 				SettingsKey.leaveMessageChannel,
 				null
@@ -768,7 +768,7 @@ export class TrackingService {
 							}
 						)
 					)
-					.catch(err => {
+					.catch(async err => {
 						// Missing permissions
 						if (
 							err.code === 50001 ||
@@ -776,7 +776,7 @@ export class TrackingService {
 							err.code === 50013
 						) {
 							// Reset the channel
-							this.client.cache.settings.setOne(
+							await this.client.cache.settings.setOne(
 								guild.id,
 								SettingsKey.joinMessageChannel,
 								null
@@ -861,11 +861,11 @@ export class TrackingService {
 
 			leaveChannel
 				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
-				.catch(err => {
+				.catch(async err => {
 					// Missing permissions
 					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 						// Reset the channel
-						this.client.cache.settings.setOne(
+						await this.client.cache.settings.setOne(
 							guild.id,
 							SettingsKey.joinMessageChannel,
 							null

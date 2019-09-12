@@ -20,7 +20,8 @@ export class RaveDJ extends MusicPlatform {
 
 	public constructor(client: IMClient) {
 		super(client);
-		this.getIdToken();
+		// TODO: Deactivate service if not available
+		this.getIdToken().catch(() => undefined);
 	}
 
 	public isPlatformUrl(url: string): boolean {

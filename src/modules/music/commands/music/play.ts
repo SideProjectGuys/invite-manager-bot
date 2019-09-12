@@ -55,7 +55,7 @@ export default class extends Command {
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
-			this.sendReply(message, t('music.voiceChannelRequired'));
+			await this.sendReply(message, t('music.voiceChannelRequired'));
 			return;
 		}
 
@@ -92,9 +92,9 @@ export default class extends Command {
 			item.setAuthor(message.author);
 			const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
-			conn.play(item, voiceChannel, next);
+			await conn.play(item, voiceChannel, next);
 
-			this.sendEmbed(
+			await this.sendEmbed(
 				message.channel,
 				this.client.music.createPlayingEmbed(item)
 			);

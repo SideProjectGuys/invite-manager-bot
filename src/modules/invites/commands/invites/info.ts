@@ -532,6 +532,6 @@ export default class extends Command {
 			});
 		}
 
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

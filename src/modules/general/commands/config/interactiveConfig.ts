@@ -69,7 +69,7 @@ export default class extends Command {
 				.permissionsOf(this.client.user.id)
 				.has(GuildPermission.MANAGE_MESSAGES)
 		) {
-			message.delete();
+			await message.delete();
 		}
 
 		const msg = await this.sendReply(message, embed);
@@ -78,13 +78,13 @@ export default class extends Command {
 		}
 
 		for (let i = 0; i < this.choices.length; i++) {
-			msg.addReaction(this.choices[i]);
+			await msg.addReaction(this.choices[i]);
 		}
 
-		msg.addReaction(this.prev);
-		msg.addReaction(this.next);
-		msg.addReaction(this.up);
-		msg.addReaction(this.cancel);
+		await msg.addReaction(this.prev);
+		await msg.addReaction(this.next);
+		await msg.addReaction(this.up);
+		await msg.addReaction(this.cancel);
 
 		while (
 			(await this.showConfigMenu(context, message.author.id, msg, [])) === 'up'
@@ -580,10 +580,10 @@ export default class extends Command {
 
 			this.client.on('messageReactionAdd', func);
 
-			const timeOutFunc = () => {
+			const timeOutFunc = async () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				msg.delete();
+				await msg.delete();
 
 				resolve(undefined);
 			};

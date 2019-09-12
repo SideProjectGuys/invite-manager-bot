@@ -106,7 +106,7 @@ export default class extends Command {
 			isNew = true;
 		}
 
-		this.client.logAction(
+		await this.client.logAction(
 			guild,
 			message,
 			isNew ? LogAction.addRank : LogAction.updateRank,

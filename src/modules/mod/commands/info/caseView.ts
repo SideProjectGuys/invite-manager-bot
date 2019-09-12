@@ -89,6 +89,6 @@ export default class extends Command {
 			embed.description = t('cmd.caseView.notFound');
 		}
 
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

@@ -34,7 +34,7 @@
 		"no-duplicate-variable": true,
 		"no-empty": true,
 		"no-eval": true,
-		"no-floating-promises": false,
+		"no-floating-promises": true,
 		"no-inferrable-types": [false],
 		"no-parameter-properties": true,
 		"no-shadowed-variable": true,

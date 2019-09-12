@@ -105,7 +105,7 @@ export default class extends Command {
 		const maxPage = Math.ceil(suspiciousJoins.length / USERS_PER_PAGE);
 		const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-		this.showPaginated(message, p, maxPage, page => {
+		await this.showPaginated(message, p, maxPage, page => {
 			let description = '';
 
 			suspiciousJoins

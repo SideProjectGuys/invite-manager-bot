@@ -39,13 +39,13 @@ export default class extends Command {
 		// TODO
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
-			this.sendReply(message, t('music.voiceChannelRequired'));
+			await this.sendReply(message, t('music.voiceChannelRequired'));
 			return;
 		}
 
 		const [link1, link2] = videos.split(' ');
 		if (!link2) {
-			this.sendReply(message, t('cmd.mashup.missingSecondVideo'));
+			await this.sendReply(message, t('cmd.mashup.missingSecondVideo'));
 			return;
 		}
 		const platform1 = this.client.music.platforms.getForLink(link1);
@@ -78,6 +78,6 @@ export default class extends Command {
 			mashupId = await musicPlatform.mix(result1.id, result2.id);
 		}
 
-		this.sendReply(message, `RaveDJ Link: https://rave.dj/${mashupId}`);
+		await this.sendReply(message, `RaveDJ Link: https://rave.dj/${mashupId}`);
 	}
 }

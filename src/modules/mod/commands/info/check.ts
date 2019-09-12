@@ -112,6 +112,6 @@ export default class extends Command {
 			embed.description = t('cmd.check.noHistory');
 		}
 
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

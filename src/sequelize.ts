@@ -781,6 +781,7 @@ export interface CommandUsageAttributes extends BaseAttributes {
 	memberId: string;
 	command: string;
 	args: string;
+	errored: boolean;
 	time: number;
 }
 export interface CommandUsageInstance
@@ -799,6 +800,7 @@ export const commandUsage = sequelize.define<
 		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		command: Sequelize.STRING,
 		args: Sequelize.TEXT,
+		errored: Sequelize.BOOLEAN,
 		time: Sequelize.FLOAT,
 		guildId: Sequelize.STRING(32),
 		memberId: Sequelize.STRING(32)
@@ -1414,3 +1416,29 @@ export const shardStats = sequelize.define<
 
 shardStats.belongsTo(shards);
 shards.hasMany(shardStats);
+
+// ------------------------------------
+// Incidents
+// ------------------------------------
+export interface IncidentAttributes extends BaseAttributes {
+	id: number;
+	guildId: string;
+	error: string;
+	details: any;
+}
+export interface IncidentInstance
+	extends Sequelize.Instance<IncidentAttributes>,
+		IncidentAttributes {}
+
+export const incidents = sequelize.define<IncidentInstance, IncidentAttributes>(
+	'incidents',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		guildId: Sequelize.STRING(32),
+		error: Sequelize.TEXT,
+		details: Sequelize.JSON
+	}
+);
+
+incidents.belongsTo(guilds);
+guilds.hasMany(incidents);

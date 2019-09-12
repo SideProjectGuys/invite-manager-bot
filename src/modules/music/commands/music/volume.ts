@@ -31,15 +31,15 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
-			this.sendReply(message, t('music.notPlaying'));
+			await this.sendReply(message, t('music.notPlaying'));
 			return;
 		}
 
 		if (volume) {
 			conn.setVolume(volume);
-			this.sendReply(message, `Changed volume to ${volume}`);
+			await this.sendReply(message, `Changed volume to ${volume}`);
 		} else {
-			this.sendReply(message, `Volume is set to ${conn.getVolume()}`);
+			await this.sendReply(message, `Volume is set to ${conn.getVolume()}`);
 		}
 	}
 }

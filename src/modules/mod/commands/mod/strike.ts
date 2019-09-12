@@ -47,9 +47,13 @@ export default class extends Command {
 		const source =
 			`${message.author.username}#${message.author.discriminator} ` +
 			`(ID: ${message.author.id})`;
-		this.client.mod.logViolationModAction(guild, member.user, type, amount, [
-			{ name: 'Issued by', value: source }
-		]);
+		await this.client.mod.logViolationModAction(
+			guild,
+			member.user,
+			type,
+			amount,
+			[{ name: 'Issued by', value: source }]
+		);
 
 		await this.client.mod.addStrikesAndPunish(member, type, amount, {
 			guild,

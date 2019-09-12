@@ -45,7 +45,7 @@ export default class extends Command {
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
-			this.sendReply(message, t('music.voiceChannelRequired'));
+			await this.sendReply(message, t('music.voiceChannelRequired'));
 			return;
 		}
 
@@ -59,7 +59,7 @@ export default class extends Command {
 		}
 
 		if (!musicPlatform.supportsSearch) {
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.search.notSupported', {
 					platform: musicPlatform.getType()
@@ -71,7 +71,7 @@ export default class extends Command {
 		const items = await musicPlatform.search(searchTerm);
 
 		if (items.length === 0) {
-			this.sendReply(message, t('cmd.search.noResults'));
+			await this.sendReply(message, t('cmd.search.noResults'));
 			return;
 		}
 
@@ -105,9 +105,9 @@ export default class extends Command {
 
 		const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
-		conn.play(musicItem, voiceChannel);
+		await conn.play(musicItem, voiceChannel);
 
-		this.sendEmbed(
+		await this.sendEmbed(
 			message.channel,
 			this.client.music.createPlayingEmbed(musicItem)
 		);

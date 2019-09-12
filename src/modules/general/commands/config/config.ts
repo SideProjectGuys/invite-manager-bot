@@ -37,6 +37,11 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Config,
+			/*botPermissions: [
+				GuildPermission.ADD_REACTIONS,
+				GuildPermission.MANAGE_MESSAGES,
+				GuildPermission.READ_MESSAGE_HISTORY
+			],*/
 			guildOnly: true,
 			defaultAdminOnly: true
 		});
@@ -126,7 +131,7 @@ export default class extends Command {
 		embed.description = t('cmd.config.changed.text', { prefix, key });
 
 		// Log the settings change
-		this.client.logAction(guild, message, LogAction.config, {
+		await this.client.logAction(guild, message, LogAction.config, {
 			key,
 			oldValue: oldVal,
 			newValue: value
@@ -332,7 +337,7 @@ export default class extends Command {
 					member.voiceState.channelID
 				) as VoiceChannel;
 				const conn = await this.client.music.getMusicConnection(guild);
-				conn.playAnnouncement(value, `Hi, my name is ${value}`, channel);
+				await conn.playAnnouncement(value, `Hi, my name is ${value}`, channel);
 			}
 		}
 	}

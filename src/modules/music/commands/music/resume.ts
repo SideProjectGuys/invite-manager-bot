@@ -24,7 +24,7 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isConnected()) {
-			this.sendReply(message, t('music.notConnected'));
+			await this.sendReply(message, t('music.notConnected'));
 			return;
 		}
 

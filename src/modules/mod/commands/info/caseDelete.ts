@@ -61,6 +61,6 @@ export default class extends Command {
 			embed.description = t('cmd.caseDelete.notFound');
 		}
 
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

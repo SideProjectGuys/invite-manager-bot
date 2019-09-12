@@ -54,7 +54,7 @@ export default class extends Command {
 					name: 'Mod',
 					value: `<@${message.author.id}>`
 				});
-				this.client.logModAction(guild, logEmbed);
+				await this.client.logModAction(guild, logEmbed);
 
 				embed.description = t('cmd.unmute.done');
 			}

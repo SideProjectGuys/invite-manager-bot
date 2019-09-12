@@ -120,7 +120,7 @@ export default class extends Command {
 			this.client.cache.invites.flush(guild.id);
 		}
 
-		this.client.logAction(guild, message, LogAction.clearInvites, {
+		await this.client.logAction(guild, message, LogAction.clearInvites, {
 			clearBonus,
 			...(memberId && { targetId: memberId })
 		});

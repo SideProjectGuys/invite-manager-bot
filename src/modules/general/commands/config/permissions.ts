@@ -216,7 +216,7 @@ export default class extends Command {
 		if (oldPerms.length > 0) {
 			oldPerms.forEach(op => op.destroy());
 
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.permissions.removed', {
 					role: `<@&${role.id}>`,
@@ -239,7 +239,7 @@ export default class extends Command {
 				}))
 			);
 
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.permissions.added', {
 					role: `<@&${role.id}>`,

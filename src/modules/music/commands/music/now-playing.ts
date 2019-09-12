@@ -85,7 +85,7 @@ export default class extends Command {
 				? PREMIUM_PIN_UPDATE_INTERVAL
 				: PIN_UPDATE_INTERVAL;
 
-			func();
+			await func();
 			this.timerMap.set(guild.id, setInterval(func, interval));
 		}
 	}

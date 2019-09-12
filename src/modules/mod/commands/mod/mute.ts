@@ -89,7 +89,7 @@ export default class extends Command {
 					creatorId: message.author.id
 				});
 
-				this.client.mod.logPunishmentModAction(
+				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetMember.user,
 					punishment.type,
@@ -99,7 +99,7 @@ export default class extends Command {
 				);
 
 				if (duration) {
-					this.client.scheduler.addScheduledAction(
+					await this.client.scheduler.addScheduledAction(
 						guild.id,
 						ScheduledActionType.unmute,
 						{ memberId: targetMember.id },

@@ -163,7 +163,7 @@ export default class extends Command {
 		embed.description = t('cmd.inviteCodeConfig.changed.text', { prefix, key });
 
 		// Log the settings change
-		this.client.logAction(guild, message, LogAction.config, {
+		await this.client.logAction(guild, message, LogAction.config, {
 			key,
 			oldValue: oldVal,
 			newValue: value

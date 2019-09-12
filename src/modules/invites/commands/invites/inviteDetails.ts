@@ -46,7 +46,7 @@ export default class extends Command {
 		});
 
 		if (invs.length === 0) {
-			this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
+			await this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
 			return;
 		}
 
@@ -71,6 +71,6 @@ export default class extends Command {
 				}) + '\n';
 		}
 
-		this.sendReply(message, invText);
+		await this.sendReply(message, invText);
 	}
 }

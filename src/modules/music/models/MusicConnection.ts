@@ -90,7 +90,7 @@ export class MusicConnection {
 		}
 
 		if (!this.isPlaying()) {
-			this.playNext();
+			await this.playNext();
 		}
 	}
 
@@ -107,11 +107,11 @@ export class MusicConnection {
 	}
 
 	public async rewind() {
-		this.seek(0);
+		await this.seek(0);
 	}
 
 	public async skip(amount: number = 1) {
-		this.playNext(amount - 1);
+		await this.playNext(amount - 1);
 	}
 
 	public isRepeating() {
@@ -168,11 +168,11 @@ export class MusicConnection {
 			this.player.on('reconnect', () => {
 				console.error(`Reconnected lavalink player for guild ${this.guild.id}`);
 			});
-			this.player.on('disconnect', () => {
+			this.player.on('disconnect', async () => {
 				console.error(`Player disconnected for guild ${this.guild.id}`);
 				this.player = null;
 				this.voiceChannel.leave();
-				this.service.removeConnection(this.guild);
+				await this.service.removeConnection(this.guild);
 			});
 		}
 	}
@@ -210,7 +210,7 @@ export class MusicConnection {
 		}
 	}
 
-	private onStreamEnd(data: any) {
+	private async onStreamEnd(data: any) {
 		console.log(data);
 
 		if (data.reason && data.reason === 'REPLACED') {
@@ -229,7 +229,7 @@ export class MusicConnection {
 		}
 
 		if (this.doPlayNext) {
-			this.playNext();
+			await this.playNext();
 		}
 	}
 
@@ -287,7 +287,7 @@ export class MusicConnection {
 
 			if (tracks.length === 0) {
 				this.preparingNext = false;
-				this.playNext();
+				await this.playNext();
 				return;
 			}
 
@@ -310,10 +310,10 @@ export class MusicConnection {
 		this.player.seek(offsetSeconds * 1000);
 	}
 
-	public disconnect() {
+	public async disconnect() {
 		this.player.stop();
 		this.voiceChannel.leave();
 		this.player = null;
-		this.service.removeConnection(this.guild);
+		await this.service.removeConnection(this.guild);
 	}
 }

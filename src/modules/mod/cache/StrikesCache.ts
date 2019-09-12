@@ -1,6 +1,5 @@
-import { StrikeConfigInstance, strikeConfigs } from '../../../sequelize';
-
 import { Cache } from '../../../framework/cache/Cache';
+import { StrikeConfigInstance, strikeConfigs } from '../../../sequelize';
 
 export class StrikesCache extends Cache<StrikeConfigInstance[]> {
 	public async init() {

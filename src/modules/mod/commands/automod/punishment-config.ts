@@ -97,6 +97,6 @@ export default class extends Command {
 		}
 
 		this.client.cache.punishments.flush(guild.id);
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

@@ -3,9 +3,7 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { RoleResolver } from '../../../../framework/resolvers';
-import { BotCommand, CommandGroup } from '../../../../types';
-
-const MISSING_PERMISSIONS = 50013;
+import { BotCommand, CommandGroup, GuildPermission } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -20,6 +18,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Other,
+			botPermissions: [GuildPermission.MANAGE_ROLES],
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!mentionRole @Role', '!mentionRole "Role with space"']
@@ -56,14 +55,7 @@ export default class extends Command {
 				);
 			}
 
-			const res = await role
-				.edit({ mentionable: true }, 'Pinging role')
-				.catch(e => {
-					if (e.code === MISSING_PERMISSIONS) {
-						this.sendReply(message, 'cmd.mentionRole.missingPermissions');
-					}
-					return null as Role;
-				});
+			const res = await role.edit({ mentionable: true }, 'Pinging role');
 			if (!res) {
 				return;
 			}

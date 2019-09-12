@@ -30,7 +30,7 @@ export class CommandsService {
 		this.commandCalls = new Map();
 	}
 
-	public async init() {
+	public init() {
 		console.log(`Loading commands...`);
 
 		// Load all commands
@@ -151,7 +151,7 @@ export class CommandsService {
 			if (content === '') {
 				// If the content is an empty string then the user just mentioned the
 				// bot, so we'll print the prefix to help them out.
-				this.client.msg.sendReply(
+				await this.client.msg.sendReply(
 					message,
 					t('bot.mentionHelp', {
 						prefix: sets.prefix
@@ -225,7 +225,7 @@ export class CommandsService {
 				if (!lastCall.warned) {
 					lastCall.warned = true;
 					lastCall.last = now + cooldown * 1000;
-					this.client.msg.sendReply(
+					await this.client.msg.sendReply(
 						message,
 						t('permissions.rateLimit', {
 							cooldown: cooldown.toString()
@@ -247,7 +247,7 @@ export class CommandsService {
 			: false;
 
 		if (!isPremium && cmd.premiumOnly) {
-			this.client.msg.sendReply(message, t('permissions.premiumOnly'));
+			await this.client.msg.sendReply(message, t('permissions.premiumOnly'));
 			return;
 		}
 
@@ -267,7 +267,7 @@ export class CommandsService {
 				console.error(
 					`Could not get member ${message.author.id} for ${guild.id}`
 				);
-				this.client.msg.sendReply(message, t('permissions.memberError'));
+				await this.client.msg.sendReply(message, t('permissions.memberError'));
 				return;
 			}
 
@@ -283,7 +283,7 @@ export class CommandsService {
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
 					if (!perms.some(p => member.roles.indexOf(p) >= 0)) {
-						this.client.msg.sendReply(
+						await this.client.msg.sendReply(
 							message,
 							t('permissions.role', {
 								roles: perms.map(p => `<@&${p}>`).join(', ')
@@ -293,7 +293,7 @@ export class CommandsService {
 					}
 				} else if (cmd.strict) {
 					// Allow commands that require no roles, if strict is not true
-					this.client.msg.sendReply(message, t('permissions.adminOnly'));
+					await this.client.msg.sendReply(message, t('permissions.adminOnly'));
 					return;
 				}
 			}
@@ -310,7 +310,7 @@ export class CommandsService {
 					!(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
 			);
 			if (missingPerms.length > 0) {
-				this.client.msg.sendReply(
+				await this.client.msg.sendReply(
 					message,
 					t(`permissions.missing`, {
 						channel: `<#${channel.id}>`,
@@ -395,7 +395,7 @@ export class CommandsService {
 			let val: any = true;
 			if (!skipVal) {
 				if (!hasVal) {
-					this.client.msg.sendReply(
+					await this.client.msg.sendReply(
 						message,
 						`Missing required value for flag \`${flag.name}\`.\n` +
 							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
@@ -406,7 +406,7 @@ export class CommandsService {
 					try {
 						val = await resolver.resolve(rawVal, context, []);
 					} catch (e) {
-						this.client.msg.sendReply(
+						await this.client.msg.sendReply(
 							message,
 							`Invalid value for \`${flag.name}\`: ${e.message}\n` +
 								`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
@@ -443,7 +443,7 @@ export class CommandsService {
 				const val = await resolver.resolve(rawVal, context, args);
 
 				if (typeof val === typeof undefined && arg.required) {
-					this.client.msg.sendReply(
+					await this.client.msg.sendReply(
 						message,
 						t('resolvers.missingRequired', {
 							name: arg.name,
@@ -456,7 +456,7 @@ export class CommandsService {
 
 				args.push(val);
 			} catch (e) {
-				this.client.msg.sendReply(
+				await this.client.msg.sendReply(
 					message,
 					t('resolvers.invalid', {
 						name: arg.name,
@@ -473,56 +473,68 @@ export class CommandsService {
 		}
 
 		// Run command
+		let error: any = null;
 		try {
 			await cmd.action(message, args, flags, context);
 		} catch (e) {
-			console.error(e);
+			// Save the error for later so error handling doesn't count to command process time
+			error = e;
+		}
+
+		const execTime = Date.now() - start;
+
+		if (error) {
+			console.error(error);
+
 			withScope(scope => {
-				scope.setTag('command', cmd.name);
-				scope.setExtra('message', message.content);
 				if (guild) {
 					scope.setUser({ id: guild.id });
 				}
-				captureException(e);
+				scope.setTag('command', cmd.name);
+				scope.setExtra('message', message.content);
+				captureException(error);
 			});
-			this.client.msg.sendReply(
+
+			if (guild) {
+				this.client.dbQueue.addIncident(
+					{
+						id: null,
+						guildId: guild.id,
+						error: error.message,
+						details: {
+							command: cmd.name,
+							author: message.author.id,
+							message: message.content
+						}
+					},
+					guild
+				);
+			}
+
+			await this.client.msg.sendReply(
 				message,
 				t('cmd.error', {
-					error: e.message
+					error: error.message
 				})
 			);
-			return;
 		}
-
-		const execTime: number = Date.now() - start;
 
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			/*this.client.dbQueue.addCommandUsage(
+			this.client.dbQueue.addCommandUsage(
 				{
 					id: null,
 					guildId: guild.id,
 					memberId: message.author.id,
 					command: cmd.name,
 					args: args.join(' '),
-					time: execTime,
-					createdAt: new Date(),
-					updatedAt: new Date()
+					errored: error !== null,
+					time: execTime
 				},
-				{
-					id: guild.id,
-					name: guild.name,
-					icon: guild.iconURL,
-					memberCount: guild.memberCount,
-					banReason: null
-				},
-				{
-					id: message.author.id,
-					name: message.author.username,
-					discriminator: message.author.discriminator
-				}
-			);*/
+				guild,
+				message.author
+			);
 		}
 	}
 }

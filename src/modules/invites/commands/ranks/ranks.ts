@@ -45,7 +45,7 @@ export default class extends Command {
 
 		const maxPage = Math.ceil(rs.length / RANKS_PER_PAGE);
 		const startPage = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
-		this.showPaginated(message, startPage, maxPage, page => {
+		await this.showPaginated(message, startPage, maxPage, page => {
 			let description = '';
 
 			rs.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach(
