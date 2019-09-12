@@ -6,7 +6,6 @@ import {
 	MemberSettingsObject,
 	SettingsObject
 } from './settings';
-import { BotType } from './types';
 
 const config = require('../config.json');
 
@@ -15,7 +14,7 @@ export const sequelize = new Sequelize({
 	logging: (msg: string) => console.log(msg)
 });
 
-export interface BaseAttributes {
+interface BaseAttributes {
 	createdAt?: Date | number | string;
 	updatedAt?: Date | number | string;
 	deletedAt?: Date | number | string;
@@ -1300,168 +1299,6 @@ export const musicNodes = sequelize.define<
 	isPremium: Sequelize.BOOLEAN,
 	isCustom: Sequelize.BOOLEAN
 });
-
-// ------------------------------------
-// Servers
-// ------------------------------------
-export interface ServerAttributes extends BaseAttributes {
-	id: number;
-	name: string;
-	cpu: number;
-	ram: number;
-	fs: number;
-}
-export interface ServerInstance
-	extends Sequelize.Instance<ServerAttributes>,
-		ServerAttributes {}
-
-export const servers = sequelize.define<ServerInstance, ServerAttributes>(
-	'servers',
-	{
-		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		name: Sequelize.STRING(255),
-		cpu: Sequelize.DOUBLE,
-		ram: Sequelize.DOUBLE,
-		fs: Sequelize.DOUBLE
-	},
-	{
-		indexes: [{ fields: ['name'], unique: true }]
-	}
-);
-
-// ------------------------------------
-// ServerStats
-// ------------------------------------
-export interface ServerStatAttributes extends BaseAttributes {
-	id: number;
-	serverId: number;
-	cpu: number;
-	ram: number;
-	fs: number;
-}
-export interface ServerStatInstance
-	extends Sequelize.Instance<ServerStatAttributes>,
-		ServerStatAttributes {}
-
-export const serverStats = sequelize.define<
-	ServerStatInstance,
-	ServerStatAttributes
->('serverStats', {
-	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	serverId: Sequelize.INTEGER,
-	cpu: Sequelize.DOUBLE,
-	ram: Sequelize.DOUBLE,
-	fs: Sequelize.DOUBLE
-});
-
-serverStats.belongsTo(servers);
-servers.hasMany(serverStats);
-
-// ------------------------------------
-// Instances
-// ------------------------------------
-export interface InstanceAttributes extends BaseAttributes {
-	id: number;
-	type: BotType;
-	name: string;
-	shardCount: number;
-}
-export interface InstanceInstance
-	extends Sequelize.Instance<InstanceAttributes>,
-		InstanceAttributes {}
-
-export const instances = sequelize.define<InstanceInstance, InstanceAttributes>(
-	'instances',
-	{
-		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		type: Sequelize.ENUM(Object.values(BotType)),
-		name: Sequelize.STRING(255),
-		shardCount: Sequelize.INTEGER
-	},
-	{
-		indexes: [{ fields: ['name'], unique: true }]
-	}
-);
-
-// ------------------------------------
-// Shards
-// ------------------------------------
-export interface ShardAttributes extends BaseAttributes {
-	id: number;
-	instanceId: number;
-	shardId: number;
-	serverId: number;
-	version: string;
-	revision: string;
-}
-export interface ShardInstance
-	extends Sequelize.Instance<ShardAttributes>,
-		ShardAttributes {
-	getInstance: Sequelize.BelongsToGetAssociationMixin<InstanceInstance>;
-}
-
-export const shards = sequelize.define<ShardInstance, ShardAttributes>(
-	'shards',
-	{
-		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-		instanceId: Sequelize.INTEGER,
-		shardId: Sequelize.INTEGER,
-		serverId: Sequelize.INTEGER,
-		version: Sequelize.STRING(255),
-		revision: Sequelize.STRING(255)
-	},
-	{
-		indexes: [{ fields: ['instanceId', 'shardId'], unique: true }]
-	}
-);
-
-shards.belongsTo(servers);
-servers.hasMany(shards);
-
-shards.belongsTo(instances);
-instances.hasMany(shards);
-
-// ------------------------------------
-// ShardStats
-// ------------------------------------
-export interface ShardStatAttributes extends BaseAttributes {
-	id: number;
-	shardId: number;
-
-	status: string;
-	cpu: number;
-	ram: number;
-	uptime: number;
-
-	gateway: boolean;
-	guilds: number;
-	pendingGuilds: number;
-	musicConnections: number;
-}
-export interface ShardStatInstance
-	extends Sequelize.Instance<ShardStatAttributes>,
-		ShardStatAttributes {
-	getShard: Sequelize.BelongsToGetAssociationMixin<ShardInstance>;
-}
-
-export const shardStats = sequelize.define<
-	ShardStatInstance,
-	ShardStatAttributes
->('shardStats', {
-	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	shardId: Sequelize.INTEGER,
-	status: Sequelize.STRING(255),
-	cpu: Sequelize.DOUBLE,
-	ram: Sequelize.DOUBLE,
-	uptime: Sequelize.DOUBLE,
-	gateway: Sequelize.BOOLEAN,
-	guilds: Sequelize.INTEGER,
-	pendingGuilds: Sequelize.INTEGER,
-	musicConnections: Sequelize.INTEGER
-});
-
-shardStats.belongsTo(shards);
-shards.hasMany(shardStats);
 
 // ------------------------------------
 // Incidents
