@@ -1,10 +1,10 @@
 {
 	"name": "discord-invite-manager",
-	"version": "8.2.0",
+	"version": "8.2.1",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
-		"start": "node scripts/dev-run.js",
+		"start": "cross-env NODE_ENV=dev node scripts/dev-run.js",
 		"build": "tsc",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"test/**/*.js\"",
@@ -56,6 +56,7 @@
 		"@types/node": "12.7.4",
 		"@types/sequelize": "4.28.4",
 		"@types/xmldoc": "1.1.4",
+		"cross-env": "5.2.1",
 		"docsify": "4.9.4",
 		"docsify-cli": "4.3.0",
 		"husky": "3.0.5",

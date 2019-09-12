@@ -29,7 +29,8 @@ export enum GuildPermission {
 	BAN_MEMBERS = 'banMembers',
 	KICK_MEMBERS = 'kickMembers',
 	ADD_REACTIONS = 'addReactions',
-	MANAGE_EMOJIS = 'manageEmojis'
+	MANAGE_EMOJIS = 'manageEmojis',
+	READ_MESSAGE_HISTORY = 'readMessageHistory'
 }
 
 export enum PromptResult {

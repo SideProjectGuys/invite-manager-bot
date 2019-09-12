@@ -1,7 +1,7 @@
 import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Op } from 'sequelize';
 
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
@@ -118,14 +118,15 @@ export class IMClient extends Client {
 	public music: MusicService;
 	public tracking: TrackingService;
 
-	public startedAt: moment.Moment;
+	public startedAt: Moment;
 	public gatewayConnected: boolean;
 	public gatewayInfo: GatewayInfo;
+	public gatewayInfoCachedAt: Moment;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 
 	private counts: {
-		cachedAt: number;
+		cachedAt: Moment;
 		guilds: number;
 		members: number;
 	};
@@ -162,7 +163,7 @@ export class IMClient extends Client {
 
 		this.startedAt = moment();
 		this.counts = {
-			cachedAt: 0,
+			cachedAt: moment.unix(0),
 			guilds: 0,
 			members: 0
 		};
@@ -325,7 +326,7 @@ export class IMClient extends Client {
 		this.setActivity();
 		this.activityInterval = setInterval(
 			() => this.setActivity(),
-			20 * 60 * 1000
+			1 * 60 * 1000
 		);
 	}
 
@@ -585,13 +586,17 @@ export class IMClient extends Client {
 
 	public async getCounts() {
 		// If cached data is older than 12 hours, update it
-		if (Date.now() - this.counts.cachedAt > 1000 * 60 * 60) {
+		if (
+			moment()
+				.subtract(4, 'hours')
+				.isAfter(this.counts.cachedAt)
+		) {
 			console.log('Fetching data counts from DB...');
 			const rows = await dbStats.findAll({
 				where: { key: ['guilds', 'members'] }
 			});
 			this.counts = {
-				cachedAt: Date.now(),
+				cachedAt: moment(),
 				guilds: rows.find(r => r.key === 'guilds').value,
 				members: rows.find(r => r.key === 'members').value
 			};
@@ -600,8 +605,16 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
-	private async getGatewayInfo() {
-		return (await this.getBotGateway()) as GatewayInfo;
+	private async updateGatewayInfo() {
+		if (
+			moment()
+				.subtract(4, 'hours')
+				.isAfter(this.gatewayInfoCachedAt)
+		) {
+			console.log('Fetching gateway info...');
+			this.gatewayInfo = (await this.getBotGateway()) as GatewayInfo;
+			this.gatewayInfoCachedAt = moment();
+		}
 	}
 
 	public async setActivity() {
@@ -609,7 +622,7 @@ export class IMClient extends Client {
 			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
 		}
 
-		this.gatewayInfo = await this.getGatewayInfo();
+		await this.updateGatewayInfo();
 
 		const status = this.settings.activityStatus;
 

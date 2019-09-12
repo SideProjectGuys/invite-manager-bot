@@ -8,6 +8,7 @@ import {
 	StringResolver
 } from '../../../../framework/resolvers';
 import {
+	members,
 	punishments,
 	PunishmentType,
 	ScheduledActionType
@@ -70,6 +71,13 @@ export default class extends Command {
 			if (error) {
 				embed.description = t('cmd.mute.error', { error });
 			} else {
+				// Make sure member exists in DB
+				await members.insertOrUpdate({
+					id: targetMember.user.id,
+					name: targetMember.user.username,
+					discriminator: targetMember.user.discriminator
+				});
+
 				const punishment = await punishments.create({
 					id: null,
 					guildId: guild.id,

@@ -24,7 +24,11 @@ const shardCount = Number(args[2]);
 const instance = args[3] || type;
 
 // Initialize sentry
-init({ dsn: config.sentryDsn, release: pkg.version });
+init({
+	dsn: config.sentryDsn,
+	release: pkg.version,
+	environment: process.env.NODE_ENV || 'production'
+});
 configureScope(scope => {
 	scope.setTag('botType', type);
 	scope.setTag('instance', instance);

@@ -27,7 +27,8 @@ export default class extends Command {
 			group: CommandGroup.Config,
 			botPermissions: [
 				GuildPermission.ADD_REACTIONS,
-				GuildPermission.MANAGE_MESSAGES
+				GuildPermission.MANAGE_MESSAGES,
+				GuildPermission.READ_MESSAGE_HISTORY
 			],
 			guildOnly: true,
 			defaultAdminOnly: true

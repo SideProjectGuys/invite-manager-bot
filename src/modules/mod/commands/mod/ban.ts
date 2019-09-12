@@ -7,7 +7,7 @@ import {
 	StringResolver,
 	UserResolver
 } from '../../../../framework/resolvers';
-import { punishments, PunishmentType } from '../../../../sequelize';
+import { members, punishments, PunishmentType } from '../../../../sequelize';
 import {
 	BasicUser,
 	CommandGroup,
@@ -83,6 +83,13 @@ export default class extends Command {
 			if (error) {
 				embed.description = t('cmd.ban.error', { error });
 			} else {
+				// Make sure member exists in DB
+				await members.insertOrUpdate({
+					id: targetMember.user.id,
+					name: targetMember.user.username,
+					discriminator: targetMember.user.discriminator
+				});
+
 				const punishment = await punishments.create({
 					id: null,
 					guildId: guild.id,
