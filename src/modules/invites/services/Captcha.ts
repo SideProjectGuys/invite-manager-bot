@@ -104,7 +104,7 @@ export class CaptchaService {
 			}
 
 			if (response === text) {
-				dmChannel.createMessage(
+				await dmChannel.createMessage(
 					sets.captchaVerificationSuccessMessage.replace(
 						/\{serverName\}/g,
 						member.guild.name
@@ -113,7 +113,7 @@ export class CaptchaService {
 				return;
 			}
 
-			dmChannel.createMessage(
+			await dmChannel.createMessage(
 				i18n.__({ locale: sets.lang, phrase: 'captcha.invalid' })
 			);
 		}

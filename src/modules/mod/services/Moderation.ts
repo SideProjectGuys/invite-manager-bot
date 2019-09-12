@@ -101,11 +101,11 @@ export class ModerationService {
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
-		this.hoist(guild, member);
+		await this.hoist(guild, member);
 	}
 
 	private async onGuildMemberUpdate(guild: Guild, member: Member) {
-		this.hoist(guild, member);
+		await this.hoist(guild, member);
 	}
 
 	private async onMessage(message: Message) {
@@ -218,9 +218,9 @@ export class ModerationService {
 				continue;
 			}
 
-			message.delete();
+			await message.delete();
 
-			this.logViolationModAction(
+			await this.logViolationModAction(
 				guild,
 				message.author,
 				strike.type,
@@ -237,8 +237,8 @@ export class ModerationService {
 			embed.description = `Message by ${usr} was removed because it violated the ${viol} rule.\n`;
 			embed.description += `\n\nUser got ${strike.amount} strikes.`;
 
-			this.sendReplyAndDelete(message, embed, settings);
-			this.addStrikesAndPunish(member, strike.type, strike.amount, {
+			await this.sendReplyAndDelete(message, embed, settings);
+			await this.addStrikesAndPunish(member, strike.type, strike.amount, {
 				guild,
 				settings
 			});
@@ -258,7 +258,7 @@ export class ModerationService {
 
 			message.delete().catch(() => undefined);
 
-			this.logViolationModAction(guild, message.author, violation, 0, [
+			await this.logViolationModAction(guild, message.author, violation, 0, [
 				{ name: 'Channel', value: channel.name },
 				{ name: 'Message', value: message.content }
 			]);
@@ -267,7 +267,7 @@ export class ModerationService {
 			const usr = `<@${message.author.id}>`;
 			embed.description = `Message by ${usr} was removed because it violated the \`${violation}\` rule.\n`;
 
-			this.sendReplyAndDelete(message, embed, settings);
+			await this.sendReplyAndDelete(message, embed, settings);
 			return;
 		}
 	}
@@ -283,7 +283,7 @@ export class ModerationService {
 		return embed;
 	}
 
-	public logViolationModAction(
+	public async logViolationModAction(
 		guild: Guild,
 		user: BasicUser,
 		type: ViolationType,
@@ -307,10 +307,10 @@ export class ModerationService {
 		if (extra) {
 			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push(e));
 		}
-		this.client.logModAction(guild, logEmbed);
+		await this.client.logModAction(guild, logEmbed);
 	}
 
-	public logPunishmentModAction(
+	public async logPunishmentModAction(
 		guild: Guild,
 		user: BasicUser,
 		type: PunishmentType,
@@ -329,7 +329,7 @@ export class ModerationService {
 		if (extra) {
 			extra.forEach(e => logEmbed.fields.push(e));
 		}
-		this.client.logModAction(guild, logEmbed);
+		await this.client.logModAction(guild, logEmbed);
 	}
 
 	private getMiniMessage(message: Message): MiniMessage {
@@ -413,7 +413,7 @@ export class ModerationService {
 				creatorId: null
 			});
 
-			this.logPunishmentModAction(
+			await this.logPunishmentModAction(
 				args.guild,
 				member.user,
 				punishmentConfig.type,
@@ -696,12 +696,12 @@ export class ModerationService {
 		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
 		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
-		this.logViolationModAction(guild, member.user, type, amount, [
+		await this.logViolationModAction(guild, member.user, type, amount, [
 			{ name: 'New name', value: newName },
 			{ name: 'Previous name', value: name }
 		]);
 
-		this.addStrikesAndPunish(member, type, amount, {
+		await this.addStrikesAndPunish(member, type, amount, {
 			guild,
 			settings
 		});
@@ -801,7 +801,7 @@ export class ModerationService {
 			}
 		);
 
-		return dmChannel.createMessage(message).catch(() => {
+		return dmChannel.createMessage(message).catch(async () => {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
@@ -820,7 +820,7 @@ export class ModerationService {
 							}
 						]
 					});
-					channel.createMessage({ embed });
+					await channel.createMessage({ embed });
 				}
 			}
 		});
@@ -851,7 +851,7 @@ export class ModerationService {
 			);
 		}
 
-		return dmChannel.createMessage(message).catch(() => {
+		return dmChannel.createMessage(message).catch(async () => {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
@@ -870,7 +870,7 @@ export class ModerationService {
 							}
 						]
 					});
-					channel.createMessage({ embed });
+					await channel.createMessage({ embed });
 				}
 			}
 		});

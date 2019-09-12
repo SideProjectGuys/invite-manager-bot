@@ -1155,7 +1155,10 @@
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs"
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "permissions.manageMessages",
+		"readMessageHistory": "permissions.readMessageHistory",
+		"missing": "permissions.missing"
 	},
 	"prompt": {
 		"canceled": "Canceled"

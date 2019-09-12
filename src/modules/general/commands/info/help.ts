@@ -140,6 +140,6 @@ export default class extends Command {
 			value: linksArray.join(` | `)
 		});
 
-		this.sendReply(message, embed);
+		await this.sendReply(message, embed);
 	}
 }

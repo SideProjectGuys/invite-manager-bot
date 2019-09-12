@@ -41,7 +41,7 @@ export default class extends Command {
 		if (rank) {
 			await rank.destroy();
 
-			this.client.logAction(guild, message, LogAction.removeRank, {
+			await this.client.logAction(guild, message, LogAction.removeRank, {
 				rankId: rank.id,
 				roleId: role.id
 			});

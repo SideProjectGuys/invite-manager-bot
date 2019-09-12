@@ -643,7 +643,7 @@ export class InvitesService {
 						`Guild ${guild.id} has invalid ` +
 							`rank announcement channel ${rankChannelId}`
 					);
-					this.client.cache.settings.setOne(
+					await this.client.cache.settings.setOne(
 						guild.id,
 						SettingsKey.rankAnnouncementChannel,
 						null

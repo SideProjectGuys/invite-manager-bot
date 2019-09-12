@@ -100,7 +100,7 @@ export default class extends Command {
 		const style: LeaderboardStyle = settings.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
-		this.showPaginated(message, p, maxPage, page => {
+		await this.showPaginated(message, p, maxPage, page => {
 			const compText = t('cmd.leaderboard.comparedTo', {
 				to: `**${comp.locale(settings.lang).fromNow()}**`
 			});

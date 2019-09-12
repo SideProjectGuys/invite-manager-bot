@@ -33,14 +33,14 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
-			this.sendReply(message, t('music.notPlaying'));
+			await this.sendReply(message, t('music.notPlaying'));
 			return;
 		}
 
 		const musicPlatform: MusicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsSeek) {
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.seek.notSupported', {
 					platform: musicPlatform.getType()
@@ -49,6 +49,6 @@ export default class extends Command {
 			return;
 		}
 
-		conn.seek(duration);
+		await conn.seek(duration);
 	}
 }

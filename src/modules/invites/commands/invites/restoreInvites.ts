@@ -87,7 +87,7 @@ export default class extends Command {
 			this.client.cache.invites.flush(guild.id);
 		}
 
-		this.client.logAction(guild, message, LogAction.restoreInvites, {
+		await this.client.logAction(guild, message, LogAction.restoreInvites, {
 			...(memberId && { targetId: memberId })
 		});
 

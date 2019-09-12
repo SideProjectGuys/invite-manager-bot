@@ -200,8 +200,9 @@ export class IMClient extends Client {
 		this.music = new MusicService(this);
 
 		// Services
-		this.rabbitmq.init();
 		this.cmds.init();
+		this.rabbitmq.init();
+		this.scheduler.init();
 
 		this.disabledGuilds = new Set();
 
@@ -323,7 +324,7 @@ export class IMClient extends Client {
 			this.dbl = new DBL(this.config.bot.dblToken, this);
 		}
 
-		this.setActivity();
+		await this.setActivity();
 		this.activityInterval = setInterval(
 			() => this.setActivity(),
 			1 * 60 * 1000
@@ -506,7 +507,7 @@ export class IMClient extends Client {
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
 			if (logChannel) {
-				this.msg.sendEmbed(logChannel, embed);
+				await this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 	}
@@ -554,7 +555,7 @@ export class IMClient extends Client {
 						}
 					]
 				});
-				this.msg.sendEmbed(logChannel, embed);
+				await this.msg.sendEmbed(logChannel, embed);
 			}
 		}
 
@@ -569,18 +570,8 @@ export class IMClient extends Client {
 				createdAt: new Date(),
 				updatedAt: new Date()
 			},
-			{
-				id: guild.id,
-				name: guild.name,
-				icon: guild.iconURL,
-				memberCount: guild.memberCount,
-				banReason: null
-			},
-			{
-				id: message.author.id,
-				discriminator: message.author.discriminator,
-				name: message.author.username
-			}
+			guild,
+			message.author
 		);
 	}
 
@@ -619,7 +610,11 @@ export class IMClient extends Client {
 
 	public async setActivity() {
 		if (this.dbl) {
-			this.dbl.postStats(this.guilds.size, this.shardId - 1, this.shardCount);
+			await this.dbl.postStats(
+				this.guilds.size,
+				this.shardId - 1,
+				this.shardCount
+			);
 		}
 
 		await this.updateGatewayInfo();
@@ -660,13 +655,13 @@ export class IMClient extends Client {
 	private async onConnect() {
 		console.error('DISCORD CONNECT');
 		this.gatewayConnected = true;
-		this.rabbitmq.sendStatusToManager();
+		await this.rabbitmq.sendStatusToManager();
 	}
 
 	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
 		this.gatewayConnected = false;
-		this.rabbitmq.sendStatusToManager(err);
+		await this.rabbitmq.sendStatusToManager(err);
 
 		if (err) {
 			console.error(err);

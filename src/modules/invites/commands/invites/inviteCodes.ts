@@ -199,8 +199,8 @@ export default class extends Command {
 			});
 		}
 
-		this.sendEmbed(await message.author.getDMChannel(), embed);
-		this.sendReply(
+		await this.sendEmbed(await message.author.getDMChannel(), embed);
+		await this.sendReply(
 			message,
 			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
 		);

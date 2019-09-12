@@ -60,7 +60,7 @@ export default class extends Command {
 				name: 'Reason',
 				value: reason
 			});
-			this.client.logModAction(guild, logEmbed);
+			await this.client.logModAction(guild, logEmbed);
 
 			embed.description = t('cmd.unban.done');
 		}

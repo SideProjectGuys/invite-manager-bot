@@ -12,7 +12,7 @@ export class SchedulerService {
 	private client: IMClient = null;
 	private scheduledActionTimers: Map<string, any>;
 	private scheduledActionFunctions: {
-		[k in ScheduledActionType]: (args: any) => void
+		[k in ScheduledActionType]: (args: any) => void;
 	};
 
 	public constructor(client: IMClient) {
@@ -21,7 +21,10 @@ export class SchedulerService {
 		this.scheduledActionFunctions = {
 			[ScheduledActionType.unmute]: this.unmute.bind(this)
 		};
-		this.scheduleScheduledActions();
+	}
+
+	public async init() {
+		await this.scheduleScheduledActions();
 	}
 
 	public async addScheduledAction(

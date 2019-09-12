@@ -5,7 +5,6 @@ import { Command, Context } from '../../../../framework/commands/Command';
 import { BooleanResolver } from '../../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../../types';
 import { MusicConnection } from '../../models/MusicConnection';
-import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -35,14 +34,14 @@ export default class extends Command {
 	): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
-			this.sendReply(message, t('music.notPlaying'));
+			await this.sendReply(message, t('music.notPlaying'));
 			return;
 		}
 
 		const musicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsLyrics) {
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.lyrics.notSupported', {
 					platform: musicPlatform.getType()
@@ -55,12 +54,12 @@ export default class extends Command {
 
 		const lyrics = await this.client.music.getLyrics(item);
 		if (lyrics.length === 0) {
-			this.sendReply(message, t('cmd.lyrics.notFound'));
+			await this.sendReply(message, t('cmd.lyrics.notFound'));
 			return;
 		}
 
 		if (!live) {
-			this.sendReply(
+			await this.sendReply(
 				message,
 				lyrics
 					.map(l => `${this.client.music.formatTime(l.start)}: ${l.text}`)
@@ -75,10 +74,10 @@ export default class extends Command {
 		);
 		const msg = await this.sendReply(message, 'Loading...');
 
-		this.scheduleNext(msg, conn, lyrics, index);
+		await this.scheduleNext(msg, conn, lyrics, index);
 	}
 
-	private scheduleNext(
+	private async scheduleNext(
 		msg: Message,
 		conn: MusicConnection,
 		lyrics: { start: number; dur: number; text: string }[],
@@ -104,7 +103,7 @@ export default class extends Command {
 			setTimeout(() => msg.delete(), now.dur * 1000 + 500);
 		}
 
-		msg.edit({
+		await msg.edit({
 			embed: this.createEmbed({ description: text })
 		});
 	}

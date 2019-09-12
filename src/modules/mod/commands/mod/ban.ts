@@ -101,7 +101,7 @@ export default class extends Command {
 					creatorId: message.author.id
 				});
 
-				this.client.mod.logPunishmentModAction(
+				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetUser,
 					punishment.type,

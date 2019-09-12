@@ -41,7 +41,7 @@ export default class extends Command {
 		const { guild, t } = context;
 
 		if (this.client.type !== 'custom') {
-			this.sendReply(
+			await this.sendReply(
 				message,
 				t('cmd.botConfig.customOnly', {
 					prefix: context.settings.prefix,
@@ -142,7 +142,7 @@ export default class extends Command {
 				updateOnDuplicate: ['value', 'updatedAt']
 			}
 		);
-		this.client.setActivity();
+		await this.client.setActivity();
 
 		if (value === oldVal) {
 			embed.description = t('cmd.botConfig.sameValue');
@@ -156,7 +156,7 @@ export default class extends Command {
 		embed.description = t('cmd.botConfig.changed.text', { prefix, key });
 
 		// Log the settings change
-		this.client.logAction(guild, message, LogAction.config, {
+		await this.client.logAction(guild, message, LogAction.config, {
 			key,
 			oldValue: oldVal,
 			newValue: value

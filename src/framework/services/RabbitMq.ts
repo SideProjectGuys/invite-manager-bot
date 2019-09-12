@@ -148,7 +148,7 @@ export class RabbitMqService {
 	}
 
 	public async sendStatusToManager(err?: Error) {
-		this.sendToManager({
+		await this.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			connected: this.client.gatewayConnected,
@@ -186,13 +186,13 @@ export class RabbitMqService {
 
 		switch (cmd) {
 			case ShardCommand.STATUS:
-				this.sendStatusToManager();
+				await this.sendStatusToManager();
 				break;
 
 			case ShardCommand.CUSTOM:
 				const self = await this.client.getSelf();
 
-				sendResponse({
+				await sendResponse({
 					self,
 					guilds: this.client.guilds.map(g => ({
 						id: g.id,
@@ -204,7 +204,7 @@ export class RabbitMqService {
 				break;
 
 			case ShardCommand.CACHE:
-				sendResponse(this.getCacheSizes());
+				await sendResponse(this.getCacheSizes());
 				break;
 
 			case ShardCommand.DIAGNOSE:
@@ -262,7 +262,7 @@ export class RabbitMqService {
 
 				const premium = await this.client.cache.premium.get(guildId);
 
-				sendResponse({
+				await sendResponse({
 					owner,
 					premium,
 					settings: sets,
@@ -275,12 +275,12 @@ export class RabbitMqService {
 
 			case ShardCommand.FLUSH_CACHE:
 				Object.values(this.client.cache).forEach(c => c.flush(guildId));
-				sendResponse({});
+				await sendResponse({});
 				break;
 
 			case ShardCommand.RELOAD_MUSIC_NODES:
-				this.client.music.loadMusicNodes();
-				sendResponse({});
+				await this.client.music.loadMusicNodes();
+				await sendResponse({});
 				break;
 
 			case ShardCommand.LEAVE_GUILD:
@@ -291,7 +291,7 @@ export class RabbitMqService {
 				}
 
 				await guild.leave();
-				sendResponse({});
+				await sendResponse({});
 				break;
 
 			case ShardCommand.SUDO:
@@ -309,11 +309,11 @@ export class RabbitMqService {
 				this.client.channelGuildMap[channel.id] = guild.id;
 				guild.channels.add(channel);
 
-				channel.listener = data => {
+				channel.listener = async data => {
 					console.log(data);
 					delete this.client.channelGuildMap[channel.id];
 					guild.channels.remove(channel);
-					sendResponse({ data });
+					await sendResponse({ data });
 				};
 
 				const args = content.args ? content.args.join(' ') : '';
@@ -330,7 +330,7 @@ export class RabbitMqService {
 					this.client
 				);
 				(fakeMsg as any).__sudo = true;
-				this.client.cmds.onMessage(fakeMsg);
+				await this.client.cmds.onMessage(fakeMsg);
 				break;
 
 			case ShardCommand.OWNER_DM:
@@ -338,9 +338,9 @@ export class RabbitMqService {
 					const user = await this.client.getRESTUser(content.userId);
 					const userChannel = await user.getDMChannel();
 					await userChannel.createMessage(content.message);
-					sendResponse({ ok: true });
+					await sendResponse({ ok: true });
 				} catch (e) {
-					sendResponse({ ok: false, error: e });
+					await sendResponse({ ok: false, error: e });
 				}
 				break;
 
@@ -366,7 +366,7 @@ export class RabbitMqService {
 					inline: true
 				});
 
-				dmChannel.createMessage({
+				await dmChannel.createMessage({
 					embed
 				});
 				break;

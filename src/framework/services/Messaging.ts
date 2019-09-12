@@ -122,6 +122,41 @@ export class MessagingService {
 
 		const content = convertEmbedToPlain(e);
 
+		const handleException = (err: Error, reportIndicent = true): undefined => {
+			withScope(scope => {
+				if (target instanceof GuildChannel) {
+					scope.setUser({ id: target.guild.id });
+					scope.setExtra(
+						'permissions',
+						target.permissionsOf(this.client.user.id).json
+					);
+				}
+				scope.setExtra('channel', target.id);
+				scope.setExtra('message', embed);
+				scope.setExtra('content', content);
+				if (fallbackUser) {
+					scope.setExtra('fallbackUser', fallbackUser.id);
+				}
+				captureException(err);
+			});
+			if (reportIndicent && target instanceof GuildChannel) {
+				this.client.dbQueue.addIncident(
+					{
+						id: null,
+						guildId: target.guild.id,
+						error: err.message,
+						details: {
+							channel: target.id,
+							embed,
+							content
+						}
+					},
+					target.guild
+				);
+			}
+			return undefined;
+		};
+
 		return new Promise<Message>((resolve, reject) => {
 			// Fallback functions when sending message fails
 			const sendDM = (error?: any) => {
@@ -147,41 +182,9 @@ export class MessagingService {
 						return dmChannel
 							.createMessage(msg)
 							.then(resolve)
-							.catch(err2 => {
-								withScope(scope => {
-									if (target instanceof GuildChannel) {
-										scope.setUser({ id: target.guild.id });
-										scope.setExtra(
-											'permissions',
-											target.permissionsOf(this.client.user.id).json
-										);
-									}
-									scope.setExtra('channel', target.id);
-									scope.setExtra('message', embed);
-									scope.setExtra('content', content);
-									scope.setExtra('fallbackUser', fallbackUser.id);
-									captureException(err2);
-								});
-								return undefined;
-							});
+							.catch(err2 => handleException(err2, false));
 					})
-					.catch(err2 => {
-						withScope(scope => {
-							if (target instanceof GuildChannel) {
-								scope.setUser({ id: target.guild.id });
-								scope.setExtra(
-									'permissions',
-									target.permissionsOf(this.client.user.id).json
-								);
-							}
-							scope.setExtra('channel', target.id);
-							scope.setExtra('message', embed);
-							scope.setExtra('content', content);
-							scope.setExtra('fallbackUser', fallbackUser.id);
-							captureException(err2);
-						});
-						return undefined;
-					});
+					.catch(err2 => handleException(err2, false));
 			};
 
 			const sendPlain = (error?: any) => {
@@ -199,20 +202,7 @@ export class MessagingService {
 					.createMessage(content)
 					.then(resolve)
 					.catch(err => {
-						withScope(scope => {
-							if (target instanceof GuildChannel) {
-								scope.setUser({ id: target.guild.id });
-								scope.setExtra(
-									'permissions',
-									target.permissionsOf(this.client.user.id).json
-								);
-							}
-							scope.setExtra('channel', target.id);
-							scope.setExtra('message', embed);
-							scope.setExtra('content', content);
-							captureException(err);
-						});
-
+						handleException(err);
 						return sendDM(error);
 					});
 			};
@@ -235,20 +225,7 @@ export class MessagingService {
 					.createMessage({ embed: e })
 					.then(resolve)
 					.catch(error => {
-						withScope(scope => {
-							if (target instanceof GuildChannel) {
-								scope.setUser({ id: target.guild.id });
-								scope.setExtra(
-									'permissions',
-									target.permissionsOf(this.client.user.id).json
-								);
-							}
-							scope.setExtra('channel', target.id);
-							scope.setExtra('message', embed);
-							scope.setExtra('content', content);
-							captureException(error);
-						});
-
+						handleException(error);
 						return sendPlain(error);
 					});
 			};
@@ -379,7 +356,7 @@ export class MessagingService {
 		const sudo: boolean = (prevMsg as any).__sudo;
 
 		if (prevMsg.author.id === this.client.user.id) {
-			prevMsg.edit({ embed });
+			await prevMsg.edit({ embed });
 			if (!author) {
 				throw new Error(
 					'Either the message of the original author must be passed, or you must explicitly specify the original author'
@@ -411,7 +388,7 @@ export class MessagingService {
 				.getReaction(upSymbol, 10)
 				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg.removeReaction(upSymbol, this.client.user.id);
+				await prevMsg.removeReaction(upSymbol, this.client.user.id);
 			}
 		}
 
@@ -422,7 +399,7 @@ export class MessagingService {
 				.getReaction(downSymbol, 10)
 				.catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
-				prevMsg.removeReaction(downSymbol, this.client.user.id);
+				await prevMsg.removeReaction(downSymbol, this.client.user.id);
 			}
 		}
 
@@ -442,18 +419,18 @@ export class MessagingService {
 
 				const isUp = emoji.name === upSymbol;
 				if (isUp && page > 0) {
-					this.showPaginated(prevMsg, page - 1, maxPage, render, author);
+					await this.showPaginated(prevMsg, page - 1, maxPage, render, author);
 				} else if (!isUp && page < maxPage) {
-					this.showPaginated(prevMsg, page + 1, maxPage, render, author);
+					await this.showPaginated(prevMsg, page + 1, maxPage, render, author);
 				}
 			};
 
 			this.client.on('messageReactionAdd', func);
 
-			const timeOut = () => {
+			const timeOut = async () => {
 				this.client.removeListener('messageReactionAdd', func);
-				prevMsg.removeReaction(upSymbol, this.client.user.id);
-				prevMsg.removeReaction(downSymbol, this.client.user.id);
+				await prevMsg.removeReaction(upSymbol, this.client.user.id);
+				await prevMsg.removeReaction(downSymbol, this.client.user.id);
 			};
 
 			timer = setTimeout(timeOut, 15000);
