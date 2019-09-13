@@ -76,18 +76,14 @@ export default class extends Command {
 			}
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
-			const [error] = await to(
-				this.client.banGuildMember(guild.id, targetUser.id, days, reason)
-			);
+			try {
+				await this.client.banGuildMember(guild.id, targetUser.id, days, reason);
 
-			if (error) {
-				embed.description = t('cmd.ban.error', { error });
-			} else {
 				// Make sure member exists in DB
 				await members.insertOrUpdate({
-					id: targetMember.user.id,
-					name: targetMember.user.username,
-					discriminator: targetMember.user.discriminator
+					id: targetUser.id,
+					name: targetUser.username,
+					discriminator: targetUser.discriminator
 				});
 
 				const punishment = await punishments.create({
@@ -111,6 +107,8 @@ export default class extends Command {
 				);
 
 				embed.description = t('cmd.ban.done');
+			} catch (error) {
+				embed.description = t('cmd.ban.error', { error });
 			}
 		} else {
 			embed.description = t('cmd.ban.canNotBan');
