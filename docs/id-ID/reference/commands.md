@@ -80,7 +80,7 @@ resolvers.duration.typeInfo
 | Command                           | Description                                        | Usage                                                            |
 | --------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
 | [addInvites](#addInvites)         | Tambah/hapus undangan kepada/dari seorang anggota. | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Clear invites of the server/a user.                | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [clearInvites](#clearInvites)     | Hapus undangan dari server/pengguna.               | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
 | [createInvite](#createInvite)     | Creates unique invite codes.                       | !createInvite \<name\> [channel]                                 |
 | [fake](#fake)                     | Help find users trying to cheat.                   | !fake [page]                                                     |
 | [info](#info)                     | Show info about a specific member.                 | !info \<user\> [details][page]                                   |
@@ -140,12 +140,12 @@ resolvers.duration.typeInfo
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | Blokir anggota dari server.                                                                                                                   | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
-| [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
+| [caseDelete](#caseDelete)             | Hapus kasus tertentu,                                                                                                                         | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Lihat informasi tentang kasus tertentu.                                                                                                       | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | Periksa riwayat pelanggaran dan hukuman pengguna.                                                                                             | !check \<user\>                                                  |
+| [clean](#clean)                       | Bersihkan saluran dari jenis pesan tertentu.                                                                                                  | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | Hapus pesan pendek                                                                                                                            | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | Hapus pesan yang mengandung kata kunci tertentu.                                                                                              | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute \<user\> [reason]                                          |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
@@ -283,9 +283,9 @@ Blokir anggota dari server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                          |
-| --------------------------------- | --------- | ----------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                                                  |
+| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -352,7 +352,7 @@ Dapatkan informasi umum tentang bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Hapus kasus tertentu,
 
 ### Usage
 
@@ -368,10 +368,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description                   | Details |
+| ---------- | ----------------- | -------- | ----------------------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | Nomor kasus                   |         |
+| reason     | [Text](#Text)     | No       | Alasan untuk menghapus kasus. |         |
 
 ### Examples
 
@@ -385,7 +385,7 @@ Delete a specific case.
 
 ## !caseView
 
-View info about a specific case.
+Lihat informasi tentang kasus tertentu.
 
 ### Usage
 
@@ -403,7 +403,7 @@ View info about a specific case.
 
 | Argument   | Type              | Required | Description | Details |
 | ---------- | ----------------- | -------- | ----------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number |         |
+| caseNumber | [Number](#Number) | Yes      | Nomor kasus |         |
 
 ### Examples
 
@@ -417,7 +417,7 @@ View info about a specific case.
 
 ## !check
 
-Check violation and punishment history of a user.
+Periksa riwayat pelanggaran dan hukuman pengguna.
 
 ### Usage
 
@@ -431,9 +431,9 @@ Check violation and punishment history of a user.
 
 ### Arguments
 
-| Argument | Type          | Required | Description    | Details |
-| -------- | ------------- | -------- | -------------- | ------- |
-| user     | [User](#User) | Yes      | User to check. |         |
+| Argument | Type          | Required | Description              | Details |
+| -------- | ------------- | -------- | ------------------------ | ------- |
+| user     | [User](#User) | Yes      | Pengguna untuk memeriksa |         |
 
 ### Examples
 
@@ -451,7 +451,7 @@ Check violation and punishment history of a user.
 
 ## !clean
 
-Clean a channel of certain message types.
+Bersihkan saluran dari jenis pesan tertentu.
 
 ### Usage
 
@@ -465,10 +465,10 @@ Clean a channel of certain message types.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                | Details                                                                                                            |
-| ---------------- | ----------------- | -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| type             | [Enum](#Enum)     | Yes      | The type of messages that will be deleted. | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.  |                                                                                                                    |
+| Argument         | Type              | Required | Description                    | Details                                                                                                            |
+| ---------------- | ----------------- | -------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| type             | [Enum](#Enum)     | Yes      | Jenis pesan yang akan dihapus. | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
+| numberOfMessages | [Number](#Number) | No       | Jumlah pesan yang akan dicari. |                                                                                                                    |
 
 ### Examples
 
@@ -478,7 +478,7 @@ Clean a channel of certain message types.
 
 ## !cleanShort
 
-Clear short messages
+Hapus pesan pendek
 
 ### Usage
 
@@ -494,10 +494,10 @@ Clear short messages
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                     | Details |
-| ---------------- | ----------------- | -------- | ----------------------------------------------- | ------- |
-| maxTextLength    | [Number](#Number) | Yes      | All messages shorter than this will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.       |         |
+| Argument         | Type              | Required | Description                                          | Details |
+| ---------------- | ----------------- | -------- | ---------------------------------------------------- | ------- |
+| maxTextLength    | [Number](#Number) | Yes      | Semua pesan yang lebih pendek dari ini akan dihapus. |         |
+| numberOfMessages | [Number](#Number) | No       | Jumlah pesan yang akan dicari.                       |         |
 
 ### Examples
 
@@ -507,7 +507,7 @@ Clear short messages
 
 ## !cleanText
 
-Delete messages containing certain keywords.
+Hapus pesan yang mengandung kata kunci tertentu.
 
 ### Usage
 
@@ -525,8 +525,8 @@ Delete messages containing certain keywords.
 
 | Argument         | Type              | Required | Description                                        | Details |
 | ---------------- | ----------------- | -------- | -------------------------------------------------- | ------- |
-| text             | [Text](#Text)     | Yes      | All messages containing this word will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.          |         |
+| text             | [Text](#Text)     | Yes      | Semua pesan yang mengandung kata ini akan dihapus. |         |
+| numberOfMessages | [Number](#Number) | No       | Jumlah pesan yang akan dicari.                     |         |
 
 ### Examples
 
@@ -536,7 +536,7 @@ Delete messages containing certain keywords.
 
 ## !clearInvites
 
-Clear invites of the server/a user.
+Hapus undangan dari server/pengguna.
 
 ### Usage
 
@@ -1602,7 +1602,7 @@ Purge messages in a channel.
 | Argument | Type              | Required | Description                          | Details |
 | -------- | ----------------- | -------- | ------------------------------------ | ------- |
 | quantity | [Number](#Number) | Yes      | How many messages should be deleted. |         |
-| user     | [User](#User)     | No       | cmd.purge.self.args.user             |         |
+| user     | [User](#User)     | No       | User whose messages are deleted.     |         |
 
 ### Examples
 

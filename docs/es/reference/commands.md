@@ -283,9 +283,9 @@ Banea a un usuario del servidor.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                          |
-| --------------------------------- | --------- | ----------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                                                  |
+| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -1602,7 +1602,7 @@ Elimina mensajes en un canal.
 | Argument | Type              | Required | Description                               | Details |
 | -------- | ----------------- | -------- | ----------------------------------------- | ------- |
 | quantity | [Number](#Number) | Yes      | Cuantos mensajes deberían ser eliminados. |         |
-| user     | [User](#User)     | No       | cmd.purge.self.args.user                  |         |
+| user     | [User](#User)     | No       | User whose messages are deleted.          |         |
 
 ### Examples
 

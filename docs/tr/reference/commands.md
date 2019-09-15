@@ -283,9 +283,9 @@ Kullanıcıyı sunucudan banlamak için.
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                          |
-| --------------------------------- | --------- | ------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type          | Description                                                                  |
+| --------------------------------- | --------- | ------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -1602,7 +1602,7 @@ Purge messages in a channel.
 | Argument | Type          | Required | Description                          | Details |
 | -------- | ------------- | -------- | ------------------------------------ | ------- |
 | quantity | [Sayı](#Sayı) | Yes      | How many messages should be deleted. |         |
-| user     | [User](#User) | No       | cmd.purge.self.args.user             |         |
+| user     | [User](#User) | No       | User whose messages are deleted.     |         |
 
 ### Examples
 
