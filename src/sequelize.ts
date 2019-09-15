@@ -291,6 +291,8 @@ export enum Lang {
 	ro = 'ro',
 	ru = 'ru',
 	tr = 'tr',
+	zh_CN = 'zh_CN',
+	zh_TW = 'zh_TW',
 
 	// Legacy
 	ur_PK = 'ur_PK',
