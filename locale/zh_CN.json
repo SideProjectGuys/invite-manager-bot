@@ -1,7 +1,7 @@
 {
 	"bot": {
 		"invite": {
-			"title": "Добавете бот-a към вашия сървър"
+			"title": "Add bot to your server"
 		},
 		"patreon": {
 			"title": "Patreon"
@@ -10,56 +10,56 @@
 			"title": "Support Discord"
 		},
 		"website": {
-			"title": "Уебсайт на бота"
+			"title": "Bot website"
 		},
-		"mentionHelp": "Моят текущ префикс е `{{{ prefix }}}` \n\nИзползвайте `{{{ prefix }}}help` за повече помощ."
+		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
 	},
 	"captcha": {
-		"invalid": "Captcha не съвпадна. Моля, опитайте отново."
+		"invalid": "Captcha didn't match, please try again."
 	},
 	"cmd": {
 		"addInvites": {
 			"amount": {
-				"negative": "Премахнати **{{ amount }}** покани от {{{ member }}}, сега на: **{{ totalInvites }}** покани.",
-				"positive": "Добавено **{{ amount }}** покани за {{{ member }}}, сега на: **{{ totalInvites }}** покани."
+				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites.",
+				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites."
 			},
 			"self": {
 				"args": {
-					"amount": "Количеството покани, които потребителят ще получи / загуби. Използвайте отрицателен (-) номер за премахване на покани.",
-					"reason": "Причината за добавяне / премахване на поканите.",
-					"user": "Потребителят ще получи / загуби бонус за поканите."
+					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
+					"reason": "The reason for adding/removing the invites.",
+					"user": "The user that will receive/lose the bonus invites."
 				},
-				"description": "Добавя/Премахва покани на/от член."
+				"description": "Adds/Removes invites to/from a member."
 			},
-			"zero": "Добавянето на нулеви покани всъщност няма смисъл ...",
-			"numberTooLarge": "Предоставеният от вас номер е твърде голям.",
-			"numberTooSmall": "Предоставеният от вас номер е твърде малък."
+			"zero": "Adding zero invites doesn't really make sense...",
+			"numberTooLarge": "The number you provided is too big.",
+			"numberTooSmall": "The number you provided is too small."
 		},
 		"addRank": {
-			"created": "Добавен ранг {{{ role }}}, който се нуждае от {{ invites }} покани и има следното описание: {{ description }}",
-			"roleTooHigh": "Ролята {{{ role }}} е по-висока от моята роля ({{{ myRole }}}), така че няма да мога да я присвоя на членове, които я печелят.",
+			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
+			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
 			"self": {
 				"args": {
-					"info": "Описание, което потребителите ще видят, за да знаят повече за този ранг.",
-					"invites": "Количеството покани, необходими за достигане на ранга.",
-					"role": "Ролята, която потребителят ще получи, когато достигне този ранг."
+					"info": "A description that users will see so they know more about this rank.",
+					"invites": "The amount of invites needed to reach the rank.",
+					"role": "The role which the user will receive when reaching this rank."
 				},
-				"description": "Добавете нов ранг."
+				"description": "Add a new rank."
 			},
-			"updated": "Ранг {{{ role }}} актуализиран: Сега се нуждае от {{ invites }} покани и има следното описание: {{ description }}"
+			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}"
 		},
 		"ban": {
-			"canNotBan": "Не мога да банна този потребител.",
-			"done": "Потребителят е успешно баннат.",
-			"error": "Възникна грешка при банването на този потребител:\n{{ error }}",
-			"missingPermissions": "Имам нужда от разрешение на „Бан за членове“, за да използвам тази команда.",
+			"canNotBan": "I cannot ban this user.",
+			"done": "The user was successfully banned.",
+			"error": "There was an error banning this user:\n{{ error }}",
+			"missingPermissions": "I need the `Ban Members` permission to use this command.",
 			"self": {
 				"args": {
-					"deleteMessageDays": "Колко стари съобщения ще бъдат изтрити (в дни).",
-					"reason": "Защо потребителят беше баннат.",
+					"deleteMessageDays": "How far back messages will be deleted (in days).",
+					"reason": "Why was the user banned.",
 					"user": "User to ban."
 				},
-				"description": "Банни член от сървъра.",
+				"description": "Ban a member from the server.",
 				"flags": {
 					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
@@ -67,54 +67,54 @@
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
 		},
 		"botConfig": {
-			"canNotClear": "Конфигурационната настройка **{{ key }}** не може да бъде изчистена. Можете да използвате `{{ prefix }}botConfig {{ key }} default`, за да го нулирате до стойността по подразбиране.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
 			"changed": {
-				"text": "Тази конфигурация е променена.\nИзползвайте `{{ prefix }} botConfig {{ key }}<value>`, за да го промените отново.\nИзползвайте `{{ prefix }} botConfig {{ key }} default`, за да го нулирате по подразбиране."
+				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
 			},
 			"current": {
-				"clear": "Използвайте `{{ prefix }} botConfig {{ key }} none`, за да го изчистите.",
-				"notSet": "Понастоящем тази конфигурация е зададена **not**.\nИзползвайте `{{ prefix }} config {{ key }}<value>`, за да го зададете.",
-				"text": "Понастоящем тази конфигурация е зададена.\nИзползвайте `{{ prefix }} botConfig {{ key }}<value>`, за да го промените.\nИзползвайте `{{ prefix }} botConfig {{ key }} default`, за да го нулирате по подразбиране.",
-				"title": "Текуща стойност"
+				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
+				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
+				"title": "Current Value"
 			},
-			"customOnly": "** Тази команда е достъпна само за персонализирани ботове. **\nАко търсите конфигурацията на вашия сървър, моля използвайте командата `{{ prefix }} config`.\n\nПосетете нашата страница за patreon, за да научите повече за това как можете да получите собствен персонализиран бот: {{{ patreon }}}",
+			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord поддържа само twitch.tv URL адреси за поточната активност."
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
 			},
 			"new": {
-				"title": "Нова стойност"
+				"title": "New Value"
 			},
-			"none": "Нито един",
-			"notSet": "Тези настройки не са зададени",
+			"none": "None",
+			"notSet": "These settings are not set",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Преглед"
+				"title": "Preview"
 			},
 			"previous": {
-				"title": "Предишна стойност"
+				"title": "Previous Value"
 			},
-			"sameValue": "Тази конфигурация вече е настроена на тази стойност.",
+			"sameValue": "This config is already set to that value.",
 			"self": {
 				"args": {
-					"key": "Настройката за конфигурация на бот, която искате да покажете / промените.",
-					"value": "Новата стойност на настройката."
+					"key": "The bot config setting which you want to show/change.",
+					"value": "The new value of the setting."
 				},
-				"description": "Показване и промяна на конфигурацията на бота."
+				"description": "Show and change the config of the bot."
 			},
-			"text": "По-долу са всички конфигурационни настройки на вашия бот.\nИзползвайте `{{ prefix }} botConfig <key>`, за да видите една настройка\nИзползвайте `{{ prefix }} botConfig <key> <value>`, за да настроите конфигурацията <key> <value>",
-			"title": "Конфигуриране на персонализиран Бот"
+			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"title": "Custom Bot Config"
 		},
 		"botInfo": {
 			"guilds": "Guilds",
-			"members": "Потребители",
+			"members": "Members",
 			"premium": {
-				"active": "Този сървър има **активен премиум** абонамент.",
-				"custom": "Използвате персонализирана версия на бота!",
-				"none": "Този сървър в момента **няма** премиум.",
-				"title": "Премиум"
+				"active": "This server has an **active premium** subscription.",
+				"custom": "You are using a custom version of the bot!",
+				"none": "This server currently **does not** have premium.",
+				"title": "Premium"
 			},
 			"self": {
-				"description": "Вземете обща информация за бота."
+				"description": "Get general information about the bot."
 			},
 			"shards": {
 				"current": "Current Shard",

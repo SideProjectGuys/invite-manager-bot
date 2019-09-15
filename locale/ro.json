@@ -61,7 +61,7 @@
 				},
 				"description": "Interzice un membru de pe acest server.",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "User whose messages get deleted",
 					"quantity": "How many messages should be deleted.",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "Purge messages in a channel."
 			},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs"
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "Canceled"

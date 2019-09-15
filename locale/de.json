@@ -61,7 +61,7 @@
 				},
 				"description": "Bannt ein Mitglied vom Server.",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "Benutzer wessen nachricht gelöscht wird.",
 					"quantity": "Wieviele Nachrichten sollen entfernt werden.",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "Entferne Nachrichten in einem Kanal."
 			},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs"
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "Canceled"

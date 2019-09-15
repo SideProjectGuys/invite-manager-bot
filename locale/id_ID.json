@@ -61,7 +61,7 @@
 				},
 				"description": "Blokir anggota dari server.",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -124,91 +124,91 @@
 			"version": "Versi"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Kasus dihapus",
+			"notFound": "Kasus tidak ditemukan",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Nomor kasus",
+					"reason": "Alasan untuk menghapus kasus."
 				},
-				"description": "Delete a specific case."
+				"description": "Hapus kasus tertentu,"
 			},
-			"title": "Case #{{ id }}"
+			"title": "Kasus #{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "Kasus tidak ditemukan",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Nomor kasus"
 				},
-				"description": "View info about a specific case."
+				"description": "Lihat informasi tentang kasus tertentu."
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
-			"title": "Case #{{ id }}"
+			"strike": "{{{ member }}} menerima {{{ amount }}} peringatan karena melanggar peraturan {{{ violation }}} {{{ date }}}.",
+			"title": "Kasus #{{ id }}"
 		},
 		"check": {
-			"noHistory": "User does not have any history.",
+			"noHistory": "Pengguna tidak mempunyai riwayat apapun.",
 			"punishments": {
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
-				"title": "Punishments",
-				"total": "Punishments Total",
-				"totalText": "{{{ amount }}} punishments."
+				"entry": "{{ punishment }} karena dia mempunyai {{ amount }} peringatan {{ date }}",
+				"title": "Hukuman.",
+				"total": "Total Hukuman",
+				"totalText": "{{{ amount }}} hukuman."
 			},
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "Pengguna untuk memeriksa"
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "Periksa riwayat pelanggaran dan hukuman pengguna."
 			},
 			"strikes": {
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
+				"entry": "#{{ id }} - Menerima {{ amount }} peringatan untuk {{ violation }} {{ date }}",
 				"title": "Strikes",
-				"total": "Strikes Total",
-				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
+				"total": "Total Peringatan",
+				"totalText": "Menerima {{{ total }}} peringatan untuk {{{ amount }}} pelanggaran."
 			}
 		},
 		"clean": {
 			"error": "Error",
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"invalidQuantity": "Kamu harus menentukan jumlah positif pesan untuk dibersihkan.",
 			"self": {
 				"args": {
-					"member": "User whose messages get deleted.",
-					"numberOfMessages": "Number of messages that will be searched.",
-					"quantity": "How many messages should be deleted.",
-					"type": "The type of messages that will be deleted."
+					"member": "Pengguna yang pesannya dihapus.",
+					"numberOfMessages": "Jumlah pesan yang akan dicari.",
+					"quantity": "Berapa banyak pesan yang harus dihapus.",
+					"type": "Jenis pesan yang akan dihapus."
 				},
-				"description": "Clean a channel of certain message types."
+				"description": "Bersihkan saluran dari jenis pesan tertentu."
 			},
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"text": "Menghapus {{ amount }} messages.\nPesan ini akan dihapus dalam 5 detik.",
+			"title": "Pesan terhapus",
+			"textReactions": "Menghapus {{ amount }} pesan yang berisi reaksi."
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "All messages shorter than this will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"maxTextLength": "Semua pesan yang lebih pendek dari ini akan dihapus.",
+					"numberOfMessages": "Jumlah pesan yang akan dicari."
 				},
-				"description": "Clear short messages"
+				"description": "Hapus pesan pendek"
 			}
 		},
 		"cleanText": {
 			"self": {
 				"args": {
-					"numberOfMessages": "Number of messages that will be searched.",
-					"text": "All messages containing this word will be deleted."
+					"numberOfMessages": "Jumlah pesan yang akan dicari.",
+					"text": "Semua pesan yang mengandung kata ini akan dihapus."
 				},
-				"description": "Delete messages containing certain keywords."
+				"description": "Hapus pesan yang mengandung kata kunci tertentu."
 			}
 		},
 		"clearInvites": {
-			"done": "Cleared invites for {{ amount }} users!",
+			"done": "Menghapus undangan untuk {{ amount }} pengguna!",
 			"self": {
 				"args": {
-					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
+					"clearBonus": "Pass `true` jika kamu ingin menghapus bonus undangan, jika tidak `false` (standar).",
 					"user": "The user to clear all invites from. If omitted clears all users."
 				},
-				"description": "Clear invites of the server/a user.",
+				"description": "Hapus undangan dari server/pengguna.",
 				"flags": {
 					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched.",
 					"date": "The date start at which invites should be counted. Default is today."
@@ -221,13 +221,13 @@
 				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
+				"clear": "Gunakan `{{ prefix }}config {{ key }} none` untuk menghapus itu.",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"title": "Nilai Sekarang."
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
+				"canNotReadMessages": "Saya tidak mempunyai izin untuk **membaca pesan** di channel itu.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
 				"mustBeTextChannel": "That channel is not a text channel."
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "User whose messages get deleted",
 					"quantity": "How many messages should be deleted.",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "Purge messages in a channel."
 			},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs"
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "Canceled"

@@ -61,7 +61,7 @@
 				},
 				"description": "Bannir un membre du serveur.",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "Utilisateur dont les messages sont supprimés.",
 					"quantity": "Combien de messages doivent être supprimés?",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "Purger les messages dans un canal."
 			},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "Cette commande est uniquement disponible pour les abonnés premium!",
 		"rateLimit": "Ralentissez ! Veuillez patienter {{ cooldown }} secondes et réessayez.",
 		"role": "Vous n'êtes pas autorisé à utiliser cette commande.\nVous avez besoin de l'un des rôles suivants: {{{ roles }}}",
-		"viewAuditLogs": "Voir les logs du serveur"
+		"viewAuditLogs": "Voir les logs du serveur",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "Annulé"
@@ -1164,13 +1167,13 @@
 		"boolean": {
 			"invalid": "Ce n'est pas une valeur oui/non valide.",
 			"type": "Booléen",
-			"typeInfo": "resolvers.boolean.typeInfo"
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
 		},
 		"channel": {
 			"multiple": "Plusieurs salons trouvés. {{{ channels }}}",
 			"notFound": "Salon non trouvé.",
 			"type": "Salon",
-			"typeInfo": "resolvers.channel.typeInfo"
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Plusieurs commandes trouvées. {{{ commands }}}",
@@ -1183,7 +1186,7 @@
 			"invalid": "Valeur invalide.",
 			"validValues": "Utilisez une des valeurs suivantes : {{{ values }}}",
 			"type": "Énumération",
-			"typeInfo": "resolvers.enum.typeInfo"
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
 		},
 		"invalid": "Valeur invalide pour `{{ arg }}` : {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1195,23 +1198,23 @@
 		"number": {
 			"invalid": "Ce n'est pas un nombre valide.",
 			"type": "Nombre",
-			"typeInfo": "resolvers.number.typeInfo"
+			"typeInfo": "This arguments expects a number"
 		},
 		"role": {
 			"multiple": "Plusieurs rôles trouvés. {{{ roles }}}",
 			"notFound": "Rôle non trouvé.",
 			"type": "Role",
-			"typeInfo": "resolvers.role.typeInfo"
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "Plusieurs utilisateurs trouvés. {{{ users }}}",
 			"notFound": "L'utilisateur n'a pas été trouvé.",
 			"type": "Utilisateur",
-			"typeInfo": "resolvers.user.typeInfo"
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "Texte",
-			"typeInfo": "resolvers.string.typeInfo"
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
 		},
 		"settingsvalue": {
 			"type": "Valeur"
@@ -1226,7 +1229,7 @@
 		},
 		"invitecode": {
 			"type": "Code d'invitation",
-			"typeInfo": "resolvers.invitecode.typeInfo"
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
 		}
 	},
 	"settings": {
