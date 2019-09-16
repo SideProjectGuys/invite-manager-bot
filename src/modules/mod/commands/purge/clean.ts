@@ -3,8 +3,11 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, NumberResolver } from '../../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../../types';
-import { to } from '../../../../util';
+import {
+	CommandGroup,
+	GuildPermission,
+	ModerationCommand
+} from '../../../../types';
 
 enum CleanType {
 	images = 'images',
@@ -38,6 +41,11 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			botPermissions: [
+				GuildPermission.READ_MESSAGE_HISTORY,
+				GuildPermission.MANAGE_MESSAGES,
+				GuildPermission.MANAGE_EMOJIS
+			],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -76,36 +84,32 @@ export default class extends Command {
 
 		const messagesToBeDeleted = this.cleanFunctions[type](messages);
 
-		let error: any;
 		if (type === CleanType.reactions) {
 			for (const messageToBeDeleted of messagesToBeDeleted) {
 				await messageToBeDeleted.removeReactions().catch(() => undefined);
 			}
 			message.delete().catch(() => undefined);
+
+			embed.title = t('cmd.clean.title');
+			embed.description = t('cmd.clean.textReactions', {
+				amount: `**${messagesToBeDeleted.length}**`
+			});
 		} else {
 			messagesToBeDeleted.push(message);
-			[error] = await to(
-				this.client.deleteMessages(
+
+			try {
+				await this.client.deleteMessages(
 					message.channel.id,
 					messagesToBeDeleted.map(m => m.id)
-				)
-			);
-		}
+				);
 
-		if (error) {
-			embed.title = t('cmd.clean.error');
-			embed.description = error.message;
-		} else {
-			if (type === CleanType.reactions) {
-				embed.title = t('cmd.clean.title');
-				embed.description = t('cmd.clean.textReactions', {
-					amount: `**${messagesToBeDeleted.length}**`
-				});
-			} else {
 				embed.title = t('cmd.clean.title');
 				embed.description = t('cmd.clean.text', {
 					amount: `**${messagesToBeDeleted.length}**`
 				});
+			} catch (error) {
+				embed.title = t('cmd.clean.error');
+				embed.description = error.message;
 			}
 		}
 

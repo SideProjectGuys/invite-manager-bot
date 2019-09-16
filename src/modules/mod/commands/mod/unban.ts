@@ -9,7 +9,6 @@ import {
 	GuildPermission,
 	ModerationCommand
 } from '../../../../types';
-import { to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -43,11 +42,9 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetUser);
 
-		const [error] = await to(guild.unbanMember(targetUser.id, reason));
+		try {
+			await guild.unbanMember(targetUser.id, reason);
 
-		if (error) {
-			embed.description = t('cmd.unban.error', { error });
-		} else {
 			const logEmbed = this.client.mod.createBasicEmbed(message.author);
 
 			const usr =
@@ -63,6 +60,8 @@ export default class extends Command {
 			await this.client.logModAction(guild, logEmbed);
 
 			embed.description = t('cmd.unban.done');
+		} catch (error) {
+			embed.description = t('cmd.unban.error', { error });
 		}
 
 		const response = await this.sendReply(message, embed);

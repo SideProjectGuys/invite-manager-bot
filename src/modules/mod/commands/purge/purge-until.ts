@@ -3,8 +3,11 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { StringResolver } from '../../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../../types';
-import { to } from '../../../../util';
+import {
+	CommandGroup,
+	GuildPermission,
+	ModerationCommand
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -19,6 +22,10 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			botPermissions: [
+				GuildPermission.READ_MESSAGE_HISTORY,
+				GuildPermission.MANAGE_MESSAGES
+			],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -47,16 +54,18 @@ export default class extends Command {
 			embed.description = t('cmd.purgeUntil.msgNotFound');
 			return this.sendReply(message, embed);
 		} else {
-			const [error] = await to(
-				this.client.deleteMessages(message.channel.id, messages.map(m => m.id))
-			);
-			if (error) {
-				embed.title = t('cmd.purgeUntil.error');
-				embed.description = JSON.stringify(error);
-			} else {
+			try {
+				await this.client.deleteMessages(
+					message.channel.id,
+					messages.map(m => m.id)
+				);
+
 				embed.description = t('cmd.purgeUntil.text', {
 					amount: `**${messages.length}**`
 				});
+			} catch (error) {
+				embed.title = t('cmd.purgeUntil.error');
+				embed.description = JSON.stringify(error);
 			}
 
 			const response = await this.sendReply(message, embed);

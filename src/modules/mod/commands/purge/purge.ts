@@ -3,8 +3,12 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver, UserResolver } from '../../../../framework/resolvers';
-import { BasicUser, CommandGroup, ModerationCommand } from '../../../../types';
-import { to } from '../../../../util';
+import {
+	BasicUser,
+	CommandGroup,
+	GuildPermission,
+	ModerationCommand
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -23,6 +27,10 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			botPermissions: [
+				GuildPermission.READ_MESSAGE_HISTORY,
+				GuildPermission.MANAGE_MESSAGES
+			],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -53,21 +61,21 @@ export default class extends Command {
 			);
 		}
 		messages.push(message);
-		const [error] = await to(
-			this.client.deleteMessages(
+
+		try {
+			await this.client.deleteMessages(
 				message.channel.id,
 				messages.map(m => m.id),
 				'purge command'
-			)
-		);
-		if (error) {
-			embed.title = t('cmd.purge.error');
-			embed.description = error.message;
-		} else {
+			);
+
 			embed.title = t('cmd.purge.title');
 			embed.description = t('cmd.purge.text', {
 				amount: `**${messages.length}**`
 			});
+		} catch (error) {
+			embed.title = t('cmd.purge.error');
+			embed.description = error.message;
 		}
 
 		const response = await this.sendReply(message, embed);

@@ -1,4 +1,4 @@
-import { Embed, Guild, Member, Message, TextChannel, User } from 'eris';
+import { Embed, Guild, Member, Message, TextChannel, User, Role } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -874,5 +874,32 @@ export class ModerationService {
 				}
 			}
 		});
+	}
+
+	public getHighestRole(guild: Guild, roles: string[]): Role {
+		return roles
+			.map(role => guild.roles.get(role))
+			.filter(role => !!role)
+			.reduce((prev, role) => (role.position > prev.position ? role : prev), {
+				position: -1
+			} as Role);
+	}
+
+	public isPunishable(
+		guild: Guild,
+		targetMember: Member,
+		authorMember: Member,
+		me: Member
+	) {
+		const highestBotRole = this.getHighestRole(guild, me.roles);
+		const highestMemberRole = this.getHighestRole(guild, targetMember.roles);
+		const highestAuthorRole = this.getHighestRole(guild, authorMember.roles);
+
+		return (
+			targetMember.id !== guild.ownerID &&
+			targetMember.id !== me.user.id &&
+			highestBotRole.position > highestMemberRole.position &&
+			highestAuthorRole.position > highestMemberRole.position
+		);
 	}
 }

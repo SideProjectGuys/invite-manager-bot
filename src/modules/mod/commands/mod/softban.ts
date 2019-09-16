@@ -13,7 +13,6 @@ import {
 	GuildPermission,
 	ModerationCommand
 } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -54,7 +53,7 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
-		if (isPunishable(guild, targetMember, message.member, me)) {
+		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
 			await this.client.mod.informAboutPunishment(
 				targetMember,
 				PunishmentType.softban,
@@ -63,45 +62,40 @@ export default class extends Command {
 			);
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
-			let [error] = await to(targetMember.ban(days, reason));
+			try {
+				await targetMember.ban(days, reason);
+				await targetMember.unban('softban');
 
-			if (error) {
+				// Make sure member exists in DB
+				await members.insertOrUpdate({
+					id: targetMember.user.id,
+					name: targetMember.user.username,
+					discriminator: targetMember.user.discriminator
+				});
+
+				const punishment = await punishments.create({
+					id: null,
+					guildId: guild.id,
+					memberId: targetMember.id,
+					type: PunishmentType.softban,
+					amount: 0,
+					args: '',
+					reason: reason,
+					creatorId: message.author.id
+				});
+
+				await this.client.mod.logPunishmentModAction(
+					guild,
+					targetMember.user,
+					punishment.type,
+					punishment.amount,
+					[{ name: 'Reason', value: reason }],
+					message.author
+				);
+
+				embed.description = t('cmd.softBan.done');
+			} catch (error) {
 				embed.description = t('cmd.softBan.error', { error });
-			} else {
-				[error] = await to(targetMember.unban('softban'));
-
-				if (error) {
-					embed.description = t('cmd.softBan.unBanError', { error });
-				} else {
-					// Make sure member exists in DB
-					await members.insertOrUpdate({
-						id: targetMember.user.id,
-						name: targetMember.user.username,
-						discriminator: targetMember.user.discriminator
-					});
-
-					const punishment = await punishments.create({
-						id: null,
-						guildId: guild.id,
-						memberId: targetMember.id,
-						type: PunishmentType.softban,
-						amount: 0,
-						args: '',
-						reason: reason,
-						creatorId: message.author.id
-					});
-
-					await this.client.mod.logPunishmentModAction(
-						guild,
-						targetMember.user,
-						punishment.type,
-						punishment.amount,
-						[{ name: 'Reason', value: reason }],
-						message.author
-					);
-
-					embed.description = t('cmd.softBan.done');
-				}
 			}
 		} else {
 			embed.description = t('cmd.ban.canNotSoftBan');

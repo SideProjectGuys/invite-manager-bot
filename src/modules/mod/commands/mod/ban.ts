@@ -14,7 +14,6 @@ import {
 	GuildPermission,
 	ModerationCommand
 } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -64,7 +63,7 @@ export default class extends Command {
 
 		if (
 			!targetMember ||
-			isPunishable(guild, targetMember, message.member, me)
+			this.client.mod.isPunishable(guild, targetMember, message.member, me)
 		) {
 			if (targetMember) {
 				await this.client.mod.informAboutPunishment(
