@@ -204,7 +204,7 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `ar`, `bg`, `cs`, `de`, `el`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `ur_PK`, `sv`, `sr`, `hu`, `lt`
+Possible values: `ar`, `bg`, `cs`, `de`, `el`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`
 
 Example:
 

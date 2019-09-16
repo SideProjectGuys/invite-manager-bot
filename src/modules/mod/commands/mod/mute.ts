@@ -14,7 +14,6 @@ import {
 	ScheduledActionType
 } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -58,7 +57,9 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
-		} else if (isPunishable(guild, targetMember, message.member, me)) {
+		} else if (
+			this.client.mod.isPunishable(guild, targetMember, message.member, me)
+		) {
 			await this.client.mod.informAboutPunishment(
 				targetMember,
 				PunishmentType.mute,
@@ -66,11 +67,9 @@ export default class extends Command {
 				{ reason }
 			);
 
-			const [error] = await to(targetMember.addRole(mutedRole, reason));
+			try {
+				await targetMember.addRole(mutedRole, reason);
 
-			if (error) {
-				embed.description = t('cmd.mute.error', { error });
-			} else {
 				// Make sure member exists in DB
 				await members.insertOrUpdate({
 					id: targetMember.user.id,
@@ -111,6 +110,8 @@ export default class extends Command {
 				}
 
 				embed.description = t('cmd.mute.done');
+			} catch (error) {
+				embed.description = t('cmd.mute.error', { error });
 			}
 		} else {
 			embed.description = t('cmd.mute.canNotMute');

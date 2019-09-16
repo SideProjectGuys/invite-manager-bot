@@ -4,7 +4,6 @@ import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { MemberResolver } from '../../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -36,12 +35,12 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.unmute.missingRole');
-		} else if (isPunishable(guild, targetMember, message.member, me)) {
-			const [error] = await to(targetMember.removeRole(mutedRole));
+		} else if (
+			this.client.mod.isPunishable(guild, targetMember, message.member, me)
+		) {
+			try {
+				await targetMember.removeRole(mutedRole);
 
-			if (error) {
-				embed.description = t('cmd.unmute.error', { error });
-			} else {
 				const logEmbed = this.client.mod.createBasicEmbed(targetMember);
 
 				const usr =
@@ -57,6 +56,8 @@ export default class extends Command {
 				await this.client.logModAction(guild, logEmbed);
 
 				embed.description = t('cmd.unmute.done');
+			} catch (error) {
+				embed.description = t('cmd.unmute.error', { error });
 			}
 		} else {
 			embed.description = t('cmd.unmute.canNotUnmute');

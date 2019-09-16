@@ -262,9 +262,12 @@ export class RabbitMqService {
 
 				const premium = await this.client.cache.premium.get(guildId);
 
+				const disabled = this.client.disabledGuilds.has(guildId);
+
 				await sendResponse({
 					owner,
 					premium,
+					disabled,
 					settings: sets,
 					perms,
 					joinChannelPerms,

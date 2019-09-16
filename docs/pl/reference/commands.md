@@ -9,31 +9,51 @@ According to the **Type** of the argument or flag you can provide different valu
 
 ### Boolean
 
-resolvers.boolean.typeInfo
+This arguments expects `true` or `false`. You can also use `yes` and `no`.
 
 ### Number
 
-resolvers.number.typeInfo
+This arguments expects a number
 
 ### Enum
 
-resolvers.enum.typeInfo
+This arguments expects a value from a specific set of valid values.
+
+> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.
 
 ### Invite Code
 
-resolvers.invitecode.typeInfo
+This arguments expects a Discord Invite Code.
+
+> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.
 
 ### User
 
-resolvers.user.typeInfo
+This arguments expects a Discord User. You can use any of the following methods to provide a user:
+
+- Mention the user: `@Valandur`
+- Use their ID: `102785693046026240`
+- Use their name: `Valandur`
+- Use their name and discriminator: `Valandur#3581`
+- Use quotes if their name has a space: `"Valandur with a space"`
 
 ### Role
 
-resolvers.role.typeInfo
+This arguments expects a Discord Role. You can use any of the following methods to provide a role:
+
+- Mention the role: `@Admin`
+- Use the ID: `102785693046026240`
+- Use the name: `Admin`
+- Use quotes if the name has a space: `"Admin with a space"`
 
 ### Channel
 
-resolvers.channel.typeInfo
+This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:
+
+- Mention the channel: `#general`
+- Use the ID: `409846838129197057`
+- Use the name: `general`
+- Use quotes if the name has a space: `"general with a space"`
 
 ### Command
 
@@ -41,7 +61,9 @@ resolvers.command.typeInfo
 
 ### Text
 
-resolvers.string.typeInfo
+This arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.
+
+> If the text is the last argument you don't have to use quotes.
 
 ### Date
 
@@ -261,9 +283,9 @@ Banuje członka z serwera.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                          |
-| --------------------------------- | --------- | ----------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                                                  |
+| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -1580,7 +1602,7 @@ Purge messages in a channel.
 | Argument | Type              | Required | Description                          | Details |
 | -------- | ----------------- | -------- | ------------------------------------ | ------- |
 | quantity | [Number](#Number) | Yes      | How many messages should be deleted. |         |
-| user     | [User](#User)     | No       | cmd.purge.self.args.user             |         |
+| user     | [User](#User)     | No       | User whose messages are deleted.     |         |
 
 ### Examples
 

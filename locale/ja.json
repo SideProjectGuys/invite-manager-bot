@@ -61,7 +61,7 @@
 				},
 				"description": "サーバーからメンバーをBANします。",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "ユーザーのメッセージが削除されました",
 					"quantity": "削除するメッセージ数。",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "チャネル内のメッセージを削除します。"
 			},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "このコマンドはプレミアムメンバーにのみ利用可能です。",
 		"rateLimit": "ちょっと待って！ {{cooldown}}秒間待ってからもう一度お試しください。",
 		"role": "このコマンドを使用する権限がありません。\n次のいずれかの役職が必要です。{{{roles}}}",
-		"viewAuditLogs": "サーバーログの表示"
+		"viewAuditLogs": "サーバーログの表示",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "キャンセルしました。"

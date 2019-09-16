@@ -14,7 +14,6 @@ import {
 	GuildPermission,
 	ModerationCommand
 } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -64,7 +63,7 @@ export default class extends Command {
 
 		if (
 			!targetMember ||
-			isPunishable(guild, targetMember, message.member, me)
+			this.client.mod.isPunishable(guild, targetMember, message.member, me)
 		) {
 			if (targetMember) {
 				await this.client.mod.informAboutPunishment(
@@ -76,18 +75,14 @@ export default class extends Command {
 			}
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
-			const [error] = await to(
-				this.client.banGuildMember(guild.id, targetUser.id, days, reason)
-			);
+			try {
+				await this.client.banGuildMember(guild.id, targetUser.id, days, reason);
 
-			if (error) {
-				embed.description = t('cmd.ban.error', { error });
-			} else {
 				// Make sure member exists in DB
 				await members.insertOrUpdate({
-					id: targetMember.user.id,
-					name: targetMember.user.username,
-					discriminator: targetMember.user.discriminator
+					id: targetUser.id,
+					name: targetUser.username,
+					discriminator: targetUser.discriminator
 				});
 
 				const punishment = await punishments.create({
@@ -111,6 +106,8 @@ export default class extends Command {
 				);
 
 				embed.description = t('cmd.ban.done');
+			} catch (error) {
+				embed.description = t('cmd.ban.error', { error });
 			}
 		} else {
 			embed.description = t('cmd.ban.canNotBan');

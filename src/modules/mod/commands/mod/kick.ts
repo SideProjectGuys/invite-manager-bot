@@ -12,7 +12,6 @@ import {
 	GuildPermission,
 	ModerationCommand
 } from '../../../../types';
-import { isPunishable, to } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -46,7 +45,7 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
-		if (isPunishable(guild, targetMember, message.member, me)) {
+		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
 			await this.client.mod.informAboutPunishment(
 				targetMember,
 				PunishmentType.kick,
@@ -54,11 +53,9 @@ export default class extends Command {
 				{ reason }
 			);
 
-			const [error] = await to(targetMember.kick(reason));
+			try {
+				await targetMember.kick(reason);
 
-			if (error) {
-				embed.description = t('cmd.kick.error', { error });
-			} else {
 				// Make sure member exists in DB
 				await members.insertOrUpdate({
 					id: targetMember.user.id,
@@ -87,6 +84,8 @@ export default class extends Command {
 				);
 
 				embed.description = t('cmd.kick.done');
+			} catch (error) {
+				embed.description = t('cmd.kick.error', { error });
 			}
 		} else {
 			embed.description = t('cmd.kick.canNotKick');

@@ -283,9 +283,9 @@ resolvers.duration.typeInfo
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                          |
-| --------------------------------- | --------- | ------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type          | Description                                                                  |
+| --------------------------------- | --------- | ------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -1599,10 +1599,10 @@ InviteManager のプレミアムバージョンに関する情報。
 
 ### Arguments
 
-| Argument | Type                  | Required | Description              | Details |
-| -------- | --------------------- | -------- | ------------------------ | ------- |
-| quantity | [番号](#番号)         | Yes      | 削除するメッセージ数。   |         |
-| user     | [ユーザー](#ユーザー) | No       | cmd.purge.self.args.user |         |
+| Argument | Type                  | Required | Description                      | Details |
+| -------- | --------------------- | -------- | -------------------------------- | ------- |
+| quantity | [番号](#番号)         | Yes      | 削除するメッセージ数。           |         |
+| user     | [ユーザー](#ユーザー) | No       | User whose messages are deleted. |         |
 
 ### Examples
 

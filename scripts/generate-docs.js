@@ -21,7 +21,9 @@ const locales = [
 	'pt_BR',
 	'ro',
 	'ru',
-	'tr'
+	'tr',
+	'zh_CN',
+	'zh_TW'
 ];
 
 const argTypes = [

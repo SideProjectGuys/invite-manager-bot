@@ -6,8 +6,11 @@ import {
 	NumberResolver,
 	StringResolver
 } from '../../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../../types';
-import { to } from '../../../../util';
+import {
+	CommandGroup,
+	GuildPermission,
+	ModerationCommand
+} from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -26,6 +29,10 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			botPermissions: [
+				GuildPermission.READ_MESSAGE_HISTORY,
+				GuildPermission.MANAGE_MESSAGES
+			],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -57,21 +64,20 @@ export default class extends Command {
 		});
 
 		messagesToBeDeleted.push(message);
-		const [error] = await to(
-			this.client.deleteMessages(
+
+		try {
+			await this.client.deleteMessages(
 				message.channel.id,
 				messagesToBeDeleted.map(m => m.id)
-			)
-		);
+			);
 
-		if (error) {
-			embed.title = t('cmd.clean.error');
-			embed.description = error;
-		} else {
 			embed.title = t('cmd.clean.title');
 			embed.description = t('cmd.clean.text', {
 				amount: `**${messagesToBeDeleted.length}**`
 			});
+		} catch (error) {
+			embed.title = t('cmd.clean.error');
+			embed.description = error;
 		}
 
 		const response = await this.sendReply(message, embed);

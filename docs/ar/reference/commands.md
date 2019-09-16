@@ -283,9 +283,9 @@ resolvers.duration.typeInfo
 
 ### Flags
 
-| Flag                              | Short     | Type        | Description                          |
-| --------------------------------- | --------- | ----------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [رقم](#رقم) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type        | Description                                                                  |
+| --------------------------------- | --------- | ----------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [رقم](#رقم) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -1603,7 +1603,7 @@ Purge messages in a channel.
 | Argument | Type                  | Required | Description                          | Details |
 | -------- | --------------------- | -------- | ------------------------------------ | ------- |
 | quantity | [رقم](#رقم)           | Yes      | How many messages should be deleted. |         |
-| user     | [المستعمل](#المستعمل) | No       | cmd.purge.self.args.user             |         |
+| user     | [المستعمل](#المستعمل) | No       | User whose messages are deleted.     |         |
 
 ### Examples
 

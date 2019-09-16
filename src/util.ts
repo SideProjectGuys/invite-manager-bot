@@ -1,11 +1,8 @@
 import {
-	Guild,
-	Member,
 	Message,
 	MessageContent,
 	MessageFile,
 	Permission,
-	Role,
 	TextChannel
 } from 'eris';
 
@@ -26,7 +23,7 @@ export class FakeChannel extends TextChannel {
 	}
 
 	public permissionsOf(memberID: string): Permission {
-		return new Permission(0b1111111111111111111110111111111, 0);
+		return new Permission(0b1111111111111111111111111111111, 0);
 	}
 }
 
@@ -55,45 +52,4 @@ export function getShardIdForGuild(guildId: any, shardCount: number) {
 	const bin = idToBinary(guildId);
 	const num = parseInt(bin.substring(0, bin.length - 22), 2);
 	return (num % shardCount) + 1;
-}
-
-export function to<T, U = any>(
-	promise: Promise<T>,
-	errorExt?: object
-): Promise<[U | null, T | undefined]> {
-	return promise
-		.then<[null, T]>((data: T) => [null, data])
-		.catch<[U, undefined]>(err => {
-			if (errorExt) {
-				Object.assign(err, errorExt);
-			}
-
-			return [err, undefined];
-		});
-}
-
-export function getHighestRole(guild: Guild, roles: string[]): Role {
-	return roles
-		.map(role => guild.roles.get(role))
-		.reduce((prev, role) => (role.position > prev.position ? role : prev), {
-			position: -1
-		} as Role);
-}
-
-export function isPunishable(
-	guild: Guild,
-	targetMember: Member,
-	authorMember: Member,
-	me: Member
-) {
-	const highestBotRole = getHighestRole(guild, me.roles);
-	const highestMemberRole = getHighestRole(guild, targetMember.roles);
-	const highestAuthorRole = getHighestRole(guild, authorMember.roles);
-
-	return (
-		targetMember.id !== guild.ownerID &&
-		targetMember.id !== me.user.id &&
-		highestBotRole.position > highestMemberRole.position &&
-		highestAuthorRole.position > highestMemberRole.position
-	);
 }

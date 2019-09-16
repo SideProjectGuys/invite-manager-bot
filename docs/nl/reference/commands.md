@@ -109,9 +109,9 @@ resolvers.duration.typeInfo
 | [botConfig](#botConfig)                 | Zie en verander de configuratie van de bot.                        | !botConfig [key][value]                     |
 | [config](#config)                       | Zie en verander de configuratie van de server.                     | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactieve Configuratie                                          | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server.          | !inviteCodeConfig [key][invitecode] [value] |
+| [inviteCodeConfig](#inviteCodeConfig)   | Zie en verander de configuratie van de invite codes van de server. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Zie en verander de configuratie van de gebruikers van deze server. | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | Configure permissions to use commands.                             | !permissions [cmd][role]                    |
+| [permissions](#permissions)             | Configureer permissies om commando's te gebruiken.                 | !permissions [cmd][role]                    |
 
 ### Info
 
@@ -122,42 +122,42 @@ resolvers.duration.typeInfo
 | [getBot](#getBot)   | Krijg een invite link voor de bot.                                                                 | !getBot         |
 | [help](#help)       | Zie help.                                                                                          | !help [command] |
 | [members](#members) | Zie de gebruiker aantal van deze server.                                                           | !members        |
-| [ping](#ping)       | Ping the bot                                                                                       | !ping           |
+| [ping](#ping)       | Mention de bot                                                                                     | !ping           |
 | [prefix](#prefix)   | Laat de huidige prefix zien van de bot.                                                            | !prefix         |
 | [setup](#setup)     | Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies) | !setup          |
 | [support](#support) | Krijg een invite link naar onze hulp server.                                                       | !support        |
 
 ### Premium
 
-| Command                   | Description                                                               | Usage             |
-| ------------------------- | ------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Exporteer data van InviteManager in een csv bestand.                      | !export \<type\>  |
-| [premium](#premium)       | Info about premium version of InviteManager.                              | !premium [action] |
-| [tryPremium](#tryPremium) | Try the premium version of InviteManager for free for a limited duration. | !tryPremium       |
+| Command                   | Description                                                                 | Usage             |
+| ------------------------- | --------------------------------------------------------------------------- | ----------------- |
+| [export](#export)         | Exporteer data van InviteManager in een csv bestand.                        | !export \<type\>  |
+| [premium](#premium)       | Informatie over de betaalde versie van InviteManager.                       | !premium [action] |
+| [tryPremium](#tryPremium) | Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd. | !tryPremium       |
 
 ### Moderation
 
-| Command                               | Description                                                                                                                                   | Usage                                                            |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Verban een gebruiker van de server.                                                                                                           | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Verwijder een specifiek geval.                                                                                                                | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | Bekijk meer informatie over een specifiek geval.                                                                                              | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Zie overtredingen en straffen van een gebruiker.                                                                                              | !check \<user\>                                                  |
-| [clean](#clean)                       | Maak een kanaal schoon van verschillende soorten berichten.                                                                                   | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Verwijder korte berichten                                                                                                                     | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Verwijder berichten die een bepaald woord bevatten.                                                                                           | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Kick een gebruiker van de server.                                                                                                             | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | Mute a user                                                                                                                                   | !mute \<user\> [reason]                                          |
-| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | Verwijder berichten in een kanaal.                                                                                                            | !purge \<quantity\> [user]                                       |
-| [purgeUntil](#purgeUntil)             | Verwijder berichten in een kanaal tot een specifiek aan berichten.                                                                            | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | Ban en dan unban een gebruiker automatisch van de server.                                                                                     | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | Add strikes to a user                                                                                                                         | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | Configureer waarschuwingen die gegeven zijn door vorige straffen.                                                                             | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | Unban a user                                                                                                                                  | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list. | !unhoist                                                         |
-| [unmute](#unmute)                     | Unmute a user                                                                                                                                 | !unmute \<user\>                                                 |
-| [warn](#warn)                         | Warn a member.                                                                                                                                | !warn \<member\> [reason]                                        |
+| Command                               | Description                                                                                                                                                       | Usage                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [ban](#ban)                           | Verban een gebruiker van de server.                                                                                                                               | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | Verwijder een specifiek geval.                                                                                                                                    | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Bekijk meer informatie over een specifiek geval.                                                                                                                  | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | Zie overtredingen en straffen van een gebruiker.                                                                                                                  | !check \<user\>                                                  |
+| [clean](#clean)                       | Maak een kanaal schoon van verschillende soorten berichten.                                                                                                       | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | Verwijder korte berichten                                                                                                                                         | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | Verwijder berichten die een bepaald woord bevatten.                                                                                                               | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | Kick een gebruiker van de server.                                                                                                                                 | !kick \<member\> [reason]                                        |
+| [mute](#mute)                         | Mute een gebruiker                                                                                                                                                | !mute \<user\> [reason]                                          |
+| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                                                  | !punishmentConfig [punishment][strikes] [args]                   |
+| [purge](#purge)                       | Verwijder berichten in een kanaal.                                                                                                                                | !purge \<quantity\> [user]                                       |
+| [purgeUntil](#purgeUntil)             | Verwijder berichten in een kanaal tot een specifiek aan berichten.                                                                                                | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | Ban en dan unban een gebruiker automatisch van de server.                                                                                                         | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | Add strikes to a user                                                                                                                                             | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | Configureer waarschuwingen die gegeven zijn door vorige straffen.                                                                                                 | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | Unban een gebruiker                                                                                                                                               | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan. | !unhoist                                                         |
+| [unmute](#unmute)                     | Unmute een gebruiker                                                                                                                                              | !unmute \<user\>                                                 |
+| [warn](#warn)                         | Waarschuw een gebruikt.                                                                                                                                           | !warn \<member\> [reason]                                        |
 
 ### Music
 
@@ -180,11 +180,11 @@ resolvers.duration.typeInfo
 
 ### Other
 
-| Command                             | Description                                                           | Usage                      |
-| ----------------------------------- | --------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Laat verschillende soorten grafieken zien van je server statistieken. | !graph \<type\> [duration] |
-| [makeMentionable](#makeMentionable) | Make a role mentionable for 60 seconds or until it was used.          | !makeMentionable \<role\>  |
-| [mentionRole](#mentionRole)         | Mention an unmentionable role.                                        | !mentionRole \<role\>      |
+| Command                             | Description                                                                | Usage                      |
+| ----------------------------------- | -------------------------------------------------------------------------- | -------------------------- |
+| [graph](#graph)                     | Laat verschillende soorten grafieken zien van je server statistieken.      | !graph \<type\> [duration] |
+| [makeMentionable](#makeMentionable) | Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt. | !makeMentionable \<role\>  |
+| [mentionRole](#mentionRole)         | Mention een niet mentionable role.                                         | !mentionRole \<role\>      |
 
 <a name='addInvites'></a>
 
@@ -283,9 +283,9 @@ Verban een gebruiker van de server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                          |
-| --------------------------------- | --------- | ----------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                                                  |
+| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
 
 ### Examples
 
@@ -942,7 +942,7 @@ Interactieve Configuratie
 
 ## !inviteCodeConfig
 
-Show and change the config of invite codes of the server.
+Zie en verander de configuratie van de invite codes van de server.
 
 ### Usage
 
@@ -959,9 +959,9 @@ Show and change the config of invite codes of the server.
 
 | Argument   | Type                       | Required | Description                                                | Details                                          |
 | ---------- | -------------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------ |
-| key        | [Enum](#Enum)              | No       | The config setting which you want to show/change.          | Use one of the following values: `name`, `roles` |
-| inviteCode | [Invite Code](#InviteCode) | No       | The invite code for which you want to change the settings. |                                                  |
-| value      | [Value](#Value)            | No       | The new value of the setting.                              |                                                  |
+| key        | [Enum](#Enum)              | No       | De configuratie instelling die je wilt zien/veranderen.    | Use one of the following values: `name`, `roles` |
+| inviteCode | [Invite Code](#InviteCode) | No       | De invite code waarvan je de instellingen wilt veranderen. |                                                  |
+| value      | [Value](#Value)            | No       | De nieuwe waarde van de instelling.                        |                                                  |
 
 ### Examples
 
@@ -1120,16 +1120,16 @@ Laat de mensen zien met de meeste invites.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                                          | Details |
-| -------- | --------------------- | -------- | ---------------------------------------------------- | ------- |
-| duration | [Duration](#Duration) | No       | The duration for which to calculate the leaderboard. |         |
-| page     | [Number](#Number)     | No       | Welke pagina van de leaderboard om te krijgen.       |         |
+| Argument | Type                  | Required | Description                                    | Details |
+| -------- | --------------------- | -------- | ---------------------------------------------- | ------- |
+| duration | [Duration](#Duration) | No       | De tijd om de leaderboard te berekenen.        |         |
+| page     | [Number](#Number)     | No       | Welke pagina van de leaderboard om te krijgen. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                                                         |
-| ----------------------- | --------- | --------------------- | ------------------------------------------------------------------- |
-| &#x2011;&#x2011;compare | &#x2011;c | [Duration](#Duration) | The date to which the current leaderboard standings are compared to |
+| Flag                    | Short     | Type                  | Description                                       |
+| ----------------------- | --------- | --------------------- | ------------------------------------------------- |
+| &#x2011;&#x2011;compare | &#x2011;c | [Duration](#Duration) | De datum waarop de leaderboard wordt weergegeven. |
 
 ### Examples
 
@@ -1177,7 +1177,7 @@ Show lyrics of the currently playing song.
 
 ## !makeMentionable
 
-Make a role mentionable for 60 seconds or until it was used.
+Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt.
 
 ### Usage
 
@@ -1192,9 +1192,9 @@ Make a role mentionable for 60 seconds or until it was used.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | The role that you want to mention. |         |
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
 
 ### Examples
 
@@ -1250,11 +1250,11 @@ Zie en verander de configuratie van de gebruikers van deze server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                              | Details                                                |
-| -------- | --------------- | -------- | -------------------------------------------------------- | ------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | The member config setting which you want to show/change. | Use one of the following values: `hideFromLeaderboard` |
-| user     | [User](#User)   | No       | De gebruiker waar de setting voor is.                    |                                                        |
-| value    | [Value](#Value) | No       | De nieuwe waarde van de setting.                         |                                                        |
+| Argument | Type            | Required | Description                                                       | Details                                                |
+| -------- | --------------- | -------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
+| key      | [Enum](#Enum)   | No       | De gebruiker configuratie instelling die je wilt zien/veranderen. | Use one of the following values: `hideFromLeaderboard` |
+| user     | [User](#User)   | No       | De gebruiker waar de setting voor is.                             |                                                        |
+| value    | [Value](#Value) | No       | De nieuwe waarde van de setting.                                  |                                                        |
 
 ### Examples
 
@@ -1293,7 +1293,7 @@ Zie de gebruiker aantal van deze server.
 
 ## !mentionRole
 
-Mention an unmentionable role.
+Mention een niet mentionable role.
 
 ### Usage
 
@@ -1308,9 +1308,9 @@ Mention an unmentionable role.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | The role that you want to mention. |         |
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
 
 ### Examples
 
@@ -1328,7 +1328,7 @@ Mention an unmentionable role.
 
 ## !mute
 
-Mute a user
+Mute een gebruiker
 
 ### Usage
 
@@ -1338,10 +1338,10 @@ Mute a user
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | The user that should be muted.     |         |
-| reason   | [Text](#Text)     | No       | The reason why this user is muted. |         |
+| Argument | Type              | Required | Description                                | Details |
+| -------- | ----------------- | -------- | ------------------------------------------ | ------- |
+| user     | [Member](#Member) | Yes      | De gebruiker die gemute zou moeten worden. |         |
+| reason   | [Text](#Text)     | No       | De reden waarom de gebruiker is gemute.    |         |
 
 ### Examples
 
@@ -1406,7 +1406,7 @@ Pause the current song.
 
 ## !permissions
 
-Configure permissions to use commands.
+Configureer permissies om commando's te gebruiken.
 
 ### Usage
 
@@ -1420,10 +1420,10 @@ Configure permissions to use commands.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Argument | Type                | Required | Description                                                        | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------- | ------------------- | -------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Command](#Command) | No       | De commando om de permissies te configureren.                      | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Role](#Role)       | No       | De role die toegang of geen toegang moet krijgen tot het commando. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ### Examples
 
@@ -1437,7 +1437,7 @@ Configure permissions to use commands.
 
 ## !ping
 
-Ping the bot
+Mention de bot
 
 ### Usage
 
@@ -1510,7 +1510,7 @@ Laat de huidige prefix zien van de bot.
 
 ## !premium
 
-Info about premium version of InviteManager.
+Informatie over de betaalde versie van InviteManager.
 
 ### Usage
 
@@ -1525,9 +1525,9 @@ Info about premium version of InviteManager.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                                         | Details                                                            |
-| -------- | ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| action   | [Enum](#Enum) | No       | The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server. | Use one of the following values: `Activate`, `Check`, `Deactivate` |
+| Argument | Type          | Required | Description                                                                                                                                          | Details                                                            |
+| -------- | ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| action   | [Enum](#Enum) | No       | De actie om uit te voeren. Niets voor premium info. `check` om je premium status te controleren. `acivate` om premium te gebruiken voor deze server. | Use one of the following values: `Activate`, `Check`, `Deactivate` |
 
 ### Examples
 
@@ -1602,7 +1602,7 @@ Verwijder berichten in een kanaal.
 | Argument | Type              | Required | Description                                    | Details |
 | -------- | ----------------- | -------- | ---------------------------------------------- | ------- |
 | quantity | [Number](#Number) | Yes      | Hoeveel berichten er verwijdert zullen worden. |         |
-| user     | [User](#User)     | No       | cmd.purge.self.args.user                       |         |
+| user     | [User](#User)     | No       | User whose messages are deleted.               |         |
 
 ### Examples
 
@@ -2035,7 +2035,7 @@ Add strikes to a user
 | Argument | Type              | Required | Description                       | Details                                                                                                                                                      |
 | -------- | ----------------- | -------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | member   | [Member](#Member) | Yes      | The member receiving the strikes  |                                                                                                                                                              |
-| type     | [Enum](#Enum)     | Yes      | The type of the violation         | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
+| type     | [Enum](#Enum)     | Yes      | De type overtreding               | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
 | amount   | [Number](#Number) | Yes      | The amount of strikes to be added |                                                                                                                                                              |
 
 ### Examples
@@ -2149,7 +2149,7 @@ Krijg een invite link naar onze hulp server.
 
 ## !tryPremium
 
-Try the premium version of InviteManager for free for a limited duration.
+Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd.
 
 ### Usage
 
@@ -2174,7 +2174,7 @@ Try the premium version of InviteManager for free for a limited duration.
 
 ## !unban
 
-Unban a user
+Unban een gebruiker
 
 ### Usage
 
@@ -2184,10 +2184,10 @@ Unban a user
 
 ### Arguments
 
-| Argument | Type          | Required | Description                           | Details |
-| -------- | ------------- | -------- | ------------------------------------- | ------- |
-| user     | [User](#User) | Yes      | The user that should be unbanned.     |         |
-| reason   | [Text](#Text) | No       | The reason why this user is unbanned. |         |
+| Argument | Type          | Required | Description                                 | Details |
+| -------- | ------------- | -------- | ------------------------------------------- | ------- |
+| user     | [User](#User) | Yes      | De gebruiker die wordt geunbanned.          |         |
+| reason   | [Text](#Text) | No       | De reden waarom de gebruiker is geunbanned. |         |
 
 ### Examples
 
@@ -2197,7 +2197,7 @@ Unban a user
 
 ## !unhoist
 
-Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list.
+Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan.
 
 ### Usage
 
@@ -2221,7 +2221,7 @@ Add a character in front of all members with a special character in front of the
 
 ## !unmute
 
-Unmute a user
+Unmute een gebruiker
 
 ### Usage
 
@@ -2233,7 +2233,7 @@ Unmute a user
 
 | Argument | Type              | Required | Description                      | Details |
 | -------- | ----------------- | -------- | -------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | The user that should be unmuted. |         |
+| user     | [Member](#Member) | Yes      | De gebruiker die geunmute wordt. |         |
 
 ### Examples
 
@@ -2269,7 +2269,7 @@ Set the volume if an argument is passed, or show the current volume.
 
 ## !warn
 
-Warn a member.
+Waarschuw een gebruikt.
 
 ### Usage
 
@@ -2279,9 +2279,9 @@ Warn a member.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                    | Details |
-| -------- | ----------------- | -------- | ------------------------------ | ------- |
-| member   | [Member](#Member) | Yes      | Member to warn.                |         |
-| reason   | [Text](#Text)     | No       | Why was the member was warned. |         |
+| Argument | Type              | Required | Description                          | Details |
+| -------- | ----------------- | -------- | ------------------------------------ | ------- |
+| member   | [Member](#Member) | Yes      | Gebruiker om te waarschuwen.         |         |
+| reason   | [Text](#Text)     | No       | Waarom de gebruiker gewaarschuwd is. |         |
 
 ### Examples

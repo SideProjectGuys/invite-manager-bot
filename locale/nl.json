@@ -61,7 +61,7 @@
 				},
 				"description": "Verban een gebruiker van de server.",
 				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -431,7 +431,7 @@
 					"title": "Verwijder"
 				},
 				"set": {
-					"text": "Set the whole list using space separated values.",
+					"text": "Zet de hele lijst door alle woorden te scheiden van elkaar door middel van een spatie.",
 					"title": "Verander"
 				}
 			},
@@ -469,33 +469,33 @@
 			"current": {
 				"clear": "Gebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` om alles te verwijderen.",
 				"notSet": "Deze invite code configuratie is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` om dit te zetten.",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
-				"title": "Current Value"
+				"text": "Deze invite code configuratie is momenteel gezet.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}InviteCodeConfig {{ key }} {{ code }} default` om het te resetten naar de standaard waarde.\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` om dit te verwijderen.",
+				"title": "Huidge Waarden"
 			},
 			"keys": {
-				"title": "Valid invite code config keys"
+				"title": "Geldige invite code configuratie opties"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nieuwe Waarde"
 			},
 			"none": "Geen",
-			"notSet": "This invite code config is currently not set for any invite code",
+			"notSet": "Deze invite code configuratie is momenteel niet gezet voor alle invite codes",
 			"previous": {
-				"title": "Previous Value"
+				"title": "Vorige Waarde"
 			},
-			"sameValue": "This invite code config is already set to that value",
+			"sameValue": "Deze invite code configuratie is al gezet naar die waarde",
 			"self": {
 				"args": {
-					"code": "The invite code that the setting is changed for.",
-					"inviteCode": "The invite code for which you want to change the settings.",
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"code": "De invite code waarvan de waarde is veranderd.",
+					"inviteCode": "De invite code waarvan je de instellingen wilt veranderen.",
+					"key": "De configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de instelling."
 				},
-				"description": "Show and change the config of invite codes of the server."
+				"description": "Zie en verander de configuratie van de invite codes van de server."
 			},
-			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config",
-			"noneSet": "No configs set!"
+			"text": "Stel de configuraties in voor individuele invite codes.",
+			"title": "Invite Code Configuratie",
+			"noneSet": "Geen configuraties gezet!"
 		},
 		"inviteCodes": {
 			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
@@ -581,12 +581,12 @@
 			"self": {
 				"args": {
 					"date": "De datum (& tijd) waarop de leaderboard wordt weergegeven.",
-					"duration": "The duration for which to calculate the leaderboard.",
+					"duration": "De tijd om de leaderboard te berekenen.",
 					"page": "Welke pagina van de leaderboard om te krijgen."
 				},
 				"description": "Laat de mensen zien met de meeste invites.",
 				"flags": {
-					"compare": "The date to which the current leaderboard standings are compared to"
+					"compare": "De datum waarop de leaderboard wordt weergegeven."
 				}
 			},
 			"title": "Leaderboard"
@@ -609,22 +609,22 @@
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "{{{ role }}} is already mentionable.",
+			"alreadyDone": "{{{ role }}} kan je al mentionen.",
 			"self": {
 				"args": {
-					"role": "The role that you want to mention."
+					"role": "De role die je wilt mentionen."
 				},
-				"description": "Make a role mentionable for 60 seconds or until it was used."
+				"description": "Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt."
 			}
 		},
 		"memberConfig": {
 			"canNotClear": "De gebruiker configuratie **{{ key }}** kan niet verwijderd worden. Je kan `memberConfig {{ key }} default` gebruiken om dit te resetten naar de standaard waarde.",
 			"changed": {
-				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
+				"text": "Deze gebruiker configuratie is gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te resetten."
 			},
 			"current": {
-				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
+				"notSet": "Deze gebruiker configuratie is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}memberConfig {{ ke }} {{ username }} <value>` om dit te zetten.",
+				"text": "Deze gebruiker configuratie is momenteel gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} default` om dit te resetten naar de standaard waarde.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te verwijderen.",
 				"title": "Huidige Waarde"
 			},
 			"keys": {
@@ -638,10 +638,10 @@
 			"previous": {
 				"title": "Vorige Waarde"
 			},
-			"sameValue": "This member config is already set to that value",
+			"sameValue": "Deze gebruiker configuratie is al gezet naar die waarde",
 			"self": {
 				"args": {
-					"key": "The member config setting which you want to show/change.",
+					"key": "De gebruiker configuratie instelling die je wilt zien/veranderen.",
 					"user": "De gebruiker waar de setting voor is.",
 					"value": "De nieuwe waarde van de setting."
 				},
@@ -665,46 +665,46 @@
 			}
 		},
 		"mentionRole": {
-			"alreadyDone": "{{{ role }}} is already mentionable.",
-			"roleTooHigh": "The mentioned role is above my highest role, so I can't change it.",
+			"alreadyDone": "{{{ role }}} kan je al mentionen.",
+			"roleTooHigh": "De opgegeven role is hoger dan mijn role, dus ik kan het niet veranderen. Zet de InviteManager role hoger dan de opegegeven role en probeer het opnieuw.",
 			"self": {
 				"args": {
-					"role": "The role that you want to mention."
+					"role": "De role die je wilt mentionen."
 				},
-				"description": "Mention an unmentionable role."
+				"description": "Mention een niet mentionable role."
 			}
 		},
 		"mute": {
-			"canNotMute": "Cannot mute user!",
-			"done": "User muted!",
-			"error": "There was an error muting this person.",
-			"missingRole": "Muted role not set or does not exist!",
+			"canNotMute": "De gebruiker kan niet gemute worden!",
+			"done": "Gebruiker is gemute!",
+			"error": "Er is een error opgetreden tijdens het muten van deze persoon.",
+			"missingRole": "Muted role is niet gezet of bestaat niet!",
 			"self": {
 				"args": {
-					"muteDuration": "The duration for which the user should be muted.",
-					"reason": "The reason why this user is muted.",
-					"user": "The user that should be muted."
+					"muteDuration": "De tijd waarvoor de gebruiker gemute wordt.",
+					"reason": "De reden waarom de gebruiker is gemute.",
+					"user": "De gebruiker die gemute zou moeten worden."
 				},
-				"description": "Mute a user"
+				"description": "Mute een gebruiker"
 			}
 		},
 		"permissions": {
-			"added": "{{{ role }}} can now use {{{ cmds }}}",
-			"adminOnly": "This command can only be used by admins",
-			"adminsCanUseAll": "Keep in mind that *Server Administrators* can *always* use *all* commands",
-			"everyone": "This command can be used by everyone",
-			"removed": "{{{ role }}} can not use {{{ cmds }}} anymore",
+			"added": "{{{ role }}} kan nu {{{ cmds }}} gebruiken",
+			"adminOnly": "Deze commando kan alleen worden gebruikt door admins",
+			"adminsCanUseAll": "Onthoudt dat \"Server Administratoren\" altijd **alle** commando's kan gebruiken",
+			"everyone": "Dit commando kan door iedereen gebruikt worden",
+			"removed": "{{{ role }}} kan niet langer {{{ cmds }}} gebruiken",
 			"self": {
 				"args": {
-					"cmd": "The command to configure permissions for.",
-					"role": "The role which should be granted or denied access to the command."
+					"cmd": "De commando om de permissies te configureren.",
+					"role": "De role die toegang of geen toegang moet krijgen tot het commando."
 				},
-				"description": "Configure permissions to use commands."
+				"description": "Configureer permissies om commando's te gebruiken."
 			}
 		},
 		"ping": {
 			"self": {
-				"description": "Ping the bot"
+				"description": "Mention de bot"
 			}
 		},
 		"prefix": {
@@ -715,25 +715,25 @@
 		},
 		"premium": {
 			"activate": {
-				"currentlyActive": "There is already a premium subscription active on this server.",
-				"customBot": "You are using a custom bot. Custom bots always have premium.",
-				"done": "Premium has been successfully activated for this server.",
-				"noGuild": "You must run this command inside a server.",
-				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Activate premium on this server"
+				"currentlyActive": "Er is al een premium abonnement actief bezig op deze server.",
+				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
+				"done": "Premium is succesvol geactiveerd voor deze server.",
+				"noGuild": "Je moet deze commando gebruiken binnen een server.",
+				"noSubscription": "Je hebt geen betaalde abonnement.\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"title": "Activeer premium op deze server"
 			},
 			"check": {
-				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
-				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info.",
-				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
-				"title": "Check for a Premium Subscription"
+				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
+				"done": "Je hebt een betaalde abonnement geldig tot {{{ valid }}}.\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"notFound": "Je account heeft geen premium abonnement.\n\nAls je premium hebt gekocht via Patreon, zorg dan dat je patreon account gekoppeld is aan je discord account. Voer dan het commando opnieuw uit.",
+				"title": "Check foor een Premium Abonnement"
 			},
 			"deactivate": {
-				"customBot": "You are using a custom bot. Custom bots always have premium.",
-				"done": "Premium has been successfully deactivated for this server.",
-				"noGuild": "You must run this command inside a server.",
-				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Deactivate premium on this server"
+				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
+				"done": "Premium is succesvol gedeactiveerd voor deze server.",
+				"noGuild": "Je moet deze commando gebruiken binnen een server.",
+				"noSubscription": "Je hebt een geen betaalde abonnement\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"title": "Deactiveer premium op deze server"
 			},
 			"feature": {
 				"embeds": {
@@ -741,12 +741,12 @@
 					"title": "Betaalde toevoegingen: Embeds in join berichten"
 				},
 				"export": {
-					"text": "You can export all the joins and leaves that happened on your server since you invited our bot.",
-					"title": "Premium Feature: History export"
+					"text": "Je kan alle joins en leaves exporteren die gebeurd zijn op je server sinds je de premium bot hebt geinvite.",
+					"title": "Premium Toevoeding: Exporteer de geschiedenis"
 				},
 				"patreon": {
-					"text": "Run {{{ cmd }}} to validate and activate your Patreon plegde.",
-					"title": "If you purchsed premium on Patreon"
+					"text": "Gebruik {{{ cmd }}} om je Patreon product te valideren en te activeren.",
+					"title": "Als je premium hebt betaald via Patreon"
 				},
 				"servers": {
 					"text": "Wanneer je de betaalde functies hebt kan je dit activeren tot 5 servers naar jouw keuze, en je kan deze 5 servers op elk moment wijzigen.",
@@ -758,16 +758,16 @@
 				"title": "Je hebt momenteel geen betaalde abonnement"
 			},
 			"premium": {
-				"activate": "Use {{{ cmd }}} to activate it on this server",
-				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
-				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"activate": "Gebruik {{{ cmd }}} om het te activeren op deze server",
+				"deactivate": "Gebruik {{{ cmd }}} om het te deactiveren op deze server",
+				"text": "Je premium abonnement geldig voor {{ date }}.\n\nJe hebt premium geactiveerd op {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Wat kan ik doen met premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
 				"args": {
-					"action": "The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server."
+					"action": "De actie om uit te voeren. Niets voor premium info. `check` om je premium status te controleren. `acivate` om premium te gebruiken voor deze server."
 				},
-				"description": "Info about premium version of InviteManager."
+				"description": "Informatie over de betaalde versie van InviteManager."
 			}
 		},
 		"punishmentConfig": {
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "Van wie de berichten worden verwijdert",
 					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
-					"user": "cmd.purge.self.args.user"
+					"user": "User whose messages are deleted."
 				},
 				"description": "Verwijder berichten in een kanaal."
 			},
@@ -853,7 +853,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/",
+				"text": "Een complete guide voor het opzetten van de bot kan hier gevonden worden: https://docs.invitemanager.co/bot/",
 				"title": "Vraag en antwoorden en meer"
 			},
 			"help": {
@@ -913,7 +913,7 @@
 				"args": {
 					"amount": "The amount of strikes to be added",
 					"member": "The member receiving the strikes",
-					"type": "The type of the violation"
+					"type": "De type overtreding"
 				},
 				"description": "Add strikes to a user"
 			}
@@ -952,59 +952,59 @@
 			"server": "Hulp discord"
 		},
 		"tryPremium": {
-			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
-			"currentlyActive": "You currently have an active premium subscription!",
-			"prompt": "Please reply with **yes** or **no**.",
+			"alreadyUsed": "Je hebt al je free premium voor tijdelijk gebruikt! Als je deze bot goed vind, kan je altijd ervoor kiezen om de betaalde bot te kopen.",
+			"currentlyActive": "Je hebt momenteel een actieve betaalde abonnement.",
+			"prompt": "Reageer met **yes** of **no**.",
 			"self": {
-				"description": "Try the premium version of InviteManager for free for a limited duration."
+				"description": "Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd."
 			},
-			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
-			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
-			"title": "InviteManager - Try Premium"
+			"started": "Je hebt de proeftijd succesvol gestart! Gebruik `{{ prefix }}premium` om te bekijken hoeveel tijd je nog over hebt.",
+			"text": "Je kan onze betaalde toevoegingen uitproberen voor {{ duration }}. Je kan dit 1 keer doen. Wil je het nu testen?",
+			"title": "InviteManager - Probeer Premium"
 		},
 		"unban": {
-			"canNotUnban": "I cannot unban this member.",
-			"done": "User has been unbanned.",
-			"missingPermissions": "I need the `Ban Members` permission to use this command",
+			"canNotUnban": "Ik kan deze gebruiker niet unbannen.",
+			"done": "De gebruiker is geunbanned.",
+			"missingPermissions": "Ik heb de `Ban Gebruikers` permissie om dit commando te gebruiken",
 			"self": {
 				"args": {
-					"reason": "The reason why this user is unbanned.",
-					"user": "The user that should be unbanned."
+					"reason": "De reden waarom de gebruiker is geunbanned.",
+					"user": "De gebruiker die wordt geunbanned."
 				},
-				"description": "Unban a user"
+				"description": "Unban een gebruiker"
 			},
-			"error": "Could not unban user because of the following error:\n{{{ error }}}"
+			"error": "Ik kan de gebruiker niet unbannen door de volgende error:\n{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
-			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
+			"done": "**Geklaard!**\n\nVerwerkt: {{ verwerkt }}\n**Gewijzigd: {{ gewijzigd }}**\nUitgesloten: {{ uitgesloten }}\nErrored: {{ errored }}\n",
+			"processing": "Bezig, dit kan een tijdje duren...\n\nVerwerkt: {{ verwerkt }}/{{ total }}\n**Gewijzigd: {{ gewijzigd }}**\nUitgesloten: {{ uitgesloten }}\nErrored: {{ errored }}",
 			"self": {
-				"description": "Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list."
+				"description": "Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan."
 			},
-			"starting": "Starting unhoist process...",
-			"title": "Unhoist users"
+			"starting": "De unhoist process wordt gestart...",
+			"title": "Verwijder de characters die ervoor zorgt dat alle gebruikers die een speciale teken voor hun naam hebben staan helemaal onderaan de lijsr komen te staan"
 		},
 		"unmute": {
-			"canNotUnmute": "Cannot unmute that user.",
-			"done": "User has been unmuted.",
-			"missingRole": "Muted role not set or does not exist!",
+			"canNotUnmute": "Die gebruiker kan niet geunmute worden.",
+			"done": "De gebruiker is geunmute.",
+			"missingRole": "Muted role in niet gezet of bestaat niet!",
 			"self": {
 				"args": {
-					"user": "The user that should be unmuted."
+					"user": "De gebruiker die geunmute wordt."
 				},
-				"description": "Unmute a user"
+				"description": "Unmute een gebruiker"
 			}
 		},
 		"warn": {
-			"canNotDm": "User was not able to receive DM:\n{{ error }}",
-			"canNotWarn": "I cannot warn this user.",
-			"done": "The user was successfully warned.",
+			"canNotDm": "De gebruiker kon geen prive bericht krijgen:\n{{ error }}",
+			"canNotWarn": "Ik kan die gebruiker niet waarschuwen.",
+			"done": "De gebruiker is succesvol gewaarschuwd.",
 			"self": {
 				"args": {
-					"member": "Member to warn.",
-					"reason": "Why was the member was warned."
+					"member": "Gebruiker om te waarschuwen.",
+					"reason": "Waarom de gebruiker gewaarschuwd is."
 				},
-				"description": "Warn a member."
+				"description": "Waarschuw een gebruikt."
 			},
 			"text": "You have been warned on server {{ guild }}\n{{ text }}"
 		},
@@ -1155,7 +1155,10 @@
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
 		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs"
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
 		"canceled": "Canceled"

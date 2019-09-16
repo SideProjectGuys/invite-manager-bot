@@ -8,7 +8,6 @@ import {
 } from '../../../../framework/resolvers';
 import { members, punishments, PunishmentType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
-import { isPunishable } from '../../../../util';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -41,7 +40,7 @@ export default class extends Command {
 	): Promise<any> {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
-		if (isPunishable(guild, targetMember, message.member, me)) {
+		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
 			await this.client.mod.informAboutPunishment(
 				targetMember,
 				PunishmentType.warn,
