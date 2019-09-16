@@ -58,7 +58,7 @@ i18n.configure({
 	],
 	defaultLocale: 'en',
 	// syncFiles: true,
-	directory: __dirname + '/../locale',
+	directory: __dirname + '/../i18n/bot',
 	objectNotation: true,
 	logDebugFn: function(msg: string) {
 		console.log('debug', msg);

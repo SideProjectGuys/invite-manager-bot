@@ -13,8 +13,8 @@
 - Premium
 
   - [Features](/en/premium/features.md)
-  - [Tiers](/en/premium/tiers.md)
-  - [Setting Up Pro](/en/premium/setting-up.md)
+  - [premium.tiers.menuTitle](/en/premium/tiers.md)
+  - [Setup](/en/premium/setup.md)
 
 - Modules
 
@@ -26,13 +26,12 @@
 
   - Moderation
 
-    - [Overview](/en/modules/moderation/overview.md)
-    - [Strikes](/en/modules/moderation/strikes.md)
-    - [Punishments](/en/modules/moderation/punishments.md)
+    - [modules.moderation.strikes.menuTitle](/en/modules/moderation/strikes.md)
+    - [modules.moderation.punishments.menuTitle](/en/modules/moderation/punishments.md)
 
   - Music
 
-    - [Overview](/en/modules/music/overview.md)
+    - [modules.music.overview.menuTitle](/en/modules/music/Overview.md)
 
 - Other
 

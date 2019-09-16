@@ -1,0 +1,131 @@
+{
+	"modules": {
+		"url": "modules",
+		"invites": {
+			"url": "invites",
+			"custom-messages": {
+				"url": "custom-messages"
+			},
+			"examples": {
+				"url": "examples"
+			},
+			"menuTitle": "Invite Management",
+			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system."
+		},
+		"moderation": {
+			"url": "moderation",
+			"punishments": {
+				"url": "punishments",
+				"menuTitle": "modules.moderation.punishments.menuTitle"
+			},
+			"strikes": {
+				"url": "strikes",
+				"menuTitle": "modules.moderation.strikes.menuTitle"
+			},
+			"menuTitle": "Moderation",
+			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](modules/moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user."
+		},
+		"music": {
+			"url": "music",
+			"overview": {
+				"url": "Overview",
+				"menuTitle": "modules.music.overview.menuTitle"
+			},
+			"menuTitle": "Music"
+		},
+		"menuTitle": "Modules"
+	},
+	"other": {
+		"url": "other",
+		"donating": {
+			"url": "donating",
+			"menuTitle": "Donating"
+		},
+		"open-source": {
+			"url": "open-source"
+		},
+		"roadmap": {
+			"url": "roadmap",
+			"menuTitle": "Roadmap"
+		},
+		"support": {
+			"url": "support",
+			"menuTitle": "Support"
+		},
+		"translations": {
+			"url": "translations",
+			"menuTitle": "Translations"
+		},
+		"webpanel": {
+			"url": "webpanel",
+			"menuTitle": "Webpanel"
+		},
+		"menuTitle": "Other",
+		"changelog": {
+			"menuTitle": "Changelog",
+			"url": "changelog"
+		},
+		"openSource": {
+			"menuTitle": "Open Source",
+			"url": "open-source"
+		}
+	},
+	"premium": {
+		"url": "premium",
+		"features": {
+			"url": "features",
+			"menuTitle": "Features"
+		},
+		"tiers": {
+			"url": "tiers",
+			"menuTitle": "premium.tiers.menuTitle"
+		},
+		"menuTitle": "Premium",
+		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](premium/tiers.md#pricing).",
+		"setup": {
+			"menuTitle": "Setup",
+			"url": "setup"
+		}
+	},
+	"README": {
+		"url": "README"
+	},
+	"start": {
+		"url": "getting-started",
+		"alpha": {
+			"url": "alpha",
+			"menuTitle": "Alpha Bot",
+			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
+			"linkDescription": "Invite the InviteManager Alpha here"
+		},
+		"faq": {
+			"url": "faq",
+			"menuTitle": "FAQs"
+		},
+		"pro": {
+			"url": "pro",
+			"menuTitle": "Pro Bot"
+		},
+		"quick": {
+			"url": "quick-start",
+			"menuTitle": "Quick Start"
+		},
+		"menuTitle": "Getting Started",
+		"description": "To get started, just run the `!setup` command on your server."
+	},
+	"_sidebar": {
+		"url": "_sidebar"
+	},
+	"reference": {
+		"menuTitle": "Reference",
+		"commands": {
+			"menuTitle": "Commands",
+			"url": "commands"
+		},
+		"url": "reference",
+		"settings": {
+			"menuTitle": "Configs / Settings",
+			"url": "settings"
+		}
+	}
+}

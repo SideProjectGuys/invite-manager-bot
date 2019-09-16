@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const i18n = require('i18n');
 
@@ -40,10 +40,22 @@ const argTypes = [
 	'duration'
 ];
 
+let i18nBot = {};
 i18n.configure({
 	locales,
-	directory: __dirname + '/../locale',
-	objectNotation: true
+	directory: path.resolve('./i18n/bot/'),
+	objectNotation: true,
+	register: i18nBot,
+	updateFiles: false
+});
+
+let i18nDocs = {};
+i18n.configure({
+	locales,
+	directory: path.resolve('./i18n/docs/'),
+	objectNotation: true,
+	register: i18nDocs,
+	updateFiles: false
 });
 
 let child = spawn(
@@ -58,7 +70,7 @@ child.on('error', error => console.log(error));
 
 child.on('close', () => {
 	const cmds = [];
-	const cmdDir = path.resolve(__dirname, '../bin/modules/');
+	const cmdDir = path.resolve('./bin/modules/');
 	const fakeClient = {
 		msg: {
 			createEmbed: () => {},
@@ -72,7 +84,7 @@ child.on('close', () => {
 	};
 	const loadRecursive = dir =>
 		fs.readdirSync(dir).forEach(fileName => {
-			const file = dir + '/' + fileName;
+			const file = path.join(dir, fileName);
 
 			if (fs.statSync(file).isDirectory()) {
 				loadRecursive(file);
@@ -98,30 +110,69 @@ child.on('close', () => {
 	loadRecursive(cmdDir);
 	console.log(`Loaded \x1b[32m${cmds.length}\x1b[0m commands!`);
 
-	locales.forEach(locale => {
-		const _t = (phrase, replacements) =>
-			i18n.__({ locale, phrase }, replacements);
+	const getAllFiles = dir => {
+		let files = [];
+		fs.readdirSync(dir).forEach(fileName => {
+			const file = path.join(dir, fileName);
 
-		if (!fs.existsSync(`./docs/${locale.replace('_', '-')}`)) {
-			fs.mkdirSync(`./docs/${locale.replace('_', '-')}`);
+			if (fs.statSync(file).isDirectory()) {
+				files = files.concat(getAllFiles(file));
+				return;
+			}
+
+			files.push(file);
+		});
+		return files;
+	};
+
+	locales.forEach(locale => {
+		const niceLocale = locale.replace('_', '-');
+		console.log(`Generating ${niceLocale}...`);
+
+		const _tBot = (phrase, replacements) =>
+			i18nBot.__({ locale, phrase }, replacements);
+		const _tDocs = (phrase, replacements) =>
+			i18nDocs.__({ locale, phrase }, replacements);
+
+		const docFiles = getAllFiles(`./docs/_base/`);
+		docFiles.forEach(docFile => {
+			const pathParts = path
+				.relative('./docs/_base/', docFile)
+				.split(path.sep)
+				.map(part => part.replace(/\.md/gi, ''))
+				.map((_, i, arr) => _tDocs(`${arr.slice(0, i + 1).join('.')}.url`));
+			const newPath = pathParts.join(path.sep);
+
+			let text = fs.readFileSync(docFile, 'utf8');
+			text = text.replace(/\§\{lang\}/g, niceLocale);
+			text = text.replace(/\§\{([\w.]+)\}/g, (s, ...args) => _tDocs(args[0]));
+
+			fs.mkdirpSync(`./docs/${niceLocale}/${path.dirname(newPath)}`);
+			fs.writeFileSync(`./docs/${niceLocale}/${newPath}.md`, text, 'utf8');
+		});
+
+		if (!fs.existsSync(`./docs/${niceLocale}`)) {
+			fs.mkdirSync(`./docs/${niceLocale}`);
 		}
-		if (!fs.existsSync(`./docs/${locale.replace('_', '-')}/reference/`)) {
-			fs.mkdirSync(`./docs/${locale.replace('_', '-')}/reference/`);
+		if (!fs.existsSync(`./docs/${niceLocale}/reference/`)) {
+			fs.mkdirSync(`./docs/${niceLocale}/reference/`);
 		}
 
 		function generateGroup(path, group) {
 			let out = '';
 			if (path.length > 0) {
 				const prefix = '#'.repeat(path.length + 2);
-				out += `${prefix} ${_t(`settings.groups.${path.join('.')}.title`)}\n\n`;
+				out += `${prefix} ${_tBot(
+					`settings.groups.${path.join('.')}.title`
+				)}\n\n`;
 				if (group.__settings) {
 					out += `| Setting | Description |\n|---|---|\n`;
 					out += group.__settings
 						.map(
 							key =>
-								`| [${_t(
+								`| [${_tBot(
 									`settings.${key}.title`
-								)}](#${key.toLowerCase()}) | ${_t(
+								)}](#${key.toLowerCase()}) | ${_tBot(
 									`settings.${key}.description`
 								)}`
 						)
@@ -156,8 +207,8 @@ child.on('close', () => {
 		const settings = {};
 		Object.keys(settingsInfo).forEach(key => {
 			const info = settingsInfo[key];
-			let text = `---\n## ${_t(`settings.${key}.title`)}\n\n`;
-			text += `${_t(`settings.${key}.description`)}\n\n`;
+			let text = `---\n## ${_tBot(`settings.${key}.title`)}\n\n`;
+			text += `${_tBot(`settings.${key}.description`)}\n\n`;
 			text += `Type: \`${info.type}\`\n\n`;
 			text += `Default: \`${info.defaultValue}\`\n\n`;
 			text += `Reset to default:\n\`!config ${key} default\`\n\n`;
@@ -215,10 +266,7 @@ child.on('close', () => {
 			.map(key => `<a name=${key}></a>\n\n` + settingsInfo[key].markdown)
 			.join('\n\n');
 
-		fs.writeFileSync(
-			`./docs/${locale.replace('_', '-')}/reference/settings.md`,
-			outSettings
-		);
+		fs.writeFileSync(`./docs/${niceLocale}/reference/settings.md`, outSettings);
 
 		// Generate command docs
 		let outCmds = '# Commands\n\n';
@@ -230,8 +278,8 @@ child.on('close', () => {
 			'According to the **Type** of the argument or flag you can provide different values.\n\n';
 
 		argTypes.forEach(argType => {
-			const name = _t(`resolvers.${argType}.type`);
-			const info = _t(`resolvers.${argType}.typeInfo`);
+			const name = _tBot(`resolvers.${argType}.type`);
+			const info = _tBot(`resolvers.${argType}.typeInfo`);
 			outCmds += `### ${name}\n\n${info}\n\n`;
 		});
 
@@ -249,7 +297,7 @@ child.on('close', () => {
 				.map(
 					cmd =>
 						`| [${cmd.name}](#${cmd.name}) ` +
-						`| ${_t(`cmd.${cmd.name}.self.description`)} | ` +
+						`| ${_tBot(`cmd.${cmd.name}.self.description`)} | ` +
 						`${cmd.usage
 							.replace('{prefix}', '!')
 							.replace(/</g, '\\<')
@@ -264,7 +312,7 @@ child.on('close', () => {
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.forEach(cmd => {
 				const usage = cmd.usage.replace('{prefix}', '!');
-				const info = cmd.getInfo2({ t: _t });
+				const info = cmd.getInfo2({ t: _tBot });
 
 				outCmds += `<a name='${cmd.name}'></a>\n\n---\n\n## !${cmd.name}\n\n`;
 
@@ -274,7 +322,7 @@ child.on('close', () => {
 						'> This command has been deprecated and will be removed soon, please avoid using it.\n\n';
 				}
 
-				outCmds += `${_t(`cmd.${cmd.name}.self.description`)}\n\n`;
+				outCmds += `${_tBot(`cmd.${cmd.name}.self.description`)}\n\n`;
 				outCmds += '### Usage\n\n```text\n' + usage + '\n```\n\n';
 
 				if (cmd.aliases.length > 0) {
@@ -318,9 +366,6 @@ child.on('close', () => {
 				outCmds += generateExamples(cmd).join('  \n') + '\n\n';
 			});
 
-		fs.writeFileSync(
-			`./docs/${locale.replace('_', '-')}/reference/commands.md`,
-			outCmds
-		);
+		fs.writeFileSync(`./docs/${niceLocale}/reference/commands.md`, outCmds);
 	});
 });

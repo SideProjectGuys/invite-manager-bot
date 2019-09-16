@@ -2,9 +2,15 @@
 host = https://www.transifex.com
 
 [invitemanager-bot.main]
-file_filter = locale/<lang>.json
+file_filter = i18n/bot/<lang>.json
 minimum_perc = 0
-source_file = locale/en.json
+source_file = i18n/bot/en.json
 source_lang = en
 type = KEYVALUEJSON
 
+[invitemanager-bot.docs]
+file_filter = i18n/docs/<lang>.json
+minimum_perc = 0
+source_file = i18n/docs/en.json
+source_lang = en
+type = KEYVALUEJSON

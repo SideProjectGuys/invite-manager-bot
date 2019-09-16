@@ -7,69 +7,47 @@ To get a list of available commands, do !help on your server.
 Most commands accept arguments and/or flags.  
 According to the **Type** of the argument or flag you can provide different values.
 
-### Boolean
+### resolvers.boolean.type
 
-This arguments expects `true` or `false`. You can also use `yes` and `no`.
+resolvers.boolean.typeInfo
 
-### Number
+### resolvers.number.type
 
-This arguments expects a number
+resolvers.number.typeInfo
 
-### Enum
+### resolvers.enum.type
 
-This arguments expects a value from a specific set of valid values.
+resolvers.enum.typeInfo
 
-> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.
+### resolvers.invitecode.type
 
-### Invite Code
+resolvers.invitecode.typeInfo
 
-This arguments expects a Discord Invite Code.
+### resolvers.user.type
 
-> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.
+resolvers.user.typeInfo
 
-### User
+### resolvers.role.type
 
-This arguments expects a Discord User. You can use any of the following methods to provide a user:
+resolvers.role.typeInfo
 
-- Mention the user: `@Valandur`
-- Use their ID: `102785693046026240`
-- Use their name: `Valandur`
-- Use their name and discriminator: `Valandur#3581`
-- Use quotes if their name has a space: `"Valandur with a space"`
+### resolvers.channel.type
 
-### Role
+resolvers.channel.typeInfo
 
-This arguments expects a Discord Role. You can use any of the following methods to provide a role:
-
-- Mention the role: `@Admin`
-- Use the ID: `102785693046026240`
-- Use the name: `Admin`
-- Use quotes if the name has a space: `"Admin with a space"`
-
-### Channel
-
-This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:
-
-- Mention the channel: `#general`
-- Use the ID: `409846838129197057`
-- Use the name: `general`
-- Use quotes if the name has a space: `"general with a space"`
-
-### Command
+### resolvers.command.type
 
 resolvers.command.typeInfo
 
-### Text
+### resolvers.string.type
 
-This arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.
+resolvers.string.typeInfo
 
-> If the text is the last argument you don't have to use quotes.
-
-### Date
+### resolvers.date.type
 
 resolvers.date.typeInfo
 
-### Duration
+### resolvers.duration.type
 
 resolvers.duration.typeInfo
 
@@ -77,114 +55,114 @@ resolvers.duration.typeInfo
 
 ### Invites
 
-| Command                           | Description                                               | Usage                                                            |
-| --------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | Voeg toe/verwijder invites van een gebruiker.             | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Verwijder alle invites van de server/een gebruiker        | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | Maak unieke invite codes aan.                             | !createInvite \<name\> [channel]                                 |
-| [fake](#fake)                     | Help om gebruikers te vinden die proberen vals te spelen. | !fake [page]                                                     |
-| [info](#info)                     | Zie informatie over een specifieke gebruiker.             | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | Krijg een lijst van al jouw invite codes                  | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | Zie details waar je je invites vandaan komen.             | !inviteDetails [user]                                            |
-| [invites](#invites)               | Zie persoonlijke invites.                                 | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Laat de mensen zien met de meeste invites.                | !leaderboard [-c value\|--compare=value][duration] [page]        |
-| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description                        | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | Zat alle vorige verwijderde invites terug.                | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | Verwijder fake invites van alle gebruikers.               | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | Verwijder leaves voor alle gebruikers.                    | !subtractLeaves                                                  |
+| Command                           | Description                         | Usage                                                            |
+| --------------------------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | cmd.addInvites.self.description     | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | cmd.clearInvites.self.description   | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | cmd.createInvite.self.description   | !createInvite \<name\> [channel]                                 |
+| [fake](#fake)                     | cmd.fake.self.description           | !fake [page]                                                     |
+| [info](#info)                     | cmd.info.self.description           | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | cmd.inviteCodes.self.description    | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | cmd.inviteDetails.self.description  | !inviteDetails [user]                                            |
+| [invites](#invites)               | cmd.invites.self.description        | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | cmd.leaderboard.self.description    | !leaderboard [-c value\|--compare=value][duration] [page]        |
+| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description  | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | cmd.restoreInvites.self.description | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | cmd.subtractFakes.self.description  | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | cmd.subtractLeaves.self.description | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                   | Usage                                |
-| ------------------------- | ----------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Voeg een nieuwe rank toe.     | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description | !fixRanks                            |
-| [ranks](#ranks)           | Zie alle ranks.               | !ranks [page]                        |
-| [removeRank](#removeRank) | Verwijder een rank.           | !removeRank \<rank\>                 |
+| Command                   | Description                     | Usage                                |
+| ------------------------- | ------------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | cmd.addRank.self.description    | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description   | !fixRanks                            |
+| [ranks](#ranks)           | cmd.ranks.self.description      | !ranks [page]                        |
+| [removeRank](#removeRank) | cmd.removeRank.self.description | !removeRank \<rank\>                 |
 
 ### Config
 
-| Command                                 | Description                                                        | Usage                                       |
-| --------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Zie en verander de configuratie van de bot.                        | !botConfig [key][value]                     |
-| [config](#config)                       | Zie en verander de configuratie van de server.                     | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | Interactieve Configuratie                                          | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | Zie en verander de configuratie van de invite codes van de server. | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | Zie en verander de configuratie van de gebruikers van deze server. | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | Configureer permissies om commando's te gebruiken.                 | !permissions [cmd][role]                    |
+| Command                                 | Description                            | Usage                                       |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------- |
+| [botConfig](#botConfig)                 | cmd.botConfig.self.description         | !botConfig [key][value]                     |
+| [config](#config)                       | cmd.config.self.description            | !config [key][value]                        |
+| [interactiveConfig](#interactiveConfig) | cmd.interactiveConfig.self.description | !interactiveConfig                          |
+| [inviteCodeConfig](#inviteCodeConfig)   | cmd.inviteCodeConfig.self.description  | !inviteCodeConfig [key][invitecode] [value] |
+| [memberConfig](#memberConfig)           | cmd.memberConfig.self.description      | !memberConfig [key][user] [value]           |
+| [permissions](#permissions)             | cmd.permissions.self.description       | !permissions [cmd][role]                    |
 
 ### Info
 
-| Command             | Description                                                                                        | Usage           |
-| ------------------- | -------------------------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Krijg algemene informatie over deze bot.                                                           | !botInfo        |
-| [credits](#credits) | Zie de ontwikkelaars en de mensen die hebben helpen aan de bot.                                    | !credits        |
-| [getBot](#getBot)   | Krijg een invite link voor de bot.                                                                 | !getBot         |
-| [help](#help)       | Zie help.                                                                                          | !help [command] |
-| [members](#members) | Zie de gebruiker aantal van deze server.                                                           | !members        |
-| [ping](#ping)       | Mention de bot                                                                                     | !ping           |
-| [prefix](#prefix)   | Laat de huidige prefix zien van de bot.                                                            | !prefix         |
-| [setup](#setup)     | Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies) | !setup          |
-| [support](#support) | Krijg een invite link naar onze hulp server.                                                       | !support        |
+| Command             | Description                  | Usage           |
+| ------------------- | ---------------------------- | --------------- |
+| [botInfo](#botInfo) | cmd.botInfo.self.description | !botInfo        |
+| [credits](#credits) | cmd.credits.self.description | !credits        |
+| [getBot](#getBot)   | cmd.getBot.self.description  | !getBot         |
+| [help](#help)       | cmd.help.self.description    | !help [command] |
+| [members](#members) | cmd.members.self.description | !members        |
+| [ping](#ping)       | cmd.ping.self.description    | !ping           |
+| [prefix](#prefix)   | cmd.prefix.self.description  | !prefix         |
+| [setup](#setup)     | cmd.setup.self.description   | !setup          |
+| [support](#support) | cmd.support.self.description | !support        |
 
 ### Premium
 
-| Command                   | Description                                                                 | Usage             |
-| ------------------------- | --------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Exporteer data van InviteManager in een csv bestand.                        | !export \<type\>  |
-| [premium](#premium)       | Informatie over de betaalde versie van InviteManager.                       | !premium [action] |
-| [tryPremium](#tryPremium) | Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd. | !tryPremium       |
+| Command                   | Description                     | Usage             |
+| ------------------------- | ------------------------------- | ----------------- |
+| [export](#export)         | cmd.export.self.description     | !export \<type\>  |
+| [premium](#premium)       | cmd.premium.self.description    | !premium [action] |
+| [tryPremium](#tryPremium) | cmd.tryPremium.self.description | !tryPremium       |
 
 ### Moderation
 
-| Command                               | Description                                                                                                                                                       | Usage                                                            |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Verban een gebruiker van de server.                                                                                                                               | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Verwijder een specifiek geval.                                                                                                                                    | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | Bekijk meer informatie over een specifiek geval.                                                                                                                  | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Zie overtredingen en straffen van een gebruiker.                                                                                                                  | !check \<user\>                                                  |
-| [clean](#clean)                       | Maak een kanaal schoon van verschillende soorten berichten.                                                                                                       | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Verwijder korte berichten                                                                                                                                         | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Verwijder berichten die een bepaald woord bevatten.                                                                                                               | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Kick een gebruiker van de server.                                                                                                                                 | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | Mute een gebruiker                                                                                                                                                | !mute \<user\> [reason]                                          |
-| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                                                  | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | Verwijder berichten in een kanaal.                                                                                                                                | !purge \<quantity\> [user]                                       |
-| [purgeUntil](#purgeUntil)             | Verwijder berichten in een kanaal tot een specifiek aan berichten.                                                                                                | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | Ban en dan unban een gebruiker automatisch van de server.                                                                                                         | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | Add strikes to a user                                                                                                                                             | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | Configureer waarschuwingen die gegeven zijn door vorige straffen.                                                                                                 | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | Unban een gebruiker                                                                                                                                               | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan. | !unhoist                                                         |
-| [unmute](#unmute)                     | Unmute een gebruiker                                                                                                                                              | !unmute \<user\>                                                 |
-| [warn](#warn)                         | Waarschuw een gebruikt.                                                                                                                                           | !warn \<member\> [reason]                                        |
+| Command                               | Description                           | Usage                                                            |
+| ------------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| [ban](#ban)                           | cmd.ban.self.description              | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | cmd.caseDelete.self.description       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | cmd.caseView.self.description         | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | cmd.check.self.description            | !check \<user\>                                                  |
+| [clean](#clean)                       | cmd.clean.self.description            | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | cmd.cleanShort.self.description       | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | cmd.cleanText.self.description        | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | cmd.kick.self.description             | !kick \<member\> [reason]                                        |
+| [mute](#mute)                         | cmd.mute.self.description             | !mute \<user\> [reason]                                          |
+| [punishmentConfig](#punishmentConfig) | cmd.punishmentConfig.self.description | !punishmentConfig [punishment][strikes] [args]                   |
+| [purge](#purge)                       | cmd.purge.self.description            | !purge \<quantity\> [user]                                       |
+| [purgeUntil](#purgeUntil)             | cmd.purgeUntil.self.description       | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | cmd.softBan.self.description          | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | cmd.strike.self.description           | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | cmd.strikeConfig.self.description     | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | cmd.unban.self.description            | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | cmd.unhoist.self.description          | !unhoist                                                         |
+| [unmute](#unmute)                     | cmd.unmute.self.description           | !unmute \<user\>                                                 |
+| [warn](#warn)                         | cmd.warn.self.description             | !warn \<member\> [reason]                                        |
 
 ### Music
 
-| Command                   | Description                                                                                  | Usage                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | Disconnect the bot from the current voice channel.                                           | !disconnect                                             |
-| [lyrics](#lyrics)         | Show lyrics of the currently playing song.                                                   | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | Create a mashup of 2 songs.                                                                  | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | Shows information about the currently playing song                                           | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | Pause the current song.                                                                      | !pause                                                  |
-| [play](#play)             | Play the song if the queue is empty, otherwise it will add the song to the end of the queue. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | Display the songs in the queue.                                                              | !queue                                                  |
-| [repeat](#repeat)         | Set the song to be played on repeat.                                                         | !repeat                                                 |
-| [resume](#resume)         | Resume the current song.                                                                     | !resume                                                 |
-| [rewind](#rewind)         | Rewind the song and start from the beginning.                                                | !rewind                                                 |
-| [search](#search)         | Search for the search term and let you chose one of the results.                             | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | Skip to a specific part of the song.                                                         | !seek [duration]                                        |
-| [skip](#skip)             | Skip the current song and play the next song in the queue.                                   | !skip [amount]                                          |
-| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.                         | !volume [volume]                                        |
+| Command                   | Description                     | Usage                                                   |
+| ------------------------- | ------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | cmd.disconnect.self.description | !disconnect                                             |
+| [lyrics](#lyrics)         | cmd.lyrics.self.description     | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | cmd.mashup.self.description     | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | cmd.nowPlaying.self.description | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | cmd.pause.self.description      | !pause                                                  |
+| [play](#play)             | cmd.play.self.description       | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | cmd.queue.self.description      | !queue                                                  |
+| [repeat](#repeat)         | cmd.repeat.self.description     | !repeat                                                 |
+| [resume](#resume)         | cmd.resume.self.description     | !resume                                                 |
+| [rewind](#rewind)         | cmd.rewind.self.description     | !rewind                                                 |
+| [search](#search)         | cmd.search.self.description     | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | cmd.seek.self.description       | !seek [duration]                                        |
+| [skip](#skip)             | cmd.skip.self.description       | !skip [amount]                                          |
+| [volume](#volume)         | cmd.volume.self.description     | !volume [volume]                                        |
 
 ### Other
 
-| Command                             | Description                                                                | Usage                      |
-| ----------------------------------- | -------------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Laat verschillende soorten grafieken zien van je server statistieken.      | !graph \<type\> [duration] |
-| [makeMentionable](#makeMentionable) | Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt. | !makeMentionable \<role\>  |
-| [mentionRole](#mentionRole)         | Mention een niet mentionable role.                                         | !mentionRole \<role\>      |
+| Command                             | Description                          | Usage                      |
+| ----------------------------------- | ------------------------------------ | -------------------------- |
+| [graph](#graph)                     | cmd.graph.self.description           | !graph \<type\> [duration] |
+| [makeMentionable](#makeMentionable) | cmd.makeMentionable.self.description | !makeMentionable \<role\>  |
+| [mentionRole](#mentionRole)         | cmd.mentionRole.self.description     | !mentionRole \<role\>      |
 
 <a name='addInvites'></a>
 
@@ -192,7 +170,7 @@ resolvers.duration.typeInfo
 
 ## !addInvites
 
-Voeg toe/verwijder invites van een gebruiker.
+cmd.addInvites.self.description
 
 ### Usage
 
@@ -206,11 +184,11 @@ Voeg toe/verwijder invites van een gebruiker.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                                                                | Details |
-| -------- | ----------------- | -------- | ---------------------------------------------------------------------------------------------------------- | ------- |
-| user     | [User](#User)     | Yes      | De gebruiker die krijgt of verliest de bonus invites.                                                      |         |
-| amount   | [Number](#Number) | Yes      | De hoeveelheid invites dat de gebruiker krijgt / verliest. Gebruik de (-) teken om invites te verwijderen. |         |
-| reason   | [Text](#Text)     | No       | De reden om invites toe te voegen of te verwijderen.                                                       |         |
+| Argument | Type                                            | Required | Description                     | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.addInvites.self.args.user   |         |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addInvites.self.args.amount |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addInvites.self.args.reason |         |
 
 ### Examples
 
@@ -228,7 +206,7 @@ Voeg toe/verwijder invites van een gebruiker.
 
 ## !addRank
 
-Voeg een nieuwe rank toe.
+cmd.addRank.self.description
 
 ### Usage
 
@@ -244,11 +222,11 @@ Voeg een nieuwe rank toe.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                             | Details |
-| -------- | ----------------- | -------- | ----------------------------------------------------------------------- | ------- |
-| role     | [Role](#Role)     | Yes      | De role die de gebruiker krijgt bij het bereiken van deze rank.         |         |
-| invites  | [Number](#Number) | Yes      | De hoeveelheid invites nodig om de rank te krijgen.                     |         |
-| info     | [Text](#Text)     | No       | Een beschrijving zodat gebruikers meer krijgen te weten over deze rank. |         |
+| Argument | Type                                            | Required | Description                   | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------------- | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type)     | Yes      | cmd.addRank.self.args.role    |         |
+| invites  | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addRank.self.args.invites |         |
+| info     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addRank.self.args.info    |         |
 
 ### Examples
 
@@ -266,7 +244,7 @@ Voeg een nieuwe rank toe.
 
 ## !ban
 
-Verban een gebruiker van de server.
+cmd.ban.self.description
 
 ### Usage
 
@@ -276,16 +254,16 @@ Verban een gebruiker van de server.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| user     | [User](#User) | Yes      | Gebruiker om te verbannen.         |         |
-| reason   | [Text](#Text) | No       | Waarom de gebruiker was verbannen. |         |
+| Argument | Type                                            | Required | Description              | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.ban.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.ban.self.args.reason |         |
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type                                            | Description                          |
+| --------------------------------- | --------- | ----------------------------------------------- | ------------------------------------ |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.ban.self.flags.deleteMessageDays |
 
 ### Examples
 
@@ -295,7 +273,7 @@ Verban een gebruiker van de server.
 
 ## !botConfig
 
-Zie en verander de configuratie van de bot.
+cmd.botConfig.self.description
 
 ### Usage
 
@@ -311,10 +289,10 @@ Zie en verander de configuratie van de bot.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                 | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | De bot configuratie instelling die je wilt zien/veranderen. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | De nieuwe waarde van de setting.                            |                                                                                                                                             |
+| Argument | Type                                                          | Required | Description                   | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | ----------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.botConfig.self.args.key   | resolvers.enum.validValues |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.botConfig.self.args.value |                            |
 
 ### Examples
 
@@ -328,7 +306,7 @@ Zie en verander de configuratie van de bot.
 
 ## !botInfo
 
-Krijg algemene informatie over deze bot.
+cmd.botInfo.self.description
 
 ### Usage
 
@@ -352,7 +330,7 @@ Krijg algemene informatie over deze bot.
 
 ## !caseDelete
 
-Verwijder een specifiek geval.
+cmd.caseDelete.self.description
 
 ### Usage
 
@@ -368,10 +346,10 @@ Verwijder een specifiek geval.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                                  | Details |
-| ---------- | ----------------- | -------- | -------------------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case nummer                                  |         |
-| reason     | [Text](#Text)     | No       | De reden voor het verwijderen van het geval. |         |
+| Argument   | Type                                            | Required | Description                         | Details |
+| ---------- | ----------------------------------------------- | -------- | ----------------------------------- | ------- |
+| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseDelete.self.args.caseNumber |         |
+| reason     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.caseDelete.self.args.reason     |         |
 
 ### Examples
 
@@ -385,7 +363,7 @@ Verwijder een specifiek geval.
 
 ## !caseView
 
-Bekijk meer informatie over een specifiek geval.
+cmd.caseView.self.description
 
 ### Usage
 
@@ -401,9 +379,9 @@ Bekijk meer informatie over een specifiek geval.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description  | Details |
-| ---------- | ----------------- | -------- | ------------ | ------- |
-| caseNumber | [Number](#Number) | Yes      | Geval nummer |         |
+| Argument   | Type                                            | Required | Description                       | Details |
+| ---------- | ----------------------------------------------- | -------- | --------------------------------- | ------- |
+| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseView.self.args.caseNumber |         |
 
 ### Examples
 
@@ -417,7 +395,7 @@ Bekijk meer informatie over een specifiek geval.
 
 ## !check
 
-Zie overtredingen en straffen van een gebruiker.
+cmd.check.self.description
 
 ### Usage
 
@@ -431,9 +409,9 @@ Zie overtredingen en straffen van een gebruiker.
 
 ### Arguments
 
-| Argument | Type          | Required | Description              | Details |
-| -------- | ------------- | -------- | ------------------------ | ------- |
-| user     | [User](#User) | Yes      | Gebruiker om te checken. |         |
+| Argument | Type                                        | Required | Description              | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------ | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | Yes      | cmd.check.self.args.user |         |
 
 ### Examples
 
@@ -451,7 +429,7 @@ Zie overtredingen en straffen van een gebruiker.
 
 ## !clean
 
-Maak een kanaal schoon van verschillende soorten berichten.
+cmd.clean.self.description
 
 ### Usage
 
@@ -465,10 +443,10 @@ Maak een kanaal schoon van verschillende soorten berichten.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                              | Details                                                                                                            |
-| ---------------- | ----------------- | -------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| type             | [Enum](#Enum)     | Yes      | Het type bericht dat wordt verwijdert.   | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
-| numberOfMessages | [Number](#Number) | No       | Hoeveelheid berichten dat wordt gezocht. |                                                                                                                    |
+| Argument         | Type                                            | Required | Description                          | Details                    |
+| ---------------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
+| type             | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.clean.self.args.type             | resolvers.enum.validValues |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.clean.self.args.numberOfMessages |                            |
 
 ### Examples
 
@@ -478,7 +456,7 @@ Maak een kanaal schoon van verschillende soorten berichten.
 
 ## !cleanShort
 
-Verwijder korte berichten
+cmd.cleanShort.self.description
 
 ### Usage
 
@@ -494,10 +472,10 @@ Verwijder korte berichten
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                                | Details |
-| ---------------- | ----------------- | -------- | ---------------------------------------------------------- | ------- |
-| maxTextLength    | [Number](#Number) | Yes      | Alle berichten die korter zijn dan deze worden verwijderd. |         |
-| numberOfMessages | [Number](#Number) | No       | Aantal berichten die worden gezocht.                       |         |
+| Argument         | Type                                            | Required | Description                               | Details |
+| ---------------- | ----------------------------------------------- | -------- | ----------------------------------------- | ------- |
+| maxTextLength    | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.cleanShort.self.args.maxTextLength    |         |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanShort.self.args.numberOfMessages |         |
 
 ### Examples
 
@@ -507,7 +485,7 @@ Verwijder korte berichten
 
 ## !cleanText
 
-Verwijder berichten die een bepaald woord bevatten.
+cmd.cleanText.self.description
 
 ### Usage
 
@@ -523,10 +501,10 @@ Verwijder berichten die een bepaald woord bevatten.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                     | Details |
-| ---------------- | ----------------- | -------- | ----------------------------------------------- | ------- |
-| text             | [Text](#Text)     | Yes      | Alle berichten met die woord worden verwijdert. |         |
-| numberOfMessages | [Number](#Number) | No       | Aantal berichten die worden gezocht.            |         |
+| Argument         | Type                                            | Required | Description                              | Details |
+| ---------------- | ----------------------------------------------- | -------- | ---------------------------------------- | ------- |
+| text             | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.cleanText.self.args.text             |         |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanText.self.args.numberOfMessages |         |
 
 ### Examples
 
@@ -536,7 +514,7 @@ Verwijder berichten die een bepaald woord bevatten.
 
 ## !clearInvites
 
-Verwijder alle invites van de server/een gebruiker
+cmd.clearInvites.self.description
 
 ### Usage
 
@@ -550,16 +528,16 @@ Verwijder alle invites van de server/een gebruiker
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                        | Details |
-| -------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ | ------- |
-| user     | [User](#User) | No       | De gebruiker waar alle invites worden verwijdert. Wanneer dit wordt weggelaten, worden alle gebruikers verwijdert. |         |
+| Argument | Type                                        | Required | Description                     | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.clearInvites.self.args.user |         |
 
 ### Flags
 
-| Flag                       | Short      | Type                | Description                            |
-| -------------------------- | ---------- | ------------------- | -------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | cmd.clearInvites.self.flags.date       |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | cmd.clearInvites.self.flags.clearBonus |
+| Flag                       | Short      | Type                                              | Description                            |
+| -------------------------- | ---------- | ------------------------------------------------- | -------------------------------------- |
+| &#x2011;&#x2011;date       | &#x2011;d  | [resolvers.date.type](#resolvers.date.type)       | cmd.clearInvites.self.flags.date       |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.clearInvites.self.flags.clearBonus |
 
 ### Examples
 
@@ -581,7 +559,7 @@ Verwijder alle invites van de server/een gebruiker
 
 ## !config
 
-Zie en verander de configuratie van de server.
+cmd.config.self.description
 
 ### Usage
 
@@ -595,10 +573,10 @@ Zie en verander de configuratie van de server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                             | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| -------- | --------------- | -------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | De configuratie instelling die je wilt zien/veranderen. | Use one of the following values: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Value](#Value) | No       | De nieuwe waarde van de instelling.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Argument | Type                                                          | Required | Description                | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | -------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.config.self.args.key   | resolvers.enum.validValues |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.config.self.args.value |                            |
 
 ### Examples
 
@@ -612,7 +590,7 @@ Zie en verander de configuratie van de server.
 
 ## !createInvite
 
-Maak unieke invite codes aan.
+cmd.createInvite.self.description
 
 ### Usage
 
@@ -626,10 +604,10 @@ Maak unieke invite codes aan.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                                                  | Details |
-| -------- | ------------------- | -------- | -------------------------------------------------------------------------------------------- | ------- |
-| name     | [Text](#Text)       | Yes      | De naam van de invite code.                                                                  |         |
-| channel  | [Channel](#Channel) | No       | De kanaal waarvoor de invite code is aangemaakt. De huidige kanaal wordt standaard gebruikt. |         |
+| Argument | Type                                              | Required | Description                        | Details |
+| -------- | ------------------------------------------------- | -------- | ---------------------------------- | ------- |
+| name     | [resolvers.string.type](#resolvers.string.type)   | Yes      | cmd.createInvite.self.args.name    |         |
+| channel  | [resolvers.channel.type](#resolvers.channel.type) | No       | cmd.createInvite.self.args.channel |         |
 
 ### Examples
 
@@ -647,7 +625,7 @@ Maak unieke invite codes aan.
 
 ## !credits
 
-Zie de ontwikkelaars en de mensen die hebben helpen aan de bot.
+cmd.credits.self.description
 
 ### Usage
 
@@ -667,7 +645,7 @@ Zie de ontwikkelaars en de mensen die hebben helpen aan de bot.
 
 ## !disconnect
 
-Disconnect the bot from the current voice channel.
+cmd.disconnect.self.description
 
 ### Usage
 
@@ -687,7 +665,7 @@ Disconnect the bot from the current voice channel.
 
 ## !export
 
-Exporteer data van InviteManager in een csv bestand.
+cmd.export.self.description
 
 ### Usage
 
@@ -697,9 +675,9 @@ Exporteer data van InviteManager in een csv bestand.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                 | Details                                        |
-| -------- | ------------- | -------- | --------------------------- | ---------------------------------------------- |
-| type     | [Enum](#Enum) | Yes      | De type export wat je wilt. | Use one of the following values: `leaderboard` |
+| Argument | Type                                        | Required | Description               | Details                    |
+| -------- | ------------------------------------------- | -------- | ------------------------- | -------------------------- |
+| type     | [resolvers.enum.type](#resolvers.enum.type) | Yes      | cmd.export.self.args.type | resolvers.enum.validValues |
 
 ### Examples
 
@@ -713,7 +691,7 @@ Exporteer data van InviteManager in een csv bestand.
 
 ## !fake
 
-Help om gebruikers te vinden die proberen vals te spelen.
+cmd.fake.self.description
 
 ### Usage
 
@@ -730,9 +708,9 @@ Help om gebruikers te vinden die proberen vals te spelen.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                             | Details |
-| -------- | ----------------- | -------- | --------------------------------------- | ------- |
-| page     | [Number](#Number) | No       | Welke pagina van de fake te verkrijgen. |         |
+| Argument | Type                                            | Required | Description             | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.fake.self.args.page |         |
 
 ### Examples
 
@@ -774,7 +752,7 @@ cmd.fixRanks.self.description
 
 ## !getBot
 
-Krijg een invite link voor de bot.
+cmd.getBot.self.description
 
 ### Usage
 
@@ -800,7 +778,7 @@ Krijg een invite link voor de bot.
 
 ## !graph
 
-Laat verschillende soorten grafieken zien van je server statistieken.
+cmd.graph.self.description
 
 ### Usage
 
@@ -815,10 +793,10 @@ Laat verschillende soorten grafieken zien van je server statistieken.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                  | Details                                                     |
-| -------- | --------------------- | -------- | ---------------------------- | ----------------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | De type grafiek om te zien.  | Use one of the following values: `joins`, `leaves`, `usage` |
-| duration | [Duration](#Duration) | No       | De tijdsduur voor de grafiek |                                                             |
+| Argument | Type                                                | Required | Description                  | Details                    |
+| -------- | --------------------------------------------------- | -------- | ---------------------------- | -------------------------- |
+| type     | [resolvers.enum.type](#resolvers.enum.type)         | Yes      | cmd.graph.self.args.type     | resolvers.enum.validValues |
+| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.graph.self.args.duration |                            |
 
 ### Examples
 
@@ -840,7 +818,7 @@ Laat verschillende soorten grafieken zien van je server statistieken.
 
 ## !help
 
-Zie help.
+cmd.help.self.description
 
 ### Usage
 
@@ -850,9 +828,9 @@ Zie help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| -------- | ------------------- | -------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Command](#Command) | No       | De commando om gedetailleerde informatie te krijgen. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type                                              | Required | Description                | Details                       |
+| -------- | ------------------------------------------------- | -------- | -------------------------- | ----------------------------- |
+| command  | [resolvers.command.type](#resolvers.command.type) | No       | cmd.help.self.args.command | resolvers.command.validValues |
 
 ### Examples
 
@@ -870,7 +848,7 @@ Zie help.
 
 ## !info
 
-Zie informatie over een specifieke gebruiker.
+cmd.info.self.description
 
 ### Usage
 
@@ -884,11 +862,11 @@ Zie informatie over een specifieke gebruiker.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                                                     | Details                                             |
-| -------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| user     | [User](#User)     | Yes      | De gebruiker van wie je de toegevoegde informatie wilt zien.                                    |                                                     |
-| details  | [Enum](#Enum)     | No       | Vraag alleen specifieke details aan van een gebruiker.                                          | Use one of the following values: `bonus`, `members` |
-| page     | [Number](#Number) | No       | Welke pagina van de detail om te laten zien. Je kan ook de reactions gebruiken om te navigeren. |                                                     |
+| Argument | Type                                            | Required | Description                | Details                    |
+| -------- | ----------------------------------------------- | -------- | -------------------------- | -------------------------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.info.self.args.user    |                            |
+| details  | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.info.self.args.details | resolvers.enum.validValues |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.info.self.args.page    |                            |
 
 ### Examples
 
@@ -918,7 +896,7 @@ Zie informatie over een specifieke gebruiker.
 
 ## !interactiveConfig
 
-Interactieve Configuratie
+cmd.interactiveConfig.self.description
 
 ### Usage
 
@@ -942,7 +920,7 @@ Interactieve Configuratie
 
 ## !inviteCodeConfig
 
-Zie en verander de configuratie van de invite codes van de server.
+cmd.inviteCodeConfig.self.description
 
 ### Usage
 
@@ -957,11 +935,11 @@ Zie en verander de configuratie van de invite codes van de server.
 
 ### Arguments
 
-| Argument   | Type                       | Required | Description                                                | Details                                          |
-| ---------- | -------------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------ |
-| key        | [Enum](#Enum)              | No       | De configuratie instelling die je wilt zien/veranderen.    | Use one of the following values: `name`, `roles` |
-| inviteCode | [Invite Code](#InviteCode) | No       | De invite code waarvan je de instellingen wilt veranderen. |                                                  |
-| value      | [Value](#Value)            | No       | De nieuwe waarde van de instelling.                        |                                                  |
+| Argument   | Type                                                          | Required | Description                               | Details                    |
+| ---------- | ------------------------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
+| key        | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.inviteCodeConfig.self.args.key        | resolvers.enum.validValues |
+| inviteCode | [resolvers.invitecode.type](#resolvers.invitecode.type)       | No       | cmd.inviteCodeConfig.self.args.inviteCode |                            |
+| value      | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.inviteCodeConfig.self.args.value      |                            |
 
 ### Examples
 
@@ -975,7 +953,7 @@ Zie en verander de configuratie van de invite codes van de server.
 
 ## !inviteCodes
 
-Krijg een lijst van al jouw invite codes
+cmd.inviteCodes.self.description
 
 ### Usage
 
@@ -1006,7 +984,7 @@ Krijg een lijst van al jouw invite codes
 
 ## !inviteDetails
 
-Zie details waar je je invites vandaan komen.
+cmd.inviteDetails.self.description
 
 ### Usage
 
@@ -1020,9 +998,9 @@ Zie details waar je je invites vandaan komen.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                 | Details |
-| -------- | ------------- | -------- | ----------------------------------------------------------- | ------- |
-| user     | [User](#User) | No       | De gebruiker van wie je de invites gedetailleerd wilt zien. |         |
+| Argument | Type                                        | Required | Description                      | Details |
+| -------- | ------------------------------------------- | -------- | -------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.inviteDetails.self.args.user |         |
 
 ### Examples
 
@@ -1044,7 +1022,7 @@ Zie details waar je je invites vandaan komen.
 
 ## !invites
 
-Zie persoonlijke invites.
+cmd.invites.self.description
 
 ### Usage
 
@@ -1059,9 +1037,9 @@ Zie persoonlijke invites.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                   | Details |
-| -------- | ------------- | -------- | --------------------------------------------- | ------- |
-| user     | [User](#User) | No       | De gebruiker van wie je de invites wilt zien. |         |
+| Argument | Type                                        | Required | Description                | Details |
+| -------- | ------------------------------------------- | -------- | -------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.invites.self.args.user |         |
 
 ### Examples
 
@@ -1083,7 +1061,7 @@ Zie persoonlijke invites.
 
 ## !kick
 
-Kick een gebruiker van de server.
+cmd.kick.self.description
 
 ### Usage
 
@@ -1093,10 +1071,10 @@ Kick een gebruiker van de server.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                      | Details |
-| -------- | ----------------- | -------- | -------------------------------- | ------- |
-| member   | [Member](#Member) | Yes      | Gebruiker om te kicken.          |         |
-| reason   | [Text](#Text)     | No       | Waarom de gebruiker is gekicked. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.kick.self.args.member |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.kick.self.args.reason |         |
 
 ### Examples
 
@@ -1106,7 +1084,7 @@ Kick een gebruiker van de server.
 
 ## !leaderboard
 
-Laat de mensen zien met de meeste invites.
+cmd.leaderboard.self.description
 
 ### Usage
 
@@ -1120,16 +1098,16 @@ Laat de mensen zien met de meeste invites.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                                    | Details |
-| -------- | --------------------- | -------- | ---------------------------------------------- | ------- |
-| duration | [Duration](#Duration) | No       | De tijd om de leaderboard te berekenen.        |         |
-| page     | [Number](#Number)     | No       | Welke pagina van de leaderboard om te krijgen. |         |
+| Argument | Type                                                | Required | Description                        | Details |
+| -------- | --------------------------------------------------- | -------- | ---------------------------------- | ------- |
+| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.leaderboard.self.args.duration |         |
+| page     | [resolvers.number.type](#resolvers.number.type)     | No       | cmd.leaderboard.self.args.page     |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                                       |
-| ----------------------- | --------- | --------------------- | ------------------------------------------------- |
-| &#x2011;&#x2011;compare | &#x2011;c | [Duration](#Duration) | De datum waarop de leaderboard wordt weergegeven. |
+| Flag                    | Short     | Type                                                | Description                        |
+| ----------------------- | --------- | --------------------------------------------------- | ---------------------------------- |
+| &#x2011;&#x2011;compare | &#x2011;c | [resolvers.duration.type](#resolvers.duration.type) | cmd.leaderboard.self.flags.compare |
 
 ### Examples
 
@@ -1151,7 +1129,7 @@ Laat de mensen zien met de meeste invites.
 
 ## !lyrics
 
-Show lyrics of the currently playing song.
+cmd.lyrics.self.description
 
 ### Usage
 
@@ -1161,9 +1139,9 @@ Show lyrics of the currently playing song.
 
 ### Flags
 
-| Flag                 | Short     | Type                | Description                                                          |
-| -------------------- | --------- | ------------------- | -------------------------------------------------------------------- |
-| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | If set, then the lyrics will sync with the current time of the song. |
+| Flag                 | Short     | Type                                              | Description                |
+| -------------------- | --------- | ------------------------------------------------- | -------------------------- |
+| &#x2011;&#x2011;live | &#x2011;l | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.lyrics.self.flags.live |
 
 ### Examples
 
@@ -1177,7 +1155,7 @@ Show lyrics of the currently playing song.
 
 ## !makeMentionable
 
-Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt.
+cmd.makeMentionable.self.description
 
 ### Usage
 
@@ -1192,9 +1170,9 @@ Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                    | Details |
-| -------- | ------------- | -------- | ------------------------------ | ------- |
-| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
+| Argument | Type                                        | Required | Description                        | Details |
+| -------- | ------------------------------------------- | -------- | ---------------------------------- | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.makeMentionable.self.args.role |         |
 
 ### Examples
 
@@ -1212,7 +1190,7 @@ Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt.
 
 ## !mashup
 
-Create a mashup of 2 songs.
+cmd.mashup.self.description
 
 ### Usage
 
@@ -1222,9 +1200,9 @@ Create a mashup of 2 songs.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                | Details |
-| -------- | ------------- | -------- | ------------------------------------------ | ------- |
-| videos   | [Text](#Text) | Yes      | The videos that should be mashed together. |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| videos   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.mashup.self.args.videos |         |
 
 ### Examples
 
@@ -1234,7 +1212,7 @@ Create a mashup of 2 songs.
 
 ## !memberConfig
 
-Zie en verander de configuratie van de gebruikers van deze server.
+cmd.memberConfig.self.description
 
 ### Usage
 
@@ -1250,11 +1228,11 @@ Zie en verander de configuratie van de gebruikers van deze server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                       | Details                                                |
-| -------- | --------------- | -------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | De gebruiker configuratie instelling die je wilt zien/veranderen. | Use one of the following values: `hideFromLeaderboard` |
-| user     | [User](#User)   | No       | De gebruiker waar de setting voor is.                             |                                                        |
-| value    | [Value](#Value) | No       | De nieuwe waarde van de setting.                                  |                                                        |
+| Argument | Type                                                          | Required | Description                      | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | -------------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.memberConfig.self.args.key   | resolvers.enum.validValues |
+| user     | [resolvers.user.type](#resolvers.user.type)                   | No       | cmd.memberConfig.self.args.user  |                            |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.memberConfig.self.args.value |                            |
 
 ### Examples
 
@@ -1268,7 +1246,7 @@ Zie en verander de configuratie van de gebruikers van deze server.
 
 ## !members
 
-Zie de gebruiker aantal van deze server.
+cmd.members.self.description
 
 ### Usage
 
@@ -1293,7 +1271,7 @@ Zie de gebruiker aantal van deze server.
 
 ## !mentionRole
 
-Mention een niet mentionable role.
+cmd.mentionRole.self.description
 
 ### Usage
 
@@ -1308,9 +1286,9 @@ Mention een niet mentionable role.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                    | Details |
-| -------- | ------------- | -------- | ------------------------------ | ------- |
-| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
+| Argument | Type                                        | Required | Description                    | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------------ | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.mentionRole.self.args.role |         |
 
 ### Examples
 
@@ -1328,7 +1306,7 @@ Mention een niet mentionable role.
 
 ## !mute
 
-Mute een gebruiker
+cmd.mute.self.description
 
 ### Usage
 
@@ -1338,10 +1316,10 @@ Mute een gebruiker
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                | Details |
-| -------- | ----------------- | -------- | ------------------------------------------ | ------- |
-| user     | [Member](#Member) | Yes      | De gebruiker die gemute zou moeten worden. |         |
-| reason   | [Text](#Text)     | No       | De reden waarom de gebruiker is gemute.    |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.mute.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.mute.self.args.reason |         |
 
 ### Examples
 
@@ -1351,7 +1329,7 @@ Mute een gebruiker
 
 ## !nowPlaying
 
-Shows information about the currently playing song
+cmd.nowPlaying.self.description
 
 ### Usage
 
@@ -1366,9 +1344,9 @@ Shows information about the currently playing song
 
 ### Flags
 
-| Flag                | Short     | Type                | Description                                                                        |
-| ------------------- | --------- | ------------------- | ---------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Pin the now playing message and update it automatically whenever a new song plays. |
+| Flag                | Short     | Type                                              | Description                   |
+| ------------------- | --------- | ------------------------------------------------- | ----------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.nowPlaying.self.flags.pin |
 
 ### Examples
 
@@ -1382,7 +1360,7 @@ Shows information about the currently playing song
 
 ## !pause
 
-Pause the current song.
+cmd.pause.self.description
 
 ### Usage
 
@@ -1406,7 +1384,7 @@ Pause the current song.
 
 ## !permissions
 
-Configureer permissies om commando's te gebruiken.
+cmd.permissions.self.description
 
 ### Usage
 
@@ -1420,10 +1398,10 @@ Configureer permissies om commando's te gebruiken.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                        | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| -------- | ------------------- | -------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Command](#Command) | No       | De commando om de permissies te configureren.                      | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)       | No       | De role die toegang of geen toegang moet krijgen tot het commando. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Argument | Type                                              | Required | Description                    | Details                       |
+| -------- | ------------------------------------------------- | -------- | ------------------------------ | ----------------------------- |
+| cmd      | [resolvers.command.type](#resolvers.command.type) | No       | cmd.permissions.self.args.cmd  | resolvers.command.validValues |
+| role     | [resolvers.role.type](#resolvers.role.type)       | No       | cmd.permissions.self.args.role |                               |
 
 ### Examples
 
@@ -1437,7 +1415,7 @@ Configureer permissies om commando's te gebruiken.
 
 ## !ping
 
-Mention de bot
+cmd.ping.self.description
 
 ### Usage
 
@@ -1457,7 +1435,7 @@ Mention de bot
 
 ## !play
 
-Play the song if the queue is empty, otherwise it will add the song to the end of the queue.
+cmd.play.self.description
 
 ### Usage
 
@@ -1471,16 +1449,16 @@ Play the song if the queue is empty, otherwise it will add the song to the end o
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                   | Details |
-| -------- | ------------- | -------- | --------------------------------------------- | ------- |
-| link     | [Text](#Text) | Yes      | The link to a specific song or a search term. |         |
+| Argument | Type                                            | Required | Description             | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
+| link     | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.play.self.args.link |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                | Description                                                                       |
-| ------------------------ | --------- | ------------------- | --------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Select the platform where you want the song to be played.                         |
-| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | If set, it will play this song next instead of adding it to the end of the queue. |
+| Flag                     | Short     | Type                                              | Description                  |
+| ------------------------ | --------- | ------------------------------------------------- | ---------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type)       | cmd.play.self.flags.platform |
+| &#x2011;&#x2011;next     | &#x2011;n | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.play.self.flags.next     |
 
 ### Examples
 
@@ -1490,7 +1468,7 @@ Play the song if the queue is empty, otherwise it will add the song to the end o
 
 ## !prefix
 
-Laat de huidige prefix zien van de bot.
+cmd.prefix.self.description
 
 ### Usage
 
@@ -1510,7 +1488,7 @@ Laat de huidige prefix zien van de bot.
 
 ## !premium
 
-Informatie over de betaalde versie van InviteManager.
+cmd.premium.self.description
 
 ### Usage
 
@@ -1525,9 +1503,9 @@ Informatie over de betaalde versie van InviteManager.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                                                          | Details                                                            |
-| -------- | ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| action   | [Enum](#Enum) | No       | De actie om uit te voeren. Niets voor premium info. `check` om je premium status te controleren. `acivate` om premium te gebruiken voor deze server. | Use one of the following values: `Activate`, `Check`, `Deactivate` |
+| Argument | Type                                        | Required | Description                  | Details                    |
+| -------- | ------------------------------------------- | -------- | ---------------------------- | -------------------------- |
+| action   | [resolvers.enum.type](#resolvers.enum.type) | No       | cmd.premium.self.args.action | resolvers.enum.validValues |
 
 ### Examples
 
@@ -1553,7 +1531,7 @@ Informatie over de betaalde versie van InviteManager.
 
 ## !punishmentConfig
 
-Configure punishments when reaching a certain amount of strikes.
+cmd.punishmentConfig.self.description
 
 ### Usage
 
@@ -1567,11 +1545,11 @@ Configure punishments when reaching a certain amount of strikes.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                                           | Details                                                                   |
-| ---------- | ----------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
-| punishment | [Enum](#Enum)     | No       | Straf type om te gebruiken.                           | Use one of the following values: `ban`, `kick`, `mute`, `softban`, `warn` |
-| strikes    | [Number](#Number) | No       | Waarschuwing aantal voor deze straf mom te gebruiken. |                                                                           |
-| args       | [Text](#Text)     | No       | Arguments passed to the punishment.                   |                                                                           |
+| Argument   | Type                                            | Required | Description                               | Details                    |
+| ---------- | ----------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
+| punishment | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.punishmentConfig.self.args.punishment | resolvers.enum.validValues |
+| strikes    | [resolvers.number.type](#resolvers.number.type) | No       | cmd.punishmentConfig.self.args.strikes    |                            |
+| args       | [resolvers.string.type](#resolvers.string.type) | No       | cmd.punishmentConfig.self.args.args       |                            |
 
 ### Examples
 
@@ -1585,7 +1563,7 @@ Configure punishments when reaching a certain amount of strikes.
 
 ## !purge
 
-Verwijder berichten in een kanaal.
+cmd.purge.self.description
 
 ### Usage
 
@@ -1599,10 +1577,10 @@ Verwijder berichten in een kanaal.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                    | Details |
-| -------- | ----------------- | -------- | ---------------------------------------------- | ------- |
-| quantity | [Number](#Number) | Yes      | Hoeveel berichten er verwijdert zullen worden. |         |
-| user     | [User](#User)     | No       | User whose messages are deleted.               |         |
+| Argument | Type                                            | Required | Description                  | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
+| quantity | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.purge.self.args.quantity |         |
+| user     | [resolvers.user.type](#resolvers.user.type)     | No       | cmd.purge.self.args.user     |         |
 
 ### Examples
 
@@ -1612,7 +1590,7 @@ Verwijder berichten in een kanaal.
 
 ## !purgeUntil
 
-Verwijder berichten in een kanaal tot een specifiek aan berichten.
+cmd.purgeUntil.self.description
 
 ### Usage
 
@@ -1629,9 +1607,9 @@ Verwijder berichten in een kanaal tot een specifiek aan berichten.
 
 ### Arguments
 
-| Argument  | Type          | Required | Description                           | Details |
-| --------- | ------------- | -------- | ------------------------------------- | ------- |
-| messageID | [Text](#Text) | Yes      | Laatste bericht ID om te verwijderen. |         |
+| Argument  | Type                                            | Required | Description                        | Details |
+| --------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
+| messageID | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.purgeUntil.self.args.messageID |         |
 
 ### Examples
 
@@ -1641,7 +1619,7 @@ Verwijder berichten in een kanaal tot een specifiek aan berichten.
 
 ## !queue
 
-Display the songs in the queue.
+cmd.queue.self.description
 
 ### Usage
 
@@ -1661,7 +1639,7 @@ Display the songs in the queue.
 
 ## !ranks
 
-Zie alle ranks.
+cmd.ranks.self.description
 
 ### Usage
 
@@ -1676,9 +1654,9 @@ Zie alle ranks.
 
 ### Arguments
 
-| Argument | Type              | Required | Description              | Details |
-| -------- | ----------------- | -------- | ------------------------ | ------- |
-| page     | [Number](#Number) | No       | cmd.ranks.self.args.page |         |
+| Argument | Type                                            | Required | Description              | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.ranks.self.args.page |         |
 
 ### Examples
 
@@ -1706,11 +1684,11 @@ cmd.removeInvites.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| user     | [User](#User)     | Yes      | cmd.removeInvites.self.args.user   |         |
-| amount   | [Number](#Number) | Yes      | cmd.removeInvites.self.args.amount |         |
-| reason   | [Text](#Text)     | No       | cmd.removeInvites.self.args.reason |         |
+| Argument | Type                                            | Required | Description                        | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.removeInvites.self.args.user   |         |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.removeInvites.self.args.amount |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.removeInvites.self.args.reason |         |
 
 ### Examples
 
@@ -1732,7 +1710,7 @@ cmd.removeInvites.self.description
 
 ## !removeRank
 
-Verwijder een rank.
+cmd.removeRank.self.description
 
 ### Usage
 
@@ -1746,9 +1724,9 @@ Verwijder een rank.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                           | Details |
-| -------- | ------------- | -------- | ------------------------------------- | ------- |
-| rank     | [Role](#Role) | Yes      | Voor wie je de rank wilt verwijderen. |         |
+| Argument | Type                                        | Required | Description                   | Details |
+| -------- | ------------------------------------------- | -------- | ----------------------------- | ------- |
+| rank     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.removeRank.self.args.rank |         |
 
 ### Examples
 
@@ -1766,7 +1744,7 @@ Verwijder een rank.
 
 ## !repeat
 
-Set the song to be played on repeat.
+cmd.repeat.self.description
 
 ### Usage
 
@@ -1790,7 +1768,7 @@ Set the song to be played on repeat.
 
 ## !restoreInvites
 
-Zat alle vorige verwijderde invites terug.
+cmd.restoreInvites.self.description
 
 ### Usage
 
@@ -1806,9 +1784,9 @@ Zat alle vorige verwijderde invites terug.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                    | Details |
-| -------- | ------------- | -------- | -------------------------------------------------------------------------------------------------------------- | ------- |
-| user     | [User](#User) | No       | De gebruiker om alle invites terug te zetten. Wanneer leeg gelaten worden de invites van iedereen terug gezet. |         |
+| Argument | Type                                        | Required | Description                       | Details |
+| -------- | ------------------------------------------- | -------- | --------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.restoreInvites.self.args.user |         |
 
 ### Examples
 
@@ -1830,7 +1808,7 @@ Zat alle vorige verwijderde invites terug.
 
 ## !resume
 
-Resume the current song.
+cmd.resume.self.description
 
 ### Usage
 
@@ -1854,7 +1832,7 @@ Resume the current song.
 
 ## !rewind
 
-Rewind the song and start from the beginning.
+cmd.rewind.self.description
 
 ### Usage
 
@@ -1878,7 +1856,7 @@ Rewind the song and start from the beginning.
 
 ## !search
 
-Search for the search term and let you chose one of the results.
+cmd.search.self.description
 
 ### Usage
 
@@ -1888,15 +1866,15 @@ Search for the search term and let you chose one of the results.
 
 ### Arguments
 
-| Argument | Type          | Required | Description     | Details |
-| -------- | ------------- | -------- | --------------- | ------- |
-| search   | [Text](#Text) | Yes      | The search term |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| search   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.search.self.args.search |         |
 
 ### Flags
 
-| Flag                     | Short     | Type          | Description                                               |
-| ------------------------ | --------- | ------------- | --------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | Select the platform where you want the song to be played. |
+| Flag                     | Short     | Type                                        | Description                    |
+| ------------------------ | --------- | ------------------------------------------- | ------------------------------ |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type) | cmd.search.self.flags.platform |
 
 ### Examples
 
@@ -1906,7 +1884,7 @@ Search for the search term and let you chose one of the results.
 
 ## !seek
 
-Skip to a specific part of the song.
+cmd.seek.self.description
 
 ### Usage
 
@@ -1916,9 +1894,9 @@ Skip to a specific part of the song.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                                | Details |
-| -------- | ----------------- | -------- | -------------------------------------------------------------------------- | ------- |
-| duration | [Number](#Number) | No       | The position the song will be skipped to (from the beginning, in seconds). |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| duration | [resolvers.number.type](#resolvers.number.type) | No       | cmd.seek.self.args.duration |         |
 
 ### Examples
 
@@ -1932,7 +1910,7 @@ Skip to a specific part of the song.
 
 ## !setup
 
-Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies)
+cmd.setup.self.description
 
 ### Usage
 
@@ -1959,7 +1937,7 @@ Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld 
 
 ## !skip
 
-Skip the current song and play the next song in the queue.
+cmd.skip.self.description
 
 ### Usage
 
@@ -1973,9 +1951,9 @@ Skip the current song and play the next song in the queue.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                     | Details |
-| -------- | ----------------- | -------- | ------------------------------- | ------- |
-| amount   | [Number](#Number) | No       | How many songs will be skipped. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| amount   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.skip.self.args.amount |         |
 
 ### Examples
 
@@ -1989,7 +1967,7 @@ Skip the current song and play the next song in the queue.
 
 ## !softBan
 
-Ban en dan unban een gebruiker automatisch van de server.
+cmd.softBan.self.description
 
 ### Usage
 
@@ -2003,16 +1981,16 @@ Ban en dan unban een gebruiker automatisch van de server.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | Gebruiker om te verbannen.         |         |
-| reason   | [Text](#Text)     | No       | Waarom de gebruiker was verbannen. |         |
+| Argument | Type                                            | Required | Description                  | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.softBan.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.softBan.self.args.reason |         |
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                              |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.softBan.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type                                            | Description                              |
+| --------------------------------- | --------- | ----------------------------------------------- | ---------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.softBan.self.flags.deleteMessageDays |
 
 ### Examples
 
@@ -2022,7 +2000,7 @@ Ban en dan unban een gebruiker automatisch van de server.
 
 ## !strike
 
-Add strikes to a user
+cmd.strike.self.description
 
 ### Usage
 
@@ -2032,11 +2010,11 @@ Add strikes to a user
 
 ### Arguments
 
-| Argument | Type              | Required | Description                       | Details                                                                                                                                                      |
-| -------- | ----------------- | -------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| member   | [Member](#Member) | Yes      | The member receiving the strikes  |                                                                                                                                                              |
-| type     | [Enum](#Enum)     | Yes      | De type overtreding               | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
-| amount   | [Number](#Number) | Yes      | The amount of strikes to be added |                                                                                                                                                              |
+| Argument | Type                                            | Required | Description                 | Details                    |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | -------------------------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.strike.self.args.member |                            |
+| type     | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.strike.self.args.type   | resolvers.enum.validValues |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.strike.self.args.amount |                            |
 
 ### Examples
 
@@ -2046,7 +2024,7 @@ Add strikes to a user
 
 ## !strikeConfig
 
-Configureer waarschuwingen die gegeven zijn door vorige straffen.
+cmd.strikeConfig.self.description
 
 ### Usage
 
@@ -2060,10 +2038,10 @@ Configureer waarschuwingen die gegeven zijn door vorige straffen.
 
 ### Arguments
 
-| Argument  | Type              | Required | Description            | Details                                                                                                                                                      |
-| --------- | ----------------- | -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| violation | [Enum](#Enum)     | No       | Straf type.            | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
-| strikes   | [Number](#Number) | No       | Aantal waarschuwingen. |                                                                                                                                                              |
+| Argument  | Type                                            | Required | Description                          | Details                    |
+| --------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
+| violation | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.strikeConfig.self.args.violation | resolvers.enum.validValues |
+| strikes   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.strikeConfig.self.args.strikes   |                            |
 
 ### Examples
 
@@ -2077,7 +2055,7 @@ Configureer waarschuwingen die gegeven zijn door vorige straffen.
 
 ## !subtractFakes
 
-Verwijder fake invites van alle gebruikers.
+cmd.subtractFakes.self.description
 
 ### Usage
 
@@ -2103,7 +2081,7 @@ Verwijder fake invites van alle gebruikers.
 
 ## !subtractLeaves
 
-Verwijder leaves voor alle gebruikers.
+cmd.subtractLeaves.self.description
 
 ### Usage
 
@@ -2129,7 +2107,7 @@ Verwijder leaves voor alle gebruikers.
 
 ## !support
 
-Krijg een invite link naar onze hulp server.
+cmd.support.self.description
 
 ### Usage
 
@@ -2149,7 +2127,7 @@ Krijg een invite link naar onze hulp server.
 
 ## !tryPremium
 
-Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd.
+cmd.tryPremium.self.description
 
 ### Usage
 
@@ -2174,7 +2152,7 @@ Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd.
 
 ## !unban
 
-Unban een gebruiker
+cmd.unban.self.description
 
 ### Usage
 
@@ -2184,10 +2162,10 @@ Unban een gebruiker
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                 | Details |
-| -------- | ------------- | -------- | ------------------------------------------- | ------- |
-| user     | [User](#User) | Yes      | De gebruiker die wordt geunbanned.          |         |
-| reason   | [Text](#Text) | No       | De reden waarom de gebruiker is geunbanned. |         |
+| Argument | Type                                            | Required | Description                | Details |
+| -------- | ----------------------------------------------- | -------- | -------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.unban.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.unban.self.args.reason |         |
 
 ### Examples
 
@@ -2197,7 +2175,7 @@ Unban een gebruiker
 
 ## !unhoist
 
-Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan.
+cmd.unhoist.self.description
 
 ### Usage
 
@@ -2221,7 +2199,7 @@ Voeg een character toe in het begin van alle gebruikers met een speciale charact
 
 ## !unmute
 
-Unmute een gebruiker
+cmd.unmute.self.description
 
 ### Usage
 
@@ -2231,9 +2209,9 @@ Unmute een gebruiker
 
 ### Arguments
 
-| Argument | Type              | Required | Description                      | Details |
-| -------- | ----------------- | -------- | -------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | De gebruiker die geunmute wordt. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.unmute.self.args.user |         |
 
 ### Examples
 
@@ -2243,7 +2221,7 @@ Unmute een gebruiker
 
 ## !volume
 
-Set the volume if an argument is passed, or show the current volume.
+cmd.volume.self.description
 
 ### Usage
 
@@ -2253,9 +2231,9 @@ Set the volume if an argument is passed, or show the current volume.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                          | Details |
-| -------- | ----------------- | -------- | ------------------------------------ | ------- |
-| volume   | [Number](#Number) | No       | The value the volume will be set to. |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| volume   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.volume.self.args.volume |         |
 
 ### Examples
 
@@ -2269,7 +2247,7 @@ Set the volume if an argument is passed, or show the current volume.
 
 ## !warn
 
-Waarschuw een gebruikt.
+cmd.warn.self.description
 
 ### Usage
 
@@ -2279,9 +2257,9 @@ Waarschuw een gebruikt.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                          | Details |
-| -------- | ----------------- | -------- | ------------------------------------ | ------- |
-| member   | [Member](#Member) | Yes      | Gebruiker om te waarschuwen.         |         |
-| reason   | [Text](#Text)     | No       | Waarom de gebruiker gewaarschuwd is. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.warn.self.args.member |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.warn.self.args.reason |         |
 
 ### Examples
