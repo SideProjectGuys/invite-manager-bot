@@ -1,4 +1,4 @@
-import { Embed, Guild, Member, Message, TextChannel, User, Role } from 'eris';
+import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -13,7 +13,6 @@ import {
 } from '../../../sequelize';
 import { SettingsObject } from '../../../settings';
 import { BasicUser } from '../../../types';
-import { to } from '../../../util';
 
 interface Arguments {
 	guild: Guild;
@@ -716,8 +715,12 @@ export class ModerationService {
 		amount: number,
 		{ guild, settings }: Arguments
 	) {
-		const [error] = await to(member.ban(7, 'automod'));
-		return !error;
+		try {
+			await member.ban(7, 'automod');
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	private async kick(
@@ -725,8 +728,12 @@ export class ModerationService {
 		amount: number,
 		{ guild, settings }: Arguments
 	) {
-		const [error] = await to(member.kick('automod'));
-		return !error;
+		try {
+			await member.kick('automod');
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	private async softban(
@@ -734,12 +741,13 @@ export class ModerationService {
 		amount: number,
 		{ guild, settings }: Arguments
 	) {
-		let [error] = await to(member.ban(7, 'automod'));
-		if (!error) {
-			[error] = await to(member.unban('softban'));
+		try {
+			await member.ban(7, 'automod');
+			await member.unban('softban');
+			return true;
+		} catch (error) {
+			return false;
 		}
-
-		return !error;
 	}
 
 	private async warn(
@@ -760,8 +768,12 @@ export class ModerationService {
 			return false;
 		}
 
-		const [error] = await to(member.addRole(mutedRole, 'AutoMod muted'));
-		return !error;
+		try {
+			await member.addRole(mutedRole, 'AutoMod muted');
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	private async sendReplyAndDelete(
