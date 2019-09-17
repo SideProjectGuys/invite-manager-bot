@@ -1,4 +1,3 @@
-import DBL from 'dblapi.js';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
@@ -131,8 +130,6 @@ export class IMClient extends Client {
 		members: number;
 	};
 	public disabledGuilds: Set<string>;
-
-	private dbl: DBL;
 
 	public constructor({
 		version,
@@ -318,11 +315,6 @@ export class IMClient extends Client {
 					break;
 			}
 		});
-
-		// Setup discord bots api
-		if (this.config.bot.dblToken) {
-			this.dbl = new DBL(this.config.bot.dblToken, this);
-		}
 
 		await this.setActivity();
 		this.activityInterval = setInterval(
@@ -609,14 +601,6 @@ export class IMClient extends Client {
 	}
 
 	public async setActivity() {
-		if (this.dbl) {
-			await this.dbl.postStats(
-				this.guilds.size,
-				this.shardId - 1,
-				this.shardCount
-			);
-		}
-
 		await this.updateGatewayInfo();
 
 		const status = this.settings.activityStatus;
