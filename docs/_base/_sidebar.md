@@ -1,44 +1,44 @@
-- §{start.menuTitle}
+- §{start.title}
 
-  - [§{start.quick.menuTitle}](/§{lang}/§{start.url}/§{start.quick.url}.md)
-  - [§{start.faq.menuTitle}](/§{lang}/§{start.url}/§{start.faq.url}.md)
-  - [§{start.alpha.menuTitle}](/§{lang}/§{start.url}/§{start.alpha.url}.md)
-  - [§{start.pro.menuTitle}](/§{lang}/§{start.url}/§{start.pro.url}.md)
+  - [§{start.quick.title}](/§{lang}/§{start.url}/§{start.quick.url}.md)
+  - [§{start.faq.title}](/§{lang}/§{start.url}/§{start.faq.url}.md)
+  - [§{start.alpha.title}](/§{lang}/§{start.url}/§{start.alpha.url}.md)
+  - [§{start.pro.title}](/§{lang}/§{start.url}/§{start.pro.url}.md)
 
-- §{reference.menuTitle}
+- §{reference.title}
 
-  - [§{reference.commands.menuTitle}](/§{lang}/§{reference.url}/§{reference.commands.url}.md)
-  - [§{reference.settings.menuTitle}](/§{lang}/§{reference.url}/§{reference.settings.url}.md)
+  - [§{reference.commands.title}](/§{lang}/§{reference.url}/§{reference.commands.url}.md)
+  - [§{reference.settings.title}](/§{lang}/§{reference.url}/§{reference.settings.url}.md)
 
-- §{premium.menuTitle}
+- §{premium.title}
 
-  - [§{premium.features.menuTitle}](/§{lang}/§{premium.url}/§{premium.features.url}.md)
-  - [§{premium.tiers.menuTitle}](/§{lang}/§{premium.url}/§{premium.tiers.url}.md)
-  - [§{premium.setup.menuTitle}](/§{lang}/§{premium.url}/§{premium.setup.url}.md)
+  - [§{premium.features.title}](/§{lang}/§{premium.url}/§{premium.features.url}.md)
+  - [§{premium.tiers.title}](/§{lang}/§{premium.url}/§{premium.tiers.url}.md)
+  - [§{premium.setup.title}](/§{lang}/§{premium.url}/§{premium.setup.url}.md)
 
-- §{modules.menuTitle}
+- §{modules.title}
 
-  - §{modules.invites.menuTitle}
+  - §{modules.invites.title}
 
-    - [Overview](/§{lang}/§{modules.url}/§{modules.invites.url}/commands.md)
-    - [Custom Messages](/§{lang}/§{modules.url}/§{modules.invites.url}/custom-messages.md)
-      - [Examples](/§{lang}/§{modules.url}/§{modules.invites.url}/examples.md)
+    - [§{modules.invites.overview.title}](/§{lang}/§{modules.url}/§{modules.invites.url}/§{modules.invites.overview.url}.md)
+    - [§{modules.invites.customMessages.title}](/§{lang}/§{modules.url}/§{modules.invites.url}/§{modules.invites.customMessages.url}.md)
+      - [§{modules.invites.examples.title}](/§{lang}/§{modules.url}/§{modules.invites.url}/§{modules.invites.examples.url}.md)
 
-  - §{modules.moderation.menuTitle}
+  - §{modules.moderation.title}
 
-    - [§{modules.moderation.strikes.menuTitle}](/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.strikes.url}.md)
-    - [§{modules.moderation.punishments.menuTitle}](/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.punishments.url}.md)
+    - [§{modules.moderation.strikes.title}](/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.strikes.url}.md)
+    - [§{modules.moderation.punishments.title}](/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.punishments.url}.md)
 
-  - §{modules.music.menuTitle}
+  - §{modules.music.title}
 
-    - [§{modules.music.overview.menuTitle}](/§{lang}/§{modules.url}/§{modules.music.url}/§{modules.music.overview.url}.md)
+    - [§{modules.music.overview.title}](/§{lang}/§{modules.url}/§{modules.music.url}/§{modules.music.overview.url}.md)
 
-- §{other.menuTitle}
+- §{other.title}
 
-  - [§{other.webpanel.menuTitle}](/§{lang}/§{other.url}/§{other.webpanel.url}.md)
-  - [§{other.translations.menuTitle}](/§{lang}/§{other.url}/§{other.translations.url}.md)
-  - [§{other.donating.menuTitle}](/§{lang}/§{other.url}/§{other.donating.url}.md)
-  - [§{other.support.menuTitle}](/§{lang}/§{other.url}/§{other.support.url}.md)
-  - [§{other.changelog.menuTitle}](/§{lang}/§{other.url}/§{other.changelog.url}.md)
-  - [§{other.roadmap.menuTitle}](/§{lang}/§{other.url}/§{other.roadmap.url}.md)
-  - [§{other.openSource.menuTitle}](/§{lang}/§{other.url}/§{other.openSource.url}.md)
+  - [§{other.webpanel.title}](/§{lang}/§{other.url}/§{other.webpanel.url}.md)
+  - [§{other.translations.title}](/§{lang}/§{other.url}/§{other.translations.url}.md)
+  - [§{other.donating.title}](/§{lang}/§{other.url}/§{other.donating.url}.md)
+  - [§{other.support.title}](/§{lang}/§{other.url}/§{other.support.url}.md)
+  - [§{other.changelog.title}](/§{lang}/§{other.url}/§{other.changelog.url}.md)
+  - [§{other.roadmap.title}](/§{lang}/§{other.url}/§{other.roadmap.url}.md)
+  - [§{other.openSource.title}](/§{lang}/§{other.url}/§{other.openSource.url}.md)

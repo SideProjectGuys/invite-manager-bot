@@ -1,45 +1,44 @@
-- Getting Started
+- start.title
 
-  - [Quick Start](/id-ID/getting-started/quick-start.md)
-  - [FAQs](/id-ID/getting-started/faq.md)
-  - [Alpha Bot](/id-ID/getting-started/alpha.md)
-  - [Pro Bot](/id-ID/getting-started/pro.md)
+  - [start.quick.title](/id-ID/getting-started/quick-start.md)
+  - [start.faq.title](/id-ID/getting-started/faq.md)
+  - [start.alpha.title](/id-ID/getting-started/alpha.md)
+  - [start.pro.title](/id-ID/getting-started/pro.md)
 
-- Reference
+- reference.title
 
-  - [Commands](/id-ID/reference/commands.md)
-  - [Configs / Settings](/id-ID/reference/settings.md)
+  - [reference.commands.title](/id-ID/reference/commands.md)
+  - [reference.settings.title](/id-ID/reference/settings.md)
 
-- Premium
+- premium.title
 
-  - [Features](/id-ID/premium/features.md)
-  - [Tiers](/id-ID/premium/tiers.md)
-  - [Setting Up Pro](/id-ID/premium/setting-up.md)
+  - [premium.features.title](/id-ID/premium/features.md)
+  - [premium.tiers.title](/id-ID/premium/tiers.md)
+  - [premium.setup.title](/id-ID/premium/setup.md)
 
-- Modules
+- modules.title
 
-  - Invite Management
+  - modules.invites.title
 
-    - [Overview](/id-ID/modules/invites/commands.md)
-    - [Custom Messages](/id-ID/modules/invites/custom-messages.md)
-      - [Examples](/id-ID/modules/invites/examples.md)
+    - [modules.invites.overview.title](/id-ID/modules/invites/modules.invites.overview.url.md)
+    - [modules.invites.customMessages.title](/id-ID/modules/invites/modules.invites.customMessages.url.md)
+      - [modules.invites.examples.title](/id-ID/modules/invites/examples.md)
 
-  - Moderation
+  - modules.moderation.title
 
-    - [Overview](/id-ID/modules/moderation/overview.md)
-    - [Strikes](/id-ID/modules/moderation/strikes.md)
-    - [Punishments](/id-ID/modules/moderation/punishments.md)
+    - [modules.moderation.strikes.title](/id-ID/modules/moderation/strikes.md)
+    - [modules.moderation.punishments.title](/id-ID/modules/moderation/punishments.md)
 
-  - Music
+  - modules.music.title
 
-    - [Overview](/id-ID/modules/music/overview.md)
+    - [modules.music.overview.title](/id-ID/modules/music/Overview.md)
 
-- Other
+- other.title
 
-  - [Webpanel](/id-ID/other/webpanel.md)
-  - [Translations](/id-ID/other/translations.md)
-  - [Donating](/id-ID/other/donating.md)
-  - [Support](/id-ID/other/support.md)
-  - [Changelog](/id-ID/other/changelog.md)
-  - [Roadmap](/id-ID/other/roadmap.md)
-  - [Open Source](/id-ID/other/open-source.md)
+  - [other.webpanel.title](/id-ID/other/webpanel.md)
+  - [other.translations.title](/id-ID/other/translations.md)
+  - [other.donating.title](/id-ID/other/donating.md)
+  - [other.support.title](/id-ID/other/support.md)
+  - [other.changelog.title](/id-ID/other/changelog.md)
+  - [other.roadmap.title](/id-ID/other/roadmap.md)
+  - [other.openSource.title](/id-ID/other/open-source.md)

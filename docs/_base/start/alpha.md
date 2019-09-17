@@ -1,4 +1,4 @@
-# §{start.alpha.menuTitle}
+# §{start.alpha.title}
 
 §{start.alpha.intro}
 

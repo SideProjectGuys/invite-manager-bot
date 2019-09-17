@@ -13,25 +13,25 @@
 - Premium
 
   - [Features](/en/premium/features.md)
-  - [premium.tiers.menuTitle](/en/premium/tiers.md)
+  - [Tiers](/en/premium/tiers.md)
   - [Setup](/en/premium/setup.md)
 
 - Modules
 
   - Invite Management
 
-    - [Overview](/en/modules/invites/commands.md)
-    - [Custom Messages](/en/modules/invites/custom-messages.md)
+    - [Overview](/en/modules/invites/overview.md)
+    - [Custom message](/en/modules/invites/custom-message.md)
       - [Examples](/en/modules/invites/examples.md)
 
   - Moderation
 
-    - [modules.moderation.strikes.menuTitle](/en/modules/moderation/strikes.md)
-    - [modules.moderation.punishments.menuTitle](/en/modules/moderation/punishments.md)
+    - [Strikes](/en/modules/moderation/strikes.md)
+    - [Punishments](/en/modules/moderation/punishments.md)
 
   - Music
 
-    - [modules.music.overview.menuTitle](/en/modules/music/Overview.md)
+    - [Overview](/en/modules/music/overview.md)
 
 - Other
 

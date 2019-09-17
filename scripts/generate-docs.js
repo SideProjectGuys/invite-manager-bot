@@ -4,12 +4,13 @@ const path = require('path');
 const i18n = require('i18n');
 
 const locales = [
+	'en',
+
 	'ar',
 	'bg',
 	'cs',
 	'de',
 	'el',
-	'en',
 	'es',
 	'fr',
 	'id_ID',
@@ -39,6 +40,9 @@ const argTypes = [
 	'date',
 	'duration'
 ];
+
+const langRegex = /§{lang}/g;
+const varRegex = /§{([\w\.]+)(?::\[(.*?)\])?}/g;
 
 let i18nBot = {};
 i18n.configure({
@@ -144,8 +148,19 @@ child.on('close', () => {
 			const newPath = pathParts.join(path.sep);
 
 			let text = fs.readFileSync(docFile, 'utf8');
-			text = text.replace(/\§\{lang\}/g, niceLocale);
-			text = text.replace(/\§\{([\w.]+)\}/g, (s, ...args) => _tDocs(args[0]));
+			text = text.replace(langRegex, niceLocale);
+			text = text.replace(varRegex, (s, ...args) => {
+				let replace = {};
+				if (args[1]) {
+					replace = JSON.parse(`{${args[1]}}`);
+					Object.keys(replace).forEach(key => {
+						replace[key] = replace[key].replace(varRegex, (s, ...args) =>
+							_tDocs(args[0])
+						);
+					});
+				}
+				return _tDocs(args[0], replace);
+			});
 
 			fs.mkdirpSync(`./docs/${niceLocale}/${path.dirname(newPath)}`);
 			fs.writeFileSync(`./docs/${niceLocale}/${newPath}.md`, text, 'utf8');

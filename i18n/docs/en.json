@@ -1,131 +1,187 @@
 {
-	"modules": {
-		"url": "modules",
-		"invites": {
-			"url": "invites",
-			"custom-messages": {
-				"url": "custom-messages"
-			},
-			"examples": {
-				"url": "examples"
-			},
-			"menuTitle": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system."
-		},
-		"moderation": {
-			"url": "moderation",
-			"punishments": {
-				"url": "punishments",
-				"menuTitle": "modules.moderation.punishments.menuTitle"
-			},
-			"strikes": {
-				"url": "strikes",
-				"menuTitle": "modules.moderation.strikes.menuTitle"
-			},
-			"menuTitle": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](modules/moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user."
-		},
-		"music": {
-			"url": "music",
-			"overview": {
-				"url": "Overview",
-				"menuTitle": "modules.music.overview.menuTitle"
-			},
-			"menuTitle": "Music"
-		},
-		"menuTitle": "Modules"
-	},
-	"other": {
-		"url": "other",
-		"donating": {
-			"url": "donating",
-			"menuTitle": "Donating"
-		},
-		"open-source": {
-			"url": "open-source"
-		},
-		"roadmap": {
-			"url": "roadmap",
-			"menuTitle": "Roadmap"
-		},
-		"support": {
-			"url": "support",
-			"menuTitle": "Support"
-		},
-		"translations": {
-			"url": "translations",
-			"menuTitle": "Translations"
-		},
-		"webpanel": {
-			"url": "webpanel",
-			"menuTitle": "Webpanel"
-		},
-		"menuTitle": "Other",
-		"changelog": {
-			"menuTitle": "Changelog",
-			"url": "changelog"
-		},
-		"openSource": {
-			"menuTitle": "Open Source",
-			"url": "open-source"
-		}
-	},
-	"premium": {
-		"url": "premium",
-		"features": {
-			"url": "features",
-			"menuTitle": "Features"
-		},
-		"tiers": {
-			"url": "tiers",
-			"menuTitle": "premium.tiers.menuTitle"
-		},
-		"menuTitle": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](premium/tiers.md#pricing).",
-		"setup": {
-			"menuTitle": "Setup",
-			"url": "setup"
-		}
+	"_sidebar": {
+		"url": "_sidebar"
 	},
 	"README": {
 		"url": "README"
 	},
+	"modules": {
+		"url": "modules",
+		"title": "Modules",
+		"invites": {
+			"url": "invites",
+			"title": "Invite Management",
+			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"examples": {
+				"url": "examples",
+				"title": "Examples"
+			},
+			"overview": {
+				"url": "overview",
+				"title": "Overview"
+			},
+			"customMessages": {
+				"url": "custom-message",
+				"title": "Custom message"
+			}
+		},
+		"moderation": {
+			"url": "moderation",
+			"title": "Moderation",
+			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"punishments": {
+				"url": "punishments",
+				"title": "Punishments"
+			},
+			"strikes": {
+				"url": "strikes",
+				"title": "Strikes"
+			}
+		},
+		"music": {
+			"url": "music",
+			"title": "Music",
+			"overview": {
+				"url": "overview",
+				"title": "Overview"
+			}
+		}
+	},
+	"other": {
+		"url": "other",
+		"title": "Other",
+		"donating": {
+			"url": "donating",
+			"title": "Donating",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "Crypto",
+				"description": "other.donating.crypto.description"
+			}
+		},
+		"roadmap": {
+			"url": "roadmap",
+			"title": "Roadmap"
+		},
+		"support": {
+			"url": "support",
+			"title": "Support"
+		},
+		"translations": {
+			"url": "translations",
+			"title": "Translations",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
+		},
+		"webpanel": {
+			"url": "webpanel",
+			"title": "Webpanel",
+			"description": "other.webpanel.description"
+		},
+		"changelog": {
+			"url": "changelog",
+			"title": "Changelog"
+		},
+		"openSource": {
+			"url": "open-source",
+			"title": "Open Source",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "Main Bot",
+				"description": "other.openSource.bot.description"
+			}
+		}
+	},
+	"premium": {
+		"url": "premium",
+		"title": "Premium",
+		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"features": {
+			"url": "features",
+			"title": "Features"
+		},
+		"tiers": {
+			"url": "tiers",
+			"title": "Tiers"
+		},
+		"setup": {
+			"url": "setup",
+			"title": "Setup"
+		}
+	},
 	"start": {
 		"url": "getting-started",
+		"title": "Getting Started",
+		"description": "To get started, just run the `!setup` command on your server.",
 		"alpha": {
 			"url": "alpha",
-			"menuTitle": "Alpha Bot",
+			"title": "Alpha Bot",
 			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
 			"linkDescription": "Invite the InviteManager Alpha here"
 		},
 		"faq": {
 			"url": "faq",
-			"menuTitle": "FAQs"
+			"title": "FAQs",
+			"prefix": {
+				"title": "How do I change the prefix of the bot?",
+				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+			},
+			"joinLeaveChannel": {
+				"title": "How do I set join and leave messages?",
+				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+			},
+			"joinLeaveMessage": {
+				"title": "Can I customize the join and leave messages?",
+				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+			},
+			"ranks": {
+				"title": "What are 'Ranks' and how can I use them?",
+				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+			},
+			"channel": {
+				"title": "How can I disable the bot in all but one/some channels?",
+				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+			},
+			"limitations": {
+				"title": "Limitation: No advanced tracking before the bot joins",
+				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+			}
 		},
 		"pro": {
 			"url": "pro",
-			"menuTitle": "Pro Bot"
+			"title": "Pro Bot",
+			"description": "start.pro.description"
 		},
 		"quick": {
 			"url": "quick-start",
-			"menuTitle": "Quick Start"
-		},
-		"menuTitle": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server."
-	},
-	"_sidebar": {
-		"url": "_sidebar"
+			"title": "Quick Start",
+			"setup": {
+				"title": "Setup",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
+		}
 	},
 	"reference": {
-		"menuTitle": "Reference",
-		"commands": {
-			"menuTitle": "Commands",
-			"url": "commands"
-		},
 		"url": "reference",
+		"title": "Reference",
+		"commands": {
+			"url": "commands",
+			"title": "Commands"
+		},
 		"settings": {
-			"menuTitle": "Configs / Settings",
-			"url": "settings"
+			"url": "settings",
+			"title": "Configs / Settings"
 		}
 	}
 }

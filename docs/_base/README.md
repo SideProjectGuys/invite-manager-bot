@@ -1,22 +1,22 @@
 # InviteManager
 
-## §{reference.menuTitle}
+## §{reference.title}
 
-- [§{reference.commands.menuTitle}](/§{lang}/§{reference.url}/§{reference.commands.url}.md)
-- [§{reference.settings.menuTitle}](/§{lang}/§{reference.url}/§{reference.settings.url}.md)
+- [§{reference.commands.title}](/§{lang}/§{reference.url}/§{reference.commands.url}.md)
+- [§{reference.settings.title}](/§{lang}/§{reference.url}/§{reference.settings.url}.md)
 
-## §{start.menuTitle}
+## §{start.title}
 
 §{start.description}
 
-### §{modules.invites.menuTitle}
+### §{modules.invites.title}
 
 §{modules.invites.description}
 
-### §{modules.moderation.menuTitle}
+### §{modules.moderation.title}
 
-§{modules.moderation.description}
+§{modules.moderation.description:["linkStrikes":"/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.strikes.url}.md","linkPunishments":"/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.punishments.url}.md"]}
 
-## §{premium.menuTitle}
+## §{premium.title}
 
-§{premium.description}
+§{premium.description:["link":"/§{lang}/§{premium.url}/§{premium.features.url}.md"]}

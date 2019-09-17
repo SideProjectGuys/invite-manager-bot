@@ -1,22 +1,22 @@
 # InviteManager
 
-## reference.menuTitle
+## reference.title
 
-- [reference.commands.menuTitle](/el/reference.url/reference.commands.url.md)
-- [reference.settings.menuTitle](/el/reference.url/reference.settings.url.md)
+- [reference.commands.title](/el/reference.url/reference.commands.url.md)
+- [reference.settings.title](/el/reference.url/reference.settings.url.md)
 
-## start.menuTitle
+## start.title
 
 start.description
 
-### modules.invites.menuTitle
+### modules.invites.title
 
 modules.invites.description
 
-### modules.moderation.menuTitle
+### modules.moderation.title
 
 modules.moderation.description
 
-## premium.menuTitle
+## premium.title
 
 premium.description

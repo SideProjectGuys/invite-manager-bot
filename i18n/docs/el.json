@@ -7,33 +7,56 @@
 				"url": "modules.invites.custom-messages.url"
 			},
 			"examples": {
-				"url": "modules.invites.examples.url"
+				"url": "modules.invites.examples.url",
+				"title": "modules.invites.examples.title"
 			},
 			"menuTitle": "modules.invites.menuTitle",
-			"description": "modules.invites.description"
+			"description": "modules.invites.description",
+			"title": "modules.invites.title",
+			"overview": {
+				"title": "modules.invites.overview.title",
+				"url": "modules.invites.overview.url"
+			},
+			"customMessage": {
+				"title": "modules.invites.customMessage.title",
+				"url": "modules.invites.customMessage.url",
+				"example": {
+					"title": "modules.invites.customMessage.example.title",
+					"url": "modules.invites.customMessage.example.url"
+				}
+			},
+			"customMessages": {
+				"url": "modules.invites.customMessages.url"
+			}
 		},
 		"moderation": {
 			"url": "modules.moderation.url",
 			"punishments": {
 				"url": "modules.moderation.punishments.url",
-				"menuTitle": "modules.moderation.punishments.menuTitle"
+				"menuTitle": "modules.moderation.punishments.menuTitle",
+				"title": "modules.moderation.punishments.title"
 			},
 			"strikes": {
 				"url": "modules.moderation.strikes.url",
-				"menuTitle": "modules.moderation.strikes.menuTitle"
+				"menuTitle": "modules.moderation.strikes.menuTitle",
+				"title": "modules.moderation.strikes.title"
 			},
 			"menuTitle": "modules.moderation.menuTitle",
-			"description": "modules.moderation.description"
+			"description": "modules.moderation.description",
+			"title": "modules.moderation.title"
 		},
 		"music": {
 			"url": "modules.music.url",
 			"overview": {
 				"url": "modules.music.overview.url",
-				"menuTitle": "modules.music.overview.menuTitle"
+				"menuTitle": "modules.music.overview.menuTitle",
+				"title": "modules.music.overview.title"
 			},
-			"menuTitle": "modules.music.menuTitle"
+			"menuTitle": "modules.music.menuTitle",
+			"title": "modules.music.title"
 		},
-		"menuTitle": "modules.menuTitle"
+		"menuTitle": "modules.menuTitle",
+		"title": "modules.title"
 	},
 	"memberMention": "memberMention",
 	"inviterName": "inviterName",
@@ -59,56 +82,84 @@
 		"url": "other.url",
 		"donating": {
 			"url": "other.donating.url",
-			"menuTitle": "other.donating.menuTitle"
+			"menuTitle": "other.donating.menuTitle",
+			"title": "other.donating.title",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "other.donating.crypto.title",
+				"description": "other.donating.crypto.description"
+			}
 		},
 		"open-source": {
 			"url": "other.open-source.url"
 		},
 		"roadmap": {
 			"url": "other.roadmap.url",
-			"menuTitle": "other.roadmap.menuTitle"
+			"menuTitle": "other.roadmap.menuTitle",
+			"title": "other.roadmap.title"
 		},
 		"support": {
 			"url": "other.support.url",
-			"menuTitle": "other.support.menuTitle"
+			"menuTitle": "other.support.menuTitle",
+			"title": "other.support.title"
 		},
 		"translations": {
 			"url": "other.translations.url",
-			"menuTitle": "other.translations.menuTitle"
+			"menuTitle": "other.translations.menuTitle",
+			"title": "other.translations.title",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
 		},
 		"webpanel": {
 			"url": "other.webpanel.url",
-			"menuTitle": "other.webpanel.menuTitle"
+			"menuTitle": "other.webpanel.menuTitle",
+			"title": "other.webpanel.title",
+			"description": "other.webpanel.description"
 		},
 		"menuTitle": "other.menuTitle",
 		"changelog": {
 			"menuTitle": "other.changelog.menuTitle",
-			"url": "other.changelog.url"
+			"url": "other.changelog.url",
+			"title": "other.changelog.title"
 		},
 		"openSource": {
 			"menuTitle": "other.openSource.menuTitle",
-			"url": "other.openSource.url"
-		}
+			"url": "other.openSource.url",
+			"title": "other.openSource.title",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "other.openSource.bot.title",
+				"description": "other.openSource.bot.description"
+			}
+		},
+		"title": "other.title"
 	},
 	"premium": {
 		"url": "premium.url",
 		"features": {
 			"url": "premium.features.url",
-			"menuTitle": "premium.features.menuTitle"
+			"menuTitle": "premium.features.menuTitle",
+			"title": "premium.features.title"
 		},
 		"setting-up": {
 			"url": "premium.setting-up.url"
 		},
 		"tiers": {
 			"url": "premium.tiers.url",
-			"menuTitle": "premium.tiers.menuTitle"
+			"menuTitle": "premium.tiers.menuTitle",
+			"title": "premium.tiers.title"
 		},
 		"menuTitle": "premium.menuTitle",
 		"description": "premium.description",
 		"setup": {
 			"menuTitle": "premium.setup.menuTitle",
-			"url": "premium.setup.url"
-		}
+			"url": "premium.setup.url",
+			"title": "premium.setup.title"
+		},
+		"title": "premium.title"
 	},
 	"README": {
 		"url": "README.url"
@@ -119,22 +170,64 @@
 			"url": "start.alpha.url",
 			"menuTitle": "start.alpha.menuTitle",
 			"intro": "start.alpha.intro",
-			"linkDescription": "start.alpha.linkDescription"
+			"linkDescription": "start.alpha.linkDescription",
+			"title": "start.alpha.title"
 		},
 		"faq": {
 			"url": "start.faq.url",
-			"menuTitle": "start.faq.menuTitle"
+			"menuTitle": "start.faq.menuTitle",
+			"title": "start.faq.title",
+			"prefix": {
+				"title": "start.faq.prefix.title",
+				"description": "start.faq.prefix.description"
+			},
+			"joinLeaveChannel": {
+				"title": "start.faq.joinLeaveChannel.title",
+				"description": "start.faq.joinLeaveChannel.description"
+			},
+			"joinLeaveMessage": {
+				"title": "start.faq.joinLeaveMessage.title",
+				"description": "start.faq.joinLeaveMessage.description"
+			},
+			"ranks": {
+				"title": "start.faq.ranks.title",
+				"description": "start.faq.ranks.description"
+			},
+			"channel": {
+				"title": "start.faq.channel.title",
+				"description": "start.faq.channel.description"
+			},
+			"limitations": {
+				"title": "start.faq.limitations.title",
+				"description": "start.faq.limitations.description"
+			}
 		},
 		"pro": {
 			"url": "start.pro.url",
-			"menuTitle": "start.pro.menuTitle"
+			"menuTitle": "start.pro.menuTitle",
+			"title": "start.pro.title",
+			"description": "start.pro.description"
 		},
 		"quick": {
 			"url": "start.quick.url",
-			"menuTitle": "start.quick.menuTitle"
+			"menuTitle": "start.quick.menuTitle",
+			"title": "start.quick.title",
+			"setup": {
+				"title": "start.quick.setup.title",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
 		},
 		"menuTitle": "start.menuTitle",
-		"description": "start.description"
+		"description": "start.description",
+		"title": "start.title"
 	},
 	"_sidebar": {
 		"url": "_sidebar.url"
@@ -143,13 +236,16 @@
 		"menuTitle": "reference.menuTitle",
 		"commands": {
 			"menuTitle": "reference.commands.menuTitle",
-			"url": "reference.commands.url"
+			"url": "reference.commands.url",
+			"title": "reference.commands.title"
 		},
 		"url": "reference.url",
 		"settings": {
 			"menuTitle": "reference.settings.menuTitle",
-			"url": "reference.settings.url"
-		}
+			"url": "reference.settings.url",
+			"title": "reference.settings.title"
+		},
+		"title": "reference.title"
 	},
 	"settings": {
 		"prefix": {
