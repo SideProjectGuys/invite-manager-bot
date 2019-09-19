@@ -4,177 +4,177 @@ There are many config options that can be set. You don't have to set all of them
 
 ## Overview
 
-### settings.groups.general.title
+### Paramètres de base
 
-| Setting                                            | Description                          |
-| -------------------------------------------------- | ------------------------------------ |
-| [settings.prefix.title](#prefix)                   | settings.prefix.description          |
-| [settings.lang.title](#lang)                       | settings.lang.description            |
-| [settings.logChannel.title](#logchannel)           | settings.logChannel.description      |
-| [settings.getUpdates.title](#getupdates)           | settings.getUpdates.description      |
-| [settings.channels.title](#channels)               | settings.channels.description        |
-| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description |
+| Setting                                  | Description                                               |
+| ---------------------------------------- | --------------------------------------------------------- |
+| [Préfixe](#prefix)                       | Le préfixe utilisé pour les commandes du bot.             |
+| [Langage](#lang)                         | La langue du bot                                          |
+| [Salon des logs](#logchannel)            | Le salon dans lequel les actions du bot sont notées.      |
+| [Obtenir les mises à jour.](#getupdates) | Activer pour recevoir les mises à jour d'InviteManager.   |
+| [Channel des commandes](#channels)       | Le channel dans lequel le bot réagira aux commandes.      |
+| [Salons ignorés](#ignoredchannels)       | Les salons dans lesquelles le bot ignorera les commandes. |
 
-### settings.groups.invites.title
+### Invitations
 
-#### settings.groups.invites.joins.title
+#### Arrivées
 
-| Setting                                                  | Description                             |
-| -------------------------------------------------------- | --------------------------------------- |
-| [settings.joinMessage.title](#joinmessage)               | settings.joinMessage.description        |
-| [settings.joinMessageChannel.title](#joinmessagechannel) | settings.joinMessageChannel.description |
+| Setting                                | Description                                              |
+| -------------------------------------- | -------------------------------------------------------- |
+| [Message d'arrivée](#joinmessage)      | Le message envoyé quand quelqu'un rejoint le serveur.    |
+| [Salon d'arrivée](#joinmessagechannel) | Le salon dans lequel le message de bienvenue est envoyé. |
 
-#### settings.groups.invites.leaves.title
+#### Départs
 
-| Setting                                                                  | Description                                     |
-| ------------------------------------------------------------------------ | ----------------------------------------------- |
-| [settings.leaveMessage.title](#leavemessage)                             | settings.leaveMessage.description               |
-| [settings.leaveMessageChannel.title](#leavemessagechannel)               | settings.leaveMessageChannel.description        |
-| [settings.autoSubtractLeaves.title](#autosubtractleaves)                 | settings.autoSubtractLeaves.description         |
-| [settings.autoSubtractLeaveThreshold.title](#autosubtractleavethreshold) | settings.autoSubtractLeaveThreshold.description |
+| Setting                                                          | Description                                                                             |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Message de départ](#leavemessage)                               | Le message envoyé quand quelqu'un quitte le serveur.                                    |
+| [Salon de départ](#leavemessagechannel)                          | Le salon dans lequel est envoyé le message lorsque quelqu'un quitte le serveur.         |
+| [Soustraction automatique](#autosubtractleaves)                  | Enlève automatiquement les invitations de l'invitant quand l'utilisateur invité quitte. |
+| [Seuil de soustraction automatique](#autosubtractleavethreshold) | Le temps en secondes que doivent rester les utilisateurs pour que l'invitation compte.  |
 
-#### settings.groups.invites.leaderboard.title
+#### Classement
 
-| Setting                                                                          | Description                                         |
-| -------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [settings.leaderboardStyle.title](#leaderboardstyle)                             | settings.leaderboardStyle.description               |
-| [settings.hideLeftMembersFromLeaderboard.title](#hideleftmembersfromleaderboard) | settings.hideLeftMembersFromLeaderboard.description |
+| Setting                                                      | Description                                                      |
+| ------------------------------------------------------------ | ---------------------------------------------------------------- |
+| [Style](#leaderboardstyle)                                   | Le style d'affichage du leaderboard.                             |
+| [Cacher les membres partis](#hideleftmembersfromleaderboard) | Cache les utilisateurs qui ont quitté le serveur du leaderboard. |
 
-#### settings.groups.invites.fakes.title
+#### Faux
 
-| Setting                                                | Description                            |
-| ------------------------------------------------------ | -------------------------------------- |
-| [settings.autoSubtractFakes.title](#autosubtractfakes) | settings.autoSubtractFakes.description |
+| Setting                                        | Description                                     |
+| ---------------------------------------------- | ----------------------------------------------- |
+| [Soustraction automatique](#autosubtractfakes) | Enlève automatiquement les fausses invitations. |
 
-#### settings.groups.invites.ranks.title
+#### Rangs
 
-| Setting                                                            | Description                                  |
-| ------------------------------------------------------------------ | -------------------------------------------- |
-| [settings.rankAssignmentStyle.title](#rankassignmentstyle)         | settings.rankAssignmentStyle.description     |
-| [settings.rankAnnouncementChannel.title](#rankannouncementchannel) | settings.rankAnnouncementChannel.description |
-| [settings.rankAnnouncementMessage.title](#rankannouncementmessage) | settings.rankAnnouncementMessage.description |
+| Setting                                        | Description                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| [Style d'assignement](#rankassignmentstyle)    | Comment les rangs sont donnés aux utilisateurs.               |
+| [Salon d'annonce](#rankannouncementchannel)    | Le salon où le nouveau niveau d'utilisateurs est annoncé.     |
+| [Message d'annonce ](#rankannouncementmessage) | Le message envoyé quand l'utilisateur reçois un nouveau rang. |
 
-### settings.groups.moderation.title
+### Modération
 
-#### settings.groups.moderation.captcha.title
+#### Captcha
 
-| Setting                                                                                | Description                                            |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| [settings.captchaVerificationOnJoin.title](#captchaverificationonjoin)                 | settings.captchaVerificationOnJoin.description         |
-| [settings.captchaVerificationWelcomeMessage.title](#captchaverificationwelcomemessage) | settings.captchaVerificationWelcomeMessage.description |
-| [settings.captchaVerificationSuccessMessage.title](#captchaverificationsuccessmessage) | settings.captchaVerificationSuccessMessage.description |
-| [settings.captchaVerificationFailedMessage.title](#captchaverificationfailedmessage)   | settings.captchaVerificationFailedMessage.description  |
-| [settings.captchaVerificationTimeout.title](#captchaverificationtimeout)               | settings.captchaVerificationTimeout.description        |
-| [settings.captchaVerificationLogEnabled.title](#captchaverificationlogenabled)         | settings.captchaVerificationLogEnabled.description     |
+| Setting                                                    | Description                                                                                                       |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [Activé](#captchaverificationonjoin)                       | Si la vérification captcha est activée ou non.                                                                    |
+| [Message de bienvenue](#captchaverificationwelcomemessage) | Le message que l'utilisateur recevra après avoir rejoint le server et les instructions pour compléter le captcha. |
+| [Message de réussite](#captchaverificationsuccessmessage)  | Le message de bienvenue envoyé à l'utilisateur après une vérification réussie.                                    |
+| [Message d’échec](#captchaverificationfailedmessage)       | Le message envoyé à l'utilisateur si il a entré un mauvais captcha.                                               |
+| [Message de temps expiré](#captchaverificationtimeout)     | Le temps que l'utilisateur a pour valider le captcha.                                                             |
+| [Logs](#captchaverificationlogenabled)                     | Whether or not verification attempts will be logged                                                               |
 
-#### settings.groups.moderation.general.title
+#### Générale
 
-| Setting                                                                                        | Description                                                |
-| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [settings.autoModEnabled.title](#automodenabled)                                               | settings.autoModEnabled.description                        |
-| [settings.autoModModeratedChannels.title](#automodmoderatedchannels)                           | settings.autoModModeratedChannels.description              |
-| [settings.autoModModeratedRoles.title](#automodmoderatedroles)                                 | settings.autoModModeratedRoles.description                 |
-| [settings.autoModIgnoredChannels.title](#automodignoredchannels)                               | settings.autoModIgnoredChannels.description                |
-| [settings.autoModIgnoredRoles.title](#automodignoredroles)                                     | settings.autoModIgnoredRoles.description                   |
-| [settings.mutedRole.title](#mutedrole)                                                         | settings.mutedRole.description                             |
-| [settings.autoModDisabledForOldMembers.title](#automoddisabledforoldmembers)                   | settings.autoModDisabledForOldMembers.description          |
-| [settings.autoModDisabledForOldMembersThreshold.title](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
+| Setting                                                                  | Description                                                |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| [Activé](#automodenabled)                                                | settings.autoModEnabled.description                        |
+| [Salons modérés](#automodmoderatedchannels)                              | settings.autoModModeratedChannels.description              |
+| [Rôles modérés](#automodmoderatedroles)                                  | settings.autoModModeratedRoles.description                 |
+| [Salons ignorés](#automodignoredchannels)                                | settings.autoModIgnoredChannels.description                |
+| [Rôles ignorés](#automodignoredroles)                                    | settings.autoModIgnoredRoles.description                   |
+| [Rôle muet](#mutedrole)                                                  | settings.mutedRole.description                             |
+| [Désactivé pour les anciens membres](#automoddisabledforoldmembers)      | settings.autoModDisabledForOldMembers.description          |
+| [Seuil pour les anciens membres](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
 
-#### settings.groups.moderation.logging.title
+#### Logger
 
-| Setting                                                                                            | Description                                                  |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [settings.autoModLogEnabled.title](#automodlogenabled)                                             | settings.autoModLogEnabled.description                       |
-| [settings.modLogChannel.title](#modlogchannel)                                                     | settings.modLogChannel.description                           |
-| [settings.autoModDeleteBotMessage.title](#automoddeletebotmessage)                                 | settings.autoModDeleteBotMessage.description                 |
-| [settings.autoModDeleteBotMessageTimeoutInSeconds.title](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description |
-| [settings.modPunishmentBanDeleteMessage.title](#modpunishmentbandeletemessage)                     | settings.modPunishmentBanDeleteMessage.description           |
-| [settings.modPunishmentKickDeleteMessage.title](#modpunishmentkickdeletemessage)                   | settings.modPunishmentKickDeleteMessage.description          |
-| [settings.modPunishmentSoftbanDeleteMessage.title](#modpunishmentsoftbandeletemessage)             | settings.modPunishmentSoftbanDeleteMessage.description       |
-| [settings.modPunishmentWarnDeleteMessage.title](#modpunishmentwarndeletemessage)                   | settings.modPunishmentWarnDeleteMessage.description          |
-| [settings.modPunishmentMuteDeleteMessage.title](#modpunishmentmutedeletemessage)                   | settings.modPunishmentMuteDeleteMessage.description          |
+| Setting                                                                               | Description                                                                   |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [Mod Log Channel](#automodlogenabled)                                                 | settings.autoModLogEnabled.description                                        |
+| [Salon des journaux de modération](#modlogchannel)                                    | Le salon où les notes de modérations seront postées.                          |
+| [Supprimer les messages du Bot](#automoddeletebotmessage)                             | settings.autoModDeleteBotMessage.description                                  |
+| [Délai de suppression des messages du bot.](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description                  |
+| [Supprimer les messages de bannissement](#modpunishmentbandeletemessage)              | Si oui ou non les messages après un ban seront automatiquement supprimés.     |
+| [Supprimer les messages d'expulsion](#modpunishmentkickdeletemessage)                 | Si oui ou non les messages après un kick seront automatiquement supprimés.    |
+| [Supprime les messages de Softban](#modpunishmentsoftbandeletemessage)                | Si oui ou non les messages après un softban seront automatiquement supprimés. |
+| [Supprimer les messages d'avertissement](#modpunishmentwarndeletemessage)             | Si oui ou non les messages après un warn seront automatiquement supprimés.    |
+| [Supprimer les messages de mute](#modpunishmentmutedeletemessage)                     | Si oui ou non les messages après un mute seront automatiquement supprimés.    |
 
-#### settings.groups.moderation.invites.title
+#### Invitations
 
-| Setting                                                        | Description                                |
-| -------------------------------------------------------------- | ------------------------------------------ |
-| [settings.autoModInvitesEnabled.title](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
+| Setting                                                           | Description                                |
+| ----------------------------------------------------------------- | ------------------------------------------ |
+| [Les invitations sont désormais modérées](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
 
-#### settings.groups.moderation.links.title
+#### Liens
 
-| Setting                                                                    | Description                                      |
-| -------------------------------------------------------------------------- | ------------------------------------------------ |
-| [settings.autoModLinksEnabled.title](#automodlinksenabled)                 | settings.autoModLinksEnabled.description         |
-| [settings.autoModLinksWhitelist.title](#automodlinkswhitelist)             | settings.autoModLinksWhitelist.description       |
-| [settings.autoModLinksBlacklist.title](#automodlinksblacklist)             | settings.autoModLinksBlacklist.description       |
-| [settings.autoModLinksFollowRedirects.title](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
+| Setting                                                  | Description                                      |
+| -------------------------------------------------------- | ------------------------------------------------ |
+| [Les liens sont désormais modérés](#automodlinksenabled) | settings.autoModLinksEnabled.description         |
+| [Liste blanche](#automodlinkswhitelist)                  | settings.autoModLinksWhitelist.description       |
+| [Liste noire](#automodlinksblacklist)                    | settings.autoModLinksBlacklist.description       |
+| [Suivre les redirections](#automodlinksfollowredirects)  | settings.autoModLinksFollowRedirects.description |
 
-#### settings.groups.moderation.bannedWords.title
+#### Mots bannis
 
-| Setting                                                        | Description                                |
-| -------------------------------------------------------------- | ------------------------------------------ |
-| [settings.autoModWordsEnabled.title](#automodwordsenabled)     | settings.autoModWordsEnabled.description   |
-| [settings.autoModWordsBlacklist.title](#automodwordsblacklist) | settings.autoModWordsBlacklist.description |
+| Setting                               | Description                                               |
+| ------------------------------------- | --------------------------------------------------------- |
+| [Activé](#automodwordsenabled)        | Que les mots de la liste noire soient ou non automatisés. |
+| [Liste noire](#automodwordsblacklist) | Une liste de mots bannis.                                 |
 
-#### settings.groups.moderation.caps.title
+#### Majuscules
 
-| Setting                                                                      | Description                                       |
-| ---------------------------------------------------------------------------- | ------------------------------------------------- |
-| [settings.autoModAllCapsEnabled.title](#automodallcapsenabled)               | settings.autoModAllCapsEnabled.description        |
-| [settings.autoModAllCapsMinCharacters.title](#automodallcapsmincharacters)   | settings.autoModAllCapsMinCharacters.description  |
-| [settings.autoModAllCapsPercentageCaps.title](#automodallcapspercentagecaps) | settings.autoModAllCapsPercentageCaps.description |
+| Setting                                            | Description                                       |
+| -------------------------------------------------- | ------------------------------------------------- |
+| [Activé](#automodallcapsenabled)                   | settings.autoModAllCapsEnabled.description        |
+| [Caractères minimum](#automodallcapsmincharacters) | settings.autoModAllCapsMinCharacters.description  |
+| [Percentage Caps](#automodallcapspercentagecaps)   | settings.autoModAllCapsPercentageCaps.description |
 
-#### settings.groups.moderation.duplicate.title
+#### Messages doublons
 
-| Setting                                                                                          | Description                                                 |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| [settings.autoModDuplicateTextEnabled.title](#automodduplicatetextenabled)                       | settings.autoModDuplicateTextEnabled.description            |
-| [settings.autoModDuplicateTextTimeframeInSeconds.title](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
+| Setting                                              | Description                                                 |
+| ---------------------------------------------------- | ----------------------------------------------------------- |
+| [Activé](#automodduplicatetextenabled)               | settings.autoModDuplicateTextEnabled.description            |
+| [Timeframe](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
 
-#### settings.groups.moderation.spam.title
+#### Spam
 
-| Setting                                                                                          | Description                                                 |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| [settings.autoModQuickMessagesEnabled.title](#automodquickmessagesenabled)                       | settings.autoModQuickMessagesEnabled.description            |
-| [settings.autoModQuickMessagesNumberOfMessages.title](#automodquickmessagesnumberofmessages)     | settings.autoModQuickMessagesNumberOfMessages.description   |
-| [settings.autoModQuickMessagesTimeframeInSeconds.title](#automodquickmessagestimeframeinseconds) | settings.autoModQuickMessagesTimeframeInSeconds.description |
+| Setting                                                     | Description                                                 |
+| ----------------------------------------------------------- | ----------------------------------------------------------- |
+| [Activé](#automodquickmessagesenabled)                      | settings.autoModQuickMessagesEnabled.description            |
+| [Nombre de messages](#automodquickmessagesnumberofmessages) | settings.autoModQuickMessagesNumberOfMessages.description   |
+| [Timeframe](#automodquickmessagestimeframeinseconds)        | settings.autoModQuickMessagesTimeframeInSeconds.description |
 
-#### settings.groups.moderation.mentions.title
+#### Mentions
 
-| Setting                                                                                          | Description                                                 |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| [settings.autoModMentionUsersEnabled.title](#automodmentionusersenabled)                         | settings.autoModMentionUsersEnabled.description             |
-| [settings.autoModMentionUsersMaxNumberOfMentions.title](#automodmentionusersmaxnumberofmentions) | settings.autoModMentionUsersMaxNumberOfMentions.description |
-| [settings.autoModMentionRolesEnabled.title](#automodmentionrolesenabled)                         | settings.autoModMentionRolesEnabled.description             |
-| [settings.autoModMentionRolesMaxNumberOfMentions.title](#automodmentionrolesmaxnumberofmentions) | settings.autoModMentionRolesMaxNumberOfMentions.description |
+| Setting                                                                                        | Description                                                 |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [Activé](#automodmentionusersenabled)                                                          | settings.autoModMentionUsersEnabled.description             |
+| [Nombre maximal de mentions utilisateurs par message](#automodmentionusersmaxnumberofmentions) | settings.autoModMentionUsersMaxNumberOfMentions.description |
+| [Activé](#automodmentionrolesenabled)                                                          | settings.autoModMentionRolesEnabled.description             |
+| [Nombre maximal de mentions de rôle par message](#automodmentionrolesmaxnumberofmentions)      | settings.autoModMentionRolesMaxNumberOfMentions.description |
 
-#### settings.groups.moderation.emojis.title
+#### Emojis
 
-| Setting                                                                          | Description                                         |
-| -------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [settings.autoModEmojisEnabled.title](#automodemojisenabled)                     | settings.autoModEmojisEnabled.description           |
-| [settings.autoModEmojisMaxNumberOfEmojis.title](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
-| [settings.autoModHoistEnabled.title](#automodhoistenabled)                       | settings.autoModHoistEnabled.description            |
+| Setting                                                    | Description                                         |
+| ---------------------------------------------------------- | --------------------------------------------------- |
+| [Activé](#automodemojisenabled)                            | settings.autoModEmojisEnabled.description           |
+| [Nombre maximal d'émojis](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
+| [Activé](#automodhoistenabled)                             | settings.autoModHoistEnabled.description            |
 
-### settings.groups.music.title
+### Musique
 
-#### settings.groups.music.general.title
+#### Musique
 
-| Setting                                                | Description                            |
-| ------------------------------------------------------ | -------------------------------------- |
-| [settings.musicVolume.title](#musicvolume)             | settings.musicVolume.description       |
-| [settings.announceNextSong.title](#announcenextsong)   | settings.announceNextSong.description  |
-| [settings.announcementVoice.title](#announcementvoice) | settings.announcementVoice.description |
-| [settings.fadeMusicOnTalk.title](#fademusicontalk)     | settings.fadeMusicOnTalk.description   |
-| [settings.fadeMusicEndDelay.title](#fademusicenddelay) | settings.fadeMusicEndDelay.description |
+| Setting                                                    | Description                                                                               |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [Volume de la musique](#musicvolume)                       | Le volume par défaut qui est défini lorsque le bot rejoin le salon vocal.                 |
+| [Annonce la musique suivante](#announcenextsong)           | Si oui ou non la chanson suivante sera annoncée dans le salon vocal.                      |
+| [Voix d'annonce](#announcementvoice)                       | La voix utilisée pour annoncer la musique suivante.                                       |
+| [Baisse le volume lors d'une discussion](#fademusicontalk) | Si activé, la musique baissera de volume si des personnes sont en train de parler.        |
+| [Fin du délai de baisse du volume](#fademusicenddelay)     | Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale. |
 
 <a name=prefix></a>
 
 ---
 
-## settings.prefix.title
+## Préfixe
 
-settings.prefix.description
+Le préfixe utilisé pour les commandes du bot.
 
 Type: `String`
 
@@ -193,9 +193,9 @@ Examples:
 
 ---
 
-## settings.lang.title
+## Langage
 
-settings.lang.description
+La langue du bot
 
 Type: `Enum<Lang>`
 
@@ -214,9 +214,9 @@ Example:
 
 ---
 
-## settings.logChannel.title
+## Salon des logs
 
-settings.logChannel.description
+Le salon dans lequel les actions du bot sont notées.
 
 Type: `Channel`
 
@@ -233,9 +233,9 @@ Examples:
 
 ---
 
-## settings.getUpdates.title
+## Obtenir les mises à jour.
 
-settings.getUpdates.description
+Activer pour recevoir les mises à jour d'InviteManager.
 
 Type: `Boolean`
 
@@ -256,9 +256,9 @@ Disable:
 
 ---
 
-## settings.channels.title
+## Channel des commandes
 
-settings.channels.description
+Le channel dans lequel le bot réagira aux commandes.
 
 Type: `Channel[]`
 
@@ -271,9 +271,9 @@ Reset to default:
 
 ---
 
-## settings.ignoredChannels.title
+## Salons ignorés
 
-settings.ignoredChannels.description
+Les salons dans lesquelles le bot ignorera les commandes.
 
 Type: `Channel[]`
 
@@ -286,9 +286,9 @@ Reset to default:
 
 ---
 
-## settings.joinMessage.title
+## Message d'arrivée
 
-settings.joinMessage.description
+Le message envoyé quand quelqu'un rejoint le serveur.
 
 Type: `String`
 
@@ -301,9 +301,9 @@ Reset to default:
 
 ---
 
-## settings.joinMessageChannel.title
+## Salon d'arrivée
 
-settings.joinMessageChannel.description
+Le salon dans lequel le message de bienvenue est envoyé.
 
 Type: `Channel`
 
@@ -322,9 +322,9 @@ Examples:
 
 ---
 
-## settings.leaveMessage.title
+## Message de départ
 
-settings.leaveMessage.description
+Le message envoyé quand quelqu'un quitte le serveur.
 
 Type: `String`
 
@@ -343,9 +343,9 @@ Examples:
 
 ---
 
-## settings.leaveMessageChannel.title
+## Salon de départ
 
-settings.leaveMessageChannel.description
+Le salon dans lequel est envoyé le message lorsque quelqu'un quitte le serveur.
 
 Type: `Channel`
 
@@ -364,9 +364,9 @@ Examples:
 
 ---
 
-## settings.leaderboardStyle.title
+## Style
 
-settings.leaderboardStyle.description
+Le style d'affichage du leaderboard.
 
 Type: `Enum<LeaderboardStyle>`
 
@@ -385,9 +385,9 @@ Example:
 
 ---
 
-## settings.hideLeftMembersFromLeaderboard.title
+## Cacher les membres partis
 
-settings.hideLeftMembersFromLeaderboard.description
+Cache les utilisateurs qui ont quitté le serveur du leaderboard.
 
 Type: `Boolean`
 
@@ -408,9 +408,9 @@ Disable:
 
 ---
 
-## settings.autoSubtractFakes.title
+## Soustraction automatique
 
-settings.autoSubtractFakes.description
+Enlève automatiquement les fausses invitations.
 
 Type: `Boolean`
 
@@ -431,9 +431,9 @@ Disable:
 
 ---
 
-## settings.autoSubtractLeaves.title
+## Soustraction automatique
 
-settings.autoSubtractLeaves.description
+Enlève automatiquement les invitations de l'invitant quand l'utilisateur invité quitte.
 
 Type: `Boolean`
 
@@ -454,9 +454,9 @@ Disable:
 
 ---
 
-## settings.autoSubtractLeaveThreshold.title
+## Seuil de soustraction automatique
 
-settings.autoSubtractLeaveThreshold.description
+Le temps en secondes que doivent rester les utilisateurs pour que l'invitation compte.
 
 Type: `Number`
 
@@ -475,9 +475,9 @@ Examples:
 
 ---
 
-## settings.rankAssignmentStyle.title
+## Style d'assignement
 
-settings.rankAssignmentStyle.description
+Comment les rangs sont donnés aux utilisateurs.
 
 Type: `Enum<RankAssignmentStyle>`
 
@@ -496,9 +496,9 @@ Example:
 
 ---
 
-## settings.rankAnnouncementChannel.title
+## Salon d'annonce
 
-settings.rankAnnouncementChannel.description
+Le salon où le nouveau niveau d'utilisateurs est annoncé.
 
 Type: `Channel`
 
@@ -517,9 +517,9 @@ Examples:
 
 ---
 
-## settings.rankAnnouncementMessage.title
+## Message d'annonce
 
-settings.rankAnnouncementMessage.description
+Le message envoyé quand l'utilisateur reçois un nouveau rang.
 
 Type: `String`
 
@@ -538,9 +538,9 @@ Examples:
 
 ---
 
-## settings.captchaVerificationOnJoin.title
+## Activé
 
-settings.captchaVerificationOnJoin.description
+Si la vérification captcha est activée ou non.
 
 Type: `Boolean`
 
@@ -561,9 +561,9 @@ Disable:
 
 ---
 
-## settings.captchaVerificationWelcomeMessage.title
+## Message de bienvenue
 
-settings.captchaVerificationWelcomeMessage.description
+Le message que l'utilisateur recevra après avoir rejoint le server et les instructions pour compléter le captcha.
 
 Type: `String`
 
@@ -580,9 +580,9 @@ Examples:
 
 ---
 
-## settings.captchaVerificationSuccessMessage.title
+## Message de réussite
 
-settings.captchaVerificationSuccessMessage.description
+Le message de bienvenue envoyé à l'utilisateur après une vérification réussie.
 
 Type: `String`
 
@@ -599,9 +599,9 @@ Examples:
 
 ---
 
-## settings.captchaVerificationFailedMessage.title
+## Message d’échec
 
-settings.captchaVerificationFailedMessage.description
+Le message envoyé à l'utilisateur si il a entré un mauvais captcha.
 
 Type: `String`
 
@@ -618,9 +618,9 @@ Examples:
 
 ---
 
-## settings.captchaVerificationTimeout.title
+## Message de temps expiré
 
-settings.captchaVerificationTimeout.description
+Le temps que l'utilisateur a pour valider le captcha.
 
 Type: `Number`
 
@@ -639,9 +639,9 @@ Examples:
 
 ---
 
-## settings.captchaVerificationLogEnabled.title
+## Logs
 
-settings.captchaVerificationLogEnabled.description
+Whether or not verification attempts will be logged
 
 Type: `Boolean`
 
@@ -662,7 +662,7 @@ Disable:
 
 ---
 
-## settings.autoModEnabled.title
+## Activé
 
 settings.autoModEnabled.description
 
@@ -685,7 +685,7 @@ Disable:
 
 ---
 
-## settings.autoModModeratedChannels.title
+## Salons modérés
 
 settings.autoModModeratedChannels.description
 
@@ -706,7 +706,7 @@ Examples:
 
 ---
 
-## settings.autoModModeratedRoles.title
+## Rôles modérés
 
 settings.autoModModeratedRoles.description
 
@@ -727,7 +727,7 @@ Examples:
 
 ---
 
-## settings.autoModIgnoredChannels.title
+## Salons ignorés
 
 settings.autoModIgnoredChannels.description
 
@@ -748,7 +748,7 @@ Examples:
 
 ---
 
-## settings.autoModIgnoredRoles.title
+## Rôles ignorés
 
 settings.autoModIgnoredRoles.description
 
@@ -769,7 +769,7 @@ Examples:
 
 ---
 
-## settings.mutedRole.title
+## Rôle muet
 
 settings.mutedRole.description
 
@@ -788,7 +788,7 @@ Examples:
 
 ---
 
-## settings.autoModDisabledForOldMembers.title
+## Désactivé pour les anciens membres
 
 settings.autoModDisabledForOldMembers.description
 
@@ -811,7 +811,7 @@ Disable:
 
 ---
 
-## settings.autoModDisabledForOldMembersThreshold.title
+## Seuil pour les anciens membres
 
 settings.autoModDisabledForOldMembersThreshold.description
 
@@ -832,7 +832,7 @@ Examples:
 
 ---
 
-## settings.autoModLogEnabled.title
+## Mod Log Channel
 
 settings.autoModLogEnabled.description
 
@@ -855,9 +855,9 @@ Disable:
 
 ---
 
-## settings.modLogChannel.title
+## Salon des journaux de modération
 
-settings.modLogChannel.description
+Le salon où les notes de modérations seront postées.
 
 Type: `Channel`
 
@@ -876,7 +876,7 @@ Examples:
 
 ---
 
-## settings.autoModDeleteBotMessage.title
+## Supprimer les messages du Bot
 
 settings.autoModDeleteBotMessage.description
 
@@ -899,7 +899,7 @@ Disable:
 
 ---
 
-## settings.autoModDeleteBotMessageTimeoutInSeconds.title
+## Délai de suppression des messages du bot.
 
 settings.autoModDeleteBotMessageTimeoutInSeconds.description
 
@@ -920,9 +920,9 @@ Examples:
 
 ---
 
-## settings.modPunishmentBanDeleteMessage.title
+## Supprimer les messages de bannissement
 
-settings.modPunishmentBanDeleteMessage.description
+Si oui ou non les messages après un ban seront automatiquement supprimés.
 
 Type: `Boolean`
 
@@ -943,9 +943,9 @@ Disable:
 
 ---
 
-## settings.modPunishmentKickDeleteMessage.title
+## Supprimer les messages d'expulsion
 
-settings.modPunishmentKickDeleteMessage.description
+Si oui ou non les messages après un kick seront automatiquement supprimés.
 
 Type: `Boolean`
 
@@ -966,9 +966,9 @@ Disable:
 
 ---
 
-## settings.modPunishmentSoftbanDeleteMessage.title
+## Supprime les messages de Softban
 
-settings.modPunishmentSoftbanDeleteMessage.description
+Si oui ou non les messages après un softban seront automatiquement supprimés.
 
 Type: `Boolean`
 
@@ -989,9 +989,9 @@ Disable:
 
 ---
 
-## settings.modPunishmentWarnDeleteMessage.title
+## Supprimer les messages d'avertissement
 
-settings.modPunishmentWarnDeleteMessage.description
+Si oui ou non les messages après un warn seront automatiquement supprimés.
 
 Type: `Boolean`
 
@@ -1012,9 +1012,9 @@ Disable:
 
 ---
 
-## settings.modPunishmentMuteDeleteMessage.title
+## Supprimer les messages de mute
 
-settings.modPunishmentMuteDeleteMessage.description
+Si oui ou non les messages après un mute seront automatiquement supprimés.
 
 Type: `Boolean`
 
@@ -1035,7 +1035,7 @@ Disable:
 
 ---
 
-## settings.autoModInvitesEnabled.title
+## Les invitations sont désormais modérées
 
 settings.autoModInvitesEnabled.description
 
@@ -1058,7 +1058,7 @@ Disable:
 
 ---
 
-## settings.autoModLinksEnabled.title
+## Les liens sont désormais modérés
 
 settings.autoModLinksEnabled.description
 
@@ -1081,7 +1081,7 @@ Disable:
 
 ---
 
-## settings.autoModLinksWhitelist.title
+## Liste blanche
 
 settings.autoModLinksWhitelist.description
 
@@ -1102,7 +1102,7 @@ Examples:
 
 ---
 
-## settings.autoModLinksBlacklist.title
+## Liste noire
 
 settings.autoModLinksBlacklist.description
 
@@ -1123,7 +1123,7 @@ Examples:
 
 ---
 
-## settings.autoModLinksFollowRedirects.title
+## Suivre les redirections
 
 settings.autoModLinksFollowRedirects.description
 
@@ -1146,9 +1146,9 @@ Disable:
 
 ---
 
-## settings.autoModWordsEnabled.title
+## Activé
 
-settings.autoModWordsEnabled.description
+Que les mots de la liste noire soient ou non automatisés.
 
 Type: `Boolean`
 
@@ -1169,9 +1169,9 @@ Disable:
 
 ---
 
-## settings.autoModWordsBlacklist.title
+## Liste noire
 
-settings.autoModWordsBlacklist.description
+Une liste de mots bannis.
 
 Type: `String[]`
 
@@ -1190,7 +1190,7 @@ Examples:
 
 ---
 
-## settings.autoModAllCapsEnabled.title
+## Activé
 
 settings.autoModAllCapsEnabled.description
 
@@ -1213,7 +1213,7 @@ Disable:
 
 ---
 
-## settings.autoModAllCapsMinCharacters.title
+## Caractères minimum
 
 settings.autoModAllCapsMinCharacters.description
 
@@ -1234,7 +1234,7 @@ Examples:
 
 ---
 
-## settings.autoModAllCapsPercentageCaps.title
+## Percentage Caps
 
 settings.autoModAllCapsPercentageCaps.description
 
@@ -1255,7 +1255,7 @@ Examples:
 
 ---
 
-## settings.autoModDuplicateTextEnabled.title
+## Activé
 
 settings.autoModDuplicateTextEnabled.description
 
@@ -1278,7 +1278,7 @@ Disable:
 
 ---
 
-## settings.autoModDuplicateTextTimeframeInSeconds.title
+## Timeframe
 
 settings.autoModDuplicateTextTimeframeInSeconds.description
 
@@ -1299,7 +1299,7 @@ Examples:
 
 ---
 
-## settings.autoModQuickMessagesEnabled.title
+## Activé
 
 settings.autoModQuickMessagesEnabled.description
 
@@ -1322,7 +1322,7 @@ Disable:
 
 ---
 
-## settings.autoModQuickMessagesNumberOfMessages.title
+## Nombre de messages
 
 settings.autoModQuickMessagesNumberOfMessages.description
 
@@ -1343,7 +1343,7 @@ Examples:
 
 ---
 
-## settings.autoModQuickMessagesTimeframeInSeconds.title
+## Timeframe
 
 settings.autoModQuickMessagesTimeframeInSeconds.description
 
@@ -1364,7 +1364,7 @@ Examples:
 
 ---
 
-## settings.autoModMentionUsersEnabled.title
+## Activé
 
 settings.autoModMentionUsersEnabled.description
 
@@ -1387,7 +1387,7 @@ Disable:
 
 ---
 
-## settings.autoModMentionUsersMaxNumberOfMentions.title
+## Nombre maximal de mentions utilisateurs par message
 
 settings.autoModMentionUsersMaxNumberOfMentions.description
 
@@ -1408,7 +1408,7 @@ Examples:
 
 ---
 
-## settings.autoModMentionRolesEnabled.title
+## Activé
 
 settings.autoModMentionRolesEnabled.description
 
@@ -1431,7 +1431,7 @@ Disable:
 
 ---
 
-## settings.autoModMentionRolesMaxNumberOfMentions.title
+## Nombre maximal de mentions de rôle par message
 
 settings.autoModMentionRolesMaxNumberOfMentions.description
 
@@ -1452,7 +1452,7 @@ Examples:
 
 ---
 
-## settings.autoModEmojisEnabled.title
+## Activé
 
 settings.autoModEmojisEnabled.description
 
@@ -1475,7 +1475,7 @@ Disable:
 
 ---
 
-## settings.autoModEmojisMaxNumberOfEmojis.title
+## Nombre maximal d'émojis
 
 settings.autoModEmojisMaxNumberOfEmojis.description
 
@@ -1496,7 +1496,7 @@ Examples:
 
 ---
 
-## settings.autoModHoistEnabled.title
+## Activé
 
 settings.autoModHoistEnabled.description
 
@@ -1519,9 +1519,9 @@ Disable:
 
 ---
 
-## settings.musicVolume.title
+## Volume de la musique
 
-settings.musicVolume.description
+Le volume par défaut qui est défini lorsque le bot rejoin le salon vocal.
 
 Type: `Number`
 
@@ -1534,9 +1534,9 @@ Reset to default:
 
 ---
 
-## settings.announceNextSong.title
+## Annonce la musique suivante
 
-settings.announceNextSong.description
+Si oui ou non la chanson suivante sera annoncée dans le salon vocal.
 
 Type: `Boolean`
 
@@ -1557,9 +1557,9 @@ Disable:
 
 ---
 
-## settings.announcementVoice.title
+## Voix d'annonce
 
-settings.announcementVoice.description
+La voix utilisée pour annoncer la musique suivante.
 
 Type: `Enum<AnnouncementVoice>`
 
@@ -1578,9 +1578,9 @@ Example:
 
 ---
 
-## settings.fadeMusicOnTalk.title
+## Baisse le volume lors d'une discussion
 
-settings.fadeMusicOnTalk.description
+Si activé, la musique baissera de volume si des personnes sont en train de parler.
 
 Type: `Boolean`
 
@@ -1601,9 +1601,9 @@ Disable:
 
 ---
 
-## settings.fadeMusicEndDelay.title
+## Fin du délai de baisse du volume
 
-settings.fadeMusicEndDelay.description
+Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale.
 
 Type: `Number`
 

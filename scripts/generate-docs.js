@@ -1,7 +1,6 @@
 const { spawn } = require('child_process');
 const fs = require('fs-extra');
 const path = require('path');
-const i18n = require('i18n');
 
 const locales = [
 	'en',
@@ -43,23 +42,11 @@ const argTypes = [
 const langRegex = /§{lang}/g;
 const varRegex = /§{([\w\.]+)(?::\[(.*?)\])?}/g;
 
-let i18nBot = {};
-i18n.configure({
-	locales,
-	directory: path.resolve('./i18n/bot/'),
-	objectNotation: true,
-	register: i18nBot,
-	updateFiles: false
-});
-
-let i18nDocs = {};
-i18n.configure({
-	locales,
-	directory: path.resolve('./i18n/docs/'),
-	objectNotation: true,
-	register: i18nDocs,
-	updateFiles: false
-});
+function geti18n(config) {
+	delete require.cache['i18n'];
+	i18n = require('i18n');
+	i18n.configure(config);
+}
 
 let child = spawn(
 	/^win/.test(process.platform) ? 'npm.cmd' : 'npm',
@@ -128,43 +115,28 @@ child.on('close', () => {
 		return files;
 	};
 
+	console.log('Generating reference...');
+
+	let i18nBot = {};
+	geti18n({
+		locales,
+		directory: path.resolve('./i18n/bot/'),
+		objectNotation: true,
+		register: i18nBot,
+		updateFiles: false
+	});
+
 	locales.forEach(locale => {
 		const niceLocale = locale.replace('_', '-');
-		console.log(`Generating ${niceLocale}...`);
-
-		const _tBot = (phrase, replacements) =>
-			i18nBot.__({ locale, phrase }, replacements);
-		const _tDocs = (phrase, replacements) =>
-			i18nDocs.__({ locale, phrase }, replacements);
-
-		const docFiles = getAllFiles(`./docs/_base/`);
-		docFiles.forEach(docFile => {
-			const newPath = path
-				.relative('./docs/_base/', docFile)
-				.replace(/\.md/gi, '');
-
-			let text = fs.readFileSync(docFile, 'utf8');
-			text = text.replace(langRegex, niceLocale);
-			text = text.replace(varRegex, (s, ...args) => {
-				let replace = {};
-				if (args[1]) {
-					replace = JSON.parse(`{${args[1]}}`);
-					Object.keys(replace).forEach(key => {
-						replace[key] = replace[key].replace(varRegex, (s, ...args) =>
-							_tDocs(args[0])
-						);
-					});
-				}
-				return _tDocs(args[0], replace);
-			});
-
-			fs.mkdirpSync(`./docs/${niceLocale}/${path.dirname(newPath)}`);
-			fs.writeFileSync(`./docs/${niceLocale}/${newPath}.md`, text, 'utf8');
-		});
+		console.log(`  ${niceLocale}`);
 
 		if (!fs.existsSync(`./docs/${niceLocale}`)) {
 			fs.mkdirSync(`./docs/${niceLocale}`);
 		}
+
+		const _tBot = (phrase, replacements) =>
+			i18nBot.__({ locale, phrase }, replacements);
+
 		if (!fs.existsSync(`./docs/${niceLocale}/reference/`)) {
 			fs.mkdirSync(`./docs/${niceLocale}/reference/`);
 		}
@@ -378,6 +350,50 @@ child.on('close', () => {
 			});
 
 		fs.writeFileSync(`./docs/${niceLocale}/reference/commands.md`, outCmds);
+	});
+
+	console.log('Generating docs...');
+
+	let i18nDocs = {};
+	geti18n({
+		locales,
+		directory: path.resolve('./i18n/docs/'),
+		objectNotation: true,
+		register: i18nDocs,
+		updateFiles: true
+	});
+
+	locales.forEach(locale => {
+		const niceLocale = locale.replace('_', '-');
+		console.log(`  ${niceLocale}`);
+
+		const _tDocs = (phrase, replacements) =>
+			i18nDocs.__({ locale, phrase }, replacements);
+
+		const docFiles = getAllFiles(`./docs/_base/`);
+		docFiles.forEach(docFile => {
+			const newPath = path
+				.relative('./docs/_base/', docFile)
+				.replace(/\.md/gi, '');
+
+			let text = fs.readFileSync(docFile, 'utf8');
+			text = text.replace(langRegex, niceLocale);
+			text = text.replace(varRegex, (s, ...args) => {
+				let replace = {};
+				if (args[1]) {
+					replace = JSON.parse(`{${args[1]}}`);
+					Object.keys(replace).forEach(key => {
+						replace[key] = replace[key].replace(varRegex, (s, ...args) =>
+							_tDocs(args[0])
+						);
+					});
+				}
+				return _tDocs(args[0], replace);
+			});
+
+			fs.mkdirpSync(`./docs/${niceLocale}/${path.dirname(newPath)}`);
+			fs.writeFileSync(`./docs/${niceLocale}/${newPath}.md`, text, 'utf8');
+		});
 	});
 
 	// Generate the main readme and sidebar with all the languages

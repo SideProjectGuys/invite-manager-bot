@@ -7,47 +7,70 @@ To get a list of available commands, do !help on your server.
 Most commands accept arguments and/or flags.  
 According to the **Type** of the argument or flag you can provide different values.
 
-### resolvers.boolean.type
+### ブール値
 
-resolvers.boolean.typeInfo
+この引数は、`true` または `false`を要求しています。 `yes`と `no`使用できます。
 
-### resolvers.number.type
+### 番号
 
-resolvers.number.typeInfo
+この引数には数値が必要です
 
-### resolvers.enum.type
+### 列挙型
 
-resolvers.enum.typeInfo
+この引数は、有効な値の特定のセットからの値を要求します。
 
-### resolvers.invitecode.type
+> 有効な値はコマンドによって異なります。コマンドと列挙型の有効な値に関する詳細情報を取得するには、`!help<command>` (eg. `!help addRank`) と使用してください。
 
-resolvers.invitecode.typeInfo
+### 招待コード
 
-### resolvers.user.type
+この引数は、Discord Invite Code を想定しています。
 
-resolvers.user.typeInfo
+> `https://discord.gg/` の後ろの部分置くことができ、Discord がプレビューを作成しないようにします。
 
-### resolvers.role.type
+### ユーザー
 
-resolvers.role.typeInfo
+この引数は Discord ユーザーを想定しています。 次のいずれかの方法を使用して、ユーザーに指定できます:
 
-### resolvers.channel.type
+-ユーザーをメンション: `@Valandur`
 
-resolvers.channel.typeInfo
+- 彼らの ID を使用: `102785693046026240`
+- 彼らの名前を使用: `Valandur`
+- 名前と識別名を使用: `Valandur#3581`
+- 名前にスペースが含まれる場合は引用符を使用します: `"Valandur with a space"`
 
-### resolvers.command.type
+### 役職
+
+この引数は、Discord の Role を想定しています。 次のいずれかの方法を使用して、Role を指定できます。
+
+- role をメンション: `@Admin`
+- ID を使用: `102785693046026240`
+- 名前を使用: `Admin`
+- 名前にスペースがある場合は引用符を使用します: `"Admin with a space"`
+
+### チャンネル
+
+この引数は Discord チャンネルを想定しています。 次のいずれかの方法を使用して、チャンネルを要求できます:
+
+- チャンネルのメンション:`#general`
+- ID を使用: `409846838129197057`
+- 名前を使用: `general`
+- 名前にスペースがある場合は引用符を使用します: `"general with a space"`
+
+### コマンド
 
 resolvers.command.typeInfo
 
-### resolvers.string.type
+### テキスト
 
-resolvers.string.typeInfo
+この引数には、任意のテキストが必要です。 スペースを含むテキストには、引用符(`"Text with quotes"`) を使用できます。
 
-### resolvers.date.type
+> テキストが最後の引数である場合、引用符を使用する必要はありません。
+
+### 日付
 
 resolvers.date.typeInfo
 
-### resolvers.duration.type
+### 期間
 
 resolvers.duration.typeInfo
 
@@ -55,114 +78,114 @@ resolvers.duration.typeInfo
 
 ### Invites
 
-| Command                           | Description                         | Usage                                                            |
-| --------------------------------- | ----------------------------------- | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | cmd.addInvites.self.description     | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | cmd.clearInvites.self.description   | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | cmd.createInvite.self.description   | !createInvite \<name\> [channel]                                 |
-| [fake](#fake)                     | cmd.fake.self.description           | !fake [page]                                                     |
-| [info](#info)                     | cmd.info.self.description           | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | cmd.inviteCodes.self.description    | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | cmd.inviteDetails.self.description  | !inviteDetails [user]                                            |
-| [invites](#invites)               | cmd.invites.self.description        | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | cmd.leaderboard.self.description    | !leaderboard [-c value\|--compare=value][duration] [page]        |
-| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description  | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | cmd.restoreInvites.self.description | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | cmd.subtractFakes.self.description  | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | cmd.subtractLeaves.self.description | !subtractLeaves                                                  |
+| Command                           | Description                                        | Usage                                                            |
+| --------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | メンバーに招待を追加(又は削除)します。             | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | サーバー(ユーザー)の招待を削除します。             | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | 永久の招待コードを作成します。                     | !createInvite \<name\> [channel]                                 |
+| [fake](#fake)                     | 騙そうとしているユーザーを見つけるのに役立ちます。 | !fake [page]                                                     |
+| [info](#info)                     | 特定のメンバーに関する情報を表示します。           | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | すべての招待コードの一覧を取得する                 | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | 招待状の送信元に関する詳細が表示されます。         | !inviteDetails [user]                                            |
+| [invites](#invites)               | Show personal invites.                             | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | 招待が最も多いメンバーを表示します。               | !leaderboard [-c value\|--compare=value][duration] [page]        |
+| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description                 | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | 以前にクリアした招待状をすべて復元します。         | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | すべてのユーザーから偽の招待を削除します。         | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | すべてのユーザーの退出履歴を削除します。           | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                     | Usage                                |
-| ------------------------- | ------------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | cmd.addRank.self.description    | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description   | !fixRanks                            |
-| [ranks](#ranks)           | cmd.ranks.self.description      | !ranks [page]                        |
-| [removeRank](#removeRank) | cmd.removeRank.self.description | !removeRank \<rank\>                 |
+| Command                   | Description                   | Usage                                |
+| ------------------------- | ----------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | 新しいランクを追加する。      | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description | !fixRanks                            |
+| [ranks](#ranks)           | すべてのランクを見る          | !ranks [page]                        |
+| [removeRank](#removeRank) | ランクを外します。            | !removeRank \<rank\>                 |
 
 ### Config
 
-| Command                                 | Description                            | Usage                                       |
-| --------------------------------------- | -------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | cmd.botConfig.self.description         | !botConfig [key][value]                     |
-| [config](#config)                       | cmd.config.self.description            | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | cmd.interactiveConfig.self.description | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | cmd.inviteCodeConfig.self.description  | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | cmd.memberConfig.self.description      | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | cmd.permissions.self.description       | !permissions [cmd][role]                    |
+| Command                                 | Description                                      | Usage                                       |
+| --------------------------------------- | ------------------------------------------------ | ------------------------------------------- |
+| [botConfig](#botConfig)                 | BOT の設定を表示および変更します。               | !botConfig [key][value]                     |
+| [config](#config)                       | サーバーの設定を表示および変更します。           | !config [key][value]                        |
+| [interactiveConfig](#interactiveConfig) | 対話型の設定                                     | !interactiveConfig                          |
+| [inviteCodeConfig](#inviteCodeConfig)   | サーバーの招待リンクの設定を表示、変更します。   | !inviteCodeConfig [key][invitecode] [value] |
+| [memberConfig](#memberConfig)           | サーバーのメンバーの設定を表示および変更します。 | !memberConfig [key][user] [value]           |
+| [permissions](#permissions)             | コマンドを使用するための権限を設定します。       | !permissions [cmd][role]                    |
 
 ### Info
 
-| Command             | Description                  | Usage           |
-| ------------------- | ---------------------------- | --------------- |
-| [botInfo](#botInfo) | cmd.botInfo.self.description | !botInfo        |
-| [credits](#credits) | cmd.credits.self.description | !credits        |
-| [getBot](#getBot)   | cmd.getBot.self.description  | !getBot         |
-| [help](#help)       | cmd.help.self.description    | !help [command] |
-| [members](#members) | cmd.members.self.description | !members        |
-| [ping](#ping)       | cmd.ping.self.description    | !ping           |
-| [prefix](#prefix)   | cmd.prefix.self.description  | !prefix         |
-| [setup](#setup)     | cmd.setup.self.description   | !setup          |
-| [support](#support) | cmd.support.self.description | !support        |
+| Command             | Description                                            | Usage           |
+| ------------------- | ------------------------------------------------------ | --------------- |
+| [botInfo](#botInfo) | BOT に関する基本的な情報を入手してください。           | !botInfo        |
+| [credits](#credits) | BOT の開発者と貢献者を表示します。                     | !credits        |
+| [getBot](#getBot)   | ボットへの招待リンクを入手できます。                   | !getBot         |
+| [help](#help)       | ヘルプを表示する。                                     | !help [command] |
+| [members](#members) | 現在のサーバーのメンバー数を表示します。               | !members        |
+| [ping](#ping)       | ボットをピング                                         | !ping           |
+| [prefix](#prefix)   | ボットの現在のプレフィックスを表示します。             | !prefix         |
+| [setup](#setup)     | ボットの設定や問題の確認（権限の不足など）を手助けする | !setup          |
+| [support](#support) | サポートサーバーへの招待リンクを入手してください。     | !support        |
 
 ### Premium
 
-| Command                   | Description                     | Usage             |
-| ------------------------- | ------------------------------- | ----------------- |
-| [export](#export)         | cmd.export.self.description     | !export \<type\>  |
-| [premium](#premium)       | cmd.premium.self.description    | !premium [action] |
-| [tryPremium](#tryPremium) | cmd.tryPremium.self.description | !tryPremium       |
+| Command                   | Description                                                     | Usage             |
+| ------------------------- | --------------------------------------------------------------- | ----------------- |
+| [export](#export)         | InviteManager のデータを csv シートにエクスポートします。       | !export \<type\>  |
+| [premium](#premium)       | InviteManager のプレミアムバージョンに関する情報。              | !premium [action] |
+| [tryPremium](#tryPremium) | プレミアム版の InviteManager を期間限定で無料でお試しください。 | !tryPremium       |
 
 ### Moderation
 
-| Command                               | Description                           | Usage                                                            |
-| ------------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | cmd.ban.self.description              | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | cmd.caseDelete.self.description       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | cmd.caseView.self.description         | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | cmd.check.self.description            | !check \<user\>                                                  |
-| [clean](#clean)                       | cmd.clean.self.description            | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | cmd.cleanShort.self.description       | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | cmd.cleanText.self.description        | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | cmd.kick.self.description             | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | cmd.mute.self.description             | !mute \<user\> [reason]                                          |
-| [punishmentConfig](#punishmentConfig) | cmd.punishmentConfig.self.description | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | cmd.purge.self.description            | !purge \<quantity\> [user]                                       |
-| [purgeUntil](#purgeUntil)             | cmd.purgeUntil.self.description       | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | cmd.softBan.self.description          | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | cmd.strike.self.description           | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | cmd.strikeConfig.self.description     | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | cmd.unban.self.description            | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | cmd.unhoist.self.description          | !unhoist                                                         |
-| [unmute](#unmute)                     | cmd.unmute.self.description           | !unmute \<user\>                                                 |
-| [warn](#warn)                         | cmd.warn.self.description             | !warn \<member\> [reason]                                        |
+| Command                               | Description                                                                                                        | Usage                                                            |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| [ban](#ban)                           | サーバーからメンバーを BAN します。                                                                                | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | 指定したケースを削除します。                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | 特定のケースに関する情報を表示します。                                                                             | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | ユーザーの違反と罰の回数を確認してください。                                                                       | !check \<user\>                                                  |
+| [clean](#clean)                       | 特定のチャットタイプを削除します。                                                                                 | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | 短いメッセージを消去する                                                                                           | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | 指定のキーワードを含むメッセージを削除します。                                                                     | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | サーバーからメンバーを蹴ります。                                                                                   | !kick \<member\> [reason]                                        |
+| [mute](#mute)                         | ユーザーをミュートする                                                                                             | !mute \<user\> [reason]                                          |
+| [punishmentConfig](#punishmentConfig) | 一定量の警告に達したときに罰を設定します。                                                                         | !punishmentConfig [punishment][strikes] [args]                   |
+| [purge](#purge)                       | チャネル内のメッセージを削除します。                                                                               | !purge \<quantity\> [user]                                       |
+| [purgeUntil](#purgeUntil)             | 指定されたメッセージまでチャネル内のメッセージを削除します。                                                       | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | サーバーからメンバーを BAN してから自動的に BAN 解除します。                                                       | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | ユーザーにストライクを追加する                                                                                     | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | さまざまな違反に対して受け取った警告を設定します。                                                                 | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | ユーザーの BAN を解除する                                                                                          | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | すべてのメンバーの前にその名前の前に特殊文字を付けて文字を追加すると、メンバーリストの最後にそれらが表示されます。 | !unhoist                                                         |
+| [unmute](#unmute)                     | ユーザーのミュートを解除する                                                                                       | !unmute \<user\>                                                 |
+| [warn](#warn)                         | メンバーに警告する                                                                                                 | !warn \<member\> [reason]                                        |
 
 ### Music
 
-| Command                   | Description                     | Usage                                                   |
-| ------------------------- | ------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | cmd.disconnect.self.description | !disconnect                                             |
-| [lyrics](#lyrics)         | cmd.lyrics.self.description     | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | cmd.mashup.self.description     | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | cmd.nowPlaying.self.description | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | cmd.pause.self.description      | !pause                                                  |
-| [play](#play)             | cmd.play.self.description       | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | cmd.queue.self.description      | !queue                                                  |
-| [repeat](#repeat)         | cmd.repeat.self.description     | !repeat                                                 |
-| [resume](#resume)         | cmd.resume.self.description     | !resume                                                 |
-| [rewind](#rewind)         | cmd.rewind.self.description     | !rewind                                                 |
-| [search](#search)         | cmd.search.self.description     | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | cmd.seek.self.description       | !seek [duration]                                        |
-| [skip](#skip)             | cmd.skip.self.description       | !skip [amount]                                          |
-| [volume](#volume)         | cmd.volume.self.description     | !volume [volume]                                        |
+| Command                   | Description                                                                  | Usage                                                   |
+| ------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | 現在の音声チャンネルからボットを退出させます。                               | !disconnect                                             |
+| [lyrics](#lyrics)         | 現在再生中の曲の歌詞を表示します。                                           | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | 2 つの曲のマッシュアップを作成します。                                       | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | 現在再生されている曲の情報を表示しています。                                 | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | 現在の曲を一時停止します。                                                   | !pause                                                  |
+| [play](#play)             | キューが空の場合は曲を再生し、それ以外の場合はキューの最後に曲を追加します。 | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | キュー内の曲を表示します。                                                   | !queue                                                  |
+| [repeat](#repeat)         | 繰り返し再生する曲を設定します。                                             | !repeat                                                 |
+| [resume](#resume)         | 現在の曲を再開します。                                                       | !resume                                                 |
+| [rewind](#rewind)         | 曲を巻き戻して最初から始めます。                                             | !rewind                                                 |
+| [search](#search)         | 検索語を検索して、結果の 1 つを選択させます。                                | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | 曲の特定の部分にスキップします。                                             | !seek [duration]                                        |
+| [skip](#skip)             | 現在の曲をスキップして、キュー内の次の曲を再生します。                       | !skip [amount]                                          |
+| [volume](#volume)         | 引数が渡された場合は音量を設定するか、現在の音量を表示します。               | !volume [volume]                                        |
 
 ### Other
 
-| Command                             | Description                          | Usage                      |
-| ----------------------------------- | ------------------------------------ | -------------------------- |
-| [graph](#graph)                     | cmd.graph.self.description           | !graph \<type\> [duration] |
-| [makeMentionable](#makeMentionable) | cmd.makeMentionable.self.description | !makeMentionable \<role\>  |
-| [mentionRole](#mentionRole)         | cmd.mentionRole.self.description     | !mentionRole \<role\>      |
+| Command                             | Description                                                      | Usage                      |
+| ----------------------------------- | ---------------------------------------------------------------- | -------------------------- |
+| [graph](#graph)                     | このサーバー上のさまざまな統計グラフを表示します。               | !graph \<type\> [duration] |
+| [makeMentionable](#makeMentionable) | 役割を 60 秒間またはそれが使用されるまでメンション可能にします。 | !makeMentionable \<role\>  |
+| [mentionRole](#mentionRole)         | メンションできない役職についてメンションしてください。           | !mentionRole \<role\>      |
 
 <a name='addInvites'></a>
 
@@ -170,7 +193,7 @@ resolvers.duration.typeInfo
 
 ## !addInvites
 
-cmd.addInvites.self.description
+メンバーに招待を追加(又は削除)します。
 
 ### Usage
 
@@ -184,11 +207,11 @@ cmd.addInvites.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                     | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.addInvites.self.args.user   |         |
-| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addInvites.self.args.amount |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addInvites.self.args.reason |         |
+| Argument | Type                  | Required | Description                                                                       | Details |
+| -------- | --------------------- | -------- | --------------------------------------------------------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | Yes      | そのユーザーはボーナスの招待数を受け取る、または失うでしょう。                    |         |
+| amount   | [番号](#番号)         | Yes      | ユーザーが取得、又は失う可能性のある招待の数。招待を削除する場合は`-`を用います。 |         |
+| reason   | [テキスト](#テキスト) | No       | 招待数を追加(又は削除)した理由。                                                  |         |
 
 ### Examples
 
@@ -206,7 +229,7 @@ cmd.addInvites.self.description
 
 ## !addRank
 
-cmd.addRank.self.description
+新しいランクを追加する。
 
 ### Usage
 
@@ -222,11 +245,11 @@ cmd.addRank.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                   | Details |
-| -------- | ----------------------------------------------- | -------- | ----------------------------- | ------- |
-| role     | [resolvers.role.type](#resolvers.role.type)     | Yes      | cmd.addRank.self.args.role    |         |
-| invites  | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addRank.self.args.invites |         |
-| info     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addRank.self.args.info    |         |
+| Argument | Type                  | Required | Description                                            | Details |
+| -------- | --------------------- | -------- | ------------------------------------------------------ | ------- |
+| role     | [役職](#役職)         | Yes      | このランクに到達したときにユーザーが受け取る役職。     |         |
+| invites  | [番号](#番号)         | Yes      | ランクに到達するために必要な招待の数。                 |         |
+| info     | [テキスト](#テキスト) | No       | ユーザーがこのランクについて知るために表示される説明。 |         |
 
 ### Examples
 
@@ -244,7 +267,7 @@ cmd.addRank.self.description
 
 ## !ban
 
-cmd.ban.self.description
+サーバーからメンバーを BAN します。
 
 ### Usage
 
@@ -254,16 +277,16 @@ cmd.ban.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description              | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.ban.self.args.user   |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.ban.self.args.reason |         |
+| Argument | Type                  | Required | Description                 | Details |
+| -------- | --------------------- | -------- | --------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | Yes      | ユーザーを BAN する。       |         |
+| reason   | [テキスト](#テキスト) | No       | ユーザーが BAN された理由。 |         |
 
 ### Flags
 
-| Flag                              | Short     | Type                                            | Description                          |
-| --------------------------------- | --------- | ----------------------------------------------- | ------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.ban.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type          | Description                                              |
+| --------------------------------- | --------- | ------------- | -------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | BAN したユーザーのメッセージを指定した日数分を削除します |
 
 ### Examples
 
@@ -273,7 +296,7 @@ cmd.ban.self.description
 
 ## !botConfig
 
-cmd.botConfig.self.description
+BOT の設定を表示および変更します。
 
 ### Usage
 
@@ -289,10 +312,10 @@ cmd.botConfig.self.description
 
 ### Arguments
 
-| Argument | Type                                                          | Required | Description                   | Details                    |
-| -------- | ------------------------------------------------------------- | -------- | ----------------------------- | -------------------------- |
-| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.botConfig.self.args.key   | resolvers.enum.validValues |
-| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.botConfig.self.args.value |                            |
+| Argument | Type              | Required | Description           | Details                                                                                                                             |
+| -------- | ----------------- | -------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [列挙型](#列挙型) | No       | 表示/変更したい設定。 | 以下のいずれかの値を使用:`activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [値](#値)         | No       | 設定の新しい値        |                                                                                                                                     |
 
 ### Examples
 
@@ -306,7 +329,7 @@ cmd.botConfig.self.description
 
 ## !botInfo
 
-cmd.botInfo.self.description
+BOT に関する基本的な情報を入手してください。
 
 ### Usage
 
@@ -330,7 +353,7 @@ cmd.botInfo.self.description
 
 ## !caseDelete
 
-cmd.caseDelete.self.description
+指定したケースを削除します。
 
 ### Usage
 
@@ -346,10 +369,10 @@ cmd.caseDelete.self.description
 
 ### Arguments
 
-| Argument   | Type                                            | Required | Description                         | Details |
-| ---------- | ----------------------------------------------- | -------- | ----------------------------------- | ------- |
-| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseDelete.self.args.caseNumber |         |
-| reason     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.caseDelete.self.args.reason     |         |
+| Argument   | Type                  | Required | Description              | Details |
+| ---------- | --------------------- | -------- | ------------------------ | ------- |
+| caseNumber | [番号](#番号)         | Yes      | ケース番号               |         |
+| reason     | [テキスト](#テキスト) | No       | そのケースを削除した理由 |         |
 
 ### Examples
 
@@ -363,7 +386,7 @@ cmd.caseDelete.self.description
 
 ## !caseView
 
-cmd.caseView.self.description
+特定のケースに関する情報を表示します。
 
 ### Usage
 
@@ -379,9 +402,9 @@ cmd.caseView.self.description
 
 ### Arguments
 
-| Argument   | Type                                            | Required | Description                       | Details |
-| ---------- | ----------------------------------------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseView.self.args.caseNumber |         |
+| Argument   | Type          | Required | Description | Details |
+| ---------- | ------------- | -------- | ----------- | ------- |
+| caseNumber | [番号](#番号) | Yes      | ケース番号  |         |
 
 ### Examples
 
@@ -395,7 +418,7 @@ cmd.caseView.self.description
 
 ## !check
 
-cmd.check.self.description
+ユーザーの違反と罰の回数を確認してください。
 
 ### Usage
 
@@ -409,9 +432,9 @@ cmd.check.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description              | Details |
-| -------- | ------------------------------------------- | -------- | ------------------------ | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type) | Yes      | cmd.check.self.args.user |         |
+| Argument | Type                  | Required | Description          | Details |
+| -------- | --------------------- | -------- | -------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | Yes      | ユーザーを確認する。 |         |
 
 ### Examples
 
@@ -429,7 +452,7 @@ cmd.check.self.description
 
 ## !clean
 
-cmd.clean.self.description
+特定のチャットタイプを削除します。
 
 ### Usage
 
@@ -443,10 +466,10 @@ cmd.clean.self.description
 
 ### Arguments
 
-| Argument         | Type                                            | Required | Description                          | Details                    |
-| ---------------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
-| type             | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.clean.self.args.type             | resolvers.enum.validValues |
-| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.clean.self.args.numberOfMessages |                            |
+| Argument         | Type              | Required | Description              | Details                                                                                                    |
+| ---------------- | ----------------- | -------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| type             | [列挙型](#列挙型) | Yes      | 削除するメッセージの種類 | 以下のいずれかの値を使用:`bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
+| numberOfMessages | [番号](#番号)     | No       | 削除されるメッセージの数 |                                                                                                            |
 
 ### Examples
 
@@ -456,7 +479,7 @@ cmd.clean.self.description
 
 ## !cleanShort
 
-cmd.cleanShort.self.description
+短いメッセージを消去する
 
 ### Usage
 
@@ -472,10 +495,10 @@ cmd.cleanShort.self.description
 
 ### Arguments
 
-| Argument         | Type                                            | Required | Description                               | Details |
-| ---------------- | ----------------------------------------------- | -------- | ----------------------------------------- | ------- |
-| maxTextLength    | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.cleanShort.self.args.maxTextLength    |         |
-| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanShort.self.args.numberOfMessages |         |
+| Argument         | Type          | Required | Description                                  | Details |
+| ---------------- | ------------- | -------- | -------------------------------------------- | ------- |
+| maxTextLength    | [番号](#番号) | Yes      | これより短いメッセージはすべて削除されます。 |         |
+| numberOfMessages | [番号](#番号) | No       | 削除されるメッセージの数                     |         |
 
 ### Examples
 
@@ -485,7 +508,7 @@ cmd.cleanShort.self.description
 
 ## !cleanText
 
-cmd.cleanText.self.description
+指定のキーワードを含むメッセージを削除します。
 
 ### Usage
 
@@ -501,10 +524,10 @@ cmd.cleanText.self.description
 
 ### Arguments
 
-| Argument         | Type                                            | Required | Description                              | Details |
-| ---------------- | ----------------------------------------------- | -------- | ---------------------------------------- | ------- |
-| text             | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.cleanText.self.args.text             |         |
-| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanText.self.args.numberOfMessages |         |
+| Argument         | Type                  | Required | Description                                      | Details |
+| ---------------- | --------------------- | -------- | ------------------------------------------------ | ------- |
+| text             | [テキスト](#テキスト) | Yes      | この単語を含むすべてのメッセージが削除されます。 |         |
+| numberOfMessages | [番号](#番号)         | No       | 検索されるメッセージの数                         |         |
 
 ### Examples
 
@@ -514,7 +537,7 @@ cmd.cleanText.self.description
 
 ## !clearInvites
 
-cmd.clearInvites.self.description
+サーバー(ユーザー)の招待を削除します。
 
 ### Usage
 
@@ -528,16 +551,16 @@ cmd.clearInvites.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                     | Details |
-| -------- | ------------------------------------------- | -------- | ------------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.clearInvites.self.args.user |         |
+| Argument | Type                  | Required | Description                                                                | Details |
+| -------- | --------------------- | -------- | -------------------------------------------------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | No       | 招待数をすべて削除する。省略された場合、すべてのメンバーが対象になります。 |         |
 
 ### Flags
 
-| Flag                       | Short      | Type                                              | Description                            |
-| -------------------------- | ---------- | ------------------------------------------------- | -------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [resolvers.date.type](#resolvers.date.type)       | cmd.clearInvites.self.flags.date       |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.clearInvites.self.flags.clearBonus |
+| Flag                       | Short      | Type                  | Description                                                                                            |
+| -------------------------- | ---------- | --------------------- | ------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;date       | &#x2011;d  | [日付](#日付)         | 招待の開始日を指定する必要があります。 デフォルトは今日です。                                          |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [ブール値](#ブール値) | これを追加すると、ボーナスの招待数もクリアされます。省略した場合、ボーナスの招待状はそのまま残ります。 |
 
 ### Examples
 
@@ -559,7 +582,7 @@ cmd.clearInvites.self.description
 
 ## !config
 
-cmd.config.self.description
+サーバーの設定を表示および変更します。
 
 ### Usage
 
@@ -573,10 +596,10 @@ cmd.config.self.description
 
 ### Arguments
 
-| Argument | Type                                                          | Required | Description                | Details                    |
-| -------- | ------------------------------------------------------------- | -------- | -------------------------- | -------------------------- |
-| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.config.self.args.key   | resolvers.enum.validValues |
-| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.config.self.args.value |                            |
+| Argument | Type              | Required | Description           | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| -------- | ----------------- | -------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [列挙型](#列挙型) | No       | 表示/変更したい設定。 | 以下のいずれかの値を使用:`announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
+| value    | [値](#値)         | No       | 設定の新しい値        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ### Examples
 
@@ -590,7 +613,7 @@ cmd.config.self.description
 
 ## !createInvite
 
-cmd.createInvite.self.description
+永久の招待コードを作成します。
 
 ### Usage
 
@@ -604,10 +627,10 @@ cmd.createInvite.self.description
 
 ### Arguments
 
-| Argument | Type                                              | Required | Description                        | Details |
-| -------- | ------------------------------------------------- | -------- | ---------------------------------- | ------- |
-| name     | [resolvers.string.type](#resolvers.string.type)   | Yes      | cmd.createInvite.self.args.name    |         |
-| channel  | [resolvers.channel.type](#resolvers.channel.type) | No       | cmd.createInvite.self.args.channel |         |
+| Argument | Type                      | Required | Description                                                                   | Details |
+| -------- | ------------------------- | -------- | ----------------------------------------------------------------------------- | ------- |
+| name     | [テキスト](#テキスト)     | Yes      | 招待リンクの名前。                                                            |         |
+| channel  | [チャンネル](#チャンネル) | No       | 招待コードが作成されたチャンネル。 デフォルトで現在のチャンネルを使用します。 |         |
 
 ### Examples
 
@@ -625,7 +648,7 @@ cmd.createInvite.self.description
 
 ## !credits
 
-cmd.credits.self.description
+BOT の開発者と貢献者を表示します。
 
 ### Usage
 
@@ -645,7 +668,7 @@ cmd.credits.self.description
 
 ## !disconnect
 
-cmd.disconnect.self.description
+現在の音声チャンネルからボットを退出させます。
 
 ### Usage
 
@@ -665,7 +688,7 @@ cmd.disconnect.self.description
 
 ## !export
 
-cmd.export.self.description
+InviteManager のデータを csv シートにエクスポートします。
 
 ### Usage
 
@@ -675,9 +698,9 @@ cmd.export.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description               | Details                    |
-| -------- | ------------------------------------------- | -------- | ------------------------- | -------------------------- |
-| type     | [resolvers.enum.type](#resolvers.enum.type) | Yes      | cmd.export.self.args.type | resolvers.enum.validValues |
+| Argument | Type              | Required | Description                | Details                                |
+| -------- | ----------------- | -------- | -------------------------- | -------------------------------------- |
+| type     | [列挙型](#列挙型) | Yes      | 必要なエクスポートの種類。 | 以下のいずれかの値を使用:`leaderboard` |
 
 ### Examples
 
@@ -691,7 +714,7 @@ cmd.export.self.description
 
 ## !fake
 
-cmd.fake.self.description
+騙そうとしているユーザーを見つけるのに役立ちます。
 
 ### Usage
 
@@ -708,9 +731,9 @@ cmd.fake.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description             | Details |
-| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
-| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.fake.self.args.page |         |
+| Argument | Type          | Required | Description                              | Details |
+| -------- | ------------- | -------- | ---------------------------------------- | ------- |
+| page     | [番号](#番号) | No       | 偽の招待リストのどのページを取得するか。 |         |
 
 ### Examples
 
@@ -752,7 +775,7 @@ cmd.fixRanks.self.description
 
 ## !getBot
 
-cmd.getBot.self.description
+ボットへの招待リンクを入手できます。
 
 ### Usage
 
@@ -778,7 +801,7 @@ cmd.getBot.self.description
 
 ## !graph
 
-cmd.graph.self.description
+このサーバー上のさまざまな統計グラフを表示します。
 
 ### Usage
 
@@ -793,10 +816,10 @@ cmd.graph.self.description
 
 ### Arguments
 
-| Argument | Type                                                | Required | Description                  | Details                    |
-| -------- | --------------------------------------------------- | -------- | ---------------------------- | -------------------------- |
-| type     | [resolvers.enum.type](#resolvers.enum.type)         | Yes      | cmd.graph.self.args.type     | resolvers.enum.validValues |
-| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.graph.self.args.duration |                            |
+| Argument | Type              | Required | Description              | Details                                             |
+| -------- | ----------------- | -------- | ------------------------ | --------------------------------------------------- |
+| type     | [列挙型](#列挙型) | Yes      | 表示するチャートの種類。 | 以下のいずれかの値を使用:`joins`, `leaves`, `usage` |
+| duration | [期間](#期間)     | No       | チャートの期間。         |                                                     |
 
 ### Examples
 
@@ -818,7 +841,7 @@ cmd.graph.self.description
 
 ## !help
 
-cmd.help.self.description
+ヘルプを表示する。
 
 ### Usage
 
@@ -828,9 +851,9 @@ cmd.help.self.description
 
 ### Arguments
 
-| Argument | Type                                              | Required | Description                | Details                       |
-| -------- | ------------------------------------------------- | -------- | -------------------------- | ----------------------------- |
-| command  | [resolvers.command.type](#resolvers.command.type) | No       | cmd.help.self.args.command | resolvers.command.validValues |
+| Argument | Type                  | Required | Description                        | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------- | --------------------- | -------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [コマンド](#コマンド) | No       | 詳細情報を取得するためのコマンド。 | 以下のいずれかの値を使用:`addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -848,7 +871,7 @@ cmd.help.self.description
 
 ## !info
 
-cmd.info.self.description
+特定のメンバーに関する情報を表示します。
 
 ### Usage
 
@@ -862,11 +885,11 @@ cmd.info.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                | Details                    |
-| -------- | ----------------------------------------------- | -------- | -------------------------- | -------------------------- |
-| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.info.self.args.user    |                            |
-| details  | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.info.self.args.details | resolvers.enum.validValues |
-| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.info.self.args.page    |                            |
+| Argument | Type                  | Required | Description                                                             | Details                                     |
+| -------- | --------------------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------- |
+| user     | [ユーザー](#ユーザー) | Yes      | 追加情報を見たいユーザー。                                              |                                             |
+| details  | [列挙型](#列挙型)     | No       | メンバーに関する特定の詳細のみを要求します。                            | 以下のいずれかの値を使用:`bonus`, `members` |
+| page     | [番号](#番号)         | No       | 表示する詳細のどのページ。 リアクションを使って移動することもできます。 |                                             |
 
 ### Examples
 
@@ -896,7 +919,7 @@ cmd.info.self.description
 
 ## !interactiveConfig
 
-cmd.interactiveConfig.self.description
+対話型の設定
 
 ### Usage
 
@@ -920,7 +943,7 @@ cmd.interactiveConfig.self.description
 
 ## !inviteCodeConfig
 
-cmd.inviteCodeConfig.self.description
+サーバーの招待リンクの設定を表示、変更します。
 
 ### Usage
 
@@ -935,11 +958,11 @@ cmd.inviteCodeConfig.self.description
 
 ### Arguments
 
-| Argument   | Type                                                          | Required | Description                               | Details                    |
-| ---------- | ------------------------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
-| key        | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.inviteCodeConfig.self.args.key        | resolvers.enum.validValues |
-| inviteCode | [resolvers.invitecode.type](#resolvers.invitecode.type)       | No       | cmd.inviteCodeConfig.self.args.inviteCode |                            |
-| value      | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.inviteCodeConfig.self.args.value      |                            |
+| Argument   | Type                      | Required | Description                  | Details                                  |
+| ---------- | ------------------------- | -------- | ---------------------------- | ---------------------------------------- |
+| key        | [列挙型](#列挙型)         | No       | 表示/変更したい設定。        | 以下のいずれかの値を使用:`name`, `roles` |
+| inviteCode | [招待コード](#招待コード) | No       | 招待リンクの設定を変更する。 |                                          |
+| value      | [値](#値)                 | No       | 新しい設定値                 |                                          |
 
 ### Examples
 
@@ -953,7 +976,7 @@ cmd.inviteCodeConfig.self.description
 
 ## !inviteCodes
 
-cmd.inviteCodes.self.description
+すべての招待コードの一覧を取得する
 
 ### Usage
 
@@ -984,7 +1007,7 @@ cmd.inviteCodes.self.description
 
 ## !inviteDetails
 
-cmd.inviteDetails.self.description
+招待状の送信元に関する詳細が表示されます。
 
 ### Usage
 
@@ -998,9 +1021,9 @@ cmd.inviteDetails.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                      | Details |
-| -------- | ------------------------------------------- | -------- | -------------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.inviteDetails.self.args.user |         |
+| Argument | Type                  | Required | Description                    | Details |
+| -------- | --------------------- | -------- | ------------------------------ | ------- |
+| user     | [ユーザー](#ユーザー) | No       | 詳細な招待状を見たいユーザー。 |         |
 
 ### Examples
 
@@ -1022,7 +1045,7 @@ cmd.inviteDetails.self.description
 
 ## !invites
 
-cmd.invites.self.description
+Show personal invites.
 
 ### Usage
 
@@ -1037,9 +1060,9 @@ cmd.invites.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                | Details |
-| -------- | ------------------------------------------- | -------- | -------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.invites.self.args.user |         |
+| Argument | Type                  | Required | Description                      | Details |
+| -------- | --------------------- | -------- | -------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | No       | 表示したいユーザーを招待します。 |         |
 
 ### Examples
 
@@ -1061,7 +1084,7 @@ cmd.invites.self.description
 
 ## !kick
 
-cmd.kick.self.description
+サーバーからメンバーを蹴ります。
 
 ### Usage
 
@@ -1071,10 +1094,10 @@ cmd.kick.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description               | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
-| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.kick.self.args.member |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.kick.self.args.reason |         |
+| Argument | Type                  | Required | Description            | Details |
+| -------- | --------------------- | -------- | ---------------------- | ------- |
+| member   | [メンバー](#メンバー) | Yes      | メンバーをキックする   |         |
+| reason   | [テキスト](#テキスト) | No       | メンバーが蹴られた理由 |         |
 
 ### Examples
 
@@ -1084,7 +1107,7 @@ cmd.kick.self.description
 
 ## !leaderboard
 
-cmd.leaderboard.self.description
+招待が最も多いメンバーを表示します。
 
 ### Usage
 
@@ -1098,16 +1121,16 @@ cmd.leaderboard.self.description
 
 ### Arguments
 
-| Argument | Type                                                | Required | Description                        | Details |
-| -------- | --------------------------------------------------- | -------- | ---------------------------------- | ------- |
-| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.leaderboard.self.args.duration |         |
-| page     | [resolvers.number.type](#resolvers.number.type)     | No       | cmd.leaderboard.self.args.page     |         |
+| Argument | Type          | Required | Description                              | Details |
+| -------- | ------------- | -------- | ---------------------------------------- | ------- |
+| duration | [期間](#期間) | No       | リーダーボードを計算する期間。           |         |
+| page     | [番号](#番号) | No       | リーダーボードのどのページを取得するか。 |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                                                | Description                        |
-| ----------------------- | --------- | --------------------------------------------------- | ---------------------------------- |
-| &#x2011;&#x2011;compare | &#x2011;c | [resolvers.duration.type](#resolvers.duration.type) | cmd.leaderboard.self.flags.compare |
+| Flag                    | Short     | Type          | Description                              |
+| ----------------------- | --------- | ------------- | ---------------------------------------- |
+| &#x2011;&#x2011;compare | &#x2011;c | [期間](#期間) | 現在のリーダーボード順位が比較される日付 |
 
 ### Examples
 
@@ -1129,7 +1152,7 @@ cmd.leaderboard.self.description
 
 ## !lyrics
 
-cmd.lyrics.self.description
+現在再生中の曲の歌詞を表示します。
 
 ### Usage
 
@@ -1139,9 +1162,9 @@ cmd.lyrics.self.description
 
 ### Flags
 
-| Flag                 | Short     | Type                                              | Description                |
-| -------------------- | --------- | ------------------------------------------------- | -------------------------- |
-| &#x2011;&#x2011;live | &#x2011;l | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.lyrics.self.flags.live |
+| Flag                 | Short     | Type                  | Description                                      |
+| -------------------- | --------- | --------------------- | ------------------------------------------------ |
+| &#x2011;&#x2011;live | &#x2011;l | [ブール値](#ブール値) | 設定すると、歌詞はその曲の現在時刻と同期します。 |
 
 ### Examples
 
@@ -1155,7 +1178,7 @@ cmd.lyrics.self.description
 
 ## !makeMentionable
 
-cmd.makeMentionable.self.description
+役割を 60 秒間またはそれが使用されるまでメンション可能にします。
 
 ### Usage
 
@@ -1170,9 +1193,9 @@ cmd.makeMentionable.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                        | Details |
-| -------- | ------------------------------------------- | -------- | ---------------------------------- | ------- |
-| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.makeMentionable.self.args.role |         |
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [役職](#役職) | Yes      | あなたがメンションしたい役割。 |         |
 
 ### Examples
 
@@ -1190,7 +1213,7 @@ cmd.makeMentionable.self.description
 
 ## !mashup
 
-cmd.mashup.self.description
+2 つの曲のマッシュアップを作成します。
 
 ### Usage
 
@@ -1200,9 +1223,9 @@ cmd.mashup.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                 | Details |
-| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
-| videos   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.mashup.self.args.videos |         |
+| Argument | Type                  | Required | Description                                    | Details |
+| -------- | --------------------- | -------- | ---------------------------------------------- | ------- |
+| videos   | [テキスト](#テキスト) | Yes      | ビデオを一緒にマッシュアップする必要があります |         |
 
 ### Examples
 
@@ -1212,7 +1235,7 @@ cmd.mashup.self.description
 
 ## !memberConfig
 
-cmd.memberConfig.self.description
+サーバーのメンバーの設定を表示および変更します。
 
 ### Usage
 
@@ -1228,11 +1251,11 @@ cmd.memberConfig.self.description
 
 ### Arguments
 
-| Argument | Type                                                          | Required | Description                      | Details                    |
-| -------- | ------------------------------------------------------------- | -------- | -------------------------------- | -------------------------- |
-| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.memberConfig.self.args.key   | resolvers.enum.validValues |
-| user     | [resolvers.user.type](#resolvers.user.type)                   | No       | cmd.memberConfig.self.args.user  |                            |
-| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.memberConfig.self.args.value |                            |
+| Argument | Type                  | Required | Description                       | Details                                        |
+| -------- | --------------------- | -------- | --------------------------------- | ---------------------------------------------- |
+| key      | [列挙型](#列挙型)     | No       | 表示/変更したいメンバー構成設定。 | 以下のいずれかの値を使用:`hideFromLeaderboard` |
+| user     | [ユーザー](#ユーザー) | No       | 設定が表示/変更されたメンバー。   |                                                |
+| value    | [値](#値)             | No       | 設定の新しい値                    |                                                |
 
 ### Examples
 
@@ -1246,7 +1269,7 @@ cmd.memberConfig.self.description
 
 ## !members
 
-cmd.members.self.description
+現在のサーバーのメンバー数を表示します。
 
 ### Usage
 
@@ -1271,7 +1294,7 @@ cmd.members.self.description
 
 ## !mentionRole
 
-cmd.mentionRole.self.description
+メンションできない役職についてメンションしてください。
 
 ### Usage
 
@@ -1286,9 +1309,9 @@ cmd.mentionRole.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                    | Details |
-| -------- | ------------------------------------------- | -------- | ------------------------------ | ------- |
-| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.mentionRole.self.args.role |         |
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [役職](#役職) | Yes      | あなたが言及したいメンション。 |         |
 
 ### Examples
 
@@ -1306,7 +1329,7 @@ cmd.mentionRole.self.description
 
 ## !mute
 
-cmd.mute.self.description
+ユーザーをミュートする
 
 ### Usage
 
@@ -1316,10 +1339,10 @@ cmd.mute.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description               | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
-| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.mute.self.args.user   |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.mute.self.args.reason |         |
+| Argument | Type                  | Required | Description                          | Details |
+| -------- | --------------------- | -------- | ------------------------------------ | ------- |
+| user     | [メンバー](#メンバー) | Yes      | ミュートする必要があるユーザー。     |         |
+| reason   | [テキスト](#テキスト) | No       | このユーザーがミュートされている理由 |         |
 
 ### Examples
 
@@ -1329,7 +1352,7 @@ cmd.mute.self.description
 
 ## !nowPlaying
 
-cmd.nowPlaying.self.description
+現在再生されている曲の情報を表示しています。
 
 ### Usage
 
@@ -1344,9 +1367,9 @@ cmd.nowPlaying.self.description
 
 ### Flags
 
-| Flag                | Short     | Type                                              | Description                   |
-| ------------------- | --------- | ------------------------------------------------- | ----------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.nowPlaying.self.flags.pin |
+| Flag                | Short     | Type                  | Description                                                                      |
+| ------------------- | --------- | --------------------- | -------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [ブール値](#ブール値) | 現在再生中のメッセージを固定して、新しい曲が再生されるたびに自動的に更新します。 |
 
 ### Examples
 
@@ -1360,7 +1383,7 @@ cmd.nowPlaying.self.description
 
 ## !pause
 
-cmd.pause.self.description
+現在の曲を一時停止します。
 
 ### Usage
 
@@ -1384,7 +1407,7 @@ cmd.pause.self.description
 
 ## !permissions
 
-cmd.permissions.self.description
+コマンドを使用するための権限を設定します。
 
 ### Usage
 
@@ -1398,10 +1421,10 @@ cmd.permissions.self.description
 
 ### Arguments
 
-| Argument | Type                                              | Required | Description                    | Details                       |
-| -------- | ------------------------------------------------- | -------- | ------------------------------ | ----------------------------- |
-| cmd      | [resolvers.command.type](#resolvers.command.type) | No       | cmd.permissions.self.args.cmd  | resolvers.command.validValues |
-| role     | [resolvers.role.type](#resolvers.role.type)       | No       | cmd.permissions.self.args.role |                               |
+| Argument | Type                  | Required | Description                                    | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------- | --------------------- | -------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [コマンド](#コマンド) | No       | 権限を設定するためのコマンド。                 | 以下のいずれかの値を使用:`addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [役職](#役職)         | No       | コマンドへのアクセスを許可または拒否する役職。 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ### Examples
 
@@ -1415,7 +1438,7 @@ cmd.permissions.self.description
 
 ## !ping
 
-cmd.ping.self.description
+ボットをピング
 
 ### Usage
 
@@ -1435,7 +1458,7 @@ cmd.ping.self.description
 
 ## !play
 
-cmd.play.self.description
+キューが空の場合は曲を再生し、それ以外の場合はキューの最後に曲を追加します。
 
 ### Usage
 
@@ -1449,16 +1472,16 @@ cmd.play.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description             | Details |
-| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
-| link     | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.play.self.args.link |         |
+| Argument | Type                  | Required | Description                      | Details |
+| -------- | --------------------- | -------- | -------------------------------- | ------- |
+| link     | [テキスト](#テキスト) | Yes      | 特定の曲または検索語へのリンク。 |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                                              | Description                  |
-| ------------------------ | --------- | ------------------------------------------------- | ---------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type)       | cmd.play.self.flags.platform |
-| &#x2011;&#x2011;next     | &#x2011;n | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.play.self.flags.next     |
+| Flag                     | Short     | Type                  | Description                                                                    |
+| ------------------------ | --------- | --------------------- | ------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;platform | &#x2011;p | [列挙型](#列挙型)     | 曲を再生するプラットフォームを選択してください。                               |
+| &#x2011;&#x2011;next     | &#x2011;n | [ブール値](#ブール値) | 設定されている場合、キューの最後に追加するのではなく、次にこの曲を再生します。 |
 
 ### Examples
 
@@ -1468,7 +1491,7 @@ cmd.play.self.description
 
 ## !prefix
 
-cmd.prefix.self.description
+ボットの現在のプレフィックスを表示します。
 
 ### Usage
 
@@ -1488,7 +1511,7 @@ cmd.prefix.self.description
 
 ## !premium
 
-cmd.premium.self.description
+InviteManager のプレミアムバージョンに関する情報。
 
 ### Usage
 
@@ -1503,9 +1526,9 @@ cmd.premium.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                  | Details                    |
-| -------- | ------------------------------------------- | -------- | ---------------------------- | -------------------------- |
-| action   | [resolvers.enum.type](#resolvers.enum.type) | No       | cmd.premium.self.args.action | resolvers.enum.validValues |
+| Argument | Type              | Required | Description                                                                                                                                             | Details                                                    |
+| -------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| action   | [列挙型](#列挙型) | No       | プレミアム情報はありません。 あなたのプレミアムステータスをチェックするために `check`。 このサーバーにプレミアムを使用するには `activate`してください。 | 以下のいずれかの値を使用:`Activate`, `Check`, `Deactivate` |
 
 ### Examples
 
@@ -1531,7 +1554,7 @@ cmd.premium.self.description
 
 ## !punishmentConfig
 
-cmd.punishmentConfig.self.description
+一定量の警告に達したときに罰を設定します。
 
 ### Usage
 
@@ -1545,11 +1568,11 @@ cmd.punishmentConfig.self.description
 
 ### Arguments
 
-| Argument   | Type                                            | Required | Description                               | Details                    |
-| ---------- | ----------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
-| punishment | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.punishmentConfig.self.args.punishment | resolvers.enum.validValues |
-| strikes    | [resolvers.number.type](#resolvers.number.type) | No       | cmd.punishmentConfig.self.args.strikes    |                            |
-| args       | [resolvers.string.type](#resolvers.string.type) | No       | cmd.punishmentConfig.self.args.args       |                            |
+| Argument   | Type                  | Required | Description                        | Details                                                           |
+| ---------- | --------------------- | -------- | ---------------------------------- | ----------------------------------------------------------------- |
+| punishment | [列挙型](#列挙型)     | No       | 使用する罰の種類                   | 以下のいずれかの値を使用:`ban`, `kick`, `mute`, `softban`, `warn` |
+| strikes    | [番号](#番号)         | No       | この罰が適用されるための警告の数。 |                                                                   |
+| args       | [テキスト](#テキスト) | No       | 議論は罰に渡された。               |                                                                   |
 
 ### Examples
 
@@ -1563,7 +1586,7 @@ cmd.punishmentConfig.self.description
 
 ## !purge
 
-cmd.purge.self.description
+チャネル内のメッセージを削除します。
 
 ### Usage
 
@@ -1577,10 +1600,10 @@ cmd.purge.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                  | Details |
-| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
-| quantity | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.purge.self.args.quantity |         |
-| user     | [resolvers.user.type](#resolvers.user.type)     | No       | cmd.purge.self.args.user     |         |
+| Argument | Type                  | Required | Description                            | Details |
+| -------- | --------------------- | -------- | -------------------------------------- | ------- |
+| quantity | [番号](#番号)         | Yes      | 削除するメッセージ数。                 |         |
+| user     | [ユーザー](#ユーザー) | No       | ユーザーのメッセージは削除されました。 |         |
 
 ### Examples
 
@@ -1590,7 +1613,7 @@ cmd.purge.self.description
 
 ## !purgeUntil
 
-cmd.purgeUntil.self.description
+指定されたメッセージまでチャネル内のメッセージを削除します。
 
 ### Usage
 
@@ -1607,9 +1630,9 @@ cmd.purgeUntil.self.description
 
 ### Arguments
 
-| Argument  | Type                                            | Required | Description                        | Details |
-| --------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
-| messageID | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.purgeUntil.self.args.messageID |         |
+| Argument  | Type                  | Required | Description                            | Details |
+| --------- | --------------------- | -------- | -------------------------------------- | ------- |
+| messageID | [テキスト](#テキスト) | Yes      | 最後のメッセージ ID は削除されました。 |         |
 
 ### Examples
 
@@ -1619,7 +1642,7 @@ cmd.purgeUntil.self.description
 
 ## !queue
 
-cmd.queue.self.description
+キュー内の曲を表示します。
 
 ### Usage
 
@@ -1639,7 +1662,7 @@ cmd.queue.self.description
 
 ## !ranks
 
-cmd.ranks.self.description
+すべてのランクを見る
 
 ### Usage
 
@@ -1654,9 +1677,9 @@ cmd.ranks.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description              | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
-| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.ranks.self.args.page |         |
+| Argument | Type          | Required | Description              | Details |
+| -------- | ------------- | -------- | ------------------------ | ------- |
+| page     | [番号](#番号) | No       | cmd.ranks.self.args.page |         |
 
 ### Examples
 
@@ -1684,11 +1707,11 @@ cmd.removeInvites.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                        | Details |
-| -------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.removeInvites.self.args.user   |         |
-| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.removeInvites.self.args.amount |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.removeInvites.self.args.reason |         |
+| Argument | Type                  | Required | Description                        | Details |
+| -------- | --------------------- | -------- | ---------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | Yes      | cmd.removeInvites.self.args.user   |         |
+| amount   | [番号](#番号)         | Yes      | cmd.removeInvites.self.args.amount |         |
+| reason   | [テキスト](#テキスト) | No       | cmd.removeInvites.self.args.reason |         |
 
 ### Examples
 
@@ -1710,7 +1733,7 @@ cmd.removeInvites.self.description
 
 ## !removeRank
 
-cmd.removeRank.self.description
+ランクを外します。
 
 ### Usage
 
@@ -1724,9 +1747,9 @@ cmd.removeRank.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                   | Details |
-| -------- | ------------------------------------------- | -------- | ----------------------------- | ------- |
-| rank     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.removeRank.self.args.rank |         |
+| Argument | Type          | Required | Description                  | Details |
+| -------- | ------------- | -------- | ---------------------------- | ------- |
+| rank     | [役職](#役職) | Yes      | ランクを削除したい対象です。 |         |
 
 ### Examples
 
@@ -1744,7 +1767,7 @@ cmd.removeRank.self.description
 
 ## !repeat
 
-cmd.repeat.self.description
+繰り返し再生する曲を設定します。
 
 ### Usage
 
@@ -1768,7 +1791,7 @@ cmd.repeat.self.description
 
 ## !restoreInvites
 
-cmd.restoreInvites.self.description
+以前にクリアした招待状をすべて復元します。
 
 ### Usage
 
@@ -1784,9 +1807,9 @@ cmd.restoreInvites.self.description
 
 ### Arguments
 
-| Argument | Type                                        | Required | Description                       | Details |
-| -------- | ------------------------------------------- | -------- | --------------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.restoreInvites.self.args.user |         |
+| Argument | Type                  | Required | Description                                                                           | Details |
+| -------- | --------------------- | -------- | ------------------------------------------------------------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | No       | ユーザーのすべての招待を復元する。 省略すると、すべてのユーザーの招待が復元されます。 |         |
 
 ### Examples
 
@@ -1808,7 +1831,7 @@ cmd.restoreInvites.self.description
 
 ## !resume
 
-cmd.resume.self.description
+現在の曲を再開します。
 
 ### Usage
 
@@ -1832,7 +1855,7 @@ cmd.resume.self.description
 
 ## !rewind
 
-cmd.rewind.self.description
+曲を巻き戻して最初から始めます。
 
 ### Usage
 
@@ -1856,7 +1879,7 @@ cmd.rewind.self.description
 
 ## !search
 
-cmd.search.self.description
+検索語を検索して、結果の 1 つを選択させます。
 
 ### Usage
 
@@ -1866,15 +1889,15 @@ cmd.search.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                 | Details |
-| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
-| search   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.search.self.args.search |         |
+| Argument | Type                  | Required | Description | Details |
+| -------- | --------------------- | -------- | ----------- | ------- |
+| search   | [テキスト](#テキスト) | Yes      | 検索語      |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                                        | Description                    |
-| ------------------------ | --------- | ------------------------------------------- | ------------------------------ |
-| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type) | cmd.search.self.flags.platform |
+| Flag                     | Short     | Type              | Description                                      |
+| ------------------------ | --------- | ----------------- | ------------------------------------------------ |
+| &#x2011;&#x2011;platform | &#x2011;p | [列挙型](#列挙型) | 曲を再生するプラットフォームを選択してください。 |
 
 ### Examples
 
@@ -1884,7 +1907,7 @@ cmd.search.self.description
 
 ## !seek
 
-cmd.seek.self.description
+曲の特定の部分にスキップします。
 
 ### Usage
 
@@ -1894,9 +1917,9 @@ cmd.seek.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                 | Details |
-| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
-| duration | [resolvers.number.type](#resolvers.number.type) | No       | cmd.seek.self.args.duration |         |
+| Argument | Type          | Required | Description                              | Details |
+| -------- | ------------- | -------- | ---------------------------------------- | ------- |
+| duration | [番号](#番号) | No       | 曲がスキップされる位置（最初から秒単位） |         |
 
 ### Examples
 
@@ -1910,7 +1933,7 @@ cmd.seek.self.description
 
 ## !setup
 
-cmd.setup.self.description
+ボットの設定や問題の確認（権限の不足など）を手助けする
 
 ### Usage
 
@@ -1937,7 +1960,7 @@ cmd.setup.self.description
 
 ## !skip
 
-cmd.skip.self.description
+現在の曲をスキップして、キュー内の次の曲を再生します。
 
 ### Usage
 
@@ -1951,9 +1974,9 @@ cmd.skip.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description               | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
-| amount   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.skip.self.args.amount |         |
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| amount   | [番号](#番号) | No       | いくつの曲がスキップされます。 |         |
 
 ### Examples
 
@@ -1967,7 +1990,7 @@ cmd.skip.self.description
 
 ## !softBan
 
-cmd.softBan.self.description
+サーバーからメンバーを BAN してから自動的に BAN 解除します。
 
 ### Usage
 
@@ -1981,16 +2004,16 @@ cmd.softBan.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                  | Details |
-| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
-| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.softBan.self.args.user   |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.softBan.self.args.reason |         |
+| Argument | Type                  | Required | Description               | Details |
+| -------- | --------------------- | -------- | ------------------------- | ------- |
+| user     | [メンバー](#メンバー) | Yes      | メンバーを BAN する       |         |
+| reason   | [テキスト](#テキスト) | No       | ユーザーが BAN された理由 |         |
 
 ### Flags
 
-| Flag                              | Short     | Type                                            | Description                              |
-| --------------------------------- | --------- | ----------------------------------------------- | ---------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.softBan.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type          | Description                              |
+| --------------------------------- | --------- | ------------- | ---------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | cmd.softBan.self.flags.deleteMessageDays |
 
 ### Examples
 
@@ -2000,7 +2023,7 @@ cmd.softBan.self.description
 
 ## !strike
 
-cmd.strike.self.description
+ユーザーにストライクを追加する
 
 ### Usage
 
@@ -2010,11 +2033,11 @@ cmd.strike.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                 | Details                    |
-| -------- | ----------------------------------------------- | -------- | --------------------------- | -------------------------- |
-| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.strike.self.args.member |                            |
-| type     | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.strike.self.args.type   | resolvers.enum.validValues |
-| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.strike.self.args.amount |                            |
+| Argument | Type                  | Required | Description                        | Details                                                                                                                                              |
+| -------- | --------------------- | -------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| member   | [メンバー](#メンバー) | Yes      | メンバーがストライキを受けました。 |                                                                                                                                                      |
+| type     | [列挙型](#列挙型)     | Yes      | 違反の種類                         | 以下のいずれかの値を使用:`allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
+| amount   | [番号](#番号)         | Yes      | 追加するストライクの量             |                                                                                                                                                      |
 
 ### Examples
 
@@ -2024,7 +2047,7 @@ cmd.strike.self.description
 
 ## !strikeConfig
 
-cmd.strikeConfig.self.description
+さまざまな違反に対して受け取った警告を設定します。
 
 ### Usage
 
@@ -2038,10 +2061,10 @@ cmd.strikeConfig.self.description
 
 ### Arguments
 
-| Argument  | Type                                            | Required | Description                          | Details                    |
-| --------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
-| violation | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.strikeConfig.self.args.violation | resolvers.enum.validValues |
-| strikes   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.strikeConfig.self.args.strikes   |                            |
+| Argument  | Type              | Required | Description  | Details                                                                                                                                              |
+| --------- | ----------------- | -------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| violation | [列挙型](#列挙型) | No       | 違反のタイプ | 以下のいずれかの値を使用:`allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
+| strikes   | [番号](#番号)     | No       | 警告の数     |                                                                                                                                                      |
 
 ### Examples
 
@@ -2055,7 +2078,7 @@ cmd.strikeConfig.self.description
 
 ## !subtractFakes
 
-cmd.subtractFakes.self.description
+すべてのユーザーから偽の招待を削除します。
 
 ### Usage
 
@@ -2081,7 +2104,7 @@ cmd.subtractFakes.self.description
 
 ## !subtractLeaves
 
-cmd.subtractLeaves.self.description
+すべてのユーザーの退出履歴を削除します。
 
 ### Usage
 
@@ -2107,7 +2130,7 @@ cmd.subtractLeaves.self.description
 
 ## !support
 
-cmd.support.self.description
+サポートサーバーへの招待リンクを入手してください。
 
 ### Usage
 
@@ -2127,7 +2150,7 @@ cmd.support.self.description
 
 ## !tryPremium
 
-cmd.tryPremium.self.description
+プレミアム版の InviteManager を期間限定で無料でお試しください。
 
 ### Usage
 
@@ -2152,7 +2175,7 @@ cmd.tryPremium.self.description
 
 ## !unban
 
-cmd.unban.self.description
+ユーザーの BAN を解除する
 
 ### Usage
 
@@ -2162,10 +2185,10 @@ cmd.unban.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                | Details |
-| -------- | ----------------------------------------------- | -------- | -------------------------- | ------- |
-| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.unban.self.args.user   |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.unban.self.args.reason |         |
+| Argument | Type                  | Required | Description                           | Details |
+| -------- | --------------------- | -------- | ------------------------------------- | ------- |
+| user     | [ユーザー](#ユーザー) | Yes      | BAN を解除すべきユーザー。            |         |
+| reason   | [テキスト](#テキスト) | No       | このユーザーの BAN が解除された理由。 |         |
 
 ### Examples
 
@@ -2175,7 +2198,7 @@ cmd.unban.self.description
 
 ## !unhoist
 
-cmd.unhoist.self.description
+すべてのメンバーの前にその名前の前に特殊文字を付けて文字を追加すると、メンバーリストの最後にそれらが表示されます。
 
 ### Usage
 
@@ -2199,7 +2222,7 @@ cmd.unhoist.self.description
 
 ## !unmute
 
-cmd.unmute.self.description
+ユーザーのミュートを解除する
 
 ### Usage
 
@@ -2209,9 +2232,9 @@ cmd.unmute.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description               | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
-| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.unmute.self.args.user |         |
+| Argument | Type                  | Required | Description                            | Details |
+| -------- | --------------------- | -------- | -------------------------------------- | ------- |
+| user     | [メンバー](#メンバー) | Yes      | ミュートを解除する必要があるユーザー。 |         |
 
 ### Examples
 
@@ -2221,7 +2244,7 @@ cmd.unmute.self.description
 
 ## !volume
 
-cmd.volume.self.description
+引数が渡された場合は音量を設定するか、現在の音量を表示します。
 
 ### Usage
 
@@ -2231,9 +2254,9 @@ cmd.volume.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description                 | Details |
-| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
-| volume   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.volume.self.args.volume |         |
+| Argument | Type          | Required | Description          | Details |
+| -------- | ------------- | -------- | -------------------- | ------- |
+| volume   | [番号](#番号) | No       | 音量が設定される値。 |         |
 
 ### Examples
 
@@ -2247,7 +2270,7 @@ cmd.volume.self.description
 
 ## !warn
 
-cmd.warn.self.description
+メンバーに警告する
 
 ### Usage
 
@@ -2257,9 +2280,9 @@ cmd.warn.self.description
 
 ### Arguments
 
-| Argument | Type                                            | Required | Description               | Details |
-| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
-| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.warn.self.args.member |         |
-| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.warn.self.args.reason |         |
+| Argument | Type                  | Required | Description                | Details |
+| -------- | --------------------- | -------- | -------------------------- | ------- |
+| member   | [メンバー](#メンバー) | Yes      | メンバーに警告する         |         |
+| reason   | [テキスト](#テキスト) | No       | メンバーが警告された理由。 |         |
 
 ### Examples
