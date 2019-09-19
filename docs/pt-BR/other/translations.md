@@ -1,4 +1,4 @@
-# other.translations.title
+# Translations
 
 other.translations.description
 

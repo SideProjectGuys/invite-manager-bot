@@ -1,92 +1,54 @@
 {
 	"modules": {
-		"url": "modules",
+		"title": "Modules",
 		"invites": {
-			"url": "invites",
-			"custom-messages": {
-				"url": "custom-messages"
-			},
-			"examples": {
-				"url": "examples",
-				"title": "modules.invites.examples.title"
-			},
-			"menuTitle": "Invite Management",
+			"title": "Invite Management",
 			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
-			"title": "modules.invites.title",
-			"overview": {
-				"title": "modules.invites.overview.title",
-				"url": "modules.invites.overview.url"
+			"examples": {
+				"title": "Examples"
 			},
-			"customMessage": {
-				"title": "modules.invites.customMessage.title",
-				"url": "modules.invites.customMessage.url",
-				"example": {
-					"title": "modules.invites.customMessage.example.title",
-					"url": "modules.invites.customMessage.example.url"
-				}
+			"overview": {
+				"title": "Overview"
 			},
 			"customMessages": {
-				"url": "modules.invites.customMessages.url"
+				"title": "Custom message"
 			}
 		},
 		"moderation": {
-			"url": "moderation",
+			"title": "Moderation",
+			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
 			"punishments": {
-				"url": "punishments",
-				"menuTitle": "modules.moderation.punishments.menuTitle",
-				"title": "modules.moderation.punishments.title"
+				"title": "Punishments"
 			},
 			"strikes": {
-				"url": "strikes",
-				"menuTitle": "modules.moderation.strikes.menuTitle",
-				"title": "modules.moderation.strikes.title"
-			},
-			"menuTitle": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](modules/moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
-			"title": "modules.moderation.title"
+				"title": "Strikes"
+			}
 		},
 		"music": {
-			"url": "music",
+			"title": "Music",
 			"overview": {
-				"url": "Overview",
-				"menuTitle": "modules.music.overview.menuTitle",
-				"title": "modules.music.overview.title"
-			},
-			"menuTitle": "Music",
-			"title": "modules.music.title"
-		},
-		"menuTitle": "Modules",
-		"title": "modules.title"
+				"title": "Overview"
+			}
+		}
 	},
 	"other": {
-		"url": "other",
+		"title": "Other",
 		"donating": {
-			"url": "donating",
-			"menuTitle": "Donating",
-			"title": "other.donating.title",
+			"title": "Donating",
 			"description": "other.donating.description",
 			"crypto": {
-				"title": "other.donating.crypto.title",
+				"title": "Crypto",
 				"description": "other.donating.crypto.description"
 			}
 		},
-		"open-source": {
-			"url": "open-source"
-		},
 		"roadmap": {
-			"url": "roadmap",
-			"menuTitle": "Roadmap",
-			"title": "other.roadmap.title"
+			"title": "Roadmap"
 		},
 		"support": {
-			"url": "support",
-			"menuTitle": "Support",
-			"title": "other.support.title"
+			"title": "Support"
 		},
 		"translations": {
-			"url": "translations",
-			"menuTitle": "Translations",
-			"title": "other.translations.title",
+			"title": "Translations",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -94,106 +56,77 @@
 			}
 		},
 		"webpanel": {
-			"url": "webpanel",
-			"menuTitle": "Webpanel",
-			"title": "other.webpanel.title",
+			"title": "Webpanel",
 			"description": "other.webpanel.description"
 		},
-		"menuTitle": "Other",
 		"changelog": {
-			"menuTitle": "Changelog",
-			"url": "changelog",
-			"title": "other.changelog.title"
+			"title": "Changelog"
 		},
 		"openSource": {
-			"menuTitle": "Open Source",
-			"url": "open-source",
-			"title": "other.openSource.title",
+			"title": "Open Source",
 			"description": "other.openSource.description",
 			"bot": {
-				"title": "other.openSource.bot.title",
+				"title": "Main Bot",
 				"description": "other.openSource.bot.description"
 			}
-		},
-		"title": "other.title"
-	},
-	"premium": {
-		"url": "premium",
-		"features": {
-			"url": "features",
-			"menuTitle": "Features",
-			"title": "premium.features.title"
-		},
-		"tiers": {
-			"url": "tiers",
-			"menuTitle": "premium.tiers.menuTitle",
-			"title": "premium.tiers.title"
-		},
-		"menuTitle": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](premium/tiers.md#pricing).",
-		"setup": {
-			"menuTitle": "Setup",
-			"url": "setup",
-			"title": "premium.setup.title"
-		},
-		"title": "premium.title",
-		"setting-up": {
-			"url": "premium.setting-up.url"
 		}
 	},
-	"README": {
-		"url": "README"
+	"premium": {
+		"title": "Premium",
+		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"features": {
+			"title": "Features"
+		},
+		"tiers": {
+			"title": "Tiers"
+		},
+		"setup": {
+			"title": "Setup"
+		}
 	},
 	"start": {
-		"url": "getting-started",
+		"title": "Getting Started",
+		"description": "To get started, just run the `!setup` command on your server.",
 		"alpha": {
-			"url": "alpha",
-			"menuTitle": "Alpha Bot",
+			"title": "Alpha Bot",
 			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here",
-			"title": "start.alpha.title"
+			"linkDescription": "Invite the InviteManager Alpha here"
 		},
 		"faq": {
-			"url": "faq",
-			"menuTitle": "FAQs",
-			"title": "start.faq.title",
+			"title": "FAQs",
 			"prefix": {
-				"title": "start.faq.prefix.title",
-				"description": "start.faq.prefix.description"
+				"title": "How do I change the prefix of the bot?",
+				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
 			},
 			"joinLeaveChannel": {
-				"title": "start.faq.joinLeaveChannel.title",
-				"description": "start.faq.joinLeaveChannel.description"
+				"title": "How do I set join and leave messages?",
+				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
 			},
 			"joinLeaveMessage": {
-				"title": "start.faq.joinLeaveMessage.title",
-				"description": "start.faq.joinLeaveMessage.description"
+				"title": "Can I customize the join and leave messages?",
+				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
 			},
 			"ranks": {
-				"title": "start.faq.ranks.title",
-				"description": "start.faq.ranks.description"
+				"title": "What are 'Ranks' and how can I use them?",
+				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
 			},
 			"channel": {
-				"title": "start.faq.channel.title",
-				"description": "start.faq.channel.description"
+				"title": "How can I disable the bot in all but one/some channels?",
+				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
 			},
 			"limitations": {
-				"title": "start.faq.limitations.title",
-				"description": "start.faq.limitations.description"
+				"title": "Limitation: No advanced tracking before the bot joins",
+				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
 			}
 		},
 		"pro": {
-			"url": "pro",
-			"menuTitle": "Pro Bot",
-			"title": "start.pro.title",
+			"title": "Pro Bot",
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"url": "quick-start",
-			"menuTitle": "Quick Start",
-			"title": "start.quick.title",
+			"title": "Quick Start",
 			"setup": {
-				"title": "start.quick.setup.title",
+				"title": "Setup",
 				"description": "start.quick.setup.description",
 				"first": {
 					"title": "start.quick.setup.first.title",
@@ -204,981 +137,15 @@
 					"description": "start.quick.setup.second.description"
 				}
 			}
-		},
-		"menuTitle": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
-		"title": "start.title"
-	},
-	"_sidebar": {
-		"url": "_sidebar"
+		}
 	},
 	"reference": {
-		"menuTitle": "Reference",
+		"title": "Reference",
 		"commands": {
-			"menuTitle": "Commands",
-			"url": "commands",
-			"title": "reference.commands.title"
+			"title": "Commands"
 		},
-		"url": "reference",
 		"settings": {
-			"menuTitle": "Configs / Settings",
-			"url": "settings",
-			"title": "reference.settings.title"
-		},
-		"title": "reference.title"
-	},
-	"settings": {
-		"prefix": {
-			"title": "settings.prefix.title",
-			"description": "settings.prefix.description"
-		},
-		"lang": {
-			"title": "settings.lang.title",
-			"description": "settings.lang.description"
-		},
-		"logChannel": {
-			"title": "settings.logChannel.title",
-			"description": "settings.logChannel.description"
-		},
-		"getUpdates": {
-			"title": "settings.getUpdates.title",
-			"description": "settings.getUpdates.description"
-		},
-		"channels": {
-			"title": "settings.channels.title",
-			"description": "settings.channels.description"
-		},
-		"ignoredChannels": {
-			"title": "settings.ignoredChannels.title",
-			"description": "settings.ignoredChannels.description"
-		},
-		"joinMessage": {
-			"title": "settings.joinMessage.title",
-			"description": "settings.joinMessage.description"
-		},
-		"joinMessageChannel": {
-			"title": "settings.joinMessageChannel.title",
-			"description": "settings.joinMessageChannel.description"
-		},
-		"leaveMessage": {
-			"title": "settings.leaveMessage.title",
-			"description": "settings.leaveMessage.description"
-		},
-		"leaveMessageChannel": {
-			"title": "settings.leaveMessageChannel.title",
-			"description": "settings.leaveMessageChannel.description"
-		},
-		"leaderboardStyle": {
-			"title": "settings.leaderboardStyle.title",
-			"description": "settings.leaderboardStyle.description"
-		},
-		"hideLeftMembersFromLeaderboard": {
-			"title": "settings.hideLeftMembersFromLeaderboard.title",
-			"description": "settings.hideLeftMembersFromLeaderboard.description"
-		},
-		"autoSubtractFakes": {
-			"title": "settings.autoSubtractFakes.title",
-			"description": "settings.autoSubtractFakes.description"
-		},
-		"autoSubtractLeaves": {
-			"title": "settings.autoSubtractLeaves.title",
-			"description": "settings.autoSubtractLeaves.description"
-		},
-		"autoSubtractLeaveThreshold": {
-			"title": "settings.autoSubtractLeaveThreshold.title",
-			"description": "settings.autoSubtractLeaveThreshold.description"
-		},
-		"rankAssignmentStyle": {
-			"title": "settings.rankAssignmentStyle.title",
-			"description": "settings.rankAssignmentStyle.description"
-		},
-		"rankAnnouncementChannel": {
-			"title": "settings.rankAnnouncementChannel.title",
-			"description": "settings.rankAnnouncementChannel.description"
-		},
-		"rankAnnouncementMessage": {
-			"title": "settings.rankAnnouncementMessage.title",
-			"description": "settings.rankAnnouncementMessage.description"
-		},
-		"captchaVerificationOnJoin": {
-			"title": "settings.captchaVerificationOnJoin.title",
-			"description": "settings.captchaVerificationOnJoin.description"
-		},
-		"captchaVerificationWelcomeMessage": {
-			"title": "settings.captchaVerificationWelcomeMessage.title",
-			"description": "settings.captchaVerificationWelcomeMessage.description"
-		},
-		"captchaVerificationSuccessMessage": {
-			"title": "settings.captchaVerificationSuccessMessage.title",
-			"description": "settings.captchaVerificationSuccessMessage.description"
-		},
-		"captchaVerificationFailedMessage": {
-			"title": "settings.captchaVerificationFailedMessage.title",
-			"description": "settings.captchaVerificationFailedMessage.description"
-		},
-		"captchaVerificationTimeout": {
-			"title": "settings.captchaVerificationTimeout.title",
-			"description": "settings.captchaVerificationTimeout.description"
-		},
-		"captchaVerificationLogEnabled": {
-			"title": "settings.captchaVerificationLogEnabled.title",
-			"description": "settings.captchaVerificationLogEnabled.description"
-		},
-		"autoModEnabled": {
-			"title": "settings.autoModEnabled.title",
-			"description": "settings.autoModEnabled.description"
-		},
-		"autoModModeratedChannels": {
-			"title": "settings.autoModModeratedChannels.title",
-			"description": "settings.autoModModeratedChannels.description"
-		},
-		"autoModModeratedRoles": {
-			"title": "settings.autoModModeratedRoles.title",
-			"description": "settings.autoModModeratedRoles.description"
-		},
-		"autoModIgnoredChannels": {
-			"title": "settings.autoModIgnoredChannels.title",
-			"description": "settings.autoModIgnoredChannels.description"
-		},
-		"autoModIgnoredRoles": {
-			"title": "settings.autoModIgnoredRoles.title",
-			"description": "settings.autoModIgnoredRoles.description"
-		},
-		"mutedRole": {
-			"title": "settings.mutedRole.title",
-			"description": "settings.mutedRole.description"
-		},
-		"autoModDisabledForOldMembers": {
-			"title": "settings.autoModDisabledForOldMembers.title",
-			"description": "settings.autoModDisabledForOldMembers.description"
-		},
-		"autoModDisabledForOldMembersThreshold": {
-			"title": "settings.autoModDisabledForOldMembersThreshold.title",
-			"description": "settings.autoModDisabledForOldMembersThreshold.description"
-		},
-		"autoModLogEnabled": {
-			"title": "settings.autoModLogEnabled.title",
-			"description": "settings.autoModLogEnabled.description"
-		},
-		"modLogChannel": {
-			"title": "settings.modLogChannel.title",
-			"description": "settings.modLogChannel.description"
-		},
-		"autoModDeleteBotMessage": {
-			"title": "settings.autoModDeleteBotMessage.title",
-			"description": "settings.autoModDeleteBotMessage.description"
-		},
-		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"title": "settings.autoModDeleteBotMessageTimeoutInSeconds.title",
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description"
-		},
-		"modPunishmentBanDeleteMessage": {
-			"title": "settings.modPunishmentBanDeleteMessage.title",
-			"description": "settings.modPunishmentBanDeleteMessage.description"
-		},
-		"modPunishmentKickDeleteMessage": {
-			"title": "settings.modPunishmentKickDeleteMessage.title",
-			"description": "settings.modPunishmentKickDeleteMessage.description"
-		},
-		"modPunishmentSoftbanDeleteMessage": {
-			"title": "settings.modPunishmentSoftbanDeleteMessage.title",
-			"description": "settings.modPunishmentSoftbanDeleteMessage.description"
-		},
-		"modPunishmentWarnDeleteMessage": {
-			"title": "settings.modPunishmentWarnDeleteMessage.title",
-			"description": "settings.modPunishmentWarnDeleteMessage.description"
-		},
-		"modPunishmentMuteDeleteMessage": {
-			"title": "settings.modPunishmentMuteDeleteMessage.title",
-			"description": "settings.modPunishmentMuteDeleteMessage.description"
-		},
-		"autoModInvitesEnabled": {
-			"title": "settings.autoModInvitesEnabled.title",
-			"description": "settings.autoModInvitesEnabled.description"
-		},
-		"autoModLinksEnabled": {
-			"title": "settings.autoModLinksEnabled.title",
-			"description": "settings.autoModLinksEnabled.description"
-		},
-		"autoModLinksWhitelist": {
-			"title": "settings.autoModLinksWhitelist.title",
-			"description": "settings.autoModLinksWhitelist.description"
-		},
-		"autoModLinksBlacklist": {
-			"title": "settings.autoModLinksBlacklist.title",
-			"description": "settings.autoModLinksBlacklist.description"
-		},
-		"autoModLinksFollowRedirects": {
-			"title": "settings.autoModLinksFollowRedirects.title",
-			"description": "settings.autoModLinksFollowRedirects.description"
-		},
-		"autoModWordsEnabled": {
-			"title": "settings.autoModWordsEnabled.title",
-			"description": "settings.autoModWordsEnabled.description"
-		},
-		"autoModWordsBlacklist": {
-			"title": "settings.autoModWordsBlacklist.title",
-			"description": "settings.autoModWordsBlacklist.description"
-		},
-		"autoModAllCapsEnabled": {
-			"title": "settings.autoModAllCapsEnabled.title",
-			"description": "settings.autoModAllCapsEnabled.description"
-		},
-		"autoModAllCapsMinCharacters": {
-			"title": "settings.autoModAllCapsMinCharacters.title",
-			"description": "settings.autoModAllCapsMinCharacters.description"
-		},
-		"autoModAllCapsPercentageCaps": {
-			"title": "settings.autoModAllCapsPercentageCaps.title",
-			"description": "settings.autoModAllCapsPercentageCaps.description"
-		},
-		"autoModDuplicateTextEnabled": {
-			"title": "settings.autoModDuplicateTextEnabled.title",
-			"description": "settings.autoModDuplicateTextEnabled.description"
-		},
-		"autoModDuplicateTextTimeframeInSeconds": {
-			"title": "settings.autoModDuplicateTextTimeframeInSeconds.title",
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description"
-		},
-		"autoModQuickMessagesEnabled": {
-			"title": "settings.autoModQuickMessagesEnabled.title",
-			"description": "settings.autoModQuickMessagesEnabled.description"
-		},
-		"autoModQuickMessagesNumberOfMessages": {
-			"title": "settings.autoModQuickMessagesNumberOfMessages.title",
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description"
-		},
-		"autoModQuickMessagesTimeframeInSeconds": {
-			"title": "settings.autoModQuickMessagesTimeframeInSeconds.title",
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description"
-		},
-		"autoModMentionUsersEnabled": {
-			"title": "settings.autoModMentionUsersEnabled.title",
-			"description": "settings.autoModMentionUsersEnabled.description"
-		},
-		"autoModMentionUsersMaxNumberOfMentions": {
-			"title": "settings.autoModMentionUsersMaxNumberOfMentions.title",
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description"
-		},
-		"autoModMentionRolesEnabled": {
-			"title": "settings.autoModMentionRolesEnabled.title",
-			"description": "settings.autoModMentionRolesEnabled.description"
-		},
-		"autoModMentionRolesMaxNumberOfMentions": {
-			"title": "settings.autoModMentionRolesMaxNumberOfMentions.title",
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description"
-		},
-		"autoModEmojisEnabled": {
-			"title": "settings.autoModEmojisEnabled.title",
-			"description": "settings.autoModEmojisEnabled.description"
-		},
-		"autoModEmojisMaxNumberOfEmojis": {
-			"title": "settings.autoModEmojisMaxNumberOfEmojis.title",
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description"
-		},
-		"autoModHoistEnabled": {
-			"title": "settings.autoModHoistEnabled.title",
-			"description": "settings.autoModHoistEnabled.description"
-		},
-		"musicVolume": {
-			"title": "settings.musicVolume.title",
-			"description": "settings.musicVolume.description"
-		},
-		"announceNextSong": {
-			"title": "settings.announceNextSong.title",
-			"description": "settings.announceNextSong.description"
-		},
-		"announcementVoice": {
-			"title": "settings.announcementVoice.title",
-			"description": "settings.announcementVoice.description"
-		},
-		"fadeMusicOnTalk": {
-			"title": "settings.fadeMusicOnTalk.title",
-			"description": "settings.fadeMusicOnTalk.description"
-		},
-		"fadeMusicEndDelay": {
-			"title": "settings.fadeMusicEndDelay.title",
-			"description": "settings.fadeMusicEndDelay.description"
-		},
-		"groups": {
-			"general": {
-				"title": "settings.groups.general.title"
-			},
-			"invites": {
-				"title": "settings.groups.invites.title",
-				"joins": {
-					"title": "settings.groups.invites.joins.title"
-				},
-				"leaves": {
-					"title": "settings.groups.invites.leaves.title"
-				},
-				"leaderboard": {
-					"title": "settings.groups.invites.leaderboard.title"
-				},
-				"fakes": {
-					"title": "settings.groups.invites.fakes.title"
-				},
-				"ranks": {
-					"title": "settings.groups.invites.ranks.title"
-				}
-			},
-			"moderation": {
-				"title": "settings.groups.moderation.title",
-				"captcha": {
-					"title": "settings.groups.moderation.captcha.title"
-				},
-				"general": {
-					"title": "settings.groups.moderation.general.title"
-				},
-				"logging": {
-					"title": "settings.groups.moderation.logging.title"
-				},
-				"invites": {
-					"title": "settings.groups.moderation.invites.title"
-				},
-				"links": {
-					"title": "settings.groups.moderation.links.title"
-				},
-				"bannedWords": {
-					"title": "settings.groups.moderation.bannedWords.title"
-				},
-				"caps": {
-					"title": "settings.groups.moderation.caps.title"
-				},
-				"duplicate": {
-					"title": "settings.groups.moderation.duplicate.title"
-				},
-				"spam": {
-					"title": "settings.groups.moderation.spam.title"
-				},
-				"mentions": {
-					"title": "settings.groups.moderation.mentions.title"
-				},
-				"emojis": {
-					"title": "settings.groups.moderation.emojis.title"
-				}
-			},
-			"music": {
-				"title": "settings.groups.music.title",
-				"general": {
-					"title": "settings.groups.music.general.title"
-				}
-			}
-		}
-	},
-	"resolvers": {
-		"boolean": {
-			"type": "resolvers.boolean.type",
-			"typeInfo": "resolvers.boolean.typeInfo"
-		},
-		"number": {
-			"type": "resolvers.number.type",
-			"typeInfo": "resolvers.number.typeInfo"
-		},
-		"enum": {
-			"type": "resolvers.enum.type",
-			"typeInfo": "resolvers.enum.typeInfo",
-			"validValues": "resolvers.enum.validValues"
-		},
-		"invitecode": {
-			"type": "resolvers.invitecode.type",
-			"typeInfo": "resolvers.invitecode.typeInfo"
-		},
-		"user": {
-			"type": "resolvers.user.type",
-			"typeInfo": "resolvers.user.typeInfo"
-		},
-		"role": {
-			"type": "resolvers.role.type",
-			"typeInfo": "resolvers.role.typeInfo"
-		},
-		"channel": {
-			"type": "resolvers.channel.type",
-			"typeInfo": "resolvers.channel.typeInfo"
-		},
-		"command": {
-			"type": "resolvers.command.type",
-			"typeInfo": "resolvers.command.typeInfo",
-			"validValues": "resolvers.command.validValues"
-		},
-		"string": {
-			"type": "resolvers.string.type",
-			"typeInfo": "resolvers.string.typeInfo"
-		},
-		"date": {
-			"type": "resolvers.date.type",
-			"typeInfo": "resolvers.date.typeInfo"
-		},
-		"duration": {
-			"type": "resolvers.duration.type",
-			"typeInfo": "resolvers.duration.typeInfo"
-		},
-		"settingsvalue": {
-			"type": "resolvers.settingsvalue.type"
-		},
-		"member": {
-			"type": "resolvers.member.type"
-		}
-	},
-	"cmd": {
-		"addInvites": {
-			"self": {
-				"description": "cmd.addInvites.self.description",
-				"args": {
-					"user": "cmd.addInvites.self.args.user",
-					"amount": "cmd.addInvites.self.args.amount",
-					"reason": "cmd.addInvites.self.args.reason"
-				}
-			}
-		},
-		"clearInvites": {
-			"self": {
-				"description": "cmd.clearInvites.self.description",
-				"flags": {
-					"date": "cmd.clearInvites.self.flags.date",
-					"clearBonus": "cmd.clearInvites.self.flags.clearBonus"
-				},
-				"args": {
-					"user": "cmd.clearInvites.self.args.user"
-				}
-			}
-		},
-		"createInvite": {
-			"self": {
-				"description": "cmd.createInvite.self.description",
-				"args": {
-					"name": "cmd.createInvite.self.args.name",
-					"channel": "cmd.createInvite.self.args.channel"
-				}
-			}
-		},
-		"fake": {
-			"self": {
-				"description": "cmd.fake.self.description",
-				"args": {
-					"page": "cmd.fake.self.args.page"
-				}
-			}
-		},
-		"info": {
-			"self": {
-				"description": "cmd.info.self.description",
-				"args": {
-					"user": "cmd.info.self.args.user",
-					"details": "cmd.info.self.args.details",
-					"page": "cmd.info.self.args.page"
-				}
-			}
-		},
-		"inviteCodes": {
-			"self": {
-				"description": "cmd.inviteCodes.self.description"
-			}
-		},
-		"inviteDetails": {
-			"self": {
-				"description": "cmd.inviteDetails.self.description",
-				"args": {
-					"user": "cmd.inviteDetails.self.args.user"
-				}
-			}
-		},
-		"invites": {
-			"self": {
-				"description": "cmd.invites.self.description",
-				"args": {
-					"user": "cmd.invites.self.args.user"
-				}
-			}
-		},
-		"leaderboard": {
-			"self": {
-				"description": "cmd.leaderboard.self.description",
-				"flags": {
-					"compare": "cmd.leaderboard.self.flags.compare"
-				},
-				"args": {
-					"duration": "cmd.leaderboard.self.args.duration",
-					"page": "cmd.leaderboard.self.args.page"
-				}
-			}
-		},
-		"removeInvites": {
-			"self": {
-				"description": "cmd.removeInvites.self.description",
-				"args": {
-					"user": "cmd.removeInvites.self.args.user",
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason"
-				}
-			}
-		},
-		"restoreInvites": {
-			"self": {
-				"description": "cmd.restoreInvites.self.description",
-				"args": {
-					"user": "cmd.restoreInvites.self.args.user"
-				}
-			}
-		},
-		"subtractFakes": {
-			"self": {
-				"description": "cmd.subtractFakes.self.description"
-			}
-		},
-		"subtractLeaves": {
-			"self": {
-				"description": "cmd.subtractLeaves.self.description"
-			}
-		},
-		"addRank": {
-			"self": {
-				"description": "cmd.addRank.self.description",
-				"args": {
-					"role": "cmd.addRank.self.args.role",
-					"invites": "cmd.addRank.self.args.invites",
-					"info": "cmd.addRank.self.args.info"
-				}
-			}
-		},
-		"fixRanks": {
-			"self": {
-				"description": "cmd.fixRanks.self.description"
-			}
-		},
-		"ranks": {
-			"self": {
-				"description": "cmd.ranks.self.description",
-				"args": {
-					"page": "cmd.ranks.self.args.page"
-				}
-			}
-		},
-		"removeRank": {
-			"self": {
-				"description": "cmd.removeRank.self.description",
-				"args": {
-					"rank": "cmd.removeRank.self.args.rank"
-				}
-			}
-		},
-		"botConfig": {
-			"self": {
-				"description": "cmd.botConfig.self.description",
-				"args": {
-					"key": "cmd.botConfig.self.args.key",
-					"value": "cmd.botConfig.self.args.value"
-				}
-			}
-		},
-		"config": {
-			"self": {
-				"description": "cmd.config.self.description",
-				"args": {
-					"key": "cmd.config.self.args.key",
-					"value": "cmd.config.self.args.value"
-				}
-			}
-		},
-		"interactiveConfig": {
-			"self": {
-				"description": "cmd.interactiveConfig.self.description"
-			}
-		},
-		"inviteCodeConfig": {
-			"self": {
-				"description": "cmd.inviteCodeConfig.self.description",
-				"args": {
-					"key": "cmd.inviteCodeConfig.self.args.key",
-					"inviteCode": "cmd.inviteCodeConfig.self.args.inviteCode",
-					"value": "cmd.inviteCodeConfig.self.args.value"
-				}
-			}
-		},
-		"memberConfig": {
-			"self": {
-				"description": "cmd.memberConfig.self.description",
-				"args": {
-					"key": "cmd.memberConfig.self.args.key",
-					"user": "cmd.memberConfig.self.args.user",
-					"value": "cmd.memberConfig.self.args.value"
-				}
-			}
-		},
-		"permissions": {
-			"self": {
-				"description": "cmd.permissions.self.description",
-				"args": {
-					"cmd": "cmd.permissions.self.args.cmd",
-					"role": "cmd.permissions.self.args.role"
-				}
-			}
-		},
-		"botInfo": {
-			"self": {
-				"description": "cmd.botInfo.self.description"
-			}
-		},
-		"credits": {
-			"self": {
-				"description": "cmd.credits.self.description"
-			}
-		},
-		"getBot": {
-			"self": {
-				"description": "cmd.getBot.self.description"
-			}
-		},
-		"help": {
-			"self": {
-				"description": "cmd.help.self.description",
-				"args": {
-					"command": "cmd.help.self.args.command"
-				}
-			}
-		},
-		"members": {
-			"self": {
-				"description": "cmd.members.self.description"
-			}
-		},
-		"ping": {
-			"self": {
-				"description": "cmd.ping.self.description"
-			}
-		},
-		"prefix": {
-			"self": {
-				"description": "cmd.prefix.self.description"
-			}
-		},
-		"setup": {
-			"self": {
-				"description": "cmd.setup.self.description"
-			}
-		},
-		"support": {
-			"self": {
-				"description": "cmd.support.self.description"
-			}
-		},
-		"export": {
-			"self": {
-				"description": "cmd.export.self.description",
-				"args": {
-					"type": "cmd.export.self.args.type"
-				}
-			}
-		},
-		"premium": {
-			"self": {
-				"description": "cmd.premium.self.description",
-				"args": {
-					"action": "cmd.premium.self.args.action"
-				}
-			}
-		},
-		"tryPremium": {
-			"self": {
-				"description": "cmd.tryPremium.self.description"
-			}
-		},
-		"ban": {
-			"self": {
-				"description": "cmd.ban.self.description",
-				"flags": {
-					"deleteMessageDays": "cmd.ban.self.flags.deleteMessageDays"
-				},
-				"args": {
-					"user": "cmd.ban.self.args.user",
-					"reason": "cmd.ban.self.args.reason"
-				}
-			}
-		},
-		"caseDelete": {
-			"self": {
-				"description": "cmd.caseDelete.self.description",
-				"args": {
-					"caseNumber": "cmd.caseDelete.self.args.caseNumber",
-					"reason": "cmd.caseDelete.self.args.reason"
-				}
-			}
-		},
-		"caseView": {
-			"self": {
-				"description": "cmd.caseView.self.description",
-				"args": {
-					"caseNumber": "cmd.caseView.self.args.caseNumber"
-				}
-			}
-		},
-		"check": {
-			"self": {
-				"description": "cmd.check.self.description",
-				"args": {
-					"user": "cmd.check.self.args.user"
-				}
-			}
-		},
-		"clean": {
-			"self": {
-				"description": "cmd.clean.self.description",
-				"args": {
-					"type": "cmd.clean.self.args.type",
-					"numberOfMessages": "cmd.clean.self.args.numberOfMessages"
-				}
-			}
-		},
-		"cleanShort": {
-			"self": {
-				"description": "cmd.cleanShort.self.description",
-				"args": {
-					"maxTextLength": "cmd.cleanShort.self.args.maxTextLength",
-					"numberOfMessages": "cmd.cleanShort.self.args.numberOfMessages"
-				}
-			}
-		},
-		"cleanText": {
-			"self": {
-				"description": "cmd.cleanText.self.description",
-				"args": {
-					"text": "cmd.cleanText.self.args.text",
-					"numberOfMessages": "cmd.cleanText.self.args.numberOfMessages"
-				}
-			}
-		},
-		"kick": {
-			"self": {
-				"description": "cmd.kick.self.description",
-				"args": {
-					"member": "cmd.kick.self.args.member",
-					"reason": "cmd.kick.self.args.reason"
-				}
-			}
-		},
-		"mute": {
-			"self": {
-				"description": "cmd.mute.self.description",
-				"args": {
-					"user": "cmd.mute.self.args.user",
-					"reason": "cmd.mute.self.args.reason"
-				}
-			}
-		},
-		"punishmentConfig": {
-			"self": {
-				"description": "cmd.punishmentConfig.self.description",
-				"args": {
-					"punishment": "cmd.punishmentConfig.self.args.punishment",
-					"strikes": "cmd.punishmentConfig.self.args.strikes",
-					"args": "cmd.punishmentConfig.self.args.args"
-				}
-			}
-		},
-		"purge": {
-			"self": {
-				"description": "cmd.purge.self.description",
-				"args": {
-					"quantity": "cmd.purge.self.args.quantity",
-					"user": "cmd.purge.self.args.user"
-				}
-			}
-		},
-		"purgeUntil": {
-			"self": {
-				"description": "cmd.purgeUntil.self.description",
-				"args": {
-					"messageID": "cmd.purgeUntil.self.args.messageID"
-				}
-			}
-		},
-		"softBan": {
-			"self": {
-				"description": "cmd.softBan.self.description",
-				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
-				},
-				"args": {
-					"user": "cmd.softBan.self.args.user",
-					"reason": "cmd.softBan.self.args.reason"
-				}
-			}
-		},
-		"strike": {
-			"self": {
-				"description": "cmd.strike.self.description",
-				"args": {
-					"member": "cmd.strike.self.args.member",
-					"type": "cmd.strike.self.args.type",
-					"amount": "cmd.strike.self.args.amount"
-				}
-			}
-		},
-		"strikeConfig": {
-			"self": {
-				"description": "cmd.strikeConfig.self.description",
-				"args": {
-					"violation": "cmd.strikeConfig.self.args.violation",
-					"strikes": "cmd.strikeConfig.self.args.strikes"
-				}
-			}
-		},
-		"unban": {
-			"self": {
-				"description": "cmd.unban.self.description",
-				"args": {
-					"user": "cmd.unban.self.args.user",
-					"reason": "cmd.unban.self.args.reason"
-				}
-			}
-		},
-		"unhoist": {
-			"self": {
-				"description": "cmd.unhoist.self.description"
-			}
-		},
-		"unmute": {
-			"self": {
-				"description": "cmd.unmute.self.description",
-				"args": {
-					"user": "cmd.unmute.self.args.user"
-				}
-			}
-		},
-		"warn": {
-			"self": {
-				"description": "cmd.warn.self.description",
-				"args": {
-					"member": "cmd.warn.self.args.member",
-					"reason": "cmd.warn.self.args.reason"
-				}
-			}
-		},
-		"disconnect": {
-			"self": {
-				"description": "cmd.disconnect.self.description"
-			}
-		},
-		"lyrics": {
-			"self": {
-				"description": "cmd.lyrics.self.description",
-				"flags": {
-					"live": "cmd.lyrics.self.flags.live"
-				}
-			}
-		},
-		"mashup": {
-			"self": {
-				"description": "cmd.mashup.self.description",
-				"args": {
-					"videos": "cmd.mashup.self.args.videos"
-				}
-			}
-		},
-		"nowPlaying": {
-			"self": {
-				"description": "cmd.nowPlaying.self.description",
-				"flags": {
-					"pin": "cmd.nowPlaying.self.flags.pin"
-				}
-			}
-		},
-		"pause": {
-			"self": {
-				"description": "cmd.pause.self.description"
-			}
-		},
-		"play": {
-			"self": {
-				"description": "cmd.play.self.description",
-				"flags": {
-					"platform": "cmd.play.self.flags.platform",
-					"next": "cmd.play.self.flags.next"
-				},
-				"args": {
-					"link": "cmd.play.self.args.link"
-				}
-			}
-		},
-		"queue": {
-			"self": {
-				"description": "cmd.queue.self.description"
-			}
-		},
-		"repeat": {
-			"self": {
-				"description": "cmd.repeat.self.description"
-			}
-		},
-		"resume": {
-			"self": {
-				"description": "cmd.resume.self.description"
-			}
-		},
-		"rewind": {
-			"self": {
-				"description": "cmd.rewind.self.description"
-			}
-		},
-		"search": {
-			"self": {
-				"description": "cmd.search.self.description",
-				"flags": {
-					"platform": "cmd.search.self.flags.platform"
-				},
-				"args": {
-					"search": "cmd.search.self.args.search"
-				}
-			}
-		},
-		"seek": {
-			"self": {
-				"description": "cmd.seek.self.description",
-				"args": {
-					"duration": "cmd.seek.self.args.duration"
-				}
-			}
-		},
-		"skip": {
-			"self": {
-				"description": "cmd.skip.self.description",
-				"args": {
-					"amount": "cmd.skip.self.args.amount"
-				}
-			}
-		},
-		"volume": {
-			"self": {
-				"description": "cmd.volume.self.description",
-				"args": {
-					"volume": "cmd.volume.self.args.volume"
-				}
-			}
-		},
-		"graph": {
-			"self": {
-				"description": "cmd.graph.self.description",
-				"args": {
-					"type": "cmd.graph.self.args.type",
-					"duration": "cmd.graph.self.args.duration"
-				}
-			}
-		},
-		"makeMentionable": {
-			"self": {
-				"description": "cmd.makeMentionable.self.description",
-				"args": {
-					"role": "cmd.makeMentionable.self.args.role"
-				}
-			}
-		},
-		"mentionRole": {
-			"self": {
-				"description": "cmd.mentionRole.self.description",
-				"args": {
-					"role": "cmd.mentionRole.self.args.role"
-				}
-			}
+			"title": "Configs / Settings"
 		}
 	}
 }

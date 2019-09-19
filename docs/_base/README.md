@@ -2,8 +2,8 @@
 
 ## §{reference.title}
 
-- [§{reference.commands.title}](/§{lang}/§{reference.url}/§{reference.commands.url}.md)
-- [§{reference.settings.title}](/§{lang}/§{reference.url}/§{reference.settings.url}.md)
+- [§{reference.commands.title}](/§{lang}/reference/commands.md)
+- [§{reference.settings.title}](/§{lang}/reference/settings.md)
 
 ## §{start.title}
 
@@ -15,8 +15,8 @@
 
 ### §{modules.moderation.title}
 
-§{modules.moderation.description:["linkStrikes":"/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.strikes.url}.md","linkPunishments":"/§{lang}/§{modules.url}/§{modules.moderation.url}/§{modules.moderation.punishments.url}.md"]}
+§{modules.moderation.description:["linkStrikes":"/§{lang}/modules/moderation/strikes.md","linkPunishments":"/§{lang}/modules/moderation/punishments.md"]}
 
 ## §{premium.title}
 
-§{premium.description:["link":"/§{lang}/§{premium.url}/§{premium.features.url}.md"]}
+§{premium.description:["link":"/§{lang}/premium/features.md"]}

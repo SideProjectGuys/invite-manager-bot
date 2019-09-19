@@ -1,25 +1,43 @@
-# start.faq.title}
+# FAQs}
 
-## start.faq.prefix.title
+## bot のプレフィックスを変更するにはどうすればよいですか？
 
-start.faq.prefix.description
+プレフィックスを変更するには `!config prefix -`を実行します。
 
-## start.faq.joinLeaveChannel.title
+現在のプレフィックスがわからない場合は`@InviteManager config prefix` を実行してプレフィックスを確認できます。
 
-start.faq.joinLeaveChannel.description
+## 参加および退出のメッセージを設定するにはどうすればよいですか？
 
-## start.faq.joinLeaveMessage.title
+チャンネルを設定するには
 
-start.faq.joinLeaveMessage.description
+`!config joinMessageChannel #channel`
 
-## start.faq.ranks.title
+または
 
-start.faq.ranks.description
+`!config leaveMessageChannel #channel`.
 
-## start.faq.channel.title
+を実行すると新しい参加と退出がそのチャンネルに投稿されます。
 
-start.faq.channel.description
+## 参加と退出メッセージをカスタマイズできますか？
 
-## start.faq.limitations.title
+もちろん！ たとえば、次のようにしてメッセージを変更できます
 
-start.faq.limitations.description
+`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`
+
+または
+
+`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
+
+利用可能な多くのプレースホルダーがあります。 完全なリストは'[Custom Messages](/ja/modules/invites/custom-messages.md)' ページで確認できます。
+
+## 'ランク' とは何ですか？どのように使用できますか？
+
+ランクは、使われた招待が一定数に達したときに役職を人々に割り当てるために使用されます。例えば `@Beginner` という役職があり、その役職に 5 人以上の招待がある人を追加したい場合は、このようにランクを作成する必要があります： `!add-rank @Beginner 5 (必要ならここに説明を入力できます)`。招待者された人が 5 人いるとすぐにその役職が自動的に追加されます！
+
+## 1 つまたはいくつかのチャンネルで bot を無効にするにはどうすればよいですか？
+
+bot に返信させたくないチャンネルのメッセージの読み取り許可を取り除きます。
+
+## 制限：ボットが参加する前に高度な追跡はありません
+
+高度な追跡（誰が誰を招待したか）は、bot を招待した後にのみ機能します。 bot は、招待しても全員の招待がカウントされることを引き続き認識します。心配しないでください。 追加情報のみが欠落しており、ボットを招待した後に参加したメンバーについてのみ収集できます。

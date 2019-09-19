@@ -1,57 +1,39 @@
 {
-	"_sidebar": {
-		"url": "_sidebar"
-	},
-	"README": {
-		"url": "README"
-	},
 	"modules": {
-		"url": "modules",
 		"title": "Modules",
 		"invites": {
-			"url": "invites",
 			"title": "Invite Management",
 			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
 			"examples": {
-				"url": "examples",
 				"title": "Examples"
 			},
 			"overview": {
-				"url": "overview",
 				"title": "Overview"
 			},
 			"customMessages": {
-				"url": "custom-message",
 				"title": "Custom message"
 			}
 		},
 		"moderation": {
-			"url": "moderation",
 			"title": "Moderation",
 			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
 			"punishments": {
-				"url": "punishments",
 				"title": "Punishments"
 			},
 			"strikes": {
-				"url": "strikes",
 				"title": "Strikes"
 			}
 		},
 		"music": {
-			"url": "music",
 			"title": "Music",
 			"overview": {
-				"url": "overview",
 				"title": "Overview"
 			}
 		}
 	},
 	"other": {
-		"url": "other",
 		"title": "Other",
 		"donating": {
-			"url": "donating",
 			"title": "Donating",
 			"description": "other.donating.description",
 			"crypto": {
@@ -60,15 +42,12 @@
 			}
 		},
 		"roadmap": {
-			"url": "roadmap",
 			"title": "Roadmap"
 		},
 		"support": {
-			"url": "support",
 			"title": "Support"
 		},
 		"translations": {
-			"url": "translations",
 			"title": "Translations",
 			"description": "other.translations.description",
 			"help": {
@@ -77,16 +56,13 @@
 			}
 		},
 		"webpanel": {
-			"url": "webpanel",
 			"title": "Webpanel",
 			"description": "other.webpanel.description"
 		},
 		"changelog": {
-			"url": "changelog",
 			"title": "Changelog"
 		},
 		"openSource": {
-			"url": "open-source",
 			"title": "Open Source",
 			"description": "other.openSource.description",
 			"bot": {
@@ -96,34 +72,27 @@
 		}
 	},
 	"premium": {
-		"url": "premium",
 		"title": "Premium",
 		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
 		"features": {
-			"url": "features",
 			"title": "Features"
 		},
 		"tiers": {
-			"url": "tiers",
 			"title": "Tiers"
 		},
 		"setup": {
-			"url": "setup",
 			"title": "Setup"
 		}
 	},
 	"start": {
-		"url": "getting-started",
 		"title": "Getting Started",
 		"description": "To get started, just run the `!setup` command on your server.",
 		"alpha": {
-			"url": "alpha",
 			"title": "Alpha Bot",
 			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
 			"linkDescription": "Invite the InviteManager Alpha here"
 		},
 		"faq": {
-			"url": "faq",
 			"title": "FAQs",
 			"prefix": {
 				"title": "How do I change the prefix of the bot?",
@@ -151,12 +120,10 @@
 			}
 		},
 		"pro": {
-			"url": "pro",
 			"title": "Pro Bot",
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"url": "quick-start",
 			"title": "Quick Start",
 			"setup": {
 				"title": "Setup",
@@ -173,14 +140,11 @@
 		}
 	},
 	"reference": {
-		"url": "reference",
 		"title": "Reference",
 		"commands": {
-			"url": "commands",
 			"title": "Commands"
 		},
 		"settings": {
-			"url": "settings",
 			"title": "Configs / Settings"
 		}
 	}

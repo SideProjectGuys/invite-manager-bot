@@ -32,8 +32,8 @@
 				"description": "メンバーに招待を追加(又は削除)します。"
 			},
 			"zero": "招待を0件追加しても意味がありません...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "指定した数が大きすぎます。",
+			"numberTooSmall": "指定した数が小さすぎます。"
 		},
 		"addRank": {
 			"created": "ランク役職が追加されました: {{{ role }}} 必要な招待数は{{ invites }}で、次の説明を追加しました: {{ description }}",
@@ -61,7 +61,7 @@
 				},
 				"description": "サーバーからメンバーをBANします。",
 				"flags": {
-					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+					"deleteMessageDays": "BANしたユーザーのメッセージを指定した日数分を削除します"
 				}
 			},
 			"canNotSoftBan": "cmd.ban.canNotSoftBan"
@@ -181,7 +181,7 @@
 			},
 			"text": "{{ amount }}のメッセージを削除しました。\nこのメッセージは5秒後に自動的に削除されます。",
 			"title": "削除されたメッセージ",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"textReactions": "リアクションを含む {{ amount }} メッセージを削除しました。"
 		},
 		"cleanShort": {
 			"self": {
@@ -269,7 +269,7 @@
 			"developers": "開発者",
 			"moderators": "モデレーター",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "BOTの開発者と貢献者を表示します。"
 			},
 			"staff": "スタッフ",
 			"translators": "翻訳者"
@@ -469,7 +469,7 @@
 			"current": {
 				"clear": "クリアするには `{{prefix}} inviteCodeConfig {{key}} {{code}} none`を使います。",
 				"notSet": "この招待コード設定は現在**設定されていません**。\n\n設定するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使います。",
-				"text": "This invite code config is currently set.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} default` to reset it to the default.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` to clear it.",
+				"text": "この招待リンク設定は現在設定されています。\n\n変更するには `{{prefix}} inviteCodeConfig {{key}} {{code}} <value>`を使ってください。\nデフォルトに戻すには `{{prefix}} inviteCodeConfig {{key}} {{code}} default`を使います。\nクリアするには、 `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\`を使用してください。",
 				"title": "現在の値"
 			},
 			"keys": {
@@ -495,7 +495,7 @@
 			},
 			"text": "個々の招待リンクの設定をします。",
 			"title": "招待リンク設定",
-			"noneSet": "No configs set!"
+			"noneSet": "設定がセットされていません。"
 		},
 		"inviteCodes": {
 			"dmSent": "あなたのすべての招待コードをあなたにDMを送りました。",
@@ -624,7 +624,7 @@
 			},
 			"current": {
 				"notSet": "このメンバー設定は現在**設定されていません**。\n\n設定するには `{{prefix}} memberConfig {{key}} {{username}}<value>`を使います。",
-				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
+				"text": "このメンバー設定は現在設定されています。\n\n変更するには `{{ prefix }}memberConfig {{ key }} {{ username }} <value>`を使います。\nデフォルトにリセットするには `{{ prefix }}memberConfig {{ key }} {{ username }} default`を使います。\nクリアするには `{{ prefix }}memberConfig {{ key }} {{ username }} none\\`を使用してください。",
 				"title": "現在の値"
 			},
 			"keys": {
@@ -791,7 +791,7 @@
 				"args": {
 					"member": "ユーザーのメッセージが削除されました",
 					"quantity": "削除するメッセージ数。",
-					"user": "User whose messages are deleted."
+					"user": "ユーザーのメッセージは削除されました。"
 				},
 				"description": "チャネル内のメッセージを削除します。"
 			},
@@ -976,8 +976,8 @@
 			"error": "次のエラーのため、ユーザーのBANを解除できませんでした:{{{ error }}}"
 		},
 		"unhoist": {
-			"done": "**Completed!**\n\nProcessed: {{ processed }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}\n",
-			"processing": "Processing, this might take a while...\n\nProcessed: {{ processed }}/{{ total }}\n**Changed: {{ changed }}**\nExcluded: {{ excluded }}\nErrored: {{ errored }}",
+			"done": "**完成しました！**\n\n処理済み: {{ processed }}\n**変更されました: {{ changed }}**\n除外されました: {{ excluded }}\nエラーです: {{ errored }}\n",
+			"processing": "処理しています。これにはしばらく時間がかかる場合があります...\n\n処理済み: {{ processed }}/{{ total }}\n**変更されました: {{ changed }}**\n除外されました: {{ excluded }}\nエラーです: {{ errored }}",
 			"self": {
 				"description": "すべてのメンバーの前にその名前の前に特殊文字を付けて文字を追加すると、メンバーリストの最後にそれらが表示されます。"
 			},
@@ -1020,8 +1020,8 @@
 					"live": "設定すると、歌詞はその曲の現在時刻と同期します。"
 				}
 			},
-			"notFound": "No lyrics found for this song!",
-			"notSupported": "The lyrics command is not supported on {{ platform }}."
+			"notFound": "この曲の歌詞は見つかりませんでした！",
+			"notSupported": "この歌詞コマンドは {{ platform }}でサポートされていません。"
 		},
 		"mashup": {
 			"self": {
@@ -1118,7 +1118,7 @@
 			}
 		},
 		"fixRanks": {
-			"done": "Done fixing ranks.",
+			"done": "ランクの修正が完了しました。",
 			"self": {
 				"description": "cmd.fixRanks.self.description"
 			}
@@ -1156,9 +1156,9 @@
 		"rateLimit": "ちょっと待って！ {{cooldown}}秒間待ってからもう一度お試しください。",
 		"role": "このコマンドを使用する権限がありません。\n次のいずれかの役職が必要です。{{{roles}}}",
 		"viewAuditLogs": "サーバーログの表示",
-		"manageMessages": "Manage Messages",
-		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+		"manageMessages": "メッセージの管理",
+		"readMessageHistory": "メッセージの履歴を見る",
+		"missing": "InviteManagerは{{{ channel }}}の{{{ permissions }}}許可がありません"
 	},
 	"prompt": {
 		"canceled": "キャンセルしました。"
@@ -1167,13 +1167,13 @@
 		"boolean": {
 			"invalid": "有効なyes / noではありません。",
 			"type": "ブール値",
-			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
+			"typeInfo": "この引数は、`true` または `false`を要求しています。 `yes`と `no`使用できます。"
 		},
 		"channel": {
 			"multiple": "複数の一致するチャンネルが見つかりました。{{{ channels }}}",
 			"notFound": "チャンネルが見つかりませんでした。",
 			"type": "チャンネル",
-			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
+			"typeInfo": "この引数はDiscordチャンネルを想定しています。 次のいずれかの方法を使用して、チャンネルを要求できます:\n\n- チャンネルのメンション:`#general`\n- IDを使用: `409846838129197057`\n- 名前を使用: `general`\n- 名前にスペースがある場合は引用符を使用します: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "複数のコマンドが見つかりました。{{{ commands }}}",
@@ -1186,7 +1186,7 @@
 			"invalid": "不正な値です。",
 			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
 			"type": "列挙型",
-			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
+			"typeInfo": "この引数は、有効な値の特定のセットからの値を要求します。\n\n> 有効な値はコマンドによって異なります。コマンドと列挙型の有効な値に関する詳細情報を取得するには、`!help<command>` (eg. `!help addRank`) と使用してください。"
 		},
 		"invalid": "`{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}の値が無効です",
 		"member": {
@@ -1198,23 +1198,23 @@
 		"number": {
 			"invalid": "不正な数です。",
 			"type": "番号",
-			"typeInfo": "This arguments expects a number"
+			"typeInfo": "この引数には数値が必要です"
 		},
 		"role": {
 			"multiple": "複数の役職が見つかりました。 {{{ roles }}}",
 			"notFound": "役職は見つかりませんでした。",
 			"type": "役職",
-			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
+			"typeInfo": "この引数は、Discord のRoleを想定しています。 次のいずれかの方法を使用して、Roleを指定できます。\n\n- roleをメンション: `@Admin`\n- IDを使用: `102785693046026240`\n- 名前を使用: `Admin`\n- 名前にスペースがある場合は引用符を使用します: `\"Admin with a space\"`"
 		},
 		"user": {
 			"multiple": "複数の一致するユーザーが見つかりました。{{{ user }}}",
 			"notFound": "ユーザーが見つかりませんでした。",
 			"type": "ユーザー",
-			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
+			"typeInfo": "この引数はDiscordユーザーを想定しています。 次のいずれかの方法を使用して、ユーザーに指定できます:\n\n-ユーザーをメンション: `@Valandur`\n- 彼らのIDを使用: `102785693046026240`\n- 彼らの名前を使用: `Valandur`\n- 名前と識別名を使用: `Valandur#3581`\n- 名前にスペースが含まれる場合は引用符を使用します: `\"Valandur with a space\"`"
 		},
 		"string": {
 			"type": "テキスト",
-			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
+			"typeInfo": "この引数には、任意のテキストが必要です。 スペースを含むテキストには、引用符(`\"Text with quotes\"`) を使用できます。\n\n> テキストが最後の引数である場合、引用符を使用する必要はありません。"
 		},
 		"settingsvalue": {
 			"type": "値"
@@ -1229,7 +1229,7 @@
 		},
 		"invitecode": {
 			"type": "招待コード",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "この引数は、Discord Invite Codeを想定しています。\n\n> `https://discord.gg/` の後ろの部分置くことができ、Discordがプレビューを作成しないようにします。"
 		}
 	},
 	"settings": {
@@ -1453,7 +1453,7 @@
 					"title": "重複メッセージ"
 				},
 				"emojis": {
-					"description": "Automatically remove messages with too many emojis.",
+					"description": "メッセージに付随するemojiが多すぎる場合に自動的に削除します。",
 					"title": "絵文字"
 				},
 				"general": {

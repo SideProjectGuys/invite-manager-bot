@@ -1,4 +1,4 @@
-# other.translations.title
+# 翻訳
 
 other.translations.description
 

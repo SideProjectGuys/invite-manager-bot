@@ -1,44 +1,44 @@
-- start.title
+- さあ-始めよう
 
-  - [start.quick.title](/ja/getting-started/quick-start.md)
-  - [start.faq.title](/ja/getting-started/faq.md)
-  - [start.alpha.title](/ja/getting-started/alpha.md)
-  - [start.pro.title](/ja/getting-started/pro.md)
+  - [クイック-スタート](/ja/getting-started/quick-start.md)
+  - [FAQs](/ja/getting-started/faq.md)
+  - [アルファ Bot](/ja/getting-started/alpha.md)
+  - [Pro Bot](/ja/getting-started/pro.md)
 
-- reference.title
+- 参照
 
-  - [reference.commands.title](/ja/reference/commands.md)
-  - [reference.settings.title](/ja/reference/settings.md)
+  - [コマンド](/ja/reference/commands.md)
+  - [Configs / Settings](/ja/reference/settings.md)
 
-- premium.title
+- プレミアム
 
-  - [premium.features.title](/ja/premium/features.md)
-  - [premium.tiers.title](/ja/premium/tiers.md)
-  - [premium.setup.title](/ja/premium/setup.md)
+  - [特徴](/ja/premium/features.md)
+  - [ティア](/ja/premium/tiers.md)
+  - [セットアップ](/ja/premium/setup.md)
 
-- modules.title
+- モジュール
 
-  - modules.invites.title
+  - Invite Management
 
-    - [modules.invites.overview.title](/ja/modules/invites/modules.invites.overview.url.md)
-    - [modules.invites.customMessages.title](/ja/modules/invites/modules.invites.customMessages.url.md)
-      - [modules.invites.examples.title](/ja/modules/invites/examples.md)
+    - [オーバービュー](/ja/modules/invites/overview.md)
+    - [カスタム-メッセージ](/ja/modules/invites/custom-message.md)
+      - [例](/ja/modules/invites/examples.md)
 
-  - modules.moderation.title
+  - 管理
 
-    - [modules.moderation.strikes.title](/ja/modules/moderation/strikes.md)
-    - [modules.moderation.punishments.title](/ja/modules/moderation/punishments.md)
+    - [警告](/ja/modules/moderation/strikes.md)
+    - [罰](/ja/modules/moderation/punishments.md)
 
-  - modules.music.title
+  - 音楽
 
-    - [modules.music.overview.title](/ja/modules/music/Overview.md)
+    - [オーバービュー](/ja/modules/music/overview.md)
 
-- other.title
+- その他
 
-  - [other.webpanel.title](/ja/other/webpanel.md)
-  - [other.translations.title](/ja/other/translations.md)
-  - [other.donating.title](/ja/other/donating.md)
-  - [other.support.title](/ja/other/support.md)
-  - [other.changelog.title](/ja/other/changelog.md)
-  - [other.roadmap.title](/ja/other/roadmap.md)
-  - [other.openSource.title](/ja/other/open-source.md)
+  - [ウェブパネル](/ja/other/webpanel.md)
+  - [翻訳](/ja/other/translations.md)
+  - [寄付](/ja/other/donating.md)
+  - [サポート](/ja/other/support.md)
+  - [チェンジログ](/ja/other/changelog.md)
+  - [ロードマップ](/ja/other/roadmap.md)
+  - [オープン-ソース](/ja/other/open-source.md)

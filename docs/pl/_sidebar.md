@@ -1,44 +1,44 @@
-- start.title
+- Getting Started
 
-  - [start.quick.title](/pl/getting-started/quick-start.md)
-  - [start.faq.title](/pl/getting-started/faq.md)
-  - [start.alpha.title](/pl/getting-started/alpha.md)
-  - [start.pro.title](/pl/getting-started/pro.md)
+  - [Quick Start](/pl/getting-started/quick-start.md)
+  - [FAQs](/pl/getting-started/faq.md)
+  - [Alpha Bot](/pl/getting-started/alpha.md)
+  - [Pro Bot](/pl/getting-started/pro.md)
 
-- reference.title
+- Reference
 
-  - [reference.commands.title](/pl/reference/commands.md)
-  - [reference.settings.title](/pl/reference/settings.md)
+  - [Commands](/pl/reference/commands.md)
+  - [Configs / Settings](/pl/reference/settings.md)
 
-- premium.title
+- Premium
 
-  - [premium.features.title](/pl/premium/features.md)
-  - [premium.tiers.title](/pl/premium/tiers.md)
-  - [premium.setup.title](/pl/premium/setup.md)
+  - [Features](/pl/premium/features.md)
+  - [Tiers](/pl/premium/tiers.md)
+  - [Setup](/pl/premium/setup.md)
 
-- modules.title
+- Modules
 
-  - modules.invites.title
+  - Invite Management
 
-    - [modules.invites.overview.title](/pl/modules/invites/modules.invites.overview.url.md)
-    - [modules.invites.customMessages.title](/pl/modules/invites/modules.invites.customMessages.url.md)
-      - [modules.invites.examples.title](/pl/modules/invites/examples.md)
+    - [Overview](/pl/modules/invites/overview.md)
+    - [Custom message](/pl/modules/invites/custom-message.md)
+      - [Examples](/pl/modules/invites/examples.md)
 
-  - modules.moderation.title
+  - Moderation
 
-    - [modules.moderation.strikes.title](/pl/modules/moderation/strikes.md)
-    - [modules.moderation.punishments.title](/pl/modules/moderation/punishments.md)
+    - [Strikes](/pl/modules/moderation/strikes.md)
+    - [Punishments](/pl/modules/moderation/punishments.md)
 
-  - modules.music.title
+  - Music
 
-    - [modules.music.overview.title](/pl/modules/music/Overview.md)
+    - [Overview](/pl/modules/music/overview.md)
 
-- other.title
+- Other
 
-  - [other.webpanel.title](/pl/other/webpanel.md)
-  - [other.translations.title](/pl/other/translations.md)
-  - [other.donating.title](/pl/other/donating.md)
-  - [other.support.title](/pl/other/support.md)
-  - [other.changelog.title](/pl/other/changelog.md)
-  - [other.roadmap.title](/pl/other/roadmap.md)
-  - [other.openSource.title](/pl/other/open-source.md)
+  - [Webpanel](/pl/other/webpanel.md)
+  - [Translations](/pl/other/translations.md)
+  - [Donating](/pl/other/donating.md)
+  - [Support](/pl/other/support.md)
+  - [Changelog](/pl/other/changelog.md)
+  - [Roadmap](/pl/other/roadmap.md)
+  - [Open Source](/pl/other/open-source.md)

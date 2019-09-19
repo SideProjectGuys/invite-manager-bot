@@ -1,22 +1,22 @@
 # InviteManager
 
-## reference.title
+## 参照
 
-- [reference.commands.title](/ja/reference/commands.md)
-- [reference.settings.title](/ja/reference/settings.md)
+- [コマンド](/ja/reference/commands.md)
+- [Configs / Settings](/ja/reference/settings.md)
 
-## start.title
+## さあ-始めよう
 
-To get started, just run the `!setup` command on your server.
+開始するには、サーバーで `!setup` コマンドを実行するだけです。
 
-### modules.invites.title
+### Invite Management
 
-While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.
+BOT がサーバーにいる間は、招待を使って起こったすべての出来事を追跡します。Discord はどれくらい招待コードが使われたのかしか表示しませんが、我々の BOT は誰が作ったコードが誰に使われたのか分析します。これにより、BOT は偽物の招待を検出し、招待システムをだまそうとしている人を確認できます。
 
-### modules.moderation.title
+### 管理
 
-Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](modules/moderation/strikes.md#what-are-strikes) and [punishments](modules/moderation/punishments.md#what-are-punishments) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.
+新しいモデレーションシステムにより、多くのことを自動モデレートできます。詳細については [strikes](/ja/modules/moderation/strikes.md) および[punishments](/ja/modules/moderation/punishments.md) ページをご覧ください。要するに、BOT は不正行為をした人に'strikes' を行い、一定数の警告の後、ユーザーに罰を与えます。 これらはすべてユーザーに設定可能です。
 
-## premium.title
+## プレミアム
 
-To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](premium/tiers.md#pricing).
+サーバーの請求書を支払うために、bot のプレミアムバージョンを提供しています。 追加機能をすべてご覧になるには、[pricing page](/ja/premium/features.md) をご覧ください。

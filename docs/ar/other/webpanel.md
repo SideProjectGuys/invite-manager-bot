@@ -1,3 +1,3 @@
-# other.webpanel.title
+# Webpanel
 
 other.webpanel.description

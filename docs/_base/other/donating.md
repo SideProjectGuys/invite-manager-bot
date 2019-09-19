@@ -1,6 +1,6 @@
 # §{other.donating.title}
 
-§{other.donating.description:["premiumLink":"/§{lang}/§{premium.url}/§{premium.tiers.url}.md","paypalLink":"https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=2E4RE33LFZJGY&lc=CH&item_name=InviteManager&amount=5%2e00&currency_code=USD&button_subtype=services&tax_rate=0%2e000&shipping=0%2e00&bn=PP%2dBuyNowBF%3abtn_buynowCC_LG%2egif%3aNonHosted"]}
+§{other.donating.description:["premiumLink":"/§{lang}/premium/tiers.md","paypalLink":"https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=2E4RE33LFZJGY&lc=CH&item_name=InviteManager&amount=5%2e00&currency_code=USD&button_subtype=services&tax_rate=0%2e000&shipping=0%2e00&bn=PP%2dBuyNowBF%3abtn_buynowCC_LG%2egif%3aNonHosted"]}
 
 ## §{other.donating.crypto.title}
 

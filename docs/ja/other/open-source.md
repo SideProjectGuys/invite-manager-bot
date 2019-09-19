@@ -1,7 +1,7 @@
-# other.openSource.title
+# オープン-ソース
 
 other.openSource.description
 
-## other.openSource.bot.title
+## メイン Bot
 
 other.openSource.bot.description

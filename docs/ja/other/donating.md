@@ -1,7 +1,7 @@
-# other.donating.title
+# 寄付
 
 other.donating.description
 
-## other.donating.crypto.title
+## 暗号
 
 other.donating.crypto.description

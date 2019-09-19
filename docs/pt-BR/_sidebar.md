@@ -1,44 +1,44 @@
-- start.title
+- Getting Started
 
-  - [start.quick.title](/pt-BR/getting-started/quick-start.md)
-  - [start.faq.title](/pt-BR/getting-started/faq.md)
-  - [start.alpha.title](/pt-BR/getting-started/alpha.md)
-  - [start.pro.title](/pt-BR/getting-started/pro.md)
+  - [Quick Start](/pt-BR/getting-started/quick-start.md)
+  - [FAQs](/pt-BR/getting-started/faq.md)
+  - [Alpha Bot](/pt-BR/getting-started/alpha.md)
+  - [Pro Bot](/pt-BR/getting-started/pro.md)
 
-- reference.title
+- Reference
 
-  - [reference.commands.title](/pt-BR/reference/commands.md)
-  - [reference.settings.title](/pt-BR/reference/settings.md)
+  - [Commands](/pt-BR/reference/commands.md)
+  - [Configs / Settings](/pt-BR/reference/settings.md)
 
-- premium.title
+- Premium
 
-  - [premium.features.title](/pt-BR/premium/features.md)
-  - [premium.tiers.title](/pt-BR/premium/tiers.md)
-  - [premium.setup.title](/pt-BR/premium/setup.md)
+  - [Features](/pt-BR/premium/features.md)
+  - [Tiers](/pt-BR/premium/tiers.md)
+  - [Setup](/pt-BR/premium/setup.md)
 
-- modules.title
+- Modules
 
-  - modules.invites.title
+  - Invite Management
 
-    - [modules.invites.overview.title](/pt-BR/modules/invites/modules.invites.overview.url.md)
-    - [modules.invites.customMessages.title](/pt-BR/modules/invites/modules.invites.customMessages.url.md)
-      - [modules.invites.examples.title](/pt-BR/modules/invites/examples.md)
+    - [Overview](/pt-BR/modules/invites/overview.md)
+    - [Custom message](/pt-BR/modules/invites/custom-message.md)
+      - [Examples](/pt-BR/modules/invites/examples.md)
 
-  - modules.moderation.title
+  - Moderation
 
-    - [modules.moderation.strikes.title](/pt-BR/modules/moderation/strikes.md)
-    - [modules.moderation.punishments.title](/pt-BR/modules/moderation/punishments.md)
+    - [Strikes](/pt-BR/modules/moderation/strikes.md)
+    - [Punishments](/pt-BR/modules/moderation/punishments.md)
 
-  - modules.music.title
+  - Music
 
-    - [modules.music.overview.title](/pt-BR/modules/music/Overview.md)
+    - [Overview](/pt-BR/modules/music/overview.md)
 
-- other.title
+- Other
 
-  - [other.webpanel.title](/pt-BR/other/webpanel.md)
-  - [other.translations.title](/pt-BR/other/translations.md)
-  - [other.donating.title](/pt-BR/other/donating.md)
-  - [other.support.title](/pt-BR/other/support.md)
-  - [other.changelog.title](/pt-BR/other/changelog.md)
-  - [other.roadmap.title](/pt-BR/other/roadmap.md)
-  - [other.openSource.title](/pt-BR/other/open-source.md)
+  - [Webpanel](/pt-BR/other/webpanel.md)
+  - [Translations](/pt-BR/other/translations.md)
+  - [Donating](/pt-BR/other/donating.md)
+  - [Support](/pt-BR/other/support.md)
+  - [Changelog](/pt-BR/other/changelog.md)
+  - [Roadmap](/pt-BR/other/roadmap.md)
+  - [Open Source](/pt-BR/other/open-source.md)

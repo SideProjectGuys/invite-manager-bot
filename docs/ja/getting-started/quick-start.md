@@ -1,6 +1,6 @@
-# start.quick.title
+# クイック-スタート
 
-## start.quick.setup.title
+## セットアップ
 
 start.quick.setup.description
 

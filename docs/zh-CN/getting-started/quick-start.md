@@ -1,6 +1,6 @@
-# start.quick.title
+# Quick Start
 
-## start.quick.setup.title
+## Setup
 
 start.quick.setup.description
 

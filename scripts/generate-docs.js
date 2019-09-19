@@ -140,12 +140,9 @@ child.on('close', () => {
 
 		const docFiles = getAllFiles(`./docs/_base/`);
 		docFiles.forEach(docFile => {
-			const pathParts = path
+			const newPath = path
 				.relative('./docs/_base/', docFile)
-				.split(path.sep)
-				.map(part => part.replace(/\.md/gi, ''))
-				.map((_, i, arr) => _tDocs(`${arr.slice(0, i + 1).join('.')}.url`));
-			const newPath = pathParts.join(path.sep);
+				.replace(/\.md/gi, '');
 
 			let text = fs.readFileSync(docFile, 'utf8');
 			text = text.replace(langRegex, niceLocale);
