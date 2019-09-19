@@ -10,7 +10,6 @@ const locales = [
 	'bg',
 	'cs',
 	'de',
-	'el',
 	'es',
 	'fr',
 	'id_ID',
@@ -380,4 +379,19 @@ child.on('close', () => {
 
 		fs.writeFileSync(`./docs/${niceLocale}/reference/commands.md`, outCmds);
 	});
+
+	// Generate the main readme and sidebar with all the languages
+	let sidebarText = '';
+	locales.forEach(locale => {
+		const langName = i18nBot.__({ locale, phrase: 'lang' });
+		sidebarText += `- [${langName}](/${locale.replace('_', '-')}/README.md)\n`;
+	});
+	fs.writeFileSync(`./docs/_sidebar.md`, sidebarText);
+
+	let readmeText = '# InviteManager Docs\n\n';
+	locales.forEach(locale => {
+		const langName = i18nBot.__({ locale, phrase: 'lang' });
+		readmeText += `- [${langName}](/${locale.replace('_', '-')}/README.md)\n`;
+	});
+	fs.writeFileSync(`./docs/README.md`, readmeText);
 });
