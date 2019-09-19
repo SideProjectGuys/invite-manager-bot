@@ -1,43 +1,43 @@
-# FAQ
+# FAQs}
 
-## How do I change the prefix of the bot?
+## bot のプレフィックスを変更するにはどうすればよいですか？
 
-You can do `!config prefix -` to change the prefix.
+プレフィックスを変更するには `!config prefix -`を実行します。
 
-If you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix.
+現在のプレフィックスがわからない場合は`@InviteManager config prefix` を実行してプレフィックスを確認できます。
 
-## How do I set join and leave messages?
+## 参加および退出のメッセージを設定するにはどうすればよいですか？
 
-Set the channel by doing
+チャンネルを設定するには
 
 `!config joinMessageChannel #channel`
 
-or
+または
 
 `!config leaveMessageChannel #channel`.
 
-After doing that, new joins and leaves will be posted to that channel.
+を実行すると新しい参加と退出がそのチャンネルに投稿されます。
 
-## Can I customize the join and leave messages?
+## 参加と退出メッセージをカスタマイズできますか？
 
-Absolutely! You can change the message by doing for example
+もちろん！ たとえば、次のようにしてメッセージを変更できます
 
 `!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`
 
-or
+または
 
 `!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
 
-There are many placeholders available. You can see the full list on the "[Custom Messages](modules/invites/custom-messages.md?id=placeholders)" page.
+利用可能な多くのプレースホルダーがあります。 完全なリストは'[Custom Messages](/ja/modules/invites/custom-messages.md)' ページで確認できます。
 
-## What are "Ranks" and how can I use them?
+## 'ランク' とは何ですか？どのように使用できますか？
 
-Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!
+ランクは、使われた招待が一定数に達したときに役職を人々に割り当てるために使用されます。例えば `@Beginner` という役職があり、その役職に 5 人以上の招待がある人を追加したい場合は、このようにランクを作成する必要があります： `!add-rank @Beginner 5 (必要ならここに説明を入力できます)`。招待者された人が 5 人いるとすぐにその役職が自動的に追加されます！
 
-## How can I disable the bot in all but one/some channels?
+## 1 つまたはいくつかのチャンネルで bot を無効にするにはどうすればよいですか？
 
-Take away the read message permissions in the channels where you don't want the bot to reply.
+bot に返信させたくないチャンネルのメッセージの読み取り許可を取り除きます。
 
-## Limitation: No advanced tracking before the bot joins
+## 制限：ボットが参加する前に高度な追跡はありません
 
-Advanced tracking \(who invited who\) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot.
+高度な追跡（誰が誰を招待したか）は、bot を招待した後にのみ機能します。 bot は、招待しても全員の招待がカウントされることを引き続き認識します。心配しないでください。 追加情報のみが欠落しており、ボットを招待した後に参加したメンバーについてのみ収集できます。

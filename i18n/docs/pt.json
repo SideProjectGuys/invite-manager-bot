@@ -1,0 +1,152 @@
+{
+	"lang": "Português",
+	"modules": {
+		"title": "Modules",
+		"invites": {
+			"title": "Invite Management",
+			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"examples": {
+				"title": "Examples"
+			},
+			"overview": {
+				"title": "Overview"
+			},
+			"customMessages": {
+				"title": "Custom message"
+			}
+		},
+		"moderation": {
+			"title": "Moderation",
+			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"punishments": {
+				"title": "Punishments"
+			},
+			"strikes": {
+				"title": "Strikes"
+			}
+		},
+		"music": {
+			"title": "Music",
+			"overview": {
+				"title": "Overview"
+			}
+		}
+	},
+	"other": {
+		"title": "Other",
+		"donating": {
+			"title": "Donating",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "Crypto",
+				"description": "other.donating.crypto.description"
+			}
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"support": {
+			"title": "Support"
+		},
+		"translations": {
+			"title": "Translations",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
+		},
+		"webpanel": {
+			"title": "Webpanel",
+			"description": "other.webpanel.description"
+		},
+		"changelog": {
+			"title": "Changelog"
+		},
+		"openSource": {
+			"title": "Open Source",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "Main Bot",
+				"description": "other.openSource.bot.description"
+			}
+		}
+	},
+	"premium": {
+		"title": "Premium",
+		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"features": {
+			"title": "Features"
+		},
+		"tiers": {
+			"title": "Tiers"
+		},
+		"setup": {
+			"title": "Setup"
+		}
+	},
+	"start": {
+		"title": "Getting Started",
+		"description": "To get started, just run the `!setup` command on your server.",
+		"alpha": {
+			"title": "Alpha Bot",
+			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
+			"linkDescription": "Invite the InviteManager Alpha here"
+		},
+		"faq": {
+			"title": "FAQs",
+			"prefix": {
+				"title": "How do I change the prefix of the bot?",
+				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+			},
+			"joinLeaveChannel": {
+				"title": "How do I set join and leave messages?",
+				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+			},
+			"joinLeaveMessage": {
+				"title": "Can I customize the join and leave messages?",
+				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+			},
+			"ranks": {
+				"title": "What are 'Ranks' and how can I use them?",
+				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+			},
+			"channel": {
+				"title": "How can I disable the bot in all but one/some channels?",
+				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+			},
+			"limitations": {
+				"title": "Limitation: No advanced tracking before the bot joins",
+				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+			}
+		},
+		"pro": {
+			"title": "Pro Bot",
+			"description": "start.pro.description"
+		},
+		"quick": {
+			"title": "Quick Start",
+			"setup": {
+				"title": "Setup",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
+		}
+	},
+	"reference": {
+		"title": "Reference",
+		"commands": {
+			"title": "Commands"
+		},
+		"settings": {
+			"title": "Configs / Settings"
+		}
+	}
+}

@@ -277,7 +277,6 @@ export enum Lang {
 	bg = 'bg',
 	cs = 'cs',
 	de = 'de',
-	el = 'el',
 	en = 'en',
 	es = 'es',
 	fr = 'fr',
@@ -299,7 +298,8 @@ export enum Lang {
 	sv = 'sv',
 	sr = 'sr',
 	hu = 'hu',
-	lt = 'lt'
+	lt = 'lt',
+	el = 'el'
 }
 
 export enum LeaderboardStyle {

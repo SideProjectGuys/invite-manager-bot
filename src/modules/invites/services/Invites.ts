@@ -1,7 +1,7 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import { Moment } from 'moment';
-import moment = require('moment');
-import { FindOptionsAttributesArray, Op } from 'sequelize';
+import moment from 'moment';
+import { Op } from 'sequelize';
 
 import { IMClient } from '../../../client';
 import {
@@ -12,7 +12,6 @@ import {
 	leaves,
 	members,
 	memberSettings,
-	MemberSettingsKey,
 	RankAssignmentStyle,
 	RankInstance,
 	sequelize,

@@ -4,177 +4,177 @@ There are many config options that can be set. You don't have to set all of them
 
 ## Overview
 
-### عام
+### settings.groups.general.title
 
-| Setting                               | Description                                      |
-| ------------------------------------- | ------------------------------------------------ |
-| [بريفكس](#prefix)                     | البريفكس المستخدم لتشغيل أوامر البوت.            |
-| [لغه](#lang)                          | لغة البوت                                        |
-| [قناه السجل](#logchannel)             | القناه التي يتم تسجيل حركات البوت فيها.          |
-| [الحصول على التحديثات](#getupdates)   | فعل لتلقي تحديثات التطوير الخاصه بInviteManager. |
-| [قنوات الأوامر](#channels)            | القنوات التي سيتفاعل فيها البوت مع الأوامر.      |
-| [القنوات المتجاهلة](#ignoredchannels) | القنوات التي سيتجاهل فيها البوت الأوامر.         |
+| Setting                                            | Description                          |
+| -------------------------------------------------- | ------------------------------------ |
+| [settings.prefix.title](#prefix)                   | settings.prefix.description          |
+| [settings.lang.title](#lang)                       | settings.lang.description            |
+| [settings.logChannel.title](#logchannel)           | settings.logChannel.description      |
+| [settings.getUpdates.title](#getupdates)           | settings.getUpdates.description      |
+| [settings.channels.title](#channels)               | settings.channels.description        |
+| [settings.ignoredChannels.title](#ignoredchannels) | settings.ignoredChannels.description |
 
-### دعوات
+### settings.groups.invites.title
 
-#### الانضمامات
+#### settings.groups.invites.joins.title
 
-| Setting                             | Description                                       |
-| ----------------------------------- | ------------------------------------------------- |
-| [رساله](#joinmessage)               | الرسالة المرسلة عندما يدخل شخص ما الخادم/السيرفر. |
-| [قناه الرسائل](#joinmessagechannel) | القناة التي يتم إرسال رسالة الدخول فيها.          |
+| Setting                                                  | Description                             |
+| -------------------------------------------------------- | --------------------------------------- |
+| [settings.joinMessage.title](#joinmessage)               | settings.joinMessage.description        |
+| [settings.joinMessageChannel.title](#joinmessagechannel) | settings.joinMessageChannel.description |
 
-#### المغادرات
+#### settings.groups.invites.leaves.title
 
-| Setting                                             | Description                                                              |
-| --------------------------------------------------- | ------------------------------------------------------------------------ |
-| [رساله](#leavemessage)                              | الرسالة المرسلة عندما يترك شخص ما الخادم/السيرفر.                        |
-| [قناه الرسائل](#leavemessagechannel)                | القناة التي يتم إرسال رسالة الخروج فيها.                                 |
-| [طرح تلقائي](#autosubtractleaves)                   | ازالة الدعوات تلقائيًا من المدعو عندما يغادر                             |
-| [بداية الطرح التلقائي](#autosubtractleavethreshold) | الوقت بالثواني الذي يتعين على المستخدم البقاء فيه في السيرفر للدعوه للعد |
+| Setting                                                                  | Description                                     |
+| ------------------------------------------------------------------------ | ----------------------------------------------- |
+| [settings.leaveMessage.title](#leavemessage)                             | settings.leaveMessage.description               |
+| [settings.leaveMessageChannel.title](#leavemessagechannel)               | settings.leaveMessageChannel.description        |
+| [settings.autoSubtractLeaves.title](#autosubtractleaves)                 | settings.autoSubtractLeaves.description         |
+| [settings.autoSubtractLeaveThreshold.title](#autosubtractleavethreshold) | settings.autoSubtractLeaveThreshold.description |
 
-#### المتصدرين
+#### settings.groups.invites.leaderboard.title
 
-| Setting                                                     | Description                                   |
-| ----------------------------------------------------------- | --------------------------------------------- |
-| [اسلوب ](#leaderboardstyle)                                 | مظهر اسلوب المتصدرين                          |
-| [اخفي الاعضاء الذين خرجوا](#hideleftmembersfromleaderboard) | إخفاء الأعضاء الذين تركوا الخادم من المتصدرين |
+| Setting                                                                          | Description                                         |
+| -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [settings.leaderboardStyle.title](#leaderboardstyle)                             | settings.leaderboardStyle.description               |
+| [settings.hideLeftMembersFromLeaderboard.title](#hideleftmembersfromleaderboard) | settings.hideLeftMembersFromLeaderboard.description |
 
-#### المزيفون
+#### settings.groups.invites.fakes.title
 
-| Setting                          | Description                    |
-| -------------------------------- | ------------------------------ |
-| [طرح تلقائي](#autosubtractfakes) | ازاله الدعوات المزورة تلقائياً |
+| Setting                                                | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [settings.autoSubtractFakes.title](#autosubtractfakes) | settings.autoSubtractFakes.description |
 
-#### رتب
+#### settings.groups.invites.ranks.title
 
-| Setting                                   | Description                                               |
-| ----------------------------------------- | --------------------------------------------------------- |
-| [أسلوب الواجب](#rankassignmentstyle)      | كيف تتم مكافأة الرتب للمستخدمين.                          |
-| [قناه التصاريح](#rankannouncementchannel) | القناة التي يعلن فيها المستخدمون الذين يتلقون رتبة جديدة. |
-| [رساله التصريح](#rankannouncementmessage) | الرسالة التي يتم إرسالها عندما يتلقى المستخدم رتبة جديدة. |
+| Setting                                                            | Description                                  |
+| ------------------------------------------------------------------ | -------------------------------------------- |
+| [settings.rankAssignmentStyle.title](#rankassignmentstyle)         | settings.rankAssignmentStyle.description     |
+| [settings.rankAnnouncementChannel.title](#rankannouncementchannel) | settings.rankAnnouncementChannel.description |
+| [settings.rankAnnouncementMessage.title](#rankannouncementmessage) | settings.rankAnnouncementMessage.description |
 
-### اداره
+### settings.groups.moderation.title
 
-#### كلمة التحقق
+#### settings.groups.moderation.captcha.title
 
-| Setting                                             | Description                                                                                 |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [مفعل](#captchaverificationonjoin)                  | سواء تم تفعيل التحقق من كلمة التحقق أم لا.                                                  |
-| [رسالة الترحيب](#captchaverificationwelcomemessage) | الرسالة التي سيحصل عليها المستخدم بعد الانضمام إلى الخادم وتوجيهه لدخول اختبار كلمة التحقق. |
-| [رسالة النجاح](#captchaverificationsuccessmessage)  | رسالة الترحيب التي سيتم إرسالها إلى المستخدم بعد أن يتحقق بنجاح.                            |
-| [رسالة فاشلة](#captchaverificationfailedmessage)    | الرسالة التي يتم إرسالها عندما يخفق المستخدم بكلمه التحقق.                                  |
-| [التحقق من المهلة](#captchaverificationtimeout)     | الوقت الذي يتم فيه إدخال كلمة التحقق بنجاح.                                                 |
-| [السجل مفعل](#captchaverificationlogenabled)        | سواء سيتم تسجيل محاولات التحقق ام لا.                                                       |
+| Setting                                                                                | Description                                            |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [settings.captchaVerificationOnJoin.title](#captchaverificationonjoin)                 | settings.captchaVerificationOnJoin.description         |
+| [settings.captchaVerificationWelcomeMessage.title](#captchaverificationwelcomemessage) | settings.captchaVerificationWelcomeMessage.description |
+| [settings.captchaVerificationSuccessMessage.title](#captchaverificationsuccessmessage) | settings.captchaVerificationSuccessMessage.description |
+| [settings.captchaVerificationFailedMessage.title](#captchaverificationfailedmessage)   | settings.captchaVerificationFailedMessage.description  |
+| [settings.captchaVerificationTimeout.title](#captchaverificationtimeout)               | settings.captchaVerificationTimeout.description        |
+| [settings.captchaVerificationLogEnabled.title](#captchaverificationlogenabled)         | settings.captchaVerificationLogEnabled.description     |
 
-#### عام
+#### settings.groups.moderation.general.title
 
-| Setting                                                        | Description                                                |
-| -------------------------------------------------------------- | ---------------------------------------------------------- |
-| [تمكين](#automodenabled)                                       | settings.autoModEnabled.description                        |
-| [Moderated Channels](#automodmoderatedchannels)                | settings.autoModModeratedChannels.description              |
-| [Moderated Roles](#automodmoderatedroles)                      | settings.autoModModeratedRoles.description                 |
-| [القنوات المتجاهلة](#automodignoredchannels)                   | settings.autoModIgnoredChannels.description                |
-| [تجاهل الأدوار](#automodignoredroles)                          | settings.autoModIgnoredRoles.description                   |
-| [رتبه صامته](#mutedrole)                                       | settings.mutedRole.description                             |
-| [معطل للأعضاء القدامى](#automoddisabledforoldmembers)          | settings.autoModDisabledForOldMembers.description          |
-| [الأعضاء القديمة عتبة](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
+| Setting                                                                                        | Description                                                |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [settings.autoModEnabled.title](#automodenabled)                                               | settings.autoModEnabled.description                        |
+| [settings.autoModModeratedChannels.title](#automodmoderatedchannels)                           | settings.autoModModeratedChannels.description              |
+| [settings.autoModModeratedRoles.title](#automodmoderatedroles)                                 | settings.autoModModeratedRoles.description                 |
+| [settings.autoModIgnoredChannels.title](#automodignoredchannels)                               | settings.autoModIgnoredChannels.description                |
+| [settings.autoModIgnoredRoles.title](#automodignoredroles)                                     | settings.autoModIgnoredRoles.description                   |
+| [settings.mutedRole.title](#mutedrole)                                                         | settings.mutedRole.description                             |
+| [settings.autoModDisabledForOldMembers.title](#automoddisabledforoldmembers)                   | settings.autoModDisabledForOldMembers.description          |
+| [settings.autoModDisabledForOldMembersThreshold.title](#automoddisabledforoldmembersthreshold) | settings.autoModDisabledForOldMembersThreshold.description |
 
-#### تسجيل
+#### settings.groups.moderation.logging.title
 
-| Setting                                                             | Description                                                  |
-| ------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Log Enabled](#automodlogenabled)                                   | settings.autoModLogEnabled.description                       |
-| [سجل القناه الخاص بالمود](#modlogchannel)                           | القناة التي سيتم نشر سجلات المود فيها.                       |
-| [حذف رسائل بوت](#automoddeletebotmessage)                           | settings.autoModDeleteBotMessage.description                 |
-| [حذف Bot Message Timeout](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description |
-| [حذف رسائل الحظر](#modpunishmentbandeletemessage)                   | سواء سيتم حذف رسائل "الحظر" من عدمه تلقائيًا او لا.          |
-| [حذف رسائل الطرد](#modpunishmentkickdeletemessage)                  | سواء سيتم حذف رسائل "الطرد" من عدمه تلقائيًا او لا.          |
-| [حذف رسائل الحظر](#modpunishmentsoftbandeletemessage)               | سواء سيتم حذف رسائل "الحظر" من عدمه تلقائيًا او لا.          |
-| [حذف رسائل التحذير.](#modpunishmentwarndeletemessage)               | سواء سيتم حذف رسائل "تحذير" من عدمه تلقائيًا او لا.          |
-| [حذف رسائل الصمت](#modpunishmentmutedeletemessage)                  | سواء سيتم حذف رسائل "الصمت" من عدمه تلقائيًا او لا.          |
+| Setting                                                                                            | Description                                                  |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [settings.autoModLogEnabled.title](#automodlogenabled)                                             | settings.autoModLogEnabled.description                       |
+| [settings.modLogChannel.title](#modlogchannel)                                                     | settings.modLogChannel.description                           |
+| [settings.autoModDeleteBotMessage.title](#automoddeletebotmessage)                                 | settings.autoModDeleteBotMessage.description                 |
+| [settings.autoModDeleteBotMessageTimeoutInSeconds.title](#automoddeletebotmessagetimeoutinseconds) | settings.autoModDeleteBotMessageTimeoutInSeconds.description |
+| [settings.modPunishmentBanDeleteMessage.title](#modpunishmentbandeletemessage)                     | settings.modPunishmentBanDeleteMessage.description           |
+| [settings.modPunishmentKickDeleteMessage.title](#modpunishmentkickdeletemessage)                   | settings.modPunishmentKickDeleteMessage.description          |
+| [settings.modPunishmentSoftbanDeleteMessage.title](#modpunishmentsoftbandeletemessage)             | settings.modPunishmentSoftbanDeleteMessage.description       |
+| [settings.modPunishmentWarnDeleteMessage.title](#modpunishmentwarndeletemessage)                   | settings.modPunishmentWarnDeleteMessage.description          |
+| [settings.modPunishmentMuteDeleteMessage.title](#modpunishmentmutedeletemessage)                   | settings.modPunishmentMuteDeleteMessage.description          |
 
-#### دعوات
+#### settings.groups.moderation.invites.title
 
-| Setting                         | Description                                |
-| ------------------------------- | ------------------------------------------ |
-| [تمكين](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
+| Setting                                                        | Description                                |
+| -------------------------------------------------------------- | ------------------------------------------ |
+| [settings.autoModInvitesEnabled.title](#automodinvitesenabled) | settings.autoModInvitesEnabled.description |
 
-#### روابط
+#### settings.groups.moderation.links.title
 
-| Setting                                          | Description                                      |
-| ------------------------------------------------ | ------------------------------------------------ |
-| [تمكين](#automodlinksenabled)                    | settings.autoModLinksEnabled.description         |
-| [Whitelist](#automodlinkswhitelist)              | settings.autoModLinksWhitelist.description       |
-| [القائمة السوداء](#automodlinksblacklist)        | settings.autoModLinksBlacklist.description       |
-| [Follow Redirects](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
+| Setting                                                                    | Description                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------ |
+| [settings.autoModLinksEnabled.title](#automodlinksenabled)                 | settings.autoModLinksEnabled.description         |
+| [settings.autoModLinksWhitelist.title](#automodlinkswhitelist)             | settings.autoModLinksWhitelist.description       |
+| [settings.autoModLinksBlacklist.title](#automodlinksblacklist)             | settings.autoModLinksBlacklist.description       |
+| [settings.autoModLinksFollowRedirects.title](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
 
-#### كلمات محظوره
+#### settings.groups.moderation.bannedWords.title
 
-| Setting                       | Description                                        |
-| ----------------------------- | -------------------------------------------------- |
-| [مفعل](#automodwordsenabled)  | سواء سيتم التحقق تلقائياً من رسائل المحظوره او لا. |
-| [حظر](#automodwordsblacklist) | قائمه من الكلمات المحظوره                          |
+| Setting                                                        | Description                                |
+| -------------------------------------------------------------- | ------------------------------------------ |
+| [settings.autoModWordsEnabled.title](#automodwordsenabled)     | settings.autoModWordsEnabled.description   |
+| [settings.autoModWordsBlacklist.title](#automodwordsblacklist) | settings.autoModWordsBlacklist.description |
 
-#### احرف كبيره
+#### settings.groups.moderation.caps.title
 
-| Setting                                                 | Description                                       |
-| ------------------------------------------------------- | ------------------------------------------------- |
-| [تمكين](#automodallcapsenabled)                         | settings.autoModAllCapsEnabled.description        |
-| [الحد الأدنى من الشخصيات](#automodallcapsmincharacters) | settings.autoModAllCapsMinCharacters.description  |
-| [النسبة المئوية CAPs](#automodallcapspercentagecaps)    | settings.autoModAllCapsPercentageCaps.description |
+| Setting                                                                      | Description                                       |
+| ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| [settings.autoModAllCapsEnabled.title](#automodallcapsenabled)               | settings.autoModAllCapsEnabled.description        |
+| [settings.autoModAllCapsMinCharacters.title](#automodallcapsmincharacters)   | settings.autoModAllCapsMinCharacters.description  |
+| [settings.autoModAllCapsPercentageCaps.title](#automodallcapspercentagecaps) | settings.autoModAllCapsPercentageCaps.description |
 
-#### رسائل مكررة
+#### settings.groups.moderation.duplicate.title
 
-| Setting                                                           | Description                                                 |
-| ----------------------------------------------------------------- | ----------------------------------------------------------- |
-| [تمكين](#automodduplicatetextenabled)                             | settings.autoModDuplicateTextEnabled.description            |
-| [الإطار الزمني بالثواني](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
+| Setting                                                                                          | Description                                                 |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| [settings.autoModDuplicateTextEnabled.title](#automodduplicatetextenabled)                       | settings.autoModDuplicateTextEnabled.description            |
+| [settings.autoModDuplicateTextTimeframeInSeconds.title](#automodduplicatetexttimeframeinseconds) | settings.autoModDuplicateTextTimeframeInSeconds.description |
 
-#### سبام/اصرار
+#### settings.groups.moderation.spam.title
 
-| Setting                                                           | Description                                                 |
-| ----------------------------------------------------------------- | ----------------------------------------------------------- |
-| [مفعل](#automodquickmessagesenabled)                              | settings.autoModQuickMessagesEnabled.description            |
-| [# من الرسائل](#automodquickmessagesnumberofmessages)             | settings.autoModQuickMessagesNumberOfMessages.description   |
-| [الإطار الزمني بالثواني](#automodquickmessagestimeframeinseconds) | settings.autoModQuickMessagesTimeframeInSeconds.description |
+| Setting                                                                                          | Description                                                 |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| [settings.autoModQuickMessagesEnabled.title](#automodquickmessagesenabled)                       | settings.autoModQuickMessagesEnabled.description            |
+| [settings.autoModQuickMessagesNumberOfMessages.title](#automodquickmessagesnumberofmessages)     | settings.autoModQuickMessagesNumberOfMessages.description   |
+| [settings.autoModQuickMessagesTimeframeInSeconds.title](#automodquickmessagestimeframeinseconds) | settings.autoModQuickMessagesTimeframeInSeconds.description |
 
-#### إشارات
+#### settings.groups.moderation.mentions.title
 
-| Setting                                                      | Description                                                 |
-| ------------------------------------------------------------ | ----------------------------------------------------------- |
-| [تمكين](#automodmentionusersenabled)                         | settings.autoModMentionUsersEnabled.description             |
-| [Max # of Mentions](#automodmentionusersmaxnumberofmentions) | settings.autoModMentionUsersMaxNumberOfMentions.description |
-| [تمكين](#automodmentionrolesenabled)                         | settings.autoModMentionRolesEnabled.description             |
-| [Max # of Mentions](#automodmentionrolesmaxnumberofmentions) | settings.autoModMentionRolesMaxNumberOfMentions.description |
+| Setting                                                                                          | Description                                                 |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| [settings.autoModMentionUsersEnabled.title](#automodmentionusersenabled)                         | settings.autoModMentionUsersEnabled.description             |
+| [settings.autoModMentionUsersMaxNumberOfMentions.title](#automodmentionusersmaxnumberofmentions) | settings.autoModMentionUsersMaxNumberOfMentions.description |
+| [settings.autoModMentionRolesEnabled.title](#automodmentionrolesenabled)                         | settings.autoModMentionRolesEnabled.description             |
+| [settings.autoModMentionRolesMaxNumberOfMentions.title](#automodmentionrolesmaxnumberofmentions) | settings.autoModMentionRolesMaxNumberOfMentions.description |
 
-#### ايموجيز - تعبير وجه
+#### settings.groups.moderation.emojis.title
 
-| Setting                                             | Description                                         |
-| --------------------------------------------------- | --------------------------------------------------- |
-| [تمكين](#automodemojisenabled)                      | settings.autoModEmojisEnabled.description           |
-| [ماكس # من Emojis](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
-| [Dehoist ممكن](#automodhoistenabled)                | settings.autoModHoistEnabled.description            |
+| Setting                                                                          | Description                                         |
+| -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [settings.autoModEmojisEnabled.title](#automodemojisenabled)                     | settings.autoModEmojisEnabled.description           |
+| [settings.autoModEmojisMaxNumberOfEmojis.title](#automodemojismaxnumberofemojis) | settings.autoModEmojisMaxNumberOfEmojis.description |
+| [settings.autoModHoistEnabled.title](#automodhoistenabled)                       | settings.autoModHoistEnabled.description            |
 
-### موسيقى
+### settings.groups.music.title
 
-#### موسيقى
+#### settings.groups.music.general.title
 
-| Setting                                            | Description                                                                      |
-| -------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [طبقة صوت الموسيقى](#musicvolume)                  | الصوت المعتاد الذي تم ضبطه عند دخول بوت لقناه صوتيه.                             |
-| [اعلان الاغنيه التاليه](#announcenextsong)         | ما إذا كان سيتم الإعلان عن الأغنية التالية في القناة الصوتية أم لا.              |
-| [صوت الاعلانات.](#announcementvoice)               | الصوت المستخدم في إعلانات الأغنية التاليه.                                       |
-| [تلاشي الموسيقى على التكلم](#fademusicontalk)      | اذا مفعل, الموسيقى ستبدأ بالتلاشي عندما يتحدث الناس                              |
-| [تلاشي الموسيقى نهايه التأخير](#fademusicenddelay) | تأخر عدد الثواني التي يجب ألا يتحدث فيها أحد من أجل عودة مستوى الصوت إلى طبيعته. |
+| Setting                                                | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [settings.musicVolume.title](#musicvolume)             | settings.musicVolume.description       |
+| [settings.announceNextSong.title](#announcenextsong)   | settings.announceNextSong.description  |
+| [settings.announcementVoice.title](#announcementvoice) | settings.announcementVoice.description |
+| [settings.fadeMusicOnTalk.title](#fademusicontalk)     | settings.fadeMusicOnTalk.description   |
+| [settings.fadeMusicEndDelay.title](#fademusicenddelay) | settings.fadeMusicEndDelay.description |
 
 <a name=prefix></a>
 
 ---
 
-## بريفكس
+## settings.prefix.title
 
-البريفكس المستخدم لتشغيل أوامر البوت.
+settings.prefix.description
 
 Type: `String`
 
@@ -193,9 +193,9 @@ Examples:
 
 ---
 
-## لغه
+## settings.lang.title
 
-لغة البوت
+settings.lang.description
 
 Type: `Enum<Lang>`
 
@@ -204,7 +204,7 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `ar`, `bg`, `cs`, `de`, `el`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`
+Possible values: `ar`, `bg`, `cs`, `de`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`, `el`
 
 Example:
 
@@ -214,9 +214,9 @@ Example:
 
 ---
 
-## قناه السجل
+## settings.logChannel.title
 
-القناه التي يتم تسجيل حركات البوت فيها.
+settings.logChannel.description
 
 Type: `Channel`
 
@@ -233,9 +233,9 @@ Examples:
 
 ---
 
-## الحصول على التحديثات
+## settings.getUpdates.title
 
-فعل لتلقي تحديثات التطوير الخاصه بInviteManager.
+settings.getUpdates.description
 
 Type: `Boolean`
 
@@ -256,9 +256,9 @@ Disable:
 
 ---
 
-## قنوات الأوامر
+## settings.channels.title
 
-القنوات التي سيتفاعل فيها البوت مع الأوامر.
+settings.channels.description
 
 Type: `Channel[]`
 
@@ -271,9 +271,9 @@ Reset to default:
 
 ---
 
-## القنوات المتجاهلة
+## settings.ignoredChannels.title
 
-القنوات التي سيتجاهل فيها البوت الأوامر.
+settings.ignoredChannels.description
 
 Type: `Channel[]`
 
@@ -286,9 +286,9 @@ Reset to default:
 
 ---
 
-## رساله
+## settings.joinMessage.title
 
-الرسالة المرسلة عندما يدخل شخص ما الخادم/السيرفر.
+settings.joinMessage.description
 
 Type: `String`
 
@@ -301,9 +301,9 @@ Reset to default:
 
 ---
 
-## قناه الرسائل
+## settings.joinMessageChannel.title
 
-القناة التي يتم إرسال رسالة الدخول فيها.
+settings.joinMessageChannel.description
 
 Type: `Channel`
 
@@ -322,9 +322,9 @@ Examples:
 
 ---
 
-## رساله
+## settings.leaveMessage.title
 
-الرسالة المرسلة عندما يترك شخص ما الخادم/السيرفر.
+settings.leaveMessage.description
 
 Type: `String`
 
@@ -343,9 +343,9 @@ Examples:
 
 ---
 
-## قناه الرسائل
+## settings.leaveMessageChannel.title
 
-القناة التي يتم إرسال رسالة الخروج فيها.
+settings.leaveMessageChannel.description
 
 Type: `Channel`
 
@@ -364,9 +364,9 @@ Examples:
 
 ---
 
-## اسلوب
+## settings.leaderboardStyle.title
 
-مظهر اسلوب المتصدرين
+settings.leaderboardStyle.description
 
 Type: `Enum<LeaderboardStyle>`
 
@@ -385,9 +385,9 @@ Example:
 
 ---
 
-## اخفي الاعضاء الذين خرجوا
+## settings.hideLeftMembersFromLeaderboard.title
 
-إخفاء الأعضاء الذين تركوا الخادم من المتصدرين
+settings.hideLeftMembersFromLeaderboard.description
 
 Type: `Boolean`
 
@@ -408,9 +408,9 @@ Disable:
 
 ---
 
-## طرح تلقائي
+## settings.autoSubtractFakes.title
 
-ازاله الدعوات المزورة تلقائياً
+settings.autoSubtractFakes.description
 
 Type: `Boolean`
 
@@ -431,9 +431,9 @@ Disable:
 
 ---
 
-## طرح تلقائي
+## settings.autoSubtractLeaves.title
 
-ازالة الدعوات تلقائيًا من المدعو عندما يغادر
+settings.autoSubtractLeaves.description
 
 Type: `Boolean`
 
@@ -454,9 +454,9 @@ Disable:
 
 ---
 
-## بداية الطرح التلقائي
+## settings.autoSubtractLeaveThreshold.title
 
-الوقت بالثواني الذي يتعين على المستخدم البقاء فيه في السيرفر للدعوه للعد
+settings.autoSubtractLeaveThreshold.description
 
 Type: `Number`
 
@@ -475,9 +475,9 @@ Examples:
 
 ---
 
-## أسلوب الواجب
+## settings.rankAssignmentStyle.title
 
-كيف تتم مكافأة الرتب للمستخدمين.
+settings.rankAssignmentStyle.description
 
 Type: `Enum<RankAssignmentStyle>`
 
@@ -496,9 +496,9 @@ Example:
 
 ---
 
-## قناه التصاريح
+## settings.rankAnnouncementChannel.title
 
-القناة التي يعلن فيها المستخدمون الذين يتلقون رتبة جديدة.
+settings.rankAnnouncementChannel.description
 
 Type: `Channel`
 
@@ -517,9 +517,9 @@ Examples:
 
 ---
 
-## رساله التصريح
+## settings.rankAnnouncementMessage.title
 
-الرسالة التي يتم إرسالها عندما يتلقى المستخدم رتبة جديدة.
+settings.rankAnnouncementMessage.description
 
 Type: `String`
 
@@ -538,9 +538,9 @@ Examples:
 
 ---
 
-## مفعل
+## settings.captchaVerificationOnJoin.title
 
-سواء تم تفعيل التحقق من كلمة التحقق أم لا.
+settings.captchaVerificationOnJoin.description
 
 Type: `Boolean`
 
@@ -561,9 +561,9 @@ Disable:
 
 ---
 
-## رسالة الترحيب
+## settings.captchaVerificationWelcomeMessage.title
 
-الرسالة التي سيحصل عليها المستخدم بعد الانضمام إلى الخادم وتوجيهه لدخول اختبار كلمة التحقق.
+settings.captchaVerificationWelcomeMessage.description
 
 Type: `String`
 
@@ -580,9 +580,9 @@ Examples:
 
 ---
 
-## رسالة النجاح
+## settings.captchaVerificationSuccessMessage.title
 
-رسالة الترحيب التي سيتم إرسالها إلى المستخدم بعد أن يتحقق بنجاح.
+settings.captchaVerificationSuccessMessage.description
 
 Type: `String`
 
@@ -599,9 +599,9 @@ Examples:
 
 ---
 
-## رسالة فاشلة
+## settings.captchaVerificationFailedMessage.title
 
-الرسالة التي يتم إرسالها عندما يخفق المستخدم بكلمه التحقق.
+settings.captchaVerificationFailedMessage.description
 
 Type: `String`
 
@@ -618,9 +618,9 @@ Examples:
 
 ---
 
-## التحقق من المهلة
+## settings.captchaVerificationTimeout.title
 
-الوقت الذي يتم فيه إدخال كلمة التحقق بنجاح.
+settings.captchaVerificationTimeout.description
 
 Type: `Number`
 
@@ -639,9 +639,9 @@ Examples:
 
 ---
 
-## السجل مفعل
+## settings.captchaVerificationLogEnabled.title
 
-سواء سيتم تسجيل محاولات التحقق ام لا.
+settings.captchaVerificationLogEnabled.description
 
 Type: `Boolean`
 
@@ -662,7 +662,7 @@ Disable:
 
 ---
 
-## تمكين
+## settings.autoModEnabled.title
 
 settings.autoModEnabled.description
 
@@ -685,7 +685,7 @@ Disable:
 
 ---
 
-## Moderated Channels
+## settings.autoModModeratedChannels.title
 
 settings.autoModModeratedChannels.description
 
@@ -706,7 +706,7 @@ Examples:
 
 ---
 
-## Moderated Roles
+## settings.autoModModeratedRoles.title
 
 settings.autoModModeratedRoles.description
 
@@ -727,7 +727,7 @@ Examples:
 
 ---
 
-## القنوات المتجاهلة
+## settings.autoModIgnoredChannels.title
 
 settings.autoModIgnoredChannels.description
 
@@ -748,7 +748,7 @@ Examples:
 
 ---
 
-## تجاهل الأدوار
+## settings.autoModIgnoredRoles.title
 
 settings.autoModIgnoredRoles.description
 
@@ -769,7 +769,7 @@ Examples:
 
 ---
 
-## رتبه صامته
+## settings.mutedRole.title
 
 settings.mutedRole.description
 
@@ -788,7 +788,7 @@ Examples:
 
 ---
 
-## معطل للأعضاء القدامى
+## settings.autoModDisabledForOldMembers.title
 
 settings.autoModDisabledForOldMembers.description
 
@@ -811,7 +811,7 @@ Disable:
 
 ---
 
-## الأعضاء القديمة عتبة
+## settings.autoModDisabledForOldMembersThreshold.title
 
 settings.autoModDisabledForOldMembersThreshold.description
 
@@ -832,7 +832,7 @@ Examples:
 
 ---
 
-## Log Enabled
+## settings.autoModLogEnabled.title
 
 settings.autoModLogEnabled.description
 
@@ -855,9 +855,9 @@ Disable:
 
 ---
 
-## سجل القناه الخاص بالمود
+## settings.modLogChannel.title
 
-القناة التي سيتم نشر سجلات المود فيها.
+settings.modLogChannel.description
 
 Type: `Channel`
 
@@ -876,7 +876,7 @@ Examples:
 
 ---
 
-## حذف رسائل بوت
+## settings.autoModDeleteBotMessage.title
 
 settings.autoModDeleteBotMessage.description
 
@@ -899,7 +899,7 @@ Disable:
 
 ---
 
-## حذف Bot Message Timeout
+## settings.autoModDeleteBotMessageTimeoutInSeconds.title
 
 settings.autoModDeleteBotMessageTimeoutInSeconds.description
 
@@ -920,9 +920,9 @@ Examples:
 
 ---
 
-## حذف رسائل الحظر
+## settings.modPunishmentBanDeleteMessage.title
 
-سواء سيتم حذف رسائل "الحظر" من عدمه تلقائيًا او لا.
+settings.modPunishmentBanDeleteMessage.description
 
 Type: `Boolean`
 
@@ -943,9 +943,9 @@ Disable:
 
 ---
 
-## حذف رسائل الطرد
+## settings.modPunishmentKickDeleteMessage.title
 
-سواء سيتم حذف رسائل "الطرد" من عدمه تلقائيًا او لا.
+settings.modPunishmentKickDeleteMessage.description
 
 Type: `Boolean`
 
@@ -966,9 +966,9 @@ Disable:
 
 ---
 
-## حذف رسائل الحظر
+## settings.modPunishmentSoftbanDeleteMessage.title
 
-سواء سيتم حذف رسائل "الحظر" من عدمه تلقائيًا او لا.
+settings.modPunishmentSoftbanDeleteMessage.description
 
 Type: `Boolean`
 
@@ -989,9 +989,9 @@ Disable:
 
 ---
 
-## حذف رسائل التحذير.
+## settings.modPunishmentWarnDeleteMessage.title
 
-سواء سيتم حذف رسائل "تحذير" من عدمه تلقائيًا او لا.
+settings.modPunishmentWarnDeleteMessage.description
 
 Type: `Boolean`
 
@@ -1012,9 +1012,9 @@ Disable:
 
 ---
 
-## حذف رسائل الصمت
+## settings.modPunishmentMuteDeleteMessage.title
 
-سواء سيتم حذف رسائل "الصمت" من عدمه تلقائيًا او لا.
+settings.modPunishmentMuteDeleteMessage.description
 
 Type: `Boolean`
 
@@ -1035,7 +1035,7 @@ Disable:
 
 ---
 
-## تمكين
+## settings.autoModInvitesEnabled.title
 
 settings.autoModInvitesEnabled.description
 
@@ -1058,7 +1058,7 @@ Disable:
 
 ---
 
-## تمكين
+## settings.autoModLinksEnabled.title
 
 settings.autoModLinksEnabled.description
 
@@ -1081,7 +1081,7 @@ Disable:
 
 ---
 
-## Whitelist
+## settings.autoModLinksWhitelist.title
 
 settings.autoModLinksWhitelist.description
 
@@ -1102,7 +1102,7 @@ Examples:
 
 ---
 
-## القائمة السوداء
+## settings.autoModLinksBlacklist.title
 
 settings.autoModLinksBlacklist.description
 
@@ -1123,7 +1123,7 @@ Examples:
 
 ---
 
-## Follow Redirects
+## settings.autoModLinksFollowRedirects.title
 
 settings.autoModLinksFollowRedirects.description
 
@@ -1146,9 +1146,9 @@ Disable:
 
 ---
 
-## مفعل
+## settings.autoModWordsEnabled.title
 
-سواء سيتم التحقق تلقائياً من رسائل المحظوره او لا.
+settings.autoModWordsEnabled.description
 
 Type: `Boolean`
 
@@ -1169,9 +1169,9 @@ Disable:
 
 ---
 
-## حظر
+## settings.autoModWordsBlacklist.title
 
-قائمه من الكلمات المحظوره
+settings.autoModWordsBlacklist.description
 
 Type: `String[]`
 
@@ -1190,7 +1190,7 @@ Examples:
 
 ---
 
-## تمكين
+## settings.autoModAllCapsEnabled.title
 
 settings.autoModAllCapsEnabled.description
 
@@ -1213,7 +1213,7 @@ Disable:
 
 ---
 
-## الحد الأدنى من الشخصيات
+## settings.autoModAllCapsMinCharacters.title
 
 settings.autoModAllCapsMinCharacters.description
 
@@ -1234,7 +1234,7 @@ Examples:
 
 ---
 
-## النسبة المئوية CAPs
+## settings.autoModAllCapsPercentageCaps.title
 
 settings.autoModAllCapsPercentageCaps.description
 
@@ -1255,7 +1255,7 @@ Examples:
 
 ---
 
-## تمكين
+## settings.autoModDuplicateTextEnabled.title
 
 settings.autoModDuplicateTextEnabled.description
 
@@ -1278,7 +1278,7 @@ Disable:
 
 ---
 
-## الإطار الزمني بالثواني
+## settings.autoModDuplicateTextTimeframeInSeconds.title
 
 settings.autoModDuplicateTextTimeframeInSeconds.description
 
@@ -1299,7 +1299,7 @@ Examples:
 
 ---
 
-## مفعل
+## settings.autoModQuickMessagesEnabled.title
 
 settings.autoModQuickMessagesEnabled.description
 
@@ -1322,7 +1322,7 @@ Disable:
 
 ---
 
-## # من الرسائل
+## settings.autoModQuickMessagesNumberOfMessages.title
 
 settings.autoModQuickMessagesNumberOfMessages.description
 
@@ -1343,7 +1343,7 @@ Examples:
 
 ---
 
-## الإطار الزمني بالثواني
+## settings.autoModQuickMessagesTimeframeInSeconds.title
 
 settings.autoModQuickMessagesTimeframeInSeconds.description
 
@@ -1364,7 +1364,7 @@ Examples:
 
 ---
 
-## تمكين
+## settings.autoModMentionUsersEnabled.title
 
 settings.autoModMentionUsersEnabled.description
 
@@ -1387,7 +1387,7 @@ Disable:
 
 ---
 
-## Max # of Mentions
+## settings.autoModMentionUsersMaxNumberOfMentions.title
 
 settings.autoModMentionUsersMaxNumberOfMentions.description
 
@@ -1408,7 +1408,7 @@ Examples:
 
 ---
 
-## تمكين
+## settings.autoModMentionRolesEnabled.title
 
 settings.autoModMentionRolesEnabled.description
 
@@ -1431,7 +1431,7 @@ Disable:
 
 ---
 
-## Max # of Mentions
+## settings.autoModMentionRolesMaxNumberOfMentions.title
 
 settings.autoModMentionRolesMaxNumberOfMentions.description
 
@@ -1452,7 +1452,7 @@ Examples:
 
 ---
 
-## تمكين
+## settings.autoModEmojisEnabled.title
 
 settings.autoModEmojisEnabled.description
 
@@ -1475,7 +1475,7 @@ Disable:
 
 ---
 
-## ماكس # من Emojis
+## settings.autoModEmojisMaxNumberOfEmojis.title
 
 settings.autoModEmojisMaxNumberOfEmojis.description
 
@@ -1496,7 +1496,7 @@ Examples:
 
 ---
 
-## Dehoist ممكن
+## settings.autoModHoistEnabled.title
 
 settings.autoModHoistEnabled.description
 
@@ -1519,9 +1519,9 @@ Disable:
 
 ---
 
-## طبقة صوت الموسيقى
+## settings.musicVolume.title
 
-الصوت المعتاد الذي تم ضبطه عند دخول بوت لقناه صوتيه.
+settings.musicVolume.description
 
 Type: `Number`
 
@@ -1534,9 +1534,9 @@ Reset to default:
 
 ---
 
-## اعلان الاغنيه التاليه
+## settings.announceNextSong.title
 
-ما إذا كان سيتم الإعلان عن الأغنية التالية في القناة الصوتية أم لا.
+settings.announceNextSong.description
 
 Type: `Boolean`
 
@@ -1557,9 +1557,9 @@ Disable:
 
 ---
 
-## صوت الاعلانات.
+## settings.announcementVoice.title
 
-الصوت المستخدم في إعلانات الأغنية التاليه.
+settings.announcementVoice.description
 
 Type: `Enum<AnnouncementVoice>`
 
@@ -1578,9 +1578,9 @@ Example:
 
 ---
 
-## تلاشي الموسيقى على التكلم
+## settings.fadeMusicOnTalk.title
 
-اذا مفعل, الموسيقى ستبدأ بالتلاشي عندما يتحدث الناس
+settings.fadeMusicOnTalk.description
 
 Type: `Boolean`
 
@@ -1601,9 +1601,9 @@ Disable:
 
 ---
 
-## تلاشي الموسيقى نهايه التأخير
+## settings.fadeMusicEndDelay.title
 
-تأخر عدد الثواني التي يجب ألا يتحدث فيها أحد من أجل عودة مستوى الصوت إلى طبيعته.
+settings.fadeMusicEndDelay.description
 
 Type: `Number`
 

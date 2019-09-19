@@ -1,45 +1,44 @@
-- Getting Started
+- さあ-始めよう
 
-  - [Quick Start](/ja/getting-started/quick-start.md)
+  - [クイック-スタート](/ja/getting-started/quick-start.md)
   - [FAQs](/ja/getting-started/faq.md)
-  - [Alpha Bot](/ja/getting-started/alpha.md)
+  - [アルファ Bot](/ja/getting-started/alpha.md)
   - [Pro Bot](/ja/getting-started/pro.md)
 
-- Reference
+- 参照
 
-  - [Commands](/ja/reference/commands.md)
+  - [コマンド](/ja/reference/commands.md)
   - [Configs / Settings](/ja/reference/settings.md)
 
-- Premium
+- プレミアム
 
-  - [Features](/ja/premium/features.md)
-  - [Tiers](/ja/premium/tiers.md)
-  - [Setting Up Pro](/ja/premium/setting-up.md)
+  - [特徴](/ja/premium/features.md)
+  - [ティア](/ja/premium/tiers.md)
+  - [セットアップ](/ja/premium/setup.md)
 
-- Modules
+- モジュール
 
   - Invite Management
 
-    - [Overview](/ja/modules/invites/commands.md)
-    - [Custom Messages](/ja/modules/invites/custom-messages.md)
-      - [Examples](/ja/modules/invites/examples.md)
+    - [オーバービュー](/ja/modules/invites/overview.md)
+    - [カスタム-メッセージ](/ja/modules/invites/custom-message.md)
+      - [例](/ja/modules/invites/examples.md)
 
-  - Moderation
+  - 管理
 
-    - [Overview](/ja/modules/moderation/overview.md)
-    - [Strikes](/ja/modules/moderation/strikes.md)
-    - [Punishments](/ja/modules/moderation/punishments.md)
+    - [警告](/ja/modules/moderation/strikes.md)
+    - [罰](/ja/modules/moderation/punishments.md)
 
-  - Music
+  - 音楽
 
-    - [Overview](/ja/modules/music/overview.md)
+    - [オーバービュー](/ja/modules/music/overview.md)
 
-- Other
+- その他
 
-  - [Webpanel](/ja/other/webpanel.md)
-  - [Translations](/ja/other/translations.md)
-  - [Donating](/ja/other/donating.md)
-  - [Support](/ja/other/support.md)
-  - [Changelog](/ja/other/changelog.md)
-  - [Roadmap](/ja/other/roadmap.md)
-  - [Open Source](/ja/other/open-source.md)
+  - [ウェブパネル](/ja/other/webpanel.md)
+  - [翻訳](/ja/other/translations.md)
+  - [寄付](/ja/other/donating.md)
+  - [サポート](/ja/other/support.md)
+  - [チェンジログ](/ja/other/changelog.md)
+  - [ロードマップ](/ja/other/roadmap.md)
+  - [オープン-ソース](/ja/other/open-source.md)

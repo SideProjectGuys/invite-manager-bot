@@ -14,19 +14,18 @@
 
   - [Features](/id-ID/premium/features.md)
   - [Tiers](/id-ID/premium/tiers.md)
-  - [Setting Up Pro](/id-ID/premium/setting-up.md)
+  - [Setup](/id-ID/premium/setup.md)
 
 - Modules
 
   - Invite Management
 
-    - [Overview](/id-ID/modules/invites/commands.md)
-    - [Custom Messages](/id-ID/modules/invites/custom-messages.md)
-      - [Examples](/id-ID/modules/invites/examples.md)
+    - [Gambaran](/id-ID/modules/invites/overview.md)
+    - [Pesan khusus](/id-ID/modules/invites/custom-message.md)
+      - [Contoh](/id-ID/modules/invites/examples.md)
 
-  - Moderation
+  - Moderasi
 
-    - [Overview](/id-ID/modules/moderation/overview.md)
     - [Strikes](/id-ID/modules/moderation/strikes.md)
     - [Punishments](/id-ID/modules/moderation/punishments.md)
 

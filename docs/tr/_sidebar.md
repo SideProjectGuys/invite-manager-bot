@@ -14,19 +14,18 @@
 
   - [Features](/tr/premium/features.md)
   - [Tiers](/tr/premium/tiers.md)
-  - [Setting Up Pro](/tr/premium/setting-up.md)
+  - [Setup](/tr/premium/setup.md)
 
 - Modules
 
   - Invite Management
 
-    - [Overview](/tr/modules/invites/commands.md)
-    - [Custom Messages](/tr/modules/invites/custom-messages.md)
+    - [Overview](/tr/modules/invites/overview.md)
+    - [Custom message](/tr/modules/invites/custom-message.md)
       - [Examples](/tr/modules/invites/examples.md)
 
   - Moderation
 
-    - [Overview](/tr/modules/moderation/overview.md)
     - [Strikes](/tr/modules/moderation/strikes.md)
     - [Punishments](/tr/modules/moderation/punishments.md)
 

@@ -1,4 +1,4 @@
-# FAQ
+# FAQs}
 
 ## How do I change the prefix of the bot?
 
@@ -28,9 +28,9 @@ or
 
 `!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
 
-There are many placeholders available. You can see the full list on the "[Custom Messages](modules/invites/custom-messages.md?id=placeholders)" page.
+There are many placeholders available. You can see the full list on the '[Custom Messages](/pl/modules/invites/custom-messages.md)' page.
 
-## What are "Ranks" and how can I use them?
+## What are 'Ranks' and how can I use them?
 
 Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!
 
@@ -40,4 +40,4 @@ Take away the read message permissions in the channels where you don't want the 
 
 ## Limitation: No advanced tracking before the bot joins
 
-Advanced tracking \(who invited who\) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot.
+Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot.

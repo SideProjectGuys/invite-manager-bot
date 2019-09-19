@@ -14,19 +14,18 @@
 
   - [Features](/ro/premium/features.md)
   - [Tiers](/ro/premium/tiers.md)
-  - [Setting Up Pro](/ro/premium/setting-up.md)
+  - [Setup](/ro/premium/setup.md)
 
 - Modules
 
   - Invite Management
 
-    - [Overview](/ro/modules/invites/commands.md)
-    - [Custom Messages](/ro/modules/invites/custom-messages.md)
+    - [Overview](/ro/modules/invites/overview.md)
+    - [Custom message](/ro/modules/invites/custom-message.md)
       - [Examples](/ro/modules/invites/examples.md)
 
   - Moderation
 
-    - [Overview](/ro/modules/moderation/overview.md)
     - [Strikes](/ro/modules/moderation/strikes.md)
     - [Punishments](/ro/modules/moderation/punishments.md)
 

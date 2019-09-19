@@ -7,69 +7,47 @@ To get a list of available commands, do !help on your server.
 Most commands accept arguments and/or flags.  
 According to the **Type** of the argument or flag you can provide different values.
 
-### Booléen
+### resolvers.boolean.type
 
-This arguments expects `true` or `false`. You can also use `yes` and `no`.
+resolvers.boolean.typeInfo
 
-### Nombre
+### resolvers.number.type
 
-This arguments expects a number
+resolvers.number.typeInfo
 
-### Énumération
+### resolvers.enum.type
 
-This arguments expects a value from a specific set of valid values.
+resolvers.enum.typeInfo
 
-> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.
+### resolvers.invitecode.type
 
-### Code d'invitation
+resolvers.invitecode.typeInfo
 
-This arguments expects a Discord Invite Code.
+### resolvers.user.type
 
-> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.
+resolvers.user.typeInfo
 
-### Utilisateur
+### resolvers.role.type
 
-This arguments expects a Discord User. You can use any of the following methods to provide a user:
+resolvers.role.typeInfo
 
-- Mention the user: `@Valandur`
-- Use their ID: `102785693046026240`
-- Use their name: `Valandur`
-- Use their name and discriminator: `Valandur#3581`
-- Use quotes if their name has a space: `"Valandur with a space"`
+### resolvers.channel.type
 
-### Role
+resolvers.channel.typeInfo
 
-This arguments expects a Discord Role. You can use any of the following methods to provide a role:
-
-- Mention the role: `@Admin`
-- Use the ID: `102785693046026240`
-- Use the name: `Admin`
-- Use quotes if the name has a space: `"Admin with a space"`
-
-### Salon
-
-This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:
-
-- Mention the channel: `#general`
-- Use the ID: `409846838129197057`
-- Use the name: `general`
-- Use quotes if the name has a space: `"general with a space"`
-
-### Commande
+### resolvers.command.type
 
 resolvers.command.typeInfo
 
-### Texte
+### resolvers.string.type
 
-This arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.
+resolvers.string.typeInfo
 
-> If the text is the last argument you don't have to use quotes.
-
-### Date
+### resolvers.date.type
 
 resolvers.date.typeInfo
 
-### Durée
+### resolvers.duration.type
 
 resolvers.duration.typeInfo
 
@@ -77,114 +55,114 @@ resolvers.duration.typeInfo
 
 ### Invites
 
-| Command                           | Description                                                                                | Usage                                                            |
-| --------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | Ajoute/supprime des invitations d'un membre.                                               | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Effacer les invitations du serveur/d'un utilisateur.                                       | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | Crée des codes d'invitation uniques.                                                       | !createInvite \<name\> [channel]                                 |
-| [fake](#fake)                     | Aidez les utilisateurs à essayer de tricher.                                               | !fake [page]                                                     |
-| [info](#info)                     | Afficher des informations sur un membre spécifique.                                        | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | Obtenez une liste de tous vos codes d'invitation.                                          | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | Affiche des détails sur l'origine de vos invitations.                                      | !inviteDetails [user]                                            |
-| [invites](#invites)               | Afficher les invitations personnelles.                                                     | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Afficher les membres avec le plus d'invitations.                                           | !leaderboard [-c value\|--compare=value][duration] [page]        |
-| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description                                                         | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | Restaurez toutes les invitations précédemment effacées.                                    | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | Supprimez les fausses invitations de tous les utilisateurs.                                | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | Supprimer le nombre des invitations des personne qui ont quitter de tous les utilisateurs. | !subtractLeaves                                                  |
+| Command                           | Description                         | Usage                                                            |
+| --------------------------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | cmd.addInvites.self.description     | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | cmd.clearInvites.self.description   | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | cmd.createInvite.self.description   | !createInvite \<name\> [channel]                                 |
+| [fake](#fake)                     | cmd.fake.self.description           | !fake [page]                                                     |
+| [info](#info)                     | cmd.info.self.description           | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | cmd.inviteCodes.self.description    | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | cmd.inviteDetails.self.description  | !inviteDetails [user]                                            |
+| [invites](#invites)               | cmd.invites.self.description        | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | cmd.leaderboard.self.description    | !leaderboard [-c value\|--compare=value][duration] [page]        |
+| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description  | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | cmd.restoreInvites.self.description | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | cmd.subtractFakes.self.description  | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | cmd.subtractLeaves.self.description | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                   | Usage                                |
-| ------------------------- | ----------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Ajouter un nouveau Ranks.     | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description | !fixRanks                            |
-| [ranks](#ranks)           | Montrer tous les rangs.       | !ranks [page]                        |
-| [removeRank](#removeRank) | Supprimer un rang.            | !removeRank \<rank\>                 |
+| Command                   | Description                     | Usage                                |
+| ------------------------- | ------------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | cmd.addRank.self.description    | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description   | !fixRanks                            |
+| [ranks](#ranks)           | cmd.ranks.self.description      | !ranks [page]                        |
+| [removeRank](#removeRank) | cmd.removeRank.self.description | !removeRank \<rank\>                 |
 
 ### Config
 
-| Command                                 | Description                                                            | Usage                                       |
-| --------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Afficher et changer la configuration du bot.                           | !botConfig [key][value]                     |
-| [config](#config)                       | Affiche et modifie la configuration du serveur.                        | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | Configuration interactive                                              | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | Affiche et modifie la configuration des codes d'invitation du serveur. | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | Affiche et modifie la configuration des membres du serveur.            | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | Configurez les permissions pour utiliser des commandes.                | !permissions [cmd][role]                    |
+| Command                                 | Description                            | Usage                                       |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------- |
+| [botConfig](#botConfig)                 | cmd.botConfig.self.description         | !botConfig [key][value]                     |
+| [config](#config)                       | cmd.config.self.description            | !config [key][value]                        |
+| [interactiveConfig](#interactiveConfig) | cmd.interactiveConfig.self.description | !interactiveConfig                          |
+| [inviteCodeConfig](#inviteCodeConfig)   | cmd.inviteCodeConfig.self.description  | !inviteCodeConfig [key][invitecode] [value] |
+| [memberConfig](#memberConfig)           | cmd.memberConfig.self.description      | !memberConfig [key][user] [value]           |
+| [permissions](#permissions)             | cmd.permissions.self.description       | !permissions [cmd][role]                    |
 
 ### Info
 
-| Command             | Description                                                                                           | Usage           |
-| ------------------- | ----------------------------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Obtenez des informations à propos du bot.                                                             | !botInfo        |
-| [credits](#credits) | Afficher les développeurs et les contributeurs du bot.                                                | !credits        |
-| [getBot](#getBot)   | Obtenez un lien d'invitation pour le bot.                                                             | !getBot         |
-| [help](#help)       | Afficher l'aide.                                                                                      | !help [command] |
-| [members](#members) | Afficher le nombre de membres du serveur actuel.                                                      | !members        |
-| [ping](#ping)       | Mentionner le bot                                                                                     | !ping           |
-| [prefix](#prefix)   | Affiche le préfixe actuel du bot.                                                                     | !prefix         |
-| [setup](#setup)     | Aide à la configuration du bot et à la recherche de problèmes (par exemple: autorisations manquantes) | !setup          |
-| [support](#support) | Obtenez un lien d'invitation vers notre serveur d'assistance.                                         | !support        |
+| Command             | Description                  | Usage           |
+| ------------------- | ---------------------------- | --------------- |
+| [botInfo](#botInfo) | cmd.botInfo.self.description | !botInfo        |
+| [credits](#credits) | cmd.credits.self.description | !credits        |
+| [getBot](#getBot)   | cmd.getBot.self.description  | !getBot         |
+| [help](#help)       | cmd.help.self.description    | !help [command] |
+| [members](#members) | cmd.members.self.description | !members        |
+| [ping](#ping)       | cmd.ping.self.description    | !ping           |
+| [prefix](#prefix)   | cmd.prefix.self.description  | !prefix         |
+| [setup](#setup)     | cmd.setup.self.description   | !setup          |
+| [support](#support) | cmd.support.self.description | !support        |
 
 ### Premium
 
-| Command                   | Description                                                                     | Usage             |
-| ------------------------- | ------------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Exportez les données d'InviteManager vers une feuille de calculs CSV.           | !export \<type\>  |
-| [premium](#premium)       | Informations sur la version premium d'InviteManager.                            | !premium [action] |
-| [tryPremium](#tryPremium) | Essayez gratuitement la version premium d’InviteManager pour une durée limitée. | !tryPremium       |
+| Command                   | Description                     | Usage             |
+| ------------------------- | ------------------------------- | ----------------- |
+| [export](#export)         | cmd.export.self.description     | !export \<type\>  |
+| [premium](#premium)       | cmd.premium.self.description    | !premium [action] |
+| [tryPremium](#tryPremium) | cmd.tryPremium.self.description | !tryPremium       |
 
 ### Moderation
 
-| Command                               | Description                                                                                                              | Usage                                                            |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Bannir un membre du serveur.                                                                                             | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Supprimer un cas spécifique.                                                                                             | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | Voir les informations sur un cas spécifique.                                                                             | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Vérifier la violation et l'historique des punitions d'un utilisateur.                                                    | !check \<user\>                                                  |
-| [clean](#clean)                       | Nettoyer un salon de certains messages.                                                                                  | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Effacer les messages courts.                                                                                             | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Supprimer les messages contenant certains mots clefs.                                                                    | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Expulser un membre du serveur.                                                                                           | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | Muter un joueur                                                                                                          | !mute \<user\> [reason]                                          |
-| [punishmentConfig](#punishmentConfig) | Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.                                            | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | Purger les messages dans un canal.                                                                                       | !purge \<quantity\> [user]                                       |
-| [purgeUntil](#purgeUntil)             | Purger les messages dans un salon jusqu'à un message spécifié.                                                           | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | Bannir puis automatiquement dé-bannir un membre du serveur.                                                              | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | Ajouter des avertissements à un utilisateur                                                                              | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | Configurez les Strike reçues pour diverses violations.                                                                   | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | Dé-bannir un utilisateur                                                                                                 | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | Ajoute un caractère spécial devant le nom de chaque membre, donc ils seront affichés en dernier de la liste des membres. | !unhoist                                                         |
-| [unmute](#unmute)                     | Démuter un utilisateur                                                                                                   | !unmute \<user\>                                                 |
-| [warn](#warn)                         | Avertir un membre.                                                                                                       | !warn \<member\> [reason]                                        |
+| Command                               | Description                           | Usage                                                            |
+| ------------------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| [ban](#ban)                           | cmd.ban.self.description              | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | cmd.caseDelete.self.description       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | cmd.caseView.self.description         | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | cmd.check.self.description            | !check \<user\>                                                  |
+| [clean](#clean)                       | cmd.clean.self.description            | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | cmd.cleanShort.self.description       | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | cmd.cleanText.self.description        | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | cmd.kick.self.description             | !kick \<member\> [reason]                                        |
+| [mute](#mute)                         | cmd.mute.self.description             | !mute \<user\> [reason]                                          |
+| [punishmentConfig](#punishmentConfig) | cmd.punishmentConfig.self.description | !punishmentConfig [punishment][strikes] [args]                   |
+| [purge](#purge)                       | cmd.purge.self.description            | !purge \<quantity\> [user]                                       |
+| [purgeUntil](#purgeUntil)             | cmd.purgeUntil.self.description       | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | cmd.softBan.self.description          | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | cmd.strike.self.description           | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | cmd.strikeConfig.self.description     | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | cmd.unban.self.description            | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | cmd.unhoist.self.description          | !unhoist                                                         |
+| [unmute](#unmute)                     | cmd.unmute.self.description           | !unmute \<user\>                                                 |
+| [warn](#warn)                         | cmd.warn.self.description             | !warn \<member\> [reason]                                        |
 
 ### Music
 
-| Command                   | Description                                                                                    | Usage                                                   |
-| ------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | Déconnecter le bot du salon actuel.                                                            | !disconnect                                             |
-| [lyrics](#lyrics)         | Montrer les paroles de la chanson actuelle.                                                    | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | Créer un mashup des 2 chansons.                                                                | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | Montre les informations à propos de la musique en cours de lecture                             | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | Mettre en pause la chanson actuelle.                                                           | !pause                                                  |
-| [play](#play)             | Joue la musique si la file d'attente est vide, et ajoute la musique à la fin de la file sinon. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | Affiche les musiques en attente.                                                               | !queue                                                  |
-| [repeat](#repeat)         | Répète la musique indéfiniment.                                                                | !repeat                                                 |
-| [resume](#resume)         | Reprendre la musique en cours.                                                                 | !resume                                                 |
-| [rewind](#rewind)         | Rejoue la musique depuis le début.                                                             | !rewind                                                 |
-| [search](#search)         | Recherche le nom et vous laisse choisir un des résultats.                                      | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | Passer à une partie spécifique de la musique.                                                  | !seek [duration]                                        |
-| [skip](#skip)             | Passe la musique jouée et joue la musique suivante dans la file d'attente.                     | !skip [amount]                                          |
-| [volume](#volume)         | Défini le volume si une valeur est donnée, ou montre le volume actuel.                         | !volume [volume]                                        |
+| Command                   | Description                     | Usage                                                   |
+| ------------------------- | ------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | cmd.disconnect.self.description | !disconnect                                             |
+| [lyrics](#lyrics)         | cmd.lyrics.self.description     | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | cmd.mashup.self.description     | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | cmd.nowPlaying.self.description | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | cmd.pause.self.description      | !pause                                                  |
+| [play](#play)             | cmd.play.self.description       | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | cmd.queue.self.description      | !queue                                                  |
+| [repeat](#repeat)         | cmd.repeat.self.description     | !repeat                                                 |
+| [resume](#resume)         | cmd.resume.self.description     | !resume                                                 |
+| [rewind](#rewind)         | cmd.rewind.self.description     | !rewind                                                 |
+| [search](#search)         | cmd.search.self.description     | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | cmd.seek.self.description       | !seek [duration]                                        |
+| [skip](#skip)             | cmd.skip.self.description       | !skip [amount]                                          |
+| [volume](#volume)         | cmd.volume.self.description     | !volume [volume]                                        |
 
 ### Other
 
-| Command                             | Description                                                                       | Usage                      |
-| ----------------------------------- | --------------------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Affiche des graphiques sur différentes statistiques sur ce serveur.               | !graph \<type\> [duration] |
-| [makeMentionable](#makeMentionable) | Faites un rôle mentionnable pendant 60 secondes ou jusqu'à ce qu'il soit utilisé. | !makeMentionable \<role\>  |
-| [mentionRole](#mentionRole)         | Mentionnez un rôle non-mentionnable.                                              | !mentionRole \<role\>      |
+| Command                             | Description                          | Usage                      |
+| ----------------------------------- | ------------------------------------ | -------------------------- |
+| [graph](#graph)                     | cmd.graph.self.description           | !graph \<type\> [duration] |
+| [makeMentionable](#makeMentionable) | cmd.makeMentionable.self.description | !makeMentionable \<role\>  |
+| [mentionRole](#mentionRole)         | cmd.mentionRole.self.description     | !mentionRole \<role\>      |
 
 <a name='addInvites'></a>
 
@@ -192,7 +170,7 @@ resolvers.duration.typeInfo
 
 ## !addInvites
 
-Ajoute/supprime des invitations d'un membre.
+cmd.addInvites.self.description
 
 ### Usage
 
@@ -206,11 +184,11 @@ Ajoute/supprime des invitations d'un membre.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                                                                                      | Details |
-| -------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | L'utilisateur recevra / perdra le bonus invite                                                                                   |         |
-| amount   | [Nombre](#Nombre)           | Yes      | La quantité d'invitations que l'utilisateur va recevoir / perdre. Utilisez un nombre négatif (-) pour supprimer les invitations. |         |
-| reason   | [Texte](#Texte)             | No       | La raison de l'ajout / suppression des invitations.                                                                              |         |
+| Argument | Type                                            | Required | Description                     | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.addInvites.self.args.user   |         |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addInvites.self.args.amount |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addInvites.self.args.reason |         |
 
 ### Examples
 
@@ -228,7 +206,7 @@ Ajoute/supprime des invitations d'un membre.
 
 ## !addRank
 
-Ajouter un nouveau Ranks.
+cmd.addRank.self.description
 
 ### Usage
 
@@ -244,11 +222,11 @@ Ajouter un nouveau Ranks.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                                   | Details |
-| -------- | ----------------- | -------- | ----------------------------------------------------------------------------- | ------- |
-| role     | [Role](#Role)     | Yes      | Le rôle que l'utilisateur recevra lorsqu'il atteindra ce rang.                |         |
-| invites  | [Nombre](#Nombre) | Yes      | La quantité d'invitations nécessaires pour atteindre le rang.                 |         |
-| info     | [Texte](#Texte)   | No       | Une description que les utilisateurs verront pour en savoir plus sur ce rang. |         |
+| Argument | Type                                            | Required | Description                   | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------------- | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type)     | Yes      | cmd.addRank.self.args.role    |         |
+| invites  | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.addRank.self.args.invites |         |
+| info     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.addRank.self.args.info    |         |
 
 ### Examples
 
@@ -266,7 +244,7 @@ Ajouter un nouveau Ranks.
 
 ## !ban
 
-Bannir un membre du serveur.
+cmd.ban.self.description
 
 ### Usage
 
@@ -276,16 +254,16 @@ Bannir un membre du serveur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                              | Details |
-| -------- | --------------------------- | -------- | ---------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | Utilisateur à bannir.                    |         |
-| reason   | [Texte](#Texte)             | No       | Pourquoi l'utilisateur a-t-il été banni? |         |
+| Argument | Type                                            | Required | Description              | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.ban.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.ban.self.args.reason |         |
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Nombre](#Nombre) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type                                            | Description                          |
+| --------------------------------- | --------- | ----------------------------------------------- | ------------------------------------ |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.ban.self.flags.deleteMessageDays |
 
 ### Examples
 
@@ -295,7 +273,7 @@ Bannir un membre du serveur.
 
 ## !botConfig
 
-Afficher et changer la configuration du bot.
+cmd.botConfig.self.description
 
 ### Usage
 
@@ -311,10 +289,10 @@ Afficher et changer la configuration du bot.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                              | Details                                                                                                                                         |
-| -------- | --------------------------- | -------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Énumération](#Énumération) | No       | Les paramètres de configurations que vous souhaitez afficher / modifier. | Utilisez une des valeurs suivantes : `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Valeur](#Valeur)           | No       | La nouvelle valeur du paramètre.                                         |                                                                                                                                                 |
+| Argument | Type                                                          | Required | Description                   | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | ----------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.botConfig.self.args.key   | resolvers.enum.validValues |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.botConfig.self.args.value |                            |
 
 ### Examples
 
@@ -328,7 +306,7 @@ Afficher et changer la configuration du bot.
 
 ## !botInfo
 
-Obtenez des informations à propos du bot.
+cmd.botInfo.self.description
 
 ### Usage
 
@@ -352,7 +330,7 @@ Obtenez des informations à propos du bot.
 
 ## !caseDelete
 
-Supprimer un cas spécifique.
+cmd.caseDelete.self.description
 
 ### Usage
 
@@ -368,10 +346,10 @@ Supprimer un cas spécifique.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                         | Details |
-| ---------- | ----------------- | -------- | ----------------------------------- | ------- |
-| caseNumber | [Nombre](#Nombre) | Yes      | Numéro du cas                       |         |
-| reason     | [Texte](#Texte)   | No       | La raison de la suppression du cas. |         |
+| Argument   | Type                                            | Required | Description                         | Details |
+| ---------- | ----------------------------------------------- | -------- | ----------------------------------- | ------- |
+| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseDelete.self.args.caseNumber |         |
+| reason     | [resolvers.string.type](#resolvers.string.type) | No       | cmd.caseDelete.self.args.reason     |         |
 
 ### Examples
 
@@ -385,7 +363,7 @@ Supprimer un cas spécifique.
 
 ## !caseView
 
-Voir les informations sur un cas spécifique.
+cmd.caseView.self.description
 
 ### Usage
 
@@ -401,9 +379,9 @@ Voir les informations sur un cas spécifique.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description   | Details |
-| ---------- | ----------------- | -------- | ------------- | ------- |
-| caseNumber | [Nombre](#Nombre) | Yes      | Numéro du cas |         |
+| Argument   | Type                                            | Required | Description                       | Details |
+| ---------- | ----------------------------------------------- | -------- | --------------------------------- | ------- |
+| caseNumber | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.caseView.self.args.caseNumber |         |
 
 ### Examples
 
@@ -417,7 +395,7 @@ Voir les informations sur un cas spécifique.
 
 ## !check
 
-Vérifier la violation et l'historique des punitions d'un utilisateur.
+cmd.check.self.description
 
 ### Usage
 
@@ -431,9 +409,9 @@ Vérifier la violation et l'historique des punitions d'un utilisateur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description             | Details |
-| -------- | --------------------------- | -------- | ----------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | Utilisateur à vérifier. |         |
+| Argument | Type                                        | Required | Description              | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------ | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | Yes      | cmd.check.self.args.user |         |
 
 ### Examples
 
@@ -451,7 +429,7 @@ Vérifier la violation et l'historique des punitions d'un utilisateur.
 
 ## !clean
 
-Nettoyer un salon de certains messages.
+cmd.clean.self.description
 
 ### Usage
 
@@ -465,10 +443,10 @@ Nettoyer un salon de certains messages.
 
 ### Arguments
 
-| Argument         | Type                        | Required | Description                               | Details                                                                                                                |
-| ---------------- | --------------------------- | -------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| type             | [Énumération](#Énumération) | Yes      | Le type de messages qui seront supprimés. | Utilisez une des valeurs suivantes : `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
-| numberOfMessages | [Nombre](#Nombre)           | No       | Nombre de messages qui seront recherchés. |                                                                                                                        |
+| Argument         | Type                                            | Required | Description                          | Details                    |
+| ---------------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
+| type             | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.clean.self.args.type             | resolvers.enum.validValues |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.clean.self.args.numberOfMessages |                            |
 
 ### Examples
 
@@ -478,7 +456,7 @@ Nettoyer un salon de certains messages.
 
 ## !cleanShort
 
-Effacer les messages courts.
+cmd.cleanShort.self.description
 
 ### Usage
 
@@ -494,10 +472,10 @@ Effacer les messages courts.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                            | Details |
-| ---------------- | ----------------- | -------- | ------------------------------------------------------ | ------- |
-| maxTextLength    | [Nombre](#Nombre) | Yes      | Tous les messages plus courts que ça seront supprimés. |         |
-| numberOfMessages | [Nombre](#Nombre) | No       | Nombre de messages qui seront recherchés.              |         |
+| Argument         | Type                                            | Required | Description                               | Details |
+| ---------------- | ----------------------------------------------- | -------- | ----------------------------------------- | ------- |
+| maxTextLength    | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.cleanShort.self.args.maxTextLength    |         |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanShort.self.args.numberOfMessages |         |
 
 ### Examples
 
@@ -507,7 +485,7 @@ Effacer les messages courts.
 
 ## !cleanText
 
-Supprimer les messages contenant certains mots clefs.
+cmd.cleanText.self.description
 
 ### Usage
 
@@ -523,10 +501,10 @@ Supprimer les messages contenant certains mots clefs.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                           | Details |
-| ---------------- | ----------------- | -------- | ----------------------------------------------------- | ------- |
-| text             | [Texte](#Texte)   | Yes      | Tous les messages contenants ce mot seront supprimés. |         |
-| numberOfMessages | [Nombre](#Nombre) | No       | Nombre de messages qui seront recherchés.             |         |
+| Argument         | Type                                            | Required | Description                              | Details |
+| ---------------- | ----------------------------------------------- | -------- | ---------------------------------------- | ------- |
+| text             | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.cleanText.self.args.text             |         |
+| numberOfMessages | [resolvers.number.type](#resolvers.number.type) | No       | cmd.cleanText.self.args.numberOfMessages |         |
 
 ### Examples
 
@@ -536,7 +514,7 @@ Supprimer les messages contenant certains mots clefs.
 
 ## !clearInvites
 
-Effacer les invitations du serveur/d'un utilisateur.
+cmd.clearInvites.self.description
 
 ### Usage
 
@@ -550,16 +528,16 @@ Effacer les invitations du serveur/d'un utilisateur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                                                                                       | Details |
-| -------- | --------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | No       | L'utilisateur que vous voulez effacer toutes ses invitations. Si pas renseigner, efface les invitations de tous les utilisateurs. |         |
+| Argument | Type                                        | Required | Description                     | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.clearInvites.self.args.user |         |
 
 ### Flags
 
-| Flag                       | Short      | Type                | Description                                                                                                       |
-| -------------------------- | ---------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | La date à laquelle les invitations doivent être comptées. La valeur par défaut est aujourd'hui.                   |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Booléen](#Booléen) | Ajouter ce drapeau pour effacer aussi les invitations bonus. Sinon, les invitations bonus ne seront pas altérées. |
+| Flag                       | Short      | Type                                              | Description                            |
+| -------------------------- | ---------- | ------------------------------------------------- | -------------------------------------- |
+| &#x2011;&#x2011;date       | &#x2011;d  | [resolvers.date.type](#resolvers.date.type)       | cmd.clearInvites.self.flags.date       |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.clearInvites.self.flags.clearBonus |
 
 ### Examples
 
@@ -581,7 +559,7 @@ Effacer les invitations du serveur/d'un utilisateur.
 
 ## !config
 
-Affiche et modifie la configuration du serveur.
+cmd.config.self.description
 
 ### Usage
 
@@ -595,10 +573,10 @@ Affiche et modifie la configuration du serveur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                           | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| -------- | --------------------------- | -------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Énumération](#Énumération) | No       | Le paramètre de configuration que vous souhaitez afficher / modifier. | Utilisez une des valeurs suivantes : `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Valeur](#Valeur)           | No       | La nouvelle valeur du paramétrage.                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Argument | Type                                                          | Required | Description                | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | -------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.config.self.args.key   | resolvers.enum.validValues |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.config.self.args.value |                            |
 
 ### Examples
 
@@ -612,7 +590,7 @@ Affiche et modifie la configuration du serveur.
 
 ## !createInvite
 
-Crée des codes d'invitation uniques.
+cmd.createInvite.self.description
 
 ### Usage
 
@@ -626,10 +604,10 @@ Crée des codes d'invitation uniques.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                                    | Details |
-| -------- | --------------- | -------- | ------------------------------------------------------------------------------ | ------- |
-| name     | [Texte](#Texte) | Yes      | Le nom du code d'invitation.                                                   |         |
-| channel  | [Salon](#Salon) | No       | Le Salon ou le code d'invitation est créé. Utilise le canal actuel par défaut. |         |
+| Argument | Type                                              | Required | Description                        | Details |
+| -------- | ------------------------------------------------- | -------- | ---------------------------------- | ------- |
+| name     | [resolvers.string.type](#resolvers.string.type)   | Yes      | cmd.createInvite.self.args.name    |         |
+| channel  | [resolvers.channel.type](#resolvers.channel.type) | No       | cmd.createInvite.self.args.channel |         |
 
 ### Examples
 
@@ -647,7 +625,7 @@ Crée des codes d'invitation uniques.
 
 ## !credits
 
-Afficher les développeurs et les contributeurs du bot.
+cmd.credits.self.description
 
 ### Usage
 
@@ -667,7 +645,7 @@ Afficher les développeurs et les contributeurs du bot.
 
 ## !disconnect
 
-Déconnecter le bot du salon actuel.
+cmd.disconnect.self.description
 
 ### Usage
 
@@ -687,7 +665,7 @@ Déconnecter le bot du salon actuel.
 
 ## !export
 
-Exportez les données d'InviteManager vers une feuille de calculs CSV.
+cmd.export.self.description
 
 ### Usage
 
@@ -697,9 +675,9 @@ Exportez les données d'InviteManager vers une feuille de calculs CSV.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                            | Details                                            |
-| -------- | --------------------------- | -------- | -------------------------------------- | -------------------------------------------------- |
-| type     | [Énumération](#Énumération) | Yes      | Le type d'exportation que vous voulez. | Utilisez une des valeurs suivantes : `leaderboard` |
+| Argument | Type                                        | Required | Description               | Details                    |
+| -------- | ------------------------------------------- | -------- | ------------------------- | -------------------------- |
+| type     | [resolvers.enum.type](#resolvers.enum.type) | Yes      | cmd.export.self.args.type | resolvers.enum.validValues |
 
 ### Examples
 
@@ -713,7 +691,7 @@ Exportez les données d'InviteManager vers une feuille de calculs CSV.
 
 ## !fake
 
-Aidez les utilisateurs à essayer de tricher.
+cmd.fake.self.description
 
 ### Usage
 
@@ -730,9 +708,9 @@ Aidez les utilisateurs à essayer de tricher.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| page     | [Nombre](#Nombre) | No       | Quelle page de la liste des fakes? |         |
+| Argument | Type                                            | Required | Description             | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.fake.self.args.page |         |
 
 ### Examples
 
@@ -774,7 +752,7 @@ cmd.fixRanks.self.description
 
 ## !getBot
 
-Obtenez un lien d'invitation pour le bot.
+cmd.getBot.self.description
 
 ### Usage
 
@@ -800,7 +778,7 @@ Obtenez un lien d'invitation pour le bot.
 
 ## !graph
 
-Affiche des graphiques sur différentes statistiques sur ce serveur.
+cmd.graph.self.description
 
 ### Usage
 
@@ -815,10 +793,10 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                      | Details                                                         |
-| -------- | --------------------------- | -------- | -------------------------------- | --------------------------------------------------------------- |
-| type     | [Énumération](#Énumération) | Yes      | Le type de graphique à afficher. | Utilisez une des valeurs suivantes : `joins`, `leaves`, `usage` |
-| duration | [Durée](#Durée)             | No       | La période du graphique.         |                                                                 |
+| Argument | Type                                                | Required | Description                  | Details                    |
+| -------- | --------------------------------------------------- | -------- | ---------------------------- | -------------------------- |
+| type     | [resolvers.enum.type](#resolvers.enum.type)         | Yes      | cmd.graph.self.args.type     | resolvers.enum.validValues |
+| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.graph.self.args.duration |                            |
 
 ### Examples
 
@@ -840,7 +818,7 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 
 ## !help
 
-Afficher l'aide.
+cmd.help.self.description
 
 ### Usage
 
@@ -850,9 +828,9 @@ Afficher l'aide.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                                                | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------- | --------------------- | -------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Commande](#Commande) | No       | La commande pour obtenir des informations détaillées pour. | Utilisez une des valeurs suivantes : `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type                                              | Required | Description                | Details                       |
+| -------- | ------------------------------------------------- | -------- | -------------------------- | ----------------------------- |
+| command  | [resolvers.command.type](#resolvers.command.type) | No       | cmd.help.self.args.command | resolvers.command.validValues |
 
 ### Examples
 
@@ -870,7 +848,7 @@ Afficher l'aide.
 
 ## !info
 
-Afficher des informations sur un membre spécifique.
+cmd.info.self.description
 
 ### Usage
 
@@ -884,11 +862,11 @@ Afficher des informations sur un membre spécifique.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                                               | Details                                                 |
-| -------- | --------------------------- | -------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | L'utilisateur pour lequel vous souhaitez voir des informations supplémentaires.           |                                                         |
-| details  | [Énumération](#Énumération) | No       | Voir uniquement des détails spécifiques d'un membre.                                      | Utilisez une des valeurs suivantes : `bonus`, `members` |
-| page     | [Nombre](#Nombre)           | No       | Quelle page des détails afficher. Vous pouvez aussi utiliser les réactions pour naviguer. |                                                         |
+| Argument | Type                                            | Required | Description                | Details                    |
+| -------- | ----------------------------------------------- | -------- | -------------------------- | -------------------------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.info.self.args.user    |                            |
+| details  | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.info.self.args.details | resolvers.enum.validValues |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.info.self.args.page    |                            |
 
 ### Examples
 
@@ -918,7 +896,7 @@ Afficher des informations sur un membre spécifique.
 
 ## !interactiveConfig
 
-Configuration interactive
+cmd.interactiveConfig.self.description
 
 ### Usage
 
@@ -942,7 +920,7 @@ Configuration interactive
 
 ## !inviteCodeConfig
 
-Affiche et modifie la configuration des codes d'invitation du serveur.
+cmd.inviteCodeConfig.self.description
 
 ### Usage
 
@@ -957,11 +935,11 @@ Affiche et modifie la configuration des codes d'invitation du serveur.
 
 ### Arguments
 
-| Argument   | Type                                   | Required | Description                                                              | Details                                              |
-| ---------- | -------------------------------------- | -------- | ------------------------------------------------------------------------ | ---------------------------------------------------- |
-| key        | [Énumération](#Énumération)            | No       | Les paramètres de configurations que vous souhaitez afficher / modifier. | Utilisez une des valeurs suivantes : `name`, `roles` |
-| inviteCode | [Code d'invitation](#Coded'invitation) | No       | The invite code for which you want to change the settings.               |                                                      |
-| value      | [Valeur](#Valeur)                      | No       | La nouvelle valeur du paramètre.                                         |                                                      |
+| Argument   | Type                                                          | Required | Description                               | Details                    |
+| ---------- | ------------------------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
+| key        | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.inviteCodeConfig.self.args.key        | resolvers.enum.validValues |
+| inviteCode | [resolvers.invitecode.type](#resolvers.invitecode.type)       | No       | cmd.inviteCodeConfig.self.args.inviteCode |                            |
+| value      | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.inviteCodeConfig.self.args.value      |                            |
 
 ### Examples
 
@@ -975,7 +953,7 @@ Affiche et modifie la configuration des codes d'invitation du serveur.
 
 ## !inviteCodes
 
-Obtenez une liste de tous vos codes d'invitation.
+cmd.inviteCodes.self.description
 
 ### Usage
 
@@ -1006,7 +984,7 @@ Obtenez une liste de tous vos codes d'invitation.
 
 ## !inviteDetails
 
-Affiche des détails sur l'origine de vos invitations.
+cmd.inviteDetails.self.description
 
 ### Usage
 
@@ -1020,9 +998,9 @@ Affiche des détails sur l'origine de vos invitations.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                          | Details |
-| -------- | --------------------------- | -------- | -------------------------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | No       | L'utilisateur ou vous souhaitez afficher des invitations détaillées. |         |
+| Argument | Type                                        | Required | Description                      | Details |
+| -------- | ------------------------------------------- | -------- | -------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.inviteDetails.self.args.user |         |
 
 ### Examples
 
@@ -1044,7 +1022,7 @@ Affiche des détails sur l'origine de vos invitations.
 
 ## !invites
 
-Afficher les invitations personnelles.
+cmd.invites.self.description
 
 ### Usage
 
@@ -1059,9 +1037,9 @@ Afficher les invitations personnelles.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                               | Details |
-| -------- | --------------------------- | -------- | --------------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | No       | L'utilisateur ou vous souhaitez afficher les invitations. |         |
+| Argument | Type                                        | Required | Description                | Details |
+| -------- | ------------------------------------------- | -------- | -------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.invites.self.args.user |         |
 
 ### Examples
 
@@ -1083,7 +1061,7 @@ Afficher les invitations personnelles.
 
 ## !kick
 
-Expulser un membre du serveur.
+cmd.kick.self.description
 
 ### Usage
 
@@ -1093,10 +1071,10 @@ Expulser un membre du serveur.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                       | Details |
-| -------- | ----------------- | -------- | --------------------------------- | ------- |
-| member   | [Membre](#Membre) | Yes      | Membre à expulser.                |         |
-| reason   | [Texte](#Texte)   | No       | Pourquoi le membre a été expulsé. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.kick.self.args.member |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.kick.self.args.reason |         |
 
 ### Examples
 
@@ -1106,7 +1084,7 @@ Expulser un membre du serveur.
 
 ## !leaderboard
 
-Afficher les membres avec le plus d'invitations.
+cmd.leaderboard.self.description
 
 ### Usage
 
@@ -1120,16 +1098,16 @@ Afficher les membres avec le plus d'invitations.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                    | Details |
-| -------- | ----------------- | -------- | ---------------------------------------------- | ------- |
-| duration | [Durée](#Durée)   | No       | La durée pour laquelle calculer le classement. |         |
-| page     | [Nombre](#Nombre) | No       | Quelle page du classement voulez vous voir.    |         |
+| Argument | Type                                                | Required | Description                        | Details |
+| -------- | --------------------------------------------------- | -------- | ---------------------------------- | ------- |
+| duration | [resolvers.duration.type](#resolvers.duration.type) | No       | cmd.leaderboard.self.args.duration |         |
+| page     | [resolvers.number.type](#resolvers.number.type)     | No       | cmd.leaderboard.self.args.page     |         |
 
 ### Flags
 
-| Flag                    | Short     | Type            | Description                                           |
-| ----------------------- | --------- | --------------- | ----------------------------------------------------- |
-| &#x2011;&#x2011;compare | &#x2011;c | [Durée](#Durée) | La date à laquelle le classement actuel est comparé à |
+| Flag                    | Short     | Type                                                | Description                        |
+| ----------------------- | --------- | --------------------------------------------------- | ---------------------------------- |
+| &#x2011;&#x2011;compare | &#x2011;c | [resolvers.duration.type](#resolvers.duration.type) | cmd.leaderboard.self.flags.compare |
 
 ### Examples
 
@@ -1151,7 +1129,7 @@ Afficher les membres avec le plus d'invitations.
 
 ## !lyrics
 
-Montrer les paroles de la chanson actuelle.
+cmd.lyrics.self.description
 
 ### Usage
 
@@ -1161,9 +1139,9 @@ Montrer les paroles de la chanson actuelle.
 
 ### Flags
 
-| Flag                 | Short     | Type                | Description                                                                |
-| -------------------- | --------- | ------------------- | -------------------------------------------------------------------------- |
-| &#x2011;&#x2011;live | &#x2011;l | [Booléen](#Booléen) | Si défini, les paroles seront synchronisées au temps actuel de la musique. |
+| Flag                 | Short     | Type                                              | Description                |
+| -------------------- | --------- | ------------------------------------------------- | -------------------------- |
+| &#x2011;&#x2011;live | &#x2011;l | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.lyrics.self.flags.live |
 
 ### Examples
 
@@ -1177,7 +1155,7 @@ Montrer les paroles de la chanson actuelle.
 
 ## !makeMentionable
 
-Faites un rôle mentionnable pendant 60 secondes ou jusqu'à ce qu'il soit utilisé.
+cmd.makeMentionable.self.description
 
 ### Usage
 
@@ -1192,9 +1170,9 @@ Faites un rôle mentionnable pendant 60 secondes ou jusqu'à ce qu'il soit utili
 
 ### Arguments
 
-| Argument | Type          | Required | Description                            | Details |
-| -------- | ------------- | -------- | -------------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | Le rôle que vous souhaitez mentionner. |         |
+| Argument | Type                                        | Required | Description                        | Details |
+| -------- | ------------------------------------------- | -------- | ---------------------------------- | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.makeMentionable.self.args.role |         |
 
 ### Examples
 
@@ -1212,7 +1190,7 @@ Faites un rôle mentionnable pendant 60 secondes ou jusqu'à ce qu'il soit utili
 
 ## !mashup
 
-Créer un mashup des 2 chansons.
+cmd.mashup.self.description
 
 ### Usage
 
@@ -1222,9 +1200,9 @@ Créer un mashup des 2 chansons.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                     | Details |
-| -------- | --------------- | -------- | ----------------------------------------------- | ------- |
-| videos   | [Texte](#Texte) | Yes      | Les vidéos qui doivent être mélangées ensemble. |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| videos   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.mashup.self.args.videos |         |
 
 ### Examples
 
@@ -1234,7 +1212,7 @@ Créer un mashup des 2 chansons.
 
 ## !memberConfig
 
-Affiche et modifie la configuration des membres du serveur.
+cmd.memberConfig.self.description
 
 ### Usage
 
@@ -1250,11 +1228,11 @@ Affiche et modifie la configuration des membres du serveur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                 | Details                                                    |
-| -------- | --------------------------- | -------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
-| key      | [Énumération](#Énumération) | No       | La configuration de membre que vous souhaitez voir/changer. | Utilisez une des valeurs suivantes : `hideFromLeaderboard` |
-| user     | [Utilisateur](#Utilisateur) | No       | Le membre ou le paramètre est affiché / modifié.            |                                                            |
-| value    | [Valeur](#Valeur)           | No       | La nouvelle valeur du paramètre.                            |                                                            |
+| Argument | Type                                                          | Required | Description                      | Details                    |
+| -------- | ------------------------------------------------------------- | -------- | -------------------------------- | -------------------------- |
+| key      | [resolvers.enum.type](#resolvers.enum.type)                   | No       | cmd.memberConfig.self.args.key   | resolvers.enum.validValues |
+| user     | [resolvers.user.type](#resolvers.user.type)                   | No       | cmd.memberConfig.self.args.user  |                            |
+| value    | [resolvers.settingsvalue.type](#resolvers.settingsvalue.type) | No       | cmd.memberConfig.self.args.value |                            |
 
 ### Examples
 
@@ -1268,7 +1246,7 @@ Affiche et modifie la configuration des membres du serveur.
 
 ## !members
 
-Afficher le nombre de membres du serveur actuel.
+cmd.members.self.description
 
 ### Usage
 
@@ -1293,7 +1271,7 @@ Afficher le nombre de membres du serveur actuel.
 
 ## !mentionRole
 
-Mentionnez un rôle non-mentionnable.
+cmd.mentionRole.self.description
 
 ### Usage
 
@@ -1308,9 +1286,9 @@ Mentionnez un rôle non-mentionnable.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                            | Details |
-| -------- | ------------- | -------- | -------------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | Le rôle que vous souhaitez mentionner. |         |
+| Argument | Type                                        | Required | Description                    | Details |
+| -------- | ------------------------------------------- | -------- | ------------------------------ | ------- |
+| role     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.mentionRole.self.args.role |         |
 
 ### Examples
 
@@ -1328,7 +1306,7 @@ Mentionnez un rôle non-mentionnable.
 
 ## !mute
 
-Muter un joueur
+cmd.mute.self.description
 
 ### Usage
 
@@ -1338,10 +1316,10 @@ Muter un joueur
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                   | Details |
-| -------- | ----------------- | -------- | --------------------------------------------- | ------- |
-| user     | [Membre](#Membre) | Yes      | L'utilisateur qui doit être rendu muet.       |         |
-| reason   | [Texte](#Texte)   | No       | La raison de pourquoi l'utilisateur est muet. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.mute.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.mute.self.args.reason |         |
 
 ### Examples
 
@@ -1351,7 +1329,7 @@ Muter un joueur
 
 ## !nowPlaying
 
-Montre les informations à propos de la musique en cours de lecture
+cmd.nowPlaying.self.description
 
 ### Usage
 
@@ -1366,9 +1344,9 @@ Montre les informations à propos de la musique en cours de lecture
 
 ### Flags
 
-| Flag                | Short     | Type                | Description                                                                                                 |
-| ------------------- | --------- | ------------------- | ----------------------------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [Booléen](#Booléen) | Épingle le message "Now playing" et le mets à jour automatiquement à chaque fois qu'une musique est lancée. |
+| Flag                | Short     | Type                                              | Description                   |
+| ------------------- | --------- | ------------------------------------------------- | ----------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.nowPlaying.self.flags.pin |
 
 ### Examples
 
@@ -1382,7 +1360,7 @@ Montre les informations à propos de la musique en cours de lecture
 
 ## !pause
 
-Mettre en pause la chanson actuelle.
+cmd.pause.self.description
 
 ### Usage
 
@@ -1406,7 +1384,7 @@ Mettre en pause la chanson actuelle.
 
 ## !permissions
 
-Configurez les permissions pour utiliser des commandes.
+cmd.permissions.self.description
 
 ### Usage
 
@@ -1420,10 +1398,10 @@ Configurez les permissions pour utiliser des commandes.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                                         | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------- | --------------------- | -------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Commande](#Commande) | No       | La commande pour configurer les autorisations pour. | Utilisez une des valeurs suivantes : `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fake`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)         | No       | Le rôle qui aura l'accès ou non à la commande.      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Argument | Type                                              | Required | Description                    | Details                       |
+| -------- | ------------------------------------------------- | -------- | ------------------------------ | ----------------------------- |
+| cmd      | [resolvers.command.type](#resolvers.command.type) | No       | cmd.permissions.self.args.cmd  | resolvers.command.validValues |
+| role     | [resolvers.role.type](#resolvers.role.type)       | No       | cmd.permissions.self.args.role |                               |
 
 ### Examples
 
@@ -1437,7 +1415,7 @@ Configurez les permissions pour utiliser des commandes.
 
 ## !ping
 
-Mentionner le bot
+cmd.ping.self.description
 
 ### Usage
 
@@ -1457,7 +1435,7 @@ Mentionner le bot
 
 ## !play
 
-Joue la musique si la file d'attente est vide, et ajoute la musique à la fin de la file sinon.
+cmd.play.self.description
 
 ### Usage
 
@@ -1471,16 +1449,16 @@ Joue la musique si la file d'attente est vide, et ajoute la musique à la fin de
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                | Details |
-| -------- | --------------- | -------- | ------------------------------------------ | ------- |
-| link     | [Texte](#Texte) | Yes      | Le lien vers une musique ou une recherche. |         |
+| Argument | Type                                            | Required | Description             | Details |
+| -------- | ----------------------------------------------- | -------- | ----------------------- | ------- |
+| link     | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.play.self.args.link |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                        | Description                                                                                 |
-| ------------------------ | --------- | --------------------------- | ------------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Énumération](#Énumération) | Sélectionnez le salon où vous voulez que la musique soit jouée.                             |
-| &#x2011;&#x2011;next     | &#x2011;n | [Booléen](#Booléen)         | Si défini, cette musique sera jouée directement au lieu d'être ajoutée à la fin de la file. |
+| Flag                     | Short     | Type                                              | Description                  |
+| ------------------------ | --------- | ------------------------------------------------- | ---------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type)       | cmd.play.self.flags.platform |
+| &#x2011;&#x2011;next     | &#x2011;n | [resolvers.boolean.type](#resolvers.boolean.type) | cmd.play.self.flags.next     |
 
 ### Examples
 
@@ -1490,7 +1468,7 @@ Joue la musique si la file d'attente est vide, et ajoute la musique à la fin de
 
 ## !prefix
 
-Affiche le préfixe actuel du bot.
+cmd.prefix.self.description
 
 ### Usage
 
@@ -1510,7 +1488,7 @@ Affiche le préfixe actuel du bot.
 
 ## !premium
 
-Informations sur la version premium d'InviteManager.
+cmd.premium.self.description
 
 ### Usage
 
@@ -1525,9 +1503,9 @@ Informations sur la version premium d'InviteManager.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                                                                                                         | Details                                                                |
-| -------- | --------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| action   | [Énumération](#Énumération) | No       | L'action à faire. Aucune pour les infos premium. `check` pour vérifier votre statut premium. `activate` pour utiliser votre premium sur ce serveur. | Utilisez une des valeurs suivantes : `Activate`, `Check`, `Deactivate` |
+| Argument | Type                                        | Required | Description                  | Details                    |
+| -------- | ------------------------------------------- | -------- | ---------------------------- | -------------------------- |
+| action   | [resolvers.enum.type](#resolvers.enum.type) | No       | cmd.premium.self.args.action | resolvers.enum.validValues |
 
 ### Examples
 
@@ -1553,7 +1531,7 @@ Informations sur la version premium d'InviteManager.
 
 ## !punishmentConfig
 
-Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.
+cmd.punishmentConfig.self.description
 
 ### Usage
 
@@ -1567,11 +1545,11 @@ Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.
 
 ### Arguments
 
-| Argument   | Type                        | Required | Description                                           | Details                                                                       |
-| ---------- | --------------------------- | -------- | ----------------------------------------------------- | ----------------------------------------------------------------------------- |
-| punishment | [Énumération](#Énumération) | No       | Type de punitions à utiliser.                         | Utilisez une des valeurs suivantes : `ban`, `kick`, `mute`, `softban`, `warn` |
-| strikes    | [Nombre](#Nombre)           | No       | Nombre de Strikes pour que cette peine soit utilisée. |                                                                               |
-| args       | [Texte](#Texte)             | No       | Arguments passés pour la sanction.                    |                                                                               |
+| Argument   | Type                                            | Required | Description                               | Details                    |
+| ---------- | ----------------------------------------------- | -------- | ----------------------------------------- | -------------------------- |
+| punishment | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.punishmentConfig.self.args.punishment | resolvers.enum.validValues |
+| strikes    | [resolvers.number.type](#resolvers.number.type) | No       | cmd.punishmentConfig.self.args.strikes    |                            |
+| args       | [resolvers.string.type](#resolvers.string.type) | No       | cmd.punishmentConfig.self.args.args       |                            |
 
 ### Examples
 
@@ -1585,7 +1563,7 @@ Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.
 
 ## !purge
 
-Purger les messages dans un canal.
+cmd.purge.self.description
 
 ### Usage
 
@@ -1599,10 +1577,10 @@ Purger les messages dans un canal.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                 | Details |
-| -------- | --------------------------- | -------- | ------------------------------------------- | ------- |
-| quantity | [Nombre](#Nombre)           | Yes      | Combien de messages doivent être supprimés? |         |
-| user     | [Utilisateur](#Utilisateur) | No       | User whose messages are deleted.            |         |
+| Argument | Type                                            | Required | Description                  | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
+| quantity | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.purge.self.args.quantity |         |
+| user     | [resolvers.user.type](#resolvers.user.type)     | No       | cmd.purge.self.args.user     |         |
 
 ### Examples
 
@@ -1612,7 +1590,7 @@ Purger les messages dans un canal.
 
 ## !purgeUntil
 
-Purger les messages dans un salon jusqu'à un message spécifié.
+cmd.purgeUntil.self.description
 
 ### Usage
 
@@ -1629,9 +1607,9 @@ Purger les messages dans un salon jusqu'à un message spécifié.
 
 ### Arguments
 
-| Argument  | Type            | Required | Description                        | Details |
-| --------- | --------------- | -------- | ---------------------------------- | ------- |
-| messageID | [Texte](#Texte) | Yes      | Dernier ID de message à supprimer. |         |
+| Argument  | Type                                            | Required | Description                        | Details |
+| --------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
+| messageID | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.purgeUntil.self.args.messageID |         |
 
 ### Examples
 
@@ -1641,7 +1619,7 @@ Purger les messages dans un salon jusqu'à un message spécifié.
 
 ## !queue
 
-Affiche les musiques en attente.
+cmd.queue.self.description
 
 ### Usage
 
@@ -1661,7 +1639,7 @@ Affiche les musiques en attente.
 
 ## !ranks
 
-Montrer tous les rangs.
+cmd.ranks.self.description
 
 ### Usage
 
@@ -1676,9 +1654,9 @@ Montrer tous les rangs.
 
 ### Arguments
 
-| Argument | Type              | Required | Description              | Details |
-| -------- | ----------------- | -------- | ------------------------ | ------- |
-| page     | [Nombre](#Nombre) | No       | cmd.ranks.self.args.page |         |
+| Argument | Type                                            | Required | Description              | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------ | ------- |
+| page     | [resolvers.number.type](#resolvers.number.type) | No       | cmd.ranks.self.args.page |         |
 
 ### Examples
 
@@ -1706,11 +1684,11 @@ cmd.removeInvites.self.description
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                        | Details |
-| -------- | --------------------------- | -------- | ---------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | cmd.removeInvites.self.args.user   |         |
-| amount   | [Nombre](#Nombre)           | Yes      | cmd.removeInvites.self.args.amount |         |
-| reason   | [Texte](#Texte)             | No       | cmd.removeInvites.self.args.reason |         |
+| Argument | Type                                            | Required | Description                        | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.removeInvites.self.args.user   |         |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.removeInvites.self.args.amount |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.removeInvites.self.args.reason |         |
 
 ### Examples
 
@@ -1732,7 +1710,7 @@ cmd.removeInvites.self.description
 
 ## !removeRank
 
-Supprimer un rang.
+cmd.removeRank.self.description
 
 ### Usage
 
@@ -1746,9 +1724,9 @@ Supprimer un rang.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                              | Details |
-| -------- | ------------- | -------- | ---------------------------------------- | ------- |
-| rank     | [Role](#Role) | Yes      | Celui que vous voulez supprimer le rang. |         |
+| Argument | Type                                        | Required | Description                   | Details |
+| -------- | ------------------------------------------- | -------- | ----------------------------- | ------- |
+| rank     | [resolvers.role.type](#resolvers.role.type) | Yes      | cmd.removeRank.self.args.rank |         |
 
 ### Examples
 
@@ -1766,7 +1744,7 @@ Supprimer un rang.
 
 ## !repeat
 
-Répète la musique indéfiniment.
+cmd.repeat.self.description
 
 ### Usage
 
@@ -1790,7 +1768,7 @@ Répète la musique indéfiniment.
 
 ## !restoreInvites
 
-Restaurez toutes les invitations précédemment effacées.
+cmd.restoreInvites.self.description
 
 ### Usage
 
@@ -1806,9 +1784,9 @@ Restaurez toutes les invitations précédemment effacées.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                                                                                                                  | Details |
-| -------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | No       | L'utilisateur à qui restaurer les invitations. Si aucun utilisateur n'est indiqué, cela restaure les invitations pour tous les utilisateurs. |         |
+| Argument | Type                                        | Required | Description                       | Details |
+| -------- | ------------------------------------------- | -------- | --------------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type) | No       | cmd.restoreInvites.self.args.user |         |
 
 ### Examples
 
@@ -1830,7 +1808,7 @@ Restaurez toutes les invitations précédemment effacées.
 
 ## !resume
 
-Reprendre la musique en cours.
+cmd.resume.self.description
 
 ### Usage
 
@@ -1854,7 +1832,7 @@ Reprendre la musique en cours.
 
 ## !rewind
 
-Rejoue la musique depuis le début.
+cmd.rewind.self.description
 
 ### Usage
 
@@ -1878,7 +1856,7 @@ Rejoue la musique depuis le début.
 
 ## !search
 
-Recherche le nom et vous laisse choisir un des résultats.
+cmd.search.self.description
 
 ### Usage
 
@@ -1888,15 +1866,15 @@ Recherche le nom et vous laisse choisir un des résultats.
 
 ### Arguments
 
-| Argument | Type            | Required | Description  | Details |
-| -------- | --------------- | -------- | ------------ | ------- |
-| search   | [Texte](#Texte) | Yes      | La recherche |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| search   | [resolvers.string.type](#resolvers.string.type) | Yes      | cmd.search.self.args.search |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                        | Description                                                     |
-| ------------------------ | --------- | --------------------------- | --------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Énumération](#Énumération) | Sélectionnez le salon où vous voulez que la musique soit jouée. |
+| Flag                     | Short     | Type                                        | Description                    |
+| ------------------------ | --------- | ------------------------------------------- | ------------------------------ |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.enum.type](#resolvers.enum.type) | cmd.search.self.flags.platform |
 
 ### Examples
 
@@ -1906,7 +1884,7 @@ Recherche le nom et vous laisse choisir un des résultats.
 
 ## !seek
 
-Passer à une partie spécifique de la musique.
+cmd.seek.self.description
 
 ### Usage
 
@@ -1916,9 +1894,9 @@ Passer à une partie spécifique de la musique.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                       | Details |
-| -------- | ----------------- | -------- | ----------------------------------------------------------------- | ------- |
-| duration | [Nombre](#Nombre) | No       | La musique sera jouée à ce moment (depuis le début, en secondes). |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| duration | [resolvers.number.type](#resolvers.number.type) | No       | cmd.seek.self.args.duration |         |
 
 ### Examples
 
@@ -1932,7 +1910,7 @@ Passer à une partie spécifique de la musique.
 
 ## !setup
 
-Aide à la configuration du bot et à la recherche de problèmes (par exemple: autorisations manquantes)
+cmd.setup.self.description
 
 ### Usage
 
@@ -1959,7 +1937,7 @@ Aide à la configuration du bot et à la recherche de problèmes (par exemple: a
 
 ## !skip
 
-Passe la musique jouée et joue la musique suivante dans la file d'attente.
+cmd.skip.self.description
 
 ### Usage
 
@@ -1973,9 +1951,9 @@ Passe la musique jouée et joue la musique suivante dans la file d'attente.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                          | Details |
-| -------- | ----------------- | -------- | ------------------------------------ | ------- |
-| amount   | [Nombre](#Nombre) | No       | Combien de musiques seront ignorées. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| amount   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.skip.self.args.amount |         |
 
 ### Examples
 
@@ -1989,7 +1967,7 @@ Passe la musique jouée et joue la musique suivante dans la file d'attente.
 
 ## !softBan
 
-Bannir puis automatiquement dé-bannir un membre du serveur.
+cmd.softBan.self.description
 
 ### Usage
 
@@ -2003,16 +1981,16 @@ Bannir puis automatiquement dé-bannir un membre du serveur.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                              | Details |
-| -------- | ----------------- | -------- | ---------------------------------------- | ------- |
-| user     | [Membre](#Membre) | Yes      | Utilisateur à bannir.                    |         |
-| reason   | [Texte](#Texte)   | No       | Pourquoi l'utilisateur a-t-il été banni? |         |
+| Argument | Type                                            | Required | Description                  | Details |
+| -------- | ----------------------------------------------- | -------- | ---------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.softBan.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.softBan.self.args.reason |         |
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                              |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Nombre](#Nombre) | cmd.softBan.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type                                            | Description                              |
+| --------------------------------- | --------- | ----------------------------------------------- | ---------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [resolvers.number.type](#resolvers.number.type) | cmd.softBan.self.flags.deleteMessageDays |
 
 ### Examples
 
@@ -2022,7 +2000,7 @@ Bannir puis automatiquement dé-bannir un membre du serveur.
 
 ## !strike
 
-Ajouter des avertissements à un utilisateur
+cmd.strike.self.description
 
 ### Usage
 
@@ -2032,11 +2010,11 @@ Ajouter des avertissements à un utilisateur
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                           | Details                                                                                                                                                          |
-| -------- | --------------------------- | -------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| member   | [Membre](#Membre)           | Yes      | Le membre recevant les avertissements |                                                                                                                                                                  |
-| type     | [Énumération](#Énumération) | Yes      | Le type d'infraction                  | Utilisez une des valeurs suivantes : `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
-| amount   | [Nombre](#Nombre)           | Yes      | Le nombre d'avertissements à ajouter  |                                                                                                                                                                  |
+| Argument | Type                                            | Required | Description                 | Details                    |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | -------------------------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.strike.self.args.member |                            |
+| type     | [resolvers.enum.type](#resolvers.enum.type)     | Yes      | cmd.strike.self.args.type   | resolvers.enum.validValues |
+| amount   | [resolvers.number.type](#resolvers.number.type) | Yes      | cmd.strike.self.args.amount |                            |
 
 ### Examples
 
@@ -2046,7 +2024,7 @@ Ajouter des avertissements à un utilisateur
 
 ## !strikeConfig
 
-Configurez les Strike reçues pour diverses violations.
+cmd.strikeConfig.self.description
 
 ### Usage
 
@@ -2060,10 +2038,10 @@ Configurez les Strike reçues pour diverses violations.
 
 ### Arguments
 
-| Argument  | Type                        | Required | Description        | Details                                                                                                                                                          |
-| --------- | --------------------------- | -------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| violation | [Énumération](#Énumération) | No       | Type de violation  | Utilisez une des valeurs suivantes : `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
-| strikes   | [Nombre](#Nombre)           | No       | Nombre de Strikes. |                                                                                                                                                                  |
+| Argument  | Type                                            | Required | Description                          | Details                    |
+| --------- | ----------------------------------------------- | -------- | ------------------------------------ | -------------------------- |
+| violation | [resolvers.enum.type](#resolvers.enum.type)     | No       | cmd.strikeConfig.self.args.violation | resolvers.enum.validValues |
+| strikes   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.strikeConfig.self.args.strikes   |                            |
 
 ### Examples
 
@@ -2077,7 +2055,7 @@ Configurez les Strike reçues pour diverses violations.
 
 ## !subtractFakes
 
-Supprimez les fausses invitations de tous les utilisateurs.
+cmd.subtractFakes.self.description
 
 ### Usage
 
@@ -2103,7 +2081,7 @@ Supprimez les fausses invitations de tous les utilisateurs.
 
 ## !subtractLeaves
 
-Supprimer le nombre des invitations des personne qui ont quitter de tous les utilisateurs.
+cmd.subtractLeaves.self.description
 
 ### Usage
 
@@ -2129,7 +2107,7 @@ Supprimer le nombre des invitations des personne qui ont quitter de tous les uti
 
 ## !support
 
-Obtenez un lien d'invitation vers notre serveur d'assistance.
+cmd.support.self.description
 
 ### Usage
 
@@ -2149,7 +2127,7 @@ Obtenez un lien d'invitation vers notre serveur d'assistance.
 
 ## !tryPremium
 
-Essayez gratuitement la version premium d’InviteManager pour une durée limitée.
+cmd.tryPremium.self.description
 
 ### Usage
 
@@ -2174,7 +2152,7 @@ Essayez gratuitement la version premium d’InviteManager pour une durée limit�
 
 ## !unban
 
-Dé-bannir un utilisateur
+cmd.unban.self.description
 
 ### Usage
 
@@ -2184,10 +2162,10 @@ Dé-bannir un utilisateur
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                                       | Details |
-| -------- | --------------------------- | -------- | ------------------------------------------------- | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | The user that should be unbanned.                 |         |
-| reason   | [Texte](#Texte)             | No       | La raison de pourquoi l'utilisateur est dé-banni. |         |
+| Argument | Type                                            | Required | Description                | Details |
+| -------- | ----------------------------------------------- | -------- | -------------------------- | ------- |
+| user     | [resolvers.user.type](#resolvers.user.type)     | Yes      | cmd.unban.self.args.user   |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.unban.self.args.reason |         |
 
 ### Examples
 
@@ -2197,7 +2175,7 @@ Dé-bannir un utilisateur
 
 ## !unhoist
 
-Ajoute un caractère spécial devant le nom de chaque membre, donc ils seront affichés en dernier de la liste des membres.
+cmd.unhoist.self.description
 
 ### Usage
 
@@ -2221,7 +2199,7 @@ Ajoute un caractère spécial devant le nom de chaque membre, donc ils seront af
 
 ## !unmute
 
-Démuter un utilisateur
+cmd.unmute.self.description
 
 ### Usage
 
@@ -2231,9 +2209,9 @@ Démuter un utilisateur
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                 | Details |
-| -------- | ----------------- | -------- | ------------------------------------------- | ------- |
-| user     | [Membre](#Membre) | Yes      | L'utilisateur qui doit reprendre la parole. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| user     | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.unmute.self.args.user |         |
 
 ### Examples
 
@@ -2243,7 +2221,7 @@ Démuter un utilisateur
 
 ## !volume
 
-Défini le volume si une valeur est donnée, ou montre le volume actuel.
+cmd.volume.self.description
 
 ### Usage
 
@@ -2253,9 +2231,9 @@ Défini le volume si une valeur est donnée, ou montre le volume actuel.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                   | Details |
-| -------- | ----------------- | -------- | --------------------------------------------- | ------- |
-| volume   | [Nombre](#Nombre) | No       | La valeur sur laquelle le volume sera défini. |         |
+| Argument | Type                                            | Required | Description                 | Details |
+| -------- | ----------------------------------------------- | -------- | --------------------------- | ------- |
+| volume   | [resolvers.number.type](#resolvers.number.type) | No       | cmd.volume.self.args.volume |         |
 
 ### Examples
 
@@ -2269,7 +2247,7 @@ Défini le volume si une valeur est donnée, ou montre le volume actuel.
 
 ## !warn
 
-Avertir un membre.
+cmd.warn.self.description
 
 ### Usage
 
@@ -2279,9 +2257,9 @@ Avertir un membre.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                      | Details |
-| -------- | ----------------- | -------- | -------------------------------- | ------- |
-| member   | [Membre](#Membre) | Yes      | Membre à avertir.                |         |
-| reason   | [Texte](#Texte)   | No       | Pourquoi le membre a été averti. |         |
+| Argument | Type                                            | Required | Description               | Details |
+| -------- | ----------------------------------------------- | -------- | ------------------------- | ------- |
+| member   | [resolvers.member.type](#resolvers.member.type) | Yes      | cmd.warn.self.args.member |         |
+| reason   | [resolvers.string.type](#resolvers.string.type) | No       | cmd.warn.self.args.reason |         |
 
 ### Examples

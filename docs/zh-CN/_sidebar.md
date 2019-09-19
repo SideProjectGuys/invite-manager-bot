@@ -14,19 +14,18 @@
 
   - [Features](/zh-CN/premium/features.md)
   - [Tiers](/zh-CN/premium/tiers.md)
-  - [Setting Up Pro](/zh-CN/premium/setting-up.md)
+  - [Setup](/zh-CN/premium/setup.md)
 
 - Modules
 
   - Invite Management
 
-    - [Overview](/zh-CN/modules/invites/commands.md)
-    - [Custom Messages](/zh-CN/modules/invites/custom-messages.md)
+    - [Overview](/zh-CN/modules/invites/overview.md)
+    - [Custom message](/zh-CN/modules/invites/custom-message.md)
       - [Examples](/zh-CN/modules/invites/examples.md)
 
   - Moderation
 
-    - [Overview](/zh-CN/modules/moderation/overview.md)
     - [Strikes](/zh-CN/modules/moderation/strikes.md)
     - [Punishments](/zh-CN/modules/moderation/punishments.md)
 
