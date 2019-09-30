@@ -1,7 +1,7 @@
-# Donating
+# 贊助
 
-other.donating.description
+其他.贊助.敘述
 
-## Crypto
+## 秘密
 
-other.donating.crypto.description
+其他.贊助.秘密.敘述

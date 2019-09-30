@@ -1,44 +1,44 @@
-- Getting Started
+- Pierwsze kroki
 
-  - [Quick Start](/pl/getting-started/quick-start.md)
+  - [Szybki Start](/pl/getting-started/quick-start.md)
   - [FAQs](/pl/getting-started/faq.md)
-  - [Alpha Bot](/pl/getting-started/alpha.md)
+  - [Bot w wersji Alfa](/pl/getting-started/alpha.md)
   - [Pro Bot](/pl/getting-started/pro.md)
 
-- Reference
+- Odniesienia
 
-  - [Commands](/pl/reference/commands.md)
-  - [Configs / Settings](/pl/reference/settings.md)
+  - [Komendy](/pl/reference/commands.md)
+  - [Konfiguracje/Ustawienia](/pl/reference/settings.md)
 
 - Premium
 
-  - [Features](/pl/premium/features.md)
-  - [Tiers](/pl/premium/tiers.md)
-  - [Setup](/pl/premium/setup.md)
+  - [Funkcje](/pl/premium/features.md)
+  - [Poziomy](/pl/premium/tiers.md)
+  - [Konfiguracja](/pl/premium/setup.md)
 
-- Modules
+- Moduły
 
   - Invite Management
 
-    - [Overview](/pl/modules/invites/overview.md)
-    - [Custom message](/pl/modules/invites/custom-message.md)
-      - [Examples](/pl/modules/invites/examples.md)
+    - [Podgląd](/pl/modules/invites/overview.md)
+    - [Własne wiadomości](/pl/modules/invites/custom-message.md)
+      - [Przykłady](/pl/modules/invites/examples.md)
 
-  - Moderation
+  - Moderacyjne
 
-    - [Strikes](/pl/modules/moderation/strikes.md)
-    - [Punishments](/pl/modules/moderation/punishments.md)
+    - [Ostrzeżenia](/pl/modules/moderation/strikes.md)
+    - [Kary](/pl/modules/moderation/punishments.md)
 
-  - Music
+  - Muzyka
 
-    - [Overview](/pl/modules/music/overview.md)
+    - [Podgląd](/pl/modules/music/overview.md)
 
-- Other
+- Inne
 
-  - [Webpanel](/pl/other/webpanel.md)
-  - [Translations](/pl/other/translations.md)
-  - [Donating](/pl/other/donating.md)
-  - [Support](/pl/other/support.md)
-  - [Changelog](/pl/other/changelog.md)
+  - [Panel internetowy](/pl/other/webpanel.md)
+  - [Tłumaczenia](/pl/other/translations.md)
+  - [Dotacje](/pl/other/donating.md)
+  - [Wsparcie](/pl/other/support.md)
+  - [Dziennik zmian](/pl/other/changelog.md)
   - [Roadmap](/pl/other/roadmap.md)
-  - [Open Source](/pl/other/open-source.md)
+  - [Otwarte źródło](/pl/other/open-source.md)

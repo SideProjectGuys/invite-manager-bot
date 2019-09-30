@@ -1,3 +1,3 @@
-# Webpanel
+# Panel internetowy
 
 other.webpanel.description

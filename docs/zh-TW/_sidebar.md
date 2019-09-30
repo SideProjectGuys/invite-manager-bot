@@ -1,8 +1,8 @@
-- Getting Started
+- 開始
 
   - [Quick Start](/zh-TW/getting-started/quick-start.md)
-  - [FAQs](/zh-TW/getting-started/faq.md)
-  - [Alpha Bot](/zh-TW/getting-started/alpha.md)
+  - [常見問題](/zh-TW/getting-started/faq.md)
+  - [初期的機器人](/zh-TW/getting-started/alpha.md)
   - [Pro Bot](/zh-TW/getting-started/pro.md)
 
 - Reference
@@ -10,35 +10,35 @@
   - [Commands](/zh-TW/reference/commands.md)
   - [Configs / Settings](/zh-TW/reference/settings.md)
 
-- Premium
+- 付費
 
-  - [Features](/zh-TW/premium/features.md)
-  - [Tiers](/zh-TW/premium/tiers.md)
-  - [Setup](/zh-TW/premium/setup.md)
+  - [特色](/zh-TW/premium/features.md)
+  - [價位](/zh-TW/premium/tiers.md)
+  - [設定](/zh-TW/premium/setup.md)
 
-- Modules
+- 模組
 
-  - Invite Management
+  - 邀請管理
 
-    - [Overview](/zh-TW/modules/invites/overview.md)
-    - [Custom message](/zh-TW/modules/invites/custom-message.md)
-      - [Examples](/zh-TW/modules/invites/examples.md)
+    - [概述](/zh-TW/modules/invites/overview.md)
+    - [自定義訊息](/zh-TW/modules/invites/custom-message.md)
+      - [範例](/zh-TW/modules/invites/examples.md)
 
-  - Moderation
+  - 審核
 
-    - [Strikes](/zh-TW/modules/moderation/strikes.md)
-    - [Punishments](/zh-TW/modules/moderation/punishments.md)
+    - [連擊](/zh-TW/modules/moderation/strikes.md)
+    - [懲罰](/zh-TW/modules/moderation/punishments.md)
 
-  - Music
+  - 音樂
 
-    - [Overview](/zh-TW/modules/music/overview.md)
+    - [概述](/zh-TW/modules/music/overview.md)
 
-- Other
+- 其他
 
-  - [Webpanel](/zh-TW/other/webpanel.md)
-  - [Translations](/zh-TW/other/translations.md)
-  - [Donating](/zh-TW/other/donating.md)
-  - [Support](/zh-TW/other/support.md)
-  - [Changelog](/zh-TW/other/changelog.md)
-  - [Roadmap](/zh-TW/other/roadmap.md)
-  - [Open Source](/zh-TW/other/open-source.md)
+  - [網頁版](/zh-TW/other/webpanel.md)
+  - [翻譯](/zh-TW/other/translations.md)
+  - [贊助](/zh-TW/other/donating.md)
+  - [支援](/zh-TW/other/support.md)
+  - [更新日誌](/zh-TW/other/changelog.md)
+  - [規劃](/zh-TW/other/roadmap.md)
+  - [開放資源](/zh-TW/other/open-source.md)
