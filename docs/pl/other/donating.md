@@ -1,7 +1,7 @@
-# Donating
+# Dotacje
 
 other.donating.description
 
-## Crypto
+## Kryptowaluty
 
 other.donating.crypto.description

@@ -1,7 +1,7 @@
-# Translations
+# 翻譯
 
-other.translations.description
+其他.翻譯.敘述
 
-## other.translations.help.title
+## 其他.翻譯.幫助.標題
 
-other.translations.help.description
+其他.翻譯.幫助.敘述

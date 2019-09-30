@@ -1,6 +1,6 @@
-# Quick Start
+# Szybki Start
 
-## Setup
+## Konfiguracja
 
 start.quick.setup.description
 

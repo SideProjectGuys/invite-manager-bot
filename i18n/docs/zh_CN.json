@@ -3,42 +3,42 @@
 	"modules": {
 		"title": "Modules",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "邀请管理",
+			"description": "当机器人加入频道后，我们将会跟踪你伺服器的每项邀请。Discord 只会显示您有多少邀请但我们的机器人会分析谁邀请了谁，这让机器人可以侦测虚假邀请和谁想要欺骗邀请系统。",
 			"examples": {
-				"title": "Examples"
+				"title": "例子"
 			},
 			"overview": {
 				"title": "Overview"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "自定义讯息"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "审核",
+			"description": "我们全新的审核系统可让您自动审核许多内容。 请查看我们的 [警告] ({{{ linkStrikes }}}) 和 [惩罚] ({{{ linkPunishments }}})页面以获取更多信息。 简而言之，我们的机器人向行为不端的人发出“警告”，经过一定数量的警告后，用户会受到惩罚。 用户可以自由配置全部设定。",
 			"punishments": {
-				"title": "Punishments"
+				"title": "惩罚"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "警告"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "音乐",
 			"overview": {
-				"title": "Overview"
+				"title": "总览"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "其他",
 		"donating": {
-			"title": "Donating",
+			"title": "赞助",
 			"description": "other.donating.description",
 			"crypto": {
-				"title": "Crypto",
+				"title": "加密",
 				"description": "other.donating.crypto.description"
 			}
 		},
@@ -46,10 +46,10 @@
 			"title": "Roadmap"
 		},
 		"support": {
-			"title": "Support"
+			"title": "支持"
 		},
 		"translations": {
-			"title": "Translations",
+			"title": "翻译",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -57,11 +57,11 @@
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
+			"title": "网页后台",
 			"description": "other.webpanel.description"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "更新记录"
 		},
 		"openSource": {
 			"title": "Open Source",
@@ -82,26 +82,26 @@
 			"title": "Tiers"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "设定"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "开始",
+		"description": "想开始使用机器人，请用 !setup 指令",
 		"alpha": {
 			"title": "Alpha Bot",
 			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
 			"linkDescription": "Invite the InviteManager Alpha here"
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "问与答",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "我该如何更改机器人前缀？",
+				"description": "你可以使用 `!config prefix -` 来更改前缀。\n\n如果你不知道前缀是什么，你可以使用 `@InviteManager config prefix` 来查看前缀。"
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "我该如何设定加入与离开讯息？",
+				"description": "要设定频道使用\n\n`!config joinMessageChannel #channel`\n\n或\n\n`!config leaveMessageChannel #channel`.\n\n之后，新的加入及离开讯息将会发布到那个频道。"
 			},
 			"joinLeaveMessage": {
 				"title": "Can I customize the join and leave messages?",

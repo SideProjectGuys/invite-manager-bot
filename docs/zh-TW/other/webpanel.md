@@ -1,3 +1,3 @@
-# Webpanel
+# 網頁版
 
-other.webpanel.description
+其他.網頁版.敘述

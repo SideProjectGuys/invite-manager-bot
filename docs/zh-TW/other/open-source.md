@@ -1,7 +1,7 @@
-# Open Source
+# 開放資源
 
-other.openSource.description
+其他.開放資源.敘述
 
-## Main Bot
+## 主要機器人
 
-other.openSource.bot.description
+其他.開放資源.機器人.敘述

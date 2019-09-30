@@ -1,5 +1,5 @@
-# Alpha Bot
+# Bot w wersji Alfa
 
-The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.
+Bot `InviteManager Alpha` to bot, którego używamy do testowania nowych funkcji. Nowe funkcje bota Alpha nie zawsze będą stabilne, ale jeśli użyjesz tego bota, zobaczysz je jako pierwsze i możesz wyrazić opinię, w jaki sposób możemy je ulepszyć, zanim zostaną włączone do głównego bota .
 
-Invite the InviteManager Alpha here: [Invite](https://discordapp.com/oauth2/authorize?client_id=412380586737664020&permissions=268435616&scope=bot&redirect_uri=https://google.com)
+Dodaj InviteManager Alpha tutaj.: [Invite](https://discordapp.com/oauth2/authorize?client_id=412380586737664020&permissions=268435616&scope=bot&redirect_uri=https://google.com)

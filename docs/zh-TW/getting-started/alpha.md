@@ -1,5 +1,5 @@
-# Alpha Bot
+# 初期的機器人
 
-The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.
+`InviteManager Alpha`機器人是我們拿來測試新特色用的機器人。這些新的特色在初期的機器人不會一直穩定，但如果您使用這個機器人，您將會是第一個看到這些特色而且您可以給我們回饋讓我們知道如何把他們變得更好在他們被放進主要機器人之前。
 
-Invite the InviteManager Alpha here: [Invite](https://discordapp.com/oauth2/authorize?client_id=412380586737664020&permissions=268435616&scope=bot&redirect_uri=https://google.com)
+邀請 InviteManager Alpha 的連結在這裡: [Invite](https://discordapp.com/oauth2/authorize?client_id=412380586737664020&permissions=268435616&scope=bot&redirect_uri=https://google.com)

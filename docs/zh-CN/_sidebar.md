@@ -1,7 +1,7 @@
-- Getting Started
+- 开始
 
   - [Quick Start](/zh-CN/getting-started/quick-start.md)
-  - [FAQs](/zh-CN/getting-started/faq.md)
+  - [问与答](/zh-CN/getting-started/faq.md)
   - [Alpha Bot](/zh-CN/getting-started/alpha.md)
   - [Pro Bot](/zh-CN/getting-started/pro.md)
 
@@ -14,31 +14,31 @@
 
   - [Features](/zh-CN/premium/features.md)
   - [Tiers](/zh-CN/premium/tiers.md)
-  - [Setup](/zh-CN/premium/setup.md)
+  - [设定](/zh-CN/premium/setup.md)
 
 - Modules
 
-  - Invite Management
+  - 邀请管理
 
     - [Overview](/zh-CN/modules/invites/overview.md)
-    - [Custom message](/zh-CN/modules/invites/custom-message.md)
-      - [Examples](/zh-CN/modules/invites/examples.md)
+    - [自定义讯息](/zh-CN/modules/invites/custom-message.md)
+      - [例子](/zh-CN/modules/invites/examples.md)
 
-  - Moderation
+  - 审核
 
-    - [Strikes](/zh-CN/modules/moderation/strikes.md)
-    - [Punishments](/zh-CN/modules/moderation/punishments.md)
+    - [警告](/zh-CN/modules/moderation/strikes.md)
+    - [惩罚](/zh-CN/modules/moderation/punishments.md)
 
-  - Music
+  - 音乐
 
-    - [Overview](/zh-CN/modules/music/overview.md)
+    - [总览](/zh-CN/modules/music/overview.md)
 
-- Other
+- 其他
 
-  - [Webpanel](/zh-CN/other/webpanel.md)
-  - [Translations](/zh-CN/other/translations.md)
-  - [Donating](/zh-CN/other/donating.md)
-  - [Support](/zh-CN/other/support.md)
-  - [Changelog](/zh-CN/other/changelog.md)
+  - [网页后台](/zh-CN/other/webpanel.md)
+  - [翻译](/zh-CN/other/translations.md)
+  - [赞助](/zh-CN/other/donating.md)
+  - [支持](/zh-CN/other/support.md)
+  - [更新记录](/zh-CN/other/changelog.md)
   - [Roadmap](/zh-CN/other/roadmap.md)
   - [Open Source](/zh-CN/other/open-source.md)

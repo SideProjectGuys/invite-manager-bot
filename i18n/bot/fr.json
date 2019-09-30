@@ -1157,7 +1157,7 @@
 		"role": "Vous n'êtes pas autorisé à utiliser cette commande.\nVous avez besoin de l'un des rôles suivants: {{{ roles }}}",
 		"viewAuditLogs": "Voir les logs du serveur",
 		"manageMessages": "Gérer les messages",
-		"readMessageHistory": "Read Message History",
+		"readMessageHistory": "Lire l'historique des messages",
 		"missing": "Il me manque la permission {{{ permissions }}} dans {{{ channel }}}"
 	},
 	"prompt": {

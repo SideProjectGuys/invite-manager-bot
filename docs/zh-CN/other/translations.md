@@ -1,4 +1,4 @@
-# Translations
+# 翻译
 
 other.translations.description
 

@@ -1,115 +1,115 @@
 {
-	"lang": "中文（台湾）",
+	"lang": "英語",
 	"modules": {
-		"title": "Modules",
+		"title": "模組",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "邀請管理",
+			"description": "當我們的機器人加入您的伺服器時，我們將會追蹤您伺服器上的每一個邀請。Discord只會顯示您總共有多少邀請。我們的機器人也會分析誰邀請了誰。這個功能讓我們的機器人可以偵測到假的邀請以及誰試圖欺騙邀請系統。",
 			"examples": {
-				"title": "Examples"
+				"title": "範例"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "概述"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "自定義訊息"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "審核",
+			"description": "我們商標的全新審核系統允許您自動審核很多東西。請閱讀我們的[strikes]({{{ linkStrikes }}})和[punishments]({{{ linkPunishments }}})頁面來獲得更多資訊。簡單來說，我們的機器人會給予'連擊'當人們行為不端時，而且當他們達到一定數量的連擊時，他們便會受到懲罰。這些都可以透過使用者自行配置。",
 			"punishments": {
-				"title": "Punishments"
+				"title": "懲罰"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "連擊"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "音樂",
 			"overview": {
-				"title": "Overview"
+				"title": "概述"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "其他",
 		"donating": {
-			"title": "Donating",
-			"description": "other.donating.description",
+			"title": "贊助",
+			"description": "其他.贊助.敘述",
 			"crypto": {
-				"title": "Crypto",
-				"description": "other.donating.crypto.description"
+				"title": "秘密",
+				"description": "其他.贊助.秘密.敘述"
 			}
 		},
 		"roadmap": {
-			"title": "Roadmap"
+			"title": "規劃"
 		},
 		"support": {
-			"title": "Support"
+			"title": "支援"
 		},
 		"translations": {
-			"title": "Translations",
-			"description": "other.translations.description",
+			"title": "翻譯",
+			"description": "其他.翻譯.敘述",
 			"help": {
-				"title": "other.translations.help.title",
-				"description": "other.translations.help.description"
+				"title": "其他.翻譯.幫助.標題",
+				"description": "其他.翻譯.幫助.敘述"
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
-			"description": "other.webpanel.description"
+			"title": "網頁版",
+			"description": "其他.網頁版.敘述"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "更新日誌"
 		},
 		"openSource": {
-			"title": "Open Source",
-			"description": "other.openSource.description",
+			"title": "開放資源",
+			"description": "其他.開放資源.敘述",
 			"bot": {
-				"title": "Main Bot",
-				"description": "other.openSource.bot.description"
+				"title": "主要機器人",
+				"description": "其他.開放資源.機器人.敘述"
 			}
 		}
 	},
 	"premium": {
-		"title": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"title": "付費",
+		"description": "贊助我們的伺服器的話，我們會提供一個付費版的機器人。如果您想知道所有額外的特點，可以參觀我們的網站[pricing page]({{{ link }}})。",
 		"features": {
-			"title": "Features"
+			"title": "特色"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "價位"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "設定"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "開始",
+		"description": "想要開始的話，只要執行`!setup`指令在您的伺服器上。",
 		"alpha": {
-			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here"
+			"title": "初期的機器人",
+			"intro": "`InviteManager Alpha`機器人是我們拿來測試新特色用的機器人。這些新的特色在初期的機器人不會一直穩定，但如果您使用這個機器人，您將會是第一個看到這些特色而且您可以給我們回饋讓我們知道如何把他們變得更好在他們被放進主要機器人之前。",
+			"linkDescription": "邀請InviteManager Alpha的連結在這裡"
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "常見問題",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "我如何更改機器人的前綴指令？",
+				"description": "您可以用`!config prefix -`來更改前綴指令。\n\n如果您不知道當前的前綴指令，您可以用`@InviteManager config prefix`來得知前綴指令。"
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "我如何設定加入和離開訊息？",
+				"description": "設定頻道用\n\n`!config joinMessageChannel #channel`\n\n或\n\n`!config leaveMessageChannel #channel`。\n\n設定完之後，新的加入和離開訊息就會被顯示在該頻道。"
 			},
 			"joinLeaveMessage": {
-				"title": "Can I customize the join and leave messages?",
-				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+				"title": "我可以製作加入和離開訊息嗎？",
+				"description": "絕對可以！你可以更改訊息操作範例\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\n或\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`。\n\n有很多預留字是可用的。你可以看到完整的清單在'[Custom Messages]({{{ link }}})'頁面。"
 			},
 			"ranks": {
-				"title": "What are 'Ranks' and how can I use them?",
-				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+				"title": "甚麼是'等級'然後我要如何使用它們？",
+				"description": "等級用於分配身分組給人們當他們達到一定數量的邀請。例如，如果您有一個身分組叫做`@Beginner`然後您希望當人們達到5以上的邀請數量時被加入該身分組，您需要為此創立一個等級就像這樣：`!add-rank @Beginner 5 （然後如果您需要一個敘述可以寫在此）`。只要有人達到5邀請時，他就會自動被加入該身分組！"
 			},
 			"channel": {
 				"title": "How can I disable the bot in all but one/some channels?",

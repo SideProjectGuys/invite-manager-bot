@@ -1,22 +1,22 @@
 # InviteManager
 
-## Reference
+## Odniesienia
 
-- [Commands](/pl/reference/commands.md)
-- [Configs / Settings](/pl/reference/settings.md)
+- [Komendy](/pl/reference/commands.md)
+- [Konfiguracje/Ustawienia](/pl/reference/settings.md)
 
-## Getting Started
+## Pierwsze kroki
 
-To get started, just run the `!setup` command on your server.
+Żeby zacząć, po prostu użyj komendy `setup` na swoim serwerze.
 
 ### Invite Management
 
-While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.
+Gdy nasz bot jest na twoim serwerze, śledzimy każde zaproszenie, które wydarzy się na twoim serwerze. Discord pokazuje tylko, kto ma ile zaproszeń. Nasz bot analizuje również, kto został przez kogo zaproszony. Pozwala to naszemu botowi wykryć fałszywe zaproszenia i zobaczyć, kto próbuje oszukać system zaproszeń.
 
-### Moderation
+### Moderacyjne
 
-Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](/pl/modules/moderation/strikes.md) and [punishments](/pl/modules/moderation/punishments.md) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.
+Nasz nowy system moderacji pozwala na automatyczną moderację wielu rzeczy. Sprawdź nasze [ostrzeżenia](/pl/modules/moderation/strikes.md) oraz [kary](/pl/modules/moderation/punishments.md) strony, aby uzyskać więcej informacji. Krótko mówiąc, nasz bot wydaje „ostrzeżenia” ludziom, którzy źle się zachowują, a po pewnej liczbie ostrzeżeń użytkownik otrzymuje karę. Wszystko to jest konfigurowalne przez użytkownika.
 
 ## Premium
 
-To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](/pl/premium/features.md).
+Aby zapłacić nasz rachunek za serwer, oferujemy wersję premium bota. Aby zobaczyć wszystkie dodatkowe funkcje, które otrzymujesz, odwiedź naszą [stronę płatności](/pl/premium/features.md).

@@ -1,1 +1,1 @@
-# Support
+# Wsparcie

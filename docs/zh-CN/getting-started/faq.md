@@ -1,22 +1,22 @@
-# FAQs}
+# 问与答}
 
-## How do I change the prefix of the bot?
+## 我该如何更改机器人前缀？
 
-You can do `!config prefix -` to change the prefix.
+你可以使用 `!config prefix -` 来更改前缀。
 
-If you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix.
+如果你不知道前缀是什么，你可以使用 `@InviteManager config prefix` 来查看前缀。
 
-## How do I set join and leave messages?
+## 我该如何设定加入与离开讯息？
 
-Set the channel by doing
+要设定频道使用
 
 `!config joinMessageChannel #channel`
 
-or
+或
 
 `!config leaveMessageChannel #channel`.
 
-After doing that, new joins and leaves will be posted to that channel.
+之后，新的加入及离开讯息将会发布到那个频道。
 
 ## Can I customize the join and leave messages?
 

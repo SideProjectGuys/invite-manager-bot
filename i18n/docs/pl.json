@@ -1,44 +1,44 @@
 {
 	"lang": "Polski",
 	"modules": {
-		"title": "Modules",
+		"title": "Moduły",
 		"invites": {
 			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"description": "Gdy nasz bot jest na twoim serwerze, śledzimy każde zaproszenie, które wydarzy się na twoim serwerze. Discord pokazuje tylko, kto ma ile zaproszeń. Nasz bot analizuje również, kto został przez kogo zaproszony. Pozwala to naszemu botowi wykryć fałszywe zaproszenia i zobaczyć, kto próbuje oszukać system zaproszeń.",
 			"examples": {
-				"title": "Examples"
+				"title": "Przykłady"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "Podgląd"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "Własne wiadomości"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "Moderacyjne",
+			"description": "Nasz nowy system moderacji pozwala na automatyczną moderację wielu rzeczy. Sprawdź nasze [ostrzeżenia]({{{ linkStrikes }}}) oraz [kary]({{{ linkPunishments }}}) strony, aby uzyskać więcej informacji. Krótko mówiąc, nasz bot wydaje „ostrzeżenia” ludziom, którzy źle się zachowują, a po pewnej liczbie ostrzeżeń użytkownik otrzymuje karę. Wszystko to jest konfigurowalne przez użytkownika.",
 			"punishments": {
-				"title": "Punishments"
+				"title": "Kary"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "Ostrzeżenia"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "Muzyka",
 			"overview": {
-				"title": "Overview"
+				"title": "Podgląd"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "Inne",
 		"donating": {
-			"title": "Donating",
+			"title": "Dotacje",
 			"description": "other.donating.description",
 			"crypto": {
-				"title": "Crypto",
+				"title": "Kryptowaluty",
 				"description": "other.donating.crypto.description"
 			}
 		},
@@ -46,10 +46,10 @@
 			"title": "Roadmap"
 		},
 		"support": {
-			"title": "Support"
+			"title": "Wsparcie"
 		},
 		"translations": {
-			"title": "Translations",
+			"title": "Tłumaczenia",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -57,67 +57,67 @@
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
+			"title": "Panel internetowy",
 			"description": "other.webpanel.description"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "Dziennik zmian"
 		},
 		"openSource": {
-			"title": "Open Source",
+			"title": "Otwarte źródło",
 			"description": "other.openSource.description",
 			"bot": {
-				"title": "Main Bot",
+				"title": "Główny Bot",
 				"description": "other.openSource.bot.description"
 			}
 		}
 	},
 	"premium": {
 		"title": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"description": "Aby zapłacić nasz rachunek za serwer, oferujemy wersję premium bota. Aby zobaczyć wszystkie dodatkowe funkcje, które otrzymujesz, odwiedź naszą [stronę płatności]({{{ link }}}).",
 		"features": {
-			"title": "Features"
+			"title": "Funkcje"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "Poziomy"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "Konfiguracja"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "Pierwsze kroki",
+		"description": "Żeby zacząć, po prostu użyj komendy `setup` na swoim serwerze.",
 		"alpha": {
-			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here"
+			"title": "Bot w wersji Alfa",
+			"intro": "Bot `InviteManager Alpha` to bot, którego używamy do testowania nowych funkcji. Nowe funkcje bota Alpha nie zawsze będą stabilne, ale jeśli użyjesz tego bota, zobaczysz je jako pierwsze i możesz wyrazić opinię, w jaki sposób możemy je ulepszyć, zanim zostaną włączone do głównego bota .",
+			"linkDescription": "Dodaj InviteManager Alpha tutaj."
 		},
 		"faq": {
 			"title": "FAQs",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "Jak zmienić prefiks bota?",
+				"description": "Możesz napisać `!config prefix -` żeby zmienić prefix.\n\nJeśli nie znasz swojego aktualnego prefixu użyj `@InviteManager config prefix` aby go zobaczyć"
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "Jak ustawić wiadomości na powitania i pożegnania?",
+				"description": "Ustaw kanał wpisując:\n\n`!config joinMessageChannel #kanał`\n\nlub\n\n`!config leaveMessageChannel #kanał`.\n\nPo wykonaniu tej czynności nowe powitania i pożegnania zostaną opublikowane na tym kanale."
 			},
 			"joinLeaveMessage": {
-				"title": "Can I customize the join and leave messages?",
-				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+				"title": "Czy mogę dostosować wiadomości powitań i pożegnań?",
+				"description": "Jasne! Możesz zmienić wiadomość, wykonując na przykład\n\n`!config joinMessage {memberMention} **dołączył**; Został zaproszony przez **{inviterName}** (**{numInvites}** zaproszeń)`\n\nlub\n\n`!config leaveMessage {memberName} **wyszedł**; Został zaproszony przez **{inviterName}**`.\n\nJest wiele wartości których możesz użyć. Możesz zobaczyć pełną listę na stronie '[Własne wiadomości]({{{ link }}})'."
 			},
 			"ranks": {
-				"title": "What are 'Ranks' and how can I use them?",
-				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+				"title": "Co to są \"Rangi\" i jak mogę ich używać?",
+				"description": "Rangi służą do przypisywania ról osobom, które osiągną określoną liczbę zaproszeń. Na przykład. jeśli masz rolę o nazwie „@ Początkujący” i chcesz, aby osoby, które mają 5 lub więcej zaproszeń, były dodawane do tej roli, musisz utworzyć dla niej rangę: `add-rank @Początkujący 5 (jeśli chcesz opis tutaj) `. Gdy tylko ktoś zdobędzie 5 zaproszeń, zostanie automatycznie dodany do tej roli!"
 			},
 			"channel": {
-				"title": "How can I disable the bot in all but one/some channels?",
-				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+				"title": "Jak mogę wyłączyć bota we wszystkich kanałach oprócz jednego/niektórych?",
+				"description": "Zabierz uprawnienie \"Czytanie Wiadomości\" na kanałach gdzie bot nie ma dawać odpowiedzi"
 			},
 			"limitations": {
-				"title": "Limitation: No advanced tracking before the bot joins",
-				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+				"title": "Ograniczenie: Brak zaawansowanego śledzenia przed dołączeniem bota",
+				"description": "Zaawansowane śledzenie (kto zaprosił kogo) działa tylko po zaproszeniu bota. Bot nadal będzie wiedział, że wszyscy zaproszeni liczą po zaproszeniu, nie martw się. Brakuje tylko dodatkowych informacji i można je gromadzić tylko dla członków, którzy dołączą po zaproszeniu bota."
 			}
 		},
 		"pro": {
@@ -125,9 +125,9 @@
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"title": "Quick Start",
+			"title": "Szybki Start",
 			"setup": {
-				"title": "Setup",
+				"title": "Konfiguracja",
 				"description": "start.quick.setup.description",
 				"first": {
 					"title": "start.quick.setup.first.title",
@@ -141,12 +141,12 @@
 		}
 	},
 	"reference": {
-		"title": "Reference",
+		"title": "Odniesienia",
 		"commands": {
-			"title": "Commands"
+			"title": "Komendy"
 		},
 		"settings": {
-			"title": "Configs / Settings"
+			"title": "Konfiguracje/Ustawienia"
 		}
 	}
 }
