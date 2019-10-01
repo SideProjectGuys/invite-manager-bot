@@ -1,0 +1,1613 @@
+{
+	"bot": {
+		"invite": {
+			"title": "Voeg de bot aan jouw server toe"
+		},
+		"patreon": {
+			"title": "Patreon"
+		},
+		"supportDiscord": {
+			"title": "Hulp Discord"
+		},
+		"website": {
+			"title": "Bot website"
+		},
+		"mentionHelp": "Mijn huidige prefix is `{{{ prefix }}}`\n\nGebruik `{{{ prefix }}}help` voor meer hulp."
+	},
+	"captcha": {
+		"invalid": "Captcha verificatie kwam niet overeen, probeer het opnieuw."
+	},
+	"cmd": {
+		"addInvites": {
+			"amount": {
+				"negative": "**{{ amount }}** invites verwijdert voor <{{ member }}>, en heeft nu **{{ totalInvites }}**",
+				"positive": "**{{ amount }}** invites toegevoegt voor <@{{ member }}>, en heeft nu **{{ totalInvites }}** invites."
+			},
+			"self": {
+				"args": {
+					"amount": "De hoeveelheid invites dat de gebruiker krijgt / verliest. Gebruik de (-) teken om invites te verwijderen.",
+					"reason": "De reden om invites toe te voegen of te verwijderen.",
+					"user": "De gebruiker die krijgt of verliest de bonus invites."
+				},
+				"description": "Voeg toe/verwijder invites van een gebruiker."
+			},
+			"zero": "0 invites geven heeft niet veel zin...",
+			"numberTooLarge": "Je opgegeven nummer is te groot.",
+			"numberTooSmall": "Je opgegeven nummer is te klein."
+		},
+		"addRank": {
+			"created": "Rank {{{ role }}} toegevoegd  en heeft {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}",
+			"roleTooHigh": "De role **{{ role }}** is hoger dan mijn role (**{{ myRole }}**) dus daarom kan ik de role niet geven aan mensen die het aantal invites bereiken.",
+			"self": {
+				"args": {
+					"info": "Een beschrijving zodat gebruikers meer krijgen te weten over deze rank.",
+					"invites": "De hoeveelheid invites nodig om de rank te krijgen.",
+					"role": "De role die de gebruiker krijgt bij het bereiken van deze rank."
+				},
+				"description": "Voeg een nieuwe rank toe."
+			},
+			"updated": "Rank {{{ role }}} geüpdatet: Heeft nu {{ invites }} nodig en heeft de volgende beschrijving: {{ description }}"
+		},
+		"ban": {
+			"canNotBan": "Ik kan deze gebruiker niet verbannen.",
+			"done": "De gebruiker is succesvol verbannen.",
+			"error": "Er was een error tijdens het verbannen van deze gebruiker: \n{{ error }}",
+			"missingPermissions": "Ik heb de `Leden verbannen` permissies nodig om dit commando te gebruiken.",
+			"self": {
+				"args": {
+					"deleteMessageDays": "Hoeveel vorige berichten worden verwijdert (in days).",
+					"reason": "Waarom de gebruiker was verbannen.",
+					"user": "Gebruiker om te verbannen."
+				},
+				"description": "Verban een gebruiker van de server.",
+				"flags": {
+					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+				}
+			},
+			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+		},
+		"botConfig": {
+			"canNotClear": "De configuratie setting **{{ key }}** kan niet verwijdert worden. Je kan `{{ prefix }}botConfig {{ key }} default` doen om het te resetten naar de standaard waarde.",
+			"changed": {
+				"text": "Deze configuratie setting is veranderd.\nGebruik `{{ prefix }}botConfig {{ key }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}botConfig {{ key }} default` om dit te resetten naar de standaard waarde."
+			},
+			"current": {
+				"clear": "Gebruik `{{ prefix }}config {{ key }} none` om dit te verwijderen.",
+				"notSet": "Deze configuratie is nog **niet** gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen",
+				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nGebruik `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
+				"title": "Huidige Waarde"
+			},
+			"customOnly": "**Dit commmando is alleen beschikbaar voor custom bots.**\nAls je op zoek bent naar je server configuratie, gebruik dan het `{{ prefix }}config` commando.\n\nZie onze patreon pagina om meer te leren hoe je je eigen custom bot kan krijgen: {{{ patreon }}}",
+			"invalid": {
+				"twitchOnly": "Discord ondersteunt alleen twitch.tv linkjes voor de streaming activiteit."
+			},
+			"new": {
+				"title": "Nieuwe waarde"
+			},
+			"none": "Geen",
+			"notSet": "Deze instellingen zijn niet gezet",
+			"preview": {
+				"nextMessage": "<See next message>",
+				"title": "Voorbeeld"
+			},
+			"previous": {
+				"title": "Vorige Waarde"
+			},
+			"sameValue": "Deze configuratie is al gezet naar die waarde.",
+			"self": {
+				"args": {
+					"key": "De bot configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de setting."
+				},
+				"description": "Zie en verander de configuratie van de bot."
+			},
+			"text": "Hieronder staan alle bot configuraties van jouw bot.\nGebruik `{{ prefix }}botConfig <key>` om een enkele waarde te zien\nGebruik `{{ prefix }}botConfig <key> <value>` om de configuratie <key> naar <value> te zetten",
+			"title": "Custom Bot Configuratie"
+		},
+		"botInfo": {
+			"guilds": "Servers",
+			"members": "Leden",
+			"premium": {
+				"active": "Op deze server staat de betaalde bot **actief**.",
+				"custom": "Je gebruikt een aangepaste versie van de bot!",
+				"none": "Op deze server staat de betaalde bot **niet actief**.",
+				"title": "Betaalde versie"
+			},
+			"self": {
+				"description": "Krijg algemene informatie over deze bot."
+			},
+			"shards": {
+				"current": "Huidige Shard",
+				"total": "Totale Shards"
+			},
+			"uptime": "Tijd dat de bot aan staat",
+			"version": "Versie"
+		},
+		"caseDelete": {
+			"done": "Case verwijderd",
+			"notFound": "Case niet gevonden",
+			"self": {
+				"args": {
+					"caseNumber": "Case nummer",
+					"reason": "De reden voor het verwijderen van het geval."
+				},
+				"description": "Verwijder een specifiek geval."
+			},
+			"title": "Case #{{ id }}"
+		},
+		"caseView": {
+			"notFound": "Geval niet gevonden",
+			"self": {
+				"args": {
+					"caseNumber": "Geval nummer"
+				},
+				"description": "Bekijk meer informatie over een specifiek geval."
+			},
+			"strike": "{{{ member }}} heeft {{{ amount }}} strikes gekregen voor de {{{ violation }}} regel schenden {{{ date }}}.",
+			"title": "Case #{{ id }}"
+		},
+		"check": {
+			"noHistory": "Die gebruiker heeft geen straffen.",
+			"punishments": {
+				"entry": "{{ punishment}} omdat hij {{ amount }} waarschuwingen had {{ date }}",
+				"title": "Straffen",
+				"total": "Totale straffen",
+				"totalText": "{{{ amount }}} straffen."
+			},
+			"self": {
+				"args": {
+					"user": "Gebruiker om te checken."
+				},
+				"description": "Zie overtredingen en straffen van een gebruiker."
+			},
+			"strikes": {
+				"entry": "#{{ id }} - {{ amount }} waarschuwingen gekregen voor {{ violation }} {{ date }}",
+				"title": "Waarschuwingen",
+				"total": "Totale waarschuwingen",
+				"totalText": "{{{ total }}} strikes ontvangen voor {{{ amount }}} schendingen."
+			}
+		},
+		"clean": {
+			"error": "Fout",
+			"invalidQuantity": "Je moet een positieve hoeveelheid berichten geven om te verwijderen.",
+			"self": {
+				"args": {
+					"member": "Gebruiker van wie de berichten worden verwijdert.",
+					"numberOfMessages": "Hoeveelheid berichten dat wordt gezocht.",
+					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
+					"type": "Het type bericht dat wordt verwijdert."
+				},
+				"description": "Maak een kanaal schoon van verschillende soorten berichten."
+			},
+			"text": "{{ amount }} berichten verwijderd.\nDit bericht wordt verwijderd in 5 seconden.",
+			"title": "Verwijderde Berichten",
+			"textReactions": "{{ amount }} berichten verwijderd die reacties hadden."
+		},
+		"cleanShort": {
+			"self": {
+				"args": {
+					"maxTextLength": "Alle berichten die korter zijn dan deze worden verwijderd.",
+					"numberOfMessages": "Aantal berichten die worden gezocht."
+				},
+				"description": "Verwijder korte berichten"
+			}
+		},
+		"cleanText": {
+			"self": {
+				"args": {
+					"numberOfMessages": "Aantal berichten die worden gezocht.",
+					"text": "Alle berichten met die woord worden verwijdert."
+				},
+				"description": "Verwijder berichten die een bepaald woord bevatten."
+			}
+		},
+		"clearInvites": {
+			"done": "Invites verwijdert voor {{ amount }} gebruikers!",
+			"self": {
+				"args": {
+					"clearBonus": "Voer `true` in om bonus invites te verwijderen, anders `false` (standaard).",
+					"user": "De gebruiker waar alle invites worden verwijdert. Wanneer dit wordt weggelaten, worden alle gebruikers verwijdert."
+				},
+				"description": "Verwijder alle invites van de server/een gebruiker",
+				"flags": {
+					"clearBonus": "cmd.clearInvites.self.flags.clearBonus",
+					"date": "cmd.clearInvites.self.flags.date"
+				}
+			}
+		},
+		"config": {
+			"canNotClear": "De configuratie setting **{{ key }}** can niet gecleared worden. Je kan `config {{ key }} default` gebruiken om het te resetten naar de standaard waarde.",
+			"changed": {
+				"text": "Deze configuratie is veranderd.\nGebruik `{{ prefix }}config {{ key }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}config {{ key }} default` om dit te resetten naar de standaard waarde."
+			},
+			"current": {
+				"clear": "Gebruik `{{ prefix }}config {{ key }} none` om dit te verwijderen.",
+				"notSet": "Deze configuratie is op dit moment nog **niet** gezet.\nGebruik `{{ prefix }}config {{ key }} <waarde>` om dit in te stellen",
+				"text": "Deze configuratie is gezet.\nGebruik `{{ prefix }}config {{ key }} <value>` om het te veranderen.\nUse `{{ prefix }}config {{ key }} default` om het te resetten naar de standaard waarde.",
+				"title": "Huidige Waarde"
+			},
+			"invalid": {
+				"canNotReadMessages": "Ik heb de **berichten lezen** rechten niet in dat kanaal.",
+				"canNotSendEmbeds": "Ik heb de **ingesloten links** rechten niet in dat kanaal.",
+				"canNotSendMessages": "Ik heb de **berichten verzenden** rechten niet in dat kanaal.",
+				"mustBeTextChannel": "Dat kanaal is geen tekst kanaal."
+			},
+			"new": {
+				"title": "Nieuwe Waarde"
+			},
+			"none": "Geen",
+			"notSet": "Deze instellingen zijn niet gezet.",
+			"preview": {
+				"nextMessage": "<Zie volgende bericht>",
+				"title": "Voorbeeld"
+			},
+			"previous": {
+				"title": "Vorige Waarde"
+			},
+			"sameValue": "De configuratie is al gezet naar die waarde.",
+			"self": {
+				"args": {
+					"key": "De configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de instelling."
+				},
+				"description": "Zie en verander de configuratie van de server."
+			},
+			"text": "Hieronder staan al jouw server instellingen\nGebruik `{{ prefix }}config <key>` om één setting te zien\nGebruik `{{ prefix }}config <key> <waarde>` om configuratie key <key> naar <value> te zetten",
+			"title": "Jouw configuratie instellingen"
+		},
+		"createInvite": {
+			"done": "Invite code **{{{ code }}}** aangemaakt genaamd **{{ name }}** voor {{{ channel }}}.",
+			"self": {
+				"args": {
+					"channel": "De kanaal waarvoor de invite code is aangemaakt. De huidige kanaal wordt standaard gebruikt.",
+					"name": "De naam van de invite code."
+				},
+				"description": "Maak unieke invite codes aan."
+			}
+		},
+		"credits": {
+			"developers": "Ontwikkelaars.",
+			"moderators": "Moderators",
+			"self": {
+				"description": "Zie de ontwikkelaars en de mensen die hebben helpen aan de bot."
+			},
+			"staff": "Staff",
+			"translators": "Vertalers"
+		},
+		"error": "Er is een error opgetreden tijdens het uitvoeren van dit commando. Rapporteer dit alsjeblieft naar een ontwikkelaar:\n{{{ error }}}",
+		"export": {
+			"preparing": "Wacht alsjeblieft terwijl we een bestand aan het maken zijn...",
+			"self": {
+				"args": {
+					"type": "De type export wat je wilt."
+				},
+				"description": "Exporteer data van InviteManager in een csv bestand."
+			},
+			"title": "InviteManager - Exporteer"
+		},
+		"fake": {
+			"join": {
+				"entry": {
+					"multi": "**{{ name }}** (**{{ time }}** keren)",
+					"single": "**{{ name }}**",
+					"text": "**{{ name}}** is gejoint **{{ times }} keren**, geïnvite door:"
+				}
+			},
+			"none": "Geen fake invites gedetecteerd tot nu toe.",
+			"noneSinceJoin": "Er zijn geen fake invites sinds de bot in deze server is toegevoegt.",
+			"self": {
+				"args": {
+					"page": "Welke pagina van de fake  te verkrijgen."
+				},
+				"description": "Help om gebruikers te vinden die proberen vals te spelen."
+			},
+			"title": "Fake invites"
+		},
+		"getBot": {
+			"self": {
+				"description": "Krijg een invite link voor de bot."
+			},
+			"title": "Voeg inviteManager aan jouw server toe."
+		},
+		"graph": {
+			"joins": {
+				"text": "Deze grafiek laat zien hoeveel mensen je server gejoind zijn.",
+				"title": "Gebruikers die gejoind zijn"
+			},
+			"leaves": {
+				"text": "Deze grafiek laat zien hoeveel mensen je server geleaved zijn.",
+				"title": "Gebruikers die de server vertalen hebben"
+			},
+			"self": {
+				"args": {
+					"duration": "De tijdsduur voor de grafiek",
+					"type": "De type grafiek om te zien."
+				},
+				"description": "Laat verschillende soorten grafieken zien van je server statistieken."
+			},
+			"usage": {
+				"text": "Deze grafiek laat de hoeveelheid gebruikte commando's zien voor deze server.",
+				"title": "Commando gebruik"
+			}
+		},
+		"help": {
+			"aliases": {
+				"title": "Aliases"
+			},
+			"command": {
+				"title": "Commando"
+			},
+			"description": {
+				"title": "Beschrijving"
+			},
+			"links": "Links",
+			"missingPermissions": "De bot mist momenteel de volgende permissie: {{{ value }}}",
+			"self": {
+				"args": {
+					"command": "De commando om gedetailleerde informatie te krijgen."
+				},
+				"description": "Zie help."
+			},
+			"text": "Dit is een lijst met commando's die je kan gebruiken. Je kan meer informatie krijgen over een commando door `{{ prefix }}help <command>` (Bijv. `{{ prefix }}help add-ranks`)",
+			"usage": {
+				"title": "Gebruik"
+			}
+		},
+		"info": {
+			"bonusInvites": {
+				"details": "Gebruik {{{ cmd }}} door details.",
+				"entry": "{{ amount }} van {{{ creator }}} - {{ date }}, reden: {{ reason }}",
+				"more": "Plus {{ amount }} meer bonus invites",
+				"none": "Deze gebruiker heeft geen meer bonussen tot nu toe",
+				"noReason": "Geen reden",
+				"title": "Bonus invites"
+			},
+			"created": {
+				"title": "Gecreëerd"
+			},
+			"invitedMembers": {
+				"details": "Gebruik {{{ cmd }}} door details.",
+				"more": "Plus {{ amount }} meer mensen geïnvite.",
+				"none": "Deze gebruiker heeft niemand geinvite tot nu toe",
+				"title": "Geinvite gebruikers"
+			},
+			"invites": {
+				"clear": {
+					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)",
+					"title": "Verwijderde invites."
+				},
+				"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+				"title": "Invites"
+			},
+			"joined": {
+				"text": "{{ amount }} keren",
+				"title": "Gejoined"
+			},
+			"joins": {
+				"entry": {
+					"invite": "{{{ member }}} ({{ times }} keren)",
+					"text": "{{ total }} keren {{ time }}, geïnvite door:"
+				},
+				"more": "Plus {{ amount }} meer joins.",
+				"title": "Aantal keer gejoint",
+				"unknown": "Onbekend (Dit werkt alleen voor nieuwe leden)"
+			},
+			"lastJoined": {
+				"notInGuild": "Die gebruiker zit niet in deze guild",
+				"title": "Laatst gejoined"
+			},
+			"regularInvites": {
+				"entry": "{{ uses }} van {{ code }} - aangemaakt op {{ createdAt }}",
+				"more": "Plus {{ amount }} meer invite codes",
+				"none": "Deze gebruiker heeft niemand geinvite tot nu toe",
+				"title": "Regular invites"
+			},
+			"self": {
+				"args": {
+					"details": "Vraag alleen specifieke details aan van een gebruiker.",
+					"page": "Welke pagina van de detail om te laten zien. Je kan ook de reactions gebruiken om te navigeren.",
+					"user": "De gebruiker van wie je de toegevoegde informatie wilt zien."
+				},
+				"description": "Zie informatie over een specifieke gebruiker."
+			}
+		},
+		"interactiveConfig": {
+			"add": "Vul een waarde of lijst van waardes in om toe te voegen.",
+			"change": "**Huidige waarde**\n{{{ current }}}\n\n**Mogelijke waardes**\n{{{ possible }}}",
+			"current": {
+				"title": "Huidige waarde"
+			},
+			"list": {
+				"add": {
+					"text": "Voeg een nieuwe waarde toe aan de lijst.",
+					"title": "Toevoegen"
+				},
+				"clear": {
+					"text": "Maak de hele lijst van waardes schoon.",
+					"title": "Maak schoon"
+				},
+				"remove": {
+					"text": "Verwijder een bestaand waarde van de lijst.",
+					"title": "Verwijder"
+				},
+				"set": {
+					"text": "Zet de hele lijst door alle woorden te scheiden van elkaar door middel van een spatie.",
+					"title": "Verander"
+				}
+			},
+			"more": {
+				"description": "Show more entries",
+				"title": "Meer"
+			},
+			"new": "Vul een nieuwe waarde in:",
+			"none": "<None>",
+			"possible": {
+				"title": "Mogelijke waardes"
+			},
+			"remove": "Vul een waarde of een lijst van waardes in om te verwijderen.",
+			"removeEmpty": "De lijst is al leeg.",
+			"self": {
+				"description": "Interactieve Configuratie"
+			},
+			"set": "Vul een nieuwe waarde in voor de lijst.",
+			"values": {
+				"boolean": "`Ja` of `Nee`",
+				"channel": "Ieder kanaal, bijvoorbeeld: #general",
+				"channel[]": "Een lijst van kanalen, bijvoorbeeld: #general #bot-commands",
+				"number": "Een nummer",
+				"role": "Een rol, bijvoorbeeld: @Admin",
+				"role[]": "Een lijst van rollen, bijvoorbeeld: @Admin @Mod",
+				"string": "Een tekst",
+				"string[]": "Een lijst van woorden, bijvoorbeeld: woord nog een \"woord met spatie\""
+			},
+			"welcome": "Gebruik de reacties om een van de mogelijke opties te kiezen."
+		},
+		"inviteCodeConfig": {
+			"changed": {
+				"text": "Deze invite code config is veranderd.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} 1` om het weer te veranderen.\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` om het te resetten naar de standaard."
+			},
+			"current": {
+				"clear": "Gebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` om alles te verwijderen.",
+				"notSet": "Deze invite code configuratie is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` om dit te zetten.",
+				"text": "Deze invite code configuratie is momenteel gezet.\n\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}InviteCodeConfig {{ key }} {{ code }} default` om het te resetten naar de standaard waarde.\nGebruik `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none\\` om dit te verwijderen.",
+				"title": "Huidge Waarden"
+			},
+			"keys": {
+				"title": "Geldige invite code configuratie opties"
+			},
+			"new": {
+				"title": "Nieuwe Waarde"
+			},
+			"none": "Geen",
+			"notSet": "Deze invite code configuratie is momenteel niet gezet voor alle invite codes",
+			"previous": {
+				"title": "Vorige Waarde"
+			},
+			"sameValue": "Deze invite code configuratie is al gezet naar die waarde",
+			"self": {
+				"args": {
+					"code": "De invite code waarvan de waarde is veranderd.",
+					"inviteCode": "De invite code waarvan je de instellingen wilt veranderen.",
+					"key": "De configuratie instelling die je wilt zien/veranderen.",
+					"value": "De nieuwe waarde van de instelling."
+				},
+				"description": "Zie en verander de configuratie van de invite codes van de server."
+			},
+			"text": "Stel de configuraties in voor individuele invite codes.",
+			"title": "Invite Code Configuratie",
+			"noneSet": "Geen configuraties gezet!"
+		},
+		"inviteCodes": {
+			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
+			"noCodes": "Je hebt geen actieve invite codes. Vraag alsjeblieft een moderator hoe je er één maakt.",
+			"permanent": {
+				"entry": "**Keren gebruikt**: {{ uses }}\n**Maximale leeftijd**: {{ maxSage }}\r\n**Maximaal aantal keer te gebruiken**: {{ maxUses }}\r\n**Kanaal**: {{{ channel }}}",
+				"text": "Deze invites verlopen niet.",
+				"title": "Permanent"
+			},
+			"recommendedCode": {
+				"none": "Maakt alsjeblieft een permanente invite code aan.",
+				"title": "Aanbevolen invite code"
+			},
+			"self": {
+				"description": "Krijg een lijst van al jouw invite codes"
+			},
+			"temporary": {
+				"entry": "**Keren gebruikt**: {{ uses }}\n**Maximale leeftijd**: {{ maxSage }}\n**Maximaal aantal keer te gebruiken**: {{ maxUses }}\n**Kanaal**: {{{ channel }}}\r\n**Verloopt op**: {{ expires }}",
+				"text": "Deze invites verlopen na een bepaalde tijd.",
+				"title": "Tijdelijke"
+			},
+			"title": "Je hebt de volgende codes in de server {{ guild }}"
+		},
+		"inviteDetails": {
+			"entry": "**{{ uses }}** van {{{ code }}} - aangemaakt op **{{ createdAt }}**",
+			"noInviteCodes": "Je hebt momenteel geen invite codes.",
+			"self": {
+				"args": {
+					"user": "De gebruiker van wie je de invites gedetailleerd wilt zien."
+				},
+				"description": "Zie details waar je je invites vandaan komen."
+			}
+		},
+		"invites": {
+			"amount": {
+				"other": "{{{ target }}} heeft {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
+				"self": "Jij hebt {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)"
+			},
+			"highestRank": {
+				"other": "{{{ target }}} heeft momenteel de hoogste rank!",
+				"self": "Gefeliciteerd! Je hebt momenteel de hoogste rank!"
+			},
+			"nextRank": {
+				"other": "{{{ target }}} heeft **{{ nextRankPointsDiff }}** meer invites nodig om de rank **{{ nextRankName }}** te krijgen!",
+				"self": "Jij hebt **{{ nextRankPointsDiff }}** meer invites nodig om de rank **{{ nextRankName }}** te krijgen!"
+			},
+			"self": {
+				"args": {
+					"user": "De gebruiker van wie je de invites wilt zien."
+				},
+				"description": "Zie persoonlijke invites."
+			}
+		},
+		"kick": {
+			"canNotKick": "Ik kan deze gebruiker niet kicken.",
+			"done": "De gebruiker is succesvol gekicked.",
+			"error": "Er is een error opgetreden tijdens het kicken van deze gebruiker:\n{{ error }}",
+			"missingPermissions": "Ik heb de `Kick Members` permissie nodig om gebruikers te kicken.",
+			"self": {
+				"args": {
+					"member": "Gebruiker om te kicken.",
+					"reason": "Waarom de gebruiker is gekicked."
+				},
+				"description": "Kick een gebruiker van de server."
+			}
+		},
+		"leaderboard": {
+			"col": {
+				"change": "Verander",
+				"custom": "B",
+				"fake": "F",
+				"leave": "L",
+				"name": "Naam",
+				"regular": "R",
+				"total": "T"
+			},
+			"comparedTo": "wijzigingen vergeleken met {{ to }}",
+			"entry": "**{{ pos}}** {{{ chang }}} **{{{ name }}}** - {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
+			"from": "Invites sinds {{{ from }}}",
+			"invalidDate": "Ongeldige datum: {{ date }}",
+			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves",
+			"noInvites": "Geen invites!",
+			"self": {
+				"args": {
+					"date": "De datum (& tijd) waarop de leaderboard wordt weergegeven.",
+					"duration": "De tijd om de leaderboard te berekenen.",
+					"page": "Welke pagina van de leaderboard om te krijgen."
+				},
+				"description": "Laat de mensen zien met de meeste invites.",
+				"flags": {
+					"compare": "De datum waarop de leaderboard wordt weergegeven."
+				}
+			},
+			"title": "Leaderboard"
+		},
+		"legacyInvites": {
+			"self": {
+				"args": {
+					"user": "DEPRECATED - this command will be removed soon."
+				},
+				"description": "DEPRECATED - this command will be removed soon."
+			}
+		},
+		"legacyLeaderboard": {
+			"self": {
+				"args": {
+					"date": "DEPRECATED - this command will be removed soon.",
+					"page": "DEPRECATED - this command will be removed soon."
+				},
+				"description": "DEPRECATED - this command will be removed soon."
+			}
+		},
+		"makeMentionable": {
+			"alreadyDone": "{{{ role }}} kan je al mentionen.",
+			"self": {
+				"args": {
+					"role": "De role die je wilt mentionen."
+				},
+				"description": "Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt."
+			}
+		},
+		"memberConfig": {
+			"canNotClear": "De gebruiker configuratie **{{ key }}** kan niet verwijderd worden. Je kan `memberConfig {{ key }} default` gebruiken om dit te resetten naar de standaard waarde.",
+			"changed": {
+				"text": "Deze gebruiker configuratie is gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit opnieuw te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te resetten."
+			},
+			"current": {
+				"notSet": "Deze gebruiker configuratie is momenteel **niet** gezet.\n\nGebruik `{{ prefix }}memberConfig {{ ke }} {{ username }} <value>` om dit te zetten.",
+				"text": "Deze gebruiker configuratie is momenteel gezet.\n\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` om dit te veranderen.\nGebruik `{{ prefix }}memberConfig {{ key }} {{ username }} default` om dit te resetten naar de standaard waarde.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` om dit te verwijderen.",
+				"title": "Huidige Waarde"
+			},
+			"keys": {
+				"title": "Geldige gebruiker configuratie keys"
+			},
+			"new": {
+				"title": "Nieuwe Waarde"
+			},
+			"none": "Geen",
+			"notSet": "Deze gebruiker configuratie instelling is momenteel niet gezet voor iemand",
+			"previous": {
+				"title": "Vorige Waarde"
+			},
+			"sameValue": "Deze gebruiker configuratie is al gezet naar die waarde",
+			"self": {
+				"args": {
+					"key": "De gebruiker configuratie instelling die je wilt zien/veranderen.",
+					"user": "De gebruiker waar de setting voor is.",
+					"value": "De nieuwe waarde van de setting."
+				},
+				"description": "Zie en verander de configuratie van de gebruikers van deze server."
+			},
+			"text": "Hieronder staan alle beschikbare gebruiker configuratie instellingen.\n\nGebruik `{{ prefix }}memberConfig <key>` om gebruikers te zien die de instelling `<key>` hebben\nGebruik `{{ prefix }}memberConfig <key> @gebruiker` om de instelling van een enkele `@gebruiker` te zien\nGebruik `{{ prefix }}memberConfig <key> @gebruiker <value>` om de configuratie `<key>` te zetten naar `<value>` voor `@gebruiker`",
+			"title": "Gebruik Configuratie"
+		},
+		"members": {
+			"bots": "Bots",
+			"humans": "Mensen",
+			"joined": {
+				"day": "Is gejoint in de laatste 24 uur",
+				"month": "Is gejoint deze maan",
+				"week": "Is gejoint deze week"
+			},
+			"members": "Gebruikers",
+			"online": "Online",
+			"self": {
+				"description": "Zie de gebruiker aantal van deze server."
+			}
+		},
+		"mentionRole": {
+			"alreadyDone": "{{{ role }}} kan je al mentionen.",
+			"roleTooHigh": "De opgegeven role is hoger dan mijn role, dus ik kan het niet veranderen. Zet de InviteManager role hoger dan de opegegeven role en probeer het opnieuw.",
+			"self": {
+				"args": {
+					"role": "De role die je wilt mentionen."
+				},
+				"description": "Mention een niet mentionable role."
+			}
+		},
+		"mute": {
+			"canNotMute": "De gebruiker kan niet gemute worden!",
+			"done": "Gebruiker is gemute!",
+			"error": "Er is een error opgetreden tijdens het muten van deze persoon.",
+			"missingRole": "Muted role is niet gezet of bestaat niet!",
+			"self": {
+				"args": {
+					"muteDuration": "De tijd waarvoor de gebruiker gemute wordt.",
+					"reason": "De reden waarom de gebruiker is gemute.",
+					"user": "De gebruiker die gemute zou moeten worden."
+				},
+				"description": "Mute een gebruiker"
+			}
+		},
+		"permissions": {
+			"added": "{{{ role }}} kan nu {{{ cmds }}} gebruiken",
+			"adminOnly": "Deze commando kan alleen worden gebruikt door admins",
+			"adminsCanUseAll": "Onthoudt dat \"Server Administratoren\" altijd **alle** commando's kan gebruiken",
+			"everyone": "Dit commando kan door iedereen gebruikt worden",
+			"removed": "{{{ role }}} kan niet langer {{{ cmds }}} gebruiken",
+			"self": {
+				"args": {
+					"cmd": "De commando om de permissies te configureren.",
+					"role": "De role die toegang of geen toegang moet krijgen tot het commando."
+				},
+				"description": "Configureer permissies om commando's te gebruiken."
+			}
+		},
+		"ping": {
+			"self": {
+				"description": "Mention de bot"
+			}
+		},
+		"prefix": {
+			"self": {
+				"description": "Laat de huidige prefix zien van de bot."
+			},
+			"title": "De huidige prefix is {{{ prefix }}}"
+		},
+		"premium": {
+			"activate": {
+				"currentlyActive": "Er is al een premium abonnement actief bezig op deze server.",
+				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
+				"done": "Premium is succesvol geactiveerd voor deze server.",
+				"noGuild": "Je moet deze commando gebruiken binnen een server.",
+				"noSubscription": "Je hebt geen betaalde abonnement.\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"title": "Activeer premium op deze server"
+			},
+			"check": {
+				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
+				"done": "Je hebt een betaalde abonnement geldig tot {{{ valid }}}.\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"notFound": "Je account heeft geen premium abonnement.\n\nAls je premium hebt gekocht via Patreon, zorg dan dat je patreon account gekoppeld is aan je discord account. Voer dan het commando opnieuw uit.",
+				"title": "Check foor een Premium Abonnement"
+			},
+			"deactivate": {
+				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
+				"done": "Premium is succesvol gedeactiveerd voor deze server.",
+				"noGuild": "Je moet deze commando gebruiken binnen een server.",
+				"noSubscription": "Je hebt een geen betaalde abonnement\n\nGebruik {{{ cmd }}} voor meer informatie.",
+				"title": "Deactiveer premium op deze server"
+			},
+			"feature": {
+				"embeds": {
+					"text": "Je kan deze embed gebruiken in je join en leave bericht en dat zal een stuk beter staan. \n[Ze een aantal voorbeelden hier]({{{ link }}})",
+					"title": "Betaalde toevoegingen: Embeds in join berichten"
+				},
+				"export": {
+					"text": "Je kan alle joins en leaves exporteren die gebeurd zijn op je server sinds je de premium bot hebt geinvite.",
+					"title": "Premium Toevoeding: Exporteer de geschiedenis"
+				},
+				"patreon": {
+					"text": "Gebruik {{{ cmd }}} om je Patreon product te valideren en te activeren.",
+					"title": "Als je premium hebt betaald via Patreon"
+				},
+				"servers": {
+					"text": "Wanneer je de betaalde functies hebt kan je dit activeren tot 5 servers naar jouw keuze, en je kan deze 5 servers op elk moment wijzigen.",
+					"title": "Betaalde toevoegingen: Tot 5 servers"
+				}
+			},
+			"noPremium": {
+				"text": "Door te abonneren op een betaalde tier help je de ontwikkeling van de bot en krijg je wat extra toevoegingen.",
+				"title": "Je hebt momenteel geen betaalde abonnement"
+			},
+			"premium": {
+				"activate": "Gebruik {{{ cmd }}} om het te activeren op deze server",
+				"deactivate": "Gebruik {{{ cmd }}} om het te deactiveren op deze server",
+				"text": "Je premium abonnement geldig voor {{ date }}.\n\nJe hebt premium geactiveerd op {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Wat kan ik doen met premium?]({{{ link }}})",
+				"title": "InviteManager Premium"
+			},
+			"self": {
+				"args": {
+					"action": "De actie om uit te voeren. Niets voor premium info. `check` om je premium status te controleren. `acivate` om premium te gebruiken voor deze server."
+				},
+				"description": "Informatie over de betaalde versie van InviteManager."
+			}
+		},
+		"punishmentConfig": {
+			"deletedText": "Gebruikers zullen niet meer de {{ punishment }} straf krijgen",
+			"self": {
+				"args": {
+					"args": "Arguments passed to the punishment.",
+					"punishment": "Straf type om te gebruiken.",
+					"strikes": "Waarschuwing aantal voor deze straf mom te gebruiken."
+				},
+				"description": "Configure punishments when reaching a certain amount of strikes."
+			},
+			"text": "{{ strikes }} waarschuwingen zijn bestraft met een {{ punishment }}",
+			"title": "Straffen Configuratie",
+			"unusedPunishment": "Ongebruikte Straffen"
+		},
+		"purge": {
+			"error": "Fout opgetreden",
+			"invalidQuantity": "Je moet een geldig aantal berichten opgeven om te verwijderen",
+			"self": {
+				"args": {
+					"member": "Van wie de berichten worden verwijdert",
+					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
+					"user": "User whose messages are deleted."
+				},
+				"description": "Verwijder berichten in een kanaal."
+			},
+			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
+			"title": "Verwijderde Berichten"
+		},
+		"purgeUntil": {
+			"error": "Fout opgetreden",
+			"msgNotFound": "De bericht ID kan niet worden gevonden in de laatste 100 berichten.",
+			"none": "Geen berichten gevonden om te verwijderen.",
+			"self": {
+				"args": {
+					"messageID": "Laatste bericht ID om te verwijderen."
+				},
+				"description": "Verwijder berichten in een kanaal tot een specifiek aan berichten."
+			},
+			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
+			"title": "Verwijder Berichten"
+		},
+		"ranks": {
+			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
+			"none": "Er zijn geen ranken gecreëerd.",
+			"self": {
+				"description": "Zie alle ranks.",
+				"args": {
+					"page": "cmd.ranks.self.args.page"
+				}
+			},
+			"title": "Ranken"
+		},
+		"removeInvites": {
+			"self": {
+				"args": {
+					"amount": "cmd.removeInvites.self.args.amount",
+					"reason": "cmd.removeInvites.self.args.reason",
+					"user": "cmd.removeInvites.self.args.user"
+				},
+				"description": "cmd.removeInvites.self.description"
+			}
+		},
+		"removeRank": {
+			"done": "De rank {{ role }} is verwijdert.",
+			"rankNotFound": "De {{ role }} bestaat niet!",
+			"self": {
+				"args": {
+					"rank": "Voor wie je de rank wilt verwijderen."
+				},
+				"description": "Verwijder een rank."
+			}
+		},
+		"restoreInvites": {
+			"done": "Invites terug gezet{{! args.user ? ` for <@${args.user}>` : '' !}}",
+			"self": {
+				"args": {
+					"user": "De gebruiker om alle invites terug te zetten. Wanneer leeg gelaten worden de invites van iedereen terug gezet."
+				},
+				"description": "Zat alle vorige verwijderde invites terug."
+			}
+		},
+		"setup": {
+			"faq": {
+				"text": "Een complete guide voor het opzetten van de bot kan hier gevonden worden: https://docs.invitemanager.co/bot/",
+				"title": "Vraag en antwoorden en meer"
+			},
+			"help": {
+				"text": "Als je hulp nodig hebt, of als je een feedback hebt, kan je de `!feedback` commando gebruiken or join onze discord hulp server: {{{ link }}}",
+				"title": "Help"
+			},
+			"joinLeave": {
+				"text": "Wanneer je join en leave berichten wilt in één van je kanalen, moet je configureren door `!config joinMessageChannel #kanaal` te doen, of `!config leaveMessageChannel #kanaal` te doen. Zorg er wel voor dat de bot berichten verzennden permissies heeft.",
+				"title": "Setting join en leave bericht kanaal"
+			},
+			"manageGuild": {
+				"text": "De bot heeft de \"Server beheren\" permissies niet. Deze permissie is nodig om de invites van een gebruiker te lezen. Zonder deze permissie werkt de join bericht niet.",
+				"title": "Ik mis de permissie: Server beheren"
+			},
+			"manageRoles": {
+				"text": "De bot heeft de \"Rollen beheren\" permissies niet. Deze permissie is nodig om iemand een role te geven die hij / zij krijgt wanneer hij de zoveel invites heeft behaald. Zonder deze permissie kan de bot niet automatisch de role geven.",
+				"title": "Ik mis de permissie: Rollen beheren."
+			},
+			"prefix": {
+				"text": "Je kan de prefix veranderen door `!config prefix !` te doen\n\nAls je de bot prefix niet meer weet, kan je het vinden door `@InviteManager config prefix` te doen.",
+				"title": "Verander de prefix"
+			},
+			"premium": {
+				"text": "Als je het leuk vind om de ontwikkeling van deze bot te ondersteunen, kan je ons ondersteunen via Patreon: {{{ link }}}\n\nAfhankelijk van je tier, krijg je extra functies.",
+				"title": "Betaalde versie"
+			},
+			"self": {
+				"description": "Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies)"
+			},
+			"text": "Wanneer je de bot geinvite hebt, worden alle invites automatisch bijgehouden.",
+			"title": "Opzetten InviteManager",
+			"viewAuditLogs": {
+				"text": "De bot heeft niet de `Zie logboeken` permissie. Deze permissie laat de bot toe om op een betere manier de invites te volgen.",
+				"title": "Ik mis de permissie: Zie logboeken."
+			}
+		},
+		"softBan": {
+			"canNotSoftBan": "Ik kan deze gebruiker niet soft-bannen.",
+			"done": "De gebruiker is succesvol gesoft-banned.",
+			"error": "Er was een error tijdens het verbannen van deze gebruiker: \n{{ error }}",
+			"missingPermissions": "Ik heb de `Ban Gebruikers` permissie nodig om dit commando te gebruiken.",
+			"self": {
+				"args": {
+					"deleteMessageDays": "Hoeveel vorige berichten worden verwijdert (in dagen).",
+					"reason": "Waarom de gebruiker was verbannen.",
+					"user": "Gebruiker om te verbannen."
+				},
+				"description": "Ban en dan unban een gebruiker automatisch van de server.",
+				"flags": {
+					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+				}
+			},
+			"unBanError": "De gebruiker is verbannen maar kan niet worden geunbanned...\n{{ error }}"
+		},
+		"strike": {
+			"self": {
+				"args": {
+					"amount": "The amount of strikes to be added",
+					"member": "The member receiving the strikes",
+					"type": "De type overtreding"
+				},
+				"description": "Add strikes to a user"
+			}
+		},
+		"strikeConfig": {
+			"deletedText": "Gebruikers die de straf {{ violation }} overtreden zullen niet langer waarschuwingen ontvangen.",
+			"self": {
+				"args": {
+					"strikes": "Aantal waarschuwingen.",
+					"violation": "Straf type."
+				},
+				"description": "Configureer waarschuwingen die gegeven zijn door vorige straffen."
+			},
+			"text": "De straf {{ violation }} geeft een gebruiker {{ strikes }} waarschuwingen.",
+			"title": "Waarschuwing Configuratie",
+			"unusedViolations": "Ongebruikte straffen."
+		},
+		"subtractFakes": {
+			"done": "Verwijder nep invites!",
+			"none": "Geen fake invites gevonden.",
+			"self": {
+				"description": "Verwijder fake invites van alle gebruikers."
+			}
+		},
+		"subtractLeaves": {
+			"done": "Leaves verwijdert!",
+			"none": "Geen leaves gevonden.",
+			"self": {
+				"description": "Verwijder leaves voor alle gebruikers."
+			}
+		},
+		"support": {
+			"self": {
+				"description": "Krijg een invite link naar onze hulp server."
+			},
+			"server": "Hulp discord"
+		},
+		"tryPremium": {
+			"alreadyUsed": "Je hebt al je free premium voor tijdelijk gebruikt! Als je deze bot goed vind, kan je altijd ervoor kiezen om de betaalde bot te kopen.",
+			"currentlyActive": "Je hebt momenteel een actieve betaalde abonnement.",
+			"prompt": "Reageer met **yes** of **no**.",
+			"self": {
+				"description": "Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd."
+			},
+			"started": "Je hebt de proeftijd succesvol gestart! Gebruik `{{ prefix }}premium` om te bekijken hoeveel tijd je nog over hebt.",
+			"text": "Je kan onze betaalde toevoegingen uitproberen voor {{ duration }}. Je kan dit 1 keer doen. Wil je het nu testen?",
+			"title": "InviteManager - Probeer Premium"
+		},
+		"unban": {
+			"canNotUnban": "Ik kan deze gebruiker niet unbannen.",
+			"done": "De gebruiker is geunbanned.",
+			"missingPermissions": "Ik heb de `Ban Gebruikers` permissie om dit commando te gebruiken",
+			"self": {
+				"args": {
+					"reason": "De reden waarom de gebruiker is geunbanned.",
+					"user": "De gebruiker die wordt geunbanned."
+				},
+				"description": "Unban een gebruiker"
+			},
+			"error": "Ik kan de gebruiker niet unbannen door de volgende error:\n{{{ error }}}"
+		},
+		"unhoist": {
+			"done": "**Geklaard!**\n\nVerwerkt: {{ verwerkt }}\n**Gewijzigd: {{ gewijzigd }}**\nUitgesloten: {{ uitgesloten }}\nErrored: {{ errored }}\n",
+			"processing": "Bezig, dit kan een tijdje duren...\n\nVerwerkt: {{ verwerkt }}/{{ total }}\n**Gewijzigd: {{ gewijzigd }}**\nUitgesloten: {{ uitgesloten }}\nErrored: {{ errored }}",
+			"self": {
+				"description": "Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan."
+			},
+			"starting": "De unhoist process wordt gestart...",
+			"title": "Verwijder de characters die ervoor zorgt dat alle gebruikers die een speciale teken voor hun naam hebben staan helemaal onderaan de lijsr komen te staan"
+		},
+		"unmute": {
+			"canNotUnmute": "Die gebruiker kan niet geunmute worden.",
+			"done": "De gebruiker is geunmute.",
+			"missingRole": "Muted role in niet gezet of bestaat niet!",
+			"self": {
+				"args": {
+					"user": "De gebruiker die geunmute wordt."
+				},
+				"description": "Unmute een gebruiker"
+			}
+		},
+		"warn": {
+			"canNotDm": "De gebruiker kon geen prive bericht krijgen:\n{{ error }}",
+			"canNotWarn": "Ik kan die gebruiker niet waarschuwen.",
+			"done": "De gebruiker is succesvol gewaarschuwd.",
+			"self": {
+				"args": {
+					"member": "Gebruiker om te waarschuwen.",
+					"reason": "Waarom de gebruiker gewaarschuwd is."
+				},
+				"description": "Waarschuw een gebruikt."
+			},
+			"text": "You have been warned on server {{ guild }}\n{{ text }}"
+		},
+		"disconnect": {
+			"self": {
+				"description": "Disconnect the bot from the current voice channel."
+			}
+		},
+		"lyrics": {
+			"self": {
+				"description": "Show lyrics of the currently playing song.",
+				"flags": {
+					"live": "If set, then the lyrics will sync with the current time of the song."
+				}
+			},
+			"notFound": "No lyrics found for this song!",
+			"notSupported": "The lyrics command is not supported on {{ platform }}."
+		},
+		"mashup": {
+			"self": {
+				"description": "Create a mashup of 2 songs.",
+				"args": {
+					"videos": "The videos that should be mashed together."
+				}
+			}
+		},
+		"nowPlaying": {
+			"self": {
+				"description": "Shows information about the currently playing song",
+				"flags": {
+					"pin": "Pin the now playing message and update it automatically whenever a new song plays."
+				}
+			},
+			"playTime": "Playtime"
+		},
+		"pause": {
+			"self": {
+				"description": "Pause the current song."
+			}
+		},
+		"play": {
+			"self": {
+				"description": "Play the song if the queue is empty, otherwise it will add the song to the end of the queue.",
+				"flags": {
+					"platform": "Select the platform where you want the song to be played.",
+					"next": "If set, it will play this song next instead of adding it to the end of the queue."
+				},
+				"args": {
+					"link": "The link to a specific song or a search term."
+				}
+			}
+		},
+		"queue": {
+			"self": {
+				"description": "Display the songs in the queue."
+			},
+			"empty": "Queue is currently empty. Use the play command to add songs to it."
+		},
+		"repeat": {
+			"self": {
+				"description": "Set the song to be played on repeat."
+			},
+			"enabled": "This song will now play on repeat.",
+			"disabled": "This song will not be played on repeat anymore."
+		},
+		"resume": {
+			"self": {
+				"description": "Resume the current song."
+			}
+		},
+		"rewind": {
+			"self": {
+				"description": "Rewind the song and start from the beginning."
+			}
+		},
+		"search": {
+			"self": {
+				"description": "Search for the search term and let you chose one of the results.",
+				"flags": {
+					"platform": "Select the platform where you want the song to be played."
+				},
+				"args": {
+					"search": "The search term"
+				}
+			},
+			"title": "Results for {{ term }}",
+			"noResults": "No results found!"
+		},
+		"seek": {
+			"self": {
+				"description": "Skip to a specific part of the song.",
+				"args": {
+					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
+				}
+			}
+		},
+		"skip": {
+			"self": {
+				"description": "Skip the current song and play the next song in the queue.",
+				"args": {
+					"amount": "How many songs will be skipped."
+				}
+			}
+		},
+		"volume": {
+			"self": {
+				"description": "Set the volume if an argument is passed, or show the current volume.",
+				"args": {
+					"volume": "The value the volume will be set to."
+				}
+			}
+		},
+		"fixRanks": {
+			"done": "Done fixing ranks.",
+			"self": {
+				"description": "cmd.fixRanks.self.description"
+			}
+		}
+	},
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
+	"messages": {
+		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
+		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
+		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
+		"unknownInviter": "Unknown",
+		"joinServerWidget": "The user joined using a server widget."
+	},
+	"moderation": {
+		"punishments": {
+			"dm": {
+				"ban": "You have been **banned** from **{{ guild }}**",
+				"kick": "You have been **kicked** from **{{ guild }}**",
+				"mute": "You have been **muted** in **{{ guild }}**",
+				"warn": "You have been **warned** in **{{ guild }}**",
+				"reason": "Reason: {{ reason }}",
+				"amount": "Amount: {{ amount }}"
+			}
+		},
+		"strikes": {
+			"dm": "You have received **{{ amount }}** strikes for violating the **{{ type }}** rule in **{{ guild }}**"
+		}
+	},
+	"permissions": {
+		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
+		"createInviteCode": "Create Instant Invite",
+		"manageGuild": "Manage Server",
+		"manageRoles": "Manage Roles",
+		"premiumOnly": "This command is only available for premium subscribers!",
+		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
+		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
+		"viewAuditLogs": "View Audit Logs",
+		"manageMessages": "Manage Messages",
+		"readMessageHistory": "Read Message History",
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+	},
+	"prompt": {
+		"canceled": "Canceled"
+	},
+	"resolvers": {
+		"boolean": {
+			"invalid": "Not a valid yes/no value.",
+			"type": "Boolean",
+			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
+		},
+		"channel": {
+			"multiple": "Multiple matching channels found. {{{ channels }}}",
+			"notFound": "Channel not found.",
+			"type": "Channel",
+			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
+		},
+		"command": {
+			"multiple": "Multiple matching commands found. {{{ commands }}}",
+			"notFound": "Command not found.",
+			"type": "Command",
+			"validValues": "Use one of the following values: {{{ values }}}",
+			"typeInfo": "resolvers.command.typeInfo"
+		},
+		"enum": {
+			"invalid": "Not a valid value.",
+			"validValues": "Use one of the following values: {{{ values }}}",
+			"type": "Enum",
+			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
+		},
+		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"member": {
+			"multiple": "Multiple matching members found. {{{ members }}}",
+			"notFound": "Member was not found.",
+			"type": "Member"
+		},
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"number": {
+			"invalid": "Not a valid number.",
+			"type": "Number",
+			"typeInfo": "This arguments expects a number"
+		},
+		"role": {
+			"multiple": "Multiple matching roles found. {{{ roles }}}",
+			"notFound": "Role was not found.",
+			"type": "Role",
+			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
+		},
+		"user": {
+			"multiple": "Multiple matching users found. {{{ users }}}",
+			"notFound": "User was not found.",
+			"type": "User",
+			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
+		},
+		"string": {
+			"type": "Text",
+			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
+		},
+		"settingsvalue": {
+			"type": "Value"
+		},
+		"date": {
+			"type": "Date",
+			"typeInfo": "resolvers.date.typeInfo"
+		},
+		"duration": {
+			"type": "Duration",
+			"typeInfo": "resolvers.duration.typeInfo"
+		},
+		"invitecode": {
+			"type": "Invite Code",
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+		}
+	},
+	"settings": {
+		"autoModAllCapsEnabled": {
+			"description": "settings.autoModAllCapsEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModAllCapsMinCharacters": {
+			"description": "settings.autoModAllCapsMinCharacters.description",
+			"title": "Min. Characters"
+		},
+		"autoModAllCapsPercentageCaps": {
+			"description": "settings.autoModAllCapsPercentageCaps.description",
+			"title": "Percentage CAPs"
+		},
+		"autoModDeleteBotMessage": {
+			"description": "settings.autoModDeleteBotMessage.description",
+			"title": "Delete Bot Messages"
+		},
+		"autoModDeleteBotMessageTimeoutInSeconds": {
+			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
+			"title": "Delete Bot Message Timeout"
+		},
+		"autoModDisabledForOldMembers": {
+			"description": "settings.autoModDisabledForOldMembers.description",
+			"title": "Disabled for Old Members"
+		},
+		"autoModDisabledForOldMembersThreshold": {
+			"description": "settings.autoModDisabledForOldMembersThreshold.description",
+			"title": "Old Members Threshold"
+		},
+		"autoModDuplicateTextEnabled": {
+			"description": "settings.autoModDuplicateTextEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModDuplicateTextTimeframeInSeconds": {
+			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
+			"title": "Timeframe in Seconds"
+		},
+		"autoModEmojisEnabled": {
+			"description": "settings.autoModEmojisEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModEmojisMaxNumberOfEmojis": {
+			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
+			"title": "Max # of Emojis"
+		},
+		"autoModEnabled": {
+			"description": "settings.autoModEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModHoistEnabled": {
+			"description": "settings.autoModHoistEnabled.description",
+			"title": "Dehoist Enabled"
+		},
+		"autoModIgnoredChannels": {
+			"description": "settings.autoModIgnoredChannels.description",
+			"title": "Ignored Channels"
+		},
+		"autoModIgnoredRoles": {
+			"description": "settings.autoModIgnoredRoles.description",
+			"title": "Ignored Roles"
+		},
+		"autoModInvitesEnabled": {
+			"description": "settings.autoModInvitesEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModLinksBlacklist": {
+			"description": "settings.autoModLinksBlacklist.description",
+			"title": "Blacklist"
+		},
+		"autoModLinksEnabled": {
+			"description": "settings.autoModLinksEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModLinksFollowRedirects": {
+			"description": "settings.autoModLinksFollowRedirects.description",
+			"title": "Follow Redirects"
+		},
+		"autoModLinksWhitelist": {
+			"description": "settings.autoModLinksWhitelist.description",
+			"title": "Whitelist"
+		},
+		"autoModLogEnabled": {
+			"description": "settings.autoModLogEnabled.description",
+			"title": "Log Enabled"
+		},
+		"autoModMentionRolesEnabled": {
+			"description": "settings.autoModMentionRolesEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModMentionRolesMaxNumberOfMentions": {
+			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
+			"title": "Max # of Mentions"
+		},
+		"autoModMentionUsersEnabled": {
+			"description": "settings.autoModMentionUsersEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModMentionUsersMaxNumberOfMentions": {
+			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
+			"title": "Max # of Mentions"
+		},
+		"autoModModeratedChannels": {
+			"description": "settings.autoModModeratedChannels.description",
+			"title": "Moderated Channels"
+		},
+		"autoModModeratedRoles": {
+			"description": "settings.autoModModeratedRoles.description",
+			"title": "Moderated Roles"
+		},
+		"autoModQuickMessagesEnabled": {
+			"description": "settings.autoModQuickMessagesEnabled.description",
+			"title": "Enabled"
+		},
+		"autoModQuickMessagesNumberOfMessages": {
+			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
+			"title": "# of Messages"
+		},
+		"autoModQuickMessagesTimeframeInSeconds": {
+			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
+			"title": "Timeframe in Seconds"
+		},
+		"autoModWordsBlacklist": {
+			"description": "A list of words that are banned.",
+			"title": "Blacklist"
+		},
+		"autoModWordsEnabled": {
+			"description": "Whether or not blacklisted words will be automoderated.",
+			"title": "Enabled"
+		},
+		"autoSubtractFakes": {
+			"description": "Automatically subtract fake invites.",
+			"title": "Auto Subtract"
+		},
+		"autoSubtractLeaves": {
+			"description": "Automatically remove invites from the inviter when the invited user leaves.",
+			"title": "Auto Subtract"
+		},
+		"autoSubtractLeaveThreshold": {
+			"description": "The time in seconds for which a user has to stay in the server for the invite to count.",
+			"title": "Auto Subtract Threshold"
+		},
+		"captchaVerificationFailedMessage": {
+			"description": "The message sent to the user if he enters an invalid captcha.",
+			"title": "Failed Message"
+		},
+		"captchaVerificationLogEnabled": {
+			"description": "Whether or not verification attempts will be logged.",
+			"title": "Log Enabled"
+		},
+		"captchaVerificationOnJoin": {
+			"description": "Whether or not captcha verification is enabled.",
+			"title": "Enabled"
+		},
+		"captchaVerificationSuccessMessage": {
+			"description": "The welcome message that will be sent to the user after he successfully verifies.",
+			"title": "Success Message"
+		},
+		"captchaVerificationTimeout": {
+			"description": "The time within which the captcha has to be entered successfully.",
+			"title": "Verification Timeout"
+		},
+		"captchaVerificationWelcomeMessage": {
+			"description": "The message a user will get after joining a server and instructing them to enter the captcha.",
+			"title": "Welcome Message"
+		},
+		"channels": {
+			"title": "Command channels",
+			"description": "The channels in which the bot will react to commands."
+		},
+		"getUpdates": {
+			"description": "Enable to receive development updates about InviteManager.",
+			"title": "Get Updates"
+		},
+		"groups": {
+			"general": {
+				"description": "General bot settings such as prefix and language.",
+				"title": "General"
+			},
+			"invites": {
+				"description": "Invite related settings, such as channel and message.",
+				"fakes": {
+					"description": "Settings for fake invites.",
+					"title": "Fakes"
+				},
+				"joins": {
+					"description": "Join related settings, such as join message.",
+					"title": "Joins"
+				},
+				"leaderboard": {
+					"description": "Settings for the leaderboard, such as the visual style.",
+					"title": "Leaderboard"
+				},
+				"leaves": {
+					"description": "Leave related settings, such as leave message.",
+					"title": "Leaves"
+				},
+				"ranks": {
+					"description": "Rank related settings.",
+					"title": "Ranks"
+				},
+				"title": "Invites"
+			},
+			"moderation": {
+				"bannedWords": {
+					"description": "Ban specific words.",
+					"title": "Banned Words"
+				},
+				"caps": {
+					"description": "Prevent spamming with CAPS LOCK ON",
+					"title": "Caps"
+				},
+				"captcha": {
+					"description": "Settings related to the captcha-on-join",
+					"title": "Captcha"
+				},
+				"description": "Moderation and auto moderation settings.",
+				"duplicate": {
+					"description": "Automatically remove duplicate messages.",
+					"title": "Duplicate Messages"
+				},
+				"emojis": {
+					"description": "Automatically remove messages with too many emojis.",
+					"title": "Emojis"
+				},
+				"general": {
+					"description": "settings.groups.moderation.general.title",
+					"title": "General"
+				},
+				"invites": {
+					"description": "Automatically remove Discord invite links.",
+					"title": "Invites"
+				},
+				"links": {
+					"description": "Automatically remove links.",
+					"title": "Links"
+				},
+				"logging": {
+					"description": "Logging settings of various moderation commands and actions",
+					"title": "Logging"
+				},
+				"mentions": {
+					"description": "Automatically remove messages with too many mentions.",
+					"title": "Mentions"
+				},
+				"spam": {
+					"description": "Prevent users from spamming messages.",
+					"title": "Spam"
+				},
+				"title": "Moderation"
+			},
+			"music": {
+				"title": "Music",
+				"general": {
+					"title": "Music",
+					"description": "General Music Settings"
+				},
+				"description": "Music Settings"
+			}
+		},
+		"hideLeftMembersFromLeaderboard": {
+			"description": "Hide members that left the server from the leaderboard.",
+			"title": "Hide left members"
+		},
+		"ignoredChannels": {
+			"title": "Ignored channels",
+			"description": "The channels in which the bot will ignore commands."
+		},
+		"joinMessage": {
+			"description": "The message sent when someone joins the server.",
+			"title": "Message"
+		},
+		"joinMessageChannel": {
+			"description": "The channel that the message on join is sent to.",
+			"title": "Message Channel"
+		},
+		"lang": {
+			"description": "The language of the bot",
+			"title": "Language"
+		},
+		"leaderboardStyle": {
+			"description": "The display style of the leaderboard.",
+			"title": "Style"
+		},
+		"leaveMessage": {
+			"description": "The message sent when someone leaves the server.",
+			"title": "Message"
+		},
+		"leaveMessageChannel": {
+			"description": "The channel that the leave message is sent to.",
+			"title": "Message Channel"
+		},
+		"logChannel": {
+			"description": "The channel where bot actions are logged.",
+			"title": "Log Channel"
+		},
+		"modLogChannel": {
+			"description": "The channel where moderation logs will be posted in.",
+			"title": "Mod Log Channel"
+		},
+		"modPunishmentBanDeleteMessage": {
+			"description": "Whether or not \"Ban\" pushment messages will be deleted automatically.",
+			"title": "Delete Ban Messages"
+		},
+		"modPunishmentKickDeleteMessage": {
+			"description": "Whether or not \"Kick\" pushment messages will be deleted automatically.",
+			"title": "Delete Kick Messages"
+		},
+		"modPunishmentMuteDeleteMessage": {
+			"description": "Whether or not \"Mute\" pushment messages will be deleted automatically.",
+			"title": "Delete Mute Messages"
+		},
+		"modPunishmentSoftbanDeleteMessage": {
+			"description": "Whether or not \"Softban\" pushment messages will be deleted automatically.",
+			"title": "Delete Softban Messages"
+		},
+		"modPunishmentWarnDeleteMessage": {
+			"description": "Whether or not \"Warn\" pushment messages will be deleted automatically.",
+			"title": "Delete Warn Messages"
+		},
+		"mutedRole": {
+			"description": "settings.mutedRole.description",
+			"title": "Muted Role"
+		},
+		"prefix": {
+			"description": "The prefix used to trigger bot commands.",
+			"title": "Prefix"
+		},
+		"rankAnnouncementChannel": {
+			"description": "The channel where users receiving a new rank are announced.",
+			"title": "Announcement Channel"
+		},
+		"rankAnnouncementMessage": {
+			"description": "The message that is sent when a user receives a new rank.",
+			"title": "Announcement Message"
+		},
+		"rankAssignmentStyle": {
+			"description": "How ranks are rewarded to users.",
+			"title": "Assignment Style"
+		},
+		"musicVolume": {
+			"title": "Music Volume",
+			"description": "The default volume that is set when the bot joins a voice channel."
+		},
+		"announceNextSong": {
+			"title": "Announce Next Song",
+			"description": "Whether or not the next song should be announced in the voice channel."
+		},
+		"announcementVoice": {
+			"title": "Announcement Voice",
+			"description": "The voice used in the next song announcements."
+		},
+		"fadeMusicOnTalk": {
+			"title": "Fade Music On Talk",
+			"description": "If enabled, the music will fade down while people are talking."
+		},
+		"fadeMusicStartDuration": {
+			"title": "Fade Music Start Duration",
+			"description": "The duration during which the fade will happen (eg. 1 second)"
+		},
+		"fadeMusicEndDelay": {
+			"title": "Fade Music End Delay",
+			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+		}
+	},
+	"arguments": {
+		"invalid": "The arguments you provided are invalid.",
+		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
+	},
+	"music": {
+		"notPlaying": "There is currently no music being played!",
+		"notConnected": "The bot is not connected to a voice channel!",
+		"voiceChannelRequired": "You need to be in a voice channel to use that command!"
+	},
+	"roles": {
+		"shouldHave": "The user should have the roles {{{ shouldHave }}}, but I can't assign them.",
+		"shouldNotHave": "The user should not have the roles {{{ shouldNotHave }}}, but I can't take them away.",
+		"dangerous": "The roles {{{ dangerous }}} are potentially dangerous to assign because they include important permissions."
+	}
+}

@@ -1,0 +1,61 @@
+export interface SoundcloudResponse {
+	kind: string;
+	id: number;
+	created_at: string;
+	user_id: number;
+	duration: number;
+	commentable: boolean;
+	state: string;
+	original_content_size: number;
+	last_modified: string;
+	sharing: string;
+	tag_list: string;
+	permalink: string;
+	streamable: boolean;
+	embeddable_by: string;
+	purchase_url?: any;
+	purchase_title?: any;
+	label_id?: any;
+	genre: string;
+	title: string;
+	description: string;
+	label_name?: any;
+	release?: any;
+	track_type?: any;
+	key_signature?: any;
+	isrc?: any;
+	video_url?: any;
+	bpm?: any;
+	release_year?: any;
+	release_month?: any;
+	release_day?: any;
+	original_format: string;
+	license: string;
+	uri: string;
+	user: SoundcloudUser;
+	permalink_url: string;
+	artwork_url: string;
+	stream_url: string;
+	download_url: string;
+	playback_count: number;
+	download_count: number;
+	favoritings_count: number;
+	reposts_count: number;
+	comment_count: number;
+	downloadable: boolean;
+	waveform_url: string;
+	attachments_uri: string;
+	policy: string;
+	monetization_model: string;
+}
+
+export interface SoundcloudUser {
+	id: number;
+	kind: string;
+	permalink: string;
+	username: string;
+	last_modified: string;
+	uri: string;
+	permalink_url: string;
+	avatar_url: string;
+}

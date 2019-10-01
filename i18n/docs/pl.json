@@ -1,0 +1,152 @@
+{
+	"lang": "Polski",
+	"modules": {
+		"title": "Moduły",
+		"invites": {
+			"title": "Invite Management",
+			"description": "Gdy nasz bot jest na twoim serwerze, śledzimy każde zaproszenie, które wydarzy się na twoim serwerze. Discord pokazuje tylko, kto ma ile zaproszeń. Nasz bot analizuje również, kto został przez kogo zaproszony. Pozwala to naszemu botowi wykryć fałszywe zaproszenia i zobaczyć, kto próbuje oszukać system zaproszeń.",
+			"examples": {
+				"title": "Przykłady"
+			},
+			"overview": {
+				"title": "Podgląd"
+			},
+			"customMessages": {
+				"title": "Własne wiadomości"
+			}
+		},
+		"moderation": {
+			"title": "Moderacyjne",
+			"description": "Nasz nowy system moderacji pozwala na automatyczną moderację wielu rzeczy. Sprawdź nasze [ostrzeżenia]({{{ linkStrikes }}}) oraz [kary]({{{ linkPunishments }}}) strony, aby uzyskać więcej informacji. Krótko mówiąc, nasz bot wydaje „ostrzeżenia” ludziom, którzy źle się zachowują, a po pewnej liczbie ostrzeżeń użytkownik otrzymuje karę. Wszystko to jest konfigurowalne przez użytkownika.",
+			"punishments": {
+				"title": "Kary"
+			},
+			"strikes": {
+				"title": "Ostrzeżenia"
+			}
+		},
+		"music": {
+			"title": "Muzyka",
+			"overview": {
+				"title": "Podgląd"
+			}
+		}
+	},
+	"other": {
+		"title": "Inne",
+		"donating": {
+			"title": "Dotacje",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "Kryptowaluty",
+				"description": "other.donating.crypto.description"
+			}
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"support": {
+			"title": "Wsparcie"
+		},
+		"translations": {
+			"title": "Tłumaczenia",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
+		},
+		"webpanel": {
+			"title": "Panel internetowy",
+			"description": "other.webpanel.description"
+		},
+		"changelog": {
+			"title": "Dziennik zmian"
+		},
+		"openSource": {
+			"title": "Otwarte źródło",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "Główny Bot",
+				"description": "other.openSource.bot.description"
+			}
+		}
+	},
+	"premium": {
+		"title": "Premium",
+		"description": "Aby zapłacić nasz rachunek za serwer, oferujemy wersję premium bota. Aby zobaczyć wszystkie dodatkowe funkcje, które otrzymujesz, odwiedź naszą [stronę płatności]({{{ link }}}).",
+		"features": {
+			"title": "Funkcje"
+		},
+		"tiers": {
+			"title": "Poziomy"
+		},
+		"setup": {
+			"title": "Konfiguracja"
+		}
+	},
+	"start": {
+		"title": "Pierwsze kroki",
+		"description": "Żeby zacząć, po prostu użyj komendy `setup` na swoim serwerze.",
+		"alpha": {
+			"title": "Bot w wersji Alfa",
+			"intro": "Bot `InviteManager Alpha` to bot, którego używamy do testowania nowych funkcji. Nowe funkcje bota Alpha nie zawsze będą stabilne, ale jeśli użyjesz tego bota, zobaczysz je jako pierwsze i możesz wyrazić opinię, w jaki sposób możemy je ulepszyć, zanim zostaną włączone do głównego bota .",
+			"linkDescription": "Dodaj InviteManager Alpha tutaj."
+		},
+		"faq": {
+			"title": "FAQs",
+			"prefix": {
+				"title": "Jak zmienić prefiks bota?",
+				"description": "Możesz napisać `!config prefix -` żeby zmienić prefix.\n\nJeśli nie znasz swojego aktualnego prefixu użyj `@InviteManager config prefix` aby go zobaczyć"
+			},
+			"joinLeaveChannel": {
+				"title": "Jak ustawić wiadomości na powitania i pożegnania?",
+				"description": "Ustaw kanał wpisując:\n\n`!config joinMessageChannel #kanał`\n\nlub\n\n`!config leaveMessageChannel #kanał`.\n\nPo wykonaniu tej czynności nowe powitania i pożegnania zostaną opublikowane na tym kanale."
+			},
+			"joinLeaveMessage": {
+				"title": "Czy mogę dostosować wiadomości powitań i pożegnań?",
+				"description": "Jasne! Możesz zmienić wiadomość, wykonując na przykład\n\n`!config joinMessage {memberMention} **dołączył**; Został zaproszony przez **{inviterName}** (**{numInvites}** zaproszeń)`\n\nlub\n\n`!config leaveMessage {memberName} **wyszedł**; Został zaproszony przez **{inviterName}**`.\n\nJest wiele wartości których możesz użyć. Możesz zobaczyć pełną listę na stronie '[Własne wiadomości]({{{ link }}})'."
+			},
+			"ranks": {
+				"title": "Co to są \"Rangi\" i jak mogę ich używać?",
+				"description": "Rangi służą do przypisywania ról osobom, które osiągną określoną liczbę zaproszeń. Na przykład. jeśli masz rolę o nazwie „@ Początkujący” i chcesz, aby osoby, które mają 5 lub więcej zaproszeń, były dodawane do tej roli, musisz utworzyć dla niej rangę: `add-rank @Początkujący 5 (jeśli chcesz opis tutaj) `. Gdy tylko ktoś zdobędzie 5 zaproszeń, zostanie automatycznie dodany do tej roli!"
+			},
+			"channel": {
+				"title": "Jak mogę wyłączyć bota we wszystkich kanałach oprócz jednego/niektórych?",
+				"description": "Zabierz uprawnienie \"Czytanie Wiadomości\" na kanałach gdzie bot nie ma dawać odpowiedzi"
+			},
+			"limitations": {
+				"title": "Ograniczenie: Brak zaawansowanego śledzenia przed dołączeniem bota",
+				"description": "Zaawansowane śledzenie (kto zaprosił kogo) działa tylko po zaproszeniu bota. Bot nadal będzie wiedział, że wszyscy zaproszeni liczą po zaproszeniu, nie martw się. Brakuje tylko dodatkowych informacji i można je gromadzić tylko dla członków, którzy dołączą po zaproszeniu bota."
+			}
+		},
+		"pro": {
+			"title": "Pro Bot",
+			"description": "start.pro.description"
+		},
+		"quick": {
+			"title": "Szybki Start",
+			"setup": {
+				"title": "Konfiguracja",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
+		}
+	},
+	"reference": {
+		"title": "Odniesienia",
+		"commands": {
+			"title": "Komendy"
+		},
+		"settings": {
+			"title": "Konfiguracje/Ustawienia"
+		}
+	}
+}

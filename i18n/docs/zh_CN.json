@@ -1,0 +1,152 @@
+{
+	"lang": "中文（中国）",
+	"modules": {
+		"title": "Modules",
+		"invites": {
+			"title": "邀请管理",
+			"description": "当机器人加入频道后，我们将会跟踪你伺服器的每项邀请。Discord 只会显示您有多少邀请但我们的机器人会分析谁邀请了谁，这让机器人可以侦测虚假邀请和谁想要欺骗邀请系统。",
+			"examples": {
+				"title": "例子"
+			},
+			"overview": {
+				"title": "Overview"
+			},
+			"customMessages": {
+				"title": "自定义讯息"
+			}
+		},
+		"moderation": {
+			"title": "审核",
+			"description": "我们全新的审核系统可让您自动审核许多内容。 请查看我们的 [警告] ({{{ linkStrikes }}}) 和 [惩罚] ({{{ linkPunishments }}})页面以获取更多信息。 简而言之，我们的机器人向行为不端的人发出“警告”，经过一定数量的警告后，用户会受到惩罚。 用户可以自由配置全部设定。",
+			"punishments": {
+				"title": "惩罚"
+			},
+			"strikes": {
+				"title": "警告"
+			}
+		},
+		"music": {
+			"title": "音乐",
+			"overview": {
+				"title": "总览"
+			}
+		}
+	},
+	"other": {
+		"title": "其他",
+		"donating": {
+			"title": "赞助",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "加密",
+				"description": "other.donating.crypto.description"
+			}
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"support": {
+			"title": "支持"
+		},
+		"translations": {
+			"title": "翻译",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
+		},
+		"webpanel": {
+			"title": "网页后台",
+			"description": "other.webpanel.description"
+		},
+		"changelog": {
+			"title": "更新记录"
+		},
+		"openSource": {
+			"title": "Open Source",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "Main Bot",
+				"description": "other.openSource.bot.description"
+			}
+		}
+	},
+	"premium": {
+		"title": "Premium",
+		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"features": {
+			"title": "Features"
+		},
+		"tiers": {
+			"title": "Tiers"
+		},
+		"setup": {
+			"title": "设定"
+		}
+	},
+	"start": {
+		"title": "开始",
+		"description": "想开始使用机器人，请用 !setup 指令",
+		"alpha": {
+			"title": "Alpha Bot",
+			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
+			"linkDescription": "Invite the InviteManager Alpha here"
+		},
+		"faq": {
+			"title": "问与答",
+			"prefix": {
+				"title": "我该如何更改机器人前缀？",
+				"description": "你可以使用 `!config prefix -` 来更改前缀。\n\n如果你不知道前缀是什么，你可以使用 `@InviteManager config prefix` 来查看前缀。"
+			},
+			"joinLeaveChannel": {
+				"title": "我该如何设定加入与离开讯息？",
+				"description": "要设定频道使用\n\n`!config joinMessageChannel #channel`\n\n或\n\n`!config leaveMessageChannel #channel`.\n\n之后，新的加入及离开讯息将会发布到那个频道。"
+			},
+			"joinLeaveMessage": {
+				"title": "Can I customize the join and leave messages?",
+				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+			},
+			"ranks": {
+				"title": "What are 'Ranks' and how can I use them?",
+				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+			},
+			"channel": {
+				"title": "How can I disable the bot in all but one/some channels?",
+				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+			},
+			"limitations": {
+				"title": "Limitation: No advanced tracking before the bot joins",
+				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+			}
+		},
+		"pro": {
+			"title": "Pro Bot",
+			"description": "start.pro.description"
+		},
+		"quick": {
+			"title": "Quick Start",
+			"setup": {
+				"title": "Setup",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
+		}
+	},
+	"reference": {
+		"title": "Reference",
+		"commands": {
+			"title": "Commands"
+		},
+		"settings": {
+			"title": "Configs / Settings"
+		}
+	}
+}

@@ -1,0 +1,152 @@
+{
+	"lang": "日本語",
+	"modules": {
+		"title": "モジュール",
+		"invites": {
+			"title": "Invite Management",
+			"description": "BOTがサーバーにいる間は、招待を使って起こったすべての出来事を追跡します。Discordはどれくらい招待コードが使われたのかしか表示しませんが、我々のBOTは誰が作ったコードが誰に使われたのか分析します。これにより、BOTは偽物の招待を検出し、招待システムをだまそうとしている人を確認できます。",
+			"examples": {
+				"title": "例"
+			},
+			"overview": {
+				"title": "オーバービュー"
+			},
+			"customMessages": {
+				"title": "カスタム-メッセージ"
+			}
+		},
+		"moderation": {
+			"title": "管理",
+			"description": "新しいモデレーションシステムにより、多くのことを自動モデレートできます。詳細については [strikes]({{{ linkStrikes }}}) および[punishments]({{{ linkPunishments }}}) ページをご覧ください。要するに、BOTは不正行為をした人に'strikes' を行い、一定数の警告の後、ユーザーに罰を与えます。 これらはすべてユーザーに設定可能です。",
+			"punishments": {
+				"title": "罰"
+			},
+			"strikes": {
+				"title": "警告"
+			}
+		},
+		"music": {
+			"title": "音楽",
+			"overview": {
+				"title": "オーバービュー"
+			}
+		}
+	},
+	"other": {
+		"title": "その他",
+		"donating": {
+			"title": "寄付",
+			"description": "other.donating.description",
+			"crypto": {
+				"title": "暗号",
+				"description": "other.donating.crypto.description"
+			}
+		},
+		"roadmap": {
+			"title": "ロードマップ"
+		},
+		"support": {
+			"title": "サポート"
+		},
+		"translations": {
+			"title": "翻訳",
+			"description": "other.translations.description",
+			"help": {
+				"title": "other.translations.help.title",
+				"description": "other.translations.help.description"
+			}
+		},
+		"webpanel": {
+			"title": "ウェブパネル",
+			"description": "other.webpanel.description"
+		},
+		"changelog": {
+			"title": "チェンジログ"
+		},
+		"openSource": {
+			"title": "オープン-ソース",
+			"description": "other.openSource.description",
+			"bot": {
+				"title": "メインBot",
+				"description": "other.openSource.bot.description"
+			}
+		}
+	},
+	"premium": {
+		"title": "プレミアム",
+		"description": "サーバーの請求書を支払うために、botのプレミアムバージョンを提供しています。 追加機能をすべてご覧になるには、[pricing page]({{{ link }}}) をご覧ください。",
+		"features": {
+			"title": "特徴"
+		},
+		"tiers": {
+			"title": "ティア"
+		},
+		"setup": {
+			"title": "セットアップ"
+		}
+	},
+	"start": {
+		"title": "さあ-始めよう",
+		"description": "開始するには、サーバーで `!setup` コマンドを実行するだけです。",
+		"alpha": {
+			"title": "アルファ Bot",
+			"intro": "`InviteManager Alpha` botは、新しい機能をテストするために使用するbotです。 Alpha botの新機能は常に安定しているとは限りませんが、このボットを使用する場合、最初にそれらの機能を確認でき、main botに組み込む前に改善する方法をフィードバックできます。 ",
+			"linkDescription": "ここから InviteManager Alpha を招待できます"
+		},
+		"faq": {
+			"title": "FAQs",
+			"prefix": {
+				"title": "botのプレフィックスを変更するにはどうすればよいですか？",
+				"description": "プレフィックスを変更するには `!config prefix -`を実行します。\n\n現在のプレフィックスがわからない場合は`@InviteManager config prefix` を実行してプレフィックスを確認できます。"
+			},
+			"joinLeaveChannel": {
+				"title": "参加および退出のメッセージを設定するにはどうすればよいですか？",
+				"description": "チャンネルを設定するには\n\n`!config joinMessageChannel #channel`\n\nまたは\n\n`!config leaveMessageChannel #channel`.\n\nを実行すると新しい参加と退出がそのチャンネルに投稿されます。"
+			},
+			"joinLeaveMessage": {
+				"title": "参加と退出メッセージをカスタマイズできますか？",
+				"description": "もちろん！ たとえば、次のようにしてメッセージを変更できます\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nまたは\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\n利用可能な多くのプレースホルダーがあります。 完全なリストは'[Custom Messages]({{{ link }}})' ページで確認できます。"
+			},
+			"ranks": {
+				"title": "'ランク' とは何ですか？どのように使用できますか？",
+				"description": "ランクは、使われた招待が一定数に達したときに役職を人々に割り当てるために使用されます。例えば `@Beginner` という役職があり、その役職に5人以上の招待がある人を追加したい場合は、このようにランクを作成する必要があります： `!add-rank @Beginner 5 (必要ならここに説明を入力できます)`。招待者された人が5人いるとすぐにその役職が自動的に追加されます！"
+			},
+			"channel": {
+				"title": "1つまたはいくつかのチャンネルでbotを無効にするにはどうすればよいですか？",
+				"description": "botに返信させたくないチャンネルのメッセージの読み取り許可を取り除きます。"
+			},
+			"limitations": {
+				"title": "制限：ボットが参加する前に高度な追跡はありません",
+				"description": "高度な追跡（誰が誰を招待したか）は、botを招待した後にのみ機能します。 botは、招待しても全員の招待がカウントされることを引き続き認識します。心配しないでください。 追加情報のみが欠落しており、ボットを招待した後に参加したメンバーについてのみ収集できます。"
+			}
+		},
+		"pro": {
+			"title": "Pro Bot",
+			"description": "start.pro.description"
+		},
+		"quick": {
+			"title": "クイック-スタート",
+			"setup": {
+				"title": "セットアップ",
+				"description": "start.quick.setup.description",
+				"first": {
+					"title": "start.quick.setup.first.title",
+					"description": "start.quick.setup.first.description"
+				},
+				"second": {
+					"title": "start.quick.setup.second.title",
+					"description": "start.quick.setup.second.description"
+				}
+			}
+		}
+	},
+	"reference": {
+		"title": "参照",
+		"commands": {
+			"title": "コマンド"
+		},
+		"settings": {
+			"title": "Configs / Settings"
+		}
+	}
+}

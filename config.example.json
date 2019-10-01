@@ -1,17 +1,32 @@
 {
 	"devToken": "",
-	"owners": [],
+	"sentryDsn": "",
 	"ownerGuildIds": [],
-	"proBotId": "",
-	"botAdd": "https://invitemanager.co/add-bot/",
-	"botSupport": "https://discord.gg/Am6p2Hs",
-	"botWebsite": "https://andreasgassmann.github.io/discord-invite-manager/",
-	"botPatreon": "https://www.patreon.com/invitemanager",
-	"commandLogChannel": "",
-	"feedbackChannel": "",
-	"logChannel": "",
-	"dmChannel": "",
-	"dmGuild": "",
+	"bot": {
+		"type": "regular",
+		"ids": {
+			"regular": "",
+			"pro": ""
+		},
+		"links": {
+			"add": "https://invitemanager.co/add-bot/",
+			"support": "https://discord.gg/Am6p2Hs",
+			"website": "https://andreasgassmann.github.io/discord-invite-manager/",
+			"patreon": "https://www.patreon.com/invitemanager"
+		},
+		"dm": {
+			"guild": "",
+			"channel": ""
+		},
+		"apiAuth": {
+			"username": "",
+			"password": ""
+		},
+		"dblToken": null,
+		"music": {
+			"pollyUrl": ""
+		}
+	},
 	"rabbitmq": {
 		"hostname": "localhost",
 		"username": "guest",
@@ -21,9 +36,9 @@
 	"sequelize": {
 		"dialect": "mysql",
 		"host": "localhost",
+		"port": 3306,
 		"username": "root",
 		"password": "",
 		"database": "im"
-	},
-	"discordBotsToken": ""
+	}
 }

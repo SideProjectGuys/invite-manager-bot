@@ -97,11 +97,14 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 			SettingsKey.autoModEmojisEnabled,
 			SettingsKey.autoModEmojisMaxNumberOfEmojis
 		]
+	},
+	hoist: {
+		...getEmpty()
 	}
 };
 
 Object.keys(violationDescription).forEach((key: ViolationType) => {
-	let violation = violationDescription[key];
+	const violation = violationDescription[key];
 	let markdown = `## ${key}\n\n`;
 	markdown += `${violation.description}\n\n`;
 	markdown += `Example:\n\n`;
