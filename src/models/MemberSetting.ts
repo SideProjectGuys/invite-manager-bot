@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { InternalSettingsTypes } from '../types';
+import { InternalSettingsTypes } from '../settings';
 
 import { Guild } from './Guild';
 import { Member } from './Member';
@@ -22,7 +22,7 @@ export type MemberSettingsObject = {
 };
 
 export type MemberSettingsTypesObject = {
-	[k in MemberSettingsKey]: InternalSettingsTypes
+	[k in MemberSettingsKey]: InternalSettingsTypes;
 };
 
 export const memberSettingsTypes: MemberSettingsTypesObject = {

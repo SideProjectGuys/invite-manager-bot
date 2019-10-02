@@ -8,10 +8,9 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { ViolationType } from '../types';
-
 import { Guild } from './Guild';
 import { Member } from './Member';
+import { ViolationType } from './StrikeConfig';
 
 @Entity()
 export class Strike extends BaseEntity {

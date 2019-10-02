@@ -12,6 +12,8 @@ import { DBQueueService } from './framework/services/DBQueue';
 import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
+import { LogAction } from './models/Log';
+import { SettingsKey } from './models/Setting';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
 import { InvitesCache } from './modules/invites/cache/InvitesCache';
 import { RanksCache } from './modules/invites/cache/RanksCache';
@@ -23,38 +25,11 @@ import { StrikesCache } from './modules/mod/cache/StrikesCache';
 import { ModerationService } from './modules/mod/services/Moderation';
 import { MusicCache } from './modules/music/cache/MusicCache';
 import { MusicService } from './modules/music/services/MusicService';
-import {
-	botSettings,
-	dbStats,
-	guilds,
-	LogAction,
-	settings,
-	SettingsKey
-} from './sequelize';
-import {
-	botDefaultSettings,
-	BotSettingsObject,
-	defaultSettings
-} from './settings';
+import { botDefaultSettings, BotSettingsObject, defaultSettings } from './settings';
 import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
 i18n.configure({
-	locales: [
-		'cs',
-		'de',
-		'en',
-		'es',
-		'fr',
-		'it',
-		'ja',
-		'nl',
-		'pl',
-		'pt',
-		'pt_BR',
-		'ro',
-		'ru',
-		'tr'
-	],
+	locales: ['cs', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'pt_BR', 'ro', 'ru', 'tr'],
 	defaultLocale: 'en',
 	// syncFiles: true,
 	directory: __dirname + '/../i18n/bot',
@@ -131,16 +106,7 @@ export class IMClient extends Client {
 	};
 	public disabledGuilds: Set<string>;
 
-	public constructor({
-		version,
-		token,
-		type,
-		instance,
-		shardId,
-		shardCount,
-		flags,
-		config
-	}: ClientOptions) {
+	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
 			disableEveryone: true,
 			firstShardID: shardId - 1,
@@ -245,13 +211,7 @@ export class IMClient extends Client {
 				banReason: undefined
 			})),
 			{
-				updateOnDuplicate: [
-					'name',
-					'icon',
-					'memberCount',
-					'updatedAt',
-					'deletedAt'
-				]
+				updateOnDuplicate: ['name', 'icon', 'memberCount', 'updatedAt', 'deletedAt']
 			}
 		);
 
@@ -319,10 +279,7 @@ export class IMClient extends Client {
 		});
 
 		await this.setActivity();
-		this.activityInterval = setInterval(
-			() => this.setActivity(),
-			1 * 60 * 1000
-		);
+		this.activityInterval = setInterval(() => this.setActivity(), 1 * 60 * 1000);
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
@@ -422,10 +379,7 @@ export class IMClient extends Client {
 		}
 
 		// If this is the pro bot and the guild has the regular bot do nothing
-		if (
-			this.type === BotType.pro &&
-			guild.members.has(this.config.bot.ids.regular)
-		) {
+		if (this.type === BotType.pro && guild.members.has(this.config.bot.ids.regular)) {
 			return;
 		}
 
@@ -447,13 +401,8 @@ export class IMClient extends Client {
 
 		if (member.user.bot) {
 			// Check if it's our pro bot
-			if (
-				this.type === BotType.regular &&
-				member.user.id === this.config.bot.ids.pro
-			) {
-				console.log(
-					`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`
-				);
+			if (this.type === BotType.regular && member.user.id === this.config.bot.ids.pro) {
+				console.log(`DISABLING BOT FOR ${guildId} BECAUSE PRO VERSION IS ACTIVE`);
 				this.disabledGuilds.add(guildId);
 			}
 			return;
@@ -462,10 +411,7 @@ export class IMClient extends Client {
 
 	private async onGuildMemberRemove(guild: Guild, member: Member) {
 		// If the pro version of our bot left, re-enable this version
-		if (
-			this.type === BotType.regular &&
-			member.user.id === this.config.bot.ids.pro
-		) {
+		if (this.type === BotType.regular && member.user.id === this.config.bot.ids.pro) {
 			this.disabledGuilds.delete(guild.id);
 			console.log(`ENABLING BOT IN ${guild.id} BECAUSE PRO VERSION LEFT`);
 		}
@@ -485,18 +431,13 @@ export class IMClient extends Client {
 
 		// First channel in order where the bot can speak
 		return guild.channels
-			.filter(
-				c =>
-					c.type ===
-					ChannelType.GUILD_TEXT /*&&
-					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/
-			)
+			.filter(c => c.type === ChannelType.GUILD_TEXT /*&&
+					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/)
 			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {
-		const modLogChannelId = (await this.cache.settings.get(guild.id))
-			.modLogChannel;
+		const modLogChannelId = (await this.cache.settings.get(guild.id)).modLogChannel;
 
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
@@ -506,20 +447,13 @@ export class IMClient extends Client {
 		}
 	}
 
-	public async logAction(
-		guild: Guild,
-		message: Message,
-		action: LogAction,
-		data: any
-	) {
+	public async logAction(guild: Guild, message: Message, action: LogAction, data: any) {
 		const logChannelId = (await this.cache.settings.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;
 			if (logChannel) {
-				const content =
-					message.content.substr(0, 1000) +
-					(message.content.length > 1000 ? '...' : '');
+				const content = message.content.substr(0, 1000) + (message.content.length > 1000 ? '...' : '');
 
 				let json = JSON.stringify(data, null, 2);
 				if (json.length > 1000) {
@@ -555,6 +489,7 @@ export class IMClient extends Client {
 
 		this.dbQueue.addLogAction(
 			{
+				id: null,
 				guildId: guild.id,
 				memberId: message.author.id,
 				action,
@@ -626,10 +561,7 @@ export class IMClient extends Client {
 
 		let name = `invitemanager.co - ${counts.guilds} servers!`;
 		if (this.settings.activityMessage) {
-			name = this.settings.activityMessage.replace(
-				/{serverCount}/gi,
-				counts.guilds.toString()
-			);
+			name = this.settings.activityMessage.replace(/{serverCount}/gi, counts.guilds.toString());
 		}
 
 		const url = this.settings.activityUrl;

@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { InternalSettingsTypes } from '../types';
+import { InternalSettingsTypes } from '../settings';
 
 import { Guild } from './Guild';
 
@@ -286,8 +286,7 @@ export const defaultSettings: SettingsObject = {
 	logChannel: null,
 	getUpdates: true,
 
-	joinMessage:
-		'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
+	joinMessage: '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 	joinMessageChannel: null,
 	leaveMessage: '{memberName} **left**; Invited by **{inviterName}**',
 	leaveMessageChannel: null,
@@ -301,16 +300,14 @@ export const defaultSettings: SettingsObject = {
 
 	rankAssignmentStyle: RankAssignmentStyle.all,
 	rankAnnouncementChannel: null,
-	rankAnnouncementMessage:
-		'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
+	rankAnnouncementMessage: 'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 
 	mutedRole: null,
 
 	captchaVerificationOnJoin: false,
 	captchaVerificationWelcomeMessage:
 		'Welcome to the server **{serverName}**! For extra protection, new members are required to enter a captcha.',
-	captchaVerificationSuccessMessage:
-		'You have successfully entered the captcha. Welcome to the server!',
+	captchaVerificationSuccessMessage: 'You have successfully entered the captcha. Welcome to the server!',
 	captchaVerificationFailedMessage:
 		'You did not enter the captha right within the specified time.' +
 		`We're sorry, but we have to kick you from the server. Feel free to join again.`,
@@ -381,15 +378,12 @@ export class Setting extends BaseEntity {
 	@Column({ nullable: true })
 	public deletedAt: Date;
 
-	@Column()
-	public key: SettingsKey;
-
-	@Column({ type: 'text' })
-	public value: string;
-
 	@Column({ nullable: true })
 	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.settings)
 	public guild: Guild;
+
+	@Column({ type: 'json' })
+	public value: any;
 }

@@ -8,10 +8,9 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { PunishmentType } from '../types';
-
 import { Guild } from './Guild';
 import { Member } from './Member';
+import { PunishmentType } from './PunishmentConfig';
 
 @Entity()
 export class Punishment extends BaseEntity {

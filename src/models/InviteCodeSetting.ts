@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { InternalSettingsTypes } from '../types';
+import { InternalSettingsTypes } from '../settings';
 
 import { Guild } from './Guild';
 import { InviteCode } from './InviteCode';
@@ -24,7 +24,7 @@ export type InviteCodeSettingsObject = {
 };
 
 export type InviteCodeSettingsTypesObject = {
-	[k in InviteCodeSettingsKey]: InternalSettingsTypes
+	[k in InviteCodeSettingsKey]: InternalSettingsTypes;
 };
 
 export const inviteCodeSettingsTypes: InviteCodeSettingsTypesObject = {

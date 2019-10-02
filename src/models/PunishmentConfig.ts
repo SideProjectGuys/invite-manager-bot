@@ -9,9 +9,15 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { PunishmentType } from '../types';
-
 import { Guild } from './Guild';
+
+export enum PunishmentType {
+	ban = 'ban',
+	kick = 'kick',
+	softban = 'softban',
+	warn = 'warn',
+	mute = 'mute'
+}
 
 @Entity()
 @Index(['guild', 'punishmentType'], { unique: true })

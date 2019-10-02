@@ -1,16 +1,8 @@
 import { Guild } from 'eris';
 
 import { IMClient } from '../../client';
-import {
-	commandUsage,
-	CommandUsageAttributes,
-	guilds,
-	IncidentAttributes,
-	incidents,
-	LogAttributes,
-	logs,
-	members
-} from '../../sequelize';
+import { CommandUsage } from '../../models/CommandUsage';
+import { Log } from '../../models/Log';
 import { BasicUser } from '../../types';
 
 export class DBQueueService {
@@ -22,8 +14,8 @@ export class DBQueueService {
 	private users: Set<BasicUser> = new Set();
 	private doneUsers: Set<String> = new Set();
 
-	private logActions: LogAttributes[] = [];
-	private cmdUsages: CommandUsageAttributes[] = [];
+	private logActions: Log[] = [];
+	private cmdUsages: CommandUsage[] = [];
 	private incidents: IncidentAttributes[] = [];
 
 	public constructor(client: IMClient) {
@@ -44,11 +36,7 @@ export class DBQueueService {
 		this.logActions.push(action);
 	}
 
-	public addCommandUsage(
-		cmdUsage: CommandUsageAttributes,
-		guild: Guild,
-		user: BasicUser
-	) {
+	public addCommandUsage(cmdUsage: CommandUsageAttributes, guild: Guild, user: BasicUser) {
 		if (!this.doneGuilds.has(guild.id)) {
 			this.guilds.add(guild);
 		}
@@ -68,11 +56,7 @@ export class DBQueueService {
 	}
 
 	private async syncDB() {
-		if (
-			this.logActions.length === 0 &&
-			this.cmdUsages.length === 0 &&
-			this.incidents.length === 0
-		) {
+		if (this.logActions.length === 0 && this.cmdUsages.length === 0 && this.incidents.length === 0) {
 			return;
 		}
 

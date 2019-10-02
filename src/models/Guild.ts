@@ -1,15 +1,9 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	OneToMany,
-	UpdateDateColumn
-} from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { Channel } from './Channel';
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
+import { Incident } from './Incident';
 import { InviteCode } from './InviteCode';
 import { InviteCodeSetting } from './InviteCodeSetting';
 import { Join } from './Join';
@@ -98,4 +92,7 @@ export class Guild extends BaseEntity {
 
 	@OneToMany(type => Role, r => r.guild)
 	public roles: Role[];
+
+	@OneToMany(type => Incident, i => i.guild)
+	public incidents: Incident[];
 }

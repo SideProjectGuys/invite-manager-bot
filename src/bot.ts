@@ -1,7 +1,6 @@
-import * as amqplib from 'amqplib';
+import { configureScope, init } from '@sentry/node';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
-import { configureScope, init } from '@sentry/node';
 
 import { IMClient } from './client';
 import { Channel } from './models/Channel';
@@ -90,25 +89,25 @@ createConnection({
 		Strike,
 		StrikeConfig
 	]
-}).then(() => {
-	console.log('-------------------------------------');
-	console.log(
-		`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`
-	);
-	console.log('-------------------------------------');
-	const client = new IMClient({
-		version: pkg.version,
-		token,
-		type,
-		instance,
-		shardId,
-		shardCount,
-		flags,
-		config
-	});
+})
+	.then(async () => {
+		console.log('-------------------------------------');
+		console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
+		console.log('-------------------------------------');
+		const client = new IMClient({
+			version: pkg.version,
+			token,
+			type,
+			instance,
+			shardId,
+			shardCount,
+			flags,
+			config
+		});
 
-	console.log('-------------------------------------');
-	console.log('Starting bot...');
-	console.log('-------------------------------------');
-	client.connect();
-});
+		console.log('-------------------------------------');
+		console.log('Starting bot...');
+		console.log('-------------------------------------');
+		await client.connect();
+	})
+	.catch(err => console.error(err));

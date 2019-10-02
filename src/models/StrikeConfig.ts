@@ -9,9 +9,20 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import { ViolationType } from '../types';
-
 import { Guild } from './Guild';
+
+export enum ViolationType {
+	invites = 'invites',
+	links = 'links',
+	words = 'words',
+	allCaps = 'allCaps',
+	duplicateText = 'duplicateText',
+	quickMessages = 'quickMessages',
+	mentionUsers = 'mentionUsers',
+	mentionRoles = 'mentionRoles',
+	emojis = 'emojis',
+	hoist = 'hoist'
+}
 
 @Entity()
 @Index(['guild', 'violationType'], { unique: true })
