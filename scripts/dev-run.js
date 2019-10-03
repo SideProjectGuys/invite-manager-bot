@@ -10,13 +10,19 @@ let child = spawn(
 	}
 );
 
+const debug = process.argv[2] || false;
+
 child.on('error', error => console.log(error));
 
 child.on('close', () => {
+	if (debug) {
+		console.log('STARTING AND WAITING FOR DEBUGGER');
+	}
+
 	child = spawn(
 		'node',
 		[
-			'--inspect-brk=9229',
+			`--inspect${debug ? '-brk' : ''}=9229`,
 			'./bin/bot.js',
 			'--no-rabbitmq',
 			config.devToken,
