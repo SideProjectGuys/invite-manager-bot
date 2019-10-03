@@ -42,7 +42,7 @@ export class SchedulerService {
 	}
 
 	public async cancelScheduledAction(actionId: number) {
-		await this.client.repo.scheduledAction.update({ id: actionId }, { deletedAt: new Date() });
+		await this.client.repo.scheduledAction.delete({ id: actionId });
 		await this.removeTimer(actionId);
 	}
 

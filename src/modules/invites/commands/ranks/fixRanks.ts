@@ -21,13 +21,10 @@ export default class extends Command {
 		const allRoles = await guild.getRESTRoles();
 		const allRanks = await this.client.repo.rank.find({ where: { guildId: guild.id } });
 		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
-		await this.client.repo.rank.update(
-			{
-				guildId: guild.id,
-				roleId: In(oldRoleIds)
-			},
-			{ deletedAt: new Date() }
-		);
+		await this.client.repo.rank.delete({
+			guildId: guild.id,
+			roleId: In(oldRoleIds)
+		});
 
 		this.client.cache.ranks.flush(guild.id);
 

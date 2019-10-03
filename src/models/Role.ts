@@ -15,19 +15,16 @@ export class Role {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public name: string;
 
 	@Column({ length: 7 })
 	public color: string;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.roles)
+	@ManyToOne(type => Guild, g => g.roles, { nullable: false })
 	public guild: Guild;
 
 	@OneToMany(type => Rank, r => r.guild)

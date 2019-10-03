@@ -22,9 +22,6 @@ export class InviteCode {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public maxAge: number;
 
@@ -46,19 +43,19 @@ export class InviteCode {
 	@Column()
 	public isWidget: boolean;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: true })
 	public channelId: string;
 
-	@ManyToOne(type => Channel, c => c.inviteCodes)
+	@ManyToOne(type => Channel, c => c.inviteCodes, { nullable: true })
 	public channel: Channel;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.inviteCodes)
+	@ManyToOne(type => Guild, g => g.inviteCodes, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: true })
 	public inviterId: string;
 
 	@ManyToOne(type => Member, m => m.inviteCodes)

@@ -14,18 +14,15 @@ export class PremiumSubscriptionGuild {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.premiumSubscriptions)
+	@ManyToOne(type => Guild, g => g.premiumSubscriptions, { nullable: false })
 	public guild: Guild;
 
 	@Column({ nullable: false })
 	public subscriptionId: number;
 
-	@ManyToOne(type => PremiumSubscription, ps => ps.guilds)
+	@ManyToOne(type => PremiumSubscription, ps => ps.guilds, { nullable: false })
 	public subscription: PremiumSubscription;
 }

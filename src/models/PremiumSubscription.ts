@@ -22,9 +22,6 @@ export class PremiumSubscription {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column({ type: 'decimal', precision: 10, scale: 2 })
 	public amount: number;
 
@@ -37,10 +34,10 @@ export class PremiumSubscription {
 	@Column()
 	public validUntil: Date;
 
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.premiumSubscriptions)
+	@ManyToOne(type => Member, m => m.premiumSubscriptions, { nullable: false })
 	public member: Member;
 
 	@Column()

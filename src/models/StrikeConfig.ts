@@ -16,7 +16,7 @@ export enum ViolationType {
 }
 
 @Entity()
-@Index(['guild', 'violationType'], { unique: true })
+@Index(['guild', 'type'], { unique: true })
 export class StrikeConfig {
 	@PrimaryGeneratedColumn()
 	public id: number;
@@ -27,18 +27,15 @@ export class StrikeConfig {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column()
+	@Column({ type: 'enum', enum: Object.values(ViolationType) })
 	public type: ViolationType;
 
 	@Column()
 	public amount: number;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.strikeConfigs)
+	@ManyToOne(type => Guild, g => g.strikeConfigs, { nullable: false })
 	public guild: Guild;
 }

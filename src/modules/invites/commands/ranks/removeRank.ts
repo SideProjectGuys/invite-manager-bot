@@ -34,7 +34,7 @@ export default class extends Command {
 		});
 
 		if (rank) {
-			await this.client.repo.rank.update({ id: rank.id }, { deletedAt: new Date() });
+			await this.client.repo.rank.delete({ id: rank.id });
 
 			await this.client.logAction(guild, message, LogAction.removeRank, {
 				rankId: rank.id,

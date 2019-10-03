@@ -15,10 +15,7 @@ export class Punishment {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column()
+	@Column({ type: 'enum', enum: Object.values(PunishmentType) })
 	public type: PunishmentType;
 
 	@Column()
@@ -30,21 +27,21 @@ export class Punishment {
 	@Column({ nullable: true })
 	public reason: string;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.punishments)
+	@ManyToOne(type => Guild, g => g.punishments, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.punishments)
+	@ManyToOne(type => Member, m => m.punishments, { nullable: false })
 	public member: Member;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public creatorId: string;
 
-	@ManyToOne(type => Member, m => m.createdPunishments)
+	@ManyToOne(type => Member, m => m.createdPunishments, { nullable: false })
 	public creator: Member;
 }

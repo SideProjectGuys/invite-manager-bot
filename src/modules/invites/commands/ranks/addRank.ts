@@ -79,20 +79,15 @@ export default class extends Command {
 
 		let isNew = false;
 		if (rank) {
-			if (rank.deletedAt !== null) {
-				isNew = true;
-			}
 			rank.numInvites = invites;
 			rank.description = descr;
-			rank.deletedAt = null;
 			await this.client.repo.rank.save(rank);
 		} else {
 			rank = await this.client.repo.rank.save({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
-				description: descr,
-				deletedAt: null
+				description: descr
 			});
 			isNew = true;
 		}

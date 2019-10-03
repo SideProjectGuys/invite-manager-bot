@@ -17,9 +17,6 @@ export class ScheduledAction {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public actionType: ScheduledActionType;
 
@@ -32,9 +29,9 @@ export class ScheduledAction {
 	@Column()
 	public reason: string;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.scheduledActions)
+	@ManyToOne(type => Guild, g => g.scheduledActions, { nullable: false })
 	public guild: Guild;
 }

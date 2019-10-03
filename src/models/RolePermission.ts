@@ -13,12 +13,12 @@ export class RolePermission {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public command: string;
 
-	@ManyToOne(type => Role, r => r.permissions)
+	@Column({ length: 32, nullable: false })
+	public roleId: string;
+
+	@ManyToOne(type => Role, r => r.permissions, { nullable: false })
 	public role: Role;
 }

@@ -15,24 +15,21 @@ export class Strike {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column()
+	@Column({ type: 'enum', enum: Object.values(ViolationType) })
 	public type: ViolationType;
 
 	@Column()
 	public amount: number;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.strikes)
+	@ManyToOne(type => Guild, g => g.strikes, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.strikes)
+	@ManyToOne(type => Member, m => m.strikes, { nullable: false })
 	public member: Member;
 }

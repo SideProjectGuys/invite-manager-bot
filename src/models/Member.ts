@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
@@ -11,6 +11,7 @@ import { Punishment } from './Punishment';
 import { Strike } from './Strike';
 
 @Entity()
+@Index(['name'])
 export class Member {
 	@Column({ length: 32, primary: true })
 	public id: string;
@@ -20,9 +21,6 @@ export class Member {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
-
-	@Column({ nullable: true })
-	public deletedAt: Date;
 
 	@Column()
 	public name: string;

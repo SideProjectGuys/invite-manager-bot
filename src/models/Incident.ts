@@ -13,13 +13,10 @@ export class Incident {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.incidents)
+	@ManyToOne(type => Guild, g => g.incidents, { nullable: false })
 	public guild: Guild;
 
 	@Column({ type: 'text' })

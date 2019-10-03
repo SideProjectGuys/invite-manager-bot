@@ -14,24 +14,21 @@ export class Rank {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public numInvites: number;
 
 	@Column({ type: 'text' })
 	public description: string;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.ranks)
+	@ManyToOne(type => Guild, g => g.ranks, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public roleId: string;
 
-	@ManyToOne(type => Role, r => r.ranks)
+	@ManyToOne(type => Role, r => r.ranks, { nullable: false })
 	public role: Role;
 }

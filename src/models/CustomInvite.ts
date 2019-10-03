@@ -14,9 +14,6 @@ export class CustomInvite {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column({ type: 'bigint' })
 	public amount: number;
 
@@ -26,21 +23,21 @@ export class CustomInvite {
 	@Column()
 	public cleared: boolean;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.customInvites)
+	@ManyToOne(type => Guild, g => g.customInvites, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.customInvites)
+	@ManyToOne(type => Member, m => m.customInvites, { nullable: false })
 	public member: Member;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public creatorId: string;
 
-	@ManyToOne(type => Member, m => m.createdCustomInvites)
+	@ManyToOne(type => Member, m => m.createdCustomInvites, { nullable: false })
 	public creator: Member;
 }

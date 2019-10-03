@@ -166,13 +166,10 @@ export default class extends Command {
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
 				} else {
-					await this.client.repo.premiumSubscriptionGuild.update(
-						{
-							subscriptionId: sub.id,
-							guildId: guildId
-						},
-						{ deletedAt: new Date() }
-					);
+					await this.client.repo.premiumSubscriptionGuild.delete({
+						subscriptionId: sub.id,
+						guildId: guildId
+					});
 
 					this.client.cache.premium.flush(guildId);
 

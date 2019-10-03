@@ -3,10 +3,13 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
 import { IMClient } from './client';
+import { BotSetting } from './models/BotSetting';
 import { Channel } from './models/Channel';
 import { CommandUsage } from './models/CommandUsage';
 import { CustomInvite } from './models/CustomInvite';
+import { DBStat } from './models/DBStat';
 import { Guild } from './models/Guild';
+import { Incident } from './models/Incident';
 import { InviteCode } from './models/InviteCode';
 import { InviteCodeSetting } from './models/InviteCodeSetting';
 import { Join } from './models/Join';
@@ -14,7 +17,9 @@ import { Leave } from './models/Leave';
 import { Log } from './models/Log';
 import { Member } from './models/Member';
 import { MemberSetting } from './models/MemberSetting';
+import { MusicNode } from './models/MusicNode';
 import { PremiumSubscription } from './models/PremiumSubscription';
+import { PremiumSubscriptionGuild } from './models/PremiumSubscriptionGuild';
 import { Punishment } from './models/Punishment';
 import { PunishmentConfig } from './models/PunishmentConfig';
 import { Rank } from './models/Rank';
@@ -67,10 +72,13 @@ console.log('-------------------------------------');
 createConnection({
 	...config.database,
 	entities: [
+		BotSetting,
 		Channel,
 		CommandUsage,
 		CustomInvite,
+		DBStat,
 		Guild,
+		Incident,
 		InviteCode,
 		InviteCodeSetting,
 		Join,
@@ -78,7 +86,9 @@ createConnection({
 		Log,
 		Member,
 		MemberSetting,
+		MusicNode,
 		PremiumSubscription,
+		PremiumSubscriptionGuild,
 		Punishment,
 		PunishmentConfig,
 		Rank,

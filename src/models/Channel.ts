@@ -14,13 +14,13 @@ export class Channel {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public name: string;
 
-	@ManyToOne(type => Guild, g => g.channels)
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.channels, { nullable: false })
 	public guild: Guild;
 
 	@OneToMany(type => InviteCode, i => i.channel)

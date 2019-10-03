@@ -11,7 +11,7 @@ export enum PunishmentType {
 }
 
 @Entity()
-@Index(['guild', 'punishmentType'], { unique: true })
+@Index(['guild', 'type'], { unique: true })
 export class PunishmentConfig {
 	@PrimaryGeneratedColumn()
 	public id: number;
@@ -22,10 +22,7 @@ export class PunishmentConfig {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column()
+	@Column({ type: 'enum', enum: Object.values(PunishmentType) })
 	public type: PunishmentType;
 
 	@Column()
@@ -34,9 +31,9 @@ export class PunishmentConfig {
 	@Column()
 	public args: string;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.punishmentConfigs)
+	@ManyToOne(type => Guild, g => g.punishmentConfigs, { nullable: false })
 	public guild: Guild;
 }

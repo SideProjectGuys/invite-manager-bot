@@ -27,19 +27,16 @@ export class Leave {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.joins)
+	@ManyToOne(type => Guild, g => g.joins, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.joins)
+	@ManyToOne(type => Member, m => m.joins, { nullable: false })
 	public member: Member;
 
 	@Column({ nullable: true })

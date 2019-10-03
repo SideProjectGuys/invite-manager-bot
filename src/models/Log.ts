@@ -26,10 +26,7 @@ export class Log {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column()
+	@Column({ type: 'enum', enum: Object.values(LogAction) })
 	public action: LogAction;
 
 	@Column({ type: 'text' })
@@ -38,15 +35,15 @@ export class Log {
 	@Column({ type: 'json' })
 	public data: any;
 
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.logs)
+	@ManyToOne(type => Guild, g => g.logs, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.logs)
+	@ManyToOne(type => Member, m => m.logs, { nullable: false })
 	public member: Member;
 }

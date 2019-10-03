@@ -20,19 +20,16 @@ export class MemberSetting {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.memberSettings)
+	@ManyToOne(type => Guild, g => g.memberSettings, { nullable: false })
 	public guild: Guild;
 
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.memberSettings)
+	@ManyToOne(type => Member, m => m.memberSettings, { nullable: false })
 	public member: Member;
 
 	@Column({ type: 'json' })

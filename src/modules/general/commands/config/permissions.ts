@@ -186,7 +186,7 @@ export default class extends Command {
 		});
 
 		if (oldPerms.length > 0) {
-			await this.client.repo.rolePermission.update({ id: In(oldPerms.map(p => p.id)) }, { deletedAt: new Date() });
+			await this.client.repo.rolePermission.delete({ id: In(oldPerms.map(p => p.id)) });
 
 			await this.sendReply(
 				message,

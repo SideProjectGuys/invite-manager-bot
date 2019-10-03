@@ -14,9 +14,6 @@ export class CommandUsage {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
 	@Column()
 	public command: string;
 
@@ -29,15 +26,15 @@ export class CommandUsage {
 	@Column()
 	public errored: boolean;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: true })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.commandUsages)
+	@ManyToOne(type => Guild, g => g.commandUsages, { nullable: true })
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.commandUsages)
+	@ManyToOne(type => Member, m => m.commandUsages, { nullable: false })
 	public member: Member;
 }

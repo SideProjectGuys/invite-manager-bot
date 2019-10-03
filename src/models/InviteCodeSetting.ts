@@ -21,13 +21,10 @@ export class InviteCodeSetting {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ nullable: true })
-	public deletedAt: Date;
-
-	@Column({ nullable: false })
+	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.inviteCodeSettings)
+	@ManyToOne(type => Guild, g => g.inviteCodeSettings, { nullable: false })
 	public guild: Guild;
 
 	@Column({
