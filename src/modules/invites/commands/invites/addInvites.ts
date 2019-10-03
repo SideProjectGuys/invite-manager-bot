@@ -67,7 +67,7 @@ export default class extends Command {
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
-			amount,
+			amount: `${amount}`,
 			reason
 		});
 

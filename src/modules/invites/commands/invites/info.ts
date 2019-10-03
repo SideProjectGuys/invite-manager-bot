@@ -190,9 +190,9 @@ export default class extends Command {
 		let clearCustom = 0;
 		customInvs.forEach(ci => {
 			if (ci.cleared) {
-				clearCustom += ci.amount;
+				clearCustom += Number(ci.amount);
 			} else {
-				custom += ci.amount;
+				custom += Number(ci.amount);
 			}
 		});
 

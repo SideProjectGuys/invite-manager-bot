@@ -86,6 +86,7 @@ export default class extends Command {
 		const punishmentText = punishmentList
 			.map(p =>
 				t('cmd.check.punishments.entry', {
+					id: `**${p.id}**`,
 					punishment: `**${p.type}**`,
 					amount: `**${p.amount}**`,
 					date: moment(p.createdAt)

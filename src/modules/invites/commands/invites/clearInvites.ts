@@ -1,6 +1,6 @@
 import { Message } from 'eris';
 import { Moment } from 'moment';
-import { Not } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -49,7 +49,7 @@ export default class extends Command {
 		await this.client.repo.inviteCode.update(
 			{
 				guildId: guild.id,
-				inviterId: memberId ? memberId : Not(null)
+				inviterId: memberId ? memberId : Not(IsNull())
 			},
 			{
 				clearedAmount: () => `uses`

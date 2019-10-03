@@ -15,7 +15,7 @@ export class CustomInvite {
 	public updatedAt: Date;
 
 	@Column({ type: 'bigint' })
-	public amount: number;
+	public amount: string;
 
 	@Column({ type: 'text', nullable: true })
 	public reason: string;

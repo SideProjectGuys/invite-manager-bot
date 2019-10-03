@@ -25,12 +25,7 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: Context): Promise<any> {
-		const ranks = await this.client.repo.rank.find({
-			where: {
-				guildId: guild.id
-			},
-			order: { numInvites: 'ASC' }
-		});
+		const ranks = await this.client.cache.ranks.get(guild.id);
 
 		if (ranks.length === 0) {
 			return this.sendReply(message, t('cmd.ranks.none'));

@@ -128,6 +128,7 @@ export enum ModerationCommand {
 	check = 'check',
 	caseDelete = 'caseDelete',
 	caseView = 'caseView',
+	caseEdit = 'caseEdit',
 
 	ban = 'ban',
 	mute = 'mute',
