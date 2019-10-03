@@ -3,6 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver } from '../../../../framework/resolvers';
+import { Join } from '../../../../models/Join';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
 const USERS_PER_PAGE = 20;
@@ -26,60 +27,32 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: Context): Promise<any> {
-		type ExtendedJoin = JoinAttributes & {
-			memberName: string;
+		type ExtendedJoin = Join & {
 			totalJoins: string;
 			inviterIds: string | null;
 		};
 
-		const js: ExtendedJoin[] = (await joins.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.literal('`member`.`name`'), 'memberName'],
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'totalJoins'],
-				[
-					sequelize.fn(
-						'GROUP_CONCAT',
-						sequelize.literal('CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"')
-					),
-					'inviterIds'
-				]
-			],
-			where: {
-				guildId: guild.id
-			},
-			group: ['join.memberId'],
-			include: [
-				{
-					attributes: ['name'],
-					model: members,
-					required: true
-				},
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					include: [
-						{
-							attributes: [],
-							as: 'inviter',
-							model: members,
-							required: true
-						}
-					]
-				}
-			],
-			raw: true
-		})) as any;
+		const js: ExtendedJoin[] = await this.client.repo.join
+			.createQueryBuilder()
+			.addSelect('COUNT(join.id)', 'totalJoins')
+			.addSelect(
+				'GROUP_CONCAT(CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t")',
+				'inviterIds'
+			)
+			.leftJoinAndSelect('join.member', 'member')
+			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.leftJoinAndSelect('exactMatch.inviter', 'inviter')
+			.groupBy('join.memberId')
+			.where('guildId = :guildId', { guildId: guild.id })
+			.getRawMany();
 
 		if (js.length <= 0) {
 			return this.sendReply(message, t('cmd.fake.none'));
 		}
 
 		const suspiciousJoins = js
-			.filter((j: ExtendedJoin) => parseInt(j.totalJoins, 10) > 1)
-			.sort((a: ExtendedJoin, b: ExtendedJoin) => parseInt(b.totalJoins, 10) - parseInt(a.totalJoins, 10));
+			.filter(j => parseInt(j.totalJoins, 10) > 1)
+			.sort((a, b) => parseInt(b.totalJoins, 10) - parseInt(a.totalJoins, 10));
 
 		if (suspiciousJoins.length === 0) {
 			return this.sendReply(message, t('cmd.fake.noneSinceJoin'));
@@ -107,7 +80,7 @@ export default class extends Command {
 				});
 
 				const mainText = t('cmd.fake.join.entry.text', {
-					name: join.memberName,
+					name: join.member.name,
 					times: join.totalJoins
 				});
 

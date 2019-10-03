@@ -1,6 +1,5 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -60,26 +59,15 @@ export default class extends Command {
 			title: `${user.username}#${user.discriminator}`
 		});
 
-		const invitedMembers = await joins.findAll({
-			attributes: ['memberId', [sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']],
-			where: {
-				guildId: guild.id,
-				invalidatedReason: null
-			},
-			group: [sequelize.col('memberId')],
-			order: [sequelize.literal('MAX(join.createdAt) DESC')],
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					where: {
-						inviterId: user.id
-					}
-				}
-			],
-			raw: true
-		});
+		const invitedMembers = await this.client.repo.join
+			.createQueryBuilder()
+			.addSelect('MAX(join.createdAt)', 'createdAt')
+			.where(`guildId = :guildId AND invalidatedReason IS NULL`, { guildId: guild.id })
+			.groupBy('memberId')
+			.orderBy('MAX(join.createdAt)', 'DESC')
+			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.andWhere('exactMatch.inviterId = :userId', { userId: user.id })
+			.getRawMany();
 
 		const customInvs = await this.client.repo.customInvite.find({
 			where: {
@@ -139,7 +127,7 @@ export default class extends Command {
 
 			return this.showPaginated(message, p, maxPage, page => {
 				let inviteText = '';
-				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((join: any) => {
+				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(join => {
 					const time = moment(join.createdAt)
 						.locale(lang)
 						.fromNow();
@@ -163,16 +151,16 @@ export default class extends Command {
 			order: { uses: 'DESC' }
 		});
 
-		const js = await joins.findAll({
-			attributes: ['invalidatedReason', 'cleared', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
-			where: {
+		const js = await this.client.repo.join
+			.createQueryBuilder()
+			.addSelect('COUNT(id)', 'total')
+			.where('guildId = :guildId AND exactMatchCode IN(:codes) AND invalidatedReason IS NOT NULL', {
 				guildId: guild.id,
-				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
-				invalidatedReason: { [Op.ne]: null }
-			},
-			group: ['invalidatedReason', 'cleared'],
-			raw: true
-		});
+				codes: invCodes.map(i => i.code)
+			})
+			.groupBy('invalidatedReason')
+			.addGroupBy('cleared')
+			.getRawMany();
 
 		let fake = 0;
 		let leave = 0;

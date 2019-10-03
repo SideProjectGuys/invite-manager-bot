@@ -13,6 +13,7 @@ import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
 import { BotSetting } from './models/BotSetting';
+import { Channel } from './models/Channel';
 import { CommandUsage } from './models/CommandUsage';
 import { CustomInvite } from './models/CustomInvite';
 import { DBStat } from './models/DBStat';
@@ -21,6 +22,7 @@ import { Incident } from './models/Incident';
 import { InviteCode } from './models/InviteCode';
 import { InviteCodeSetting } from './models/InviteCodeSetting';
 import { Join } from './models/Join';
+import { Leave } from './models/Leave';
 import { Log, LogAction } from './models/Log';
 import { Member as DBMember } from './models/Member';
 import { MemberSetting } from './models/MemberSetting';
@@ -89,6 +91,7 @@ export class IMClient extends Client {
 
 	public repo: {
 		botSetting: Repository<BotSetting>;
+		channel: Repository<Channel>;
 		commandUsage: Repository<CommandUsage>;
 		customInvite: Repository<CustomInvite>;
 		dbStat: Repository<DBStat>;
@@ -97,6 +100,7 @@ export class IMClient extends Client {
 		inviteCode: Repository<InviteCode>;
 		inviteCodeSetting: Repository<InviteCodeSetting>;
 		join: Repository<Join>;
+		leave: Repository<Leave>;
 		log: Repository<Log>;
 		member: Repository<DBMember>;
 		memberSetting: Repository<MemberSetting>;
@@ -191,6 +195,7 @@ export class IMClient extends Client {
 
 		this.repo = {
 			botSetting: getRepository(BotSetting),
+			channel: getRepository(Channel),
 			commandUsage: getRepository(CommandUsage),
 			customInvite: getRepository(CustomInvite),
 			dbStat: getRepository(DBStat),
@@ -199,6 +204,7 @@ export class IMClient extends Client {
 			inviteCode: getRepository(InviteCode),
 			inviteCodeSetting: getRepository(InviteCodeSetting),
 			join: getRepository(Join),
+			leave: getRepository(Leave),
 			log: getRepository(Log),
 			member: getRepository(DBMember),
 			memberSetting: getRepository(MemberSetting),

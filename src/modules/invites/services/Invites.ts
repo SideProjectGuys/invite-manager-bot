@@ -47,48 +47,28 @@ export class InvitesService {
 	}
 
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
-		const inviteCodePromise = inviteCodes.findOne({
-			attributes: [[sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
-			where: {
-				guildId: guildId,
-				inviterId: memberId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			raw: true
-		});
-		const joinsPromise = joins.findAll({
-			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
-			where: {
-				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
-			},
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					where: { inviterId: memberId }
-				}
-			],
-			group: ['invalidatedReason'],
-			raw: true
-		});
-		const customInvitesPromise = customInvites.findOne({
-			attributes: [[sequelize.fn('SUM', sequelize.col('amount')), 'total']],
-			where: {
-				guildId: guildId,
-				memberId: memberId,
-				cleared: false
-			},
-			raw: true
-		});
+		const inviteCodePromise = this.client.repo.inviteCode
+			.createQueryBuilder()
+			.addSelect('SUM(uses - clearedAmount)', 'total')
+			.where('guildId = :guildId AND inviterId = :memberId AND uses > clearedAmount', { guildId, memberId })
+			.getRawOne();
+		const joinsPromise = this.client.repo.join
+			.createQueryBuilder()
+			.addSelect('COUNT(id)', 'total')
+			.where('guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0')
+			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.andWhere('exactMatch.inviterId = :memberId', { memberId })
+			.getRawMany();
+		const customInvitesPromise = this.client.repo.customInvite
+			.createQueryBuilder()
+			.addSelect('SUM(amount)', 'total')
+			.where('guildId = :guildId AND memberId = :memberId AND cleared = 0', { guildId, memberId })
+			.getRawOne();
 
 		const [invCode, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
-		const regular = Number((invCode as any).total);
-		const custom = Number((customInvs as any).total);
+		const regular = Number(invCode.total);
+		const custom = Number(customInvs.total);
 
 		let fake = 0;
 		let leave = 0;
@@ -122,79 +102,43 @@ export class InvitesService {
 		? `AND createdAt < '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'`
 		: '';*/
 
-		const inviteCodePromise = inviteCodes.findAll({
-			attributes: ['inviterId', [sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
-			include: [
-				{
-					attributes: ['name', 'discriminator'],
-					model: members,
-					as: 'inviter',
-					required: true
-				}
-			],
-			where: {
-				guildId: guildId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			group: ['inviterId'],
-			order: [sequelize.literal('total DESC')],
-			raw: true
-		});
+		const inviteCodePromise = this.client.repo.inviteCode
+			.createQueryBuilder()
+			.addSelect('SUM(uses - clearedAmount)', 'total')
+			.leftJoinAndSelect('inviteCode.inviter', 'inviter')
+			.where('guildId = :guildId AND uses > clearedAmount', { guildId })
+			.groupBy('inviter')
+			.orderBy('total', 'DESC')
+			.getRawMany();
 
-		const joinsPromise = joins.findAll({
-			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('join.id')), 'total']],
-			where: {
-				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
-			},
-			include: [
-				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					include: [
-						{
-							attributes: ['name', 'discriminator'],
-							model: members,
-							as: 'inviter',
-							required: true
-						}
-					]
-				}
-			],
-			group: ['exactMatch.inviterId', 'invalidatedReason'],
-			order: [sequelize.literal('total DESC')],
-			raw: true
-		});
+		const joinsPromise = this.client.repo.join
+			.createQueryBuilder()
+			.addSelect('COUNT(id)', 'total')
+			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.leftJoinAndSelect('exactMatch.inviter', 'inviter')
+			.where('guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0')
+			.groupBy('inviter')
+			.addGroupBy('invalidatedReason')
+			.orderBy('total', 'DESC')
+			.getRawMany();
 
-		const customInvitesPromise = customInvites.findAll({
-			attributes: ['memberId', [sequelize.fn('SUM', sequelize.col('amount')), 'total']],
-			where: {
-				guildId: guildId,
-				cleared: false
-			},
-			include: [
-				{
-					attributes: ['name', 'discriminator'],
-					model: members,
-					required: true
-				}
-			],
-			group: ['memberId'],
-			order: [sequelize.literal('total DESC')],
-			raw: true
-		});
+		const customInvitesPromise = this.client.repo.customInvite
+			.createQueryBuilder()
+			.addSelect('SUM(amount)', 'total')
+			.leftJoinAndSelect('customInvite.member', 'member')
+			.where('guildId = :guildId AND cleared = 0', { guildId })
+			.groupBy('member')
+			.orderBy('total', 'DESC')
+			.getRawMany();
 
 		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const invs: InvCacheType = {};
-		invCodes.forEach((inv: any) => {
+		invCodes.forEach(inv => {
 			const id = inv.inviterId;
 			invs[id] = {
 				id,
-				name: inv['inviter.name'],
+				name: inv.inviter.name,
 				total: Number(inv.total),
 				regular: Number(inv.total),
 				custom: 0,
@@ -208,8 +152,8 @@ export class InvitesService {
 			};
 		});
 
-		js.forEach((join: any) => {
-			const id = join['exactMatch.inviterId'];
+		js.forEach(join => {
+			const id = join.exactMatch.inviterId;
 			let fake = 0;
 			let leave = 0;
 			if (join.invalidatedReason === JoinInvalidatedReason.fake) {
@@ -224,7 +168,7 @@ export class InvitesService {
 			} else {
 				invs[id] = {
 					id,
-					name: join['exactMatch.inviter.name'],
+					name: join.exactMatch.inviter.name,
 					total: -(fake + leave),
 					regular: 0,
 					custom: 0,
@@ -239,7 +183,7 @@ export class InvitesService {
 			}
 		});
 
-		customInvs.forEach((inv: any) => {
+		customInvs.forEach(inv => {
 			const id = inv.memberId;
 			const custom = Number(inv.total);
 			if (invs[id]) {
@@ -248,7 +192,7 @@ export class InvitesService {
 			} else {
 				invs[id] = {
 					id,
-					name: inv['member.name'],
+					name: inv.member.name,
 					total: custom,
 					regular: 0,
 					custom: custom,
@@ -322,13 +266,11 @@ export class InvitesService {
 			]);*/
 		}
 
-		const hidden = (await memberSettings.findAll({
-			attributes: ['memberId'],
-			where: sequelize.and(
-				sequelize.where(sequelize.col('guildId'), guildId),
-				sequelize.where(sequelize.fn('JSON_EXTRACT', sequelize.col('value'), '$.hideFromLeaderboard'), 'true')
-			),
-			raw: true
+		const hidden = (await this.client.repo.memberSetting.find({
+			where: {
+				guildId,
+				'JSON_EXTRACT(value, "$.hideFromLeaderboard")': true
+			}
 		})).map(i => i.memberId);
 
 		const rawKeys = Object.keys(invs)
@@ -338,33 +280,18 @@ export class InvitesService {
 				return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
 			});
 
-		const lastJoinAndLeave = await members.findAll({
-			attributes: [
-				'id',
-				'name',
-				[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
-				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt']
-			],
-			where: { id: rawKeys },
-			group: ['member.id'],
-			include: [
-				{
-					attributes: [],
-					model: joins,
-					where: { guildId },
-					required: false
-				},
-				{
-					attributes: [],
-					model: leaves,
-					where: { guildId },
-					required: false
-				}
-			],
-			raw: true
-		});
+		const lastJoinAndLeave = await this.client.repo.member
+			.createQueryBuilder()
+			.addSelect('MAX(join.createdAt)', 'lastJoinedAt')
+			.addSelect('MAX(leave.createdAt)', 'lastLeftAt')
+			.leftJoinAndSelect('member.joins', 'join')
+			.leftJoinAndSelect('member.leaves', 'leave')
+			.where('id IN(:ids) AND join.guildId = :guildId AND leave.guildId = :guildId', { guildId, ids: rawKeys })
+			.groupBy('id')
+			.getRawMany();
+
 		const stillInServer: { [x: string]: boolean } = {};
-		lastJoinAndLeave.forEach((jal: any) => {
+		lastJoinAndLeave.forEach(jal => {
 			if (!jal.lastLeftAt) {
 				stillInServer[jal.id] = true;
 				return;
@@ -399,7 +326,7 @@ export class InvitesService {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await joins.count({
+			numJoins = await this.client.repo.join.count({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
@@ -409,12 +336,12 @@ export class InvitesService {
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await joins.find({
+			const temp = await this.client.repo.join.findOne({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'ASC']]
+				order: { createdAt: 'ASC' }
 			});
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
@@ -423,16 +350,17 @@ export class InvitesService {
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await joins.find({
+			const temp = await this.client.repo.join.find({
 				where: {
 					guildId: guild.id,
 					memberId: member.id
 				},
-				order: [['createdAt', 'DESC']],
-				offset: 1
+				order: { createdAt: 'DESC' },
+				skip: 1,
+				take: 1
 			});
 			if (temp) {
-				prevJoin = moment(temp.createdAt);
+				prevJoin = moment(temp[0].createdAt);
 			}
 		}
 

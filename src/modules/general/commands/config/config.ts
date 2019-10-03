@@ -3,6 +3,7 @@ import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, SettingsValueResolver } from '../../../../framework/resolvers';
+import { JoinInvalidatedReason } from '../../../../models/Join';
 import { LogAction } from '../../../../models/Log';
 import { SettingsKey } from '../../../../models/Setting';
 import { beautify, settingsInfo } from '../../../../settings';
@@ -248,15 +249,13 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all fake invalidations
-				await joins.update(
+				await this.client.repo.join.update(
 					{
-						invalidatedReason: null
+						guildId: guild.id,
+						invalidatedReason: JoinInvalidatedReason.fake
 					},
 					{
-						where: {
-							guildId: guild.id,
-							invalidatedReason: JoinInvalidatedReason.fake
-						}
+						invalidatedReason: null
 					}
 				);
 			}
@@ -269,15 +268,13 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all leave invalidations
-				await joins.update(
+				await this.client.repo.join.update(
 					{
-						invalidatedReason: null
+						guildId: guild.id,
+						invalidatedReason: JoinInvalidatedReason.leave
 					},
 					{
-						where: {
-							guildId: guild.id,
-							invalidatedReason: JoinInvalidatedReason.leave
-						}
+						invalidatedReason: null
 					}
 				);
 			}

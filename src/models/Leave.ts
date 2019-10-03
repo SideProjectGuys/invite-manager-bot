@@ -30,11 +30,20 @@ export class Leave {
 	@Column({ nullable: true })
 	public deletedAt: Date;
 
+	@Column({ nullable: false })
+	public guildId: string;
+
 	@ManyToOne(type => Guild, g => g.joins)
 	public guild: Guild;
 
+	@Column({ nullable: false })
+	public memberId: string;
+
 	@ManyToOne(type => Member, m => m.joins)
 	public member: Member;
+
+	@Column({ nullable: true })
+	public joinId: number;
 
 	@OneToOne(type => Join, j => j.leave)
 	@JoinColumn()

@@ -3,11 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	DurationResolver,
-	NumberResolver
-} from '../../../../framework/resolvers';
-import { LeaderboardStyle } from '../../../../sequelize';
+import { DurationResolver, NumberResolver } from '../../../../framework/resolvers';
+import { LeaderboardStyle } from '../../../../models/Setting';
 import { BotType, CommandGroup, InvitesCommand } from '../../../../types';
 
 const usersPerPage = 10;
@@ -60,21 +57,12 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
-		const from = duration
-			? moment().subtract(duration)
-			: moment(guild.createdAt);
-		const comp = compare
-			? moment().subtract(compare)
-			: moment().subtract(1, 'day');
+		const from = duration ? moment().subtract(duration) : moment(guild.createdAt);
+		const comp = compare ? moment().subtract(compare) : moment().subtract(1, 'day');
 
 		const hideLeft = settings.hideLeftMembersFromLeaderboard;
 
-		const {
-			keys,
-			oldKeys,
-			invs,
-			stillInServer
-		} = await this.client.invs.generateLeaderboard(
+		const { keys, oldKeys, invs, stillInServer } = await this.client.invs.generateLeaderboard(
 			guild,
 			hideLeft,
 			from,
@@ -125,51 +113,33 @@ export default class extends Command {
 				lines.push(lines[0].map(h => '―'.repeat(h.length + 1)));
 			}
 
-			keys
-				.slice(page * usersPerPage, (page + 1) * usersPerPage)
-				.forEach((k, i) => {
-					const inv = invs[k];
-					const pos = page * usersPerPage + i + 1;
+			keys.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((k, i) => {
+				const inv = invs[k];
+				const pos = page * usersPerPage + i + 1;
 
-					const prevPos = oldKeys.indexOf(k) + 1;
-					const posChange = prevPos - i - 1;
+				const prevPos = oldKeys.indexOf(k) + 1;
+				const posChange = prevPos - i - 1;
 
-					const name =
-						style === LeaderboardStyle.mentions && stillInServer[k]
-							? `<@${k}>`
-							: inv.name.substring(0, 10);
+				const name = style === LeaderboardStyle.mentions && stillInServer[k] ? `<@${k}>` : inv.name.substring(0, 10);
 
-					const symbol =
-						posChange > 0
-							? upSymbol
-							: posChange < 0
-							? downSymbol
-							: neutralSymbol;
+				const symbol = posChange > 0 ? upSymbol : posChange < 0 ? downSymbol : neutralSymbol;
 
-					const posText =
-						posChange > 0
-							? `+${posChange}`
-							: posChange === 0
-							? `±0`
-							: posChange;
+				const posText = posChange > 0 ? `+${posChange}` : posChange === 0 ? `±0` : posChange;
 
-					const line = [
-						`${pos}.`,
-						`${symbol} (${posText})`,
-						name,
-						`${inv.total} `,
-						`${inv.regular} `,
-						`${inv.custom} `,
-						`${inv.fakes} `,
-						`${inv.leaves} `
-					];
+				const line = [
+					`${pos}.`,
+					`${symbol} (${posText})`,
+					name,
+					`${inv.total} `,
+					`${inv.regular} `,
+					`${inv.custom} `,
+					`${inv.fakes} `,
+					`${inv.leaves} `
+				];
 
-					lines.push(line);
-					lengths.forEach(
-						(l, pIndex) =>
-							(lengths[pIndex] = Math.max(l, Array.from(line[pIndex]).length))
-					);
-				});
+				lines.push(line);
+				lengths.forEach((l, pIndex) => (lengths[pIndex] = Math.max(l, Array.from(line[pIndex]).length)));
+			});
 
 			// Put string together
 			if (style === LeaderboardStyle.table) {
@@ -180,10 +150,7 @@ export default class extends Command {
 					line.forEach((part, partIndex) => {
 						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);
 					});
-				} else if (
-					style === LeaderboardStyle.normal ||
-					style === LeaderboardStyle.mentions
-				) {
+				} else if (style === LeaderboardStyle.normal || style === LeaderboardStyle.mentions) {
 					str += t('cmd.leaderboard.entry', {
 						pos: line[0],
 						change: line[1],

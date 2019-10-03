@@ -55,77 +55,59 @@ export default class extends Command {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
-			const js = await joins.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
+			const joins = await this.client.repo.join
+				.createQueryBuilder()
+				.select('YEAR(createdAt)', 'year')
+				.addSelect('MONTH(createdAt)', 'month')
+				.addSelect('DAY(createdAt)', 'day')
+				.addSelect('COUNT(id)', 'total')
+				.groupBy('YEAR(createdAt)')
+				.addGroupBy('MONTH(createdAt')
+				.addGroupBy('DAY(createdAt')
+				.where(`guildId = :guildId`, { guildId: guild.id })
+				.orderBy('MAX(createdAt)', 'DESC')
+				.limit(days)
+				.getRawMany();
 
-			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
+			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = join.total));
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
-			const lvs = await leaves.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
+			const leaves = await this.client.repo.leave
+				.createQueryBuilder()
+				.select('YEAR(createdAt)', 'year')
+				.addSelect('MONTH(createdAt)', 'month')
+				.addSelect('DAY(createdAt)', 'day')
+				.addSelect('COUNT(id)', 'total')
+				.groupBy('YEAR(createdAt)')
+				.addGroupBy('MONTH(createdAt')
+				.addGroupBy('DAY(createdAt')
+				.where(`guildId = :guildId`, { guildId: guild.id })
+				.orderBy('MAX(createdAt)', 'DESC')
+				.limit(days)
+				.getRawMany();
 
-			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
+			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = leave.total));
 		} else if (type === ChartType.usage) {
 			title = t('cmd.graph.usage.title');
 			description = t('cmd.graph.usage.text');
 
-			const us = await commandUsage.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
+			const cmdUsages = await this.client.repo.commandUsage
+				.createQueryBuilder()
+				.select('YEAR(createdAt)', 'year')
+				.addSelect('MONTH(createdAt)', 'month')
+				.addSelect('DAY(createdAt)', 'day')
+				.addSelect('COUNT(id)', 'total')
+				.groupBy('YEAR(createdAt)')
+				.addGroupBy('MONTH(createdAt')
+				.addGroupBy('DAY(createdAt')
+				.where(`guildId = :guildId`, { guildId: guild.id })
+				.orderBy('MAX(createdAt)', 'DESC')
+				.limit(days)
+				.getRawMany();
 
-			us.forEach((u: any) => (vs[`${u.year}-${u.month}-${u.day}`] = u.total));
+			cmdUsages.forEach(cmdUsage => (vs[`${cmdUsage.year}-${cmdUsage.month}-${cmdUsage.day}`] = cmdUsage.total));
 		}
 
 		const labels: string[] = [];

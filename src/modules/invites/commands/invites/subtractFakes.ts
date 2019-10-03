@@ -16,26 +16,25 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
-		const maxJoins = await joins.findAll({
-			attributes: [[sequelize.fn('MAX', sequelize.col('id')), 'id'], 'exactMatchCode'],
-			group: ['exactMatchCode', 'memberId'],
-			where: { guildId: guild.id },
-			raw: true
-		});
+		const maxJoins = await this.client.repo.join
+			.createQueryBuilder()
+			.select('MAX(id)', 'id')
+			.groupBy('exactMatch')
+			.addGroupBy('member')
+			.where('guildId = :guildId', { guildId: guild.id })
+			.getRawMany();
 
 		if (maxJoins.length === 0) {
 			return this.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
-		const jIds = maxJoins.map(j => j.id).join(', ');
-		await joins.update(
+		const jIds = maxJoins.map(j => j.id).join(',');
+		await this.client.repo.join.update(
 			{
-				invalidatedReason: sequelize.literal(`CASE WHEN id IN (${jIds}) THEN invalidatedReason ELSE 'fake' END`) as any
+				guildId: guild.id
 			},
 			{
-				where: {
-					guildId: guild.id
-				}
+				invalidatedReason: () => `CASE WHEN id IN (${jIds}) THEN invalidatedReason ELSE 'fake' END`
 			}
 		);
 

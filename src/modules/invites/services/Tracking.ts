@@ -1,14 +1,13 @@
 import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { Op } from 'sequelize';
 import { In, Not } from 'typeorm';
 
 import { IMClient } from '../../../client';
+import { JoinInvalidatedReason } from '../../../models/Join';
+import { SettingsKey } from '../../../models/Setting';
 import { BasicMember, GuildPermission } from '../../../types';
 import { deconstruct } from '../../../util';
-import { SettingsKey } from '../../../models/Setting';
-import { JoinInvalidatedReason } from '../../../models/Join';
 
 const GUILDS_IN_PARALLEL = 10;
 const INVITE_CREATE = 40;
@@ -290,23 +289,28 @@ export class TrackingService {
 				name: m.username,
 				discriminator: m.discriminator
 			}));
-		const membersPromise = members.bulkCreate(newMembers, {
-			updateOnDuplicate: ['name', 'discriminator', 'updatedAt']
-		});
+		const membersPromise = this.client.repo.member
+			.createQueryBuilder()
+			.insert()
+			.values(newMembers)
+			.orUpdate({ columns: ['name', 'discriminator'] })
+			.execute();
 
-		const channelPromise = channels.bulkCreate(
-			newAndUsedCodes
-				.map(inv => inv.channel)
-				.filter(c => !!c)
-				.map(channel => ({
-					id: channel.id,
-					guildId: guild.id,
-					name: channel.name
-				})),
-			{
-				updateOnDuplicate: ['name', 'updatedAt']
-			}
-		);
+		const channelPromise = this.client.repo.member
+			.createQueryBuilder()
+			.insert()
+			.values(
+				newAndUsedCodes
+					.map(inv => inv.channel)
+					.filter(c => !!c)
+					.map(channel => ({
+						id: channel.id,
+						guildId: guild.id,
+						name: channel.name
+					}))
+			)
+			.orUpdate({ columns: ['name'] })
+			.execute();
 
 		// We need the members and channels in the DB for the invite codes
 		await Promise.all([membersPromise, channelPromise]);
@@ -329,17 +333,23 @@ export class TrackingService {
 
 		// Update old invite codes that were used
 		if (updatedCodes.length > 0) {
-			await sequelize.query(
-				`UPDATE \`inviteCodes\` ` +
-					`SET uses = uses + 1 ` +
-					`WHERE \`code\` IN (${updatedCodes.map(c => `'${c}'`).join(',')})`
+			await this.client.repo.inviteCode.update(
+				{
+					code: In(updatedCodes)
+				},
+				{
+					uses: () => 'uses + 1'
+				}
 			);
 		}
 
 		// We need the invite codes in the DB for the join
-		await inviteCodes.bulkCreate(codes, {
-			updateOnDuplicate: ['uses', 'updatedAt']
-		});
+		await this.client.repo.inviteCode
+			.createQueryBuilder()
+			.insert()
+			.values(codes)
+			.orUpdate({ columns: ['uses'] })
+			.execute();
 
 		// Insert the join
 		const join = await this.client.repo.join.save({
@@ -551,19 +561,11 @@ export class TrackingService {
 			discriminator: member.user.discriminator
 		});
 
-		const leave = (await leaves.bulkCreate(
-			[
-				{
-					id: null,
-					memberId: member.id,
-					guildId: guild.id,
-					joinId: join ? join.id : null
-				}
-			],
-			{
-				updateOnDuplicate: []
-			}
-		))[0];
+		const leave = await this.client.repo.leave.save({
+			memberId: member.id,
+			guildId: guild.id,
+			joinId: join ? join.id : null
+		});
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
@@ -711,39 +713,43 @@ export class TrackingService {
 
 		// Add all new inviters to db
 		promises.push(
-			members.bulkCreate(
-				newInviteCodes
-					.map(i => i.inviter)
-					.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
-					.map(m => ({
-						id: m.id,
-						name: m.username,
-						discriminator: m.discriminator,
-						createdAt: m.createdAt
-					})),
-				{
-					updateOnDuplicate: ['name', 'discriminator', 'updatedAt']
-				}
-			)
+			this.client.repo.member
+				.createQueryBuilder()
+				.insert()
+				.values(
+					newInviteCodes
+						.map(i => i.inviter)
+						.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
+						.map(m => ({
+							id: m.id,
+							name: m.username,
+							discriminator: m.discriminator,
+							createdAt: m.createdAt
+						}))
+				)
+				.orUpdate({ columns: ['name', 'discriminator'] })
+				.execute()
 		);
 
 		// Add all new invite channels to the db
 		promises.push(
-			channels.bulkCreate(
-				newInviteCodes
-					.filter(i => !!i.channel)
-					.map(i => guild.channels.get(i.channel.id))
-					.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
-					.map(c => ({
-						id: c.id,
-						name: c.name,
-						guildId: guild.id,
-						createdAt: c.createdAt
-					})),
-				{
-					updateOnDuplicate: ['name', 'updatedAt']
-				}
-			)
+			this.client.repo.channel
+				.createQueryBuilder()
+				.insert()
+				.values(
+					newInviteCodes
+						.filter(i => !!i.channel)
+						.map(i => guild.channels.get(i.channel.id))
+						.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
+						.map(c => ({
+							id: c.id,
+							name: c.name,
+							guildId: guild.id,
+							createdAt: c.createdAt
+						}))
+				)
+				.orUpdate({ columns: ['name'] })
+				.execute()
 		);
 
 		await Promise.all(promises);
@@ -764,9 +770,12 @@ export class TrackingService {
 		}));
 
 		// Then insert invite codes
-		return inviteCodes.bulkCreate(codes, {
-			updateOnDuplicate: ['uses', 'updatedAt']
-		});
+		return this.client.repo.inviteCode
+			.createQueryBuilder()
+			.insert()
+			.values(codes)
+			.orUpdate({ columns: ['uses'] })
+			.execute();
 	}
 
 	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
