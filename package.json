@@ -5,6 +5,7 @@
 	"main": "./bin/bot.js",
 	"scripts": {
 		"start": "cross-env NODE_ENV=dev node scripts/dev-run.js",
+		"debug": "cross-env NODE_ENV=dev node scripts/dev-run.js debug",
 		"build": "tsc",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"test/**/*.js\"",
