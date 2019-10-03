@@ -36,7 +36,7 @@ export class Guild {
 	@Column()
 	public name: string;
 
-	@Column()
+	@Column({ nullable: true })
 	public icon: string;
 
 	@Column()

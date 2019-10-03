@@ -293,7 +293,7 @@ export class TrackingService {
 			.createQueryBuilder()
 			.insert()
 			.values(newMembers)
-			.orUpdate({ columns: ['name', 'discriminator'] })
+			.orUpdate({ overwrite: ['name', 'discriminator'] })
 			.execute();
 
 		const channelPromise = this.client.repo.member
@@ -309,7 +309,7 @@ export class TrackingService {
 						name: channel.name
 					}))
 			)
-			.orUpdate({ columns: ['name'] })
+			.orUpdate({ overwrite: ['name'] })
 			.execute();
 
 		// We need the members and channels in the DB for the invite codes
@@ -348,7 +348,7 @@ export class TrackingService {
 			.createQueryBuilder()
 			.insert()
 			.values(codes)
-			.orUpdate({ columns: ['uses'] })
+			.orUpdate({ overwrite: ['uses'] })
 			.execute();
 
 		// Insert the join
@@ -712,50 +712,52 @@ export class TrackingService {
 		}
 
 		// Add all new inviters to db
-		promises.push(
-			this.client.repo.member
-				.createQueryBuilder()
-				.insert()
-				.values(
-					newInviteCodes
-						.map(i => i.inviter)
-						.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
-						.map(m => ({
-							id: m.id,
-							name: m.username,
-							discriminator: m.discriminator,
-							createdAt: m.createdAt
-						}))
-				)
-				.orUpdate({ columns: ['name', 'discriminator'] })
-				.execute()
-		);
+		const newMembers = newInviteCodes
+			.map(i => i.inviter)
+			.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
+			.map(m => ({
+				id: m.id,
+				name: m.username,
+				discriminator: m.discriminator,
+				createdAt: moment(m.createdAt).toDate()
+			}));
+		if (newMembers.length > 0) {
+			promises.push(
+				this.client.repo.member
+					.createQueryBuilder()
+					.insert()
+					.values(newMembers)
+					.orUpdate({ overwrite: ['name', 'discriminator'] })
+					.execute()
+			);
+		}
 
 		// Add all new invite channels to the db
-		promises.push(
-			this.client.repo.channel
-				.createQueryBuilder()
-				.insert()
-				.values(
-					newInviteCodes
-						.filter(i => !!i.channel)
-						.map(i => guild.channels.get(i.channel.id))
-						.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
-						.map(c => ({
-							id: c.id,
-							name: c.name,
-							guildId: guild.id,
-							createdAt: c.createdAt
-						}))
-				)
-				.orUpdate({ columns: ['name'] })
-				.execute()
-		);
+		const newChannels = newInviteCodes
+			.filter(i => !!i.channel)
+			.map(i => guild.channels.get(i.channel.id))
+			.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
+			.map(c => ({
+				id: c.id,
+				name: c.name,
+				guildId: guild.id,
+				createdAt: moment(c.createdAt).toDate()
+			}));
+		if (newChannels.length > 0) {
+			promises.push(
+				this.client.repo.channel
+					.createQueryBuilder()
+					.insert()
+					.values(newChannels)
+					.orUpdate({ overwrite: ['name'] })
+					.execute()
+			);
+		}
 
 		await Promise.all(promises);
 
 		const codes = invs.map(inv => ({
-			createdAt: inv.createdAt ? inv.createdAt : new Date(),
+			createdAt: inv.createdAt ? moment(inv.createdAt).toDate() : new Date(),
 			code: inv.code,
 			channelId: inv.channel ? inv.channel.id : null,
 			maxAge: inv.maxAge,
@@ -765,7 +767,7 @@ export class TrackingService {
 			guildId: guild.id,
 			inviterId: inv.inviter ? inv.inviter.id : null,
 			clearedAmount: 0,
-			isVanity: (inv as any).vanity,
+			isVanity: !!(inv as any).vanity,
 			isWidget: !inv.inviter && !(inv as any).vanity
 		}));
 
@@ -774,7 +776,7 @@ export class TrackingService {
 			.createQueryBuilder()
 			.insert()
 			.values(codes)
-			.orUpdate({ columns: ['uses'] })
+			.orUpdate({ overwrite: ['uses'] })
 			.execute();
 	}
 

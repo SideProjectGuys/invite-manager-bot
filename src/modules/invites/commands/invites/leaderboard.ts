@@ -47,7 +47,7 @@ export default class extends Command {
 		{ compare }: { compare: moment.Duration },
 		{ guild, t, settings }: Context
 	): Promise<any> {
-		if (this.client.type === BotType.regular) {
+		/*if (this.client.type === BotType.regular) {
 			const embed = this.createEmbed({
 				title: t('cmd.leaderboard.title'),
 				description:
@@ -55,7 +55,7 @@ export default class extends Command {
 					'Invites are still being tracked during this time.\n\nWe apologize for the inconvenience.'
 			});
 			return this.sendReply(message, embed);
-		}
+		}*/
 
 		const from = duration ? moment().subtract(duration) : moment(guild.createdAt);
 		const comp = compare ? moment().subtract(compare) : moment().subtract(1, 'day');

@@ -49,7 +49,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 				.createQueryBuilder()
 				.insert()
 				.values({ inviteCode, guildId, value: set })
-				.orUpdate({ columns: ['value'] })
+				.orUpdate({ overwrite: ['value'] })
 				.execute();
 		}
 

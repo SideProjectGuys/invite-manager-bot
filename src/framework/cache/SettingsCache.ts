@@ -30,7 +30,7 @@ export class SettingsCache extends Cache<SettingsObject> {
 				.createQueryBuilder()
 				.insert()
 				.values({ guildId, value: set })
-				.orUpdate({ columns: ['value'] })
+				.orUpdate({ overwrite: ['value'] })
 				.execute();
 		}
 

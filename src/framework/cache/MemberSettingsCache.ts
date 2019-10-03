@@ -45,7 +45,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 				.createQueryBuilder()
 				.insert()
 				.values({ memberId: userId, guildId, value: set })
-				.orUpdate({ columns: ['value'] })
+				.orUpdate({ overwrite: ['value'] })
 				.execute();
 		}
 

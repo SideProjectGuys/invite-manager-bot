@@ -2,7 +2,6 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
-	Index,
 	JoinColumn,
 	ManyToOne,
 	OneToOne,
@@ -16,7 +15,6 @@ import { Join } from './Join';
 import { Member } from './Member';
 
 @Entity()
-@Index(['guild', 'member', 'join'], { unique: true })
 export class Leave {
 	@PrimaryGeneratedColumn()
 	public id: number;
@@ -36,7 +34,7 @@ export class Leave {
 	@Column({ length: 32, nullable: false })
 	public memberId: string;
 
-	@ManyToOne(type => Member, m => m.joins, { nullable: false })
+	@ManyToOne(type => Member, m => m.leaves, { nullable: false })
 	public member: Member;
 
 	@Column({ nullable: true })

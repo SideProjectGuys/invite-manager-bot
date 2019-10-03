@@ -65,44 +65,53 @@ export class DBQueueService {
 
 		const newGuilds = [...this.guilds.values()];
 		this.guilds.clear();
-
-		await this.client.repo.guild
-			.createQueryBuilder()
-			.insert()
-			.values(
-				newGuilds.map(guild => ({
-					id: guild.id,
-					name: guild.name,
-					icon: guild.iconURL,
-					memberCount: guild.memberCount
-				}))
-			)
-			.orUpdate({ columns: ['name', 'icon', 'memberCount'] })
-			.execute();
-		newGuilds.forEach(g => this.doneGuilds.add(g.id));
+		if (newGuilds.length > 0) {
+			await this.client.repo.guild
+				.createQueryBuilder()
+				.insert()
+				.values(
+					newGuilds.map(guild => ({
+						id: guild.id,
+						name: guild.name,
+						icon: guild.iconURL,
+						memberCount: guild.memberCount
+					}))
+				)
+				.orUpdate({ overwrite: ['name', 'icon', 'memberCount'] })
+				.execute();
+			newGuilds.forEach(g => this.doneGuilds.add(g.id));
+		}
 
 		const newUsers = [...this.users.values()];
 		this.users.clear();
+		if (newUsers.length > 0) {
+			await this.client.repo.member
+				.createQueryBuilder()
+				.insert()
+				.values(
+					newUsers.map(user => ({
+						id: user.id,
+						name: user.username,
+						discriminator: user.discriminator
+					}))
+				)
+				.orUpdate({ overwrite: ['name', 'discriminator'] })
+				.execute();
+			newUsers.forEach(u => this.doneUsers.add(u.id));
+		}
 
-		await this.client.repo.member
-			.createQueryBuilder()
-			.insert()
-			.values(
-				newUsers.map(user => ({
-					id: user.id,
-					name: user.username,
-					discriminator: user.discriminator
-				}))
-			)
-			.orUpdate({ columns: ['name', 'discriminator'] })
-			.execute();
-		newUsers.forEach(u => this.doneUsers.add(u.id));
+		const promises: Promise<any[]>[] = [];
+		if (this.logActions.length > 0) {
+			promises.push(this.client.repo.log.insert(this.logActions).then(() => (this.logActions = [])));
+		}
+		if (this.cmdUsages.length > 0) {
+			promises.push(this.client.repo.commandUsage.insert(this.cmdUsages).then(() => (this.cmdUsages = [])));
+		}
+		if (this.incidents.length > 0) {
+			promises.push(this.client.repo.incident.insert(this.incidents).then(() => (this.incidents = [])));
+		}
 
-		await Promise.all([
-			this.client.repo.log.insert(this.logActions).then(() => (this.logActions = [])),
-			this.client.repo.commandUsage.insert(this.cmdUsages).then(() => (this.cmdUsages = [])),
-			this.client.repo.incident.insert(this.incidents).then(() => (this.incidents = []))
-		]);
+		await Promise.all(promises);
 
 		console.timeEnd('syncDB');
 	}

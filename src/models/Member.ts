@@ -9,6 +9,7 @@ import { MemberSetting } from './MemberSetting';
 import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { Strike } from './Strike';
+import { Leave } from './Leave';
 
 @Entity()
 @Index(['name'])
@@ -39,6 +40,9 @@ export class Member {
 
 	@OneToMany(type => Join, j => j.member)
 	public joins: Join[];
+
+	@OneToMany(type => Leave, l => l.member)
+	public leaves: Leave[];
 
 	@OneToMany(type => Log, l => l.member)
 	public logs: Log[];

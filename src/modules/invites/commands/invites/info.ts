@@ -56,13 +56,16 @@ export default class extends Command {
 		const lang = settings.lang;
 
 		const embed = this.createEmbed({
-			title: `${user.username}#${user.discriminator}`
+			title: `${user.username}#${user.discriminator}`,
+			description: 'Loading...'
 		});
+		const replyMessage = await this.sendReply(message, embed);
+		embed.description = null;
 
 		const invitedMembers = await this.client.repo.join
-			.createQueryBuilder()
+			.createQueryBuilder('join')
 			.addSelect('MAX(join.createdAt)', 'createdAt')
-			.where(`guildId = :guildId AND invalidatedReason IS NULL`, { guildId: guild.id })
+			.where(`join.guildId = :guildId AND invalidatedReason IS NULL`, { guildId: guild.id })
 			.groupBy('memberId')
 			.orderBy('MAX(join.createdAt)', 'DESC')
 			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
@@ -468,6 +471,6 @@ export default class extends Command {
 			});
 		}
 
-		await this.sendReply(message, embed);
+		await replyMessage.edit({ embed });
 	}
 }

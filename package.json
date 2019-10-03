@@ -43,12 +43,12 @@
 		"iheart": "3.1.1",
 		"moment": "2.24.0",
 		"mysql2": "1.7.0",
-		"typeorm": "0.2.19",
+		"pako": "1.0.10",
 		"reflect-metadata": "0.1.13",
+		"typeorm": "0.2.19",
 		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
-		"ytdl-core": "0.29.7",
-		"zlib-sync": "0.1.5"
+		"ytdl-core": "0.29.7"
 	},
 	"devDependencies": {
 		"@sentry/cli": "1.47.2",

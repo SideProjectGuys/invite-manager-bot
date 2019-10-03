@@ -90,14 +90,14 @@ export default class extends Command {
 						name: c.channel.name
 					}))
 				)
-				.orUpdate({ columns: ['name'] })
+				.orUpdate({ overwrite: ['name'] })
 				.execute();
 
 			await this.client.repo.inviteCode
 				.createQueryBuilder()
 				.insert()
 				.values(newDbCodes)
-				.orUpdate({ columns: ['uses'] })
+				.orUpdate({ overwrite: ['uses'] })
 				.execute();
 
 			codes = codes.concat(newDbCodes);

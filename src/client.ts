@@ -294,7 +294,7 @@ export class IMClient extends Client {
 					banReason: null
 				}))
 			)
-			.orUpdate({ columns: ['name', 'icon', 'memberCount', 'deletedAt'] })
+			.orUpdate({ overwrite: ['name', 'icon', 'memberCount', 'deletedAt'] })
 			.execute();
 
 		const bannedGuilds = await this.repo.guild.find({

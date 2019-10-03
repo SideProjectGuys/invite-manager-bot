@@ -17,10 +17,10 @@ export class CustomInvite {
 	@Column({ type: 'bigint' })
 	public amount: number;
 
-	@Column({ type: 'text' })
+	@Column({ type: 'text', nullable: true })
 	public reason: string;
 
-	@Column()
+	@Column({ default: false })
 	public cleared: boolean;
 
 	@Column({ length: 32, nullable: false })

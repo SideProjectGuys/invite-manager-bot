@@ -68,8 +68,7 @@ export default class extends Command {
 			memberId: user.id,
 			creatorId: message.author.id,
 			amount,
-			reason,
-			cleared: false
+			reason
 		});
 
 		// Update cache
