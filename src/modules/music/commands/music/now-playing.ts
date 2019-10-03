@@ -81,9 +81,7 @@ export default class extends Command {
 				}
 			};
 
-			const interval = isPremium
-				? PREMIUM_PIN_UPDATE_INTERVAL
-				: PIN_UPDATE_INTERVAL;
+			const interval = isPremium ? PREMIUM_PIN_UPDATE_INTERVAL : PIN_UPDATE_INTERVAL;
 
 			await func();
 			this.timerMap.set(guild.id, setInterval(func, interval));

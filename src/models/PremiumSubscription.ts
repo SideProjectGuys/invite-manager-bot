@@ -1,18 +1,18 @@
 import {
-	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn
 } from 'typeorm';
 
-import { Guild } from './Guild';
 import { Member } from './Member';
+import { PremiumSubscriptionGuild } from './PremiumSubscriptionGuild';
 
 @Entity()
-export class PremiumSubscription extends BaseEntity {
+export class PremiumSubscription {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -28,15 +28,24 @@ export class PremiumSubscription extends BaseEntity {
 	@Column({ type: 'decimal', precision: 10, scale: 2 })
 	public amount: number;
 
+	@Column({ type: 'int' })
+	public maxGuilds: number;
+
+	@Column()
+	public isFreeTier: boolean;
+
 	@Column()
 	public validUntil: Date;
 
-	@Column({ nullable: true })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.premiumSubscriptions)
-	public guild: Guild;
+	@Column({ nullable: false })
+	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.premiumSubscriptions)
 	public member: Member;
+
+	@Column()
+	public reason: string;
+
+	@OneToMany(type => PremiumSubscriptionGuild, psg => psg.guild)
+	public guilds: PremiumSubscriptionGuild[];
 }

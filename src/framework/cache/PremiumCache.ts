@@ -1,8 +1,5 @@
-import {
-	premiumSubscriptionGuilds,
-	premiumSubscriptions,
-	sequelize
-} from '../../sequelize';
+import { MoreThan } from 'typeorm';
+
 import { BotType } from '../../types';
 
 import { Cache } from './Cache';
@@ -19,22 +16,8 @@ export class PremiumCache extends Cache<boolean> {
 			return true;
 		}
 
-		const sub = await premiumSubscriptionGuilds.findOne({
-			where: {
-				guildId
-			},
-			include: [
-				{
-					attributes: [],
-					model: premiumSubscriptions,
-					where: {
-						validUntil: {
-							[sequelize.Op.gte]: new Date()
-						}
-					},
-					required: true
-				}
-			]
+		const sub = await this.client.repo.premiumSubscriptionGuild.findOne({
+			where: { guildId, subscription: { validUntil: MoreThan(new Date()) } }
 		});
 
 		return !!sub;

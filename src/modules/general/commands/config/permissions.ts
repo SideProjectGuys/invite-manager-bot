@@ -1,14 +1,9 @@
 import { Message, Role } from 'eris';
+import { In } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { CommandResolver, RoleResolver } from '../../../../framework/resolvers';
-import {
-	rolePermissions,
-	RolePermissionsInstance,
-	roles,
-	sequelize
-} from '../../../../sequelize';
 import { BotCommand, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -39,18 +34,9 @@ export default class extends Command {
 		{ guild, t }: Context
 	): Promise<any> {
 		if (!rawCmd) {
-			const perms = await rolePermissions.findAll({
-				attributes: ['command'],
-				include: [
-					{
-						attributes: ['name'],
-						model: roles,
-						where: {
-							guildId: guild.id
-						}
-					}
-				],
-				raw: true
+			const perms = await this.client.repo.rolePermission.find({
+				where: { role: { guildId: guild.id } },
+				relations: ['role']
 			});
 
 			const embed = this.createEmbed({
@@ -71,11 +57,11 @@ export default class extends Command {
 						rs.Everyone.push(command.name);
 					}
 				} else {
-					ps.forEach((p: RolePermissionsInstance & { 'role.name': string }) => {
-						if (!rs['@' + p['role.name']]) {
-							rs['@' + p['role.name']] = [];
+					ps.forEach(p => {
+						if (!rs['@' + p.role.name]) {
+							rs['@' + p.role.name] = [];
 						}
-						rs['@' + p['role.name']].push(command.name);
+						rs['@' + p.role.name].push(command.name);
 					});
 				}
 			});
@@ -139,31 +125,12 @@ export default class extends Command {
 		}
 
 		if (!role) {
-			const perms = await rolePermissions.findAll({
-				attributes: [
-					'command',
-					[
-						sequelize.fn(
-							'GROUP_CONCAT',
-							sequelize.literal(`roleId SEPARATOR ','`)
-						),
-						'roles'
-					]
-				],
+			const perms = await this.client.repo.rolePermission.find({
 				where: {
-					command: cmds.map(c => c.name)
+					command: In(cmds.map(c => c.name)),
+					role: { guildId: guild.id }
 				},
-				group: ['command'],
-				include: [
-					{
-						attributes: [],
-						model: roles,
-						where: {
-							guildId: guild.id
-						}
-					}
-				],
-				raw: true
+				relations: ['role']
 			});
 
 			const embed = this.createEmbed({
@@ -174,19 +141,24 @@ export default class extends Command {
 				cmds.forEach(c => {
 					embed.fields.push({
 						name: c.name,
-						value: c.strict
-							? t('cmd.permissions.adminOnly')
-							: t('cmd.permissions.everyone')
+						value: c.strict ? t('cmd.permissions.adminOnly') : t('cmd.permissions.everyone')
 					});
 				});
 			} else {
-				perms.forEach((p: RolePermissionsInstance & { roles: string }) => {
+				const grouped: Map<string, string[]> = new Map();
+				perms.forEach(p => {
+					let roles = grouped.get(p.command);
+					if (!roles) {
+						roles = [];
+						grouped.set(p.command, roles);
+					}
+					roles.push(p.role.id);
+				});
+
+				grouped.forEach((roles, cmd) => {
 					embed.fields.push({
-						name: p.command,
-						value: p.roles
-							.split(',')
-							.map(r => `<@&${r}>`)
-							.join(', ')
+						name: cmd,
+						value: roles.map(r => `<@&${r}>`).join(', ')
 					});
 				});
 			}
@@ -206,7 +178,7 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
-		const oldPerms = await rolePermissions.findAll({
+		const oldPerms = await this.client.repo.rolePermission.find({
 			where: {
 				command: cmds.map(c => c.name),
 				roleId: role.id
@@ -214,7 +186,7 @@ export default class extends Command {
 		});
 
 		if (oldPerms.length > 0) {
-			oldPerms.forEach(op => op.destroy());
+			await this.client.repo.rolePermission.update({ id: In(oldPerms.map(p => p.id)) }, { deletedAt: new Date() });
 
 			await this.sendReply(
 				message,
@@ -224,16 +196,15 @@ export default class extends Command {
 				})
 			);
 		} else {
-			await roles.insertOrUpdate({
+			await this.client.repo.role.save({
 				id: role.id,
 				name: role.name,
 				color: role.color.toString(16),
 				guildId: role.guild.id
 			});
 
-			await rolePermissions.bulkCreate(
+			await this.client.repo.rolePermission.save(
 				cmds.map(c => ({
-					id: null,
 					command: c.name,
 					roleId: role.id
 				}))

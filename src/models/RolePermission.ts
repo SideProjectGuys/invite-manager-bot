@@ -1,17 +1,9 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Role } from './Role';
 
 @Entity()
-export class RolePermission extends BaseEntity {
+export class RolePermission {
 	@PrimaryGeneratedColumn()
 	public id: number;
 

@@ -74,10 +74,7 @@ export class CommandsService {
 						this.cmdMap.set(a.toLowerCase(), inst);
 					});
 
-					console.log(
-						`Loaded \x1b[34m${inst.name}\x1b[0m from ` +
-							`\x1b[2m${basename(file)}\x1b[0m`
-					);
+					console.log(`Loaded \x1b[34m${inst.name}\x1b[0m from ` + `\x1b[2m${basename(file)}\x1b[0m`);
 				}
 			});
 		loadRecursive(cmdDir);
@@ -90,11 +87,7 @@ export class CommandsService {
 
 	public async onMessage(message: Message) {
 		// Skip if this is our own message, bot message or empty messages
-		if (
-			message.author.id === this.client.user.id ||
-			message.author.bot ||
-			!message.content.length
-		) {
+		if (message.author.id === this.client.user.id || message.author.bot || !message.content.length) {
 			return;
 		}
 
@@ -116,9 +109,7 @@ export class CommandsService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild
-			? await this.client.cache.settings.get(guild.id)
-			: { ...defaultSettings };
+		const sets = guild ? await this.client.cache.settings.get(guild.id) : { ...defaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
@@ -242,9 +233,7 @@ export class CommandsService {
 			lastCall.last = now;
 		}
 
-		const isPremium = guild
-			? await this.client.cache.premium.get(guild.id)
-			: false;
+		const isPremium = guild ? await this.client.cache.premium.get(guild.id) : false;
 
 		if (!isPremium && cmd.premiumOnly) {
 			await this.client.msg.sendReply(message, t('permissions.premiumOnly'));
@@ -264,21 +253,14 @@ export class CommandsService {
 				member = await guild.getRESTMember(message.author.id);
 			}
 			if (!member) {
-				console.error(
-					`Could not get member ${message.author.id} for ${guild.id}`
-				);
+				console.error(`Could not get member ${message.author.id} for ${guild.id}`);
 				await this.client.msg.sendReply(message, t('permissions.memberError'));
 				return;
 			}
 
 			// Always allow admins
-			if (
-				!member.permission.has(GuildPermission.ADMINISTRATOR) &&
-				guild.ownerID !== member.id
-			) {
-				const perms = (await this.client.cache.permissions.get(guild.id))[
-					cmd.name
-				];
+			if (!member.permission.has(GuildPermission.ADMINISTRATOR) && guild.ownerID !== member.id) {
+				const perms = (await this.client.cache.permissions.get(guild.id))[cmd.name];
 
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
@@ -306,17 +288,14 @@ export class CommandsService {
 
 			// Check command permissions
 			const missingPerms = cmd.botPermissions.filter(
-				p =>
-					!(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
+				p => !(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
 			);
 			if (missingPerms.length > 0) {
 				await this.client.msg.sendReply(
 					message,
 					t(`permissions.missing`, {
 						channel: `<#${channel.id}>`,
-						permissions: missingPerms
-							.map(p => '`' + t(`permissions.${p}`) + '`')
-							.join(', ')
+						permissions: missingPerms.map(p => '`' + t(`permissions.${p}`) + '`').join(', ')
 					})
 				);
 				return;
@@ -377,9 +356,7 @@ export class CommandsService {
 			const flagSplits = rawArg.split('=');
 			const isShort = !flagSplits[0].startsWith('--');
 			const name = flagSplits[0].replace(/-/gi, '');
-			const flag = cmd.flags.find(f =>
-				isShort ? f.short === name : f.name === name
-			);
+			const flag = cmd.flags.find(f => (isShort ? f.short === name : f.name === name));
 
 			// Exit if this is not a flag
 			if (!flag) {

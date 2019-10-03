@@ -1,5 +1,5 @@
 import { Cache } from '../../../framework/cache/Cache';
-import { inviteCodeSettings, InviteCodeSettingsKey } from '../../../sequelize';
+import { InviteCodeSettingsKey } from '../../../models/InviteCodeSetting';
 import {
 	inviteCodeDefaultSettings,
 	inviteCodeSettingsInfo,
@@ -7,27 +7,16 @@ import {
 	toDbValue
 } from '../../../settings';
 
-export class InviteCodeSettingsCache extends Cache<
-	Map<string, InviteCodeSettingsObject>
-> {
+export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSettingsObject>> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(
-		guildId: string
-	): Promise<Map<string, InviteCodeSettingsObject>> {
-		const sets = await inviteCodeSettings.findAll({
-			where: {
-				guildId
-			},
-			raw: true
-		});
+	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
+		const sets = await this.client.repo.inviteCodeSetting.find({ where: { guildId } });
 
 		const map = new Map();
-		sets.forEach(set =>
-			map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value })
-		);
+		sets.forEach(set => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
 		return map;
 	}
 
@@ -56,19 +45,12 @@ export class InviteCodeSettingsCache extends Cache<
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			inviteCodeSettings.bulkCreate(
-				[
-					{
-						id: null,
-						inviteCode,
-						guildId,
-						value: set
-					}
-				],
-				{
-					updateOnDuplicate: ['value', 'updatedAt']
-				}
-			);
+			await this.client.repo.inviteCodeSetting
+				.createQueryBuilder()
+				.insert()
+				.values({ inviteCode, guildId, value: set })
+				.orUpdate({ columns: ['value'] })
+				.execute();
 		}
 
 		return dbVal;

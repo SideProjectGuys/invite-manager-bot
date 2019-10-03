@@ -1,16 +1,11 @@
 import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import { LessThanOrEqual, MoreThan } from 'typeorm';
 
 import { IMClient } from '../../../client';
-import {
-	punishmentConfigs,
-	punishments,
-	PunishmentType,
-	sequelize,
-	strikes,
-	ViolationType
-} from '../../../sequelize';
+import { PunishmentType } from '../../../models/PunishmentConfig';
+import { ViolationType } from '../../../models/StrikeConfig';
 import { SettingsObject } from '../../../settings';
 import { BasicUser } from '../../../types';
 
@@ -44,17 +39,10 @@ export class ModerationService {
 	}
 
 	private strikeFunctions: {
-		[key in ViolationType]: (
-			message: Message,
-			args: Arguments
-		) => Promise<boolean>;
+		[key in ViolationType]: (message: Message, args: Arguments) => Promise<boolean>;
 	};
 	private punishmentFunctions: {
-		[key in PunishmentType]: (
-			member: Member,
-			amount: number,
-			args: Arguments
-		) => Promise<boolean>;
+		[key in PunishmentType]: (member: Member, amount: number, args: Arguments) => Promise<boolean>;
 	};
 
 	public constructor(client: IMClient) {
@@ -86,10 +74,7 @@ export class ModerationService {
 		const scanMessageCache = () => {
 			const now = moment();
 			this.messageCache.forEach((value, key) => {
-				this.messageCache.set(
-					key,
-					value.filter(m => now.diff(m.createdAt, 'second') < 60)
-				);
+				this.messageCache.set(key, value.filter(m => now.diff(m.createdAt, 'second') < 60));
 			});
 		};
 		setInterval(scanMessageCache, 60 * 1000);
@@ -133,22 +118,14 @@ export class ModerationService {
 		}
 
 		// If moderated channels are set only moderate those channels
-		if (
-			settings.autoModModeratedChannels &&
-			settings.autoModModeratedChannels.length > 0
-		) {
-			if (
-				!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)
-			) {
+		if (settings.autoModModeratedChannels && settings.autoModModeratedChannels.length > 0) {
+			if (!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)) {
 				return;
 			}
 		}
 
 		// Don't moderate ignored channels
-		if (
-			settings.autoModIgnoredChannels &&
-			settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0
-		) {
+		if (settings.autoModIgnoredChannels && settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0) {
 			return;
 		}
 
@@ -164,22 +141,14 @@ export class ModerationService {
 		*/
 
 		// If moderated roles are set then only moderate those roles
-		if (
-			settings.autoModModeratedRoles &&
-			settings.autoModModeratedRoles.length > 0
-		) {
-			if (
-				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
-			) {
+		if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
+			if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
 				return;
 			}
 		}
 
 		// Don't moderate ignored roles
-		if (
-			settings.autoModIgnoredRoles &&
-			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-		) {
+		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
 			return;
 		}
 
@@ -219,16 +188,10 @@ export class ModerationService {
 
 			await message.delete();
 
-			await this.logViolationModAction(
-				guild,
-				message.author,
-				strike.type,
-				strike.amount,
-				[
-					{ name: 'Channel', value: channel.name },
-					{ name: 'Message', value: message.content }
-				]
-			);
+			await this.logViolationModAction(guild, message.author, strike.type, strike.amount, [
+				{ name: 'Channel', value: channel.name },
+				{ name: 'Message', value: message.content }
+			]);
 
 			const embed = this.createBasicEmbed();
 			const usr = `<@${message.author.id}>`;
@@ -341,23 +304,18 @@ export class ModerationService {
 		};
 	}
 
-	public async addStrikesAndPunish(
-		member: Member,
-		type: ViolationType,
-		amount: number,
-		args: Arguments
-	) {
+	public async addStrikesAndPunish(member: Member, type: ViolationType, amount: number, args: Arguments) {
 		await this.informAboutStrike(member, type, amount, args.settings);
 
 		const strikesBefore =
-			(await strikes.sum('amount', {
+			(await this.client.repo.strike.sum('amount', {
 				where: {
 					guildId: args.guild.id,
 					memberId: member.id
 				}
 			})) || 0;
 
-		await strikes.create({
+		await this.client.repo.strike.save({
 			id: null,
 			guildId: args.guild.id,
 			memberId: member.id,
@@ -367,15 +325,12 @@ export class ModerationService {
 
 		const strikesAfter = strikesBefore + amount;
 
-		const punishmentConfig = await punishmentConfigs.find({
+		const punishmentConfig = await this.client.repo.punishmentConfig.findOne({
 			where: {
 				guildId: args.guild.id,
-				amount: {
-					[sequelize.Op.gt]: strikesBefore,
-					[sequelize.Op.lte]: strikesAfter
-				}
+				amount: [MoreThan(strikesBefore), LessThanOrEqual(strikesAfter)]
 			},
-			order: [['amount', 'DESC']]
+			order: { amount: 'DESC' }
 		});
 
 		if (punishmentConfig) {
@@ -385,24 +340,14 @@ export class ModerationService {
 			}
 
 			// Inform beforehand because we might be kicking/banning the user
-			await this.informAboutPunishment(
-				member,
-				punishmentConfig.type,
-				args.settings,
-				{ amount }
-			);
+			await this.informAboutPunishment(member, punishmentConfig.type, args.settings, { amount });
 
-			const punishmentResult = await func(
-				member,
-				punishmentConfig.amount,
-				args
-			);
+			const punishmentResult = await func(member, punishmentConfig.amount, args);
 			if (!punishmentResult) {
 				return;
 			}
 
-			await punishments.create({
-				id: null,
+			await this.client.repo.punishment.save({
 				guildId: args.guild.id,
 				memberId: member.id,
 				type: punishmentConfig.type,
@@ -412,12 +357,7 @@ export class ModerationService {
 				creatorId: null
 			});
 
-			await this.logPunishmentModAction(
-				args.guild,
-				member.user,
-				punishmentConfig.type,
-				strikesAfter
-			);
+			await this.logPunishmentModAction(args.guild, member.user, punishmentConfig.type, strikesAfter);
 		}
 	}
 
@@ -433,9 +373,7 @@ export class ModerationService {
 			return true;
 		}
 
-		const regex = new RegExp(
-			/(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-zA-Z0-9]/
-		);
+		const regex = new RegExp(/(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discordapp\.com\/invite)\/.+[a-zA-Z0-9]/);
 		const matches = message.content.match(regex);
 		hasInviteLink = matches && matches.length > 0;
 		return hasInviteLink;
@@ -516,43 +454,32 @@ export class ModerationService {
 			return false;
 		}
 
-		const numUppercase =
-			message.content.length - message.content.replace(/[A-Z]/g, '').length;
+		const numUppercase = message.content.length - message.content.replace(/[A-Z]/g, '').length;
 		return numUppercase / message.content.length > percentageCaps / 100;
 	}
 
-	private async duplicateText(
-		message: Message,
-		args: Arguments
-	): Promise<boolean> {
+	private async duplicateText(message: Message, args: Arguments): Promise<boolean> {
 		if (!args.settings.autoModDuplicateTextEnabled) {
 			return false;
 		}
 
 		const timeframe = args.settings.autoModDuplicateTextTimeframeInSeconds;
 
-		let cachedMessages = this.messageCache.get(
-			`${args.guild.id}-${message.author.id}`
-		);
+		let cachedMessages = this.messageCache.get(`${args.guild.id}-${message.author.id}`);
 		if (cachedMessages.length === 1) {
 			return false;
 		} else {
 			// Filter old messages
 			// Filter current message
 			cachedMessages = cachedMessages.filter(
-				m =>
-					m.id !== message.id &&
-					moment().diff(m.createdAt, 'second') < timeframe
+				m => m.id !== message.id && moment().diff(m.createdAt, 'second') < timeframe
 			);
 			const lastMessages = cachedMessages.map(m => m.content.toLowerCase());
 			return lastMessages.indexOf(message.content.toLowerCase()) >= 0;
 		}
 	}
 
-	private async quickMessages(
-		message: Message,
-		args: Arguments
-	): Promise<boolean> {
+	private async quickMessages(message: Message, args: Arguments): Promise<boolean> {
 		if (!args.settings.autoModQuickMessagesEnabled) {
 			return false;
 		}
@@ -560,29 +487,20 @@ export class ModerationService {
 		const numberOfMessages = args.settings.autoModQuickMessagesNumberOfMessages;
 		const timeframe = args.settings.autoModQuickMessagesTimeframeInSeconds;
 
-		let cachedMessages = this.messageCache.get(
-			`${args.guild.id}-${message.author.id}`
-		);
+		let cachedMessages = this.messageCache.get(`${args.guild.id}-${message.author.id}`);
 		if (cachedMessages.length === 1) {
 			return false;
 		} else {
-			cachedMessages = cachedMessages.filter(
-				m => moment().diff(m.createdAt, 'second') < timeframe
-			);
+			cachedMessages = cachedMessages.filter(m => moment().diff(m.createdAt, 'second') < timeframe);
 			return cachedMessages.length >= numberOfMessages;
 		}
 	}
 
-	private async mentionUsers(
-		message: Message,
-		args: Arguments
-	): Promise<boolean> {
+	private async mentionUsers(message: Message, args: Arguments): Promise<boolean> {
 		if (!args.settings.autoModMentionUsersEnabled) {
 			return false;
 		}
-		const maxMentions = Number(
-			args.settings.autoModMentionUsersMaxNumberOfMentions
-		);
+		const maxMentions = Number(args.settings.autoModMentionUsersMaxNumberOfMentions);
 		if (isNaN(maxMentions)) {
 			return false;
 		}
@@ -590,16 +508,11 @@ export class ModerationService {
 		return message.mentions.length > maxMentions;
 	}
 
-	private async mentionRoles(
-		message: Message,
-		args: Arguments
-	): Promise<boolean> {
+	private async mentionRoles(message: Message, args: Arguments): Promise<boolean> {
 		if (!args.settings.autoModMentionRolesEnabled) {
 			return false;
 		}
-		const maxMentions = Number(
-			args.settings.autoModMentionRolesMaxNumberOfMentions
-		);
+		const maxMentions = Number(args.settings.autoModMentionRolesMaxNumberOfMentions);
 		if (isNaN(maxMentions)) {
 			return false;
 		}
@@ -662,22 +575,14 @@ export class ModerationService {
 		}
 
 		// If moderated roles are set then only moderate those roles
-		if (
-			settings.autoModModeratedRoles &&
-			settings.autoModModeratedRoles.length > 0
-		) {
-			if (
-				!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)
-			) {
+		if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
+			if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
 				return;
 			}
 		}
 
 		// Don't moderate ignored roles
-		if (
-			settings.autoModIgnoredRoles &&
-			settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-		) {
+		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
 			return;
 		}
 
@@ -710,11 +615,7 @@ export class ModerationService {
 	// PUNISHMENT FUNCTIONS
 	//////////////////////////////
 
-	private async ban(
-		member: Member,
-		amount: number,
-		{ guild, settings }: Arguments
-	) {
+	private async ban(member: Member, amount: number, { guild, settings }: Arguments) {
 		try {
 			await member.ban(7, 'automod');
 			return true;
@@ -723,11 +624,7 @@ export class ModerationService {
 		}
 	}
 
-	private async kick(
-		member: Member,
-		amount: number,
-		{ guild, settings }: Arguments
-	) {
+	private async kick(member: Member, amount: number, { guild, settings }: Arguments) {
 		try {
 			await member.kick('automod');
 			return true;
@@ -736,11 +633,7 @@ export class ModerationService {
 		}
 	}
 
-	private async softban(
-		member: Member,
-		amount: number,
-		{ guild, settings }: Arguments
-	) {
+	private async softban(member: Member, amount: number, { guild, settings }: Arguments) {
 		try {
 			await member.ban(7, 'automod');
 			await member.unban('softban');
@@ -750,19 +643,11 @@ export class ModerationService {
 		}
 	}
 
-	private async warn(
-		member: Member,
-		amount: number,
-		{ guild, settings }: Arguments
-	) {
+	private async warn(member: Member, amount: number, { guild, settings }: Arguments) {
 		return true;
 	}
 
-	private async mute(
-		member: Member,
-		amount: number,
-		{ guild, settings }: Arguments
-	) {
+	private async mute(member: Member, amount: number, { guild, settings }: Arguments) {
 		const mutedRole = settings.mutedRole;
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			return false;
@@ -776,32 +661,17 @@ export class ModerationService {
 		}
 	}
 
-	private async sendReplyAndDelete(
-		message: Message,
-		embed: Embed,
-		settings: SettingsObject
-	) {
-		if (
-			settings.autoModDeleteBotMessage &&
-			settings.autoModDeleteBotMessageTimeoutInSeconds === 0
-		) {
+	private async sendReplyAndDelete(message: Message, embed: Embed, settings: SettingsObject) {
+		if (settings.autoModDeleteBotMessage && settings.autoModDeleteBotMessageTimeoutInSeconds === 0) {
 			return;
 		}
 		const reply = await this.client.msg.sendReply(message, embed);
 		if (reply && settings.autoModDeleteBotMessage) {
-			setTimeout(
-				() => reply.delete().catch(() => undefined),
-				settings.autoModDeleteBotMessageTimeoutInSeconds * 1000
-			);
+			setTimeout(() => reply.delete().catch(() => undefined), settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
 		}
 	}
 
-	public async informAboutStrike(
-		member: Member,
-		type: ViolationType,
-		amount: number,
-		settings: SettingsObject
-	) {
+	public async informAboutStrike(member: Member, type: ViolationType, amount: number, settings: SettingsObject) {
 		const dmChannel = await member.user.getDMChannel();
 
 		const message = i18n.__(
@@ -822,9 +692,7 @@ export class ModerationService {
 						fields: [
 							{
 								name: 'User',
-								value:
-									`${member.username}#${member.discriminator} ` +
-									`(ID: ${member.id})`
+								value: `${member.username}#${member.discriminator} ` + `(ID: ${member.id})`
 							},
 							{
 								name: 'Message',
@@ -852,10 +720,7 @@ export class ModerationService {
 				{ type, guild: member.guild.name }
 			) + '\n';
 		if (reason) {
-			message += i18n.__(
-				{ locale: settings.lang, phrase: 'moderation.punishments.dm.reason' },
-				{ reason }
-			);
+			message += i18n.__({ locale: settings.lang, phrase: 'moderation.punishments.dm.reason' }, { reason });
 		} else {
 			message += i18n.__(
 				{ locale: settings.lang, phrase: 'moderation.punishments.dm.amount' },
@@ -872,9 +737,7 @@ export class ModerationService {
 						fields: [
 							{
 								name: 'User',
-								value:
-									`${member.username}#${member.discriminator} ` +
-									`(ID: ${member.id})`
+								value: `${member.username}#${member.discriminator} ` + `(ID: ${member.id})`
 							},
 							{
 								name: 'Message',
@@ -897,12 +760,7 @@ export class ModerationService {
 			} as Role);
 	}
 
-	public isPunishable(
-		guild: Guild,
-		targetMember: Member,
-		authorMember: Member,
-		me: Member
-	) {
+	public isPunishable(guild: Guild, targetMember: Member, authorMember: Member, me: Member) {
 		const highestBotRole = this.getHighestRole(guild, me.roles);
 		const highestMemberRole = this.getHighestRole(guild, targetMember.roles);
 		const highestAuthorRole = this.getHighestRole(guild, authorMember.roles);

@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { UserResolver } from '../../../../framework/resolvers';
-import { punishments, strikes } from '../../../../sequelize';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -26,17 +25,12 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, settings, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, settings, t }: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: user.username
 		});
 
-		const strikeList = await strikes.findAll({
+		const strikeList = await this.client.repo.strike.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
@@ -54,7 +48,7 @@ export default class extends Command {
 			inline: false
 		});
 
-		const punishmentList = await punishments.findAll({
+		const punishmentList = await this.client.repo.punishment.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id

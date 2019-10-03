@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { UserResolver } from '../../../../framework/resolvers';
-import { inviteCodes } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -21,28 +20,19 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!inviteDetails @User',
-				'!inviteDetails "User with space"'
-			]
+			extraExamples: ['!inviteDetails @User', '!inviteDetails "User with space"']
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const target = user ? user : message.author;
 
-		const invs = await inviteCodes.findAll({
+		const invs = await this.client.repo.inviteCode.find({
 			where: {
 				guildId: guild.id,
 				inviterId: target.id
 			},
-			order: [['uses', 'DESC']],
-			raw: true
+			order: { uses: 'DESC' }
 		});
 
 		if (invs.length === 0) {
@@ -56,10 +46,7 @@ export default class extends Command {
 		let invText = '';
 		for (const inv of invs.slice(0, 25)) {
 			const sets = allSets.get(inv.code);
-			const name =
-				sets && sets.name
-					? `**${sets.name}** (${inv.code})`
-					: `**${inv.code}**`;
+			const name = sets && sets.name ? `**${sets.name}** (${inv.code})` : `**${inv.code}**`;
 
 			invText +=
 				t('cmd.inviteDetails.entry', {

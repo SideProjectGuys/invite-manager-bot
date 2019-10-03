@@ -1,18 +1,10 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	OneToMany,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { InviteCode } from './InviteCode';
 
 @Entity()
-export class Channel extends BaseEntity {
+export class Channel {
 	@Column({ length: 32, primary: true })
 	public id: string;
 

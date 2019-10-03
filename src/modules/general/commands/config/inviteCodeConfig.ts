@@ -2,12 +2,9 @@ import { Embed, Invite, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	InviteCodeResolver,
-	SettingsValueResolver
-} from '../../../../framework/resolvers';
-import { InviteCodeSettingsKey, LogAction } from '../../../../sequelize';
+import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../../../framework/resolvers';
+import { InviteCodeSettingsKey } from '../../../../models/InviteCodeSetting';
+import { LogAction } from '../../../../models/Log';
 import { beautify, inviteCodeSettingsInfo } from '../../../../settings';
 import { BotCommand, CommandGroup } from '../../../../types';
 
@@ -19,10 +16,7 @@ export default class extends Command {
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(
-						client,
-						Object.values(InviteCodeSettingsKey)
-					)
+					resolver: new EnumResolver(client, Object.values(InviteCodeSettingsKey))
 				},
 				{
 					name: 'inviteCode',
@@ -82,16 +76,10 @@ export default class extends Command {
 
 		// Check if this is actually a real invite code
 		if (inv.guild.id !== guild.id) {
-			return this.sendReply(
-				message,
-				t('cmd.inviteCodeConfig.codeForOtherGuild')
-			);
+			return this.sendReply(message, t('cmd.inviteCodeConfig.codeForOtherGuild'));
 		}
 
-		const codeSettings = await this.client.cache.inviteCodes.getOne(
-			guild.id,
-			inv.code
-		);
+		const codeSettings = await this.client.cache.inviteCodes.getOne(guild.id, inv.code);
 		const oldVal = codeSettings[key];
 		embed.title = `${inv.code} - ${key}`;
 
@@ -129,10 +117,7 @@ export default class extends Command {
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
 			if (!info.clearable) {
-				return this.sendReply(
-					message,
-					t('cmd.inviteCodeConfig.canNotClear', { prefix, key })
-				);
+				return this.sendReply(message, t('cmd.inviteCodeConfig.canNotClear', { prefix, key }));
 			}
 		} else {
 			// Only validate the config setting if we're not resetting or clearing it
@@ -144,12 +129,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.inviteCodes.setOne(
-			guild.id,
-			inv.code,
-			key,
-			value
-		);
+		value = await this.client.cache.inviteCodes.setOne(guild.id, inv.code, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
@@ -178,8 +158,7 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.inviteCodeConfig.new.title'),
-			value:
-				value !== null ? beautify(info, value) : t('cmd.inviteCodeConfig.none')
+			value: value !== null ? beautify(info, value) : t('cmd.inviteCodeConfig.none')
 		});
 
 		// Do any post processing, such as example messages
@@ -193,11 +172,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(
-		key: InviteCodeSettingsKey,
-		value: any,
-		{ t, me }: Context
-	): string | null {
+	private validate(key: InviteCodeSettingsKey, value: any, { t, me }: Context): string | null {
 		return null;
 	}
 

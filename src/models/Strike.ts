@@ -1,19 +1,11 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Member } from './Member';
 import { ViolationType } from './StrikeConfig';
 
 @Entity()
-export class Strike extends BaseEntity {
+export class Strike {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -27,7 +19,7 @@ export class Strike extends BaseEntity {
 	public deletedAt: Date;
 
 	@Column()
-	public violationType: ViolationType;
+	public type: ViolationType;
 
 	@Column()
 	public amount: number;

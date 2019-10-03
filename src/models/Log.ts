@@ -1,12 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Member } from './Member';
@@ -24,7 +16,7 @@ export enum LogAction {
 }
 
 @Entity()
-export class Log extends BaseEntity {
+export class Log {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -46,13 +38,13 @@ export class Log extends BaseEntity {
 	@Column({ type: 'json' })
 	public data: any;
 
-	@Column({ nullable: true })
+	@Column({ nullable: false })
 	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.logs)
 	public guild: Guild;
 
-	@Column({ nullable: true })
+	@Column({ nullable: false })
 	public memberId: string;
 
 	@ManyToOne(type => Member, m => m.logs)

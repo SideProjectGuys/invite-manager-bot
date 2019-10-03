@@ -2,11 +2,9 @@ import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	SettingsValueResolver
-} from '../../../../framework/resolvers';
-import { botSettings, BotSettingsKey, LogAction } from '../../../../sequelize';
+import { EnumResolver, SettingsValueResolver } from '../../../../framework/resolvers';
+import { BotSettingsKey } from '../../../../models/BotSetting';
+import { LogAction } from '../../../../models/Log';
 import { beautify, botSettingsInfo } from '../../../../settings';
 import { BotCommand, CommandGroup } from '../../../../types';
 
@@ -70,8 +68,7 @@ export default class extends Command {
 			});
 
 			Object.keys(configs).forEach(group => {
-				embed.description +=
-					`**${group}**\n` + configs[group].join(', ') + '\n\n';
+				embed.description += `**${group}**\n` + configs[group].join(', ') + '\n\n';
 			});
 
 			return this.sendReply(message, embed);
@@ -115,10 +112,7 @@ export default class extends Command {
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
 			if (!info.clearable) {
-				return this.sendReply(
-					message,
-					t('cmd.botConfig.canNotClear', { prefix, key })
-				);
+				return this.sendReply(message, t('cmd.botConfig.canNotClear', { prefix, key }));
 			}
 		} else {
 			// Only validate the config setting if we're not resetting or clearing it
@@ -131,17 +125,10 @@ export default class extends Command {
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
 		(this.client.settings[key] as any) = value;
-		await botSettings.bulkCreate(
-			[
-				{
-					id: this.client.user.id,
-					value: this.client.settings
-				}
-			],
-			{
-				updateOnDuplicate: ['value', 'updatedAt']
-			}
-		);
+		await this.client.repo.botSetting.save({
+			botId: this.client.user.id,
+			value: this.client.settings
+		});
 		await this.client.setActivity();
 
 		if (value === oldVal) {
@@ -185,11 +172,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(
-		key: BotSettingsKey,
-		value: any,
-		{ t, me }: Context
-	): string | null {
+	private validate(key: BotSettingsKey, value: any, { t, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}

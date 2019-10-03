@@ -2,12 +2,8 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	RoleResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import { LogAction, ranks, roles } from '../../../../sequelize';
+import { NumberResolver, RoleResolver, StringResolver } from '../../../../framework/resolvers';
+import { LogAction } from '../../../../models/Log';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -35,10 +31,7 @@ export default class extends Command {
 			group: CommandGroup.Ranks,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!addRank @Role 5',
-				'!addRank "Role with space" 10 Wow, already 10 people!'
-			]
+			extraExamples: ['!addRank @Role 5', '!addRank "Role with space" 10 Wow, already 10 people!']
 		});
 	}
 
@@ -48,7 +41,7 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		await roles.insertOrUpdate({
+		await this.client.repo.role.save({
 			id: role.id,
 			name: role.name,
 			guildId: role.guild.id,
@@ -75,12 +68,11 @@ export default class extends Command {
 			);
 		}
 
-		let rank = await ranks.find({
+		let rank = await this.client.repo.rank.findOne({
 			where: {
 				guildId: role.guild.id,
 				roleId: role.id
-			},
-			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
+			}
 		});
 
 		const descr = description ? description : '';
@@ -92,11 +84,10 @@ export default class extends Command {
 			}
 			rank.numInvites = invites;
 			rank.description = descr;
-			rank.setDataValue('deletedAt', null);
-			rank.save();
+			rank.deletedAt = null;
+			await this.client.repo.rank.save(rank);
 		} else {
-			rank = await ranks.create({
-				id: null,
+			rank = await this.client.repo.rank.save({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
@@ -106,17 +97,12 @@ export default class extends Command {
 			isNew = true;
 		}
 
-		await this.client.logAction(
-			guild,
-			message,
-			isNew ? LogAction.addRank : LogAction.updateRank,
-			{
-				rankId: rank.id,
-				roleId: role.id,
-				numInvites: invites,
-				description
-			}
-		);
+		await this.client.logAction(guild, message, isNew ? LogAction.addRank : LogAction.updateRank, {
+			rankId: rank.id,
+			roleId: role.id,
+			numInvites: invites,
+			description
+		});
 
 		this.client.cache.ranks.flush(guild.id);
 

@@ -1,16 +1,10 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { MemberSettingsObject } from '../settings';
-
 import { Guild } from './Guild';
-import { Member } from './Member';
-
-export enum MemberSettingsKey {
-	hideFromLeaderboard = 'hideFromLeaderboard'
-}
+import { PremiumSubscription } from './PremiumSubscription';
 
 @Entity()
-export class MemberSetting {
+export class PremiumSubscriptionGuild {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -26,15 +20,12 @@ export class MemberSetting {
 	@Column({ nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.memberSettings)
+	@ManyToOne(type => Guild, g => g.premiumSubscriptions)
 	public guild: Guild;
 
 	@Column({ nullable: false })
-	public memberId: string;
+	public subscriptionId: number;
 
-	@ManyToOne(type => Member, m => m.memberSettings)
-	public member: Member;
-
-	@Column({ type: 'json' })
-	public value: MemberSettingsObject;
+	@ManyToOne(type => PremiumSubscription, ps => ps.guilds)
+	public subscription: PremiumSubscription;
 }

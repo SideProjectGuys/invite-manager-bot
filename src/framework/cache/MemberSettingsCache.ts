@@ -1,34 +1,18 @@
-import { memberSettings, MemberSettingsKey } from '../../sequelize';
-import {
-	memberDefaultSettings,
-	memberSettingsInfo,
-	MemberSettingsObject,
-	toDbValue
-} from '../../settings';
+import { MemberSettingsKey } from '../../models/MemberSetting';
+import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
 
 import { Cache } from './Cache';
 
-export class MemberSettingsCache extends Cache<
-	Map<string, MemberSettingsObject>
-> {
+export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(
-		guildId: string
-	): Promise<Map<string, MemberSettingsObject>> {
-		const sets = await memberSettings.findAll({
-			where: {
-				guildId
-			},
-			raw: true
-		});
+	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
+		const sets = await this.client.repo.memberSetting.find({ where: { guildId } });
 
 		const map = new Map();
-		sets.forEach(set =>
-			map.set(set.memberId, { ...memberDefaultSettings, ...set.value })
-		);
+		sets.forEach(set => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
 		return map;
 	}
 
@@ -57,19 +41,12 @@ export class MemberSettingsCache extends Cache<
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			memberSettings.bulkCreate(
-				[
-					{
-						id: null,
-						memberId: userId,
-						guildId,
-						value: set
-					}
-				],
-				{
-					updateOnDuplicate: ['value', 'updatedAt']
-				}
-			);
+			await this.client.repo.memberSetting
+				.createQueryBuilder()
+				.insert()
+				.values({ memberId: userId, guildId, value: set })
+				.orUpdate({ columns: ['value'] })
+				.execute();
 		}
 
 		return dbVal;

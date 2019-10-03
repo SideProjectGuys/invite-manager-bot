@@ -3,10 +3,6 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	premiumSubscriptionGuilds,
-	premiumSubscriptions
-} from '../../../../sequelize';
 import { BotCommand, CommandGroup, PromptResult } from '../../../../types';
 
 export default class extends Command {
@@ -49,10 +45,7 @@ export default class extends Command {
 
 			await this.sendReply(message, promptEmbed);
 
-			const [keyResult] = await this.client.msg.prompt(
-				message,
-				t('cmd.tryPremium.prompt')
-			);
+			const [keyResult] = await this.client.msg.prompt(message, t('cmd.tryPremium.prompt'));
 			if (keyResult === PromptResult.TIMEOUT) {
 				return this.sendReply(message, t('prompt.timedOut'));
 			}
@@ -60,19 +53,19 @@ export default class extends Command {
 				return this.sendReply(message, t('prompt.canceled'));
 			}
 
-			const sub = await premiumSubscriptions.create({
-				id: null,
-				amount: 0,
-				maxGuilds: 1,
-				isFreeTier: true,
-				validUntil: validUntil.toDate(),
-				memberId: message.author.id,
-				reason: null
-			});
-			await premiumSubscriptionGuilds.create({
-				id: null,
+			const sub = await this.client.repo.premiumSubscription.save(
+				this.client.repo.premiumSubscription.create({
+					amount: 0,
+					maxGuilds: 1,
+					isFreeTier: true,
+					validUntil: validUntil.toDate(),
+					memberId: message.author.id,
+					reason: '!try-premium'
+				})
+			);
+			await this.client.repo.premiumSubscriptionGuild.save({
 				guildId: guild.id,
-				premiumSubscriptionId: sub.id
+				subscriptionId: sub.id
 			});
 
 			this.client.cache.premium.flush(guild.id);
@@ -86,20 +79,13 @@ export default class extends Command {
 	}
 
 	private async guildHadTrial(guildID: string): Promise<boolean> {
-		const subs = await premiumSubscriptionGuilds.count({
+		const subs = await this.client.repo.premiumSubscriptionGuild.count({
 			where: {
-				guildId: guildID
-			},
-			include: [
-				{
-					attributes: [],
-					model: premiumSubscriptions,
-					required: true,
-					where: {
-						isFreeTier: true
-					}
+				guildId: guildID,
+				subscription: {
+					isFreeTier: true
 				}
-			]
+			}
 		});
 
 		return subs > 0;

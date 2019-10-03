@@ -1,19 +1,11 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Member } from './Member';
 import { PunishmentType } from './PunishmentConfig';
 
 @Entity()
-export class Punishment extends BaseEntity {
+export class Punishment {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -27,7 +19,7 @@ export class Punishment extends BaseEntity {
 	public deletedAt: Date;
 
 	@Column()
-	public punishmentType: PunishmentType;
+	public type: PunishmentType;
 
 	@Column()
 	public amount: number;

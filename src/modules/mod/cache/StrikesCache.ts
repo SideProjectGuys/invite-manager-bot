@@ -1,17 +1,15 @@
 import { Cache } from '../../../framework/cache/Cache';
-import { StrikeConfigInstance, strikeConfigs } from '../../../sequelize';
+import { StrikeConfig } from '../../../models/StrikeConfig';
 
-export class StrikesCache extends Cache<StrikeConfigInstance[]> {
+export class StrikesCache extends Cache<StrikeConfig[]> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(guildId: string): Promise<StrikeConfigInstance[]> {
-		return await strikeConfigs.findAll({
-			where: {
-				guildId
-			},
-			order: [['amount', 'DESC']]
+	protected async _get(guildId: string): Promise<StrikeConfig[]> {
+		return await this.client.repo.strikeConfig.find({
+			where: { guildId },
+			order: { amount: 'DESC' }
 		});
 	}
 }

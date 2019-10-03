@@ -2,12 +2,9 @@ import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	SettingsValueResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import { LogAction, MemberSettingsKey } from '../../../../sequelize';
+import { EnumResolver, SettingsValueResolver, UserResolver } from '../../../../framework/resolvers';
+import { LogAction } from '../../../../models/Log';
+import { MemberSettingsKey } from '../../../../models/MemberSetting';
 import { beautify, memberSettingsInfo } from '../../../../settings';
 import { BasicUser, BotCommand, CommandGroup } from '../../../../types';
 
@@ -77,10 +74,7 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
-		const memSettings = await this.client.cache.members.getOne(
-			guild.id,
-			user.id
-		);
+		const memSettings = await this.client.cache.members.getOne(guild.id, user.id);
 		const oldVal = memSettings[key];
 		embed.title = `${user.username}#${user.discriminator} - ${key}`;
 
@@ -117,10 +111,7 @@ export default class extends Command {
 
 		if (value === null) {
 			if (!info.clearable) {
-				await this.sendReply(
-					message,
-					t('cmd.memberConfig.canNotClear', { prefix, key })
-				);
+				await this.sendReply(message, t('cmd.memberConfig.canNotClear', { prefix, key }));
 			}
 		} else {
 			// Only validate the config setting if we're not resetting or clearing it
@@ -132,12 +123,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.members.setOne(
-			guild.id,
-			user.id,
-			key,
-			value
-		);
+		value = await this.client.cache.members.setOne(guild.id, user.id, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.memberConfig.sameValue');
@@ -180,11 +166,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(
-		key: MemberSettingsKey,
-		value: any,
-		{ t, me }: Context
-	): string | null {
+	private validate(key: MemberSettingsKey, value: any, { t, me }: Context): string | null {
 		return null;
 	}
 

@@ -3,12 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { StringResolver, UserResolver } from '../../../../framework/resolvers';
-import {
-	BasicUser,
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -47,9 +42,7 @@ export default class extends Command {
 
 			const logEmbed = this.client.mod.createBasicEmbed(message.author);
 
-			const usr =
-				`${targetUser.username}#${targetUser.discriminator} ` +
-				`(${targetUser.id})`;
+			const usr = `${targetUser.username}#${targetUser.discriminator} ` + `(${targetUser.id})`;
 			logEmbed.description += `**User**: ${usr}\n`;
 			logEmbed.description += `**Action**: unban\n`;
 

@@ -2,6 +2,7 @@ import { Guild } from 'eris';
 
 import { IMClient } from '../../client';
 import { CommandUsage } from '../../models/CommandUsage';
+import { Incident } from '../../models/Incident';
 import { Log } from '../../models/Log';
 import { BasicUser } from '../../types';
 
@@ -14,9 +15,9 @@ export class DBQueueService {
 	private users: Set<BasicUser> = new Set();
 	private doneUsers: Set<String> = new Set();
 
-	private logActions: Log[] = [];
-	private cmdUsages: CommandUsage[] = [];
-	private incidents: IncidentAttributes[] = [];
+	private logActions: Partial<Log>[] = [];
+	private cmdUsages: Partial<CommandUsage>[] = [];
+	private incidents: Partial<Incident>[] = [];
 
 	public constructor(client: IMClient) {
 		this.client = client;
@@ -24,7 +25,7 @@ export class DBQueueService {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	public addLogAction(action: LogAttributes, guild: Guild, user: BasicUser) {
+	public addLogAction(action: Partial<Log>, guild: Guild, user: BasicUser) {
 		if (!this.doneGuilds.has(guild.id)) {
 			this.guilds.add(guild);
 		}
@@ -36,7 +37,7 @@ export class DBQueueService {
 		this.logActions.push(action);
 	}
 
-	public addCommandUsage(cmdUsage: CommandUsageAttributes, guild: Guild, user: BasicUser) {
+	public addCommandUsage(cmdUsage: Partial<CommandUsage>, guild: Guild, user: BasicUser) {
 		if (!this.doneGuilds.has(guild.id)) {
 			this.guilds.add(guild);
 		}
@@ -48,7 +49,7 @@ export class DBQueueService {
 		this.cmdUsages.push(cmdUsage);
 	}
 
-	public addIncident(incident: IncidentAttributes, guild: Guild) {
+	public addIncident(incident: Partial<Incident>, guild: Guild) {
 		if (!this.doneGuilds.has(guild.id)) {
 			this.guilds.add(guild);
 		}
@@ -64,38 +65,43 @@ export class DBQueueService {
 
 		const newGuilds = [...this.guilds.values()];
 		this.guilds.clear();
-		await guilds.bulkCreate(
-			newGuilds.map(guild => ({
-				id: guild.id,
-				name: guild.name,
-				icon: guild.iconURL,
-				memberCount: guild.memberCount,
-				banReason: null
-			})),
-			{
-				updateOnDuplicate: ['name', 'icon', 'memberCount']
-			}
-		);
+
+		await this.client.repo.guild
+			.createQueryBuilder()
+			.insert()
+			.values(
+				newGuilds.map(guild => ({
+					id: guild.id,
+					name: guild.name,
+					icon: guild.iconURL,
+					memberCount: guild.memberCount
+				}))
+			)
+			.orUpdate({ columns: ['name', 'icon', 'memberCount'] })
+			.execute();
 		newGuilds.forEach(g => this.doneGuilds.add(g.id));
 
-		const users = [...this.users.values()];
+		const newUsers = [...this.users.values()];
 		this.users.clear();
-		await members.bulkCreate(
-			users.map(user => ({
-				id: user.id,
-				name: user.username,
-				discriminator: user.discriminator
-			})),
-			{
-				updateOnDuplicate: ['name', 'discriminator']
-			}
-		);
-		users.forEach(u => this.doneUsers.add(u.id));
+
+		await this.client.repo.member
+			.createQueryBuilder()
+			.insert()
+			.values(
+				newUsers.map(user => ({
+					id: user.id,
+					name: user.username,
+					discriminator: user.discriminator
+				}))
+			)
+			.orUpdate({ columns: ['name', 'discriminator'] })
+			.execute();
+		newUsers.forEach(u => this.doneUsers.add(u.id));
 
 		await Promise.all([
-			logs.bulkCreate(this.logActions).then(() => (this.logActions = [])),
-			commandUsage.bulkCreate(this.cmdUsages).then(() => (this.cmdUsages = [])),
-			incidents.bulkCreate(this.incidents).then(() => (this.incidents = []))
+			this.client.repo.log.insert(this.logActions).then(() => (this.logActions = [])),
+			this.client.repo.commandUsage.insert(this.cmdUsages).then(() => (this.cmdUsages = [])),
+			this.client.repo.incident.insert(this.incidents).then(() => (this.incidents = []))
 		]);
 
 		console.timeEnd('syncDB');

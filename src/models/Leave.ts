@@ -1,5 +1,4 @@
 import {
-	BaseEntity,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -18,7 +17,7 @@ import { Member } from './Member';
 
 @Entity()
 @Index(['guild', 'member', 'join'], { unique: true })
-export class Leave extends BaseEntity {
+export class Leave {
 	@PrimaryGeneratedColumn()
 	public id: number;
 

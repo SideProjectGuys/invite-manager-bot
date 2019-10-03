@@ -3,7 +3,7 @@ import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
-import { AnnouncementVoice, musicNodes } from '../../../sequelize';
+import { AnnouncementVoice } from '../../../models/Setting';
 import { BotType, LavaTrack } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
@@ -66,15 +66,8 @@ export class MusicService {
 	public async loadMusicNodes() {
 		// Load nodes from database
 		const typeFilter =
-			this.client.type === BotType.custom
-				? 'isCustom'
-				: this.client.type === BotType.pro
-				? 'isPremium'
-				: 'isRegular';
-		this.nodes = await musicNodes.findAll({
-			where: { [typeFilter]: true },
-			raw: true
-		});
+			this.client.type === BotType.custom ? 'isCustom' : this.client.type === BotType.pro ? 'isPremium' : 'isRegular';
+		this.nodes = await this.client.repo.musicNode.find({ where: { [typeFilter]: true } });
 
 		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
@@ -116,9 +109,7 @@ export class MusicService {
 	}
 
 	public async getLyrics(item: MusicItem) {
-		const { data } = await axios.get(
-			`http://video.google.com/timedtext?lang=en&v=${item.id}`
-		);
+		const { data } = await axios.get(`http://video.google.com/timedtext?lang=en&v=${item.id}`);
 
 		const lyrics: { start: number; dur: number; text: string }[] = [];
 		try {
@@ -141,10 +132,7 @@ export class MusicService {
 	private decodeHTMLEntities(str: string) {
 		return str.replace(/&#?[0-9a-zA-Z]+;?/g, s => {
 			if (s.charAt(1) === '#') {
-				const code =
-					s.charAt(2).toLowerCase() === 'x'
-						? parseInt(s.substr(3), 16)
-						: parseInt(s.substr(2), 10);
+				const code = s.charAt(2).toLowerCase() === 'x' ? parseInt(s.substr(3), 16) : parseInt(s.substr(2), 10);
 
 				if (isNaN(code) || code < -32768 || code > 65535) {
 					return '';

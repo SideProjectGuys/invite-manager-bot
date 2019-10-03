@@ -1,21 +1,11 @@
 import { Message } from 'eris';
 import { Moment } from 'moment';
-import { Op } from 'sequelize';
+import { Not } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	BooleanResolver,
-	DateResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	joins,
-	LogAction,
-	sequelize
-} from '../../../../sequelize';
+import { BooleanResolver, DateResolver, UserResolver } from '../../../../framework/resolvers';
+import { LogAction } from '../../../../models/Log';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -44,10 +34,7 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!clearInvites @User',
-				'!clearInvites -cb "User with space"'
-			]
+			extraExamples: ['!clearInvites @User', '!clearInvites -cb "User with space"']
 		});
 	}
 
@@ -59,57 +46,49 @@ export default class extends Command {
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;
 
-		await inviteCodes.update(
+		await this.client.repo.inviteCode.update(
 			{
-				clearedAmount: sequelize.col('uses') as any
+				guildId: guild.id,
+				inviterId: memberId ? memberId : Not(null)
 			},
 			{
-				where: {
-					guildId: guild.id,
-					inviterId: memberId ? memberId : { [Op.ne]: null }
-				}
+				clearedAmount: () => `uses`
 			}
 		);
 
-		await joins.update(
+		await this.client.repo.join.update(
 			{
-				cleared: true
+				guildId: guild.id,
+				...(memberId && {
+					exactMatchCode: (await this.client.repo.inviteCode.find({
+						where: { guildId: guild.id, inviterId: memberId }
+					})).map(ic => ic.code)
+				})
 			},
 			{
-				where: {
-					guildId: guild.id,
-					...(memberId && {
-						exactMatchCode: (await inviteCodes.findAll({
-							where: { guildId: guild.id, inviterId: memberId }
-						})).map(ic => ic.code)
-					})
-				}
+				cleared: true
 			}
 		);
 
 		if (clearBonus) {
 			// Clear invites
-			await customInvites.update(
+			await this.client.repo.customInvite.update(
 				{
-					cleared: true
+					guildId: guild.id,
+					...(memberId && { memberId })
 				},
 				{
-					where: {
-						guildId: guild.id,
-						...(memberId && { memberId })
-					}
+					cleared: true
 				}
 			);
 		} else {
-			await customInvites.update(
+			await this.client.repo.customInvite.update(
 				{
-					cleared: false
+					guildId: guild.id,
+					...(memberId && { memberId })
 				},
 				{
-					where: {
-						guildId: guild.id,
-						...(memberId && { memberId })
-					}
+					cleared: false
 				}
 			);
 		}

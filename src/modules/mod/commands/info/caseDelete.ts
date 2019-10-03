@@ -2,11 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import { strikes } from '../../../../sequelize';
+import { NumberResolver, StringResolver } from '../../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -33,19 +29,14 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[caseNumber]: [number],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [caseNumber]: [number], flags: {}, { guild, t }: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.caseDelete.title', {
 				number: caseNumber
 			})
 		});
 
-		const strike = await strikes.findOne({
+		const strike = await this.client.repo.strike.findOne({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
@@ -53,7 +44,7 @@ export default class extends Command {
 		});
 
 		if (strike) {
-			await strike.destroy();
+			await this.client.repo.strike.remove(strike);
 			embed.description = t('cmd.caseDelete.done', {
 				id: `${strike.id}`
 			});

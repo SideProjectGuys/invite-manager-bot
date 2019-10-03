@@ -3,17 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	channels,
-	InviteCodeAttributes,
-	inviteCodes,
-	members
-} from '../../../../sequelize';
-import {
-	CommandGroup,
-	GuildPermission,
-	InvitesCommand
-} from '../../../../types';
+import { CommandGroup, GuildPermission, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -36,70 +26,57 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const lang = settings.lang;
 
-		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
+		let codes = await this.client.repo.inviteCode.find({
 			where: {
-				guildId: guild.id
+				guildId: guild.id,
+				inviterId: message.author.id
 			},
-			include: [
-				{
-					attributes: [],
-					model: members,
-					as: 'inviter',
-					where: {
-						id: message.author.id
-					},
-					required: true
-				}
-			],
-			raw: true
+			relations: ['inviter']
 		});
 
 		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
-		const newCodes = activeCodes.filter(
-			code => !codes.find(c => c.code === code.code)
-		);
+		const newCodes = activeCodes.filter(code => !codes.find(c => c.code === code.code));
 
 		if (newCodes.length > 0) {
-			const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
-				code: code.code,
-				channelId: code.channel ? code.channel.id : null,
-				maxAge: code.maxAge,
-				maxUses: code.maxUses,
-				uses: code.uses,
-				temporary: code.temporary,
-				guildId: code.guild.id,
-				inviterId: code.inviter ? code.inviter.id : null,
-				clearedAmount: 0,
-				isVanity: false,
-				isWidget: !code.inviter
-			}));
+			const newDbCodes = newCodes.map(code =>
+				this.client.repo.inviteCode.create({
+					code: code.code,
+					channelId: code.channel ? code.channel.id : null,
+					maxAge: code.maxAge,
+					maxUses: code.maxUses,
+					uses: code.uses,
+					temporary: code.temporary,
+					guildId: code.guild.id,
+					inviterId: code.inviter ? code.inviter.id : null,
+					clearedAmount: 0,
+					isVanity: false,
+					isWidget: !code.inviter
+				})
+			);
 
 			const vanityInv = await guild.getVanity().catch(() => undefined);
 			if (vanityInv && vanityInv.code) {
-				newDbCodes.push({
-					code: vanityInv.code,
-					channelId: null,
-					guildId: guild.id,
-					inviterId: null,
-					uses: 0,
-					maxUses: 0,
-					maxAge: 0,
-					temporary: false,
-					clearedAmount: 0,
-					isVanity: true,
-					isWidget: false
-				});
+				newDbCodes.push(
+					this.client.repo.inviteCode.create({
+						code: vanityInv.code,
+						channelId: null,
+						guildId: guild.id,
+						inviterId: null,
+						uses: 0,
+						maxUses: 0,
+						maxAge: 0,
+						temporary: false,
+						clearedAmount: 0,
+						isVanity: true,
+						isWidget: false
+					})
+				);
 			}
 
 			// Insert any new codes that haven't been used yet
@@ -200,9 +177,6 @@ export default class extends Command {
 		}
 
 		await this.sendEmbed(await message.author.getDMChannel(), embed);
-		await this.sendReply(
-			message,
-			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
-		);
+		await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
 	}
 }

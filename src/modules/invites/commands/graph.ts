@@ -4,7 +4,6 @@ import moment, { Duration } from 'moment';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { DurationResolver, EnumResolver } from '../../../framework/resolvers';
-import { commandUsage, joins, leaves, sequelize } from '../../../sequelize';
 import { ChartType, CommandGroup, InvitesCommand } from '../../../types';
 import { Chart } from '../models/Chart';
 

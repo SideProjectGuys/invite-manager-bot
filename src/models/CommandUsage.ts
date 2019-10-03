@@ -1,18 +1,10 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Member } from './Member';
 
 @Entity()
-export class CommandUsage extends BaseEntity {
+export class CommandUsage {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -33,6 +25,9 @@ export class CommandUsage extends BaseEntity {
 
 	@Column({ type: 'float' })
 	public time: number;
+
+	@Column()
+	public errored: boolean;
 
 	@Column({ nullable: true })
 	public guildId: string;

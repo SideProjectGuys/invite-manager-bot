@@ -1,13 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	Index,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 
@@ -26,7 +17,7 @@ export enum ViolationType {
 
 @Entity()
 @Index(['guild', 'violationType'], { unique: true })
-export class StrikeConfig extends BaseEntity {
+export class StrikeConfig {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -40,7 +31,7 @@ export class StrikeConfig extends BaseEntity {
 	public deletedAt: Date;
 
 	@Column()
-	public violationType: ViolationType;
+	public type: ViolationType;
 
 	@Column()
 	public amount: number;

@@ -3,16 +3,9 @@ import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import {
-	members,
-	punishments,
-	PunishmentType,
-	ScheduledActionType
-} from '../../../../sequelize';
+import { MemberResolver, StringResolver } from '../../../../framework/resolvers';
+import { PunishmentType } from '../../../../models/PunishmentConfig';
+import { ScheduledActionType } from '../../../../models/ScheduledAction';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -57,28 +50,20 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
-		} else if (
-			this.client.mod.isPunishable(guild, targetMember, message.member, me)
-		) {
-			await this.client.mod.informAboutPunishment(
-				targetMember,
-				PunishmentType.mute,
-				settings,
-				{ reason }
-			);
+		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
+			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
 				await targetMember.addRole(mutedRole, reason);
 
 				// Make sure member exists in DB
-				await members.insertOrUpdate({
+				await this.client.repo.member.save({
 					id: targetMember.user.id,
 					name: targetMember.user.username,
 					discriminator: targetMember.user.discriminator
 				});
 
-				const punishment = await punishments.create({
-					id: null,
+				const punishment = await this.client.repo.punishment.save({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.mute,

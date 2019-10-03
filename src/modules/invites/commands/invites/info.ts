@@ -4,19 +4,8 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	NumberResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	JoinInvalidatedReason,
-	joins,
-	members,
-	sequelize
-} from '../../../../sequelize';
+import { EnumResolver, NumberResolver, UserResolver } from '../../../../framework/resolvers';
+import { JoinInvalidatedReason } from '../../../../models/Join';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 const ENTRIES_PER_PAGE = 20;
@@ -72,10 +61,7 @@ export default class extends Command {
 		});
 
 		const invitedMembers = await joins.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
-			],
+			attributes: ['memberId', [sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']],
 			where: {
 				guildId: guild.id,
 				invalidatedReason: null
@@ -95,13 +81,12 @@ export default class extends Command {
 			raw: true
 		});
 
-		const customInvs = await customInvites.findAll({
+		const customInvs = await this.client.repo.customInvite.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			},
-			order: [['createdAt', 'DESC']],
-			raw: true
+			order: { createdAt: 'DESC' }
 		});
 
 		const bonusInvs = customInvs.filter(ci => !ci.cleared);
@@ -120,24 +105,20 @@ export default class extends Command {
 			return this.showPaginated(message, p, maxPage, page => {
 				let customInvText = '';
 
-				bonusInvs
-					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-					.forEach(inv => {
-						customInvText +=
-							t('cmd.info.bonusInvites.entry', {
-								amount: `**${inv.amount}**`,
-								creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
-								date:
-									'**' +
-									moment(inv.createdAt)
-										.locale(lang)
-										.fromNow() +
-									'**',
-								reason: inv.reason
-									? `**${inv.reason}**`
-									: '**' + t('cmd.info.bonusInvites.noReason') + '**'
-							}) + '\n';
-					});
+				bonusInvs.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(inv => {
+					customInvText +=
+						t('cmd.info.bonusInvites.entry', {
+							amount: `**${inv.amount}**`,
+							creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
+							date:
+								'**' +
+								moment(inv.createdAt)
+									.locale(lang)
+									.fromNow() +
+								'**',
+							reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
+						}) + '\n';
+				});
 
 				embed.description = customInvText;
 
@@ -158,14 +139,12 @@ export default class extends Command {
 
 			return this.showPaginated(message, p, maxPage, page => {
 				let inviteText = '';
-				invitedMembers
-					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-					.forEach((join: any) => {
-						const time = moment(join.createdAt)
-							.locale(lang)
-							.fromNow();
-						inviteText += `<@${join.memberId}> - ${time}\n`;
-					});
+				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((join: any) => {
+					const time = moment(join.createdAt)
+						.locale(lang)
+						.fromNow();
+					inviteText += `<@${join.memberId}> - ${time}\n`;
+				});
 
 				embed.description = inviteText;
 
@@ -176,21 +155,16 @@ export default class extends Command {
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invCodes = await inviteCodes.findAll({
+		const invCodes = await this.client.repo.inviteCode.find({
 			where: {
 				guildId: guild.id,
 				inviterId: user.id
 			},
-			order: [['uses', 'DESC']],
-			raw: true
+			order: { uses: 'DESC' }
 		});
 
 		const js = await joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				'cleared',
-				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
-			],
+			attributes: ['invalidatedReason', 'cleared', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
 			where: {
 				guildId: guild.id,
 				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
@@ -259,7 +233,7 @@ export default class extends Command {
 		}
 
 		const joinCount = Math.max(
-			await joins.count({
+			await this.client.repo.join.count({
 				where: {
 					guildId: guild.id,
 					memberId: user.id
@@ -306,34 +280,19 @@ export default class extends Command {
 			inline: true
 		});
 
-		const ownJoins = await joins.findAll({
-			attributes: ['createdAt'],
+		const ownJoins = await this.client.repo.join.find({
 			where: {
 				guildId: guild.id,
 				memberId: user.id
 			},
-			order: [['createdAt', 'DESC']],
-			include: [
-				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					include: [
-						{
-							attributes: [],
-							model: members,
-							as: 'inviter'
-						}
-					]
-				}
-			],
-			raw: true
+			relations: ['exactMatch'],
+			order: { createdAt: 'DESC' }
 		});
 
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-			ownJoins.forEach((join: any) => {
+			ownJoins.forEach(join => {
 				const text = moment(join.createdAt)
 					.locale(lang)
 					.fromNow();
@@ -341,7 +300,7 @@ export default class extends Command {
 					joinTimes[text] = {};
 				}
 
-				const id = join['exactMatch.inviterId'];
+				const id = join.exactMatch.inviterId;
 				if (joinTimes[text][id]) {
 					joinTimes[text][id]++;
 				} else {
@@ -354,10 +313,7 @@ export default class extends Command {
 			joinTimesKeys.slice(0, 10).forEach(time => {
 				const joinTime = joinTimes[time];
 
-				const total = Object.keys(joinTime).reduce(
-					(acc, id) => acc + joinTime[id],
-					0
-				);
+				const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
 
 				const mainText = t('cmd.info.joins.entry.text', {
 					total: total >= 1 ? total : undefined,
@@ -402,10 +358,7 @@ export default class extends Command {
 
 			for (const inv of invCodes.slice(0, 10)) {
 				const sets = allSets.get(inv.code);
-				const name =
-					sets && sets.name
-						? `**${sets.name}** (${inv.code})`
-						: `**${inv.code}**`;
+				const name = sets && sets.name ? `**${sets.name}** (${inv.code})` : `**${inv.code}**`;
 
 				invText +=
 					t('cmd.info.regularInvites.entry', {
@@ -454,9 +407,7 @@ export default class extends Command {
 								.locale(lang)
 								.fromNow() +
 							'**',
-						reason: inv.reason
-							? `**${inv.reason}**`
-							: '**' + t('cmd.info.bonusInvites.noReason') + '**'
+						reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
 					}) + '\n';
 			});
 
@@ -480,10 +431,7 @@ export default class extends Command {
 			let text = customInvText + more + detailMsg;
 			const diff = text.length - 1024;
 			if (diff > 0) {
-				text =
-					customInvText.substr(0, customInvText.length - diff - 3) +
-					'...' +
-					more;
+				text = customInvText.substr(0, customInvText.length - diff - 3) + '...' + more;
 			}
 
 			embed.fields.push({

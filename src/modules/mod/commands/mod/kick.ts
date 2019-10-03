@@ -2,16 +2,9 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import { members, punishments, PunishmentType } from '../../../../sequelize';
-import {
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { MemberResolver, StringResolver } from '../../../../framework/resolvers';
+import { PunishmentType } from '../../../../models/PunishmentConfig';
+import { CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -46,25 +39,19 @@ export default class extends Command {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.client.mod.informAboutPunishment(
-				targetMember,
-				PunishmentType.kick,
-				settings,
-				{ reason }
-			);
+			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.kick, settings, { reason });
 
 			try {
 				await targetMember.kick(reason);
 
 				// Make sure member exists in DB
-				await members.insertOrUpdate({
+				await this.client.repo.member.save({
 					id: targetMember.user.id,
 					name: targetMember.user.username,
 					discriminator: targetMember.user.discriminator
 				});
 
-				const punishment = await punishments.create({
-					id: null,
+				const punishment = await this.client.repo.punishment.save({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.kick,

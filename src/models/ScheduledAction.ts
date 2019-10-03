@@ -1,12 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 
@@ -15,7 +7,7 @@ export enum ScheduledActionType {
 }
 
 @Entity()
-export class ScheduledAction extends BaseEntity {
+export class ScheduledAction {
 	@PrimaryGeneratedColumn()
 	public id: number;
 

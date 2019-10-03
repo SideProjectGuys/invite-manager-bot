@@ -1,18 +1,8 @@
-import { rolePermissions, roles } from '../../sequelize';
-import {
-	BotCommand,
-	InvitesCommand,
-	ModerationCommand,
-	MusicCommand
-} from '../../types';
+import { BotCommand, InvitesCommand, ModerationCommand, MusicCommand } from '../../types';
 
 import { Cache } from './Cache';
 
-type AnyCommand =
-	| BotCommand
-	| InvitesCommand
-	| ModerationCommand
-	| MusicCommand;
+type AnyCommand = BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
 
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 
@@ -22,15 +12,7 @@ export class PermissionsCache extends Cache<PermissionsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {
-		const perms = await rolePermissions.findAll({
-			include: [
-				{
-					model: roles,
-					where: { guildId }
-				}
-			],
-			raw: true
-		});
+		const perms = await this.client.repo.rolePermission.find({ where: { role: { guildId } } });
 
 		const obj: PermissionsObject = {};
 

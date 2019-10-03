@@ -1,22 +1,12 @@
 import axios from 'axios';
 import { Message } from 'eris';
 import moment from 'moment';
-import sequelize = require('sequelize');
+import { MoreThan } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver } from '../../../../framework/resolvers';
-import {
-	guilds,
-	premiumSubscriptionGuilds,
-	premiumSubscriptions
-} from '../../../../sequelize';
-import {
-	BotCommand,
-	BotType,
-	CommandGroup,
-	GuildPermission
-} from '../../../../types';
+import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../../types';
 
 enum Action {
 	Check = 'Check',
@@ -38,11 +28,7 @@ export default class extends Command {
 			group: CommandGroup.Premium,
 			guildOnly: false,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!premium check',
-				'!premium activate',
-				'!premium deactivate'
-			]
+			extraExamples: ['!premium check', '!premium activate', '!premium deactivate']
 		});
 	}
 
@@ -58,12 +44,10 @@ export default class extends Command {
 
 		const embed = this.createEmbed();
 
-		const sub = await premiumSubscriptions.findOne({
+		const sub = await this.client.repo.premiumSubscription.findOne({
 			where: {
 				memberId: message.author.id,
-				validUntil: {
-					[sequelize.Op.gte]: new Date()
-				}
+				validUntil: MoreThan(new Date())
 			}
 		});
 
@@ -80,8 +64,7 @@ export default class extends Command {
 				embed.fields.push({
 					name: t('cmd.premium.feature.embeds.title'),
 					value: t('cmd.premium.feature.embeds.text', {
-						link:
-							'https://docs.invitemanager.co/bot/custom-messages/join-message-examples'
+						link: 'https://docs.invitemanager.co/bot/custom-messages/join-message-examples'
 					})
 				});
 
@@ -103,27 +86,15 @@ export default class extends Command {
 					.locale(lang)
 					.fromNow(true);
 
-				const allGuildSubs = await premiumSubscriptionGuilds.findAll({
-					where: {
-						premiumSubscriptionId: sub.id
-					},
-					include: [
-						{
-							attributes: ['name'],
-							model: guilds,
-							required: true
-						}
-					],
-					raw: true
+				const allGuildSubs = await this.client.repo.premiumSubscriptionGuild.find({
+					where: { premiumSubscriptionId: sub.id },
+					relations: ['guild']
 				});
 
 				let guildList = '';
-				allGuildSubs.forEach((guildSub: any) => {
-					const guildName = guildSub['guild.name'];
-					guildList +=
-						`- **${guildName}**` +
-						(guildSub.guildId === guildId ? ' *(This server)*' : '') +
-						'\n';
+				allGuildSubs.forEach(guildSub => {
+					const guildName = guildSub.guild.name;
+					guildList += `- **${guildName}**` + (guildSub.guildId === guildId ? ' *(This server)*' : '') + '\n';
 				});
 				if (guildId) {
 					if (allGuildSubs.some(s => s.guildId === guildId)) {
@@ -166,18 +137,15 @@ export default class extends Command {
 						cmd: '`' + settings.prefix + 'premium`'
 					});
 				} else {
-					const subs = await premiumSubscriptionGuilds.count({
-						where: {
-							premiumSubscriptionId: sub.id
-						}
+					const subs = await this.client.repo.premiumSubscriptionGuild.count({
+						where: { premiumSubscriptionId: sub.id }
 					});
 
 					if (subs >= sub.maxGuilds) {
 						embed.description = t('cmd.premium.activate.maxGuilds');
 					} else {
-						await premiumSubscriptionGuilds.create({
-							id: null,
-							premiumSubscriptionId: sub.id,
+						await this.client.repo.premiumSubscriptionGuild.save({
+							subscriptionId: sub.id,
 							guildId
 						});
 
@@ -193,19 +161,18 @@ export default class extends Command {
 					embed.description = t('cmd.premium.deactivate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (
-					!message.member.permission.has(GuildPermission.ADMINISTRATOR)
-				) {
+				} else if (!message.member.permission.has(GuildPermission.ADMINISTRATOR)) {
 					embed.description = t('cmd.premium.deactivate.adminOnly');
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
 				} else {
-					await premiumSubscriptionGuilds.destroy({
-						where: {
-							premiumSubscriptionId: sub.id,
+					await this.client.repo.premiumSubscriptionGuild.update(
+						{
+							subscriptionId: sub.id,
 							guildId: guildId
-						}
-					});
+						},
+						{ deletedAt: new Date() }
+					);
 
 					this.client.cache.premium.flush(guildId);
 
@@ -238,16 +205,15 @@ export default class extends Command {
 
 					if (sub) {
 						sub.validUntil = validUntil.toDate();
-						await sub.save();
+						await this.client.repo.premiumSubscription.save(sub);
 					} else {
-						await premiumSubscriptions.create({
-							id: null,
+						await this.client.repo.premiumSubscription.save({
 							amount: res.data.currently_entitled_amount_cents / 100,
 							maxGuilds: 5,
 							isFreeTier: false,
 							memberId: userId,
 							validUntil: validUntil.toDate(),
-							reason: null
+							reason: '!premium check'
 						});
 					}
 

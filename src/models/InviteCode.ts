@@ -1,12 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	OneToMany,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { Channel } from './Channel';
 import { Guild } from './Guild';
@@ -15,7 +7,7 @@ import { Join } from './Join';
 import { Member } from './Member';
 
 @Entity()
-export class InviteCode extends BaseEntity {
+export class InviteCode {
 	@Column({
 		charset: 'utf8mb4',
 		collation: 'utf8mb4_bin',
@@ -44,6 +36,15 @@ export class InviteCode extends BaseEntity {
 
 	@Column()
 	public temporary: boolean;
+
+	@Column({ type: 'int' })
+	public clearedAmount: number;
+
+	@Column()
+	public isVanity: boolean;
+
+	@Column()
+	public isWidget: boolean;
 
 	@Column({ nullable: true })
 	public channelId: string;

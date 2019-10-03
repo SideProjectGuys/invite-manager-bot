@@ -1,18 +1,10 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Role } from './Role';
 
 @Entity()
-export class Rank extends BaseEntity {
+export class Rank {
 	@PrimaryGeneratedColumn()
 	public id: number;
 

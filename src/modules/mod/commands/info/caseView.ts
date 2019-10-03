@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver } from '../../../../framework/resolvers';
-import { members, strikes } from '../../../../sequelize';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -36,18 +35,12 @@ export default class extends Command {
 			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
-		const strike = await strikes.findOne({
+		const strike = await this.client.repo.strike.findOne({
 			where: {
 				id: caseNumber,
 				guildId: guild.id
 			},
-			include: [
-				{
-					attributes: ['id', 'name', 'discriminator'],
-					model: members,
-					required: true
-				}
-			]
+			relations: ['member']
 		});
 
 		if (strike) {
@@ -63,12 +56,11 @@ export default class extends Command {
 				.catch(() => undefined);
 
 			if (!user) {
-				const mem = strike as any;
 				user = {
 					id: strike.memberId,
-					username: mem['members.name'],
-					discriminator: mem['members.discriminator'],
-					createdAt: mem['members.createdAt'],
+					username: strike.member.name,
+					discriminator: strike.member.discriminator,
+					createdAt: strike.member.createdAt.getTime(),
 					avatarURL: undefined
 				};
 			}

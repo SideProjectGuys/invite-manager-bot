@@ -2,12 +2,8 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import { customInvites, LogAction, members } from '../../../../sequelize';
+import { NumberResolver, StringResolver, UserResolver } from '../../../../framework/resolvers';
+import { LogAction } from '../../../../models/Log';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 const BIGINT_MAX_VALUE = 9223372036854775807;
@@ -38,10 +34,7 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!addInvites @User 5',
-				'!addInvites "Name with space" -30 Removed for cheating'
-			]
+			extraExamples: ['!addInvites @User 5', '!addInvites "Name with space" -30 Removed for cheating']
 		});
 	}
 
@@ -64,14 +57,13 @@ export default class extends Command {
 		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
-		await members.insertOrUpdate({
+		await this.client.repo.member.save({
 			id: user.id,
 			name: user.username,
 			discriminator: user.discriminator
 		});
 
-		const createdInv = await customInvites.create({
-			id: null,
+		const createdInv = await this.client.repo.customInvite.save({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
@@ -117,12 +109,7 @@ export default class extends Command {
 		// Promote the member if it's not a bot
 		// and if the member is still in the guild
 		if (member && !member.user.bot) {
-			const promoteInfo = await this.client.invs.promoteIfQualified(
-				guild,
-				member,
-				me,
-				totalInvites
-			);
+			const promoteInfo = await this.client.invs.promoteIfQualified(guild, member, me, totalInvites);
 
 			if (promoteInfo) {
 				const { shouldHave, shouldNotHave, dangerous } = promoteInfo;

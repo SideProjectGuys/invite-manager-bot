@@ -1,11 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	OneToMany,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
@@ -18,7 +11,7 @@ import { Punishment } from './Punishment';
 import { Strike } from './Strike';
 
 @Entity()
-export class Member extends BaseEntity {
+export class Member {
 	@Column({ length: 32, primary: true })
 	public id: string;
 

@@ -24,12 +24,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[amount]: [number],
-		flags: {},
-		{ t, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, [amount]: [number], flags: {}, { t, guild }: Context): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
 			await this.sendReply(message, t('music.notPlaying'));

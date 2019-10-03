@@ -2,16 +2,8 @@ import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	BooleanResolver,
-	EnumResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import {
-	CommandGroup,
-	MusicCommand,
-	MusicPlatformTypes
-} from '../../../../types';
+import { BooleanResolver, EnumResolver, StringResolver } from '../../../../framework/resolvers';
+import { CommandGroup, MusicCommand, MusicPlatformTypes } from '../../../../types';
 import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
 
@@ -79,9 +71,7 @@ export default class extends Command {
 		if (musicPlatform) {
 			item = await musicPlatform.getByLink(link);
 		} else {
-			musicPlatform = this.client.music.platforms.get(
-				MusicPlatformTypes.YouTube
-			);
+			musicPlatform = this.client.music.platforms.get(MusicPlatformTypes.YouTube);
 			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
 				item = items[0];
@@ -94,10 +84,7 @@ export default class extends Command {
 
 			await conn.play(item, voiceChannel, next);
 
-			await this.sendEmbed(
-				message.channel,
-				this.client.music.createPlayingEmbed(item)
-			);
+			await this.sendEmbed(message.channel, this.client.music.createPlayingEmbed(item));
 		}
 	}
 }

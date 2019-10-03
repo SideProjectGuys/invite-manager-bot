@@ -1,19 +1,11 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	ManyToOne,
-	OneToMany,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Rank } from './Rank';
 import { RolePermission } from './RolePermission';
 
 @Entity()
-export class Role extends BaseEntity {
+export class Role {
 	@Column({ length: 32, primary: true })
 	public id: string;
 

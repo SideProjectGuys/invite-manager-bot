@@ -1,4 +1,6 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { BotSettingsObject } from '../settings';
 
 export enum BotSettingsKey {
 	activityStatus = 'activityStatus',
@@ -23,7 +25,7 @@ export enum ActivityType {
 }
 
 @Entity()
-export class BotSetting extends BaseEntity {
+export class BotSetting {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -40,5 +42,5 @@ export class BotSetting extends BaseEntity {
 	public botId: string;
 
 	@Column({ type: 'json' })
-	public value: any;
+	public value: BotSettingsObject;
 }

@@ -1,8 +1,8 @@
 import { Message } from 'eris';
+import { In } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import { ranks, roles } from '../../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -17,23 +17,17 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: [],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: [], flags: {}, { guild, t }: Context): Promise<any> {
 		const allRoles = await guild.getRESTRoles();
-		const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
-		const oldRoleIds = allRanks
-			.filter(rank => !allRoles.some(r => r.id === rank.roleId))
-			.map(r => r.roleId);
-		await ranks.destroy({
-			where: { guildId: guild.id, roleId: oldRoleIds }
-		});
-		await roles.destroy({
-			where: { guildId: guild.id, id: oldRoleIds }
-		});
+		const allRanks = await this.client.repo.rank.find({ where: { guildId: guild.id } });
+		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
+		await this.client.repo.rank.update(
+			{
+				guildId: guild.id,
+				roleId: In(oldRoleIds)
+			},
+			{ deletedAt: new Date() }
+		);
 
 		this.client.cache.ranks.flush(guild.id);
 

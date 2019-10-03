@@ -1,6 +1,6 @@
 import { Guild, VoiceChannel } from 'eris';
 
-import { AnnouncementVoice } from '../../../sequelize';
+import { AnnouncementVoice } from '../../../models/Setting';
 import { SettingsObject } from '../../../settings';
 import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../../types';
 import { MusicService } from '../services/MusicService';
@@ -32,11 +32,7 @@ export class MusicConnection {
 	private lastUpdate: number = 0;
 	private playStart: number = 0;
 
-	public constructor(
-		service: MusicService,
-		guild: Guild,
-		musicQueueCache: MusicQueue
-	) {
+	public constructor(service: MusicService, guild: Guild, musicQueueCache: MusicQueue) {
 		this.service = service;
 		this.guild = guild;
 		this.musicQueueCache = musicQueueCache;
@@ -64,11 +60,7 @@ export class MusicConnection {
 		return !!this.player;
 	}
 
-	public async play(
-		item: MusicItem,
-		voiceChannel?: VoiceChannel,
-		next?: boolean
-	) {
+	public async play(item: MusicItem, voiceChannel?: VoiceChannel, next?: boolean) {
 		if (!item.author) {
 			throw new Error(`No author on music item ${item.toString()}`);
 		}
@@ -135,10 +127,7 @@ export class MusicConnection {
 	}
 
 	public getPlayTime() {
-		const time =
-			this.player && this.player.paused
-				? this.lastUpdate
-				: new Date().getTime();
+		const time = this.player && this.player.paused ? this.lastUpdate : new Date().getTime();
 		return (time - this.playStart) / 1000;
 	}
 
@@ -151,9 +140,7 @@ export class MusicConnection {
 		if (this.player) {
 			this.switchChannel(channel);
 		} else {
-			this.settings = await this.service.client.cache.settings.get(
-				this.guild.id
-			);
+			this.settings = await this.service.client.cache.settings.get(this.guild.id);
 			this.volume = this.settings.musicVolume;
 
 			this.voiceChannel = channel;
@@ -203,10 +190,7 @@ export class MusicConnection {
 				this.stopSpeakingTimeout = null;
 				this.player.setVolume(this.volume);
 			};
-			this.stopSpeakingTimeout = setTimeout(
-				func,
-				this.settings.fadeMusicEndDelay * 1000
-			);
+			this.stopSpeakingTimeout = setTimeout(func, this.settings.fadeMusicEndDelay * 1000);
 		}
 	}
 
@@ -233,11 +217,7 @@ export class MusicConnection {
 		}
 	}
 
-	public async playAnnouncement(
-		voice: AnnouncementVoice,
-		message: string,
-		channel?: VoiceChannel
-	) {
+	public async playAnnouncement(voice: AnnouncementVoice, message: string, channel?: VoiceChannel) {
 		if (!this.player || channel) {
 			await this.connect(channel);
 		}
@@ -271,15 +251,12 @@ export class MusicConnection {
 		const next = this.musicQueueCache.queue.shift();
 		if (next) {
 			let sanitizedTitle = next.title;
-			IGNORED_ANNOUNCEMENT_WORDS.forEach(
-				word => (sanitizedTitle = sanitizedTitle.replace(word, ''))
-			);
+			IGNORED_ANNOUNCEMENT_WORDS.forEach(word => (sanitizedTitle = sanitizedTitle.replace(word, '')));
 
 			if (this.settings.announceNextSong) {
-				await this.playAnnouncement(
-					this.settings.announcementVoice,
-					'Playing: ' + sanitizedTitle
-				).catch(() => undefined);
+				await this.playAnnouncement(this.settings.announcementVoice, 'Playing: ' + sanitizedTitle).catch(
+					() => undefined
+				);
 			}
 
 			const stream = await next.getStreamUrl().catch(() => undefined);

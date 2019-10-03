@@ -1,10 +1,5 @@
-import { settings, SettingsKey } from '../../sequelize';
-import {
-	defaultSettings,
-	settingsInfo,
-	SettingsObject,
-	toDbValue
-} from '../../settings';
+import { SettingsKey } from '../../models/Setting';
+import { defaultSettings, settingsInfo, SettingsObject, toDbValue } from '../../settings';
 
 import { Cache } from './Cache';
 
@@ -14,7 +9,7 @@ export class SettingsCache extends Cache<SettingsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<SettingsObject> {
-		const set = await settings.findOne({ where: { guildId } });
+		const set = await this.client.repo.setting.findOne({ where: { guildId } });
 		return { ...defaultSettings, ...(set ? set.value : null) };
 	}
 
@@ -31,18 +26,12 @@ export class SettingsCache extends Cache<SettingsObject> {
 			set[key] = dbVal;
 
 			// Save into DB
-			settings.bulkCreate(
-				[
-					{
-						id: null,
-						guildId,
-						value: set
-					}
-				],
-				{
-					updateOnDuplicate: ['value', 'updatedAt']
-				}
-			);
+			await this.client.repo.setting
+				.createQueryBuilder()
+				.insert()
+				.values({ guildId, value: set })
+				.orUpdate({ columns: ['value'] })
+				.execute();
 		}
 
 		return dbVal;

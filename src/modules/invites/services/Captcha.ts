@@ -64,10 +64,7 @@ export class CaptchaService {
 
 		const embed = this.client.msg.createEmbed({
 			title: 'Captcha',
-			description: sets.captchaVerificationWelcomeMessage.replace(
-				/\{serverName\}/g,
-				member.guild.name
-			),
+			description: sets.captchaVerificationWelcomeMessage.replace(/\{serverName\}/g, member.guild.name),
 			image: {
 				url: 'attachment://captcha.png'
 			}
@@ -85,19 +82,11 @@ export class CaptchaService {
 		const endTime = moment().add(sets.captchaVerificationTimeout, 's');
 
 		while (true) {
-			const response = await this.awaitMessage(
-				member,
-				endTime.diff(moment(), 'ms')
-			);
+			const response = await this.awaitMessage(member, endTime.diff(moment(), 'ms'));
 
 			if (!response) {
 				await dmChannel
-					.createMessage(
-						sets.captchaVerificationFailedMessage.replace(
-							/\{serverName\}/g,
-							member.guild.name
-						)
-					)
+					.createMessage(sets.captchaVerificationFailedMessage.replace(/\{serverName\}/g, member.guild.name))
 					.catch(() => undefined);
 				member.kick().catch(() => undefined);
 				return;
@@ -105,17 +94,12 @@ export class CaptchaService {
 
 			if (response === text) {
 				await dmChannel.createMessage(
-					sets.captchaVerificationSuccessMessage.replace(
-						/\{serverName\}/g,
-						member.guild.name
-					)
+					sets.captchaVerificationSuccessMessage.replace(/\{serverName\}/g, member.guild.name)
 				);
 				return;
 			}
 
-			await dmChannel.createMessage(
-				i18n.__({ locale: sets.lang, phrase: 'captcha.invalid' })
-			);
+			await dmChannel.createMessage(i18n.__({ locale: sets.lang, phrase: 'captcha.invalid' }));
 		}
 	}
 
@@ -140,16 +124,12 @@ export class CaptchaService {
 		config.noise = config.noise !== false ? true : false;
 		config.noiseColor = config.noiseColor || config.color;
 		config.complexity = config.complexity || 3;
-		config.complexity =
-			config.complexity < 1 || config.complexity > 5 ? 3 : config.complexity;
+		config.complexity = config.complexity < 1 || config.complexity > 5 ? 3 : config.complexity;
 		config.spacing = config.spacing || 2;
-		config.spacing =
-			config.spacing < 1 || config.spacing > 3 ? 2 : config.spacing;
+		config.spacing = config.spacing < 1 || config.spacing > 3 ? 2 : config.spacing;
 		config.nofLines = config.nofLines || 2;
 
-		const fontSize = Math.round(
-			config.height * 0.5 + (15 - config.complexity * 3)
-		);
+		const fontSize = Math.round(config.height * 0.5 + (15 - config.complexity * 3));
 		const canvas = new canvasClass(config.width, config.canvasHeight);
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = config.background;
@@ -185,10 +165,7 @@ export class CaptchaService {
 				Math.random() * modifier + modifier / 3,
 				Math.random() * modifier + modifier / 3,
 				Math.random() * modifier + 1 + modifier / 3,
-				config.width / 4 +
-					(config.height * i) / (4 - config.spacing) +
-					(config.height - fontSize) / 3 +
-					10,
+				config.width / 4 + (config.height * i) / (4 - config.spacing) + (config.height - fontSize) / 3 + 10,
 				config.canvasHeight - (config.canvasHeight - fontSize) / 2
 			);
 			ctx.fillText(config.text.charAt(i), 0, 0);
@@ -198,9 +175,7 @@ export class CaptchaService {
 			if (config.fileMode === FileMode.FILE) {
 				const fs = require('fs');
 
-				const filename = `${new Date().getTime()}-${Math.floor(
-					Math.random() * 1000
-				)}.png`;
+				const filename = `${new Date().getTime()}-${Math.floor(Math.random() * 1000)}.png`;
 				const out = fs.createWriteStream(config.saveDir + '/' + filename);
 				const stream = canvas.pngStream();
 

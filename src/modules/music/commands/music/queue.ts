@@ -16,22 +16,17 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ t, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t, guild }: Context): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		const nowPlaying = conn.getNowPlaying();
 		const queue = conn.getQueue();
 
 		if (!nowPlaying) {
-			this.sendReply(message, t('cmd.queue.empty'));
+			await this.sendReply(message, t('cmd.queue.empty'));
 			return;
 		}
 
-		this.sendReply(message, {
+		await this.sendReply(message, {
 			author: {
 				name: `${nowPlaying.author.username}#${nowPlaying.author.discriminator}`,
 				icon_url: nowPlaying.author.avatarURL

@@ -3,7 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, NumberResolver } from '../../../../framework/resolvers';
-import { strikeConfigs, ViolationType } from '../../../../sequelize';
+import { ViolationType } from '../../../../models/StrikeConfig';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -44,13 +44,11 @@ export default class extends Command {
 
 		if (typeof violation === typeof undefined) {
 			const allViolations: ViolationType[] = Object.values(ViolationType);
-			const strikeConfigList = await strikeConfigs.findAll({
+			const strikeConfigList = await this.client.repo.strikeConfig.find({
 				where: { guildId: guild.id },
-				order: [['amount', 'DESC']]
+				order: { amount: 'DESC' }
 			});
-			const unusedViolations = allViolations.filter(
-				v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0
-			);
+			const unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0);
 			embed.description = strikeConfigList
 				.map(scl =>
 					t('cmd.strikeConfig.text', {
@@ -64,19 +62,18 @@ export default class extends Command {
 				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const strike = await strikeConfigs.find({ where: violationQuery });
+			const strike = await this.client.repo.strikeConfig.findOne(violationQuery);
 			embed.description = t('cmd.strikeConfig.text', {
 				violation: `**${strike ? strike.type : violation}**`,
 				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await strikeConfigs.destroy({ where: violationQuery });
+			await this.client.repo.strikeConfig.delete(violationQuery);
 			embed.description = t('cmd.strikeConfig.deletedText', {
 				violation: `**${violation}**`
 			});
 		} else {
-			strikeConfigs.insertOrUpdate({
-				id: null,
+			await this.client.repo.strikeConfig.save({
 				amount: strikes,
 				...violationQuery
 			});

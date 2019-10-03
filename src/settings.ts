@@ -1,17 +1,9 @@
 import { Channel, Role } from 'eris';
 
-import {
-	ActivityStatus,
-	ActivityType,
-	AnnouncementVoice,
-	BotSettingsKey,
-	InviteCodeSettingsKey,
-	Lang,
-	LeaderboardStyle,
-	MemberSettingsKey,
-	RankAssignmentStyle,
-	SettingsKey
-} from './sequelize';
+import { ActivityStatus, ActivityType, BotSettingsKey } from './models/BotSetting';
+import { InviteCodeSettingsKey } from './models/InviteCodeSetting';
+import { MemberSettingsKey } from './models/MemberSetting';
+import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle, SettingsKey } from './models/Setting';
 
 export type InternalSettingsTypes =
 	| 'Boolean'
@@ -200,8 +192,7 @@ export const settingsInfo: {
 	joinMessage: {
 		type: 'String',
 		grouping: [SettingsGroup.invites, SettingsGroup.joins],
-		defaultValue:
-			'{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
+		defaultValue: '{memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)',
 		hasPremiumInfo: true
 	},
 	joinMessageChannel: {
@@ -269,8 +260,7 @@ export const settingsInfo: {
 	rankAnnouncementMessage: {
 		type: 'String',
 		grouping: [SettingsGroup.invites, SettingsGroup.ranks],
-		defaultValue:
-			'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
+		defaultValue: 'Congratulations, **{memberMention}** has reached the **{rankName}** rank!',
 		exampleValues: ['', ''],
 		hasPremiumInfo: true
 	},
@@ -292,8 +282,7 @@ export const settingsInfo: {
 	captchaVerificationSuccessMessage: {
 		type: 'String',
 		grouping: [SettingsGroup.moderation, SettingsGroup.captcha],
-		defaultValue:
-			'You have successfully entered the captcha. Welcome to the server!',
+		defaultValue: 'You have successfully entered the captcha. Welcome to the server!',
 		exampleValues: ['Thanks for entering the captcha, enjoy our server!'],
 		hasPremiumInfo: true
 	},
@@ -303,9 +292,7 @@ export const settingsInfo: {
 		defaultValue:
 			'You did not enter the captha right within the specified time.' +
 			`We're sorry, but we have to kick you from the server. Feel free to join again.`,
-		exampleValues: [
-			'Looks like you are not human :(. You can join again and try again later if this was a mistake!'
-		],
+		exampleValues: ['Looks like you are not human :(. You can join again and try again later if this was a mistake!'],
 		hasPremiumInfo: true
 	},
 	captchaVerificationTimeout: {
@@ -636,9 +623,7 @@ export const inviteCodeDefaultSettings: InviteCodeSettingsObject = {} as any;
 Object.keys(inviteCodeSettingsInfo).forEach((k: InviteCodeSettingsKey) => {
 	const info = inviteCodeSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	(inviteCodeDefaultSettings[k] as any) = inviteCodeSettingsInfo[
-		k
-	].defaultValue;
+	(inviteCodeDefaultSettings[k] as any) = inviteCodeSettingsInfo[k].defaultValue;
 });
 
 // ------------------------------------
@@ -708,12 +693,7 @@ export function toDbValue(info: SettingsInfo<any>, value: any): any {
 	return _toDbValue(info.type, value);
 }
 function _toDbValue(type: string, value: any): string {
-	if (
-		value === 'none' ||
-		value === 'empty' ||
-		value === 'null' ||
-		value === null
-	) {
+	if (value === 'none' || value === 'empty' || value === 'null' || value === null) {
 		return null;
 	}
 
@@ -731,9 +711,7 @@ function _toDbValue(type: string, value: any): string {
 		}
 	} else if (type.endsWith('[]')) {
 		const subType = type.substring(0, type.length - 2);
-		return value && value.length > 0
-			? value.map((v: any) => _toDbValue(subType, v))
-			: null;
+		return value && value.length > 0 ? value.map((v: any) => _toDbValue(subType, v)) : null;
 	}
 
 	return value;

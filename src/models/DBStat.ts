@@ -1,7 +1,7 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Channel extends BaseEntity {
+export class DBStat {
 	@PrimaryColumn()
 	public key: string;
 

@@ -3,12 +3,8 @@ import { Context } from 'vm';
 
 import { IMClient } from '../../../../client';
 import { Command } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	NumberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import { punishmentConfigs, PunishmentType } from '../../../../sequelize';
+import { EnumResolver, NumberResolver, StringResolver } from '../../../../framework/resolvers';
+import { PunishmentType } from '../../../../models/PunishmentConfig';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -53,13 +49,11 @@ export default class extends Command {
 		};
 		if (typeof punishment === typeof undefined) {
 			const allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			const punishmentConfigList = await punishmentConfigs.findAll({
+			const punishmentConfigList = await this.client.repo.punishmentConfig.find({
 				where: { guildId: guild.id },
-				order: [['amount', 'DESC']]
+				order: { amount: 'DESC' }
 			});
-			const unusedPunishment = allPunishments.filter(
-				p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0
-			);
+			const unusedPunishment = allPunishments.filter(p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0);
 			embed.description = punishmentConfigList
 				.map(pcl =>
 					t('cmd.punishmentConfig.text', {
@@ -73,19 +67,18 @@ export default class extends Command {
 				value: `\n${unusedPunishment.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const pc = await punishmentConfigs.find({ where: punishmentQuery });
+			const pc = await this.client.repo.punishmentConfig.findOne({ where: punishmentQuery });
 			embed.description = t('cmd.punishmentConfig.text', {
 				punishment: `**${pc ? pc.type : punishment}**`,
 				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await punishmentConfigs.destroy({ where: punishmentQuery });
+			await this.client.repo.punishmentConfig.delete(punishmentQuery);
 			embed.description = t('cmd.punishmentConfig.deletedText', {
 				punishment: `**${punishment}**`
 			});
 		} else {
-			punishmentConfigs.insertOrUpdate({
-				id: null,
+			await this.client.repo.punishmentConfig.save({
 				amount: strikes,
 				args: args,
 				...punishmentQuery

@@ -1,13 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	CreateDateColumn,
-	Entity,
-	Index,
-	ManyToOne,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 
@@ -21,7 +12,7 @@ export enum PunishmentType {
 
 @Entity()
 @Index(['guild', 'punishmentType'], { unique: true })
-export class PunishmentConfig extends BaseEntity {
+export class PunishmentConfig {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -35,7 +26,7 @@ export class PunishmentConfig extends BaseEntity {
 	public deletedAt: Date;
 
 	@Column()
-	public punishmentType: PunishmentType;
+	public type: PunishmentType;
 
 	@Column()
 	public amount: number;
