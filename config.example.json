@@ -1,7 +1,6 @@
 {
 	"devToken": "",
 	"sentryDsn": "",
-	"ownerGuildIds": [],
 	"bot": {
 		"type": "regular",
 		"ids": {
