@@ -21,7 +21,7 @@
   - 邀請管理
 
     - [概述](/zh-TW/modules/invites/overview.md)
-    - [自定義訊息](/zh-TW/modules/invites/custom-message.md)
+    - [自定義訊息](/zh-TW/modules/invites/custom-messages.md)
       - [範例](/zh-TW/modules/invites/examples.md)
 
   - 審核

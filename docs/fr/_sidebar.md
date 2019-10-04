@@ -21,7 +21,7 @@
   - Invite Management
 
     - [Overview](/fr/modules/invites/overview.md)
-    - [Custom message](/fr/modules/invites/custom-message.md)
+    - [Custom message](/fr/modules/invites/custom-messages.md)
       - [Examples](/fr/modules/invites/examples.md)
 
   - Moderation

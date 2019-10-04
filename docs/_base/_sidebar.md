@@ -21,7 +21,7 @@
   - §{modules.invites.title}
 
     - [§{modules.invites.overview.title}](/§{lang}/modules/invites/overview.md)
-    - [§{modules.invites.customMessages.title}](/§{lang}/modules/invites/custom-message.md)
+    - [§{modules.invites.customMessages.title}](/§{lang}/modules/invites/custom-messages.md)
       - [§{modules.invites.examples.title}](/§{lang}/modules/invites/examples.md)
 
   - §{modules.moderation.title}

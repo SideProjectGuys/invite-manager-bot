@@ -21,7 +21,7 @@
   - 邀请管理
 
     - [Overview](/zh-CN/modules/invites/overview.md)
-    - [自定义讯息](/zh-CN/modules/invites/custom-message.md)
+    - [自定义讯息](/zh-CN/modules/invites/custom-messages.md)
       - [例子](/zh-CN/modules/invites/examples.md)
 
   - 审核
