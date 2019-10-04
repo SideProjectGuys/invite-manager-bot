@@ -899,6 +899,8 @@ export const strikeConfigs = sequelize.define<StrikeConfigInstance, StrikeConfig
 		guildId: Sequelize.STRING(32)
 	},
 	{
+		timestamps: true,
+		paranoid: true,
 		indexes: [
 			{
 				unique: true,
@@ -974,6 +976,8 @@ export const punishmentConfigs = sequelize.define<PunishmentConfigInstance, Puni
 		guildId: Sequelize.STRING(32)
 	},
 	{
+		timestamps: true,
+		paranoid: true,
 		indexes: [
 			{
 				unique: true,
@@ -1035,7 +1039,7 @@ export interface ScheduledActionAttributes extends BaseAttributes {
 	id: number;
 	guildId: string;
 	actionType: ScheduledActionType;
-	args: JSON;
+	args: any;
 	reason: string;
 	date: Date;
 }
@@ -1054,6 +1058,10 @@ export const scheduledActions = sequelize.define<ScheduledActionInstance, Schedu
 		date: Sequelize.DATE,
 		reason: Sequelize.STRING,
 		guildId: Sequelize.STRING(32)
+	},
+	{
+		timestamps: true,
+		paranoid: true
 	}
 );
 
@@ -1096,10 +1104,17 @@ export interface DBStatsAttributes extends BaseAttributes {
 }
 export interface DBStatsInstance extends Sequelize.Instance<DBStatsAttributes>, DBStatsAttributes {}
 
-export const dbStats = sequelize.define<DBStatsInstance, DBStatsAttributes>('dbStats', {
-	key: { type: Sequelize.STRING, primaryKey: true },
-	value: Sequelize.DOUBLE
-});
+export const dbStats = sequelize.define<DBStatsInstance, DBStatsAttributes>(
+	'dbStats',
+	{
+		key: { type: Sequelize.STRING, primaryKey: true },
+		value: Sequelize.DOUBLE
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 // ------------------------------------
 // Music History
@@ -1114,14 +1129,21 @@ export interface MusicHistoryAttributes extends BaseAttributes {
 }
 export interface MusicHistoryInstance extends Sequelize.Instance<MusicHistoryAttributes>, MusicHistoryAttributes {}
 
-export const musicHistory = sequelize.define<MusicHistoryInstance, MusicHistoryAttributes>('musicHistory', {
-	id: { type: Sequelize.INTEGER, primaryKey: true },
-	guildId: Sequelize.STRING(32),
-	memberId: Sequelize.STRING(32),
-	sourcePlatform: Sequelize.STRING,
-	sourceLink: Sequelize.STRING,
-	skippedAt: Sequelize.INTEGER
-});
+export const musicHistory = sequelize.define<MusicHistoryInstance, MusicHistoryAttributes>(
+	'musicHistory',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true },
+		guildId: Sequelize.STRING(32),
+		memberId: Sequelize.STRING(32),
+		sourcePlatform: Sequelize.STRING,
+		sourceLink: Sequelize.STRING,
+		skippedAt: Sequelize.INTEGER
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 musicHistory.belongsTo(guilds);
 guilds.hasMany(musicHistory);
@@ -1180,16 +1202,23 @@ export interface MusicNodeAttributes extends BaseAttributes {
 }
 export interface MusicNodeInstance extends Sequelize.Instance<MusicNodeAttributes>, MusicNodeAttributes {}
 
-export const musicNodes = sequelize.define<MusicNodeInstance, MusicNodeAttributes>('musicNodes', {
-	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	host: Sequelize.STRING(255),
-	port: Sequelize.INTEGER,
-	region: Sequelize.STRING(16),
-	password: Sequelize.STRING(255),
-	isRegular: Sequelize.BOOLEAN,
-	isPremium: Sequelize.BOOLEAN,
-	isCustom: Sequelize.BOOLEAN
-});
+export const musicNodes = sequelize.define<MusicNodeInstance, MusicNodeAttributes>(
+	'musicNodes',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		host: Sequelize.STRING(255),
+		port: Sequelize.INTEGER,
+		region: Sequelize.STRING(16),
+		password: Sequelize.STRING(255),
+		isRegular: Sequelize.BOOLEAN,
+		isPremium: Sequelize.BOOLEAN,
+		isCustom: Sequelize.BOOLEAN
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 // ------------------------------------
 // Incidents
@@ -1202,12 +1231,19 @@ export interface IncidentAttributes extends BaseAttributes {
 }
 export interface IncidentInstance extends Sequelize.Instance<IncidentAttributes>, IncidentAttributes {}
 
-export const incidents = sequelize.define<IncidentInstance, IncidentAttributes>('incidents', {
-	id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-	guildId: Sequelize.STRING(32),
-	error: Sequelize.TEXT,
-	details: Sequelize.JSON
-});
+export const incidents = sequelize.define<IncidentInstance, IncidentAttributes>(
+	'incidents',
+	{
+		id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		guildId: Sequelize.STRING(32),
+		error: Sequelize.TEXT,
+		details: Sequelize.JSON
+	},
+	{
+		timestamps: true,
+		paranoid: true
+	}
+);
 
 incidents.belongsTo(guilds);
 guilds.hasMany(incidents);

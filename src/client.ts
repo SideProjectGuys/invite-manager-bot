@@ -163,8 +163,6 @@ export class IMClient extends Client {
 
 		// Services
 		this.cmds.init();
-		this.rabbitmq.init();
-		this.scheduler.init();
 
 		this.disabledGuilds = new Set();
 
@@ -185,6 +183,10 @@ export class IMClient extends Client {
 			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
 			return;
 		}
+
+		// Setup remaining services
+		await this.rabbitmq.init();
+		await this.scheduler.init();
 
 		this.hasStarted = true;
 
