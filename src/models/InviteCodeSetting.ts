@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, UpdateDateColumn } from 'typeorm';
 
 import { InviteCodeSettingsObject } from '../settings';
 
@@ -10,33 +10,32 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class InviteCodeSetting {
-	@PrimaryGeneratedColumn()
-	public id: number;
-
-	@CreateDateColumn()
-	public createdAt: Date;
-
-	@UpdateDateColumn()
-	public updatedAt: Date;
-
-	@Column({ length: 32, nullable: false })
+	@Column({ length: 32, primary: true, nullable: false })
 	public guildId: string;
 
-	@ManyToOne(type => Guild, g => g.inviteCodeSettings, { nullable: false })
+	@ManyToOne(type => Guild, g => g.inviteCodeSettings, { primary: true, nullable: false })
 	public guild: Guild;
 
 	@Column({
 		nullable: false,
 		charset: 'utf8mb4',
 		collation: 'utf8mb4_bin',
-		length: 16
+		length: 16,
+		primary: true
 	})
 	public inviteCode: string;
 
-	@ManyToOne(type => InviteCode, i => i.inviteCodeSettings)
+	@OneToOne(type => InviteCode, i => i.setting, { primary: true, nullable: false })
+	@JoinColumn()
 	public invite: InviteCode;
+
+	@CreateDateColumn()
+	public createdAt: Date;
+
+	@UpdateDateColumn()
+	public updatedAt: Date;
 
 	@Column({ type: 'json' })
 	public value: InviteCodeSettingsObject;

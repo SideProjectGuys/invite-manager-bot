@@ -1,12 +1,21 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
 import { Role } from './Role';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Rank {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.ranks, { primary: true, nullable: false })
+	public guild: Guild;
+
+	@Column({ length: 32, primary: true, nullable: false })
+	public roleId: string;
+
+	@ManyToOne(type => Role, r => r.ranks, { primary: true, nullable: false })
+	public role: Role;
 
 	@CreateDateColumn()
 	public createdAt: Date;
@@ -19,16 +28,4 @@ export class Rank {
 
 	@Column({ type: 'text' })
 	public description: string;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.ranks, { nullable: false })
-	public guild: Guild;
-
-	@Column({ length: 32, nullable: false })
-	public roleId: string;
-
-	@ManyToOne(type => Role, r => r.ranks, { nullable: false })
-	public role: Role;
 }

@@ -2,8 +2,14 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 
 import { Guild } from './Guild';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Incident {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.incidents, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -12,12 +18,6 @@ export class Incident {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.incidents, { nullable: false })
-	public guild: Guild;
 
 	@Column({ type: 'text' })
 	public error: string;

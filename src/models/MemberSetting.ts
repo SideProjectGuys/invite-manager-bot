@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, UpdateDateColumn } from 'typeorm';
 
 import { MemberSettingsObject } from '../settings';
 
@@ -9,10 +9,14 @@ export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER' })
 export class MemberSetting {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@Column({ length: 32, primary: true, nullable: false })
+	public memberId: string;
+
+	@OneToOne(type => Member, m => m.setting, { primary: true, nullable: false })
+	@JoinColumn()
+	public member: Member;
 
 	@CreateDateColumn()
 	public createdAt: Date;
@@ -25,12 +29,6 @@ export class MemberSetting {
 
 	@ManyToOne(type => Guild, g => g.memberSettings, { nullable: false })
 	public guild: Guild;
-
-	@Column({ length: 32, nullable: false })
-	public memberId: string;
-
-	@ManyToOne(type => Member, m => m.memberSettings, { nullable: false })
-	public member: Member;
 
 	@Column({ type: 'json' })
 	public value: MemberSettingsObject;

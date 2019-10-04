@@ -3,12 +3,12 @@ import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { SettingsValueResolver } from '../../../../framework/resolvers';
-import { SettingsKey } from '../../../../models/Setting';
-import { beautify, SettingsGroup, settingsInfo, SettingsInfo, toDbValue } from '../../../../settings';
+import { GuildSettingsKey } from '../../../../models/GuildSetting';
+import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../../../settings';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../../types';
 
 interface ConfigMenu {
-	items: [SettingsKey, SettingsInfo<any>][];
+	items: [GuildSettingsKey, SettingsInfo<any>][];
 	subMenus: SettingsGroup[];
 }
 
@@ -73,12 +73,12 @@ export default class extends Command {
 			subMenus: []
 		};
 
-		Object.keys(settingsInfo)
-			.filter((key: SettingsKey) => path.every((p, i) => settingsInfo[key].grouping[i] === p))
-			.forEach((key: SettingsKey) => {
-				const info = settingsInfo[key];
+		Object.keys(guildSettingsInfo)
+			.filter((key: GuildSettingsKey) => path.every((p, i) => guildSettingsInfo[key].grouping[i] === p))
+			.forEach((key: GuildSettingsKey) => {
+				const info = guildSettingsInfo[key];
 				if (info.grouping.length === path.length) {
-					menu.items.push([key, settingsInfo[key]]);
+					menu.items.push([key, guildSettingsInfo[key]]);
 				} else {
 					const group = info.grouping[path.length];
 					if (!menu.subMenus.includes(group)) {
@@ -156,9 +156,9 @@ export default class extends Command {
 			const sel = choices[choice];
 
 			if (sel.type === 'key') {
-				const key = sel.value as SettingsKey;
+				const key = sel.value as GuildSettingsKey;
 
-				if (settingsInfo[key].type === 'Boolean') {
+				if (guildSettingsInfo[key].type === 'Boolean') {
 					await this.client.cache.settings.setOne(context.guild.id, key, context.settings[key] ? false : true);
 				} else {
 					const subChoice = await this.changeConfigSetting(context, authorId, msg, key);
@@ -177,8 +177,8 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async changeConfigSetting(context: Context, authorId: string, msg: Message, key: SettingsKey) {
-		const info = settingsInfo[key];
+	private async changeConfigSetting(context: Context, authorId: string, msg: Message, key: GuildSettingsKey) {
+		const info = guildSettingsInfo[key];
 		const isList = info.type.endsWith('[]');
 
 		const title = key;
@@ -342,7 +342,7 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async parseInput(context: Context, authorId: string, msg: Message, key: SettingsKey) {
+	private async parseInput(context: Context, authorId: string, msg: Message, key: GuildSettingsKey) {
 		return new Promise<any>(async (resolve, reject) => {
 			let timeOut: NodeJS.Timer;
 
@@ -356,7 +356,7 @@ export default class extends Command {
 					resolve();
 				} else if (userMsg.author && userMsg.author.id === authorId) {
 					await userMsg.delete();
-					new SettingsValueResolver(this.client, settingsInfo)
+					new SettingsValueResolver(this.client, guildSettingsInfo)
 						.resolve(userMsg.content, context, [key])
 						.then(v => resolve(v))
 						.catch(err => reject(err));
@@ -481,12 +481,12 @@ export default class extends Command {
 		});
 	}
 
-	private validate(key: SettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: GuildSettingsKey, value: any, { t, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
 
-		const info = settingsInfo[key];
+		const info = guildSettingsInfo[key];
 
 		if (info.type === 'Channel' || info.type === 'Channel[]') {
 			let channels = value as TextChannel[];

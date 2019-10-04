@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 import { Guild } from './Guild';
 import { Member } from './Member';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER' })
 export class CommandUsage {
 	@PrimaryGeneratedColumn()
 	public id: number;

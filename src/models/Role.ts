@@ -4,8 +4,14 @@ import { Guild } from './Guild';
 import { Rank } from './Rank';
 import { RolePermission } from './RolePermission';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Role {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.roles, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@Column({ length: 32, primary: true })
 	public id: string;
 
@@ -20,12 +26,6 @@ export class Role {
 
 	@Column({ length: 7 })
 	public color: string;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.roles, { nullable: false })
-	public guild: Guild;
 
 	@OneToMany(type => Rank, r => r.guild)
 	public ranks: Rank[];

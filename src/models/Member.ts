@@ -1,17 +1,17 @@
-import { Column, CreateDateColumn, Entity, Index, OneToMany, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, OneToMany, OneToOne, UpdateDateColumn } from 'typeorm';
 
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
 import { InviteCode } from './InviteCode';
 import { Join } from './Join';
+import { Leave } from './Leave';
 import { Log } from './Log';
 import { MemberSetting } from './MemberSetting';
 import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { Strike } from './Strike';
-import { Leave } from './Leave';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER' })
 @Index(['name'])
 export class Member {
 	@Column({ length: 32, primary: true })
@@ -47,8 +47,8 @@ export class Member {
 	@OneToMany(type => Log, l => l.member)
 	public logs: Log[];
 
-	@OneToMany(type => MemberSetting, m => m.member)
-	public memberSettings: MemberSetting[];
+	@OneToOne(type => MemberSetting, m => m.member)
+	public setting: MemberSetting;
 
 	@OneToMany(type => PremiumSubscription, p => p.member)
 	public premiumSubscriptions: PremiumSubscription[];

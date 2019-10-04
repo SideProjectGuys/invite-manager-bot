@@ -1,9 +1,15 @@
 import { Channel, Role } from 'eris';
 
 import { ActivityStatus, ActivityType, BotSettingsKey } from './models/BotSetting';
+import {
+	AnnouncementVoice,
+	GuildSettingsKey,
+	Lang,
+	LeaderboardStyle,
+	RankAssignmentStyle
+} from './models/GuildSetting';
 import { InviteCodeSettingsKey } from './models/InviteCodeSetting';
 import { MemberSettingsKey } from './models/MemberSetting';
-import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle, SettingsKey } from './models/Setting';
 
 export type InternalSettingsTypes =
 	| 'Boolean'
@@ -55,9 +61,9 @@ export enum SettingsGroup {
 }
 
 // ------------------------------------
-// Settings
+// GuildSettings
 // ------------------------------------
-export interface SettingsObject {
+export interface GuildSettingsObject {
 	prefix: string;
 	lang: Lang;
 	logChannel: string;
@@ -152,8 +158,8 @@ export interface SettingsObject {
 	fadeMusicEndDelay: number;
 }
 
-export const settingsInfo: {
-	[k in SettingsKey]: SettingsInfo<SettingsObject[k]>;
+export const guildSettingsInfo: {
+	[k in GuildSettingsKey]: SettingsInfo<GuildSettingsObject[k]>;
 } = {
 	prefix: {
 		type: 'String',
@@ -565,11 +571,11 @@ export const settingsInfo: {
 	}
 };
 
-export const defaultSettings: SettingsObject = {} as any;
-Object.keys(settingsInfo).forEach((k: SettingsKey) => {
-	const info = settingsInfo[k];
+export const guildDefaultSettings: GuildSettingsObject = {} as any;
+Object.keys(guildSettingsInfo).forEach((k: GuildSettingsKey) => {
+	const info = guildSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	(defaultSettings[k] as any) = settingsInfo[k].defaultValue;
+	(guildDefaultSettings[k] as any) = guildSettingsInfo[k].defaultValue;
 });
 
 // ------------------------------------

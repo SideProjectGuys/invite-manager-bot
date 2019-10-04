@@ -1,8 +1,9 @@
-import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, UpdateDateColumn } from 'typeorm';
 
 import { Channel } from './Channel';
 import { CommandUsage } from './CommandUsage';
 import { CustomInvite } from './CustomInvite';
+import { GuildSetting } from './GuildSetting';
 import { Incident } from './Incident';
 import { InviteCode } from './InviteCode';
 import { InviteCodeSetting } from './InviteCodeSetting';
@@ -15,11 +16,10 @@ import { PunishmentConfig } from './PunishmentConfig';
 import { Rank } from './Rank';
 import { Role } from './Role';
 import { ScheduledAction } from './ScheduledAction';
-import { Setting } from './Setting';
 import { Strike } from './Strike';
 import { StrikeConfig } from './StrikeConfig';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (id)' })
 export class Guild {
 	@Column({ length: 32, primary: true })
 	public id: string;
@@ -84,8 +84,8 @@ export class Guild {
 	@OneToMany(type => ScheduledAction, s => s.guild)
 	public scheduledActions: ScheduledAction[];
 
-	@OneToMany(type => Setting, s => s.guild)
-	public settings: Setting[];
+	@OneToOne(type => GuildSetting, s => s.guild)
+	public setting: GuildSetting;
 
 	@OneToMany(type => Strike, s => s.guild)
 	public strikes: Strike[];

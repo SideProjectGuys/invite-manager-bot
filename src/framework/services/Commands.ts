@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import { basename, resolve } from 'path';
 
 import { IMClient } from '../../client';
-import { defaultSettings } from '../../settings';
+import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
@@ -109,7 +109,7 @@ export class CommandsService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild ? await this.client.cache.settings.get(guild.id) : { ...defaultSettings };
+		const sets = guild ? await this.client.cache.settings.get(guild.id) : { ...guildDefaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>

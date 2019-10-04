@@ -15,8 +15,14 @@ export enum LogAction {
 	owner = 'owner'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Log {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.logs, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -34,12 +40,6 @@ export class Log {
 
 	@Column({ type: 'json' })
 	public data: any;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.logs, { nullable: false })
-	public guild: Guild;
 
 	@Column({ length: 32, nullable: false })
 	public memberId: string;

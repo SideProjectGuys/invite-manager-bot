@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, UpdateDateColumn } from 'typeorm';
 
 import { Channel } from './Channel';
 import { Guild } from './Guild';
@@ -6,8 +6,14 @@ import { InviteCodeSetting } from './InviteCodeSetting';
 import { Join } from './Join';
 import { Member } from './Member';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class InviteCode {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.inviteCodes, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@Column({
 		charset: 'utf8mb4',
 		collation: 'utf8mb4_bin',
@@ -49,20 +55,14 @@ export class InviteCode {
 	@ManyToOne(type => Channel, c => c.inviteCodes, { nullable: true })
 	public channel: Channel;
 
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.inviteCodes, { nullable: false })
-	public guild: Guild;
-
 	@Column({ length: 32, nullable: true })
 	public inviterId: string;
 
 	@ManyToOne(type => Member, m => m.inviteCodes)
 	public inviter: Member;
 
-	@OneToMany(type => InviteCodeSetting, i => i.invite)
-	public inviteCodeSettings: InviteCodeSetting[];
+	@OneToOne(type => InviteCodeSetting, i => i.invite)
+	public setting: InviteCodeSetting;
 
 	@OneToMany(type => Join, j => j.exactMatch)
 	public joins: Join[];

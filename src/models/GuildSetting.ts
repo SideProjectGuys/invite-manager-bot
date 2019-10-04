@@ -1,10 +1,10 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm';
 
-import { SettingsObject } from '../settings';
+import { GuildSettingsObject } from '../settings';
 
 import { Guild } from './Guild';
 
-export enum SettingsKey {
+export enum GuildSettingsKey {
 	prefix = 'prefix',
 	lang = 'lang',
 	getUpdates = 'getUpdates',
@@ -131,10 +131,14 @@ export enum AnnouncementVoice {
 	Joey = 'Joey'
 }
 
-@Entity()
-export class Setting {
-	@PrimaryGeneratedColumn()
-	public id: string;
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+export class GuildSetting {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@OneToOne(type => Guild, g => g.setting, { primary: true, nullable: false })
+	@JoinColumn()
+	public guild: Guild;
 
 	@CreateDateColumn()
 	public createdAt: Date;
@@ -142,12 +146,6 @@ export class Setting {
 	@UpdateDateColumn()
 	public updatedAt: Date;
 
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.settings, { nullable: false })
-	public guild: Guild;
-
 	@Column({ type: 'json' })
-	public value: SettingsObject;
+	public value: GuildSettingsObject;
 }

@@ -3,7 +3,7 @@ import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../../client';
-import { AnnouncementVoice } from '../../../models/Setting';
+import { AnnouncementVoice } from '../../../models/GuildSetting';
 import { BotType, LavaTrack } from '../../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';

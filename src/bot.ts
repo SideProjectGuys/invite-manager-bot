@@ -9,6 +9,7 @@ import { CommandUsage } from './models/CommandUsage';
 import { CustomInvite } from './models/CustomInvite';
 import { DBStat } from './models/DBStat';
 import { Guild } from './models/Guild';
+import { GuildSetting } from './models/GuildSetting';
 import { Incident } from './models/Incident';
 import { InviteCode } from './models/InviteCode';
 import { InviteCodeSetting } from './models/InviteCodeSetting';
@@ -26,7 +27,6 @@ import { Rank } from './models/Rank';
 import { Role } from './models/Role';
 import { RolePermission } from './models/RolePermission';
 import { ScheduledAction } from './models/ScheduledAction';
-import { Setting } from './models/Setting';
 import { Strike } from './models/Strike';
 import { StrikeConfig } from './models/StrikeConfig';
 
@@ -95,7 +95,7 @@ createConnection({
 		Role,
 		RolePermission,
 		ScheduledAction,
-		Setting,
+		GuildSetting,
 		Strike,
 		StrikeConfig
 	]

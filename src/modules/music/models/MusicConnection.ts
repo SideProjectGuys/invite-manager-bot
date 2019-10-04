@@ -1,7 +1,7 @@
 import { Guild, VoiceChannel } from 'eris';
 
-import { AnnouncementVoice } from '../../../models/Setting';
-import { SettingsObject } from '../../../settings';
+import { AnnouncementVoice } from '../../../models/GuildSetting';
+import { GuildSettingsObject } from '../../../settings';
 import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../../types';
 import { MusicService } from '../services/MusicService';
 
@@ -20,7 +20,7 @@ const IGNORED_ANNOUNCEMENT_WORDS = [
 export class MusicConnection {
 	private service: MusicService;
 	private guild: Guild;
-	private settings: SettingsObject;
+	private settings: GuildSettingsObject;
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
 	private player: LavaPlayer;

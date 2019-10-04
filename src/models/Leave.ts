@@ -14,8 +14,14 @@ import { InviteCode } from './InviteCode';
 import { Join } from './Join';
 import { Member } from './Member';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Leave {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.joins, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -24,12 +30,6 @@ export class Leave {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.joins, { nullable: false })
-	public guild: Guild;
 
 	@Column({ length: 32, nullable: false })
 	public memberId: string;

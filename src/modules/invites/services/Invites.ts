@@ -1,12 +1,11 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import { Moment } from 'moment';
 import moment from 'moment';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../../client';
+import { GuildSettingsKey, RankAssignmentStyle } from '../../../models/GuildSetting';
 import { JoinInvalidatedReason } from '../../../models/Join';
 import { Rank } from '../../../models/Rank';
-import { RankAssignmentStyle, SettingsKey } from '../../../models/Setting';
 import { BasicInvite, BasicMember, GuildPermission } from '../../../types';
 
 type InvCacheType = {
@@ -493,7 +492,7 @@ export class InvitesService {
 					}
 				} else {
 					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
-					await this.client.cache.settings.setOne(guild.id, SettingsKey.rankAnnouncementChannel, null);
+					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
 				}
 			}
 		}

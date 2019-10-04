@@ -6,8 +6,14 @@ export enum ScheduledActionType {
 	unmute = 'unmute'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class ScheduledAction {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.scheduledActions, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -28,10 +34,4 @@ export class ScheduledAction {
 
 	@Column()
 	public reason: string;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.scheduledActions, { nullable: false })
-	public guild: Guild;
 }

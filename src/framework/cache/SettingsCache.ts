@@ -1,25 +1,25 @@
-import { SettingsKey } from '../../models/Setting';
-import { defaultSettings, settingsInfo, SettingsObject, toDbValue } from '../../settings';
+import { GuildSettingsKey } from '../../models/GuildSetting';
+import { guildDefaultSettings, guildSettingsInfo, GuildSettingsObject, toDbValue } from '../../settings';
 
 import { Cache } from './Cache';
 
-export class SettingsCache extends Cache<SettingsObject> {
+export class SettingsCache extends Cache<GuildSettingsObject> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(guildId: string): Promise<SettingsObject> {
+	protected async _get(guildId: string): Promise<GuildSettingsObject> {
 		const set = await this.client.repo.setting.findOne({ where: { guildId } });
-		return { ...defaultSettings, ...(set ? set.value : null) };
+		return { ...guildDefaultSettings, ...(set ? set.value : null) };
 	}
 
-	public async setOne<K extends SettingsKey>(
+	public async setOne<K extends GuildSettingsKey>(
 		guildId: string,
 		key: K,
-		value: SettingsObject[K]
-	): Promise<SettingsObject[K]> {
+		value: GuildSettingsObject[K]
+	): Promise<GuildSettingsObject[K]> {
 		const set = await this.get(guildId);
-		const dbVal = toDbValue(settingsInfo[key], value);
+		const dbVal = toDbValue(guildSettingsInfo[key], value);
 
 		// Check if the value changed
 		if (set[key] !== dbVal) {

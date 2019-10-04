@@ -1,6 +1,6 @@
 import { IMClient } from '../../client';
 import { ActivityStatus, ActivityType } from '../../models/BotSetting';
-import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../../models/Setting';
+import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../../models/GuildSetting';
 import { InternalSettingsTypes, SettingsInfo } from '../../settings';
 import { Context } from '../commands/Command';
 

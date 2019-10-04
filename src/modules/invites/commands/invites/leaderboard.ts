@@ -4,8 +4,8 @@ import moment from 'moment';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { DurationResolver, NumberResolver } from '../../../../framework/resolvers';
-import { LeaderboardStyle } from '../../../../models/Setting';
-import { BotType, CommandGroup, InvitesCommand } from '../../../../types';
+import { LeaderboardStyle } from '../../../../models/GuildSetting';
+import { CommandGroup, InvitesCommand } from '../../../../types';
 
 const usersPerPage = 10;
 const upSymbol = '🔺';

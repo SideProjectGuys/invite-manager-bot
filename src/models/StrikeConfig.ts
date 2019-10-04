@@ -15,9 +15,15 @@ export enum ViolationType {
 	hoist = 'hoist'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 @Index(['guild', 'type'], { unique: true })
 export class StrikeConfig {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.strikeConfigs, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -32,10 +38,4 @@ export class StrikeConfig {
 
 	@Column()
 	public amount: number;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.strikeConfigs, { nullable: false })
-	public guild: Guild;
 }

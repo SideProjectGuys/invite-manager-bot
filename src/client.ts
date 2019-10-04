@@ -18,6 +18,7 @@ import { CommandUsage } from './models/CommandUsage';
 import { CustomInvite } from './models/CustomInvite';
 import { DBStat } from './models/DBStat';
 import { Guild as DBGuild } from './models/Guild';
+import { GuildSetting, GuildSettingsKey } from './models/GuildSetting';
 import { Incident } from './models/Incident';
 import { InviteCode } from './models/InviteCode';
 import { InviteCodeSetting } from './models/InviteCodeSetting';
@@ -35,7 +36,6 @@ import { Rank } from './models/Rank';
 import { Role } from './models/Role';
 import { RolePermission } from './models/RolePermission';
 import { ScheduledAction } from './models/ScheduledAction';
-import { Setting, SettingsKey } from './models/Setting';
 import { Strike } from './models/Strike';
 import { StrikeConfig } from './models/StrikeConfig';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
@@ -49,7 +49,7 @@ import { StrikesCache } from './modules/mod/cache/StrikesCache';
 import { ModerationService } from './modules/mod/services/Moderation';
 import { MusicCache } from './modules/music/cache/MusicCache';
 import { MusicService } from './modules/music/services/MusicService';
-import { botDefaultSettings, BotSettingsObject, defaultSettings } from './settings';
+import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
 i18n.configure({
@@ -111,7 +111,7 @@ export class IMClient extends Client {
 		role: Repository<Role>;
 		rolePermission: Repository<RolePermission>;
 		scheduledAction: Repository<ScheduledAction>;
-		setting: Repository<Setting>;
+		setting: Repository<GuildSetting>;
 		strike: Repository<Strike>;
 		strikeConfig: Repository<StrikeConfig>;
 		premiumSubscription: Repository<PremiumSubscription>;
@@ -215,7 +215,7 @@ export class IMClient extends Client {
 			role: getRepository(Role),
 			rolePermission: getRepository(RolePermission),
 			scheduledAction: getRepository(ScheduledAction),
-			setting: getRepository(Setting),
+			setting: getRepository(GuildSetting),
 			strike: getRepository(Strike),
 			strikeConfig: getRepository(StrikeConfig),
 			premiumSubscription: getRepository(PremiumSubscription),
@@ -379,8 +379,8 @@ export class IMClient extends Client {
 
 			const defChannel = await this.getDefaultChannel(guild);
 			const newSettings = {
-				...defaultSettings,
-				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
+				...guildDefaultSettings,
+				[GuildSettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
 			};
 
 			await this.repo.setting.save({

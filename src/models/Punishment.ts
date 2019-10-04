@@ -4,8 +4,14 @@ import { Guild } from './Guild';
 import { Member } from './Member';
 import { PunishmentType } from './PunishmentConfig';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Punishment {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.punishments, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -26,12 +32,6 @@ export class Punishment {
 
 	@Column({ nullable: true })
 	public reason: string;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.punishments, { nullable: false })
-	public guild: Guild;
 
 	@Column({ length: 32, nullable: false })
 	public memberId: string;

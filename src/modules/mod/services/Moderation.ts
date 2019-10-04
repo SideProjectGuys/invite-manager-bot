@@ -6,12 +6,12 @@ import { LessThanOrEqual, MoreThan } from 'typeorm';
 import { IMClient } from '../../../client';
 import { PunishmentType } from '../../../models/PunishmentConfig';
 import { ViolationType } from '../../../models/StrikeConfig';
-import { SettingsObject } from '../../../settings';
+import { GuildSettingsObject } from '../../../settings';
 import { BasicUser } from '../../../types';
 
 interface Arguments {
 	guild: Guild;
-	settings: SettingsObject;
+	settings: GuildSettingsObject;
 }
 
 interface PunishmentDetails {
@@ -664,7 +664,7 @@ export class ModerationService {
 		}
 	}
 
-	private async sendReplyAndDelete(message: Message, embed: Embed, settings: SettingsObject) {
+	private async sendReplyAndDelete(message: Message, embed: Embed, settings: GuildSettingsObject) {
 		if (settings.autoModDeleteBotMessage && settings.autoModDeleteBotMessageTimeoutInSeconds === 0) {
 			return;
 		}
@@ -674,7 +674,7 @@ export class ModerationService {
 		}
 	}
 
-	public async informAboutStrike(member: Member, type: ViolationType, amount: number, settings: SettingsObject) {
+	public async informAboutStrike(member: Member, type: ViolationType, amount: number, settings: GuildSettingsObject) {
 		const dmChannel = await member.user.getDMChannel();
 
 		const message = i18n.__(
@@ -712,7 +712,7 @@ export class ModerationService {
 	public async informAboutPunishment(
 		member: Member,
 		type: PunishmentType,
-		settings: SettingsObject,
+		settings: GuildSettingsObject,
 		{ reason, amount }: PunishmentDetails
 	) {
 		const dmChannel = await member.user.getDMChannel();

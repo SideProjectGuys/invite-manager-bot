@@ -19,9 +19,15 @@ export enum JoinInvalidatedReason {
 	leave = 'leave'
 }
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 @Index(['guild', 'member', 'createdAt'], { unique: true })
 export class Join {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.joins, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: number;
 
@@ -30,12 +36,6 @@ export class Join {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.joins, { nullable: false })
-	public guild: Guild;
 
 	@Column({ length: 32, nullable: false })
 	public memberId: string;

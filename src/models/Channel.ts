@@ -3,8 +3,14 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColum
 import { Guild } from './Guild';
 import { InviteCode } from './InviteCode';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class Channel {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.channels, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@Column({ length: 32, primary: true })
 	public id: string;
 
@@ -16,12 +22,6 @@ export class Channel {
 
 	@Column()
 	public name: string;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.channels, { nullable: false })
-	public guild: Guild;
 
 	@OneToMany(type => InviteCode, i => i.channel)
 	public inviteCodes: InviteCode[];

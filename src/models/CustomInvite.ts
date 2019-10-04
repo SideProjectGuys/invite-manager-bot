@@ -3,8 +3,14 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 import { Guild } from './Guild';
 import { Member } from './Member';
 
-@Entity()
+@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
 export class CustomInvite {
+	@Column({ length: 32, primary: true, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.customInvites, { primary: true, nullable: false })
+	public guild: Guild;
+
 	@PrimaryGeneratedColumn()
 	public id: string;
 
@@ -22,12 +28,6 @@ export class CustomInvite {
 
 	@Column({ default: false })
 	public cleared: boolean;
-
-	@Column({ length: 32, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.customInvites, { nullable: false })
-	public guild: Guild;
 
 	@Column({ length: 32, nullable: false })
 	public memberId: string;

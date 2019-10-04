@@ -4,8 +4,8 @@ import moment from 'moment';
 import { In, Not } from 'typeorm';
 
 import { IMClient } from '../../../client';
+import { GuildSettingsKey } from '../../../models/GuildSetting';
 import { JoinInvalidatedReason } from '../../../models/Join';
-import { SettingsKey } from '../../../models/Setting';
 import { BasicMember, GuildPermission } from '../../../types';
 import { deconstruct } from '../../../util';
 
@@ -135,14 +135,14 @@ export class TrackingService {
 		if (!role) {
 			const allRoles = await guild.getRESTRoles();
 			const allRanks = await this.client.cache.ranks.get(guild.id);
-			const oldRankIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.id);
+			const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
 			await this.client.repo.rank.delete({
 				guildId: guild.id,
-				roleId: In(oldRankIds)
+				roleId: In(oldRoleIds)
 			});
 			await this.client.repo.role.delete({
 				guildId: guild.id,
-				id: In(oldRankIds)
+				id: In(oldRoleIds)
 			});
 		} else {
 			await this.client.repo.rank.delete({
@@ -375,13 +375,13 @@ export class TrackingService {
 				console.error(`Guild ${guild.id} has invalid join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 			} else if (!(joinChannel instanceof TextChannel)) {
 				// Someone set a non-text channel as join channel
 				console.error(`Guild ${guild.id} has non-text join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
 			} else if (!joinChannel.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)) {
@@ -389,7 +389,7 @@ export class TrackingService {
 				console.error(`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
 			}
@@ -422,7 +422,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -435,7 +435,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -468,7 +468,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -520,7 +520,7 @@ export class TrackingService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 				}
 			});
 		}
@@ -577,7 +577,7 @@ export class TrackingService {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(`Guild ${guild.id} has invalid leave ` + `message channel ${leaveChannelId}`);
 			// Reset the channel
-			await this.client.cache.settings.setOne(guild.id, SettingsKey.leaveMessageChannel, null);
+			await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.leaveMessageChannel, null);
 		}
 
 		// Exit if we can't find the join
@@ -597,7 +597,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -669,7 +669,7 @@ export class TrackingService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 				}
 			});
 		}

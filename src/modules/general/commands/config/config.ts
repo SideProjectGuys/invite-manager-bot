@@ -3,10 +3,10 @@ import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, SettingsValueResolver } from '../../../../framework/resolvers';
+import { GuildSettingsKey } from '../../../../models/GuildSetting';
 import { JoinInvalidatedReason } from '../../../../models/Join';
 import { LogAction } from '../../../../models/Log';
-import { SettingsKey } from '../../../../models/Setting';
-import { beautify, settingsInfo } from '../../../../settings';
+import { beautify, guildSettingsInfo } from '../../../../settings';
 import { BotCommand, CommandGroup, GuildPermission, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -17,11 +17,11 @@ export default class extends Command {
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(SettingsKey))
+					resolver: new EnumResolver(client, Object.values(GuildSettingsKey))
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, settingsInfo),
+					resolver: new SettingsValueResolver(client, guildSettingsInfo),
 					rest: true
 				}
 			],
@@ -36,7 +36,12 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [key, value]: [SettingsKey, any], flags: {}, context: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[key, value]: [GuildSettingsKey, any],
+		flags: {},
+		context: Context
+	): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
@@ -46,7 +51,7 @@ export default class extends Command {
 			return cmd.action(message, [], {}, context);
 		}
 
-		const info = settingsInfo[key];
+		const info = guildSettingsInfo[key];
 		const oldVal = settings[key];
 		embed.title = key;
 
@@ -139,12 +144,12 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: SettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: GuildSettingsKey, value: any, { t, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
 
-		const info = settingsInfo[key];
+		const info = guildSettingsInfo[key];
 
 		if (info.type === 'Channel' || info.type === 'Channel[]') {
 			let channels = value as TextChannel[];
@@ -175,14 +180,14 @@ export default class extends Command {
 	private async after(
 		message: Message,
 		embed: Embed,
-		key: SettingsKey,
+		key: GuildSettingsKey,
 		value: any,
 		context: Context
 	): Promise<Function> {
 		const { guild, t, me } = context;
 		const member = message.member;
 
-		if (value && (key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)) {
+		if (value && (key === GuildSettingsKey.joinMessage || key === GuildSettingsKey.leaveMessage)) {
 			const preview = await this.client.invs.fillJoinLeaveTemplate(
 				value,
 				guild,
@@ -217,7 +222,7 @@ export default class extends Command {
 			}
 		}
 
-		if (value && key === SettingsKey.rankAnnouncementMessage) {
+		if (value && key === GuildSettingsKey.rankAnnouncementMessage) {
 			const preview = await this.client.msg.fillTemplate(guild, value, {
 				memberId: member.id,
 				memberName: member.user.username,
@@ -242,7 +247,7 @@ export default class extends Command {
 			}
 		}
 
-		if (key === SettingsKey.autoSubtractFakes) {
+		if (key === GuildSettingsKey.autoSubtractFakes) {
 			if (value) {
 				// Subtract fake invites from all members
 				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractFakes);
@@ -261,7 +266,7 @@ export default class extends Command {
 			}
 		}
 
-		if (key === SettingsKey.autoSubtractLeaves) {
+		if (key === GuildSettingsKey.autoSubtractLeaves) {
 			if (value) {
 				// Subtract leaves from all members
 				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
@@ -280,13 +285,13 @@ export default class extends Command {
 			}
 		}
 
-		if (key === SettingsKey.autoSubtractLeaveThreshold) {
+		if (key === GuildSettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
 			const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
 			return async () => await cmd.action(message, [], {}, context);
 		}
 
-		if (key === SettingsKey.announcementVoice) {
+		if (key === GuildSettingsKey.announcementVoice) {
 			// Play sample announcement message
 			if (member.voiceState && member.voiceState.channelID) {
 				const channel = guild.channels.get(member.voiceState.channelID) as VoiceChannel;
