@@ -115,10 +115,7 @@ export class RabbitMqService {
 		}
 	}
 
-	public async sendToManager(
-		message: { id: string; [x: string]: any },
-		isResend: boolean = false
-	) {
+	public async sendToManager(message: { id: string; [x: string]: any }, isResend: boolean = false) {
 		if (!this.conn) {
 			console.log('Send message to RabbitMQ', message);
 			return;
@@ -221,8 +218,7 @@ export class RabbitMqService {
 				if (sets.joinMessageChannel) {
 					const joinChannel = guild.channels.get(sets.joinMessageChannel);
 					if (joinChannel) {
-						joinChannelPerms = joinChannel.permissionsOf(this.client.user.id)
-							.json;
+						joinChannelPerms = joinChannel.permissionsOf(this.client.user.id).json;
 					} else {
 						joinChannelPerms = { 'Invalid channel': true };
 					}
@@ -234,8 +230,7 @@ export class RabbitMqService {
 				if (sets.leaveMessageChannel) {
 					const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
 					if (leaveChannel) {
-						leaveChannelPerms = leaveChannel.permissionsOf(this.client.user.id)
-							.json;
+						leaveChannelPerms = leaveChannel.permissionsOf(this.client.user.id).json;
 					} else {
 						leaveChannelPerms = { 'Invalid channel': true };
 					}
@@ -247,8 +242,7 @@ export class RabbitMqService {
 				if (sets.rankAnnouncementChannel) {
 					const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
 					if (annChannel) {
-						annChannelPerms = annChannel.permissionsOf(this.client.user.id)
-							.json;
+						annChannelPerms = annChannel.permissionsOf(this.client.user.id).json;
 					} else {
 						annChannelPerms = { 'Invalid channel': true };
 					}
@@ -256,9 +250,7 @@ export class RabbitMqService {
 					annChannelPerms = { 'Not set': true };
 				}
 
-				const owner = await this.client
-					.getRESTUser(guild.ownerID)
-					.catch(() => undefined);
+				const owner = await this.client.getRESTUser(guild.ownerID).catch(() => undefined);
 
 				const premium = await this.client.cache.premium.get(guildId);
 
@@ -304,11 +296,7 @@ export class RabbitMqService {
 					});
 				}
 
-				const channel = new FakeChannel(
-					{ id: 'fake', name: 'fake' },
-					guild,
-					100
-				);
+				const channel = new FakeChannel({ id: 'fake', name: 'fake' }, guild, 100);
 				this.client.channelGuildMap[channel.id] = guild.id;
 				guild.channels.add(channel);
 
@@ -380,8 +368,7 @@ export class RabbitMqService {
 	}
 
 	private getCacheSizes() {
-		let channelCount =
-			this.client.groupChannels.size + this.client.privateChannels.size;
+		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
 		let roleCount = 0;
 
 		this.client.guilds.forEach(g => {

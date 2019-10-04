@@ -15,12 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ settings, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { settings, t }: Context): Promise<any> {
 		return this.sendReply(
 			message,
 			t('cmd.prefix.title', {

@@ -12,11 +12,7 @@ export abstract class Resolver {
 		this.client = client;
 	}
 
-	public abstract async resolve(
-		value: any,
-		context: Context,
-		previous: any[]
-	): Promise<any>;
+	public abstract async resolve(value: any, context: Context, previous: any[]): Promise<any>;
 
 	public getType() {
 		return this.constructor.name.replace('Resolver', '').toLowerCase();

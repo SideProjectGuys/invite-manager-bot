@@ -23,8 +23,5 @@ export abstract class MusicPlatform {
 	public abstract getType(): MusicPlatformTypes;
 
 	public abstract getByLink(link: string): Promise<MusicItem>;
-	public abstract search(
-		searchTerm: string,
-		maxResults?: number
-	): Promise<Array<MusicItem>>;
+	public abstract search(searchTerm: string, maxResults?: number): Promise<Array<MusicItem>>;
 }

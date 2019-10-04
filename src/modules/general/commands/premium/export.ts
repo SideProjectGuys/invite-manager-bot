@@ -51,9 +51,7 @@ export default class extends Command {
 				if (type === 'leaderboard') {
 					let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-					const { keys, invs } = await this.client.invs.generateLeaderboard(
-						guild
-					);
+					const { keys, invs } = await this.client.invs.generateLeaderboard(guild);
 					keys.forEach(id => {
 						const i = invs[id];
 						csv +=

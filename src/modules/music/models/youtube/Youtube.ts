@@ -64,10 +64,7 @@ export class Youtube extends MusicPlatform {
 		});
 	}
 
-	public async search(
-		searchTerm: string,
-		maxResults: number = 10
-	): Promise<Array<MusicItem>> {
+	public async search(searchTerm: string, maxResults: number = 10): Promise<Array<MusicItem>> {
 		const tracks = await this.service.resolveTracks(`ytsearch:${searchTerm}`);
 
 		return tracks.slice(0, maxResults).map(track => {
@@ -85,9 +82,7 @@ export class Youtube extends MusicPlatform {
 
 	public parseYoutubeDuration(PT: string) {
 		let durationInSec = 0;
-		const matches = PT.match(
-			/P(?:(\d*)Y)?(?:(\d*)M)?(?:(\d*)W)?(?:(\d*)D)?T(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/i
-		);
+		const matches = PT.match(/P(?:(\d*)Y)?(?:(\d*)M)?(?:(\d*)W)?(?:(\d*)D)?T(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/i);
 		const parts = [
 			{
 				// years
@@ -127,8 +122,7 @@ export class Youtube extends MusicPlatform {
 		];
 		for (var i = 0; i < parts.length; i++) {
 			if (typeof matches[parts[i].pos] !== 'undefined') {
-				durationInSec +=
-					parseInt(matches[parts[i].pos], 10) * parts[i].multiplier;
+				durationInSec += parseInt(matches[parts[i].pos], 10) * parts[i].multiplier;
 			}
 		}
 		return durationInSec;

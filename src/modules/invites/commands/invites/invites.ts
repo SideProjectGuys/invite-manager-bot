@@ -23,12 +23,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, t, me }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, me }: Context): Promise<any> {
 		const target = user ? user : message.author;
 		const invites = await this.client.cache.invites.getOne(guild.id, target.id);
 
@@ -55,28 +50,14 @@ export default class extends Command {
 
 		let targetMember = guild.members.get(target.id);
 		if (!targetMember) {
-			targetMember = await guild
-				.getRESTMember(target.id)
-				.catch(() => undefined);
+			targetMember = await guild.getRESTMember(target.id).catch(() => undefined);
 		}
 		// Only process if the user is still in the guild
 		if (targetMember && !targetMember.user.bot) {
-			const promoteInfo = await this.client.invs.promoteIfQualified(
-				guild,
-				targetMember,
-				me,
-				invites.total
-			);
+			const promoteInfo = await this.client.invs.promoteIfQualified(guild, targetMember, me, invites.total);
 
 			if (promoteInfo) {
-				const {
-					nextRank,
-					nextRankName,
-					numRanks,
-					shouldHave,
-					shouldNotHave,
-					dangerous
-				} = promoteInfo;
+				const { nextRank, nextRankName, numRanks, shouldHave, shouldNotHave, dangerous } = promoteInfo;
 
 				if (nextRank) {
 					const nextRankPointsDiff = nextRank.numInvites - invites.total;

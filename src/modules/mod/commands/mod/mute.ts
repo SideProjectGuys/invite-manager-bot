@@ -25,13 +25,13 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			/*flags: [
+			flags: [
 				{
 					name: 'duration',
 					resolver: DurationResolver,
 					short: 'd'
 				}
-			],*/
+			],
 			group: CommandGroup.Moderation,
 			defaultAdminOnly: true,
 			guildOnly: true
@@ -86,11 +86,11 @@ export default class extends Command {
 					await this.client.scheduler.addScheduledAction(
 						guild.id,
 						ScheduledActionType.unmute,
-						{ memberId: targetMember.id },
+						{ memberId: targetMember.id, roleId: mutedRole },
 						moment()
 							.add(duration)
 							.toDate(),
-						'Unmute from timed mute command'
+						'Unmute from timed `!mute` command'
 					);
 				}
 

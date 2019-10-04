@@ -37,9 +37,7 @@ export class TuneInRadio extends MusicPlatform {
 		if (matches) {
 			const id = matches[1];
 
-			const res = await axios.get(
-				`${BASE_URL}profiles/${id}&formats=mp3,aac,ogg`
-			);
+			const res = await axios.get(`${BASE_URL}profiles/${id}&formats=mp3,aac,ogg`);
 
 			const station: TuneInRadioStation = res.data.Item;
 
@@ -55,19 +53,12 @@ export class TuneInRadio extends MusicPlatform {
 		}
 	}
 
-	public async search(
-		searchTerm: string,
-		maxResults: number = 10
-	): Promise<MusicItem[]> {
+	public async search(searchTerm: string, maxResults: number = 10): Promise<MusicItem[]> {
 		const search = encodeURIComponent(searchTerm);
 
-		const res = await axios.get(
-			`${BASE_URL}profiles?fullTextSearch=true&formats=mp3,aac,ogg&query=${search}`
-		);
+		const res = await axios.get(`${BASE_URL}profiles?fullTextSearch=true&formats=mp3,aac,ogg&query=${search}`);
 
-		const stations = res.data.Items.find(
-			(i: any) => i.ContainerType === 'Stations'
-		);
+		const stations = res.data.Items.find((i: any) => i.ContainerType === 'Stations');
 
 		if (!stations) {
 			return [];

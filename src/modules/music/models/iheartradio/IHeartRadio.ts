@@ -31,10 +31,7 @@ export class IHeartRadio extends MusicPlatform {
 		return this.search(link, 1).then(res => res[0]);
 	}
 
-	public async search(
-		searchTerm: string,
-		maxResults: number = 10
-	): Promise<IHeartMusicItem[]> {
+	public async search(searchTerm: string, maxResults: number = 10): Promise<IHeartMusicItem[]> {
 		const matches = await iheart.search(searchTerm);
 
 		return matches.stations.map(

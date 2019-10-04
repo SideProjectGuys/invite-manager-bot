@@ -15,12 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
 		await guild.getRESTMembers();
 
 		const ONE_SECOND = 1000;
@@ -33,17 +28,10 @@ export default class extends Command {
 
 		const botCount = guild.members.filter(m => m.user.bot).length;
 		const humanCount = guild.memberCount - botCount;
-		const offlineCount = guild.members.filter(m => m.status === 'offline')
-			.length;
-		const joinedToday = guild.members.filter(
-			m => todayTimestamp - m.joinedAt < ONE_DAY
-		).length;
-		const joinedThisWeek = guild.members.filter(
-			m => todayTimestamp - m.joinedAt < ONE_WEEK
-		).length;
-		const joinedThisMonth = guild.members.filter(
-			m => todayTimestamp - m.joinedAt < ONE_MONTH
-		).length;
+		const offlineCount = guild.members.filter(m => m.status === 'offline').length;
+		const joinedToday = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_DAY).length;
+		const joinedThisWeek = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_WEEK).length;
+		const joinedThisMonth = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_MONTH).length;
 
 		const embed = this.createEmbed();
 		embed.fields.push({

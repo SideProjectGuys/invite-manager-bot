@@ -1,15 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
-import {
-	Embed,
-	EmbedBase,
-	EmbedOptions,
-	Emoji,
-	Guild,
-	GuildChannel,
-	Message,
-	TextableChannel,
-	User
-} from 'eris';
+import { Embed, EmbedBase, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -22,15 +12,11 @@ const truthy = new Set(['true', 'on', 'y', 'yes', 'enable']);
 
 function convertEmbedToPlain(embed: EmbedBase) {
 	const url = embed.url ? `(${embed.url})` : '';
-	const authorUrl =
-		embed.author && embed.author.url ? `(${embed.author.url})` : '';
+	const authorUrl = embed.author && embed.author.url ? `(${embed.author.url})` : '';
 
 	let fields = '';
 	if (embed.fields && embed.fields.length) {
-		fields =
-			'\n\n' +
-			embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') +
-			'\n\n';
+		fields = '\n\n' + embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') + '\n\n';
 	}
 
 	return (
@@ -45,10 +31,7 @@ function convertEmbedToPlain(embed: EmbedBase) {
 }
 
 export type CreateEmbedFunc = (options?: EmbedOptions) => Embed;
-export type SendReplyFunc = (
-	message: Message,
-	reply: EmbedOptions | string
-) => Promise<Message>;
+export type SendReplyFunc = (message: Message, reply: EmbedOptions | string) => Promise<Message>;
 export type SendEmbedFunc = (
 	target: TextableChannel,
 	embed: EmbedOptions | string,
@@ -68,23 +51,15 @@ export class MessagingService {
 		this.client = client;
 	}
 
-	public createEmbed(
-		options: EmbedOptions = {},
-		overrideFooter: boolean = true
-	): Embed {
-		let color = options.color
-			? (options.color as number | string)
-			: parseInt('00AE86', 16);
+	public createEmbed(options: EmbedOptions = {}, overrideFooter: boolean = true): Embed {
+		let color = options.color ? (options.color as number | string) : parseInt('00AE86', 16);
 		// Parse colors in hashtag/hex format
 		if (typeof color === 'string') {
 			const code = color.startsWith('#') ? color.substr(1) : color;
 			color = parseInt(code, 16);
 		}
 
-		const footer =
-			overrideFooter || !options.footer
-				? this.getDefaultFooter()
-				: options.footer;
+		const footer = overrideFooter || !options.footer ? this.getDefaultFooter() : options.footer;
 
 		delete options.color;
 		return {
@@ -108,15 +83,8 @@ export class MessagingService {
 		return this.sendEmbed(message.channel, reply, message.author);
 	}
 
-	public sendEmbed(
-		target: TextableChannel,
-		embed: EmbedOptions | string,
-		fallbackUser?: User
-	) {
-		const e =
-			typeof embed === 'string'
-				? this.createEmbed({ description: embed })
-				: embed;
+	public sendEmbed(target: TextableChannel, embed: EmbedOptions | string, fallbackUser?: User) {
+		const e = typeof embed === 'string' ? this.createEmbed({ description: embed }) : embed;
 
 		e.fields = e.fields.filter(field => field && field.value);
 
@@ -126,10 +94,7 @@ export class MessagingService {
 			withScope(scope => {
 				if (target instanceof GuildChannel) {
 					scope.setUser({ id: target.guild.id });
-					scope.setExtra(
-						'permissions',
-						target.permissionsOf(this.client.user.id).json
-					);
+					scope.setExtra('permissions', target.permissionsOf(this.client.user.id).json);
 				}
 				scope.setExtra('channel', target.id);
 				scope.setExtra('message', embed);
@@ -191,9 +156,7 @@ export class MessagingService {
 				// If we don't have permission to send messages try DM
 				if (
 					target instanceof GuildChannel &&
-					!target
-						.permissionsOf(this.client.user.id)
-						.has(GuildPermission.SEND_MESSAGES)
+					!target.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)
 				) {
 					return sendDM({ code: 50013 });
 				}
@@ -211,12 +174,8 @@ export class MessagingService {
 				// If we don't have permissions to embed links try plain content
 				if (
 					target instanceof GuildChannel &&
-					(!target
-						.permissionsOf(this.client.user.id)
-						.has(GuildPermission.SEND_MESSAGES) ||
-						!target
-							.permissionsOf(this.client.user.id)
-							.has(GuildPermission.EMBED_LINKS))
+					(!target.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES) ||
+						!target.permissionsOf(this.client.user.id).has(GuildPermission.EMBED_LINKS))
 				) {
 					return sendPlain();
 				}
@@ -243,15 +202,11 @@ export class MessagingService {
 		let msg = template;
 
 		if (strings) {
-			Object.keys(strings).forEach(
-				k => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k]))
-			);
+			Object.keys(strings).forEach(k => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k])));
 		}
 
 		if (dates) {
-			Object.keys(dates).forEach(
-				k => (msg = this.fillDatePlaceholder(msg, k, dates[k]))
-			);
+			Object.keys(dates).forEach(k => (msg = this.fillDatePlaceholder(msg, k, dates[k])));
 		}
 
 		try {
@@ -260,9 +215,7 @@ export class MessagingService {
 				return this.createEmbed(temp, false);
 			} else {
 				const lang = (await this.client.cache.settings.get(guild.id)).lang;
-				msg +=
-					'\n\n' +
-					i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
+				msg += '\n\n' + i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
 			}
 		} catch (e) {
 			//
@@ -271,16 +224,9 @@ export class MessagingService {
 		return msg;
 	}
 
-	private fillDatePlaceholder(
-		msg: string,
-		name: string,
-		value: moment.Moment | string
-	) {
+	private fillDatePlaceholder(msg: string, name: string, value: moment.Moment | string) {
 		const date = typeof value === 'string' ? value : value.calendar();
-		const duration =
-			typeof value === 'string'
-				? value
-				: moment.duration(value.diff(moment())).humanize();
+		const duration = typeof value === 'string' ? value : moment.duration(value.diff(moment())).humanize();
 		const timeAgo = typeof value === 'string' ? value : value.fromNow();
 
 		return msg
@@ -289,10 +235,7 @@ export class MessagingService {
 			.replace(new RegExp(`{${name}:timeAgo}`, 'g'), timeAgo);
 	}
 
-	public async prompt(
-		message: Message,
-		promptStr: string
-	): Promise<[PromptResult, Message]> {
+	public async prompt(message: Message, promptStr: string): Promise<[PromptResult, Message]> {
 		await message.channel.createMessage(promptStr);
 
 		let confirmation: Message;
@@ -384,9 +327,7 @@ export class MessagingService {
 		if (page > 0) {
 			await prevMsg.addReaction(upSymbol);
 		} else {
-			const users = await prevMsg
-				.getReaction(upSymbol, 10)
-				.catch(() => [] as User[]);
+			const users = await prevMsg.getReaction(upSymbol, 10).catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
 				await prevMsg.removeReaction(upSymbol, this.client.user.id);
 			}
@@ -395,9 +336,7 @@ export class MessagingService {
 		if (page < maxPage - 1) {
 			await prevMsg.addReaction(downSymbol);
 		} else {
-			const users = await prevMsg
-				.getReaction(downSymbol, 10)
-				.catch(() => [] as User[]);
+			const users = await prevMsg.getReaction(downSymbol, 10).catch(() => [] as User[]);
 			if (users.find(u => u.id === author.id)) {
 				await prevMsg.removeReaction(downSymbol, this.client.user.id);
 			}

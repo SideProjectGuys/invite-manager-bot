@@ -56,10 +56,7 @@ export class RaveDJMusicItem extends MusicItem {
 				name: 'Songs contained',
 				value: this.medias
 					.slice(0, 10) // TODO
-					.map(
-						(medium, index) =>
-							`${index}: [${medium.title}](https://youtube.com/watch?v=${medium.providerId})`
-					)
+					.map((medium, index) => `${index}: [${medium.title}](https://youtube.com/watch?v=${medium.providerId})`)
 					.join('\n')
 			}
 		]);
@@ -67,10 +64,7 @@ export class RaveDJMusicItem extends MusicItem {
 	}
 
 	public getProgress(time: number) {
-		const progress = Math.max(
-			0,
-			Math.min(30, Math.round(30 * (time / this.duration)))
-		);
+		const progress = Math.max(0, Math.min(30, Math.round(30 * (time / this.duration))));
 		return (
 			'```\n[' +
 			'='.repeat(progress) +

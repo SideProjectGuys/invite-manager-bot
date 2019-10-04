@@ -6,10 +6,7 @@ import { Resolver, ResolverConstructor } from './Resolver';
 export class ArrayResolver extends Resolver {
 	private resolver: Resolver;
 
-	public constructor(
-		client: IMClient,
-		resolver: Resolver | ResolverConstructor
-	) {
+	public constructor(client: IMClient, resolver: Resolver | ResolverConstructor) {
 		super(client);
 
 		if (resolver instanceof Resolver) {
@@ -19,11 +16,7 @@ export class ArrayResolver extends Resolver {
 		}
 	}
 
-	public async resolve(
-		value: string,
-		context: Context,
-		previous: any[]
-	): Promise<any[]> {
+	public async resolve(value: string, context: Context, previous: any[]): Promise<any[]> {
 		if (!value) {
 			return;
 		}
@@ -58,8 +51,6 @@ export class ArrayResolver extends Resolver {
 			}
 		}
 
-		return await Promise.all(
-			splits.map(s => this.resolver.resolve(s, context, previous))
-		);
+		return await Promise.all(splits.map(s => this.resolver.resolve(s, context, previous)));
 	}
 }

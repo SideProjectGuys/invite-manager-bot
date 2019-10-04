@@ -20,24 +20,13 @@ export default class extends Command {
 			group: CommandGroup.Other,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!makeMentionable @Role',
-				'!makeMentionable "Role with space"'
-			]
+			extraExamples: ['!makeMentionable @Role', '!makeMentionable "Role with space"']
 		});
 	}
 
-	public async action(
-		message: Message,
-		[role]: [Role],
-		flags: {},
-		{ t, me, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, [role]: [Role], flags: {}, { t, me, guild }: Context): Promise<any> {
 		if (role.mentionable) {
-			return this.sendReply(
-				message,
-				t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` })
-			);
+			return this.sendReply(message, t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` }));
 		} else {
 			let myRole: Role;
 			me.roles.forEach(r => {

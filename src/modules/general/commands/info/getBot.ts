@@ -15,12 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
 		const embed = this.createEmbed();
 
 		const params = [];
@@ -30,9 +25,7 @@ export default class extends Command {
 			params.push(`guild=${guild.id}`);
 		}
 
-		embed.description =
-			`[${t('cmd.getBot.title')}]` +
-			`(https://invitemanager.co/add-bot?${params.join('&')})`;
+		embed.description = `[${t('cmd.getBot.title')}]` + `(https://invitemanager.co/add-bot?${params.join('&')})`;
 
 		return this.sendReply(message, embed);
 	}
