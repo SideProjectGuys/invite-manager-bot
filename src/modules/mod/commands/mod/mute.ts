@@ -3,7 +3,7 @@ import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import { MemberResolver, StringResolver } from '../../../../framework/resolvers';
+import { DurationResolver, MemberResolver, StringResolver } from '../../../../framework/resolvers';
 import { PunishmentType } from '../../../../models/PunishmentConfig';
 import { ScheduledActionType } from '../../../../models/ScheduledAction';
 import { CommandGroup, ModerationCommand } from '../../../../types';
