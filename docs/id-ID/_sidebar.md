@@ -21,7 +21,7 @@
   - Invite Management
 
     - [Gambaran](/id-ID/modules/invites/overview.md)
-    - [Pesan khusus](/id-ID/modules/invites/custom-message.md)
+    - [Pesan khusus](/id-ID/modules/invites/custom-messages.md)
       - [Contoh](/id-ID/modules/invites/examples.md)
 
   - Moderasi
