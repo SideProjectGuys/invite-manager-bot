@@ -3,7 +3,7 @@ import { Guild } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { ScheduledActionAttributes, scheduledActions, ScheduledActionType } from '../../sequelize';
+import { ScheduledAction, ScheduledActionType } from '../../models/ScheduledAction';
 
 export class SchedulerService {
 	private client: IMClient = null;
@@ -31,8 +31,7 @@ export class SchedulerService {
 		date: Date,
 		reason: string
 	) {
-		const action = await scheduledActions.create({
-			id: null,
+		const action = await this.client.repo.scheduledAction.save({
 			guildId: guildId,
 			actionType: actionType,
 			args: args,
@@ -42,7 +41,7 @@ export class SchedulerService {
 		this.createTimer(action);
 	}
 
-	private createTimer(action: ScheduledActionAttributes) {
+	private createTimer(action: ScheduledAction) {
 		const millisUntilAction = Math.max(1000, moment(action.date).diff(moment(), 'milliseconds'));
 		const func = async () => {
 			const guild = this.client.guilds.get(action.guildId);
@@ -53,7 +52,7 @@ export class SchedulerService {
 
 			try {
 				await this.scheduledActionFunctions[action.actionType](guild, action.args);
-				await scheduledActions.destroy({ where: { id: action.id } });
+				await this.client.repo.scheduledAction.delete({ id: action.id });
 			} catch (error) {
 				withScope(scope => {
 					scope.setExtra('action', JSON.stringify(action));
@@ -66,7 +65,7 @@ export class SchedulerService {
 	}
 
 	public async cancelScheduledAction(actionId: number) {
-		await scheduledActions.destroy({ where: { id: actionId } });
+		await this.client.repo.scheduledAction.delete({ id: actionId });
 		await this.removeTimer(actionId);
 	}
 
