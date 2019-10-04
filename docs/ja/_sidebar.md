@@ -21,7 +21,7 @@
   - Invite Management
 
     - [オーバービュー](/ja/modules/invites/overview.md)
-    - [カスタム-メッセージ](/ja/modules/invites/custom-message.md)
+    - [カスタム-メッセージ](/ja/modules/invites/custom-messages.md)
       - [例](/ja/modules/invites/examples.md)
 
   - 管理

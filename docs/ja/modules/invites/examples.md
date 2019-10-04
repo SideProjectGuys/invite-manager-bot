@@ -18,7 +18,7 @@
 
 #### ** Screenshot **
 
-![Join Embed](../../assets/invite-manager-join-message-premium.png)
+![Join Embed](../../../assets/invite-manager-join-message-premium.png)
 
 #### ** Code **
 
@@ -34,7 +34,7 @@
 
 #### ** Screenshot **
 
-![Leave Embed](../../assets/invite-manager-leave-message-premium.png)
+![Leave Embed](../../../assets/invite-manager-leave-message-premium.png)
 
 #### ** Code **
 
