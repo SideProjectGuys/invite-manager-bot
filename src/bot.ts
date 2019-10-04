@@ -44,9 +44,7 @@ console.log('Syncing database...');
 console.log('-------------------------------------');
 sequelize.sync().then(async () => {
 	console.log('-------------------------------------');
-	console.log(
-		`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`
-	);
+	console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
 	console.log('-------------------------------------');
 	const client = new IMClient({
 		version: pkg.version,

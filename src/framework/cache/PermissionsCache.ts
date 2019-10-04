@@ -1,18 +1,9 @@
 import { rolePermissions, roles } from '../../sequelize';
-import {
-	BotCommand,
-	InvitesCommand,
-	ModerationCommand,
-	MusicCommand
-} from '../../types';
+import { BotCommand, InvitesCommand, ModerationCommand, MusicCommand } from '../../types';
 
 import { Cache } from './Cache';
 
-type AnyCommand =
-	| BotCommand
-	| InvitesCommand
-	| ModerationCommand
-	| MusicCommand;
+type AnyCommand = BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
 
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 

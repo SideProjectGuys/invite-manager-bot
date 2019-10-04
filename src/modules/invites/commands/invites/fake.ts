@@ -3,13 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver } from '../../../../framework/resolvers';
-import {
-	inviteCodes,
-	JoinAttributes,
-	joins,
-	members,
-	sequelize
-} from '../../../../sequelize';
+import { inviteCodes, JoinAttributes, joins, members, sequelize } from '../../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
 const USERS_PER_PAGE = 20;
@@ -32,12 +26,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[_page]: [number],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: Context): Promise<any> {
 		type ExtendedJoin = JoinAttributes & {
 			memberName: string;
 			totalJoins: string;
@@ -52,9 +41,7 @@ export default class extends Command {
 				[
 					sequelize.fn(
 						'GROUP_CONCAT',
-						sequelize.literal(
-							'CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"'
-						)
+						sequelize.literal('CONCAT(`exactMatch`.`inviterId`, "|", `exactMatch->inviter`.`name`) SEPARATOR "\\t"')
 					),
 					'inviterIds'
 				]
@@ -93,10 +80,7 @@ export default class extends Command {
 
 		const suspiciousJoins = js
 			.filter((j: ExtendedJoin) => parseInt(j.totalJoins, 10) > 1)
-			.sort(
-				(a: ExtendedJoin, b: ExtendedJoin) =>
-					parseInt(b.totalJoins, 10) - parseInt(a.totalJoins, 10)
-			);
+			.sort((a: ExtendedJoin, b: ExtendedJoin) => parseInt(b.totalJoins, 10) - parseInt(a.totalJoins, 10));
 
 		if (suspiciousJoins.length === 0) {
 			return this.sendReply(message, t('cmd.fake.noneSinceJoin'));
@@ -108,41 +92,39 @@ export default class extends Command {
 		await this.showPaginated(message, p, maxPage, page => {
 			let description = '';
 
-			suspiciousJoins
-				.slice(page * USERS_PER_PAGE, (page + 1) * USERS_PER_PAGE)
-				.forEach((join: ExtendedJoin) => {
-					if (!join.inviterIds) {
-						return;
-					}
+			suspiciousJoins.slice(page * USERS_PER_PAGE, (page + 1) * USERS_PER_PAGE).forEach((join: ExtendedJoin) => {
+				if (!join.inviterIds) {
+					return;
+				}
 
-					const invs: { [x: string]: number } = {};
-					join.inviterIds.split('\t').forEach((idName: string) => {
-						const name = idName.split('|', 2)[1];
-						if (invs[name]) {
-							invs[name]++;
-						} else {
-							invs[name] = 1;
-						}
-					});
-
-					const mainText = t('cmd.fake.join.entry.text', {
-						name: join.memberName,
-						times: join.totalJoins
-					});
-
-					const invText = Object.keys(invs)
-						.map(name =>
-							invs[name] > 1
-								? t('cmd.fake.join.entry.multi', { name, times: invs[name] })
-								: t('cmd.fake.join.entry.single', { name })
-						)
-						.join(', ');
-
-					const newFakeText = mainText + ' ' + invText + '\n';
-					if (description.length + newFakeText.length < 2048) {
-						description += newFakeText;
+				const invs: { [x: string]: number } = {};
+				join.inviterIds.split('\t').forEach((idName: string) => {
+					const name = idName.split('|', 2)[1];
+					if (invs[name]) {
+						invs[name]++;
+					} else {
+						invs[name] = 1;
 					}
 				});
+
+				const mainText = t('cmd.fake.join.entry.text', {
+					name: join.memberName,
+					times: join.totalJoins
+				});
+
+				const invText = Object.keys(invs)
+					.map(name =>
+						invs[name] > 1
+							? t('cmd.fake.join.entry.multi', { name, times: invs[name] })
+							: t('cmd.fake.join.entry.single', { name })
+					)
+					.join(', ');
+
+				const newFakeText = mainText + ' ' + invText + '\n';
+				if (description.length + newFakeText.length < 2048) {
+					description += newFakeText;
+				}
+			});
 
 			return this.createEmbed({
 				title: t('cmd.fake.title'),

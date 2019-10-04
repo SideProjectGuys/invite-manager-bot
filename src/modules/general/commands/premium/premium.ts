@@ -6,17 +6,8 @@ import sequelize = require('sequelize');
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver } from '../../../../framework/resolvers';
-import {
-	guilds,
-	premiumSubscriptionGuilds,
-	premiumSubscriptions
-} from '../../../../sequelize';
-import {
-	BotCommand,
-	BotType,
-	CommandGroup,
-	GuildPermission
-} from '../../../../types';
+import { guilds, premiumSubscriptionGuilds, premiumSubscriptions } from '../../../../sequelize';
+import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../../types';
 
 enum Action {
 	Check = 'Check',
@@ -38,11 +29,7 @@ export default class extends Command {
 			group: CommandGroup.Premium,
 			guildOnly: false,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!premium check',
-				'!premium activate',
-				'!premium deactivate'
-			]
+			extraExamples: ['!premium check', '!premium activate', '!premium deactivate']
 		});
 	}
 
@@ -80,8 +67,7 @@ export default class extends Command {
 				embed.fields.push({
 					name: t('cmd.premium.feature.embeds.title'),
 					value: t('cmd.premium.feature.embeds.text', {
-						link:
-							'https://docs.invitemanager.co/bot/custom-messages/join-message-examples'
+						link: 'https://docs.invitemanager.co/bot/custom-messages/join-message-examples'
 					})
 				});
 
@@ -120,10 +106,7 @@ export default class extends Command {
 				let guildList = '';
 				allGuildSubs.forEach((guildSub: any) => {
 					const guildName = guildSub['guild.name'];
-					guildList +=
-						`- **${guildName}**` +
-						(guildSub.guildId === guildId ? ' *(This server)*' : '') +
-						'\n';
+					guildList += `- **${guildName}**` + (guildSub.guildId === guildId ? ' *(This server)*' : '') + '\n';
 				});
 				if (guildId) {
 					if (allGuildSubs.some(s => s.guildId === guildId)) {
@@ -193,9 +176,7 @@ export default class extends Command {
 					embed.description = t('cmd.premium.deactivate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (
-					!message.member.permission.has(GuildPermission.ADMINISTRATOR)
-				) {
+				} else if (!message.member.permission.has(GuildPermission.ADMINISTRATOR)) {
 					embed.description = t('cmd.premium.deactivate.adminOnly');
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');

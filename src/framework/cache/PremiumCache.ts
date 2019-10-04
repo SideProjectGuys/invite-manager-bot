@@ -1,8 +1,4 @@
-import {
-	premiumSubscriptionGuilds,
-	premiumSubscriptions,
-	sequelize
-} from '../../sequelize';
+import { premiumSubscriptionGuilds, premiumSubscriptions, sequelize } from '../../sequelize';
 import { BotType } from '../../types';
 
 import { Cache } from './Cache';

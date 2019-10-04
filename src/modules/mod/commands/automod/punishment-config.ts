@@ -3,11 +3,7 @@ import { Context } from 'vm';
 
 import { IMClient } from '../../../../client';
 import { Command } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	NumberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
+import { EnumResolver, NumberResolver, StringResolver } from '../../../../framework/resolvers';
 import { punishmentConfigs, PunishmentType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
@@ -57,9 +53,7 @@ export default class extends Command {
 				where: { guildId: guild.id },
 				order: [['amount', 'DESC']]
 			});
-			const unusedPunishment = allPunishments.filter(
-				p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0
-			);
+			const unusedPunishment = allPunishments.filter(p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0);
 			embed.description = punishmentConfigList
 				.map(pcl =>
 					t('cmd.punishmentConfig.text', {

@@ -7,16 +7,12 @@ import {
 	toDbValue
 } from '../../../settings';
 
-export class InviteCodeSettingsCache extends Cache<
-	Map<string, InviteCodeSettingsObject>
-> {
+export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSettingsObject>> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(
-		guildId: string
-	): Promise<Map<string, InviteCodeSettingsObject>> {
+	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
 		const sets = await inviteCodeSettings.findAll({
 			where: {
 				guildId
@@ -25,9 +21,7 @@ export class InviteCodeSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set =>
-			map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value })
-		);
+		sets.forEach(set => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
 		return map;
 	}
 

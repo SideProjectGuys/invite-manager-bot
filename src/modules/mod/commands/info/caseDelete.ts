@@ -2,10 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
+import { NumberResolver, StringResolver } from '../../../../framework/resolvers';
 import { strikes } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
@@ -33,12 +30,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[caseNumber]: [number],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [caseNumber]: [number], flags: {}, { guild, t }: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.caseDelete.title', {
 				number: caseNumber

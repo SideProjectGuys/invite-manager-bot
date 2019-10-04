@@ -3,11 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { StringResolver } from '../../../../framework/resolvers';
-import {
-	CommandGroup,
-	MusicCommand,
-	MusicPlatformTypes
-} from '../../../../types';
+import { CommandGroup, MusicCommand, MusicPlatformTypes } from '../../../../types';
 import { RaveDJ } from '../../models/ravedj/RaveDJ';
 
 export default class extends Command {
@@ -30,12 +26,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[videos]: [string],
-		flags: {},
-		{ t, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, [videos]: [string], flags: {}, { t, guild }: Context): Promise<any> {
 		// TODO
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
@@ -51,9 +42,7 @@ export default class extends Command {
 		const platform1 = this.client.music.platforms.getForLink(link1);
 		const platform2 = this.client.music.platforms.getForLink(link2);
 
-		const musicPlatform = this.client.music.platforms.get(
-			MusicPlatformTypes.RaveDJ
-		) as RaveDJ;
+		const musicPlatform = this.client.music.platforms.get(MusicPlatformTypes.RaveDJ) as RaveDJ;
 
 		let mashupId;
 
@@ -69,9 +58,7 @@ export default class extends Command {
 		} else {
 			const [search1, search2] = videos.split(',');
 
-			const youtubePlatform = this.client.music.platforms.get(
-				MusicPlatformTypes.YouTube
-			);
+			const youtubePlatform = this.client.music.platforms.get(MusicPlatformTypes.YouTube);
 			const [result1] = await youtubePlatform.search(search1, 1);
 			const [result2] = await youtubePlatform.search(search2, 1);
 

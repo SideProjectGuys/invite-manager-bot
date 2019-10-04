@@ -57,10 +57,7 @@ export class SoundcloudMusicItem extends MusicItem {
 	}
 
 	public getProgress(time: number) {
-		const progress = Math.max(
-			0,
-			Math.min(30, Math.round(30 * (time / this.duration)))
-		);
+		const progress = Math.max(0, Math.min(30, Math.round(30 * (time / this.duration))));
 		return (
 			'```\n[' +
 			'='.repeat(progress) +

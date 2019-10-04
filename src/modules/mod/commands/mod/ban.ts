@@ -2,18 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
+import { NumberResolver, StringResolver, UserResolver } from '../../../../framework/resolvers';
 import { members, punishments, PunishmentType } from '../../../../sequelize';
-import {
-	BasicUser,
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -54,24 +45,14 @@ export default class extends Command {
 	): Promise<any> {
 		let targetMember = guild.members.get(targetUser.id);
 		if (!targetMember) {
-			targetMember = await guild
-				.getRESTMember(targetUser.id)
-				.catch(() => undefined);
+			targetMember = await guild.getRESTMember(targetUser.id).catch(() => undefined);
 		}
 
 		const embed = this.client.mod.createBasicEmbed(targetUser);
 
-		if (
-			!targetMember ||
-			this.client.mod.isPunishable(guild, targetMember, message.member, me)
-		) {
+		if (!targetMember || this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
 			if (targetMember) {
-				await this.client.mod.informAboutPunishment(
-					targetMember,
-					PunishmentType.ban,
-					settings,
-					{ reason }
-				);
+				await this.client.mod.informAboutPunishment(targetMember, PunishmentType.ban, settings, { reason });
 			}
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;

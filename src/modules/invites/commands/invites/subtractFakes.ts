@@ -16,17 +16,9 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
 		const maxJoins = await joins.findAll({
-			attributes: [
-				[sequelize.fn('MAX', sequelize.col('id')), 'id'],
-				'exactMatchCode'
-			],
+			attributes: [[sequelize.fn('MAX', sequelize.col('id')), 'id'], 'exactMatchCode'],
 			group: ['exactMatchCode', 'memberId'],
 			where: { guildId: guild.id },
 			raw: true
@@ -39,9 +31,7 @@ export default class extends Command {
 		const jIds = maxJoins.map(j => j.id).join(', ');
 		await joins.update(
 			{
-				invalidatedReason: sequelize.literal(
-					`CASE WHEN id IN (${jIds}) THEN invalidatedReason ELSE 'fake' END`
-				) as any
+				invalidatedReason: sequelize.literal(`CASE WHEN id IN (${jIds}) THEN invalidatedReason ELSE 'fake' END`) as any
 			},
 			{
 				where: {

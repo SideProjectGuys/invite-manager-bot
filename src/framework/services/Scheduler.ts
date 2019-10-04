@@ -2,11 +2,7 @@ import crypto from 'crypto';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import {
-	ScheduledActionAttributes,
-	scheduledActions,
-	ScheduledActionType
-} from '../../sequelize';
+import { ScheduledActionAttributes, scheduledActions, ScheduledActionType } from '../../sequelize';
 
 export class SchedulerService {
 	private client: IMClient = null;
@@ -45,11 +41,7 @@ export class SchedulerService {
 		this.createTimer(action);
 	}
 
-	public async cancelScheduledAction(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
+	public async cancelScheduledAction(guildId: string, actionType: ScheduledActionType, args: JSON) {
 		scheduledActions.destroy({
 			where: {
 				guildId: guildId,
@@ -60,11 +52,7 @@ export class SchedulerService {
 		await this.removeTimer(guildId, actionType, args);
 	}
 
-	private getActionHash(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
+	private getActionHash(guildId: string, actionType: ScheduledActionType, args: JSON) {
 		const actionString = `${guildId}|${actionType}|${args}`;
 		return crypto
 			.createHash('md5')
@@ -73,27 +61,16 @@ export class SchedulerService {
 	}
 
 	private createTimer(action: ScheduledActionAttributes) {
-		const secondsUntilAction = moment(action.date).diff(
-			moment(),
-			'milliseconds'
-		);
+		const secondsUntilAction = moment(action.date).diff(moment(), 'milliseconds');
 		const func = () => {
 			this.scheduledActionFunctions[action.actionType](action.args);
 		};
 		const timeout = setTimeout(func, secondsUntilAction);
-		const hash = this.getActionHash(
-			action.guildId,
-			action.actionType,
-			action.args
-		);
+		const hash = this.getActionHash(action.guildId, action.actionType, action.args);
 		this.scheduledActionTimers.set(hash, timeout);
 	}
 
-	private async removeTimer(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
+	private async removeTimer(guildId: string, actionType: ScheduledActionType, args: JSON) {
 		const hash = this.getActionHash(guildId, actionType, args);
 		const timeout = this.scheduledActionTimers.get(hash);
 		clearTimeout(timeout);

@@ -3,11 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { NumberResolver } from '../../../../framework/resolvers';
-import {
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -26,10 +22,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			botPermissions: [
-				GuildPermission.READ_MESSAGE_HISTORY,
-				GuildPermission.MANAGE_MESSAGES
-			],
+			botPermissions: [GuildPermission.READ_MESSAGE_HISTORY, GuildPermission.MANAGE_MESSAGES],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -50,25 +43,15 @@ export default class extends Command {
 			numberOfMessages = 5;
 		}
 
-		const messages = await message.channel.getMessages(
-			Math.min(numberOfMessages, 100),
-			message.id
-		);
+		const messages = await message.channel.getMessages(Math.min(numberOfMessages, 100), message.id);
 
 		const messagesToBeDeleted = messages.filter(msg => {
-			return (
-				msg.content.length < maxTextLength &&
-				msg.attachments.length === 0 &&
-				msg.embeds.length === 0
-			);
+			return msg.content.length < maxTextLength && msg.attachments.length === 0 && msg.embeds.length === 0;
 		});
 
 		messagesToBeDeleted.push(message);
 		try {
-			await this.client.deleteMessages(
-				message.channel.id,
-				messagesToBeDeleted.map(m => m.id)
-			);
+			await this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id));
 
 			embed.title = t('cmd.clean.title');
 			embed.description = t('cmd.clean.text', {

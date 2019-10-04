@@ -2,11 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
+import { NumberResolver, StringResolver, UserResolver } from '../../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -48,9 +44,7 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		const cmd = this.client.cmds.commands.find(
-			c => c.name === InvitesCommand.addInvites
-		);
+		const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.addInvites);
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

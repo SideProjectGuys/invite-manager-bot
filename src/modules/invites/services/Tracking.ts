@@ -51,9 +51,7 @@ export class TrackingService {
 
 		// Save all guilds, sort descending by member count
 		// (Guilds with more members are more likely to get a join)
-		const allGuilds = [...this.client.guilds.values()].sort(
-			(a, b) => b.memberCount - a.memberCount
-		);
+		const allGuilds = [...this.client.guilds.values()].sort((a, b) => b.memberCount - a.memberCount);
 
 		// Fetch all invites from DB
 		const allCodes = await inviteCodes.findAll({
@@ -83,9 +81,7 @@ export class TrackingService {
 
 				if (!guild) {
 					if (allGuilds.length) {
-						console.error(
-							'Guild in pending list was null but list is not empty'
-						);
+						console.error('Guild in pending list was null but list is not empty');
 					}
 					return;
 				}
@@ -95,19 +91,12 @@ export class TrackingService {
 					// Insert data into db
 					await this.insertGuildData(guild);
 
-					console.log(
-						'EVENT(clientReady): Updated invite count for ' + guild.name
-					);
+					console.log('EVENT(clientReady): Updated invite count for ' + guild.name);
 				}
 
 				this.pendingGuilds.delete(guild.id);
-				if (
-					this.pendingGuilds.size % 50 === 0 ||
-					this.pendingGuilds.size === 0
-				) {
-					console.log(
-						`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`
-					);
+				if (this.pendingGuilds.size % 50 === 0 || this.pendingGuilds.size === 0) {
+					console.log(`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`);
 					await this.client.rabbitmq.sendStatusToManager();
 				}
 
@@ -157,9 +146,7 @@ export class TrackingService {
 		if (!role) {
 			const allRoles = await guild.getRESTRoles();
 			const allRanks = await this.client.cache.ranks.get(guild.id);
-			const oldRankIds = allRanks
-				.filter(rank => !allRoles.some(r => r.id === rank.roleId))
-				.map(r => r.id);
+			const oldRankIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.id);
 			await ranks.destroy({
 				where: { guildId: guild.id, roleId: oldRankIds }
 			});
@@ -199,23 +186,15 @@ export class TrackingService {
 		if (member.user.bot) {
 			// Check if it's our premium bot
 			if (member.user.id === this.client.config.proBotId) {
-				console.log(
-					`DISABLING BOT FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`
-				);
+				console.log(`DISABLING BOT FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`);
 				this.client.disabledGuilds.add(guild.id);
 			}
 			return;
 		}
 
 		// If we don't have manage server then what are we even doing here and why did you invite our bot
-		if (
-			!guild.members
-				.get(this.client.user.id)
-				.permission.has(GuildPermission.MANAGE_GUILD)
-		) {
-			console.error(
-				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON MEMBERADD`
-			);
+		if (!guild.members.get(this.client.user.id).permission.has(GuildPermission.MANAGE_GUILD)) {
+			console.error(`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON MEMBERADD`);
 			return;
 		}
 
@@ -228,12 +207,7 @@ export class TrackingService {
 		this.inviteStoreUpdate[guild.id] = Date.now();
 
 		if (!oldInvs) {
-			console.error(
-				'Invite cache for guild ' +
-					guild.id +
-					' was undefined when adding member ' +
-					member.id
-			);
+			console.error('Invite cache for guild ' + guild.id + ' was undefined when adding member ' + member.id);
 			return;
 		}
 
@@ -244,22 +218,14 @@ export class TrackingService {
 
 		if (
 			inviteCodesUsed.length === 0 &&
-			guild.members
-				.get(this.client.user.id)
-				.permission.has(GuildPermission.VIEW_AUDIT_LOGS)
+			guild.members.get(this.client.user.id).permission.has(GuildPermission.VIEW_AUDIT_LOGS)
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
-			const logs = await guild
-				.getAuditLogs(50, undefined, INVITE_CREATE)
-				.catch(() => null as GuildAuditLog);
+			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null as GuildAuditLog);
 			if (logs && logs.entries.length) {
 				const createdCodes = logs.entries
-					.filter(
-						e =>
-							deconstruct(e.id) > lastUpdate &&
-							newInvs[e.after.code] === undefined
-					)
+					.filter(e => deconstruct(e.id) > lastUpdate && newInvs[e.after.code] === undefined)
 					.map(e => ({
 						code: e.after.code,
 						channel: {
@@ -404,53 +370,29 @@ export class TrackingService {
 		const lang = sets.lang;
 		const joinChannelId = sets.joinMessageChannel;
 
-		let joinChannel = joinChannelId
-			? (guild.channels.get(joinChannelId) as TextChannel)
-			: undefined;
+		let joinChannel = joinChannelId ? (guild.channels.get(joinChannelId) as TextChannel) : undefined;
 
 		if (joinChannelId) {
 			// Check if it's a valid channel
 			if (!joinChannel) {
-				console.error(
-					`Guild ${guild.id} has invalid join message channel ${joinChannelId}`
-				);
+				console.error(`Guild ${guild.id} has invalid join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(
-					guild.id,
-					SettingsKey.joinMessageChannel,
-					null
-				);
+				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 			} else if (!(joinChannel instanceof TextChannel)) {
 				// Someone set a non-text channel as join channel
-				console.error(
-					`Guild ${guild.id} has non-text join message channel ${joinChannelId}`
-				);
+				console.error(`Guild ${guild.id} has non-text join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(
-					guild.id,
-					SettingsKey.joinMessageChannel,
-					null
-				);
+				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
-			} else if (
-				!joinChannel
-					.permissionsOf(this.client.user.id)
-					.has(GuildPermission.SEND_MESSAGES)
-			) {
+			} else if (!joinChannel.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)) {
 				// We don't have permission to send messages in the join channel
-				console.error(
-					`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`
-				);
+				console.error(`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(
-					guild.id,
-					SettingsKey.joinMessageChannel,
-					null
-				);
+				await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
 			}
@@ -479,25 +421,12 @@ export class TrackingService {
 		if (!invite) {
 			if (joinChannel) {
 				joinChannel
-					.createMessage(
-						i18n.__(
-							{ locale: lang, phrase: 'messages.joinUnknownInviter' },
-							{ id: member.id }
-						)
-					)
+					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinUnknownInviter' }, { id: member.id }))
 					.catch(async err => {
 						// Missing permissions
-						if (
-							err.code === 50001 ||
-							err.code === 50020 ||
-							err.code === 50013
-						) {
+						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(
-								guild.id,
-								SettingsKey.joinMessageChannel,
-								null
-							);
+							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -505,25 +434,12 @@ export class TrackingService {
 		} else if (isVanity) {
 			if (joinChannel) {
 				joinChannel
-					.createMessage(
-						i18n.__(
-							{ locale: lang, phrase: 'messages.joinVanityUrl' },
-							{ id: member.id }
-						)
-					)
+					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinVanityUrl' }, { id: member.id }))
 					.catch(async err => {
 						// Missing permissions
-						if (
-							err.code === 50001 ||
-							err.code === 50020 ||
-							err.code === 50013
-						) {
+						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(
-								guild.id,
-								SettingsKey.joinMessageChannel,
-								null
-							);
+							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -554,120 +470,71 @@ export class TrackingService {
 		if (!invite.inviter) {
 			if (joinChannel) {
 				joinChannel
-					.createMessage(
-						i18n.__(
-							{ locale: lang, phrase: 'messages.joinServerWidget' },
-							{ id: member.id }
-						)
-					)
+					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinServerWidget' }, { id: member.id }))
 					.catch(async err => {
 						// Missing permissions
-						if (
-							err.code === 50001 ||
-							err.code === 50020 ||
-							err.code === 50013
-						) {
+						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(
-								guild.id,
-								SettingsKey.joinMessageChannel,
-								null
-							);
+							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
 			return;
 		}
 
-		const invitesCached = this.client.cache.invites.hasOne(
-			guild.id,
-			invite.inviter.id
-		);
+		const invitesCached = this.client.cache.invites.hasOne(guild.id, invite.inviter.id);
 
-		const invites = await this.client.cache.invites.getOne(
-			guild.id,
-			invite.inviter.id
-		);
+		const invites = await this.client.cache.invites.getOne(guild.id, invite.inviter.id);
 
 		if (invitesCached) {
 			invites.regular++;
 			invites.fake -= newFakes;
 			invites.leave += removedLeaves;
-			invites.total =
-				invites.regular + invites.custom + invites.fake + invites.leave;
+			invites.total = invites.regular + invites.custom + invites.fake + invites.leave;
 		}
 
 		// Add any roles for this invite code
-		const invCodeSettings = await this.client.cache.inviteCodes.getOne(
-			guild.id,
-			join.exactMatchCode
-		);
+		const invCodeSettings = await this.client.cache.inviteCodes.getOne(guild.id, join.exactMatchCode);
 		if (invCodeSettings && invCodeSettings.roles) {
 			invCodeSettings.roles.forEach(r => member.addRole(r));
 		}
 
 		let inviter = guild.members.get(invite.inviter.id);
 		if (!inviter && invite.inviter) {
-			inviter = await guild
-				.getRESTMember(invite.inviter.id)
-				.catch(() => undefined);
+			inviter = await guild.getRESTMember(invite.inviter.id).catch(() => undefined);
 		}
 
 		if (inviter) {
 			// Promote the inviter if required
 			let me = guild.members.get(this.client.user.id);
 			if (!me) {
-				me = await guild
-					.getRESTMember(this.client.user.id)
-					.catch(() => undefined);
+				me = await guild.getRESTMember(this.client.user.id).catch(() => undefined);
 			}
 
 			if (me) {
-				await this.client.invs.promoteIfQualified(
-					guild,
-					inviter,
-					me,
-					invites.total
-				);
+				await this.client.invs.promoteIfQualified(guild, inviter, me, invites.total);
 			}
 		}
 
 		const joinMessageFormat = sets.joinMessage;
 		if (joinChannel && joinMessageFormat) {
-			const msg = await this.client.invs.fillJoinLeaveTemplate(
-				joinMessageFormat,
-				guild,
-				member,
-				invites,
-				{
-					invite,
-					inviter: inviter || { user: invite.inviter }
-				}
-			);
+			const msg = await this.client.invs.fillJoinLeaveTemplate(joinMessageFormat, guild, member, invites, {
+				invite,
+				inviter: inviter || { user: invite.inviter }
+			});
 
-			await joinChannel
-				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
-				.catch(async err => {
-					// Missing permissions
-					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
-						// Reset the channel
-						await this.client.cache.settings.setOne(
-							guild.id,
-							SettingsKey.joinMessageChannel,
-							null
-						);
-					}
-				});
+			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async err => {
+				// Missing permissions
+				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
+					// Reset the channel
+					await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+				}
+			});
 		}
 	}
 
 	private async onGuildMemberRemove(guild: Guild, member: Member) {
-		console.log(
-			'EVENT(guildMemberRemove):',
-			guild.name,
-			member.user.username,
-			member.user.discriminator
-		);
+		console.log('EVENT(guildMemberRemove):', guild.name, member.user.username, member.user.discriminator);
 
 		if (member.user.bot) {
 			// If the pro version of our bot left, re-enable this version
@@ -736,28 +603,16 @@ export class TrackingService {
 		const leaveChannelId = sets.leaveMessageChannel;
 
 		// Check if leave channel is valid
-		const leaveChannel = leaveChannelId
-			? (guild.channels.get(leaveChannelId) as TextChannel)
-			: undefined;
+		const leaveChannel = leaveChannelId ? (guild.channels.get(leaveChannelId) as TextChannel) : undefined;
 		if (leaveChannelId && !leaveChannel) {
-			console.error(
-				`Guild ${guild.id} has invalid leave ` +
-					`message channel ${leaveChannelId}`
-			);
+			console.error(`Guild ${guild.id} has invalid leave ` + `message channel ${leaveChannelId}`);
 			// Reset the channel
-			await this.client.cache.settings.setOne(
-				guild.id,
-				SettingsKey.leaveMessageChannel,
-				null
-			);
+			await this.client.cache.settings.setOne(guild.id, SettingsKey.leaveMessageChannel, null);
 		}
 
 		// Exit if we can't find the join
 		if (!join || !join.exactMatchCode) {
-			console.log(
-				`Could not find join for ${member.id} in ` +
-					`${guild.id} leaveId: ${leave.id}`
-			);
+			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leave.id}`);
 			if (leaveChannel) {
 				leaveChannel
 					.createMessage(
@@ -770,17 +625,9 @@ export class TrackingService {
 					)
 					.catch(async err => {
 						// Missing permissions
-						if (
-							err.code === 50001 ||
-							err.code === 50020 ||
-							err.code === 50013
-						) {
+						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(
-								guild.id,
-								SettingsKey.joinMessageChannel,
-								null
-							);
+							await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -815,9 +662,7 @@ export class TrackingService {
 		let newLeaves = 0;
 		if (inviterId && sets.autoSubtractLeaves) {
 			const threshold = Number(sets.autoSubtractLeaveThreshold);
-			const timeDiff = moment
-				.utc(join.createdAt)
-				.diff(moment.utc(leave.createdAt), 's');
+			const timeDiff = moment.utc(join.createdAt).diff(moment.utc(leave.createdAt), 's');
 
 			if (timeDiff < threshold) {
 				[newLeaves] = await joins.update(
@@ -837,53 +682,34 @@ export class TrackingService {
 		const invites = await this.client.cache.invites.getOne(guild.id, inviterId);
 
 		invites.leave -= newLeaves;
-		invites.total =
-			invites.regular + invites.custom + invites.fake + invites.leave;
+		invites.total = invites.regular + invites.custom + invites.fake + invites.leave;
 
 		const leaveMessageFormat = sets.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
-			const msg = await this.client.invs.fillJoinLeaveTemplate(
-				leaveMessageFormat,
-				guild,
-				member,
-				invites,
-				{
-					invite: {
-						code: inviteCode,
-						channel: {
-							id: inviteChannelId,
-							name: inviteChannelName
-						}
-					},
-					inviter
-				}
-			);
-
-			leaveChannel
-				.createMessage(typeof msg === 'string' ? msg : { embed: msg })
-				.catch(async err => {
-					// Missing permissions
-					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
-						// Reset the channel
-						await this.client.cache.settings.setOne(
-							guild.id,
-							SettingsKey.joinMessageChannel,
-							null
-						);
+			const msg = await this.client.invs.fillJoinLeaveTemplate(leaveMessageFormat, guild, member, invites, {
+				invite: {
+					code: inviteCode,
+					channel: {
+						id: inviteChannelId,
+						name: inviteChannelName
 					}
-				});
+				},
+				inviter
+			});
+
+			leaveChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async err => {
+				// Missing permissions
+				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
+					// Reset the channel
+					await this.client.cache.settings.setOne(guild.id, SettingsKey.joinMessageChannel, null);
+				}
+			});
 		}
 	}
 
 	public async insertGuildData(guild: Guild) {
-		if (
-			!guild.members
-				.get(this.client.user.id)
-				.permission.has(GuildPermission.MANAGE_GUILD)
-		) {
-			console.error(
-				`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON INSERT`
-			);
+		if (!guild.members.get(this.client.user.id).permission.has(GuildPermission.MANAGE_GUILD)) {
+			console.error(`BOT DOESN'T HAVE MANAGE SERVER PERMISSIONS FOR ${guild.id} ON INSERT`);
 			return;
 		}
 
@@ -892,9 +718,7 @@ export class TrackingService {
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
-			inv =>
-				this.inviteStore[inv.guild.id] === undefined ||
-				this.inviteStore[inv.guild.id][inv.code] === undefined
+			inv => this.inviteStore[inv.guild.id] === undefined || this.inviteStore[inv.guild.id][inv.code] === undefined
 		);
 
 		// Update our local cache
@@ -924,10 +748,7 @@ export class TrackingService {
 			members.bulkCreate(
 				newInviteCodes
 					.map(i => i.inviter)
-					.filter(
-						(u, i, arr) =>
-							!!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i
-					)
+					.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
 					.map(m => ({
 						id: m.id,
 						name: m.username,
@@ -946,9 +767,7 @@ export class TrackingService {
 				newInviteCodes
 					.filter(i => !!i.channel)
 					.map(i => guild.channels.get(i.channel.id))
-					.filter(
-						(c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i
-					)
+					.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
 					.map(c => ({
 						id: c.id,
 						name: c.name,
@@ -984,9 +803,7 @@ export class TrackingService {
 		});
 	}
 
-	private getInviteCounts(
-		invites: Invite[]
-	): { [key: string]: { uses: number; maxUses: number } } {
+	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
 		const localInvites: {
 			[key: string]: { uses: number; maxUses: number };
 		} = {};

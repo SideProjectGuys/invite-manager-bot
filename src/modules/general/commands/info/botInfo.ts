@@ -16,12 +16,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ t, settings, isPremium }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t, settings, isPremium }: Context): Promise<any> {
 		const lang = settings.lang;
 
 		const counts = await this.client.getCounts();

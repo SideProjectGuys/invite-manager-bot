@@ -18,8 +18,7 @@ function getEmpty() {
 const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	invites: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user posts an invite link to another discord server.',
+		description: 'This violation is triggered whenever the user posts an invite link to another discord server.',
 		relatedConfigs: [SettingsKey.autoModInvitesEnabled]
 	},
 	links: {
@@ -34,17 +33,12 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	words: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user posts blacklisted words.',
-		relatedConfigs: [
-			SettingsKey.autoModWordsEnabled,
-			SettingsKey.autoModWordsBlacklist
-		]
+		description: 'This violation is triggered whenever the user posts blacklisted words.',
+		relatedConfigs: [SettingsKey.autoModWordsEnabled, SettingsKey.autoModWordsBlacklist]
 	},
 	allCaps: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user posts a message that is mostly in CAPS.',
+		description: 'This violation is triggered whenever the user posts a message that is mostly in CAPS.',
 		relatedConfigs: [
 			SettingsKey.autoModAllCapsEnabled,
 			SettingsKey.autoModAllCapsMinCharacters,
@@ -53,17 +47,12 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	duplicateText: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user posts the same text multiple times.',
-		relatedConfigs: [
-			SettingsKey.autoModDuplicateTextEnabled,
-			SettingsKey.autoModDuplicateTextTimeframeInSeconds
-		]
+		description: 'This violation is triggered whenever the user posts the same text multiple times.',
+		relatedConfigs: [SettingsKey.autoModDuplicateTextEnabled, SettingsKey.autoModDuplicateTextTimeframeInSeconds]
 	},
 	quickMessages: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user quickly posts messages.',
+		description: 'This violation is triggered whenever the user quickly posts messages.',
 		relatedConfigs: [
 			SettingsKey.autoModQuickMessagesEnabled,
 			SettingsKey.autoModQuickMessagesNumberOfMessages,
@@ -72,30 +61,18 @@ const violationDescription: { [k in ViolationType]: DescriptionObject } = {
 	},
 	mentionUsers: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user mentions mutliple users.',
-		relatedConfigs: [
-			SettingsKey.autoModMentionUsersEnabled,
-			SettingsKey.autoModMentionUsersMaxNumberOfMentions
-		]
+		description: 'This violation is triggered whenever the user mentions mutliple users.',
+		relatedConfigs: [SettingsKey.autoModMentionUsersEnabled, SettingsKey.autoModMentionUsersMaxNumberOfMentions]
 	},
 	mentionRoles: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user mentions mutliple roles.',
-		relatedConfigs: [
-			SettingsKey.autoModMentionRolesEnabled,
-			SettingsKey.autoModMentionRolesMaxNumberOfMentions
-		]
+		description: 'This violation is triggered whenever the user mentions mutliple roles.',
+		relatedConfigs: [SettingsKey.autoModMentionRolesEnabled, SettingsKey.autoModMentionRolesMaxNumberOfMentions]
 	},
 	emojis: {
 		...getEmpty(),
-		description:
-			'This violation is triggered whenever the user posts multiple emojis.',
-		relatedConfigs: [
-			SettingsKey.autoModEmojisEnabled,
-			SettingsKey.autoModEmojisMaxNumberOfEmojis
-		]
+		description: 'This violation is triggered whenever the user posts multiple emojis.',
+		relatedConfigs: [SettingsKey.autoModEmojisEnabled, SettingsKey.autoModEmojisMaxNumberOfEmojis]
 	},
 	hoist: {
 		...getEmpty()

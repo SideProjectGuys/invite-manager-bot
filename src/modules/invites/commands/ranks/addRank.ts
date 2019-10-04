@@ -2,11 +2,7 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	RoleResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
+import { NumberResolver, RoleResolver, StringResolver } from '../../../../framework/resolvers';
 import { LogAction, ranks, roles } from '../../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
@@ -35,10 +31,7 @@ export default class extends Command {
 			group: CommandGroup.Ranks,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!addRank @Role 5',
-				'!addRank "Role with space" 10 Wow, already 10 people!'
-			]
+			extraExamples: ['!addRank @Role 5', '!addRank "Role with space" 10 Wow, already 10 people!']
 		});
 	}
 
@@ -106,17 +99,12 @@ export default class extends Command {
 			isNew = true;
 		}
 
-		await this.client.logAction(
-			guild,
-			message,
-			isNew ? LogAction.addRank : LogAction.updateRank,
-			{
-				rankId: rank.id,
-				roleId: role.id,
-				numInvites: invites,
-				description
-			}
-		);
+		await this.client.logAction(guild, message, isNew ? LogAction.addRank : LogAction.updateRank, {
+			rankId: rank.id,
+			roleId: role.id,
+			numInvites: invites,
+			description
+		});
 
 		this.client.cache.ranks.flush(guild.id);
 

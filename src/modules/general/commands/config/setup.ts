@@ -15,12 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ t, me }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t, me }: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.setup.title'),
 			description: t('cmd.setup.text')

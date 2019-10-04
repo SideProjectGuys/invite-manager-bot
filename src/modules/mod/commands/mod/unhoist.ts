@@ -3,10 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { CommandGroup, ModerationCommand } from '../../../../types';
-import {
-	NAME_DEHOIST_PREFIX,
-	NAME_HOIST_REGEX
-} from '../../services/Moderation';
+import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/Moderation';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -20,12 +17,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: [],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, args: [], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const total = guild.memberCount;
 		const batches = Math.ceil(total / 1000);
 
@@ -79,25 +71,15 @@ export default class extends Command {
 				}
 
 				// If moderated roles are set then only moderate those roles
-				if (
-					settings.autoModModeratedRoles &&
-					settings.autoModModeratedRoles.length > 0
-				) {
-					if (
-						!settings.autoModModeratedRoles.some(
-							r => member.roles.indexOf(r) >= 0
-						)
-					) {
+				if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
+					if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
 						excluded++;
 						continue;
 					}
 				}
 
 				// Don't moderate ignored roles
-				if (
-					settings.autoModIgnoredRoles &&
-					settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)
-				) {
+				if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
 					excluded++;
 					continue;
 				}

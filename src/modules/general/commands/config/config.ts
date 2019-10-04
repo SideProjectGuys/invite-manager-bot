@@ -2,23 +2,10 @@ import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	SettingsValueResolver
-} from '../../../../framework/resolvers';
-import {
-	JoinInvalidatedReason,
-	joins,
-	LogAction,
-	SettingsKey
-} from '../../../../sequelize';
+import { EnumResolver, SettingsValueResolver } from '../../../../framework/resolvers';
+import { JoinInvalidatedReason, joins, LogAction, SettingsKey } from '../../../../sequelize';
 import { beautify, settingsInfo } from '../../../../settings';
-import {
-	BotCommand,
-	CommandGroup,
-	GuildPermission,
-	InvitesCommand
-} from '../../../../types';
+import { BotCommand, CommandGroup, GuildPermission, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -47,20 +34,13 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[key, value]: [SettingsKey, any],
-		flags: {},
-		context: Context
-	): Promise<any> {
+	public async action(message: Message, [key, value]: [SettingsKey, any], flags: {}, context: Context): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
 
 		if (!key) {
-			const cmd = this.client.cmds.commands.find(
-				c => c.name === BotCommand.interactiveConfig
-			);
+			const cmd = this.client.cmds.commands.find(c => c.name === BotCommand.interactiveConfig);
 			return cmd.action(message, [], {}, context);
 		}
 
@@ -102,10 +82,7 @@ export default class extends Command {
 		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
 			if (!info.clearable) {
-				return this.sendReply(
-					message,
-					t('cmd.config.canNotClear', { prefix, key })
-				);
+				return this.sendReply(message, t('cmd.config.canNotClear', { prefix, key }));
 			}
 		} else {
 			// Only validate the config setting if we're not resetting or clearing it
@@ -160,11 +137,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(
-		key: SettingsKey,
-		value: any,
-		{ t, me }: Context
-	): string | null {
+	private validate(key: SettingsKey, value: any, { t, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
@@ -207,10 +180,7 @@ export default class extends Command {
 		const { guild, t, me } = context;
 		const member = message.member;
 
-		if (
-			value &&
-			(key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)
-		) {
+		if (value && (key === SettingsKey.joinMessage || key === SettingsKey.leaveMessage)) {
 			const preview = await this.client.invs.fillJoinLeaveTemplate(
 				value,
 				guild,
@@ -241,10 +211,7 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () =>
-					this.sendReply(message, preview).catch(err =>
-						this.sendReply(message, err.message)
-					);
+				return () => this.sendReply(message, preview).catch(err => this.sendReply(message, err.message));
 			}
 		}
 
@@ -269,19 +236,14 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () =>
-					this.sendReply(message, preview).catch(err =>
-						this.sendReply(message, err.message)
-					);
+				return () => this.sendReply(message, preview).catch(err => this.sendReply(message, err.message));
 			}
 		}
 
 		if (key === SettingsKey.autoSubtractFakes) {
 			if (value) {
 				// Subtract fake invites from all members
-				const cmd = this.client.cmds.commands.find(
-					c => c.name === InvitesCommand.subtractFakes
-				);
+				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractFakes);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all fake invalidations
@@ -302,9 +264,7 @@ export default class extends Command {
 		if (key === SettingsKey.autoSubtractLeaves) {
 			if (value) {
 				// Subtract leaves from all members
-				const cmd = this.client.cmds.commands.find(
-					c => c.name === InvitesCommand.subtractLeaves
-				);
+				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all leave invalidations
@@ -324,18 +284,14 @@ export default class extends Command {
 
 		if (key === SettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			const cmd = this.client.cmds.commands.find(
-				c => c.name === InvitesCommand.subtractLeaves
-			);
+			const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
 			return async () => await cmd.action(message, [], {}, context);
 		}
 
 		if (key === SettingsKey.announcementVoice) {
 			// Play sample announcement message
 			if (member.voiceState && member.voiceState.channelID) {
-				const channel = guild.channels.get(
-					member.voiceState.channelID
-				) as VoiceChannel;
+				const channel = guild.channels.get(member.voiceState.channelID) as VoiceChannel;
 				const conn = await this.client.music.getMusicConnection(guild);
 				await conn.playAnnouncement(value, `Hi, my name is ${value}`, channel);
 			}

@@ -44,11 +44,7 @@ export class DBQueueService {
 		this.logActions.push(action);
 	}
 
-	public addCommandUsage(
-		cmdUsage: CommandUsageAttributes,
-		guild: Guild,
-		user: BasicUser
-	) {
+	public addCommandUsage(cmdUsage: CommandUsageAttributes, guild: Guild, user: BasicUser) {
 		if (!this.doneGuilds.has(guild.id)) {
 			this.guilds.add(guild);
 		}
@@ -68,11 +64,7 @@ export class DBQueueService {
 	}
 
 	private async syncDB() {
-		if (
-			this.logActions.length === 0 &&
-			this.cmdUsages.length === 0 &&
-			this.incidents.length === 0
-		) {
+		if (this.logActions.length === 0 && this.cmdUsages.length === 0 && this.incidents.length === 0) {
 			return;
 		}
 

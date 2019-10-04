@@ -3,16 +3,8 @@ import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import {
-	members,
-	punishments,
-	PunishmentType,
-	ScheduledActionType
-} from '../../../../sequelize';
+import { MemberResolver, StringResolver } from '../../../../framework/resolvers';
+import { members, punishments, PunishmentType, ScheduledActionType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -57,15 +49,8 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
-		} else if (
-			this.client.mod.isPunishable(guild, targetMember, message.member, me)
-		) {
-			await this.client.mod.informAboutPunishment(
-				targetMember,
-				PunishmentType.mute,
-				settings,
-				{ reason }
-			);
+		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
+			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
 				await targetMember.addRole(mutedRole, reason);

@@ -56,17 +56,9 @@ export class InvitesService {
 		this.client = client;
 	}
 
-	public async getInviteCounts(
-		guildId: string,
-		memberId: string
-	): Promise<InviteCounts> {
+	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
 		const inviteCodePromise = inviteCodes.findOne({
-			attributes: [
-				[
-					sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')),
-					'total'
-				]
-			],
+			attributes: [[sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
 			where: {
 				guildId: guildId,
 				inviterId: memberId,
@@ -75,10 +67,7 @@ export class InvitesService {
 			raw: true
 		});
 		const joinsPromise = joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
-			],
+			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
 			where: {
 				guildId,
 				invalidatedReason: { [Op.ne]: null },
@@ -106,11 +95,7 @@ export class InvitesService {
 			raw: true
 		});
 
-		const [invCode, js, customInvs] = await Promise.all([
-			inviteCodePromise,
-			joinsPromise,
-			customInvitesPromise
-		]);
+		const [invCode, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const regular = Number((invCode as any).total);
 		const custom = Number((customInvs as any).total);
@@ -148,13 +133,7 @@ export class InvitesService {
 		: '';*/
 
 		const inviteCodePromise = inviteCodes.findAll({
-			attributes: [
-				'inviterId',
-				[
-					sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')),
-					'total'
-				]
-			],
+			attributes: ['inviterId', [sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
 			include: [
 				{
 					attributes: ['name', 'discriminator'],
@@ -173,10 +152,7 @@ export class InvitesService {
 		});
 
 		const joinsPromise = joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				[sequelize.fn('COUNT', sequelize.col('join.id')), 'total']
-			],
+			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('join.id')), 'total']],
 			where: {
 				guildId,
 				invalidatedReason: { [Op.ne]: null },
@@ -204,10 +180,7 @@ export class InvitesService {
 		});
 
 		const customInvitesPromise = customInvites.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.fn('SUM', sequelize.col('amount')), 'total']
-			],
+			attributes: ['memberId', [sequelize.fn('SUM', sequelize.col('amount')), 'total']],
 			where: {
 				guildId: guildId,
 				cleared: false
@@ -224,11 +197,7 @@ export class InvitesService {
 			raw: true
 		});
 
-		const [invCodes, js, customInvs] = await Promise.all([
-			inviteCodePromise,
-			joinsPromise,
-			customInvitesPromise
-		]);
+		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const invs: InvCacheType = {};
 		invCodes.forEach((inv: any) => {
@@ -367,14 +336,7 @@ export class InvitesService {
 			attributes: ['memberId'],
 			where: sequelize.and(
 				sequelize.where(sequelize.col('guildId'), guildId),
-				sequelize.where(
-					sequelize.fn(
-						'JSON_EXTRACT',
-						sequelize.col('value'),
-						'$.hideFromLeaderboard'
-					),
-					'true'
-				)
+				sequelize.where(sequelize.fn('JSON_EXTRACT', sequelize.col('value'), '$.hideFromLeaderboard'), 'true')
 			),
 			raw: true
 		})).map(i => i.memberId);
@@ -383,11 +345,7 @@ export class InvitesService {
 			.filter(k => hidden.indexOf(k) === -1 && invs[k].total > 0)
 			.sort((a, b) => {
 				const diff = invs[b].total - invs[a].total;
-				return diff !== 0
-					? diff
-					: invs[a].name
-					? invs[a].name.localeCompare(invs[b].name)
-					: 0;
+				return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
 			});
 
 		const lastJoinAndLeave = await members.findAll({
@@ -425,22 +383,14 @@ export class InvitesService {
 				stillInServer[jal.id] = false;
 				return;
 			}
-			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(
-				moment(jal.lastJoinedAt)
-			);
+			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
 		});
 
-		const keys = rawKeys.filter(
-			k => !hideLeft || (guild.members.has(k) && stillInServer[k])
-		);
+		const keys = rawKeys.filter(k => !hideLeft || (guild.members.has(k) && stillInServer[k]));
 
 		const oldKeys = [...keys].sort((a, b) => {
 			const diff = invs[b].oldTotal - invs[a].oldTotal;
-			return diff !== 0
-				? diff
-				: invs[a].name
-				? invs[a].name.localeCompare(invs[b].name)
-				: 0;
+			return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
 		});
 
 		return { keys, oldKeys, invs, stillInServer };
@@ -496,10 +446,8 @@ export class InvitesService {
 			}
 		}
 
-		const memberFullName =
-			member.user.username + '#' + member.user.discriminator;
-		const inviterFullName =
-			inviter.user.username + '#' + inviter.user.discriminator;
+		const memberFullName = member.user.username + '#' + member.user.discriminator;
+		const inviterFullName = inviter.user.username + '#' + inviter.user.discriminator;
 
 		let memberName = member.nick ? member.nick : member.user.username;
 		const encodedMemberName = JSON.stringify(memberName);
@@ -546,12 +494,7 @@ export class InvitesService {
 		);
 	}
 
-	public async promoteIfQualified(
-		guild: Guild,
-		member: Member,
-		me: Member,
-		totalInvites: number
-	) {
+	public async promoteIfQualified(guild: Guild, member: Member, me: Member, totalInvites: number) {
 		let nextRankName = '';
 		let nextRank: RankInstance = null;
 
@@ -604,9 +547,7 @@ export class InvitesService {
 		const tooHighRoles = guild.roles.filter(r => r.position > myRole.position);
 
 		let shouldHave: Role[] = [];
-		let shouldNotHave = notReached.filter(
-			r => tooHighRoles.includes(r) && member.roles.includes(r.id)
-		);
+		let shouldNotHave = notReached.filter(r => tooHighRoles.includes(r) && member.roles.includes(r.id));
 
 		if (highest && !member.roles.includes(highest.id)) {
 			const rankChannelId = settings.rankAnnouncementChannel;
@@ -617,36 +558,24 @@ export class InvitesService {
 				if (rankChannel) {
 					const rankMessageFormat = settings.rankAnnouncementMessage;
 					if (rankMessageFormat) {
-						const msg = await this.client.msg.fillTemplate(
-							guild,
-							rankMessageFormat,
-							{
-								memberId: member.id,
-								memberName: member.user.username,
-								memberFullName:
-									member.user.username + '#' + member.user.discriminator,
-								memberMention: `<@${member.id}>`,
-								memberImage: member.user.avatarURL,
-								rankMention: `<@&${highest.id}>`,
-								rankName: highest.name,
-								totalInvites: totalInvites.toString()
-							}
-						);
+						const msg = await this.client.msg.fillTemplate(guild, rankMessageFormat, {
+							memberId: member.id,
+							memberName: member.user.username,
+							memberFullName: member.user.username + '#' + member.user.discriminator,
+							memberMention: `<@${member.id}>`,
+							memberImage: member.user.avatarURL,
+							rankMention: `<@&${highest.id}>`,
+							rankName: highest.name,
+							totalInvites: totalInvites.toString()
+						});
 						rankChannel
 							.createMessage(typeof msg === 'string' ? msg : { embed: msg })
 							.then((m: Message) => m.addReaction('🎉'))
 							.catch(() => undefined);
 					}
 				} else {
-					console.error(
-						`Guild ${guild.id} has invalid ` +
-							`rank announcement channel ${rankChannelId}`
-					);
-					await this.client.cache.settings.setOne(
-						guild.id,
-						SettingsKey.rankAnnouncementChannel,
-						null
-					);
+					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
+					await this.client.cache.settings.setOne(guild.id, SettingsKey.rankAnnouncementChannel, null);
 				}
 			}
 		}
@@ -658,20 +587,13 @@ export class InvitesService {
 				.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
 				.forEach(r =>
 					this.client
-						.removeGuildMemberRole(
-							guild.id,
-							member.id,
-							r.id,
-							'Not have enough invites for rank'
-						)
+						.removeGuildMemberRole(guild.id, member.id, r.id, 'Not have enough invites for rank')
 						.catch(() => undefined)
 				);
 
 			// Filter dangerous roles
 			dangerous = reached.filter(
-				r =>
-					r.permissions.has(GuildPermission.ADMINISTRATOR) ||
-					r.permissions.has(GuildPermission.MANAGE_GUILD)
+				r => r.permissions.has(GuildPermission.ADMINISTRATOR) || r.permissions.has(GuildPermission.MANAGE_GUILD)
 			);
 			reached = reached.filter(r => dangerous.indexOf(r) === -1);
 
@@ -685,47 +607,28 @@ export class InvitesService {
 					.filter(r => !tooHighRoles.includes(r))
 					.forEach(r =>
 						this.client
-							.addGuildMemberRole(
-								guild.id,
-								member.user.id,
-								r.id,
-								'Reached a new rank by invites'
-							)
+							.addGuildMemberRole(guild.id, member.user.id, r.id, 'Reached a new rank by invites')
 							.catch(() => undefined)
 					);
 			} else if (style === RankAssignmentStyle.highest) {
 				// Only add the highest role we've reached to the member
 				// Remove roles that we've reached but aren't the highest
-				const oldRoles = reached.filter(
-					r => r !== highest && member.roles.includes(r.id)
-				);
+				const oldRoles = reached.filter(r => r !== highest && member.roles.includes(r.id));
 				// Add more roles that we shouldn't have
-				shouldNotHave = shouldNotHave.concat(
-					oldRoles.filter(r => tooHighRoles.includes(r))
-				);
+				shouldNotHave = shouldNotHave.concat(oldRoles.filter(r => tooHighRoles.includes(r)));
 				// Remove the old ones from the member
 				oldRoles
 					.filter(r => !tooHighRoles.includes(r))
 					.forEach(r =>
 						this.client
-							.removeGuildMemberRole(
-								guild.id,
-								member.id,
-								r.id,
-								'Only keeping highest rank'
-							)
+							.removeGuildMemberRole(guild.id, member.id, r.id, 'Only keeping highest rank')
 							.catch(() => undefined)
 					);
 				// Add the highest one if we don't have it yet
 				if (highest && !member.roles.includes(highest.id)) {
 					if (!tooHighRoles.includes(highest)) {
 						this.client
-							.addGuildMemberRole(
-								guild.id,
-								member.id,
-								highest.id,
-								'Reached a new rank by invites'
-							)
+							.addGuildMemberRole(guild.id, member.id, highest.id, 'Reached a new rank by invites')
 							.catch(() => undefined);
 					} else {
 						shouldHave = [highest];

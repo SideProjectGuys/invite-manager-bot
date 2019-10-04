@@ -4,19 +4,8 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	NumberResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	JoinInvalidatedReason,
-	joins,
-	members,
-	sequelize
-} from '../../../../sequelize';
+import { EnumResolver, NumberResolver, UserResolver } from '../../../../framework/resolvers';
+import { customInvites, inviteCodes, JoinInvalidatedReason, joins, members, sequelize } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 const ENTRIES_PER_PAGE = 20;
@@ -72,10 +61,7 @@ export default class extends Command {
 		});
 
 		const invitedMembers = await joins.findAll({
-			attributes: [
-				'memberId',
-				[sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']
-			],
+			attributes: ['memberId', [sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']],
 			where: {
 				guildId: guild.id,
 				invalidatedReason: null
@@ -120,24 +106,20 @@ export default class extends Command {
 			return this.showPaginated(message, p, maxPage, page => {
 				let customInvText = '';
 
-				bonusInvs
-					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-					.forEach(inv => {
-						customInvText +=
-							t('cmd.info.bonusInvites.entry', {
-								amount: `**${inv.amount}**`,
-								creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
-								date:
-									'**' +
-									moment(inv.createdAt)
-										.locale(lang)
-										.fromNow() +
-									'**',
-								reason: inv.reason
-									? `**${inv.reason}**`
-									: '**' + t('cmd.info.bonusInvites.noReason') + '**'
-							}) + '\n';
-					});
+				bonusInvs.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(inv => {
+					customInvText +=
+						t('cmd.info.bonusInvites.entry', {
+							amount: `**${inv.amount}**`,
+							creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
+							date:
+								'**' +
+								moment(inv.createdAt)
+									.locale(lang)
+									.fromNow() +
+								'**',
+							reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
+						}) + '\n';
+				});
 
 				embed.description = customInvText;
 
@@ -158,14 +140,12 @@ export default class extends Command {
 
 			return this.showPaginated(message, p, maxPage, page => {
 				let inviteText = '';
-				invitedMembers
-					.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-					.forEach((join: any) => {
-						const time = moment(join.createdAt)
-							.locale(lang)
-							.fromNow();
-						inviteText += `<@${join.memberId}> - ${time}\n`;
-					});
+				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((join: any) => {
+					const time = moment(join.createdAt)
+						.locale(lang)
+						.fromNow();
+					inviteText += `<@${join.memberId}> - ${time}\n`;
+				});
 
 				embed.description = inviteText;
 
@@ -186,11 +166,7 @@ export default class extends Command {
 		});
 
 		const js = await joins.findAll({
-			attributes: [
-				'invalidatedReason',
-				'cleared',
-				[sequelize.fn('COUNT', sequelize.col('id')), 'total']
-			],
+			attributes: ['invalidatedReason', 'cleared', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
 			where: {
 				guildId: guild.id,
 				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
@@ -354,10 +330,7 @@ export default class extends Command {
 			joinTimesKeys.slice(0, 10).forEach(time => {
 				const joinTime = joinTimes[time];
 
-				const total = Object.keys(joinTime).reduce(
-					(acc, id) => acc + joinTime[id],
-					0
-				);
+				const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
 
 				const mainText = t('cmd.info.joins.entry.text', {
 					total: total >= 1 ? total : undefined,
@@ -402,10 +375,7 @@ export default class extends Command {
 
 			for (const inv of invCodes.slice(0, 10)) {
 				const sets = allSets.get(inv.code);
-				const name =
-					sets && sets.name
-						? `**${sets.name}** (${inv.code})`
-						: `**${inv.code}**`;
+				const name = sets && sets.name ? `**${sets.name}** (${inv.code})` : `**${inv.code}**`;
 
 				invText +=
 					t('cmd.info.regularInvites.entry', {
@@ -454,9 +424,7 @@ export default class extends Command {
 								.locale(lang)
 								.fromNow() +
 							'**',
-						reason: inv.reason
-							? `**${inv.reason}**`
-							: '**' + t('cmd.info.bonusInvites.noReason') + '**'
+						reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
 					}) + '\n';
 			});
 
@@ -480,10 +448,7 @@ export default class extends Command {
 			let text = customInvText + more + detailMsg;
 			const diff = text.length - 1024;
 			if (diff > 0) {
-				text =
-					customInvText.substr(0, customInvText.length - diff - 3) +
-					'...' +
-					more;
+				text = customInvText.substr(0, customInvText.length - diff - 3) + '...' + more;
 			}
 
 			embed.fields.push({
