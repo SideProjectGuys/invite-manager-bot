@@ -68,7 +68,7 @@ export default class extends Command {
 			);
 		}
 
-		let rank = await this.client.repo.rank.findOne({
+		const rank = await this.client.repo.rank.findOne({
 			where: {
 				guildId: role.guild.id,
 				roleId: role.id
@@ -83,7 +83,7 @@ export default class extends Command {
 			rank.description = descr;
 			await this.client.repo.rank.save(rank);
 		} else {
-			rank = await this.client.repo.rank.save({
+			await this.client.repo.rank.save({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
@@ -93,7 +93,6 @@ export default class extends Command {
 		}
 
 		await this.client.logAction(guild, message, isNew ? LogAction.addRank : LogAction.updateRank, {
-			rankId: rank.id,
 			roleId: role.id,
 			numInvites: invites,
 			description
