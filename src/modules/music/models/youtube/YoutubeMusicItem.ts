@@ -23,9 +23,7 @@ export class YoutubeMusicItem extends MusicItem {
 
 	public toSearchEntry(index: number) {
 		return {
-			name: `\`${index}\`: ${this.title} **${this.platform.service.formatTime(
-				this.duration
-			)}**`,
+			name: `\`${index}\`: ${this.title} **${this.platform.service.formatTime(this.duration)}**`,
 			value: `Uploader: ${this.channel}`
 		};
 	}
@@ -53,10 +51,7 @@ export class YoutubeMusicItem extends MusicItem {
 	}
 
 	public getProgress(time: number) {
-		const progress = Math.max(
-			0,
-			Math.min(30, Math.round(30 * (time / this.duration)))
-		);
+		const progress = Math.max(0, Math.min(30, Math.round(30 * (time / this.duration))));
 		return (
 			'```\n[' +
 			'='.repeat(progress) +

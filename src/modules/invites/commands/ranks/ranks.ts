@@ -25,12 +25,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[_page]: [number],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: Context): Promise<any> {
 		const rs = await ranks.findAll({
 			where: {
 				guildId: guild.id
@@ -48,16 +43,14 @@ export default class extends Command {
 		await this.showPaginated(message, startPage, maxPage, page => {
 			let description = '';
 
-			rs.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach(
-				rank => {
-					description +=
-						t('cmd.ranks.entry', {
-							role: `<@&${rank.roleId}>`,
-							numInvites: rank.numInvites,
-							description: rank.description
-						}) + '\n';
-				}
-			);
+			rs.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach(rank => {
+				description +=
+					t('cmd.ranks.entry', {
+						role: `<@&${rank.roleId}>`,
+						numInvites: rank.numInvites,
+						description: rank.description
+					}) + '\n';
+			});
 
 			return this.createEmbed({
 				title: t('cmd.ranks.title'),

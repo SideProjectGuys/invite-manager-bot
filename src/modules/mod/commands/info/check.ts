@@ -26,12 +26,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, settings, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, settings, t }: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: user.username
 		});

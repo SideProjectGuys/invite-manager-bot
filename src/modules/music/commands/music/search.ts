@@ -3,11 +3,7 @@ import { Emoji, Message, VoiceChannel } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, StringResolver } from '../../../../framework/resolvers';
-import {
-	CommandGroup,
-	MusicCommand,
-	MusicPlatformTypes
-} from '../../../../types';
+import { CommandGroup, MusicCommand, MusicPlatformTypes } from '../../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
@@ -53,9 +49,7 @@ export default class extends Command {
 		if (platform) {
 			musicPlatform = this.client.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.platforms.get(
-				MusicPlatformTypes.YouTube
-			);
+			musicPlatform = this.client.music.platforms.get(MusicPlatformTypes.YouTube);
 		}
 
 		if (!musicPlatform.supportsSearch) {
@@ -107,25 +101,11 @@ export default class extends Command {
 
 		await conn.play(musicItem, voiceChannel);
 
-		await this.sendEmbed(
-			message.channel,
-			this.client.music.createPlayingEmbed(musicItem)
-		);
+		await this.sendEmbed(message.channel, this.client.music.createPlayingEmbed(musicItem));
 	}
 
 	private cancel: string = '❌';
-	private choices: string[] = [
-		'1⃣',
-		'2⃣',
-		'3⃣',
-		'4⃣',
-		'5⃣',
-		'6⃣',
-		'7⃣',
-		'8⃣',
-		'9⃣',
-		'🔟'
-	];
+	private choices: string[] = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
 
 	private async awaitChoice(authorId: string, msg: Message) {
 		return new Promise<number>(async resolve => {

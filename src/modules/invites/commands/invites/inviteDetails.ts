@@ -21,19 +21,11 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!inviteDetails @User',
-				'!inviteDetails "User with space"'
-			]
+			extraExamples: ['!inviteDetails @User', '!inviteDetails "User with space"']
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const target = user ? user : message.author;
 
 		const invs = await inviteCodes.findAll({
@@ -56,10 +48,7 @@ export default class extends Command {
 		let invText = '';
 		for (const inv of invs.slice(0, 25)) {
 			const sets = allSets.get(inv.code);
-			const name =
-				sets && sets.name
-					? `**${sets.name}** (${inv.code})`
-					: `**${inv.code}**`;
+			const name = sets && sets.name ? `**${sets.name}** (${inv.code})` : `**${inv.code}**`;
 
 			invText +=
 				t('cmd.inviteDetails.entry', {

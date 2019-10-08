@@ -4,12 +4,7 @@ import { Op } from 'sequelize';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { UserResolver } from '../../../../framework/resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	joins,
-	LogAction
-} from '../../../../sequelize';
+import { customInvites, inviteCodes, joins, LogAction } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -26,19 +21,11 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!restoreInvites @User',
-				'!restoreInvites "User with space"'
-			]
+			extraExamples: ['!restoreInvites @User', '!restoreInvites "User with space"']
 		});
 	}
 
-	public async action(
-		message: Message,
-		[user]: [BasicUser],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t }: Context): Promise<any> {
 		const memberId = user ? user.id : null;
 
 		await inviteCodes.update(

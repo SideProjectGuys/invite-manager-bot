@@ -26,10 +26,7 @@ export class SettingsValueResolver extends Resolver {
 	private infos: { [key: string]: SettingsInfo<any> };
 	private resolvers: { [key in InternalSettingsTypes]: Resolver };
 
-	public constructor(
-		client: IMClient,
-		infos: { [x: string]: SettingsInfo<any> }
-	) {
+	public constructor(client: IMClient, infos: { [x: string]: SettingsInfo<any> }) {
 		super(client);
 
 		this.infos = infos;
@@ -44,26 +41,11 @@ export class SettingsValueResolver extends Resolver {
 			String: new StringResolver(client),
 			'String[]': new ArrayResolver(client, StringResolver),
 			'Enum<Lang>': new EnumResolver(client, Object.values(Lang)),
-			'Enum<LeaderboardStyle>': new EnumResolver(
-				client,
-				Object.values(LeaderboardStyle)
-			),
-			'Enum<RankAssignmentStyle>': new EnumResolver(
-				client,
-				Object.values(RankAssignmentStyle)
-			),
-			'Enum<AnnouncementVoice>': new EnumResolver(
-				client,
-				Object.values(AnnouncementVoice)
-			),
-			'Enum<ActivityType>': new EnumResolver(
-				client,
-				Object.values(ActivityType)
-			),
-			'Enum<ActivityStatus>': new EnumResolver(
-				client,
-				Object.values(ActivityStatus)
-			)
+			'Enum<LeaderboardStyle>': new EnumResolver(client, Object.values(LeaderboardStyle)),
+			'Enum<RankAssignmentStyle>': new EnumResolver(client, Object.values(RankAssignmentStyle)),
+			'Enum<AnnouncementVoice>': new EnumResolver(client, Object.values(AnnouncementVoice)),
+			'Enum<ActivityType>': new EnumResolver(client, Object.values(ActivityType)),
+			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus))
 		};
 	}
 

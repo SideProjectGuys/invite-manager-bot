@@ -3,16 +3,8 @@ import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
-import {
-	members,
-	punishments,
-	PunishmentType,
-	ScheduledActionType
-} from '../../../../sequelize';
+import { DurationResolver, MemberResolver, StringResolver } from '../../../../framework/resolvers';
+import { members, punishments, PunishmentType, ScheduledActionType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
@@ -32,13 +24,13 @@ export default class extends Command {
 					rest: true
 				}
 			],
-			/*flags: [
+			flags: [
 				{
 					name: 'duration',
 					resolver: DurationResolver,
 					short: 'd'
 				}
-			],*/
+			],
 			group: CommandGroup.Moderation,
 			defaultAdminOnly: true,
 			guildOnly: true
@@ -57,15 +49,8 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
-		} else if (
-			this.client.mod.isPunishable(guild, targetMember, message.member, me)
-		) {
-			await this.client.mod.informAboutPunishment(
-				targetMember,
-				PunishmentType.mute,
-				settings,
-				{ reason }
-			);
+		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
+			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
 				await targetMember.addRole(mutedRole, reason);
@@ -101,11 +86,11 @@ export default class extends Command {
 					await this.client.scheduler.addScheduledAction(
 						guild.id,
 						ScheduledActionType.unmute,
-						{ memberId: targetMember.id },
+						{ memberId: targetMember.id, roleId: mutedRole },
 						moment()
 							.add(duration)
 							.toDate(),
-						'Unmute from timed mute command'
+						'Unmute from timed `!mute` command'
 					);
 				}
 

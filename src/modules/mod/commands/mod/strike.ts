@@ -2,11 +2,7 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	EnumResolver,
-	MemberResolver,
-	NumberResolver
-} from '../../../../framework/resolvers';
+import { EnumResolver, MemberResolver, NumberResolver } from '../../../../framework/resolvers';
 import { ViolationType } from '../../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../../types';
 
@@ -44,16 +40,10 @@ export default class extends Command {
 		flags: {},
 		{ guild, settings }: Context
 	): Promise<any> {
-		const source =
-			`${message.author.username}#${message.author.discriminator} ` +
-			`(ID: ${message.author.id})`;
-		await this.client.mod.logViolationModAction(
-			guild,
-			member.user,
-			type,
-			amount,
-			[{ name: 'Issued by', value: source }]
-		);
+		const source = `${message.author.username}#${message.author.discriminator} ` + `(ID: ${message.author.id})`;
+		await this.client.mod.logViolationModAction(guild, member.user, type, amount, [
+			{ name: 'Issued by', value: source }
+		]);
 
 		await this.client.mod.addStrikesAndPunish(member, type, amount, {
 			guild,

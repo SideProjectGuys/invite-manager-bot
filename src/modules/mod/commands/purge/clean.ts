@@ -3,11 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { EnumResolver, NumberResolver } from '../../../../framework/resolvers';
-import {
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 enum CleanType {
 	images = 'images',
@@ -77,10 +73,7 @@ export default class extends Command {
 			numberOfMessages = 5;
 		}
 
-		const messages = await message.channel.getMessages(
-			Math.min(numberOfMessages, 100),
-			message.id
-		);
+		const messages = await message.channel.getMessages(Math.min(numberOfMessages, 100), message.id);
 
 		const messagesToBeDeleted = this.cleanFunctions[type](messages);
 
@@ -98,10 +91,7 @@ export default class extends Command {
 			messagesToBeDeleted.push(message);
 
 			try {
-				await this.client.deleteMessages(
-					message.channel.id,
-					messagesToBeDeleted.map(m => m.id)
-				);
+				await this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id));
 
 				embed.title = t('cmd.clean.title');
 				embed.description = t('cmd.clean.text', {
@@ -135,11 +125,7 @@ export default class extends Command {
 
 	private mentions(messages: Message[]): Message[] {
 		return messages.filter(message => {
-			return (
-				message.mentionEveryone ||
-				message.mentions.length > 0 ||
-				message.roleMentions.length > 0
-			);
+			return message.mentionEveryone || message.mentions.length > 0 || message.roleMentions.length > 0;
 		});
 	}
 

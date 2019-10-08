@@ -1,8 +1,5 @@
 import { Cache } from '../../../framework/cache/Cache';
-import {
-	PunishmentConfigInstance,
-	punishmentConfigs
-} from '../../../sequelize';
+import { PunishmentConfigInstance, punishmentConfigs } from '../../../sequelize';
 
 export class PunishmentCache extends Cache<PunishmentConfigInstance[]> {
 	public async init() {

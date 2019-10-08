@@ -3,12 +3,7 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { CommandResolver, RoleResolver } from '../../../../framework/resolvers';
-import {
-	rolePermissions,
-	RolePermissionsInstance,
-	roles,
-	sequelize
-} from '../../../../sequelize';
+import { rolePermissions, RolePermissionsInstance, roles, sequelize } from '../../../../sequelize';
 import { BotCommand, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -140,16 +135,7 @@ export default class extends Command {
 
 		if (!role) {
 			const perms = await rolePermissions.findAll({
-				attributes: [
-					'command',
-					[
-						sequelize.fn(
-							'GROUP_CONCAT',
-							sequelize.literal(`roleId SEPARATOR ','`)
-						),
-						'roles'
-					]
-				],
+				attributes: ['command', [sequelize.fn('GROUP_CONCAT', sequelize.literal(`roleId SEPARATOR ','`)), 'roles']],
 				where: {
 					command: cmds.map(c => c.name)
 				},
@@ -174,9 +160,7 @@ export default class extends Command {
 				cmds.forEach(c => {
 					embed.fields.push({
 						name: c.name,
-						value: c.strict
-							? t('cmd.permissions.adminOnly')
-							: t('cmd.permissions.everyone')
+						value: c.strict ? t('cmd.permissions.adminOnly') : t('cmd.permissions.everyone')
 					});
 				});
 			} else {

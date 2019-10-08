@@ -4,13 +4,7 @@ import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
 import { SettingsValueResolver } from '../../../../framework/resolvers';
 import { SettingsKey } from '../../../../sequelize';
-import {
-	beautify,
-	SettingsGroup,
-	settingsInfo,
-	SettingsInfo,
-	toDbValue
-} from '../../../../settings';
+import { beautify, SettingsGroup, settingsInfo, SettingsInfo, toDbValue } from '../../../../settings';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../../types';
 
 interface ConfigMenu {
@@ -39,25 +33,9 @@ export default class extends Command {
 	private next: string = '➡';
 	private up: string = '↩';
 	private cancel: string = '❌';
-	private choices: string[] = [
-		'1⃣',
-		'2⃣',
-		'3⃣',
-		'4⃣',
-		'5⃣',
-		'6⃣',
-		'7⃣',
-		'8⃣',
-		'9⃣',
-		'🔟'
-	];
+	private choices: string[] = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		context: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, context: Context): Promise<any> {
 		const embed = this.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
@@ -65,9 +43,7 @@ export default class extends Command {
 
 		if (
 			message.channel instanceof GuildChannel &&
-			message.channel
-				.permissionsOf(this.client.user.id)
-				.has(GuildPermission.MANAGE_MESSAGES)
+			message.channel.permissionsOf(this.client.user.id).has(GuildPermission.MANAGE_MESSAGES)
 		) {
 			await message.delete();
 		}
@@ -86,9 +62,7 @@ export default class extends Command {
 		await msg.addReaction(this.up);
 		await msg.addReaction(this.cancel);
 
-		while (
-			(await this.showConfigMenu(context, message.author.id, msg, [])) === 'up'
-		) {
+		while ((await this.showConfigMenu(context, message.author.id, msg, [])) === 'up') {
 			// NOP
 		}
 	}
@@ -100,9 +74,7 @@ export default class extends Command {
 		};
 
 		Object.keys(settingsInfo)
-			.filter((key: SettingsKey) =>
-				path.every((p, i) => settingsInfo[key].grouping[i] === p)
-			)
+			.filter((key: SettingsKey) => path.every((p, i) => settingsInfo[key].grouping[i] === p))
 			.forEach((key: SettingsKey) => {
 				const info = settingsInfo[key];
 				if (info.grouping.length === path.length) {
@@ -118,12 +90,7 @@ export default class extends Command {
 		return menu;
 	}
 
-	private async showConfigMenu(
-		context: Context,
-		authorId: string,
-		msg: Message,
-		path: SettingsGroup[]
-	) {
+	private async showConfigMenu(context: Context, authorId: string, msg: Message, path: SettingsGroup[]) {
 		const t = context.t;
 		const menu = this.buildConfigMenu(path);
 		const basePath = path.map(p => `${p}.`).join('');
@@ -132,8 +99,7 @@ export default class extends Command {
 		do {
 			let title = 'InviteManager';
 			for (let i = 0; i < path.length; i++) {
-				title +=
-					' - ' + t(`settings.groups.${path.slice(0, i + 1).join('.')}.title`);
+				title += ' - ' + t(`settings.groups.${path.slice(0, i + 1).join('.')}.title`);
 			}
 
 			// Compute these every time so that possible value changes are shown
@@ -193,30 +159,16 @@ export default class extends Command {
 				const key = sel.value as SettingsKey;
 
 				if (settingsInfo[key].type === 'Boolean') {
-					await this.client.cache.settings.setOne(
-						context.guild.id,
-						key,
-						context.settings[key] ? false : true
-					);
+					await this.client.cache.settings.setOne(context.guild.id, key, context.settings[key] ? false : true);
 				} else {
-					const subChoice = await this.changeConfigSetting(
-						context,
-						authorId,
-						msg,
-						key
-					);
+					const subChoice = await this.changeConfigSetting(context, authorId, msg, key);
 					if (subChoice === undefined) {
 						// Quit menu
 						return;
 					}
 				}
 			} else {
-				const subChoice = await this.showConfigMenu(
-					context,
-					authorId,
-					msg,
-					path.concat([sel.value as SettingsGroup])
-				);
+				const subChoice = await this.showConfigMenu(context, authorId, msg, path.concat([sel.value as SettingsGroup]));
 				if (subChoice === undefined) {
 					// Quit menu
 					return;
@@ -225,12 +177,7 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async changeConfigSetting(
-		context: Context,
-		authorId: string,
-		msg: Message,
-		key: SettingsKey
-	) {
+	private async changeConfigSetting(context: Context, authorId: string, msg: Message, key: SettingsKey) {
 		const info = settingsInfo[key];
 		const isList = info.type.endsWith('[]');
 
@@ -249,8 +196,7 @@ export default class extends Command {
 			});
 
 			const description =
-				context.t(`settings.${key}.description`) +
-				`\n\n${text}\n\n${error ? '```diff\n- ' + error + '```\n\n' : ''}`;
+				context.t(`settings.${key}.description`) + `\n\n${text}\n\n${error ? '```diff\n- ' + error + '```\n\n' : ''}`;
 
 			if (isList) {
 				const listOptions = [
@@ -272,15 +218,7 @@ export default class extends Command {
 					}
 				];
 
-				const choice = await this.showMenu(
-					context,
-					msg,
-					authorId,
-					title,
-					description,
-					listOptions,
-					false
-				);
+				const choice = await this.showMenu(context, msg, authorId, title, description, listOptions, false);
 				if (choice === undefined) {
 					// Quit menu
 					return;
@@ -300,18 +238,12 @@ export default class extends Command {
 					// Add item
 					const embed = this.createEmbed({
 						title,
-						description:
-							description + '**' + context.t('cmd.interactiveConfig.add') + '**'
+						description: description + '**' + context.t('cmd.interactiveConfig.add') + '**'
 					});
 					await msg.edit({ embed });
 
 					try {
-						const rawNewVal = await this.parseInput(
-							context,
-							authorId,
-							msg,
-							key
-						);
+						const rawNewVal = await this.parseInput(context, authorId, msg, key);
 						if (typeof rawNewVal !== 'undefined') {
 							error = this.validate(key, rawNewVal, context);
 							if (error) {
@@ -337,25 +269,14 @@ export default class extends Command {
 
 					const embed = this.createEmbed({
 						title,
-						description:
-							description +
-							'**' +
-							context.t('cmd.interactiveConfig.remove') +
-							'**'
+						description: description + '**' + context.t('cmd.interactiveConfig.remove') + '**'
 					});
 					await msg.edit({ embed });
 
 					try {
-						const rawNewVal = await this.parseInput(
-							context,
-							authorId,
-							msg,
-							key
-						);
+						const rawNewVal = await this.parseInput(context, authorId, msg, key);
 						if (typeof rawNewVal !== 'undefined') {
-							newVal = (val as string[]).filter(
-								v => rawNewVal.indexOf(v) === -1
-							);
+							newVal = (val as string[]).filter(v => rawNewVal.indexOf(v) === -1);
 						}
 					} catch (err) {
 						error = err.message;
@@ -365,18 +286,12 @@ export default class extends Command {
 					// Set list
 					const embed = this.createEmbed({
 						title,
-						description:
-							description + '**' + context.t('cmd.interactiveConfig.set') + '**'
+						description: description + '**' + context.t('cmd.interactiveConfig.set') + '**'
 					});
 					await msg.edit({ embed });
 
 					try {
-						const rawNewVal = await this.parseInput(
-							context,
-							authorId,
-							msg,
-							key
-						);
+						const rawNewVal = await this.parseInput(context, authorId, msg, key);
 						if (typeof rawNewVal !== 'undefined') {
 							error = this.validate(key, rawNewVal, context);
 							if (error) {
@@ -394,18 +309,13 @@ export default class extends Command {
 				}
 
 				if (typeof newVal !== 'undefined') {
-					await this.client.cache.settings.setOne(
-						context.guild.id,
-						key,
-						newVal
-					);
+					await this.client.cache.settings.setOne(context.guild.id, key, newVal);
 				}
 			} else {
 				// Change a non-list setting
 				const embed = this.createEmbed({
 					title,
-					description:
-						description + '**' + context.t('cmd.interactiveConfig.new') + '**'
+					description: description + '**' + context.t('cmd.interactiveConfig.new') + '**'
 				});
 				await msg.edit({ embed });
 
@@ -423,11 +333,7 @@ export default class extends Command {
 
 					const newValue = toDbValue(info, rawNewVal);
 
-					await this.client.cache.settings.setOne(
-						context.guild.id,
-						key,
-						newValue
-					);
+					await this.client.cache.settings.setOne(context.guild.id, key, newValue);
 					return 'up';
 				} catch (err) {
 					error = err.message;
@@ -436,12 +342,7 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async parseInput(
-		context: Context,
-		authorId: string,
-		msg: Message,
-		key: SettingsKey
-	) {
+	private async parseInput(context: Context, authorId: string, msg: Message, key: SettingsKey) {
 		return new Promise<any>(async (resolve, reject) => {
 			let timeOut: NodeJS.Timer;
 
@@ -503,10 +404,7 @@ export default class extends Command {
 			description: welcomeText + description,
 			fields: items.map((item, i) => ({
 				name: `${i + 1}. ${item.title}`,
-				value:
-					item.description !== null && item.description !== ''
-						? item.description
-						: t('cmd.interactiveConfig.none')
+				value: item.description !== null && item.description !== '' ? item.description : t('cmd.interactiveConfig.none')
 			}))
 		});
 
@@ -554,17 +452,8 @@ export default class extends Command {
 				}
 
 				const id = this.choices.indexOf(emoji.name);
-				if (
-					(resp.channel as GuildChannel)
-						.permissionsOf(this.client.user.id)
-						.has(GuildPermission.MANAGE_MESSAGES)
-				) {
-					await this.client.removeMessageReaction(
-						resp.channel.id,
-						resp.id,
-						emoji.name,
-						userId
-					);
+				if ((resp.channel as GuildChannel).permissionsOf(this.client.user.id).has(GuildPermission.MANAGE_MESSAGES)) {
+					await this.client.removeMessageReaction(resp.channel.id, resp.id, emoji.name, userId);
 				}
 
 				if (emoji.name === this.prev) {
@@ -592,11 +481,7 @@ export default class extends Command {
 		});
 	}
 
-	private validate(
-		key: SettingsKey,
-		value: any,
-		{ t, me }: Context
-	): string | null {
+	private validate(key: SettingsKey, value: any, { t, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}

@@ -48,9 +48,7 @@ export default class extends Command {
 				where: { guildId: guild.id },
 				order: [['amount', 'DESC']]
 			});
-			const unusedViolations = allViolations.filter(
-				v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0
-			);
+			const unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0);
 			embed.description = strikeConfigList
 				.map(scl =>
 					t('cmd.strikeConfig.text', {

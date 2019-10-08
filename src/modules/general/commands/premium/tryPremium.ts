@@ -3,10 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	premiumSubscriptionGuilds,
-	premiumSubscriptions
-} from '../../../../sequelize';
+import { premiumSubscriptionGuilds, premiumSubscriptions } from '../../../../sequelize';
 import { BotCommand, CommandGroup, PromptResult } from '../../../../types';
 
 export default class extends Command {
@@ -49,10 +46,7 @@ export default class extends Command {
 
 			await this.sendReply(message, promptEmbed);
 
-			const [keyResult] = await this.client.msg.prompt(
-				message,
-				t('cmd.tryPremium.prompt')
-			);
+			const [keyResult] = await this.client.msg.prompt(message, t('cmd.tryPremium.prompt'));
 			if (keyResult === PromptResult.TIMEOUT) {
 				return this.sendReply(message, t('prompt.timedOut'));
 			}

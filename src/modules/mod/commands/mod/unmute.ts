@@ -35,17 +35,13 @@ export default class extends Command {
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.unmute.missingRole');
-		} else if (
-			this.client.mod.isPunishable(guild, targetMember, message.member, me)
-		) {
+		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
 			try {
 				await targetMember.removeRole(mutedRole);
 
 				const logEmbed = this.client.mod.createBasicEmbed(targetMember);
 
-				const usr =
-					`${targetMember.username}#${targetMember.discriminator} ` +
-					`(ID: ${targetMember.id})`;
+				const usr = `${targetMember.username}#${targetMember.discriminator} ` + `(ID: ${targetMember.id})`;
 				logEmbed.description += `**User**: ${usr}\n`;
 				logEmbed.description += `**Action**: unmute\n`;
 

@@ -12,12 +12,7 @@ import {
 } from '../../types';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
-import {
-	CreateEmbedFunc,
-	SendEmbedFunc,
-	SendReplyFunc,
-	ShowPaginatedFunc
-} from '../services/Messaging';
+import { CreateEmbedFunc, SendEmbedFunc, SendReplyFunc, ShowPaginatedFunc } from '../services/Messaging';
 
 export interface Arg {
 	name: string;
@@ -61,10 +56,7 @@ export interface CommandOptions {
 	extraExamples?: string[];
 }
 
-export type TranslateFunc = (
-	key: string,
-	replacements?: { [key: string]: any }
-) => string;
+export type TranslateFunc = (key: string, replacements?: { [key: string]: any }) => string;
 
 export type Context = {
 	guild: Guild;
@@ -119,10 +111,7 @@ export abstract class Command {
 
 		this.flagResolvers = new Map();
 		this.flags.forEach(flag => {
-			const res =
-				flag.resolver instanceof Resolver
-					? flag.resolver
-					: new flag.resolver(this.client);
+			const res = flag.resolver instanceof Resolver ? flag.resolver : new flag.resolver(this.client);
 			this.flagResolvers.set(flag.name, res);
 			delete flag.resolver;
 
@@ -155,9 +144,7 @@ export abstract class Command {
 			const flag = this.flags[i];
 			const help = this.flagResolvers.get(flag.name).getHelp(context);
 			const descr = context.t(`cmd.${this.name}.self.flags.${flag.name}`);
-			info +=
-				`**--${flag.name}**\n${descr}\n` +
-				(help ? `${help.substr(0, 800)}\n\n` : '\n');
+			info += `**--${flag.name}**\n${descr}\n` + (help ? `${help.substr(0, 800)}\n\n` : '\n');
 		}
 		for (let i = 0; i < this.args.length; i++) {
 			const arg = this.args[i];
@@ -198,10 +185,5 @@ export abstract class Command {
 		return ret;
 	}
 
-	public abstract action(
-		message: Message,
-		args: any[],
-		flags: { [x: string]: any },
-		context: Context
-	): any;
+	public abstract action(message: Message, args: any[], flags: { [x: string]: any }, context: Context): any;
 }

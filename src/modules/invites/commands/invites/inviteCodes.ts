@@ -3,17 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	channels,
-	InviteCodeAttributes,
-	inviteCodes,
-	members
-} from '../../../../sequelize';
-import {
-	CommandGroup,
-	GuildPermission,
-	InvitesCommand
-} from '../../../../types';
+import { channels, InviteCodeAttributes, inviteCodes, members } from '../../../../sequelize';
+import { CommandGroup, GuildPermission, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -36,12 +27,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const lang = settings.lang;
 
 		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
@@ -66,9 +52,7 @@ export default class extends Command {
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
 			.map(code => code);
 
-		const newCodes = activeCodes.filter(
-			code => !codes.find(c => c.code === code.code)
-		);
+		const newCodes = activeCodes.filter(code => !codes.find(c => c.code === code.code));
 
 		if (newCodes.length > 0) {
 			const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
@@ -200,9 +184,6 @@ export default class extends Command {
 		}
 
 		await this.sendEmbed(await message.author.getDMChannel(), embed);
-		await this.sendReply(
-			message,
-			`<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`
-		);
+		await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
 	}
 }

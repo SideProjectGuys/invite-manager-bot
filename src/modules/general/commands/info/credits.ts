@@ -10,13 +10,7 @@ const developers: string[] = ['Andy', 'Valandur', 'santjum', 'legendarylol'];
 // Staff
 const moderators: string[] = ['SemiMute', 'theGordHoard', 'Mennoplays'];
 
-const staff: string[] = [
-	'CelestialStriden',
-	'Lukas',
-	'Audio',
-	'ᴊᴀᴄᴋ❤ Crush',
-	'Lukas1703'
-];
+const staff: string[] = ['CelestialStriden', 'Lukas', 'Audio', 'ᴊᴀᴄᴋ❤ Crush', 'Lukas1703'];
 
 const translators: string[] = [
 	'amiog',
@@ -43,12 +37,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t }: Context): Promise<any> {
 		const embed = this.createEmbed();
 
 		embed.fields.push({

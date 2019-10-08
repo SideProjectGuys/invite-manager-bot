@@ -1,10 +1,5 @@
 import { settings, SettingsKey } from '../../sequelize';
-import {
-	defaultSettings,
-	settingsInfo,
-	SettingsObject,
-	toDbValue
-} from '../../settings';
+import { defaultSettings, settingsInfo, SettingsObject, toDbValue } from '../../settings';
 
 import { Cache } from './Cache';
 

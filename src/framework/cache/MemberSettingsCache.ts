@@ -1,23 +1,14 @@
 import { memberSettings, MemberSettingsKey } from '../../sequelize';
-import {
-	memberDefaultSettings,
-	memberSettingsInfo,
-	MemberSettingsObject,
-	toDbValue
-} from '../../settings';
+import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
 
 import { Cache } from './Cache';
 
-export class MemberSettingsCache extends Cache<
-	Map<string, MemberSettingsObject>
-> {
+export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(
-		guildId: string
-	): Promise<Map<string, MemberSettingsObject>> {
+	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
 		const sets = await memberSettings.findAll({
 			where: {
 				guildId
@@ -26,9 +17,7 @@ export class MemberSettingsCache extends Cache<
 		});
 
 		const map = new Map();
-		sets.forEach(set =>
-			map.set(set.memberId, { ...memberDefaultSettings, ...set.value })
-		);
+		sets.forEach(set => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
 		return map;
 	}
 

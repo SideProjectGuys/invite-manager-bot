@@ -2,16 +2,9 @@ import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	MemberResolver,
-	StringResolver
-} from '../../../../framework/resolvers';
+import { MemberResolver, StringResolver } from '../../../../framework/resolvers';
 import { members, punishments, PunishmentType } from '../../../../sequelize';
-import {
-	CommandGroup,
-	GuildPermission,
-	ModerationCommand
-} from '../../../../types';
+import { CommandGroup, GuildPermission, ModerationCommand } from '../../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -46,12 +39,7 @@ export default class extends Command {
 		const embed = this.client.mod.createBasicEmbed(targetMember);
 
 		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.client.mod.informAboutPunishment(
-				targetMember,
-				PunishmentType.kick,
-				settings,
-				{ reason }
-			);
+			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.kick, settings, { reason });
 
 			try {
 				await targetMember.kick(reason);

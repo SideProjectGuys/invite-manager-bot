@@ -7,10 +7,7 @@ import { Resolver } from './Resolver';
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class UserResolver extends Resolver {
-	public async resolve(
-		value: string,
-		{ guild, t }: Context
-	): Promise<BasicUser> {
+	public async resolve(value: string, { guild, t }: Context): Promise<BasicUser> {
 		if (!value) {
 			return;
 		}
@@ -43,9 +40,7 @@ export class UserResolver extends Resolver {
 
 			// First try to find an exact match in our cache
 			let users: BasicUser[] = this.client.users.filter(
-				u =>
-					u.username.toLowerCase() === username &&
-					u.discriminator === discriminator
+				u => u.username.toLowerCase() === username && u.discriminator === discriminator
 			);
 
 			// Then try to find an approximate match in our guild

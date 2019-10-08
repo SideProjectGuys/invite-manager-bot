@@ -25,17 +25,9 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[role]: [Role],
-		flags: {},
-		{ t, me, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, [role]: [Role], flags: {}, { t, me, guild }: Context): Promise<any> {
 		if (role.mentionable) {
-			return this.sendReply(
-				message,
-				t('cmd.mentionRole.alreadyDone', { role: `<@&${role.id}>` })
-			);
+			return this.sendReply(message, t('cmd.mentionRole.alreadyDone', { role: `<@&${role.id}>` }));
 		} else {
 			let myRole: Role;
 			me.roles.forEach(r => {
@@ -60,9 +52,7 @@ export default class extends Command {
 				return;
 			}
 
-			const msg = await message.channel
-				.createMessage(`<@&${role.id}>`)
-				.catch(() => null as Message);
+			const msg = await message.channel.createMessage(`<@&${role.id}>`).catch(() => null as Message);
 			if (!msg) {
 				return;
 			}

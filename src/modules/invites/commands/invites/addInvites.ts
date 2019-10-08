@@ -2,11 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	NumberResolver,
-	StringResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
+import { NumberResolver, StringResolver, UserResolver } from '../../../../framework/resolvers';
 import { customInvites, LogAction, members } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
@@ -38,10 +34,7 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!addInvites @User 5',
-				'!addInvites "Name with space" -30 Removed for cheating'
-			]
+			extraExamples: ['!addInvites @User 5', '!addInvites "Name with space" -30 Removed for cheating']
 		});
 	}
 
@@ -117,12 +110,7 @@ export default class extends Command {
 		// Promote the member if it's not a bot
 		// and if the member is still in the guild
 		if (member && !member.user.bot) {
-			const promoteInfo = await this.client.invs.promoteIfQualified(
-				guild,
-				member,
-				me,
-				totalInvites
-			);
+			const promoteInfo = await this.client.invs.promoteIfQualified(guild, member, me, totalInvites);
 
 			if (promoteInfo) {
 				const { shouldHave, shouldNotHave, dangerous } = promoteInfo;

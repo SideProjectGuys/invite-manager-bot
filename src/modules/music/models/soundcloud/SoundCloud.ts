@@ -49,10 +49,7 @@ export class Soundcloud extends MusicPlatform {
 		});
 	}
 
-	public async search(
-		searchTerm: string,
-		maxResults?: number
-	): Promise<SoundcloudMusicItem[]> {
+	public async search(searchTerm: string, maxResults?: number): Promise<SoundcloudMusicItem[]> {
 		const scLink = `http://api.soundcloud.com/tracks?q=${searchTerm}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
 		const scData = (await axios.get(scLink)).data;
 

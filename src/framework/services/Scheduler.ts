@@ -1,25 +1,22 @@
-import crypto from 'crypto';
+import { captureException, withScope } from '@sentry/node';
+import { Guild } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import {
-	ScheduledActionAttributes,
-	scheduledActions,
-	ScheduledActionType
-} from '../../sequelize';
+import { ScheduledActionAttributes, scheduledActions, ScheduledActionType } from '../../sequelize';
 
 export class SchedulerService {
 	private client: IMClient = null;
-	private scheduledActionTimers: Map<string, any>;
+	private scheduledActionTimers: Map<number, NodeJS.Timer>;
 	private scheduledActionFunctions: {
-		[k in ScheduledActionType]: (args: any) => void;
+		[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
 	};
 
 	public constructor(client: IMClient) {
 		this.client = client;
 		this.scheduledActionTimers = new Map();
 		this.scheduledActionFunctions = {
-			[ScheduledActionType.unmute]: this.unmute.bind(this)
+			[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a)
 		};
 	}
 
@@ -45,59 +42,40 @@ export class SchedulerService {
 		this.createTimer(action);
 	}
 
-	public async cancelScheduledAction(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
-		scheduledActions.destroy({
-			where: {
-				guildId: guildId,
-				actionType: actionType,
-				args: args
-			}
-		});
-		await this.removeTimer(guildId, actionType, args);
-	}
-
-	private getActionHash(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
-		const actionString = `${guildId}|${actionType}|${args}`;
-		return crypto
-			.createHash('md5')
-			.update(actionString)
-			.digest('hex');
-	}
-
 	private createTimer(action: ScheduledActionAttributes) {
-		const secondsUntilAction = moment(action.date).diff(
-			moment(),
-			'milliseconds'
-		);
-		const func = () => {
-			this.scheduledActionFunctions[action.actionType](action.args);
+		const millisUntilAction = Math.max(1000, moment(action.date).diff(moment(), 'milliseconds'));
+		const func = async () => {
+			const guild = this.client.guilds.get(action.guildId);
+			if (!guild) {
+				console.error('COULD NOT FIND GUILD FOR SCHEDULED FUNCTION', action.guildId);
+				return;
+			}
+
+			try {
+				await this.scheduledActionFunctions[action.actionType](guild, action.args);
+				await scheduledActions.destroy({ where: { id: action.id } });
+			} catch (error) {
+				withScope(scope => {
+					scope.setExtra('action', JSON.stringify(action));
+					captureException(error);
+				});
+			}
 		};
-		const timeout = setTimeout(func, secondsUntilAction);
-		const hash = this.getActionHash(
-			action.guildId,
-			action.actionType,
-			action.args
-		);
-		this.scheduledActionTimers.set(hash, timeout);
+		const timer = setTimeout(func, millisUntilAction);
+		this.scheduledActionTimers.set(action.id, timer);
 	}
 
-	private async removeTimer(
-		guildId: string,
-		actionType: ScheduledActionType,
-		args: JSON
-	) {
-		const hash = this.getActionHash(guildId, actionType, args);
-		const timeout = this.scheduledActionTimers.get(hash);
-		clearTimeout(timeout);
-		this.scheduledActionTimers.delete(hash);
+	public async cancelScheduledAction(actionId: number) {
+		await scheduledActions.destroy({ where: { id: actionId } });
+		await this.removeTimer(actionId);
+	}
+
+	private async removeTimer(actionId: number) {
+		const timer = this.scheduledActionTimers.get(actionId);
+		if (timer) {
+			clearTimeout(timer);
+			this.scheduledActionTimers.delete(actionId);
+		}
 	}
 
 	private async scheduleScheduledActions() {
@@ -105,16 +83,25 @@ export class SchedulerService {
 			where: { guildId: this.client.guilds.map(g => g.id) },
 			raw: true
 		});
-		actions.forEach(action => {
-			this.createTimer(action);
-		});
+		actions.forEach(action => this.createTimer(action));
 	}
 
 	//////////////////////////
 	// Scheduler Functions
 	//////////////////////////
 
-	private unmute(args: string) {
-		console.log('SCHEDULED TASK: UNMUTE', args);
+	private async unmute(guild: Guild, { memberId, roleId }: { memberId: string; roleId: string }) {
+		console.log('SCHEDULED TASK: UNMUTE', guild.id, memberId);
+
+		let member = guild.members.get(memberId);
+		if (!member) {
+			member = await guild.getRESTMember(memberId);
+		}
+		if (!member) {
+			console.error('SCHEDULED TASK: UNMUTE: COULD NOT FIND MEMBER', memberId);
+			return;
+		}
+
+		await member.removeRole(roleId);
 	}
 }

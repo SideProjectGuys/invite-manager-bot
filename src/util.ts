@@ -1,10 +1,4 @@
-import {
-	Message,
-	MessageContent,
-	MessageFile,
-	Permission,
-	TextChannel
-} from 'eris';
+import { Message, MessageContent, MessageFile, Permission, TextChannel } from 'eris';
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -12,10 +6,7 @@ const EPOCH = 1420070400000;
 export class FakeChannel extends TextChannel {
 	public listener: (data: any) => void;
 
-	public createMessage(
-		content: MessageContent,
-		file?: MessageFile
-	): Promise<Message> {
+	public createMessage(content: MessageContent, file?: MessageFile): Promise<Message> {
 		if (this.listener) {
 			this.listener(content);
 		}

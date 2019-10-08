@@ -4,18 +4,8 @@ import { Op } from 'sequelize';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import {
-	BooleanResolver,
-	DateResolver,
-	UserResolver
-} from '../../../../framework/resolvers';
-import {
-	customInvites,
-	inviteCodes,
-	joins,
-	LogAction,
-	sequelize
-} from '../../../../sequelize';
+import { BooleanResolver, DateResolver, UserResolver } from '../../../../framework/resolvers';
+import { customInvites, inviteCodes, joins, LogAction, sequelize } from '../../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../../types';
 
 export default class extends Command {
@@ -44,10 +34,7 @@ export default class extends Command {
 			group: CommandGroup.Invites,
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: [
-				'!clearInvites @User',
-				'!clearInvites -cb "User with space"'
-			]
+			extraExamples: ['!clearInvites @User', '!clearInvites -cb "User with space"']
 		});
 	}
 

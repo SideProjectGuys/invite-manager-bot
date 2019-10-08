@@ -17,17 +17,10 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: [],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, args: [], flags: {}, { guild, t }: Context): Promise<any> {
 		const allRoles = await guild.getRESTRoles();
 		const allRanks = await ranks.findAll({ where: { guildId: guild.id } });
-		const oldRoleIds = allRanks
-			.filter(rank => !allRoles.some(r => r.id === rank.roleId))
-			.map(r => r.roleId);
+		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
 		await ranks.destroy({
 			where: { guildId: guild.id, roleId: oldRoleIds }
 		});

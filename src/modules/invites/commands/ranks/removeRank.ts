@@ -25,12 +25,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[role]: [Role],
-		flags: {},
-		{ guild, t }: Context
-	): Promise<any> {
+	public async action(message: Message, [role]: [Role], flags: {}, { guild, t }: Context): Promise<any> {
 		const rank = await ranks.find({
 			where: {
 				guildId: role.guild.id,
@@ -48,15 +43,9 @@ export default class extends Command {
 
 			this.client.cache.ranks.flush(guild.id);
 
-			return this.sendReply(
-				message,
-				t('cmd.removeRank.done', { role: `<@&${role.id}>` })
-			);
+			return this.sendReply(message, t('cmd.removeRank.done', { role: `<@&${role.id}>` }));
 		} else {
-			return this.sendReply(
-				message,
-				t('cmd.removeRank.rankNotFound', { role: `<@&${role.id}>` })
-			);
+			return this.sendReply(message, t('cmd.removeRank.rankNotFound', { role: `<@&${role.id}>` }));
 		}
 	}
 }

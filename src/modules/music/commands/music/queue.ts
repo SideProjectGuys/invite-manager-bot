@@ -16,12 +16,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		args: any[],
-		flags: {},
-		{ t, guild }: Context
-	): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t, guild }: Context): Promise<any> {
 		const conn = await this.client.music.getMusicConnection(guild);
 		const nowPlaying = conn.getNowPlaying();
 		const queue = conn.getQueue();
