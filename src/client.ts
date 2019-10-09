@@ -292,8 +292,8 @@ export class IMClient extends Client {
 				name: guild.name,
 				icon: guild.iconURL,
 				memberCount: guild.memberCount,
-				deletedAt: undefined,
-				banReason: undefined
+				deletedAt: null,
+				banReason: null
 			});
 
 			const defChannel = await this.getDefaultChannel(guild);
@@ -328,9 +328,6 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Insert tracking data
-		await this.tracking.insertGuildData(guild);
-
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail
 		if (dbGuild && dbGuild.deletedAt) {
@@ -358,6 +355,9 @@ export class IMClient extends Client {
 				return;
 			}
 		}
+
+		// Insert tracking data
+		await this.tracking.insertGuildData(guild);
 
 		// Send welcome message to owner with setup instructions
 		channel
