@@ -8,22 +8,24 @@ import { BotCommand, CommandGroup } from '../../../../types';
 const developers: string[] = ['Andy', 'Valandur', 'santjum', 'legendarylol'];
 
 // Staff
-const moderators: string[] = ['SemiMute', 'theGordHoard', 'Mennoplays'];
+const moderators: string[] = ['GTA Tetris', '愛 | fαkєr유蘇', 'SemiMute', 'Mennoplays'];
 
-const staff: string[] = ['CelestialStriden', 'Lukas', 'Audio', 'ᴊᴀᴄᴋ❤ Crush', 'Lukas1703'];
+const staff: string[] = ['OmeGa#9999', 'Alan Wen', 'Braydon', 'Simplee ♪ Li', 'Deadsec'];
 
 const translators: string[] = [
-	'amiog',
+	'Gugu72',
 	'CyberDarkBR',
 	'qq1zz',
 	'Lorio',
 	'legendarylol',
 	'Lukas',
 	'Mennoplays',
-	'RMG | RoHellowtf💤',
-	'Thę_Olaoleo',
+	'Qbiczeq',
+	'Simplee ♪ Li',
 	'Izmoqwy',
-	'サロにぃ/Saroniii'
+	'サロにぃ/Saroniii',
+        'Ն·Բ》ĂĆRΣANØ'
+
 ];
 
 export default class extends Command {
