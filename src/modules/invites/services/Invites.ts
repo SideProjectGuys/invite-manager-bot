@@ -48,19 +48,19 @@ export class InvitesService {
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
 		const inviteCodePromise = this.client.repo.inviteCode
 			.createQueryBuilder()
-			.addSelect('SUM(uses - clearedAmount)', 'total')
+			.select('SUM(uses - clearedAmount)', 'total')
 			.where('guildId = :guildId AND inviterId = :memberId AND uses > clearedAmount', { guildId, memberId })
 			.getRawOne();
 		const joinsPromise = this.client.repo.join
 			.createQueryBuilder('join')
-			.addSelect('COUNT(id)', 'total')
+			.select('COUNT(id)', 'total')
 			.where('join.guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0', { guildId })
 			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
 			.andWhere('exactMatch.inviterId = :memberId', { memberId })
 			.getRawMany();
 		const customInvitesPromise = this.client.repo.customInvite
 			.createQueryBuilder()
-			.addSelect('SUM(amount)', 'total')
+			.select('SUM(amount)', 'total')
 			.where('guildId = :guildId AND memberId = :memberId AND cleared = 0', { guildId, memberId })
 			.getRawOne();
 
