@@ -199,8 +199,6 @@ export class TrackingService {
 		}
 
 		let exactMatchCode: string = null;
-		let possibleMatches: string = null;
-
 		let inviteCodesUsed = this.compareInvites(oldInvs, newInvs);
 
 		if (
@@ -262,8 +260,6 @@ export class TrackingService {
 
 		if (inviteCodesUsed.length === 1) {
 			exactMatchCode = inviteCodesUsed[0];
-		} else {
-			possibleMatches = inviteCodesUsed.join(',').substr(0, 255);
 		}
 
 		const updatedCodes: string[] = [];
@@ -354,7 +350,6 @@ export class TrackingService {
 		// Insert the join
 		const join = await this.client.repo.join.save({
 			exactMatchCode,
-			possibleMatches,
 			memberId: member.id,
 			guildId: guild.id,
 			createdAt: member.joinedAt,
