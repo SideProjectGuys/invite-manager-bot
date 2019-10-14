@@ -80,25 +80,27 @@ export default class extends Command {
 			}
 
 			// Insert any new codes that haven't been used yet
-			await this.client.repo.channel
-				.createQueryBuilder()
-				.insert()
-				.values(
-					newCodes.map(c => ({
-						id: c.channel.id,
-						guildId: c.guild.id,
-						name: c.channel.name
-					}))
-				)
-				.orUpdate({ overwrite: ['name'] })
-				.execute();
+			if (newCodes.length > 0) {
+				await this.client.repo.channel
+					.createQueryBuilder()
+					.insert()
+					.values(
+						newCodes.map(c => ({
+							id: c.channel.id,
+							guildId: c.guild.id,
+							name: c.channel.name
+						}))
+					)
+					.orUpdate({ overwrite: ['name'] })
+					.execute();
 
-			await this.client.repo.inviteCode
-				.createQueryBuilder()
-				.insert()
-				.values(newDbCodes)
-				.orUpdate({ overwrite: ['uses'] })
-				.execute();
+				await this.client.repo.inviteCode
+					.createQueryBuilder()
+					.insert()
+					.values(newDbCodes)
+					.orUpdate({ overwrite: ['uses'] })
+					.execute();
+			}
 
 			codes = codes.concat(newDbCodes);
 		}
