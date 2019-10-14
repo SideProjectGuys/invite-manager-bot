@@ -156,7 +156,9 @@ export default class extends Command {
 
 		const js = await this.client.repo.join
 			.createQueryBuilder()
-			.addSelect('COUNT(id)', 'total')
+			.select('COUNT(id)', 'total')
+			.select('invalidatedReason', 'invalidatedReason')
+			.select('cleared', 'cleared')
 			.where('guildId = :guildId AND exactMatchCode IN(:codes) AND invalidatedReason IS NOT NULL', {
 				guildId: guild.id,
 				codes: invCodes.map(i => i.code)
@@ -167,7 +169,7 @@ export default class extends Command {
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach((j: any) => {
+		js.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
 				if (!j.cleared) {
 					fake -= Number(j.total);
