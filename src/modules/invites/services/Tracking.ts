@@ -340,12 +340,14 @@ export class TrackingService {
 		}
 
 		// We need the invite codes in the DB for the join
-		await this.client.repo.inviteCode
-			.createQueryBuilder()
-			.insert()
-			.values(codes)
-			.orUpdate({ overwrite: ['uses'] })
-			.execute();
+		if (codes.length > 0) {
+			await this.client.repo.inviteCode
+				.createQueryBuilder()
+				.insert()
+				.values(codes)
+				.orUpdate({ overwrite: ['uses'] })
+				.execute();
+		}
 
 		// Insert the join
 		const join = await this.client.repo.join.save({
