@@ -578,7 +578,7 @@ export class TrackingService {
 		}
 
 		// Exit if we can't find the join
-		if (!join || !join.exactMatch.code) {
+		if (!join || !join.exactMatch || !join.exactMatch.code) {
 			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leave.id}`);
 			if (leaveChannel) {
 				leaveChannel
