@@ -103,30 +103,37 @@ export class InvitesService {
 
 		const inviteCodePromise = this.client.repo.inviteCode
 			.createQueryBuilder('inviteCode')
-			.addSelect('SUM(uses - clearedAmount)', 'total')
+			.select('SUM(inviteCode.uses - inviteCode.clearedAmount)', 'total')
+			.addSelect('inviteCode.inviterId', 'inviterId')
+			.addSelect('inviter.name', 'inviterName')
 			.leftJoinAndSelect('inviteCode.inviter', 'inviter')
-			.where('inviteCode.guildId = :guildId AND uses > clearedAmount', { guildId })
-			.groupBy('inviterId')
+			.where('inviteCode.guildId = :guildId AND inviteCode.uses > inviteCode.clearedAmount', { guildId })
+			.groupBy('inviteCode.inviterId')
 			.orderBy('total', 'DESC')
 			.getRawMany();
 
 		const joinsPromise = this.client.repo.join
 			.createQueryBuilder('join')
-			.addSelect('COUNT(join.id)', 'total')
+			.select('COUNT(join.id)', 'total')
+			.select('exactMatch.inviterId', 'inviterId')
+			.select('inviter.name', 'inviterName')
+			.select('join.invalidatedReason', 'invalidatedReason')
 			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
 			.leftJoinAndSelect('exactMatch.inviter', 'inviter')
-			.where('join.guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0', { guildId })
-			.groupBy('inviterId')
-			.addGroupBy('invalidatedReason')
+			.where('join.guildId = :guildId AND join.invalidatedReason IS NOT NULL AND join.cleared = 0', { guildId })
+			.groupBy('exactMatch.inviterId')
+			.addGroupBy('join.invalidatedReason')
 			.orderBy('total', 'DESC')
 			.getRawMany();
 
 		const customInvitesPromise = this.client.repo.customInvite
 			.createQueryBuilder('customInvite')
-			.addSelect('SUM(amount)', 'total')
+			.select('SUM(amount)', 'total')
+			.addSelect('customInvite.memberId', 'memberId')
+			.addSelect('member.name', 'memberName')
 			.leftJoinAndSelect('customInvite.member', 'member')
-			.where('customInvite.guildId = :guildId AND cleared = 0', { guildId })
-			.groupBy('memberId')
+			.where('customInvite.guildId = :guildId AND customInvite.cleared = 0', { guildId })
+			.groupBy('customInvite.memberId')
 			.orderBy('total', 'DESC')
 			.getRawMany();
 
@@ -137,7 +144,7 @@ export class InvitesService {
 			const id = inv.inviterId;
 			invs[id] = {
 				id,
-				name: inv.inviter_name,
+				name: inv.inviterName,
 				total: Number(inv.total),
 				regular: Number(inv.total),
 				custom: 0,
@@ -152,7 +159,7 @@ export class InvitesService {
 		});
 
 		js.forEach(join => {
-			const id = join.exactMatch_inviterId;
+			const id = join.inviterId;
 			let fake = 0;
 			let leave = 0;
 			if (join.invalidatedReason === JoinInvalidatedReason.fake) {
@@ -167,7 +174,7 @@ export class InvitesService {
 			} else {
 				invs[id] = {
 					id,
-					name: join.inviter_name,
+					name: join.inviterName,
 					total: -(fake + leave),
 					regular: 0,
 					custom: 0,
@@ -191,7 +198,7 @@ export class InvitesService {
 			} else {
 				invs[id] = {
 					id,
-					name: inv.member_name,
+					name: inv.memberName,
 					total: custom,
 					regular: 0,
 					custom: custom,
