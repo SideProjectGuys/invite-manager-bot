@@ -276,6 +276,8 @@ export class TrackingService {
 			.filter(inv => !!inv)
 			.concat(invs.filter(inv => !oldInvs[inv.code]));
 
+		// We need the members and channels in the DB for the invite codes
+
 		const newMembers = newAndUsedCodes
 			.map(inv => inv.inviter)
 			.filter(inv => !!inv)
@@ -285,31 +287,31 @@ export class TrackingService {
 				name: m.username,
 				discriminator: m.discriminator
 			}));
-		const membersPromise = this.client.repo.member
-			.createQueryBuilder()
-			.insert()
-			.values(newMembers)
-			.orUpdate({ overwrite: ['name', 'discriminator'] })
-			.execute();
+		if (newMembers.length > 0) {
+			await this.client.repo.member
+				.createQueryBuilder()
+				.insert()
+				.values(newMembers)
+				.orUpdate({ overwrite: ['name', 'discriminator'] })
+				.execute();
+		}
 
-		const channelPromise = this.client.repo.channel
-			.createQueryBuilder()
-			.insert()
-			.values(
-				newAndUsedCodes
-					.map(inv => inv.channel)
-					.filter(c => !!c)
-					.map(channel => ({
-						id: channel.id,
-						guildId: guild.id,
-						name: channel.name
-					}))
-			)
-			.orUpdate({ overwrite: ['name'] })
-			.execute();
-
-		// We need the members and channels in the DB for the invite codes
-		await Promise.all([membersPromise, channelPromise]);
+		const newChannels = newAndUsedCodes
+			.map(inv => inv.channel)
+			.filter(c => !!c)
+			.map(channel => ({
+				id: channel.id,
+				guildId: guild.id,
+				name: channel.name
+			}));
+		if (newChannels.length > 0) {
+			await this.client.repo.channel
+				.createQueryBuilder()
+				.insert()
+				.values(newChannels)
+				.orUpdate({ overwrite: ['name'] })
+				.execute();
+		}
 
 		const codes = newAndUsedCodes.map(inv => ({
 			createdAt: inv.createdAt ? inv.createdAt : new Date(),
