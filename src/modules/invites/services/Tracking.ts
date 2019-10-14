@@ -769,12 +769,14 @@ export class TrackingService {
 		}));
 
 		// Then insert invite codes
-		return this.client.repo.inviteCode
-			.createQueryBuilder()
-			.insert()
-			.values(codes)
-			.orUpdate({ overwrite: ['uses'] })
-			.execute();
+		if (codes.length > 0) {
+			return this.client.repo.inviteCode
+				.createQueryBuilder()
+				.insert()
+				.values(codes)
+				.orUpdate({ overwrite: ['uses'] })
+				.execute();
+		}
 	}
 
 	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
