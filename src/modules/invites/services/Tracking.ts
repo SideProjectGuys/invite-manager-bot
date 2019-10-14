@@ -296,7 +296,7 @@ export class TrackingService {
 			.orUpdate({ overwrite: ['name', 'discriminator'] })
 			.execute();
 
-		const channelPromise = this.client.repo.member
+		const channelPromise = this.client.repo.channel
 			.createQueryBuilder()
 			.insert()
 			.values(
