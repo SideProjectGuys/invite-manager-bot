@@ -54,8 +54,9 @@ export class InvitesService {
 		const joinsPromise = this.client.repo.join
 			.createQueryBuilder('join')
 			.select('COUNT(id)', 'total')
+			.select('invalidatedReason', 'invalidatedReason')
 			.where('join.guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0', { guildId })
-			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.leftJoin('join.exactMatch', 'exactMatch')
 			.andWhere('exactMatch.inviterId = :memberId', { memberId })
 			.getRawMany();
 		const customInvitesPromise = this.client.repo.customInvite
@@ -106,7 +107,7 @@ export class InvitesService {
 			.select('SUM(inviteCode.uses - inviteCode.clearedAmount)', 'total')
 			.addSelect('inviteCode.inviterId', 'inviterId')
 			.addSelect('inviter.name', 'inviterName')
-			.leftJoinAndSelect('inviteCode.inviter', 'inviter')
+			.leftJoin('inviteCode.inviter', 'inviter')
 			.where('inviteCode.guildId = :guildId AND inviteCode.uses > inviteCode.clearedAmount', { guildId })
 			.groupBy('inviteCode.inviterId')
 			.orderBy('total', 'DESC')
@@ -118,8 +119,8 @@ export class InvitesService {
 			.select('exactMatch.inviterId', 'inviterId')
 			.select('inviter.name', 'inviterName')
 			.select('join.invalidatedReason', 'invalidatedReason')
-			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
-			.leftJoinAndSelect('exactMatch.inviter', 'inviter')
+			.leftJoin('join.exactMatch', 'exactMatch')
+			.leftJoin('exactMatch.inviter', 'inviter')
 			.where('join.guildId = :guildId AND join.invalidatedReason IS NOT NULL AND join.cleared = 0', { guildId })
 			.groupBy('exactMatch.inviterId')
 			.addGroupBy('join.invalidatedReason')
@@ -131,7 +132,7 @@ export class InvitesService {
 			.select('SUM(amount)', 'total')
 			.addSelect('customInvite.memberId', 'memberId')
 			.addSelect('member.name', 'memberName')
-			.leftJoinAndSelect('customInvite.member', 'member')
+			.leftJoin('customInvite.member', 'member')
 			.where('customInvite.guildId = :guildId AND customInvite.cleared = 0', { guildId })
 			.groupBy('customInvite.memberId')
 			.orderBy('total', 'DESC')
@@ -288,10 +289,10 @@ export class InvitesService {
 
 		const lastJoinAndLeave = await this.client.repo.member
 			.createQueryBuilder('member')
-			.addSelect('MAX(join.createdAt)', 'lastJoinedAt')
+			.select('MAX(join.createdAt)', 'lastJoinedAt')
 			.addSelect('MAX(leave.createdAt)', 'lastLeftAt')
-			.leftJoinAndSelect('member.joins', 'join', 'join.guildId = :guildId', { guildId })
-			.leftJoinAndSelect('member.leaves', 'leave', 'leave.guildId = :guildId', { guildId })
+			.leftJoin('member.joins', 'join', 'join.guildId = :guildId', { guildId })
+			.leftJoin('member.leaves', 'leave', 'leave.guildId = :guildId', { guildId })
 			.where('member.id IN(:ids)', { ids: rawKeys })
 			.groupBy('member.id')
 			.getRawMany();

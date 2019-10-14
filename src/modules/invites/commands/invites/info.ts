@@ -64,11 +64,11 @@ export default class extends Command {
 
 		const invitedMembers = await this.client.repo.join
 			.createQueryBuilder('join')
-			.addSelect('MAX(join.createdAt)', 'createdAt')
+			.select('MAX(join.createdAt)', 'createdAt')
 			.where(`join.guildId = :guildId AND invalidatedReason IS NULL`, { guildId: guild.id })
 			.groupBy('memberId')
 			.orderBy('MAX(join.createdAt)', 'DESC')
-			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
+			.leftJoin('join.exactMatch', 'exactMatch')
 			.andWhere('exactMatch.inviterId = :userId', { userId: user.id })
 			.getRawMany();
 
@@ -157,8 +157,8 @@ export default class extends Command {
 		const js = await this.client.repo.join
 			.createQueryBuilder()
 			.select('COUNT(id)', 'total')
-			.select('invalidatedReason', 'invalidatedReason')
-			.select('cleared', 'cleared')
+			.addSelect('invalidatedReason', 'invalidatedReason')
+			.addSelect('cleared', 'cleared')
 			.where('guildId = :guildId AND exactMatchCode IN(:codes) AND invalidatedReason IS NOT NULL', {
 				guildId: guild.id,
 				codes: invCodes.map(i => i.code)

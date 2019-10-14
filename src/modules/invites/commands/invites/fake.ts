@@ -34,11 +34,11 @@ export default class extends Command {
 
 		const js: ExtendedJoin[] = await this.client.repo.join
 			.createQueryBuilder('join')
-			.addSelect('COUNT(join.id)', 'totalJoins')
+			.select('COUNT(join.id)', 'totalJoins')
 			.addSelect('GROUP_CONCAT(CONCAT(`inviter`.`id`, "|", `inviter`.`name`) SEPARATOR "\\t")', 'inviterIds')
-			.leftJoinAndSelect('join.member', 'member')
-			.leftJoinAndSelect('join.exactMatch', 'exactMatch')
-			.leftJoinAndSelect('exactMatch.inviter', 'inviter')
+			.leftJoin('join.member', 'member')
+			.leftJoin('join.exactMatch', 'exactMatch')
+			.leftJoin('exactMatch.inviter', 'inviter')
 			.groupBy('join.memberId')
 			.where('join.guildId = :guildId', { guildId: guild.id })
 			.getRawMany();
