@@ -1,5 +1,6 @@
 import { Message } from 'eris';
 import moment from 'moment';
+import { IsNull, Not } from 'typeorm';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
@@ -276,7 +277,8 @@ export default class extends Command {
 		const ownJoins = await this.client.repo.join.find({
 			where: {
 				guildId: guild.id,
-				memberId: user.id
+				memberId: user.id,
+				exactMatch: Not(IsNull())
 			},
 			relations: ['exactMatch'],
 			order: { createdAt: 'DESC' }
