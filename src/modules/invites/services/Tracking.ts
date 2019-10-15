@@ -122,7 +122,7 @@ export class TrackingService {
 			name: role.name,
 			color: color,
 			guildId: role.guild.id,
-			createdAt: role.createdAt
+			createdAt: moment(role.createdAt).toDate()
 		});
 	}
 
@@ -314,7 +314,7 @@ export class TrackingService {
 		}
 
 		const codes = newAndUsedCodes.map(inv => ({
-			createdAt: inv.createdAt ? inv.createdAt : new Date(),
+			createdAt: inv.createdAt ? moment(inv.createdAt).toDate() : new Date(),
 			code: inv.code,
 			channelId: inv.channel ? inv.channel.id : null,
 			isNative: !inv.inviter || inv.inviter.id !== this.client.user.id,

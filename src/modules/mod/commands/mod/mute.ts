@@ -88,6 +88,7 @@ export default class extends Command {
 						ScheduledActionType.unmute,
 						{ memberId: targetMember.id, roleId: mutedRole },
 						moment()
+							.locale(settings.lang)
 							.add(duration)
 							.toDate(),
 						'Unmute from timed `!mute` command'

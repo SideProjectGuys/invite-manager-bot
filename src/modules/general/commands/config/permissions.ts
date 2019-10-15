@@ -1,4 +1,5 @@
 import { Message, Role } from 'eris';
+import moment from 'moment';
 import { In } from 'typeorm';
 
 import { IMClient } from '../../../../client';
@@ -200,7 +201,8 @@ export default class extends Command {
 				id: role.id,
 				name: role.name,
 				color: role.color.toString(16),
-				guildId: role.guild.id
+				guildId: role.guild.id,
+				createdAt: moment(role.createdAt).toDate()
 			});
 
 			await this.client.repo.rolePermission.save(

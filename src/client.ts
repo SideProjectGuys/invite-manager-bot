@@ -373,6 +373,7 @@ export class IMClient extends Client {
 				name: guild.name,
 				icon: guild.iconURL,
 				memberCount: guild.memberCount,
+				createdAt: moment(guild.createdAt).toDate(),
 				deletedAt: null,
 				banReason: null
 			});
