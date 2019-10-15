@@ -820,7 +820,7 @@
 					"page": "cmd.ranks.self.args.page"
 				}
 			},
-			"title": "Ranks"
+			"title": "الرتب"
 		},
 		"removeInvites": {
 			"self": {
@@ -869,25 +869,25 @@
 				"title": "Missing permission: Manage Server"
 			},
 			"manageRoles": {
-				"text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted.",
-				"title": "Missing permission: Manage Roles"
+				"text": "ليس لدي صلاحية \"Manage Roles\"، مطلوب إذن له لتعيين الرتب للمستخدم. بدون هذا الإذن ، لا يمكن ترقية الأعضاء تلقائيًا.",
+				"title": "افتقد صلاحية: Manage Roles"
 			},
 			"prefix": {
-				"text": "You can change the prefix by doing `!config prefix !`\n\nIf you don't know the bots prefix, you can find it using `@InviteManager config prefix`.",
-				"title": "Changing the prefix"
+				"text": "يمكنك تغيير البريفكس من خلال كتابة `!config prefix !`\n\nإذا كنت لا تعرف البريفكس ، فيمكنك العثور عليها باستخدام `InviteManager config prefix`.",
+				"title": "يتم تغيير البريفكس"
 			},
 			"premium": {
-				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features.",
-				"title": "Premium"
+				"text": "إذا كنت ترغب في دعم تطوير هذا الروبوت ، يمكنك القيام بذلك من خلال دعمنا\n{{{ link }}}\n\nحسب المستوى ، ستحصل على بعض الميزات الإضافية.",
+				"title": "النسخة المدفوعة"
 			},
 			"self": {
 				"description": "Help with setting up the bot and checking for problems (e.g. missing permissions)"
 			},
 			"text": "After inviting the bot, all invites will be tracked automatically.",
-			"title": "Setting up InviteManager",
+			"title": "اعداد الأنفايت منجر",
 			"viewAuditLogs": {
 				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites.",
-				"title": "Missing permission: View Audit Logs"
+				"title": "افتقد صلاحية: View Audit Logs"
 			}
 		},
 		"softBan": {
@@ -933,14 +933,14 @@
 		},
 		"subtractFakes": {
 			"done": "Removed fake invites!",
-			"none": "No fake invites found.",
+			"none": "لم اجد اي دعوات وهمية.",
 			"self": {
 				"description": "Remove fake invites from all users."
 			}
 		},
 		"subtractLeaves": {
-			"done": "Removed leaves!",
-			"none": "No leaves found.",
+			"done": "تم حذف المغادرات!",
+			"none": "لم نجد اي مغادرة.",
 			"self": {
 				"description": "Remove leaves from all users"
 			}
@@ -949,18 +949,18 @@
 			"self": {
 				"description": "Get an invite link to our support server."
 			},
-			"server": "Support server"
+			"server": "سيرفر الدعم الفني"
 		},
 		"tryPremium": {
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
 			"currentlyActive": "You currently have an active premium subscription!",
-			"prompt": "Please reply with **yes** or **no**.",
+			"prompt": "رجاءا قم بالاجابة بـ **yes** او **no**.",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
 			},
 			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
-			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
-			"title": "InviteManager - Try Premium"
+			"text": "يمكنك تجربة النسخة المدفوعة لمدة:  {{ duration }}.\nيمكنك استعمالها مرة فقط، خل تريد تجربتها الان؟",
+			"title": "انفايت منجر - تجربة النسخة المدفوعة"
 		},
 		"unban": {
 			"canNotUnban": "I cannot unban this member.",
@@ -1148,20 +1148,20 @@
 		}
 	},
 	"permissions": {
-		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
-		"createInviteCode": "Create Instant Invite",
+		"adminOnly": "لا يوجد لديك صلاحيات لاستخدام هذا الامر.\nفقط من يمتلك **Administrators** يمكنه استخدامه",
+		"createInviteCode": "إنشاء دعوة فورية",
 		"manageGuild": "Manage Server",
 		"manageRoles": "Manage Roles",
-		"premiumOnly": "This command is only available for premium subscribers!",
+		"premiumOnly": "هذا الامر لا يتوفر الا لمن يستخدم النسخة المدفوعة!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
-		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
+		"role": "لا يمكنك استعمال هذا الأمر لانك لا تملك الصلاحيات.\nالرتب المسموحة لاستعمال هذا المر هم: {{{ roles }}}",
 		"viewAuditLogs": "View Audit Logs",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
 	},
 	"prompt": {
-		"canceled": "Canceled"
+		"canceled": "تم الغاءها"
 	},
 	"resolvers": {
 		"boolean": {
