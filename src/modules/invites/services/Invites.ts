@@ -116,9 +116,9 @@ export class InvitesService {
 		const joinsPromise = this.client.repo.join
 			.createQueryBuilder('join')
 			.select('COUNT(join.id)', 'total')
-			.select('exactMatch.inviterId', 'inviterId')
-			.select('inviter.name', 'inviterName')
-			.select('join.invalidatedReason', 'invalidatedReason')
+			.addSelect('exactMatch.inviterId', 'inviterId')
+			.addSelect('inviter.name', 'inviterName')
+			.addSelect('join.invalidatedReason', 'invalidatedReason')
 			.leftJoin('join.exactMatch', 'exactMatch')
 			.leftJoin('exactMatch.inviter', 'inviter')
 			.where('join.guildId = :guildId AND join.invalidatedReason IS NOT NULL AND join.cleared = 0', { guildId })
