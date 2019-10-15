@@ -336,7 +336,8 @@ export class IMClient extends Client {
 
 				case BotType.pro:
 					// If this is the pro bot then leave any guilds that aren't pro
-					const premium = await this.cache.premium.get(guild.id);
+					const premium = await this.cache.premium._get(guild.id);
+
 					if (!premium) {
 						const dmChannel = await this.getDMChannel(guild.ownerID);
 						await dmChannel
@@ -402,9 +403,6 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Insert tracking data
-		await this.tracking.insertGuildData(guild);
-
 		// Clear the deleted timestamp if it's still set
 		// We have to do this before checking premium or it will fail
 		if (dbGuild && dbGuild.deletedAt) {
@@ -412,23 +410,29 @@ export class IMClient extends Client {
 			await this.repo.guild.save(dbGuild);
 		}
 
-		// We use a DB query instead of getting the value from the cache
-		const premium = await this.cache.premium._get(guild.id);
+		// Check pro bot
+		if (this.type === BotType.pro) {
+			// We use a DB query instead of getting the value from the cache
+			const premium = await this.cache.premium._get(guild.id);
 
-		if (this.type === BotType.pro && !premium) {
-			await channel
-				.createMessage(
-					`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
-						'I am the pro version of InviteManager, and only available to people ' +
-						'that support me on Patreon with the pro tier.\n\n' +
-						'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-						'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
-						'I will be leaving your server soon, thanks for having me!'
-				)
-				.catch(() => undefined);
-			setTimeout(() => guild.leave().catch(() => undefined), 5 * 60 * 1000);
-			return;
+			if (!premium) {
+				await channel
+					.createMessage(
+						`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
+							'I am the pro version of InviteManager, and only available to people ' +
+							'that support me on Patreon with the pro tier.\n\n' +
+							'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+							'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+							'I will be leaving your server soon, thanks for having me!'
+					)
+					.catch(() => undefined);
+				setTimeout(() => guild.leave().catch(() => undefined), 5 * 60 * 1000);
+				return;
+			}
 		}
+
+		// Insert tracking data
+		await this.tracking.insertGuildData(guild);
 
 		// Send welcome message to owner with setup instructions
 		channel
