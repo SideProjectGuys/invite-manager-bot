@@ -124,8 +124,8 @@ export class TrackingService {
 			name: guild.name,
 			icon: guild.iconURL,
 			memberCount: guild.memberCount,
-			deletedAt: undefined,
-			banReason: undefined
+			deletedAt: null,
+			banReason: null
 		});
 
 		await roles.insertOrUpdate({
