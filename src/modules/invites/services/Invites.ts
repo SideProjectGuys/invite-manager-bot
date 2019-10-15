@@ -366,7 +366,7 @@ export class InvitesService {
 				skip: 1,
 				take: 1
 			});
-			if (temp) {
+			if (temp.length > 0) {
 				prevJoin = moment(temp[0].createdAt);
 			}
 		}
