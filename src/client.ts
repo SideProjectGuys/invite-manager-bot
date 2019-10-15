@@ -207,7 +207,7 @@ export class IMClient extends Client {
 				icon: g.iconURL,
 				memberCount: g.memberCount,
 				deletedAt: null,
-				banReason: undefined
+				banReason: null
 			})),
 			{
 				updateOnDuplicate: ['name', 'icon', 'memberCount', 'updatedAt', 'deletedAt']
@@ -326,12 +326,8 @@ export class IMClient extends Client {
 				.catch(() => undefined);
 			await guild.leave();
 			return;
-		}
-
-		// Clear the deleted timestamp if it's still set
-		// We have to do this before checking premium or it will fail
-		if (dbGuild && dbGuild.deletedAt) {
-			dbGuild.deletedAt = null;
+		} else if (dbGuild.deletedAt) {
+			dbGuild.setDataValue('deletedAt', null);
 			await dbGuild.save();
 		}
 

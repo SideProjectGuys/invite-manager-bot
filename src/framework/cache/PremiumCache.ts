@@ -30,7 +30,8 @@ export class PremiumCache extends Cache<boolean> {
 					},
 					required: true
 				}
-			]
+			],
+			paranoid: false
 		});
 
 		return !!sub;
