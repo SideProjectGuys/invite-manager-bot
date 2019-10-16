@@ -287,7 +287,7 @@ export class ModerationService {
 		logEmbed.description += `**Punishment**: ${type}\n`;
 
 		if (extra) {
-			extra.forEach(e => logEmbed.fields.push(e));
+			extra.forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
