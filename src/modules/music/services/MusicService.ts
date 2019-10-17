@@ -174,12 +174,13 @@ export class MusicService {
 			throw new Error('There are currently no music nodes available');
 		}
 
-		const baseUrl = `http://${this.nodes[0].host}:${this.nodes[0].port}`;
+		const node = this.nodes[Math.round(Math.random() * this.nodes.length)];
+		const baseUrl = `http://${node.host}:${node.port}`;
 		const { data } = await axios.get<{ tracks: LavaTrack[] }>(
 			`${baseUrl}/loadtracks?identifier=${encodeURIComponent(url)}`,
 			{
 				headers: {
-					Authorization: this.nodes[0].password,
+					Authorization: node.password,
 					Accept: 'application/json'
 				}
 			}
