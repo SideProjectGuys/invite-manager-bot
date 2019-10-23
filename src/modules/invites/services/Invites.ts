@@ -1,5 +1,4 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
-import { Moment } from 'moment';
 import moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -9,7 +8,6 @@ import {
 	inviteCodes,
 	JoinInvalidatedReason,
 	joins,
-	leaves,
 	members,
 	memberSettings,
 	RankAssignmentStyle,
@@ -19,22 +17,15 @@ import {
 } from '../../../sequelize';
 import { BasicInvite, BasicMember, GuildPermission } from '../../../types';
 
-type InvCacheType = {
-	[x: string]: {
-		id: string;
-		name: string;
-		total: number;
-		regular: number;
-		custom: number;
-		fakes: number;
-		leaves: number;
-		oldTotal: number;
-		oldRegular: number;
-		oldCustom: number;
-		oldFakes: number;
-		oldLeaves: number;
-	};
-};
+export interface LeaderboardEntry {
+	id: string;
+	name: string;
+	total: number;
+	regular: number;
+	custom: number;
+	fakes: number;
+	leaves: number;
+}
 
 export interface JoinLeaveTemplateData {
 	invite: BasicInvite;
@@ -119,19 +110,7 @@ export class InvitesService {
 		};
 	}
 
-	public async generateLeaderboard(
-		guild: Guild,
-		hideLeft?: boolean,
-		from?: Moment,
-		compare?: Moment,
-		limit: number = null
-	) {
-		const guildId = guild.id;
-
-		/*const fromCond = from
-		? `AND createdAt < '${from.utc().format('YYYY/MM/DD HH:mm:ss')}'`
-		: '';*/
-
+	public async generateLeaderboard(guildId: string) {
 		const inviteCodePromise = inviteCodes.findAll({
 			attributes: ['inviterId', [sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
 			include: [
@@ -147,7 +126,6 @@ export class InvitesService {
 				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
 			},
 			group: ['inviterId'],
-			order: [sequelize.literal('total DESC')],
 			raw: true
 		});
 
@@ -175,7 +153,6 @@ export class InvitesService {
 				}
 			],
 			group: ['exactMatch.inviterId', 'invalidatedReason'],
-			order: [sequelize.literal('total DESC')],
 			raw: true
 		});
 
@@ -193,29 +170,23 @@ export class InvitesService {
 				}
 			],
 			group: ['memberId'],
-			order: [sequelize.literal('total DESC')],
 			raw: true
 		});
 
 		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
-		const invs: InvCacheType = {};
+		const entries: Map<string, LeaderboardEntry> = new Map();
 		invCodes.forEach((inv: any) => {
 			const id = inv.inviterId;
-			invs[id] = {
+			entries.set(id, {
 				id,
 				name: inv['inviter.name'],
 				total: Number(inv.total),
 				regular: Number(inv.total),
 				custom: 0,
 				fakes: 0,
-				leaves: 0,
-				oldTotal: 0,
-				oldRegular: 0,
-				oldCustom: 0,
-				oldFakes: 0,
-				oldLeaves: 0
-			};
+				leaves: 0
+			});
 		});
 
 		js.forEach((join: any) => {
@@ -227,110 +198,43 @@ export class InvitesService {
 			} else {
 				leave += Number(join.total);
 			}
-			if (invs[id]) {
-				invs[id].total -= fake + leave;
-				invs[id].fakes -= fake;
-				invs[id].leaves -= leave;
+			const entry = entries.get(id);
+			if (entry) {
+				entry.total -= fake + leave;
+				entry.fakes -= fake;
+				entry.leaves -= leave;
 			} else {
-				invs[id] = {
+				entries.set(id, {
 					id,
 					name: join['exactMatch.inviter.name'],
 					total: -(fake + leave),
 					regular: 0,
 					custom: 0,
 					fakes: -fake,
-					leaves: -leave,
-					oldTotal: 0,
-					oldRegular: 0,
-					oldCustom: 0,
-					oldFakes: 0,
-					oldLeaves: 0
-				};
+					leaves: -leave
+				});
 			}
 		});
 
 		customInvs.forEach((inv: any) => {
 			const id = inv.memberId;
 			const custom = Number(inv.total);
-			if (invs[id]) {
-				invs[id].total += custom;
-				invs[id].custom += custom;
+			const entry = entries.get(id);
+			if (entry) {
+				entry.total += custom;
+				entry.custom += custom;
 			} else {
-				invs[id] = {
+				entries.set(id, {
 					id,
 					name: inv['member.name'],
 					total: custom,
 					regular: 0,
 					custom: custom,
 					fakes: 0,
-					leaves: 0,
-					oldTotal: 0,
-					oldRegular: 0,
-					oldCustom: 0,
-					oldFakes: 0,
-					oldLeaves: 0
-				};
+					leaves: 0
+				});
 			}
 		});
-
-		if (compare) {
-			/*const oldJoinsPromise = joins.findAll({
-				attributes: [
-					'invalidatedReason',
-					[sequelize.fn('COUNT', sequelize.col('join.id')), 'total']
-				],
-				where: {
-					guildId,
-					invalidatedReason: { [Op.ne]: null },
-					cleared: false
-				},
-				include: [
-					{
-						attributes: ['code', 'inviterId'],
-						model: inviteCodes,
-						as: 'exactMatch',
-						required: true,
-						include: [
-							{
-								attributes: ['name', 'discriminator'],
-								model: members,
-								as: 'inviter',
-								required: true
-							}
-						]
-					}
-				],
-				group: ['exactMatch.inviterId', 'invalidatedReason'],
-				order: [sequelize.literal('total DESC')],
-				raw: true
-			});
-
-			const oldCustomInvitesPromise = customInvites.findAll({
-				attributes: [
-					'memberId',
-					[sequelize.fn('SUM', sequelize.col('amount')), 'total']
-				],
-				where: {
-					guildId: guildId,
-					cleared: false
-				},
-				include: [
-					{
-						attributes: ['name', 'discriminator'],
-						model: members,
-						required: true
-					}
-				],
-				group: ['memberId'],
-				order: [sequelize.literal('total DESC')],
-				raw: true
-			});
-
-			const [oldJs, oldCustomInvs] = await Promise.all([
-				oldJoinsPromise,
-				oldCustomInvitesPromise
-			]);*/
-		}
 
 		const hidden = (await memberSettings.findAll({
 			attributes: ['memberId'],
@@ -341,59 +245,13 @@ export class InvitesService {
 			raw: true
 		})).map(i => i.memberId);
 
-		const rawKeys = Object.keys(invs)
-			.filter(k => hidden.indexOf(k) === -1 && invs[k].total > 0)
-			.sort((a, b) => {
-				const diff = invs[b].total - invs[a].total;
-				return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
-			});
-
-		const lastJoinAndLeave = await members.findAll({
-			attributes: [
-				'id',
-				'name',
-				[sequelize.fn('MAX', sequelize.col('joins.createdAt')), 'lastJoinedAt'],
-				[sequelize.fn('MAX', sequelize.col('leaves.createdAt')), 'lastLeftAt']
-			],
-			where: { id: rawKeys },
-			group: ['member.id'],
-			include: [
-				{
-					attributes: [],
-					model: joins,
-					where: { guildId },
-					required: false
-				},
-				{
-					attributes: [],
-					model: leaves,
-					where: { guildId },
-					required: false
-				}
-			],
-			raw: true
-		});
-		const stillInServer: { [x: string]: boolean } = {};
-		lastJoinAndLeave.forEach((jal: any) => {
-			if (!jal.lastLeftAt) {
-				stillInServer[jal.id] = true;
-				return;
-			}
-			if (!jal.lastJoinedAt) {
-				stillInServer[jal.id] = false;
-				return;
-			}
-			stillInServer[jal.id] = moment(jal.lastLeftAt).isBefore(moment(jal.lastJoinedAt));
-		});
-
-		const keys = rawKeys.filter(k => !hideLeft || (guild.members.has(k) && stillInServer[k]));
-
-		const oldKeys = [...keys].sort((a, b) => {
-			const diff = invs[b].oldTotal - invs[a].oldTotal;
-			return diff !== 0 ? diff : invs[a].name ? invs[a].name.localeCompare(invs[b].name) : 0;
-		});
-
-		return { keys, oldKeys, invs, stillInServer };
+		return [...entries.entries()]
+			.filter(([k, entry]) => hidden.indexOf(k) === -1 && entry.total > 0)
+			.sort(([, a], [, b]) => {
+				const diff = b.total - a.total;
+				return diff !== 0 ? diff : a.name ? a.name.localeCompare(b.name) : 0;
+			})
+			.map(([, e]) => e);
 	}
 
 	public async fillJoinLeaveTemplate(

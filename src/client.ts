@@ -14,6 +14,7 @@ import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
 import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
 import { InvitesCache } from './modules/invites/cache/InvitesCache';
+import { LeaderboardCache } from './modules/invites/cache/LeaderboardCache';
 import { RanksCache } from './modules/invites/cache/RanksCache';
 import { CaptchaService } from './modules/invites/services/Captcha';
 import { InvitesService } from './modules/invites/services/Invites';
@@ -67,6 +68,7 @@ export class IMClient extends Client {
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
 		invites: InvitesCache;
+		leaderboard: LeaderboardCache;
 		ranks: RanksCache;
 		members: MemberSettingsCache;
 		permissions: PermissionsCache;
@@ -141,6 +143,7 @@ export class IMClient extends Client {
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
+			leaderboard: new LeaderboardCache(this),
 			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),
 			permissions: new PermissionsCache(this),
