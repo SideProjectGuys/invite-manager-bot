@@ -589,7 +589,8 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Leaderboard"
+			"title": "Leaderboard",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

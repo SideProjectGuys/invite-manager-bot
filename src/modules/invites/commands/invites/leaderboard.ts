@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../../client';
 import { Command, Context } from '../../../../framework/commands/Command';
-import { DurationResolver, NumberResolver } from '../../../../framework/resolvers';
+import { NumberResolver } from '../../../../framework/resolvers';
 import { LeaderboardStyle } from '../../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../../types';
 
@@ -15,10 +15,6 @@ export default class extends Command {
 			name: InvitesCommand.leaderboard,
 			aliases: ['top'],
 			args: [
-				{
-					name: 'duration',
-					resolver: DurationResolver
-				},
 				{
 					name: 'page',
 					resolver: NumberResolver
@@ -32,27 +28,26 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[duration, _page]: [moment.Duration, number],
-		flags: {},
-		{ guild, t, settings }: Context
-	): Promise<any> {
-		const from = duration ? moment().subtract(duration) : moment(guild.createdAt);
-
+	public async action(message: Message, [_page]: [number], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		let invs = await this.client.cache.leaderboard.get(guild.id);
+		const cachedAt = this.client.cache.leaderboard.getCacheMeta(guild.id).cachedAt;
 		if (settings.hideLeftMembersFromLeaderboard) {
 			invs = invs.filter(e => guild.members.has(e.id));
 		}
 
 		const fromText = t('cmd.leaderboard.from', {
-			from: `**${from.locale(settings.lang).fromNow()}**`
+			from: `**${moment(guild.createdAt)
+				.locale(settings.lang)
+				.fromNow()}**`
+		});
+		const lastUpdateText = t('cmd.leaderboard.lastUpdate', {
+			lastUpdate: `**${cachedAt.locale(settings.lang).fromNow()}**`
 		});
 
 		if (invs.length === 0) {
 			const embed = this.createEmbed({
 				title: t('cmd.leaderboard.title'),
-				description: fromText + '\n\n**' + t('cmd.leaderboard.noInvites') + '**'
+				description: `${fromText}\n(${lastUpdateText})\n\n**${t('cmd.leaderboard.noInvites')}**`
 			});
 			return this.sendReply(message, embed);
 		}
@@ -64,7 +59,7 @@ export default class extends Command {
 
 		// Show the leaderboard as a paginated list
 		await this.showPaginated(message, p, maxPage, page => {
-			let str = `${fromText}\n\n`;
+			let str = `${fromText}\n(${lastUpdateText})\n\n`;
 
 			// Collect texts first to possibly make a table
 			const lines: string[][] = [];
