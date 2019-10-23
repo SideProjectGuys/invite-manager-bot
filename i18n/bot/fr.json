@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "changements par rapport à {{ to }}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalide: {{ date }}",
 			"legend": "`T` = Total\n`O` = Ordinaire\n`B` = Bonus\n`F` = Faux\n`P` = Partis",
@@ -589,7 +589,8 @@
 					"compare": "La date à laquelle le classement actuel est comparé à"
 				}
 			},
-			"title": "Classement"
+			"title": "Classement",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

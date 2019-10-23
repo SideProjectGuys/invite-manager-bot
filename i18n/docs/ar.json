@@ -1,55 +1,55 @@
 {
 	"lang": "العربية",
 	"modules": {
-		"title": "Modules",
+		"title": "الخصائص",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "تدبير الدعوات",
+			"description": "أثناء وجود الروبوت لدينا على الخادم الخاص بك ، فإننا نتتبع كل دعوة تحدث على الخادم الخاص بك. الخلاف يظهر لك فقط من لديه عدد الدعوات. يحلل الروبوت لدينا أيضًا من تمت دعوته من قبل. هذا يسمح لبوتنا باكتشاف الدعوات المزيفة ومعرفة من يحاول خداع نظام الدعوة.",
 			"examples": {
-				"title": "Examples"
+				"title": "أمثلة"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "نظرة عامة"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "رسالة مخصص"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "الإشراف",
+			"description": "يتيح لك نظام الاعتدال الجديد الخاص بنا تعديل العديد من الأشياء تلقائيًا. يرجى مراجعة موقعنا [strikes]({{{ linkStrikes }}}) وايضا [punishments]({{{ linkPunishments }}}) صفحات لمزيد من المعلومات. باختصار ، يقدم الروبوت الخاص بنا \"strikes\" للأشخاص الذين يسيئون التصرف ، وبعد كمية معينة من الضربات ، يتلقى المستخدم عقوبة. كل هذا هو شكلي من قبل المستخدم.",
 			"punishments": {
-				"title": "Punishments"
+				"title": "العقوبات"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "ضربات"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "الموسيقى",
 			"overview": {
-				"title": "Overview"
+				"title": "نظرة عامة"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "أخرى",
 		"donating": {
-			"title": "Donating",
+			"title": "التبرع",
 			"description": "other.donating.description",
 			"crypto": {
-				"title": "Crypto",
+				"title": "التشفير",
 				"description": "other.donating.crypto.description"
 			}
 		},
 		"roadmap": {
-			"title": "Roadmap"
+			"title": "خريطة الطريق"
 		},
 		"support": {
-			"title": "Support"
+			"title": "الدعم الفني"
 		},
 		"translations": {
-			"title": "Translations",
+			"title": "الترجمات",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -57,58 +57,58 @@
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
+			"title": "لوحة التحكم",
 			"description": "other.webpanel.description"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "التحديثات"
 		},
 		"openSource": {
-			"title": "Open Source",
+			"title": "المصدر المفتوح",
 			"description": "other.openSource.description",
 			"bot": {
-				"title": "Main Bot",
+				"title": "بوت أساسي",
 				"description": "other.openSource.bot.description"
 			}
 		}
 	},
 	"premium": {
-		"title": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"title": "النسخة المدفوعة",
+		"description": "لدفع فاتورة الخادم الخاص بنا ، نحن نقدم نسخة مميزة من الروبوت. لرؤية جميع الميزات الإضافية التي تحصل عليها ، يرجى زيارة موقعنا [pricing page]({{{ link }}}).",
 		"features": {
-			"title": "Features"
+			"title": "الخصائص"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "مستويات"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "تأسيس"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "ابدء",
+		"description": "للبدء ، ما عليك سوى تشغيل الأمر `! setup` على الخادم الخاص بك.",
 		"alpha": {
-			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here"
+			"title": "البوت التجريبي",
+			"intro": "إن برنامج `InviteManager Alpha` هو الروبوت الذي نستخدمه لاختبار ميزات جديدة. لن تكون الميزات الجديدة الموجودة على Alpha bot مستقرة دائمًا ، ولكن إذا استخدمت هذا الروبوت ، فستكون أول من يراها ويمكنك أن تقدم لنا ملاحظات كيف يمكننا تحسينها قبل إدراجها في الروبوت الرئيسي .",
+			"linkDescription": "قم بدعوة InviteManager Alpha من هنا"
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "الأسئلة الشائعة",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "كيف أغير بريفكس البوت?",
+				"description": "يمكنك القيام `!config prefix -` لتغيير البريفكس.\n\nإذا كنت لا تعرف البريفكس الحالية الخاصة بك ، فيمكنك عمل بادئة تهيئة `@InviteManager config prefix`  لرؤية البريفكس"
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
+				"title": "كيف أختار رسائل الدخول والخروج?",
 				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
 			},
 			"joinLeaveMessage": {
-				"title": "Can I customize the join and leave messages?",
+				"title": "هل أستطيع أن اعدل على رسالة الدخول والخروج?",
 				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
 			},
 			"ranks": {
-				"title": "What are 'Ranks' and how can I use them?",
+				"title": "ماهي ال`رتب` وكيف أستطيع استخدامها?",
 				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
 			},
 			"channel": {
@@ -143,10 +143,10 @@
 	"reference": {
 		"title": "Reference",
 		"commands": {
-			"title": "Commands"
+			"title": "الأوامر"
 		},
 		"settings": {
-			"title": "Configs / Settings"
+			"title": "الاعدادات"
 		}
 	}
 }

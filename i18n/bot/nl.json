@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "wijzigingen vergeleken met {{ to }}",
-			"entry": "**{{ pos}}** {{{ chang }}} **{{{ name }}}** - {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} neppe, {{ leave }} leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites sinds {{{ from }}}",
 			"invalidDate": "Ongeldige datum: {{ date }}",
 			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves",
@@ -589,7 +589,8 @@
 					"compare": "De datum waarop de leaderboard wordt weergegeven."
 				}
 			},
-			"title": "Leaderboard"
+			"title": "Leaderboard",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
