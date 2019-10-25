@@ -1597,10 +1597,6 @@
 			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
 		}
 	},
-	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
-	},
 	"music": {
 		"notPlaying": "There is currently no music being played!",
 		"notConnected": "The bot is not connected to a voice channel!",
