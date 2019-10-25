@@ -1,5 +1,5 @@
 import { IMClient } from '../../../client';
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { IHeartMusicItem } from './IHeartMusicItem';
@@ -23,8 +23,8 @@ export class IHeartRadio extends MusicPlatform {
 		return url.startsWith('iheart');
 	}
 
-	public getType(): MusicPlatformTypes {
-		return MusicPlatformTypes.iHeartRADIO;
+	public getType(): MusicPlatformType {
+		return MusicPlatformType.iHeartRADIO;
 	}
 
 	public getByLink(link: string): Promise<IHeartMusicItem> {

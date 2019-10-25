@@ -1,5 +1,5 @@
 import { IMClient } from '../../client';
-import { MusicPlatformTypes } from '../../types';
+import { MusicPlatformType } from '../../types';
 import { IHeartRadio } from '../models/iheartradio/IHeartRadio';
 import { MusicPlatform } from '../models/MusicPlatform';
 import { RaveDJ } from '../models/ravedj/RaveDJ';
@@ -9,19 +9,19 @@ import { Youtube } from '../models/youtube/Youtube';
 
 export class MusicPlatformService {
 	private client: IMClient;
-	private platforms: Map<MusicPlatformTypes, MusicPlatform> = new Map();
+	private platforms: Map<MusicPlatformType, MusicPlatform> = new Map();
 
 	public constructor(client: IMClient) {
 		this.client = client;
 
-		this.platforms.set(MusicPlatformTypes.YouTube, new Youtube(client));
-		this.platforms.set(MusicPlatformTypes.SoundCloud, new Soundcloud(client));
-		this.platforms.set(MusicPlatformTypes.RaveDJ, new RaveDJ(client));
-		this.platforms.set(MusicPlatformTypes.iHeartRADIO, new IHeartRadio(client));
-		this.platforms.set(MusicPlatformTypes.TuneIn, new TuneInRadio(client));
+		this.platforms.set(MusicPlatformType.YouTube, new Youtube(client));
+		this.platforms.set(MusicPlatformType.SoundCloud, new Soundcloud(client));
+		this.platforms.set(MusicPlatformType.RaveDJ, new RaveDJ(client));
+		this.platforms.set(MusicPlatformType.iHeartRADIO, new IHeartRadio(client));
+		this.platforms.set(MusicPlatformType.TuneIn, new TuneInRadio(client));
 	}
 
-	public get(platform: MusicPlatformTypes): MusicPlatform | undefined {
+	public get(platform: MusicPlatformType): MusicPlatform | undefined {
 		return this.platforms.get(platform);
 	}
 

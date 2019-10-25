@@ -3,7 +3,7 @@ import { Emoji, Message, VoiceChannel } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { EnumResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicCommand, MusicPlatformTypes } from '../../../types';
+import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
 
 export default class extends Command {
@@ -23,7 +23,7 @@ export default class extends Command {
 				{
 					name: 'platform',
 					short: 'p',
-					resolver: new EnumResolver(client, Object.values(MusicPlatformTypes))
+					resolver: new EnumResolver(client, Object.values(MusicPlatformType))
 				}
 			],
 			group: CommandGroup.Music,
@@ -36,8 +36,8 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[searchTerm]: [string],
-		{ platform }: { platform: MusicPlatformTypes },
-		{ t, guild }: Context
+		{ platform }: { platform: MusicPlatformType },
+		{ t, guild, settings }: Context
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
@@ -49,7 +49,7 @@ export default class extends Command {
 		if (platform) {
 			musicPlatform = this.client.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.platforms.get(MusicPlatformTypes.YouTube);
+			musicPlatform = this.client.music.platforms.get(settings.defaultMusicPlatform);
 		}
 
 		if (!musicPlatform.supportsSearch) {

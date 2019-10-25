@@ -64,7 +64,7 @@ export default class extends Command {
 				allSets.forEach((set, invCode) =>
 					embed.fields.push({
 						name: invCode,
-						value: beautify(info, set[key])
+						value: beautify(info.type, set[key])
 					})
 				);
 			} else {
@@ -102,7 +102,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: beautify(info, oldVal)
+					value: beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
@@ -134,7 +134,7 @@ export default class extends Command {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.current.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -151,13 +151,13 @@ export default class extends Command {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.previous.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.inviteCodeConfig.new.title'),
-			value: value !== null ? beautify(info, value) : t('cmd.inviteCodeConfig.none')
+			value: value !== null ? beautify(info.type, value) : t('cmd.inviteCodeConfig.none')
 		});
 
 		// Do any post processing, such as example messages

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { IMClient } from '../../../client';
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { SoundcloudMusicItem } from './SoundCloudMusicItem';
@@ -26,8 +26,8 @@ export class Soundcloud extends MusicPlatform {
 		return url.startsWith('https://soundcloud.com');
 	}
 
-	public getType(): MusicPlatformTypes {
-		return MusicPlatformTypes.SoundCloud;
+	public getType(): MusicPlatformType {
+		return MusicPlatformType.SoundCloud;
 	}
 
 	public async getByLink(link: string): Promise<SoundcloudMusicItem> {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { IMClient } from '../../../client';
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -28,8 +28,8 @@ export class TuneInRadio extends MusicPlatform {
 		return url.startsWith('tunein');
 	}
 
-	public getType(): MusicPlatformTypes {
-		return MusicPlatformTypes.iHeartRADIO;
+	public getType(): MusicPlatformType {
+		return MusicPlatformType.iHeartRADIO;
 	}
 
 	public async getByLink(link: string): Promise<MusicItem> {

@@ -8,6 +8,7 @@ import {
 	RankAssignmentStyle
 } from '../../sequelize';
 import { InternalSettingsTypes, SettingsInfo } from '../../settings';
+import { MusicPlatformType } from '../../types';
 import { Context } from '../commands/Command';
 
 import {
@@ -45,7 +46,12 @@ export class SettingsValueResolver extends Resolver {
 			'Enum<RankAssignmentStyle>': new EnumResolver(client, Object.values(RankAssignmentStyle)),
 			'Enum<AnnouncementVoice>': new EnumResolver(client, Object.values(AnnouncementVoice)),
 			'Enum<ActivityType>': new EnumResolver(client, Object.values(ActivityType)),
-			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus))
+			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus)),
+			'Enum<MusicPlatformTypes>': new EnumResolver(client, Object.values(MusicPlatformType)),
+			'Enum<MusicPlatformTypes>[]': new ArrayResolver(
+				client,
+				new EnumResolver(client, Object.values(MusicPlatformType))
+			)
 		};
 	}
 

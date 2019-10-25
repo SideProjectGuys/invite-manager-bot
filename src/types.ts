@@ -177,7 +177,7 @@ export interface MusicQueue {
 	queue: MusicItem[];
 }
 
-export enum MusicPlatformTypes {
+export enum MusicPlatformType {
 	YouTube = 'youtube',
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',

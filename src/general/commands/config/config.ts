@@ -24,6 +24,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Config,
+			// TODO: These are only needed if we propagate our call to "interactiveConfig"
 			/*botPermissions: [
 				GuildPermission.ADD_REACTIONS,
 				GuildPermission.MANAGE_MESSAGES,
@@ -68,7 +69,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.config.current.title'),
-					value: beautify(info, oldVal)
+					value: beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.config.current.notSet', {
@@ -100,7 +101,7 @@ export default class extends Command {
 			embed.description = t('cmd.config.sameValue');
 			embed.fields.push({
 				name: t('cmd.config.current.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -117,13 +118,13 @@ export default class extends Command {
 		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.config.previous.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.config.new.title'),
-			value: value !== null ? beautify(info, value) : t('cmd.config.none')
+			value: value !== null ? beautify(info.type, value) : t('cmd.config.none')
 		});
 
 		// Do any post processing, such as example messages
@@ -144,7 +145,7 @@ export default class extends Command {
 
 		const info = settingsInfo[key];
 
-		if (info.type === 'Channel' || info.type === 'Channel[]') {
+		if ((info.type === 'Channel' || info.type === 'Channel[]') && key !== SettingsKey.ignoredChannels) {
 			let channels = value as TextChannel[];
 			if (info.type === 'Channel') {
 				channels = [value as TextChannel];

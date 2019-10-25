@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { User } from 'eris';
 
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { BaseInfo, MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 

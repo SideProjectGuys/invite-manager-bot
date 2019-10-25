@@ -97,7 +97,7 @@ export default class extends Command {
 
 				embed.fields.push({
 					name: t('cmd.botConfig.current.title'),
-					value: beautify(info, oldVal)
+					value: beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.botConfig.current.notSet', {
@@ -141,7 +141,7 @@ export default class extends Command {
 			embed.description = t('cmd.botConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.botConfig.current.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -158,13 +158,13 @@ export default class extends Command {
 		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.botConfig.previous.title'),
-				value: beautify(info, oldVal)
+				value: beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.botConfig.new.title'),
-			value: value !== null ? beautify(info, value) : t('cmd.botConfig.none')
+			value: value !== null ? beautify(info.type, value) : t('cmd.botConfig.none')
 		});
 
 		// Do any post processing, such as example messages

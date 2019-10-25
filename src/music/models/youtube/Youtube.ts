@@ -1,7 +1,7 @@
 import ytdl from 'ytdl-core';
 
 import { IMClient } from '../../../client';
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -44,8 +44,8 @@ export class Youtube extends MusicPlatform {
 		return url.startsWith('https://youtube.com/');
 	}
 
-	public getType(): MusicPlatformTypes {
-		return MusicPlatformTypes.YouTube;
+	public getType(): MusicPlatformType {
+		return MusicPlatformType.YouTube;
 	}
 
 	public async getByLink(link: string): Promise<MusicItem> {

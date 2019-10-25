@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { IMClient } from '../../../client';
-import { MusicPlatformTypes } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -31,8 +31,8 @@ export class RaveDJ extends MusicPlatform {
 		return url.startsWith('https://rave.dj');
 	}
 
-	public getType(): MusicPlatformTypes {
-		return MusicPlatformTypes.RaveDJ;
+	public getType(): MusicPlatformType {
+		return MusicPlatformType.RaveDJ;
 	}
 
 	private async getIdToken() {

@@ -115,7 +115,7 @@ export default class extends Command {
 						type: 'key',
 						value: item[0],
 						title: t(`settings.${item[0]}.title`),
-						description: beautify(item[1], context.settings[item[0]])
+						description: beautify(item[1].type, context.settings[item[0]])
 					}))
 				);
 
@@ -189,7 +189,7 @@ export default class extends Command {
 		let error: string = null;
 		do {
 			const val = context.settings[key];
-			const current = beautify(info, val);
+			const current = beautify(info.type, val);
 			const text = context.t('cmd.interactiveConfig.change', {
 				current,
 				possible
@@ -488,7 +488,7 @@ export default class extends Command {
 
 		const info = settingsInfo[key];
 
-		if (info.type === 'Channel' || info.type === 'Channel[]') {
+		if ((info.type === 'Channel' || info.type === 'Channel[]') && key !== SettingsKey.ignoredChannels) {
 			let channels = value as TextChannel[];
 			if (info.type === 'Channel') {
 				channels = [value as TextChannel];
