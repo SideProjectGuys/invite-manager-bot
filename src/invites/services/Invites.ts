@@ -236,17 +236,8 @@ export class InvitesService {
 			}
 		});
 
-		const hidden = (await memberSettings.findAll({
-			attributes: ['memberId'],
-			where: sequelize.and(
-				sequelize.where(sequelize.col('guildId'), guildId),
-				sequelize.where(sequelize.fn('JSON_EXTRACT', sequelize.col('value'), '$.hideFromLeaderboard'), true)
-			),
-			raw: true
-		})).map(i => i.memberId);
-
 		return [...entries.entries()]
-			.filter(([k, entry]) => hidden.indexOf(k) === -1 && entry.total > 0)
+			.filter(([k, entry]) => entry.total > 0)
 			.sort(([, a], [, b]) => {
 				const diff = b.total - a.total;
 				return diff !== 0 ? diff : a.name ? a.name.localeCompare(b.name) : 0;

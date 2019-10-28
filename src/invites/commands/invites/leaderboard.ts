@@ -35,6 +35,11 @@ export default class extends Command {
 			invs = invs.filter(e => guild.members.has(e.id));
 		}
 
+		// Get the member settings everytime because it's not that much work
+		// and because we want the 'hideFromLeaderboard' setting to work immediatly
+		const memSets = await this.client.cache.members.get(guild.id);
+		invs = invs.filter(e => !memSets.has(e.id) || !memSets.get(e.id).hideFromLeaderboard);
+
 		const fromText = t('cmd.leaderboard.from', {
 			from: `**${moment(guild.createdAt)
 				.locale(settings.lang)
