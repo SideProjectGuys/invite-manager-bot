@@ -5,7 +5,7 @@ import { LeaderboardEntry } from '../services/Invites';
 
 export class LeaderboardCache extends Cache<LeaderboardEntry[]> {
 	public async init() {
-		this.maxCacheDuration = moment.duration(10, 'minute');
+		this.maxCacheDuration = moment.duration(1, 'hour');
 	}
 
 	protected async _get(guildId: string): Promise<LeaderboardEntry[]> {
