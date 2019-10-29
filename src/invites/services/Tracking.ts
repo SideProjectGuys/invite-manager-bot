@@ -366,7 +366,7 @@ export class TrackingService {
 			exactMatchCode: exactMatchCode,
 			memberId: member.id,
 			guildId: guild.id,
-			createdAt: member.joinedAt,
+			createdAt: moment(member.joinedAt).toDate(),
 			invalidatedReason: null,
 			cleared: false
 		});
