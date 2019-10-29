@@ -15,17 +15,17 @@ export enum ViolationType {
 	hoist = 'hoist'
 }
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 @Index(['guild', 'type'], { unique: true })
 export class StrikeConfig {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.strikeConfigs, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@PrimaryGeneratedColumn()
 	public id: number;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.strikeConfigs, { nullable: false })
+	public guild: Guild;
 
 	@CreateDateColumn()
 	public createdAt: Date;

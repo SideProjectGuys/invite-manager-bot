@@ -6,14 +6,8 @@ import { InviteCodeSetting } from './InviteCodeSetting';
 import { Join } from './Join';
 import { Member } from './Member';
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 export class InviteCode {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.inviteCodes, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@Column({
 		charset: 'utf8mb4',
 		collation: 'utf8mb4_bin',
@@ -27,6 +21,12 @@ export class InviteCode {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.inviteCodes, { nullable: false })
+	public guild: Guild;
 
 	@Column()
 	public maxAge: number;

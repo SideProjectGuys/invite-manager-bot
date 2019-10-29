@@ -158,7 +158,7 @@ export enum AnnouncementVoice {
 	Joey = 'Joey'
 }
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 export class GuildSetting {
 	@Column({ length: 32, primary: true, nullable: false })
 	public guildId: string;

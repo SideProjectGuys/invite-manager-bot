@@ -11,7 +11,7 @@ import { PremiumSubscription } from './PremiumSubscription';
 import { Punishment } from './Punishment';
 import { Strike } from './Strike';
 
-@Entity({ engine: 'NDBCLUSTER' })
+@Entity()
 @Index(['name'])
 export class Member {
 	@Column({ length: 32, primary: true })

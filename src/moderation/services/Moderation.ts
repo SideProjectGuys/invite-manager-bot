@@ -318,8 +318,7 @@ export class ModerationService {
 			strikesBefore = 0;
 		}
 
-		await this.client.repo.strike.save({
-			id: null,
+		await this.client.repo.strike.insert({
 			guildId: args.guild.id,
 			memberId: member.id,
 			amount,
@@ -350,7 +349,7 @@ export class ModerationService {
 				return;
 			}
 
-			await this.client.repo.punishment.save({
+			await this.client.repo.punishment.insert({
 				guildId: args.guild.id,
 				memberId: member.id,
 				type: punishmentConfig.type,

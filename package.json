@@ -54,6 +54,7 @@
 		"@sentry/cli": "1.47.2",
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
+		"@types/mysql2": "github:types/mysql2",
 		"@types/node": "12.7.11",
 		"@types/xmldoc": "1.1.4",
 		"cross-env": "6.0.3",

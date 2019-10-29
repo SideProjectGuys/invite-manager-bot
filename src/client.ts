@@ -1,7 +1,7 @@
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
-import { getRepository, In, Not, Repository } from 'typeorm';
+import { getCustomRepository, getRepository, In, Not, Repository } from 'typeorm';
 
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
@@ -372,7 +372,7 @@ export class IMClient extends Client {
 
 		const dbGuild = await this.repo.guild.findOne(guild.id);
 		if (!dbGuild) {
-			await this.repo.guild.save({
+			await this.repo.guild.insert({
 				id: guild.id,
 				name: guild.name,
 				icon: guild.iconURL,
@@ -388,7 +388,7 @@ export class IMClient extends Client {
 				[GuildSettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
 			};
 
-			await this.repo.setting.save({
+			await this.repo.setting.insert({
 				guildId: guild.id,
 				value: newSettings
 			});
@@ -410,7 +410,7 @@ export class IMClient extends Client {
 		// We have to do this before checking premium or it will fail
 		if (dbGuild && dbGuild.deletedAt) {
 			dbGuild.deletedAt = null;
-			await this.repo.guild.save(dbGuild);
+			await this.repo.guild.update({ id: dbGuild.id }, dbGuild);
 		}
 
 		// Check pro bot

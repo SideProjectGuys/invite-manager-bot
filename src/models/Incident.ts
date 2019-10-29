@@ -2,16 +2,16 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 
 import { Guild } from './Guild';
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 export class Incident {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.incidents, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@PrimaryGeneratedColumn()
 	public id: number;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.incidents, { nullable: false })
+	public guild: Guild;
 
 	@CreateDateColumn()
 	public createdAt: Date;

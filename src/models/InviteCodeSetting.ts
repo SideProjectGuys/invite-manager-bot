@@ -10,14 +10,8 @@ export enum InviteCodeSettingsKey {
 	roles = 'roles'
 }
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 export class InviteCodeSetting {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.inviteCodeSettings, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@Column({
 		nullable: false,
 		charset: 'utf8mb4',
@@ -36,6 +30,12 @@ export class InviteCodeSetting {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.inviteCodeSettings, { nullable: false })
+	public guild: Guild;
 
 	@Column({ type: 'json' })
 	public value: InviteCodeSettingsObject;

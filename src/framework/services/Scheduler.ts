@@ -31,13 +31,14 @@ export class SchedulerService {
 		date: Date,
 		reason: string
 	) {
-		const action = await this.client.repo.scheduledAction.save({
+		const insert = await this.client.repo.scheduledAction.insert({
 			guildId: guildId,
 			actionType: actionType,
 			args: args,
 			date: date,
 			reason: reason
 		});
+		const action = await this.client.repo.scheduledAction.findOne(insert.identifiers[0]);
 		this.createTimer(action);
 	}
 

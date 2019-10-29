@@ -108,22 +108,32 @@ export class TrackingService {
 
 		// Create the guild first, because this event sometimes
 		// gets triggered before 'guildCreate' for new guilds
-		await this.client.repo.guild.save({
-			id: guild.id,
-			name: guild.name,
-			icon: guild.iconURL,
-			memberCount: guild.memberCount,
-			deletedAt: null,
-			banReason: null
-		});
+		await this.client.repo.guild
+			.createQueryBuilder()
+			.insert()
+			.values({
+				id: guild.id,
+				name: guild.name,
+				icon: guild.iconURL,
+				memberCount: guild.memberCount,
+				deletedAt: null,
+				banReason: null
+			})
+			.orUpdate({ columns: ['name', 'icon', 'memberCount', 'deletedAt', 'banReason'] })
+			.execute();
 
-		await this.client.repo.role.save({
-			id: role.id,
-			name: role.name,
-			color: color,
-			guildId: role.guild.id,
-			createdAt: moment(role.createdAt).toDate()
-		});
+		await this.client.repo.role
+			.createQueryBuilder()
+			.insert()
+			.values({
+				id: role.id,
+				name: role.name,
+				color: color,
+				guildId: role.guild.id,
+				createdAt: moment(role.createdAt).toDate()
+			})
+			.orUpdate({ columns: ['name', 'color'] })
+			.execute();
 	}
 
 	private async onGuildRoleDelete(guild: Guild, role: Role) {
@@ -352,14 +362,15 @@ export class TrackingService {
 		}
 
 		// Insert the join
-		const join = await this.client.repo.join.save({
-			exactMatchCode,
+		const insert = await this.client.repo.join.insert({
+			exactMatchCode: exactMatchCode,
 			memberId: member.id,
 			guildId: guild.id,
 			createdAt: member.joinedAt,
 			invalidatedReason: null,
 			cleared: false
 		});
+		const join = await this.client.repo.join.findOne(insert.identifiers[0]);
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
@@ -554,17 +565,23 @@ export class TrackingService {
 		});
 
 		// We need the member in the DB for the leave
-		await this.client.repo.member.save({
-			id: member.id,
-			name: member.user.username,
-			discriminator: member.user.discriminator
-		});
+		await this.client.repo.member
+			.createQueryBuilder()
+			.insert()
+			.values({
+				id: member.id,
+				name: member.user.username,
+				discriminator: member.user.discriminator
+			})
+			.orUpdate({ columns: ['name', 'discriminator'] })
+			.execute();
 
-		const leave = await this.client.repo.leave.save({
+		const insert = await this.client.repo.leave.insert({
 			memberId: member.id,
 			guildId: guild.id,
 			joinId: join ? join.id : null
 		});
+		const leave = await this.client.repo.leave.findOne(insert.identifiers[0]);
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);

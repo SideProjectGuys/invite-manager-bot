@@ -10,17 +10,17 @@ export enum PunishmentType {
 	mute = 'mute'
 }
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 @Index(['guild', 'type'], { unique: true })
 export class PunishmentConfig {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.punishmentConfigs, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@PrimaryGeneratedColumn()
 	public id: number;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.punishmentConfigs, { nullable: false })
+	public guild: Guild;
 
 	@CreateDateColumn()
 	public createdAt: Date;

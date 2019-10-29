@@ -1,5 +1,5 @@
 import { Message } from 'eris';
-import { IsNull, Not } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -38,13 +38,15 @@ export default class extends Command {
 			}
 		);
 
+		const codes = memberId
+			? await this.client.repo.inviteCode.find({ where: { guildId: guild.id, inviterId: memberId } })
+			: [];
+
 		await this.client.repo.join.update(
 			{
 				guildId: guild.id,
-				...(memberId && {
-					exactMatchCode: (await this.client.repo.inviteCode.find({
-						where: { guildId: guild.id, inviterId: memberId }
-					})).map(ic => ic.code)
+				...(codes.length > 0 && {
+					exactMatchCode: In(codes.map(ic => ic.code))
 				})
 			},
 			{
