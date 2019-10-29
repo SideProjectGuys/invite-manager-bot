@@ -12,6 +12,13 @@ import { DBQueueService } from './framework/services/DBQueue';
 import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
+import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache';
+import { InvitesCache } from './invites/cache/InvitesCache';
+import { LeaderboardCache } from './invites/cache/LeaderboardCache';
+import { RanksCache } from './invites/cache/RanksCache';
+import { CaptchaService } from './invites/services/Captcha';
+import { InvitesService } from './invites/services/Invites';
+import { TrackingService } from './invites/services/Tracking';
 import { BotSetting } from './models/BotSetting';
 import { Channel } from './models/Channel';
 import { CommandUsage } from './models/CommandUsage';
@@ -38,17 +45,11 @@ import { RolePermission } from './models/RolePermission';
 import { ScheduledAction } from './models/ScheduledAction';
 import { Strike } from './models/Strike';
 import { StrikeConfig } from './models/StrikeConfig';
-import { InviteCodeSettingsCache } from './modules/invites/cache/InviteCodeSettingsCache';
-import { InvitesCache } from './modules/invites/cache/InvitesCache';
-import { RanksCache } from './modules/invites/cache/RanksCache';
-import { CaptchaService } from './modules/invites/services/Captcha';
-import { InvitesService } from './modules/invites/services/Invites';
-import { TrackingService } from './modules/invites/services/Tracking';
-import { PunishmentCache } from './modules/mod/cache/PunishmentsCache';
-import { StrikesCache } from './modules/mod/cache/StrikesCache';
-import { ModerationService } from './modules/mod/services/Moderation';
-import { MusicCache } from './modules/music/cache/MusicCache';
-import { MusicService } from './modules/music/services/MusicService';
+import { PunishmentCache } from './moderation/cache/PunishmentsCache';
+import { StrikesCache } from './moderation/cache/StrikesCache';
+import { ModerationService } from './moderation/services/Moderation';
+import { MusicCache } from './music/cache/MusicCache';
+import { MusicService } from './music/services/MusicService';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
@@ -120,6 +121,7 @@ export class IMClient extends Client {
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
 		invites: InvitesCache;
+		leaderboard: LeaderboardCache;
 		ranks: RanksCache;
 		members: MemberSettingsCache;
 		permissions: PermissionsCache;
@@ -224,6 +226,7 @@ export class IMClient extends Client {
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
+			leaderboard: new LeaderboardCache(this),
 			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),
 			permissions: new PermissionsCache(this),

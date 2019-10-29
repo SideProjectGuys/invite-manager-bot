@@ -1,6 +1,6 @@
 import { VoiceConnection, VoiceConnectionManager } from 'eris';
 
-import { MusicItem } from './modules/music/models/MusicItem';
+import { MusicItem } from './music/models/MusicItem';
 
 export enum BotType {
 	regular = 'regular',
@@ -178,7 +178,7 @@ export interface MusicQueue {
 	queue: MusicItem[];
 }
 
-export enum MusicPlatformTypes {
+export enum MusicPlatformType {
 	YouTube = 'youtube',
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',

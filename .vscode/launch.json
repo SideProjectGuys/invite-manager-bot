@@ -10,7 +10,7 @@
 			"name": "Launch via NPM",
 			"runtimeExecutable": "npm",
 			"runtimeArgs": ["run-script", "start"],
-			"port": 9229,
+			"port": 19229,
 			"timeout": 15000
 		}
 	]

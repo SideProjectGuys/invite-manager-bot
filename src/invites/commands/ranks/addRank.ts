@@ -1,0 +1,123 @@
+import { Message, Role } from 'eris';
+
+import { IMClient } from '../../../client';
+import { Command, Context } from '../../../framework/commands/Command';
+import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
+import { LogAction } from '../../../models/Log';
+import { CommandGroup, InvitesCommand } from '../../../types';
+
+export default class extends Command {
+	public constructor(client: IMClient) {
+		super(client, {
+			name: InvitesCommand.addRank,
+			aliases: ['add-rank', 'set-rank', 'setRank'],
+			args: [
+				{
+					name: 'role',
+					resolver: RoleResolver,
+					required: true
+				},
+				{
+					name: 'invites',
+					resolver: NumberResolver,
+					required: true
+				},
+				{
+					name: 'info',
+					resolver: StringResolver,
+					rest: true
+				}
+			],
+			group: CommandGroup.Ranks,
+			guildOnly: true,
+			defaultAdminOnly: true,
+			extraExamples: ['!addRank @Role 5', '!addRank "Role with space" 10 Wow, already 10 people!']
+		});
+	}
+
+	public async action(
+		message: Message,
+		[role, invites, description]: [Role, number, string],
+		flags: {},
+		{ guild, t, me }: Context
+	): Promise<any> {
+		await this.client.repo.role.save({
+			id: role.id,
+			name: role.name,
+			guildId: role.guild.id,
+			color: role.color.toString(16),
+			createdAt: role.createdAt
+		});
+
+		let myRole: Role;
+		me.roles.forEach(r => {
+			const gRole = guild.roles.get(r);
+			if (!myRole || gRole.position > myRole.position) {
+				myRole = gRole;
+			}
+		});
+
+		// Check if we are higher then the role we want to assign
+		if (!myRole || myRole.position < role.position) {
+			return this.sendReply(
+				message,
+				t('cmd.addRank.roleTooHigh', {
+					role: role.name,
+					myRole: myRole ? myRole.name : '<None>'
+				})
+			);
+		}
+
+		const rank = await this.client.repo.rank.findOne({
+			where: {
+				guildId: role.guild.id,
+				roleId: role.id
+			}
+		});
+
+		const descr = description ? description : '';
+
+		let isNew = false;
+		if (rank) {
+			rank.numInvites = invites;
+			rank.description = descr;
+			await this.client.repo.rank.save(rank);
+		} else {
+			await this.client.repo.rank.save({
+				guildId: role.guild.id,
+				roleId: role.id,
+				numInvites: invites,
+				description: descr
+			});
+			isNew = true;
+		}
+
+		await this.client.logAction(guild, message, isNew ? LogAction.addRank : LogAction.updateRank, {
+			roleId: role.id,
+			numInvites: invites,
+			description
+		});
+
+		this.client.cache.ranks.flush(guild.id);
+
+		if (!isNew) {
+			return this.sendReply(
+				message,
+				t('cmd.addRank.updated', {
+					role: `<@&${role.id}>`,
+					invites,
+					description
+				})
+			);
+		} else {
+			return this.sendReply(
+				message,
+				t('cmd.addRank.created', {
+					role: `<@&${role.id}>`,
+					invites,
+					description
+				})
+			);
+		}
+	}
+}

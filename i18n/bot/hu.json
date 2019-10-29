@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalid date: {{ date }}",
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
@@ -589,7 +589,8 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Leaderboard"
+			"title": "Leaderboard",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

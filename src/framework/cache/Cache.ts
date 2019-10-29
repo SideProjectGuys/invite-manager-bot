@@ -1,13 +1,18 @@
-import moment, { Duration } from 'moment';
+import moment, { Duration, Moment } from 'moment';
 
 import { IMClient } from '../../client';
+
+interface CacheMeta {
+	cachedAt: Moment;
+	validUntil: Moment;
+}
 
 export abstract class Cache<CachedObject> {
 	protected client: IMClient;
 
 	protected maxCacheDuration: Duration = moment.duration(6, 'h');
 	protected cache: Map<string, CachedObject> = new Map();
-	protected cacheTime: Map<string, moment.Moment> = new Map();
+	protected cacheMeta: Map<string, CacheMeta> = new Map();
 
 	private pending: Map<string, Promise<CachedObject>> = new Map();
 
@@ -22,8 +27,8 @@ export abstract class Cache<CachedObject> {
 		const cached = this.cache.get(key);
 
 		if (typeof cached !== 'undefined') {
-			const time = this.cacheTime.get(key);
-			if (time && time.isAfter(moment())) {
+			const meta = this.cacheMeta.get(key);
+			if (meta && meta.validUntil.isAfter(moment())) {
 				return cached;
 			}
 		}
@@ -40,32 +45,36 @@ export abstract class Cache<CachedObject> {
 		const obj = await promise;
 
 		this.cache.set(key, obj);
-		this.cacheTime.set(key, moment().add(this.maxCacheDuration));
+		this.cacheMeta.set(key, { cachedAt: moment(), validUntil: moment().add(this.maxCacheDuration) });
 
 		return obj;
+	}
+
+	public getCacheMeta(key: string) {
+		return this.cacheMeta.get(key);
 	}
 
 	protected abstract async _get(key: string): Promise<CachedObject>;
 
 	public async set(key: string, value: CachedObject): Promise<CachedObject> {
 		this.cache.set(key, value);
-		this.cacheTime.set(key, moment().add(this.maxCacheDuration));
+		this.cacheMeta.set(key, { cachedAt: moment(), validUntil: moment().add(this.maxCacheDuration) });
 		return value;
 	}
 
 	public has(key: string) {
-		const time = this.cacheTime.get(key);
-		return time && time.isAfter(moment()) && this.cache.has(key);
+		const meta = this.cacheMeta.get(key);
+		return meta && this.cache.has(key) && meta.validUntil.isAfter(moment());
 	}
 
 	public flush(key: string) {
 		this.cache.delete(key);
-		this.cacheTime.delete(key);
+		this.cacheMeta.delete(key);
 	}
 
 	public clear() {
 		this.cache = new Map();
-		this.cacheTime = new Map();
+		this.cacheMeta = new Map();
 	}
 
 	public getSize() {
