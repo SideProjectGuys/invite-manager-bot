@@ -119,7 +119,7 @@ export class TrackingService {
 				deletedAt: null,
 				banReason: null
 			})
-			.orUpdate({ columns: ['name', 'icon', 'memberCount', 'deletedAt', 'banReason'] })
+			.orUpdate({ overwrite: ['name', 'icon', 'memberCount', 'deletedAt', 'banReason'] })
 			.execute();
 
 		await this.client.repo.role
@@ -132,7 +132,7 @@ export class TrackingService {
 				guildId: role.guild.id,
 				createdAt: moment(role.createdAt).toDate()
 			})
-			.orUpdate({ columns: ['name', 'color'] })
+			.orUpdate({ overwrite: ['name', 'color'] })
 			.execute();
 	}
 
@@ -573,7 +573,7 @@ export class TrackingService {
 				name: member.user.username,
 				discriminator: member.user.discriminator
 			})
-			.orUpdate({ columns: ['name', 'discriminator'] })
+			.orUpdate({ overwrite: ['name', 'discriminator'] })
 			.execute();
 
 		const insert = await this.client.repo.leave.insert({
