@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { InviteCode } from '../../../models/InviteCode';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -29,13 +30,7 @@ export default class extends Command {
 	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const lang = settings.lang;
 
-		let codes = await this.client.repo.inviteCode.find({
-			where: {
-				guildId: guild.id,
-				inviterId: message.author.id
-			},
-			relations: ['inviter']
-		});
+		let codes = await this.client.db.getInviteCodesForMember(guild.id, message.author.id);
 
 		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
@@ -44,39 +39,35 @@ export default class extends Command {
 		const newCodes = activeCodes.filter(code => !codes.find(c => c.code === code.code));
 
 		if (newCodes.length > 0) {
-			const newDbCodes = newCodes.map(code =>
-				this.client.repo.inviteCode.create({
-					code: code.code,
-					channelId: code.channel ? code.channel.id : null,
-					maxAge: code.maxAge,
-					maxUses: code.maxUses,
-					uses: code.uses,
-					temporary: code.temporary,
-					guildId: code.guild.id,
-					inviterId: code.inviter ? code.inviter.id : null,
-					clearedAmount: 0,
-					isVanity: false,
-					isWidget: !code.inviter
-				})
-			);
+			const newDbCodes: InviteCode[] = newCodes.map(code => ({
+				code: code.code,
+				channelId: code.channel ? code.channel.id : null,
+				maxAge: code.maxAge,
+				maxUses: code.maxUses,
+				uses: code.uses,
+				temporary: code.temporary,
+				guildId: code.guild.id,
+				inviterId: code.inviter ? code.inviter.id : null,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: !code.inviter
+			}));
 
 			const vanityInv = await guild.getVanity().catch(() => undefined);
 			if (vanityInv && vanityInv.code) {
-				newDbCodes.push(
-					this.client.repo.inviteCode.create({
-						code: vanityInv.code,
-						channelId: null,
-						guildId: guild.id,
-						inviterId: null,
-						uses: 0,
-						maxUses: 0,
-						maxAge: 0,
-						temporary: false,
-						clearedAmount: 0,
-						isVanity: true,
-						isWidget: false
-					})
-				);
+				newDbCodes.push({
+					code: vanityInv.code,
+					channelId: null,
+					guildId: guild.id,
+					inviterId: null,
+					uses: 0,
+					maxUses: 0,
+					maxAge: 0,
+					temporary: false,
+					clearedAmount: 0,
+					isVanity: true,
+					isWidget: false
+				});
 			}
 
 			// Insert any new codes that haven't been used yet
@@ -89,12 +80,7 @@ export default class extends Command {
 					}))
 				);
 
-				await this.client.repo.inviteCode
-					.createQueryBuilder()
-					.insert()
-					.values(newDbCodes)
-					.orUpdate({ overwrite: ['uses'] })
-					.execute();
+				await this.client.db.saveInviteCodes(newDbCodes);
 			}
 
 			codes = codes.concat(newDbCodes);

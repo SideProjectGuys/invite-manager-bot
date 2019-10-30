@@ -60,19 +60,21 @@ export default class extends Command {
 			}
 		]);
 
-		await this.client.repo.inviteCode.save({
-			code: inv.code,
-			maxAge: 0,
-			maxUses: 0,
-			temporary: false,
-			channelId: inv.channel.id,
-			uses: 0,
-			guildId: inv.guild.id,
-			inviterId: message.author.id,
-			clearedAmount: 0,
-			isVanity: false,
-			isWidget: false
-		});
+		await this.client.db.saveInviteCodes([
+			{
+				code: inv.code,
+				maxAge: 0,
+				maxUses: 0,
+				temporary: false,
+				channelId: inv.channel.id,
+				uses: 0,
+				guildId: inv.guild.id,
+				inviterId: message.author.id,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: false
+			}
+		]);
 
 		await this.client.cache.inviteCodes.setOne(guild.id, inv.code, InviteCodeSettingsKey.name, name);
 

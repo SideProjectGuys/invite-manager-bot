@@ -43,9 +43,7 @@ export class TrackingService {
 		const allGuilds = [...this.client.guilds.values()].sort((a, b) => b.memberCount - a.memberCount);
 
 		// Fetch all invites from DB
-		const allCodes = await this.client.repo.inviteCode.find({
-			where: { guildId: In(allGuilds.map(g => g.id)) }
-		});
+		const allCodes = await this.client.db.getAllInviteCodesForGuilds(allGuilds.map(g => g.id));
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
@@ -310,14 +308,7 @@ export class TrackingService {
 
 		// Update old invite codes that were used
 		if (updatedCodes.length > 0) {
-			await this.client.repo.inviteCode.update(
-				{
-					code: In(updatedCodes)
-				},
-				{
-					uses: () => 'uses + 1'
-				}
-			);
+			await this.client.db.incrementInviteCodesUse(updatedCodes);
 		}
 
 		// We need the invite codes in the DB for the join

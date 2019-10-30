@@ -141,13 +141,7 @@ export default class extends Command {
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invCodes = await this.client.repo.inviteCode.find({
-			where: {
-				guildId: guild.id,
-				inviterId: user.id
-			},
-			order: { uses: 'DESC' }
-		});
+		const invCodes = await this.client.db.getInviteCodesForMember(guild.id, user.id);
 
 		const js = await this.client.repo.join
 			.createQueryBuilder()

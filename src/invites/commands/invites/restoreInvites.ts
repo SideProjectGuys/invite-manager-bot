@@ -28,19 +28,9 @@ export default class extends Command {
 	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t }: Context): Promise<any> {
 		const memberId = user ? user.id : null;
 
-		await this.client.repo.inviteCode.update(
-			{
-				guildId: guild.id,
-				inviterId: memberId ? memberId : Not(IsNull())
-			},
-			{
-				clearedAmount: 0
-			}
-		);
+		await this.client.db.updateInviteCodeClearedAmount(0, guild.id, memberId);
 
-		const codes = memberId
-			? await this.client.repo.inviteCode.find({ where: { guildId: guild.id, inviterId: memberId } })
-			: [];
+		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
 
 		await this.client.repo.join.update(
 			{

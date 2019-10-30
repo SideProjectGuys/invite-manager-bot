@@ -17,16 +17,16 @@ export class InviteCode {
 	public code: string;
 
 	@CreateDateColumn()
-	public createdAt: Date;
+	public createdAt?: Date;
 
 	@UpdateDateColumn()
-	public updatedAt: Date;
+	public updatedAt?: Date;
 
 	@Column({ length: 32, nullable: false })
 	public guildId: string;
 
 	@ManyToOne(type => Guild, g => g.inviteCodes, { nullable: false })
-	public guild: Guild;
+	public guild?: Guild;
 
 	@Column()
 	public maxAge: number;
@@ -53,17 +53,17 @@ export class InviteCode {
 	public channelId: string;
 
 	@ManyToOne(type => Channel, c => c.inviteCodes, { nullable: true })
-	public channel: Channel;
+	public channel?: Channel;
 
 	@Column({ length: 32, nullable: true })
 	public inviterId: string;
 
 	@ManyToOne(type => Member, m => m.inviteCodes)
-	public inviter: Member;
+	public inviter?: Member;
 
 	@OneToOne(type => InviteCodeSetting, i => i.invite)
-	public setting: InviteCodeSetting;
+	public setting?: InviteCodeSetting;
 
 	@OneToMany(type => Join, j => j.exactMatch)
-	public joins: Join[];
+	public joins?: Join[];
 }

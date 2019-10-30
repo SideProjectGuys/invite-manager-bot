@@ -197,6 +197,9 @@ export class DatabaseService {
 	// --------------
 	//   InviteCode
 	// --------------
+	public async getAllInviteCodesForGuilds(guildIds: string[]) {
+		return this.findMany<InviteCode>('invite_code', '`guildId` IN(?)', [guildIds]);
+	}
 	public async getInviteCodesForGuild(guildId: string) {
 		return this.query<{ total: number; id: string; name: string; discriminator: string }>(
 			'SELECT SUM(ic.`uses` - ic.`clearedAmount`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
@@ -204,6 +207,12 @@ export class DatabaseService {
 				'WHERE ic.`guildId` = ? AND ic.`uses` > ic.`clearedAmount` GROUP BY ic.`inviterId`',
 			[guildId]
 		);
+	}
+	public async getInviteCodesForMember(guildId: string, memberId: string) {
+		return this.findMany<InviteCode>('invite_code', '`guildId` = ? AND `inviterId` = ? ORDER BY `uses` DESC', [
+			guildId,
+			memberId
+		]);
 	}
 	public async getInviteCodeTotalForMember(guildId: string, memberId: string) {
 		const res = await this.query<{ total: number }>(
@@ -215,6 +224,17 @@ export class DatabaseService {
 			return isFinite(num) ? num : 0;
 		}
 		return 0;
+	}
+	public async updateInviteCodeClearedAmount(clearedAmount: number | string, guildId: string, memberId?: string) {
+		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
+		await this.query(`UPDATE invite_code SET \`clearedAmount\` = ?? WHERE \`guildId\` = ? ${memberQuery}`, [
+			clearedAmount,
+			guildId,
+			memberId
+		]);
+	}
+	public async incrementInviteCodesUse(codes: string[]) {
+		await this.query('UPDATE invite_code SET `uses` = `uses` + 1 WHERE `code` IN(?)', [codes]);
 	}
 	public async saveInviteCodes(inviteCodes: Partial<InviteCode>[]) {
 		await this.insertOrUpdate(
@@ -501,7 +521,7 @@ export class DatabaseService {
 		return 0;
 	}
 	public async saveStrike(strike: Partial<Strike>) {
-		await this.insertOrUpdate('strike', ['guildId', 'type', 'amount'], ['type', 'amount'], [strike]);
+		await this.insertOrUpdate('strike', ['guildId', 'memberId', 'type', 'amount'], [], [strike]);
 	}
 	public async removeStrike(guildId: string, id: number) {
 		await this.delete('strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
@@ -526,8 +546,13 @@ export class DatabaseService {
 	public async getPunishment(guildId: string, id: number) {
 		return this.findOne<Punishment>('punishment', '`guildId` = ? AND id = ?', [guildId, id]);
 	}
-	public async savePunishment(strike: Partial<Punishment>) {
-		await this.insertOrUpdate('punishment', ['guildId', 'type', 'amount'], ['type', 'amount'], [strike]);
+	public async savePunishment(punishment: Partial<Punishment>) {
+		await this.insertOrUpdate(
+			'punishment',
+			['guildId', 'type', 'amount', 'args', 'creatorId', 'memberId', 'reason'],
+			[],
+			[punishment]
+		);
 	}
 	public async removePunishment(guildId: string, id: number) {
 		await this.delete('punishment', '`guildId` = ? AND `id` = ?', [guildId, id]);

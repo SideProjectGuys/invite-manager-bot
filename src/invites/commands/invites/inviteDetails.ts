@@ -27,13 +27,7 @@ export default class extends Command {
 	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const target = user ? user : message.author;
 
-		const invs = await this.client.repo.inviteCode.find({
-			where: {
-				guildId: guild.id,
-				inviterId: target.id
-			},
-			order: { uses: 'DESC' }
-		});
+		const invs = await this.client.db.getInviteCodesForMember(guild.id, target.id);
 
 		if (invs.length === 0) {
 			await this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));

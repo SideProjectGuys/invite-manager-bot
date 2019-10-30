@@ -21,9 +21,7 @@ import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
 import { GuildSettingsKey } from './models/GuildSetting';
-import { InviteCode } from './models/InviteCode';
 import { Join } from './models/Join';
-import { Leave } from './models/Leave';
 import { LogAction } from './models/Log';
 import { PunishmentCache } from './moderation/cache/PunishmentsCache';
 import { StrikesCache } from './moderation/cache/StrikesCache';
@@ -72,9 +70,7 @@ export class IMClient extends Client {
 
 	public db: DatabaseService;
 	public repo: {
-		inviteCode: Repository<InviteCode>;
 		join: Repository<Join>;
-		leave: Repository<Leave>;
 	};
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -155,9 +151,7 @@ export class IMClient extends Client {
 
 		this.db = new DatabaseService(this);
 		this.repo = {
-			inviteCode: getRepository(InviteCode),
-			join: getRepository(Join),
-			leave: getRepository(Leave)
+			join: getRepository(Join)
 		};
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
