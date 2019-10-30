@@ -114,7 +114,7 @@ export class DatabaseService {
 	//   Channels
 	// ------------
 	public async saveChannels(channels: Partial<Channel>[]) {
-		await this.insertOrUpdate('channel', ['guildId', 'id', 'createdAt', 'name'], ['name'], channels);
+		await this.insertOrUpdate('channel', ['guildId', 'id', 'name'], ['name'], channels);
 	}
 
 	// -----------
