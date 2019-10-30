@@ -1,5 +1,4 @@
 import { Message } from 'eris';
-import { In } from 'typeorm';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -19,14 +18,11 @@ export default class extends Command {
 
 	public async action(message: Message, args: [], flags: {}, { guild, t }: Context): Promise<any> {
 		const allRoles = await guild.getRESTRoles();
-		const allRanks = await this.client.repo.rank.find({ where: { guildId: guild.id } });
+		const allRanks = await this.client.cache.ranks.get(guild.id);
 		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
 
 		if (oldRoleIds.length > 0) {
-			await this.client.repo.rank.delete({
-				guildId: guild.id,
-				roleId: In(oldRoleIds)
-			});
+			await this.client.db.removeRanks(oldRoleIds);
 		}
 
 		this.client.cache.ranks.flush(guild.id);

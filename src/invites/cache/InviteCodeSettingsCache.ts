@@ -8,7 +8,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
-		const sets = await this.client.repo.inviteCodeSetting.find({ where: { guildId } });
+		const sets = await this.client.db.getInviteCodeSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach(set => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
@@ -40,12 +40,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.client.repo.inviteCodeSetting
-				.createQueryBuilder()
-				.insert()
-				.values({ inviteCode, guildId, value: set })
-				.orUpdate({ overwrite: ['value'] })
-				.execute();
+			await this.client.db.saveInviteCodeSettings({ inviteCode, guildId, value: set });
 		}
 
 		return dbVal;

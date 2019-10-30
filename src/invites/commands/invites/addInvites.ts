@@ -57,11 +57,13 @@ export default class extends Command {
 		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
-		await this.client.repo.member.save({
-			id: user.id,
-			name: user.username,
-			discriminator: user.discriminator
-		});
+		await this.client.db.saveMembers([
+			{
+				id: user.id,
+				name: user.username,
+				discriminator: user.discriminator
+			}
+		]);
 
 		const createdInv = await this.client.repo.customInvite.save({
 			guildId: guild.id,

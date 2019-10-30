@@ -12,7 +12,7 @@ export class PermissionsCache extends Cache<PermissionsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {
-		const perms = await this.client.repo.rolePermission.find({ where: { role: { guildId } } });
+		const perms = await this.client.db.getRolePermissionsForGuild(guildId);
 
 		const obj: PermissionsObject = {};
 

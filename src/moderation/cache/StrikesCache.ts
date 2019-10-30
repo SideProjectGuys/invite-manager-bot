@@ -7,9 +7,6 @@ export class StrikesCache extends Cache<StrikeConfig[]> {
 	}
 
 	protected async _get(guildId: string): Promise<StrikeConfig[]> {
-		return await this.client.repo.strikeConfig.find({
-			where: { guildId },
-			order: { amount: 'DESC' }
-		});
+		return this.client.db.getStrikeConfigsForGuild(guildId);
 	}
 }

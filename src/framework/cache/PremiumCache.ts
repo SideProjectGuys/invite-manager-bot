@@ -1,5 +1,3 @@
-import { MoreThan } from 'typeorm';
-
 import { BotType } from '../../types';
 
 import { Cache } from './Cache';
@@ -16,10 +14,7 @@ export class PremiumCache extends Cache<boolean> {
 			return true;
 		}
 
-		const sub = await this.client.repo.premiumSubscriptionGuild.findOne({
-			where: { guildId, subscription: { validUntil: MoreThan(new Date()) } }
-		});
-
+		const sub = await this.client.db.getActivePremiumSubscriptionGuildForGuild(guildId);
 		return !!sub;
 	}
 }

@@ -125,7 +125,7 @@ export default class extends Command {
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
 		(this.client.settings[key] as any) = value;
-		await this.client.repo.botSetting.save({
+		await this.client.db.saveBotSettings({
 			id: this.client.user.id,
 			value: this.client.settings
 		});

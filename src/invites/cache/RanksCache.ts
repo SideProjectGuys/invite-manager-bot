@@ -7,6 +7,6 @@ export class RanksCache extends Cache<Rank[]> {
 	}
 
 	protected async _get(guildId: string): Promise<Rank[]> {
-		return await this.client.repo.rank.find({ where: { guildId } });
+		return this.client.db.getRanksForGuild(guildId);
 	}
 }

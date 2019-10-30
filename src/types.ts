@@ -66,8 +66,7 @@ export enum ShardCommand {
 
 export enum ChartType {
 	joins = 'joins',
-	leaves = 'leaves',
-	usage = 'usage'
+	leaves = 'leaves'
 }
 
 export enum BotCommand {

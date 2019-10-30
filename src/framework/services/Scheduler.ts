@@ -31,14 +31,14 @@ export class SchedulerService {
 		date: Date,
 		reason: string
 	) {
-		const insert = await this.client.repo.scheduledAction.insert({
+		const newId = await this.client.db.saveScheduledAction({
 			guildId: guildId,
 			actionType: actionType,
 			args: args,
 			date: date,
 			reason: reason
 		});
-		const action = await this.client.repo.scheduledAction.findOne(insert.identifiers[0]);
+		const action = await this.client.db.getScheduledAction(newId);
 		this.createTimer(action);
 	}
 
@@ -53,7 +53,7 @@ export class SchedulerService {
 
 			try {
 				await this.scheduledActionFunctions[action.actionType](guild, action.args);
-				await this.client.repo.scheduledAction.delete({ id: action.id });
+				await this.client.db.removeScheduledAction(action.id);
 			} catch (error) {
 				withScope(scope => {
 					scope.setExtra('action', JSON.stringify(action));
@@ -66,7 +66,7 @@ export class SchedulerService {
 	}
 
 	public async cancelScheduledAction(actionId: number) {
-		await this.client.repo.scheduledAction.delete({ id: actionId });
+		await this.client.db.removeScheduledAction(actionId);
 		await this.removeTimer(actionId);
 	}
 
@@ -79,9 +79,7 @@ export class SchedulerService {
 	}
 
 	private async scheduleScheduledActions() {
-		const actions = await this.client.repo.scheduledAction.find({
-			where: { guildId: this.client.guilds.map(g => g.id) }
-		});
+		const actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map(g => g.id));
 		actions.forEach(action => this.createTimer(action));
 	}
 

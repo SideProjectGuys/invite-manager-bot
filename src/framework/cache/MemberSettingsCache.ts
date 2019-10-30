@@ -9,7 +9,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
-		const sets = await this.client.repo.memberSetting.find({ where: { guildId } });
+		const sets = await this.client.db.getMemberSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach(set => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
@@ -41,12 +41,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.client.repo.memberSetting
-				.createQueryBuilder()
-				.insert()
-				.values({ memberId: userId, guildId, value: set })
-				.orUpdate({ overwrite: ['value'] })
-				.execute();
+			await this.client.db.saveMemberSettings({ memberId: userId, guildId, value: set });
 		}
 
 		return dbVal;

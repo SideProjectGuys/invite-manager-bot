@@ -9,7 +9,7 @@ export class SettingsCache extends Cache<GuildSettingsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<GuildSettingsObject> {
-		const set = await this.client.repo.setting.findOne({ where: { guildId } });
+		const set = await this.client.db.getGuildSettings(guildId);
 		return { ...guildDefaultSettings, ...(set ? set.value : null) };
 	}
 
@@ -26,12 +26,7 @@ export class SettingsCache extends Cache<GuildSettingsObject> {
 			set[key] = dbVal;
 
 			// Save into DB
-			await this.client.repo.setting
-				.createQueryBuilder()
-				.insert()
-				.values({ guildId, value: set })
-				.orUpdate({ overwrite: ['value'] })
-				.execute();
+			await this.client.db.saveGuildSettings({ guildId, value: set });
 		}
 
 		return dbVal;

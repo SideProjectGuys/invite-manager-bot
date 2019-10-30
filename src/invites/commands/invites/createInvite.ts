@@ -52,11 +52,13 @@ export default class extends Command {
 			name ? name : null
 		);
 
-		await this.client.repo.channel.save({
-			id: inv.channel.id,
-			name: inv.channel.name,
-			guildId: guild.id
-		});
+		await this.client.db.saveChannels([
+			{
+				id: inv.channel.id,
+				name: inv.channel.name,
+				guildId: guild.id
+			}
+		]);
 
 		await this.client.repo.inviteCode.save({
 			code: inv.code,

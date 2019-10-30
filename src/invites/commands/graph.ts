@@ -89,25 +89,6 @@ export default class extends Command {
 				.getRawMany();
 
 			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = leave.total));
-		} else if (type === ChartType.usage) {
-			title = t('cmd.graph.usage.title');
-			description = t('cmd.graph.usage.text');
-
-			const cmdUsages = await this.client.repo.commandUsage
-				.createQueryBuilder()
-				.select('YEAR(createdAt)', 'year')
-				.addSelect('MONTH(createdAt)', 'month')
-				.addSelect('DAY(createdAt)', 'day')
-				.addSelect('COUNT(id)', 'total')
-				.groupBy('YEAR(createdAt)')
-				.addGroupBy('MONTH(createdAt)')
-				.addGroupBy('DAY(createdAt)')
-				.where(`guildId = :guildId`, { guildId: guild.id })
-				.orderBy('MAX(createdAt)', 'DESC')
-				.limit(days)
-				.getRawMany();
-
-			cmdUsages.forEach(cmdUsage => (vs[`${cmdUsage.year}-${cmdUsage.month}-${cmdUsage.day}`] = cmdUsage.total));
 		}
 
 		const labels: string[] = [];

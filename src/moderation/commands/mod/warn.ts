@@ -41,11 +41,13 @@ export default class extends Command {
 			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.warn, settings, { reason });
 
 			// Make sure member exists in DB
-			await this.client.repo.member.save({
-				id: targetMember.user.id,
-				name: targetMember.user.username,
-				discriminator: targetMember.user.discriminator
-			});
+			await this.client.db.saveMembers([
+				{
+					id: targetMember.user.id,
+					name: targetMember.user.username,
+					discriminator: targetMember.user.discriminator
+				}
+			]);
 
 			const punishment = await this.client.repo.punishment.save({
 				id: null,

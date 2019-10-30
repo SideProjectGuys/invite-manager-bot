@@ -7,6 +7,6 @@ export class PunishmentCache extends Cache<PunishmentConfig[]> {
 	}
 
 	protected async _get(guildId: string): Promise<PunishmentConfig[]> {
-		return await this.client.repo.punishmentConfig.find({ where: { guildId } });
+		return this.client.db.getPunishmentConfigsForGuild(guildId);
 	}
 }

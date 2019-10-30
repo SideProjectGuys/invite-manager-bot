@@ -1,4 +1,5 @@
 import { Message, Role } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -41,13 +42,15 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		await this.client.repo.role.save({
-			id: role.id,
-			name: role.name,
-			guildId: role.guild.id,
-			color: role.color.toString(16),
-			createdAt: role.createdAt
-		});
+		await this.client.db.saveRoles([
+			{
+				id: role.id,
+				name: role.name,
+				guildId: role.guild.id,
+				color: role.color.toString(16),
+				createdAt: moment(role.createdAt)
+			}
+		]);
 
 		let myRole: Role;
 		me.roles.forEach(r => {
@@ -68,27 +71,24 @@ export default class extends Command {
 			);
 		}
 
-		const rank = await this.client.repo.rank.findOne({
-			where: {
-				guildId: role.guild.id,
-				roleId: role.id
-			}
-		});
-
+		const ranks = await this.client.cache.ranks.get(guild.id);
+		const rank = ranks.find(r => r.roleId === role.id);
 		const descr = description ? description : '';
 
 		let isNew = false;
 		if (rank) {
 			rank.numInvites = invites;
 			rank.description = descr;
-			await this.client.repo.rank.save(rank);
+			await this.client.db.saveRanks([rank]);
 		} else {
-			await this.client.repo.rank.save({
-				guildId: role.guild.id,
-				roleId: role.id,
-				numInvites: invites,
-				description: descr
-			});
+			await this.client.db.saveRanks([
+				{
+					guildId: role.guild.id,
+					roleId: role.id,
+					numInvites: invites,
+					description: descr
+				}
+			]);
 			isNew = true;
 		}
 

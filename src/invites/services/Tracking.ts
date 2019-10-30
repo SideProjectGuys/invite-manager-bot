@@ -108,32 +108,26 @@ export class TrackingService {
 
 		// Create the guild first, because this event sometimes
 		// gets triggered before 'guildCreate' for new guilds
-		await this.client.repo.guild
-			.createQueryBuilder()
-			.insert()
-			.values({
+		await this.client.db.saveGuilds([
+			{
 				id: guild.id,
 				name: guild.name,
 				icon: guild.iconURL,
 				memberCount: guild.memberCount,
 				deletedAt: null,
 				banReason: null
-			})
-			.orUpdate({ overwrite: ['name', 'icon', 'memberCount', 'deletedAt', 'banReason'] })
-			.execute();
+			}
+		]);
 
-		await this.client.repo.role
-			.createQueryBuilder()
-			.insert()
-			.values({
+		await this.client.db.saveRoles([
+			{
 				id: role.id,
 				name: role.name,
 				color: color,
 				guildId: role.guild.id,
-				createdAt: moment(role.createdAt).toDate()
-			})
-			.orUpdate({ overwrite: ['name', 'color'] })
-			.execute();
+				createdAt: moment(role.createdAt)
+			}
+		]);
 	}
 
 	private async onGuildRoleDelete(guild: Guild, role: Role) {
@@ -146,23 +140,9 @@ export class TrackingService {
 			const allRoles = await guild.getRESTRoles();
 			const allRanks = await this.client.cache.ranks.get(guild.id);
 			const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
-			await this.client.repo.rank.delete({
-				guildId: guild.id,
-				roleId: In(oldRoleIds)
-			});
-			await this.client.repo.role.delete({
-				guildId: guild.id,
-				id: In(oldRoleIds)
-			});
+			await this.client.db.removeRanks(oldRoleIds);
 		} else {
-			await this.client.repo.rank.delete({
-				roleId: role.id,
-				guildId: role.guild.id
-			});
-			await this.client.repo.role.delete({
-				id: role.id,
-				guildId: role.guild.id
-			});
+			await this.client.db.removeRanks([role.id]);
 		}
 	}
 
@@ -298,12 +278,7 @@ export class TrackingService {
 				discriminator: m.discriminator
 			}));
 		if (newMembers.length > 0) {
-			await this.client.repo.member
-				.createQueryBuilder()
-				.insert()
-				.values(newMembers)
-				.orUpdate({ overwrite: ['name', 'discriminator'] })
-				.execute();
+			await this.client.db.saveMembers(newMembers);
 		}
 
 		const newChannels = newAndUsedCodes
@@ -315,12 +290,7 @@ export class TrackingService {
 				name: channel.name
 			}));
 		if (newChannels.length > 0) {
-			await this.client.repo.channel
-				.createQueryBuilder()
-				.insert()
-				.values(newChannels)
-				.orUpdate({ overwrite: ['name'] })
-				.execute();
+			await this.client.db.saveChannels(newChannels);
 		}
 
 		const codes = newAndUsedCodes.map(inv => ({
@@ -565,16 +535,13 @@ export class TrackingService {
 		});
 
 		// We need the member in the DB for the leave
-		await this.client.repo.member
-			.createQueryBuilder()
-			.insert()
-			.values({
+		await this.client.db.saveMembers([
+			{
 				id: member.id,
 				name: member.user.username,
 				discriminator: member.user.discriminator
-			})
-			.orUpdate({ overwrite: ['name', 'discriminator'] })
-			.execute();
+			}
+		]);
 
 		const insert = await this.client.repo.leave.insert({
 			memberId: member.id,
@@ -738,14 +705,7 @@ export class TrackingService {
 				createdAt: moment(m.createdAt).toDate()
 			}));
 		if (newMembers.length > 0) {
-			promises.push(
-				this.client.repo.member
-					.createQueryBuilder()
-					.insert()
-					.values(newMembers)
-					.orUpdate({ overwrite: ['name', 'discriminator'] })
-					.execute()
-			);
+			promises.push(this.client.db.saveMembers(newMembers));
 		}
 
 		// Add all new invite channels to the db
@@ -760,14 +720,7 @@ export class TrackingService {
 				createdAt: moment(c.createdAt).toDate()
 			}));
 		if (newChannels.length > 0) {
-			promises.push(
-				this.client.repo.channel
-					.createQueryBuilder()
-					.insert()
-					.values(newChannels)
-					.orUpdate({ overwrite: ['name'] })
-					.execute()
-			);
+			promises.push(this.client.db.saveChannels(newChannels));
 		}
 
 		await Promise.all(promises);

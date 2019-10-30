@@ -81,18 +81,13 @@ export default class extends Command {
 
 			// Insert any new codes that haven't been used yet
 			if (newCodes.length > 0) {
-				await this.client.repo.channel
-					.createQueryBuilder()
-					.insert()
-					.values(
-						newCodes.map(c => ({
-							id: c.channel.id,
-							guildId: c.guild.id,
-							name: c.channel.name
-						}))
-					)
-					.orUpdate({ overwrite: ['name'] })
-					.execute();
+				await this.client.db.saveChannels(
+					newCodes.map(c => ({
+						id: c.channel.id,
+						guildId: c.guild.id,
+						name: c.channel.name
+					}))
+				);
 
 				await this.client.repo.inviteCode
 					.createQueryBuilder()

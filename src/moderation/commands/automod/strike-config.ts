@@ -29,7 +29,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[violation, strikes]: [ViolationType, number],
+		[violationType, strikes]: [ViolationType, number],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
@@ -37,17 +37,10 @@ export default class extends Command {
 			title: t('cmd.strikeConfig.title')
 		});
 
-		const violationQuery = {
-			guildId: guild.id,
-			type: violation
-		};
+		const strikeConfigList = await this.client.cache.strikes.get(guild.id);
 
-		if (typeof violation === typeof undefined) {
+		if (typeof violationType === typeof undefined) {
 			const allViolations: ViolationType[] = Object.values(ViolationType);
-			const strikeConfigList = await this.client.repo.strikeConfig.find({
-				where: { guildId: guild.id },
-				order: { amount: 'DESC' }
-			});
 			const unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0);
 			embed.description = strikeConfigList
 				.map(scl =>
@@ -62,23 +55,24 @@ export default class extends Command {
 				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const strike = await this.client.repo.strikeConfig.findOne(violationQuery);
+			const strike = strikeConfigList.find(c => c.type === violationType);
 			embed.description = t('cmd.strikeConfig.text', {
-				violation: `**${strike ? strike.type : violation}**`,
+				violation: `**${strike ? strike.type : violationType}**`,
 				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await this.client.repo.strikeConfig.delete(violationQuery);
+			await this.client.db.removeStrikeConfig(guild.id, violationType);
 			embed.description = t('cmd.strikeConfig.deletedText', {
-				violation: `**${violation}**`
+				violation: `**${violationType}**`
 			});
 		} else {
-			await this.client.repo.strikeConfig.save({
-				amount: strikes,
-				...violationQuery
+			await this.client.db.saveStrikeConfig({
+				guildId: guild.id,
+				type: violationType,
+				amount: strikes
 			});
 			embed.description = t('cmd.strikeConfig.text', {
-				violation: `**${violation}**`,
+				violation: `**${violationType}**`,
 				strikes: `**${strikes}**`
 			});
 			// TODO: expiration

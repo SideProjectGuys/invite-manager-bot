@@ -53,19 +53,17 @@ export default class extends Command {
 				return this.sendReply(message, t('prompt.canceled'));
 			}
 
-			const sub = await this.client.repo.premiumSubscription.save(
-				this.client.repo.premiumSubscription.create({
-					amount: 0,
-					maxGuilds: 1,
-					isFreeTier: true,
-					validUntil: validUntil.toDate(),
-					memberId: message.author.id,
-					reason: '!try-premium'
-				})
-			);
-			await this.client.repo.premiumSubscriptionGuild.save({
+			const subId = await this.client.db.savePremiumSubscription({
+				amount: 0,
+				maxGuilds: 1,
+				isFreeTier: true,
+				validUntil: validUntil.toDate(),
+				memberId: message.author.id,
+				reason: '!try-premium'
+			});
+			await this.client.db.savePremiumSubscriptionGuild({
 				guildId: guild.id,
-				subscriptionId: sub.id
+				subscriptionId: subId
 			});
 
 			this.client.cache.premium.flush(guild.id);
@@ -78,16 +76,8 @@ export default class extends Command {
 		return this.sendReply(message, embed);
 	}
 
-	private async guildHadTrial(guildID: string): Promise<boolean> {
-		const subs = await this.client.repo.premiumSubscriptionGuild.count({
-			where: {
-				guildId: guildID,
-				subscription: {
-					isFreeTier: true
-				}
-			}
-		});
-
-		return subs > 0;
+	private async guildHadTrial(guildId: string): Promise<boolean> {
+		const sub = await this.client.db.getFreePremiumSubscriptionGuildForGuild(guildId);
+		return !!sub;
 	}
 }

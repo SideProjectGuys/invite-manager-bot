@@ -327,13 +327,8 @@ export class ModerationService {
 
 		const strikesAfter = strikesBefore + amount;
 
-		const punishmentConfig = await this.client.repo.punishmentConfig.findOne({
-			where: {
-				guildId: args.guild.id,
-				amount: [MoreThan(strikesBefore), LessThanOrEqual(strikesAfter)]
-			},
-			order: { amount: 'DESC' }
-		});
+		const punishmentConfigs = await this.client.cache.punishments.get(args.guild.id);
+		const punishmentConfig = punishmentConfigs.find(c => c.amount > strikesBefore && c.amount < strikesAfter);
 
 		if (punishmentConfig) {
 			const func = this.punishmentFunctions[punishmentConfig.type];
