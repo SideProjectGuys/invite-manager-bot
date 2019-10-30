@@ -74,25 +74,9 @@ export default class extends Command {
 
 		if (clearBonus) {
 			// Clear invites
-			await this.client.repo.customInvite.update(
-				{
-					guildId: guild.id,
-					...(memberId && { memberId })
-				},
-				{
-					cleared: true
-				}
-			);
+			await this.client.db.clearCustomInvites(true, guild.id, memberId);
 		} else {
-			await this.client.repo.customInvite.update(
-				{
-					guildId: guild.id,
-					...(memberId && { memberId })
-				},
-				{
-					cleared: false
-				}
-			);
+			await this.client.db.clearCustomInvites(false, guild.id, memberId);
 		}
 
 		if (memberId) {

@@ -166,7 +166,7 @@ export default class extends Command {
 					name: role.name,
 					color: role.color.toString(16),
 					guildId: role.guild.id,
-					createdAt: moment(role.createdAt)
+					createdAt: moment(role.createdAt).toDate()
 				}
 			]);
 

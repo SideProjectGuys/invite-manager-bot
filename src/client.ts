@@ -20,14 +20,11 @@ import { RanksCache } from './invites/cache/RanksCache';
 import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
-import { CustomInvite } from './models/CustomInvite';
 import { GuildSettingsKey } from './models/GuildSetting';
 import { InviteCode } from './models/InviteCode';
 import { Join } from './models/Join';
 import { Leave } from './models/Leave';
 import { LogAction } from './models/Log';
-import { Punishment } from './models/Punishment';
-import { Strike } from './models/Strike';
 import { PunishmentCache } from './moderation/cache/PunishmentsCache';
 import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
@@ -75,12 +72,9 @@ export class IMClient extends Client {
 
 	public db: DatabaseService;
 	public repo: {
-		customInvite: Repository<CustomInvite>;
 		inviteCode: Repository<InviteCode>;
 		join: Repository<Join>;
 		leave: Repository<Leave>;
-		punishment: Repository<Punishment>;
-		strike: Repository<Strike>;
 	};
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
@@ -161,12 +155,9 @@ export class IMClient extends Client {
 
 		this.db = new DatabaseService(this);
 		this.repo = {
-			customInvite: getRepository(CustomInvite),
 			inviteCode: getRepository(InviteCode),
 			join: getRepository(Join),
-			leave: getRepository(Leave),
-			punishment: getRepository(Punishment),
-			strike: getRepository(Strike)
+			leave: getRepository(Leave)
 		};
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),

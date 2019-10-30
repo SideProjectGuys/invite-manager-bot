@@ -1,10 +1,10 @@
-import { isMoment } from 'moment';
 import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
 import { BotSetting } from '../../models/BotSetting';
 import { Channel } from '../../models/Channel';
 import { CommandUsage } from '../../models/CommandUsage';
+import { CustomInvite } from '../../models/CustomInvite';
 import { DBStat } from '../../models/DBStat';
 import { Guild } from '../../models/Guild';
 import { GuildSetting } from '../../models/GuildSetting';
@@ -16,11 +16,13 @@ import { MemberSetting } from '../../models/MemberSetting';
 import { MusicNode } from '../../models/MusicNode';
 import { PremiumSubscription } from '../../models/PremiumSubscription';
 import { PremiumSubscriptionGuild } from '../../models/PremiumSubscriptionGuild';
+import { Punishment } from '../../models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../../models/PunishmentConfig';
 import { Rank } from '../../models/Rank';
 import { Role } from '../../models/Role';
 import { RolePermission } from '../../models/RolePermission';
 import { ScheduledAction } from '../../models/ScheduledAction';
+import { Strike } from '../../models/Strike';
 import { StrikeConfig, ViolationType } from '../../models/StrikeConfig';
 import { BotType } from '../../types';
 
@@ -56,8 +58,11 @@ export class DatabaseService {
 				values.map(val =>
 					cols.map(col => {
 						let v: any = val[col];
-						if (isMoment(v)) {
-							v = v.format('YYYY-MM-DD HH:mm:ss');
+						if (v instanceof Date) {
+							v = v
+								.toISOString()
+								.slice(0, 19)
+								.replace('T', ' ');
 						} else if (typeof v === 'object' && v !== null) {
 							v = JSON.stringify(v);
 						}
@@ -109,7 +114,7 @@ export class DatabaseService {
 	//   Channels
 	// ------------
 	public async saveChannels(channels: Partial<Channel>[]) {
-		await this.insertOrUpdate('channel', ['id', 'name'], ['name'], channels);
+		await this.insertOrUpdate('channel', ['guildId', 'id', 'createdAt', 'name'], ['name'], channels);
 	}
 
 	// -----------
@@ -194,6 +199,49 @@ export class DatabaseService {
 	}
 	public async saveInviteCodeSettings(settings: Partial<InviteCodeSetting>) {
 		await this.insertOrUpdate('invite_code_setting', ['guildId', 'inviteCode', 'value'], ['value'], [settings]);
+	}
+
+	// ----------------
+	//   CustomInvite
+	// ----------------
+	public async getCustomInvitesForMember(guildId: string, memberId: string) {
+		return this.findMany<CustomInvite>('custom_invite', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
+	}
+	public async getCustomInvitesForGuild(guildId: string) {
+		return this.query<{ total: number; id: string; name: string; discriminator: string }>(
+			'SELECT SUM(ci.`amount`) AS total, ci.`memberId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
+				'FROM `custom_invite` ci INNER JOIN `member` m ON m.`id` = ci.`memberId` ' +
+				'WHERE ci.`guildId` = ? AND ci.`cleared` = 0 GROUP BY ci.`memberId`',
+			[guildId]
+		);
+	}
+	public async getCustomInviteTotalForMember(guildId: string, memberId: string) {
+		const res = await this.query<{ total: number }>(
+			'SELECT SUM(`amount`) AS total FROM `custom_invite` WHERE `guildId` = ? AND `memberId` = ? AND `cleared` = 0',
+			[guildId, memberId]
+		);
+		if (res.length > 0) {
+			const num = Number(res[0].total);
+			return isFinite(num) ? num : 0;
+		}
+		return 0;
+	}
+	public async saveCustomInvite(customInvite: Partial<CustomInvite>) {
+		const res = await this.insertOrUpdate(
+			'custom_invite',
+			['guildId', 'memberId', 'creatorId', 'amount', 'reason'],
+			[],
+			[customInvite]
+		);
+		return res.insertId;
+	}
+	public async clearCustomInvites(cleared: boolean, guildId: string, memberId?: string) {
+		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
+		await this.query(`UPDATE \`custom_invite\` SET \`cleared\` = ? WHERE \`guildId\` = ? ${memberQuery}`, [
+			cleared ? 1 : 0,
+			guildId,
+			memberId
+		]);
 	}
 
 	// ----------------
@@ -326,6 +374,33 @@ export class DatabaseService {
 		]);
 	}
 
+	// ----------
+	//   Strike
+	// ----------
+	public async getStrike(guildId: string, id: number) {
+		return this.findOne<Strike>('strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
+	}
+	public async getStrikesForMember(guildId: string, memberId: string) {
+		return this.findMany<Strike>('strike', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
+	}
+	public async getStrikeAmount(guildId: string, memberId: string) {
+		const res = await this.query<{ total: number }>(
+			'SELECT SUM(amount) AS total FROM `strike` WHERE `guildId` = ? AND `memberId` = ?',
+			[guildId, memberId]
+		);
+		if (res.length > 0) {
+			const num = Number(res[0].total);
+			return isFinite(num) ? num : 0;
+		}
+		return 0;
+	}
+	public async saveStrike(strike: Partial<Strike>) {
+		await this.insertOrUpdate('strike', ['guildId', 'type', 'amount'], ['type', 'amount'], [strike]);
+	}
+	public async removeStrike(guildId: string, id: number) {
+		await this.delete('strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
+	}
+
 	// ------------------
 	//   Strike configs
 	// ------------------
@@ -337,6 +412,22 @@ export class DatabaseService {
 	}
 	public async removeStrikeConfig(guildId: string, type: ViolationType) {
 		await this.delete('strike_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
+	}
+
+	// --------------
+	//   Punishment
+	// --------------
+	public async getPunishment(guildId: string, id: number) {
+		return this.findOne<Punishment>('punishment', '`guildId` = ? AND id = ?', [guildId, id]);
+	}
+	public async savePunishment(strike: Partial<Punishment>) {
+		await this.insertOrUpdate('punishment', ['guildId', 'type', 'amount'], ['type', 'amount'], [strike]);
+	}
+	public async removePunishment(guildId: string, id: number) {
+		await this.delete('punishment', '`guildId` = ? AND `id` = ?', [guildId, id]);
+	}
+	public async getPunishmentsForMember(guildId: string, memberId: string) {
+		return this.findMany<Punishment>('punishment', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
 	}
 
 	// ----------------------

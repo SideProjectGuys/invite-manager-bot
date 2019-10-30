@@ -73,14 +73,8 @@ export default class extends Command {
 			.andWhere('exactMatch.inviterId = :userId', { userId: user.id })
 			.getRawMany();
 
-		const customInvs = await this.client.repo.customInvite.find({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			},
-			order: { createdAt: 'DESC' }
-		});
-
+		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
+		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 		const bonusInvs = customInvs.filter(ci => !ci.cleared);
 
 		if (details === InfoDetails.bonus) {

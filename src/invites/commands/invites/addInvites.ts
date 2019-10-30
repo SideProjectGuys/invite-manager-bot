@@ -65,7 +65,7 @@ export default class extends Command {
 			}
 		]);
 
-		const createdInv = await this.client.repo.customInvite.save({
+		const customInviteId = await this.client.db.saveCustomInvite({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
@@ -78,7 +78,7 @@ export default class extends Command {
 		invites.total += amount;
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {
-			customInviteId: createdInv.id,
+			customInviteId,
 			targetId: user.id,
 			amount,
 			reason

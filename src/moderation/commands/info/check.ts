@@ -30,13 +30,7 @@ export default class extends Command {
 			title: user.username
 		});
 
-		const strikeList = await this.client.repo.strike.find({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			}
-		});
-
+		const strikeList = await this.client.db.getStrikesForMember(guild.id, user.id);
 		const strikeTotal = strikeList.reduce((acc, s) => acc + s.amount, 0);
 
 		embed.fields.push({
@@ -48,12 +42,7 @@ export default class extends Command {
 			inline: false
 		});
 
-		const punishmentList = await this.client.repo.punishment.find({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			}
-		});
+		const punishmentList = await this.client.db.getPunishmentsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.check.punishments.total'),

@@ -307,18 +307,12 @@ export class ModerationService {
 	public async addStrikesAndPunish(member: Member, type: ViolationType, amount: number, args: Arguments) {
 		await this.informAboutStrike(member, type, amount, args.settings);
 
-		let strikesBefore = Number(
-			(await this.client.repo.strike
-				.createQueryBuilder()
-				.select('SUM(amount)', 'total')
-				.where('guildId = :guildId AND memberId = :memberId', { guildId: args.guild.id, memberId: member.id })
-				.getRawOne()).total
-		);
+		let strikesBefore = await this.client.db.getStrikeAmount(args.guild.id, member.id);
 		if (isNaN(strikesBefore) || !isFinite(strikesBefore)) {
 			strikesBefore = 0;
 		}
 
-		await this.client.repo.strike.insert({
+		await this.client.db.saveStrike({
 			guildId: args.guild.id,
 			memberId: member.id,
 			amount,
@@ -344,7 +338,7 @@ export class ModerationService {
 				return;
 			}
 
-			await this.client.repo.punishment.insert({
+			await this.client.db.savePunishment({
 				guildId: args.guild.id,
 				memberId: member.id,
 				type: punishmentConfig.type,

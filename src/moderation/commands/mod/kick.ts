@@ -53,7 +53,7 @@ export default class extends Command {
 					}
 				]);
 
-				const punishment = await this.client.repo.punishment.save({
+				await this.client.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.kick,
@@ -66,8 +66,8 @@ export default class extends Command {
 				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetMember.user,
-					punishment.type,
-					punishment.amount,
+					PunishmentType.kick,
+					0,
 					[{ name: 'Reason', value: reason }],
 					message.author
 				);

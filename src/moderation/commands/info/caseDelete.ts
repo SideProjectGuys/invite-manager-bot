@@ -36,15 +36,10 @@ export default class extends Command {
 			})
 		});
 
-		const strike = await this.client.repo.strike.findOne({
-			where: {
-				id: caseNumber,
-				guildId: guild.id
-			}
-		});
+		const strike = await this.client.db.getStrike(guild.id, caseNumber);
 
 		if (strike) {
-			await this.client.repo.strike.remove(strike);
+			await this.client.db.removeStrike(strike.guildId, strike.id);
 			embed.description = t('cmd.caseDelete.done', {
 				id: `${strike.id}`
 			});

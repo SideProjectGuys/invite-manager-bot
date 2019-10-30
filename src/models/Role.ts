@@ -1,4 +1,3 @@
-import { Moment } from 'moment';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColumn } from 'typeorm';
 
 import { Guild } from './Guild';
@@ -11,7 +10,7 @@ export class Role {
 	public id: string;
 
 	@CreateDateColumn()
-	public createdAt: Moment;
+	public createdAt: Date;
 
 	@UpdateDateColumn()
 	public updatedAt: Date;

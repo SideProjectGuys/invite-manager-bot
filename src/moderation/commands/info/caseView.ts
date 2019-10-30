@@ -35,13 +35,7 @@ export default class extends Command {
 			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
-		const strike = await this.client.repo.strike.findOne({
-			where: {
-				id: caseNumber,
-				guildId: guild.id
-			},
-			relations: ['member']
-		});
+		const strike = await this.client.db.getStrike(guild.id, caseNumber);
 
 		if (strike) {
 			let user: BasicUser = await guild

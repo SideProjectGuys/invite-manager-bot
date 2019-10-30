@@ -125,7 +125,7 @@ export class TrackingService {
 				name: role.name,
 				color: color,
 				guildId: role.guild.id,
-				createdAt: moment(role.createdAt)
+				createdAt: moment(role.createdAt).toDate()
 			}
 		]);
 	}

@@ -54,15 +54,7 @@ export default class extends Command {
 			}
 		);
 
-		await this.client.repo.customInvite.update(
-			{
-				guildId: guild.id,
-				...(memberId && { memberId })
-			},
-			{
-				cleared: false
-			}
-		);
+		await this.client.db.clearCustomInvites(false, guild.id, memberId);
 
 		if (memberId) {
 			this.client.cache.invites.flushOne(guild.id, memberId);

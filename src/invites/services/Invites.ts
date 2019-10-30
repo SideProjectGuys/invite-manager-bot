@@ -52,16 +52,11 @@ export class InvitesService {
 			.leftJoin('join.exactMatch', 'exactMatch')
 			.andWhere('exactMatch.inviterId = :memberId', { memberId })
 			.getRawMany();
-		const customInvitesPromise = this.client.repo.customInvite
-			.createQueryBuilder()
-			.select('SUM(amount)', 'total')
-			.where('guildId = :guildId AND memberId = :memberId AND cleared = 0', { guildId, memberId })
-			.getRawOne();
+		const customInvitesPromise = this.client.db.getCustomInviteTotalForMember(guildId, memberId);
 
-		const [invCode, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
+		const [invCode, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const regular = Number(invCode.total);
-		const custom = Number(customInvs.total);
 
 		let fake = 0;
 		let leave = 0;
@@ -108,16 +103,7 @@ export class InvitesService {
 			.addGroupBy('join.invalidatedReason')
 			.getRawMany();
 
-		const customInvitesPromise = this.client.repo.customInvite
-			.createQueryBuilder('customInvite')
-			.select('SUM(amount)', 'total')
-			.addSelect('customInvite.memberId', 'memberId')
-			.addSelect('member.name', 'memberName')
-			.addSelect('member.discriminator', 'memberDiscriminator')
-			.leftJoin('customInvite.member', 'member')
-			.where('customInvite.guildId = :guildId AND customInvite.cleared = 0', { guildId })
-			.groupBy('customInvite.memberId')
-			.getRawMany();
+		const customInvitesPromise = this.client.db.getCustomInvitesForGuild(guildId);
 
 		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
@@ -165,7 +151,7 @@ export class InvitesService {
 		});
 
 		customInvs.forEach(inv => {
-			const id = inv.memberId;
+			const id = inv.id;
 			const custom = Number(inv.total);
 			const entry = entries.get(id);
 			if (entry) {
@@ -174,8 +160,8 @@ export class InvitesService {
 			} else {
 				entries.set(id, {
 					id,
-					name: inv.memberName,
-					discriminator: inv.memberDiscriminator,
+					name: inv.name,
+					discriminator: inv.discriminator,
 					total: custom,
 					regular: 0,
 					custom: custom,
