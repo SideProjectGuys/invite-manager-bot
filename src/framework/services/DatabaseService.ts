@@ -207,7 +207,7 @@ export class DatabaseService {
 	}
 	public async getInviteCodeTotalForMember(guildId: string, memberId: string) {
 		const res = await this.query<{ total: number }>(
-			'SELECT SUM(`uses` - `clearedAmount`) AS total FROM `invite_code` WHERE `guildId` = ? AND `memberId` = ? AND `uses` > 0',
+			'SELECT SUM(`uses` - `clearedAmount`) AS total FROM `invite_code` WHERE `guildId` = ? AND `inviterId` = ? AND `uses` > 0',
 			[guildId, memberId]
 		);
 		if (res.length > 0) {
@@ -312,7 +312,7 @@ export class DatabaseService {
 		return this.query<{ total: number; invalidatedReason: JoinInvalidatedReason }>(
 			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason FROM `join` j ' +
 				'INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` WHERE j.`guildId` = ? AND ' +
-				'`invalidatedReason` IS NOT NULL AND `cleared` = 0 AND ic.`inviterId` = ?',
+				'j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 AND ic.`inviterId` = ? GROUP BY j.`invalidatedReason`',
 			[guildId, memberId]
 		);
 	}
