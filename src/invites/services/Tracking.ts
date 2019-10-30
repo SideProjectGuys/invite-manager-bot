@@ -267,7 +267,6 @@ export class TrackingService {
 			.concat(invs.filter(inv => !oldInvs[inv.code]));
 
 		// We need the members and channels in the DB for the invite codes
-
 		const newMembers = newAndUsedCodes
 			.map(inv => inv.inviter)
 			.filter(inv => !!inv)
@@ -332,15 +331,19 @@ export class TrackingService {
 		}
 
 		// Insert the join
-		const insert = await this.client.repo.join.insert({
-			exactMatchCode: exactMatchCode,
-			memberId: member.id,
-			guildId: guild.id,
-			createdAt: moment(member.joinedAt).toDate(),
-			invalidatedReason: null,
-			cleared: false
-		});
-		const join = await this.client.repo.join.findOne(insert.identifiers[0]);
+		let joinId: number = null;
+		if (exactMatchCode) {
+			const insert = await this.client.repo.join.insert({
+				exactMatchCode: exactMatchCode,
+				memberId: member.id,
+				guildId: guild.id,
+				createdAt: moment(member.joinedAt).toDate(),
+				invalidatedReason: null,
+				cleared: false
+			});
+			const join = await this.client.repo.join.findOne(insert.identifiers[0]);
+			joinId = join.id;
+		}
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
@@ -427,7 +430,7 @@ export class TrackingService {
 		if (sets.autoSubtractFakes) {
 			const { affected } = await this.client.repo.join.update(
 				{
-					id: Not(join.id),
+					id: Not(joinId),
 					guildId: guild.id,
 					memberId: member.id,
 					invalidatedReason: null
@@ -467,9 +470,11 @@ export class TrackingService {
 		}
 
 		// Add any roles for this invite code
-		const invCodeSettings = await this.client.cache.inviteCodes.getOne(guild.id, join.exactMatchCode);
-		if (invCodeSettings && invCodeSettings.roles) {
-			invCodeSettings.roles.forEach(r => member.addRole(r));
+		if (exactMatchCode) {
+			const invCodeSettings = await this.client.cache.inviteCodes.getOne(guild.id, exactMatchCode);
+			if (invCodeSettings && invCodeSettings.roles) {
+				invCodeSettings.roles.forEach(r => member.addRole(r));
+			}
 		}
 
 		let inviter = guild.members.get(invite.inviter.id);
