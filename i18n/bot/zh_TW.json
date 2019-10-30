@@ -1,78 +1,78 @@
 {
 	"bot": {
 		"invite": {
-			"title": "Add bot to your server"
+			"title": "加入機器人到您的伺服器"
 		},
 		"patreon": {
 			"title": "Patreon"
 		},
 		"supportDiscord": {
-			"title": "Support Discord"
+			"title": "支援Discord"
 		},
 		"website": {
-			"title": "Bot website"
+			"title": "機器人網站"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "我目前的前綴指令是`{{{ prefix }}}`\n\n使用`{{{ prefix }}}help`來得到更多幫助。"
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "驗證碼不符合，請再試一次。"
 	},
 	"cmd": {
 		"addInvites": {
 			"amount": {
-				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites.",
-				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites."
+				"negative": "移除**{{ amount }}**邀請從{{{ member }}}，現在有：**{{ totalInvites }}**邀請。",
+				"positive": "新增**{{ amount }}**邀請從{{{ member }}}，現在有：**{{ totalInvites }}**邀請。"
 			},
 			"self": {
 				"args": {
-					"amount": "The amount of invites the user will get/lose. Use a negative (-) number to remove invites.",
-					"reason": "The reason for adding/removing the invites.",
-					"user": "The user that will receive/lose the bonus invites."
+					"amount": "使用者的邀請數量將會獲得/遺失。使用一個負(-)數來移除邀請。",
+					"reason": "新增/移除邀請的原因。",
+					"user": "使用者將會收到/遺失額外獎勵的邀請。"
 				},
-				"description": "Adds/Removes invites to/from a member."
+				"description": "新增/移除成員的邀請。"
 			},
-			"zero": "Adding zero invites doesn't really make sense...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"zero": "新增零邀請真的說不通…",
+			"numberTooLarge": "您提供的數字太大了。",
+			"numberTooSmall": "您提供的數字太小了。"
 		},
 		"addRank": {
-			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",
-			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
+			"created": "新增等級{{{ role }}}需要{{ invites }}邀請和以下敘述：{{ description }}",
+			"roleTooHigh": "身分組{{{ role }}}高於我的身分組({{{ myRole }}})，所以我不能指派它給獲得它的成員。",
 			"self": {
 				"args": {
-					"info": "A description that users will see so they know more about this rank.",
-					"invites": "The amount of invites needed to reach the rank.",
-					"role": "The role which the user will receive when reaching this rank."
+					"info": "一個使用者將會看見的敘述所以他們能更知道這個等級。",
+					"invites": "需要的邀請數量來達到等級。",
+					"role": "使用者將會收到的身分組當達到等級時。"
 				},
-				"description": "Add a new rank."
+				"description": "新增一個新的等級。"
 			},
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}"
+			"updated": "等級{{{ role }}}更新：目前需要{{ invites }}邀請和以下敘述：{{ description }}"
 		},
 		"ban": {
-			"canNotBan": "I cannot ban this user.",
-			"done": "The user was successfully banned.",
-			"error": "There was an error banning this user:\n{{ error }}",
-			"missingPermissions": "I need the `Ban Members` permission to use this command.",
+			"canNotBan": "我不能封鎖這個使用者。",
+			"done": "使用者成功地被封鎖。",
+			"error": "封鎖使用者時有一個錯誤：\n{{ error }}",
+			"missingPermissions": "我需要`Ban Members`權限來使用這個指令。",
 			"self": {
 				"args": {
-					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned.",
-					"user": "User to ban."
+					"deleteMessageDays": "距離多久以前的訊息將被刪除（以天數計）。",
+					"reason": "為甚麼使用者被封鎖。",
+					"user": "使用者封鎖。"
 				},
-				"description": "Ban a member from the server.",
+				"description": "從伺服器封鎖一個成員。",
 				"flags": {
-					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+					"deleteMessageDays": "如果指定將會刪除被封鎖成員近幾日內的訊息。"
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "指令.封鎖.不能軟封鎖"
 		},
 		"botConfig": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+				"text": "這個配置已經被更改。\n使用`{{ prefix }}botConfig {{ key }} <value>`來再次更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。"
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
+				"clear": "使用`{{ prefix }}botConfig {{ key }} none`來清除它。",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
 				"title": "Current Value"
@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalid date: {{ date }}",
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
@@ -589,7 +589,8 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Leaderboard"
+			"title": "Leaderboard",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

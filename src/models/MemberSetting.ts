@@ -9,7 +9,7 @@ export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'
 }
 
-@Entity({ engine: 'NDBCLUSTER' })
+@Entity()
 export class MemberSetting {
 	@Column({ length: 32, primary: true, nullable: false })
 	public memberId: string;

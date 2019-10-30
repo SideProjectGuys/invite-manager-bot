@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "التغييرات مقارنة ب {{{ to }}}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "يدعو منذ..  {{{ from }}}",
 			"invalidDate": "تاريخ غير صالح: {{ date }}",
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
@@ -589,7 +589,8 @@
 					"compare": "التاريخ الذي تتم فيه مقارنة ترتيب المتصدرين الحاليين"
 				}
 			},
-			"title": "لائحة المتصدرين"
+			"title": "لائحة المتصدرين",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -813,9 +814,9 @@
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
-			"none": "No ranks have been created yet.",
+			"none": "لايوجد رتب تم انشائها لحد الان.",
 			"self": {
-				"description": "Show all ranks.",
+				"description": "اظهار كل الرتب.",
 				"args": {
 					"page": "cmd.ranks.self.args.page"
 				}
@@ -964,14 +965,14 @@
 		},
 		"unban": {
 			"canNotUnban": "I cannot unban this member.",
-			"done": "User has been unbanned.",
-			"missingPermissions": "I need the `Ban Members` permission to use this command",
+			"done": "تم فك الحظر من المستخدم.",
+			"missingPermissions": "احتاج الى صلاحية `Ban Members` لاستخدام الأمر.",
 			"self": {
 				"args": {
-					"reason": "The reason why this user is unbanned.",
-					"user": "The user that should be unbanned."
+					"reason": "السبب لفك حظر المستخدم.",
+					"user": "المستخدم الذي يجب فك الحظر منه."
 				},
-				"description": "Unban a user"
+				"description": "فك الحظر من شخص."
 			},
 			"error": "Could not unban user because of the following error:\n{{{ error }}}"
 		},
@@ -985,42 +986,42 @@
 			"title": "Unhoist users"
 		},
 		"unmute": {
-			"canNotUnmute": "Cannot unmute that user.",
-			"done": "User has been unmuted.",
+			"canNotUnmute": "لا يمكن فك اسكات المستخدم.",
+			"done": "تم فك الاسكات من المستخدم.",
 			"missingRole": "Muted role not set or does not exist!",
 			"self": {
 				"args": {
-					"user": "The user that should be unmuted."
+					"user": "المستخدم الذي يجب فك اسكاته."
 				},
-				"description": "Unmute a user"
+				"description": "فك الاسكات من شخص."
 			}
 		},
 		"warn": {
 			"canNotDm": "User was not able to receive DM:\n{{ error }}",
-			"canNotWarn": "I cannot warn this user.",
-			"done": "The user was successfully warned.",
+			"canNotWarn": "لايمكنني تحذير هذا الشخص.",
+			"done": "تم تحذير الشخص بنجاح.",
 			"self": {
 				"args": {
-					"member": "Member to warn.",
-					"reason": "Why was the member was warned."
+					"member": "شخص ليتم تحذيره.",
+					"reason": "لماذا تم تحذير الشخص."
 				},
-				"description": "Warn a member."
+				"description": "تحذير شخص."
 			},
 			"text": "You have been warned on server {{ guild }}\n{{ text }}"
 		},
 		"disconnect": {
 			"self": {
-				"description": "Disconnect the bot from the current voice channel."
+				"description": "فصل البوت من الروم الصوتي الحالي."
 			}
 		},
 		"lyrics": {
 			"self": {
-				"description": "Show lyrics of the currently playing song.",
+				"description": "اظهار كلمات الاغنية التي تشتغل حاليا.",
 				"flags": {
 					"live": "If set, then the lyrics will sync with the current time of the song."
 				}
 			},
-			"notFound": "No lyrics found for this song!",
+			"notFound": "لم يتم ايجاد الكلمات لهذه الاغنية!",
 			"notSupported": "The lyrics command is not supported on {{ platform }}."
 		},
 		"mashup": {
@@ -1033,7 +1034,7 @@
 		},
 		"nowPlaying": {
 			"self": {
-				"description": "Shows information about the currently playing song",
+				"description": "اظهار المعلومات المتعلقة بالاغنية التي تشتغل حاليا.",
 				"flags": {
 					"pin": "Pin the now playing message and update it automatically whenever a new song plays."
 				}
@@ -1042,7 +1043,7 @@
 		},
 		"pause": {
 			"self": {
-				"description": "Pause the current song."
+				"description": "ايقاف الاغنية التي تشتغل حاليا."
 			}
 		},
 		"play": {
@@ -1059,20 +1060,20 @@
 		},
 		"queue": {
 			"self": {
-				"description": "Display the songs in the queue."
+				"description": "اظهار الاغنية فالقائمة."
 			},
 			"empty": "Queue is currently empty. Use the play command to add songs to it."
 		},
 		"repeat": {
 			"self": {
-				"description": "Set the song to be played on repeat."
+				"description": "اختر الاغنية التي ستشتغل مع الاعادة."
 			},
-			"enabled": "This song will now play on repeat.",
-			"disabled": "This song will not be played on repeat anymore."
+			"enabled": "سوف تشتغل الاغنية مع الاعادة.",
+			"disabled": "لم يتم تشغيل الاغنية في وضع الاعادة."
 		},
 		"resume": {
 			"self": {
-				"description": "Resume the current song."
+				"description": "متابعة الاغنية الحالية."
 			}
 		},
 		"rewind": {
@@ -1091,7 +1092,7 @@
 				}
 			},
 			"title": "Results for {{ term }}",
-			"noResults": "No results found!"
+			"noResults": "لم يتم اجاد نتائج!"
 		},
 		"seek": {
 			"self": {
@@ -1129,7 +1130,7 @@
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown",
+		"unknownInviter": "مجهول",
 		"joinServerWidget": "The user joined using a server widget."
 	},
 	"moderation": {
@@ -1139,7 +1140,7 @@
 				"kick": "You have been **kicked** from **{{ guild }}**",
 				"mute": "You have been **muted** in **{{ guild }}**",
 				"warn": "You have been **warned** in **{{ guild }}**",
-				"reason": "Reason: {{ reason }}",
+				"reason": "السبب: {{ reason }}",
 				"amount": "Amount: {{ amount }}"
 			}
 		},
@@ -1171,14 +1172,14 @@
 		},
 		"channel": {
 			"multiple": "Multiple matching channels found. {{{ channels }}}",
-			"notFound": "Channel not found.",
-			"type": "Channel",
+			"notFound": "لم يتم ايجاد القناة.",
+			"type": "القناة",
 			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
 		},
 		"command": {
 			"multiple": "Multiple matching commands found. {{{ commands }}}",
-			"notFound": "Command not found.",
-			"type": "Command",
+			"notFound": "لم يتم ايجاد الأمر.",
+			"type": "أمر",
 			"validValues": "Use one of the following values: {{{ values }}}",
 			"typeInfo": "resolvers.command.typeInfo"
 		},
@@ -1311,7 +1312,7 @@
 		},
 		"autoModLinksWhitelist": {
 			"description": "settings.autoModLinksWhitelist.description",
-			"title": "Whitelist"
+			"title": "القائمة البيضاء"
 		},
 		"autoModLogEnabled": {
 			"description": "settings.autoModLogEnabled.description",
@@ -1335,11 +1336,11 @@
 		},
 		"autoModModeratedChannels": {
 			"description": "settings.autoModModeratedChannels.description",
-			"title": "Moderated Channels"
+			"title": "القنوات الادارية"
 		},
 		"autoModModeratedRoles": {
 			"description": "settings.autoModModeratedRoles.description",
-			"title": "Moderated Roles"
+			"title": "الرتب الادارية"
 		},
 		"autoModQuickMessagesEnabled": {
 			"description": "settings.autoModQuickMessagesEnabled.description",

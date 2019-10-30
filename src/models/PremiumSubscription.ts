@@ -11,7 +11,7 @@ import {
 import { Member } from './Member';
 import { PremiumSubscriptionGuild } from './PremiumSubscriptionGuild';
 
-@Entity({ engine: 'NDBCLUSTER' })
+@Entity()
 export class PremiumSubscription {
 	@PrimaryGeneratedColumn()
 	public id: number;

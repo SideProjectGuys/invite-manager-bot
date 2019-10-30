@@ -3,14 +3,8 @@ import { Column, CreateDateColumn, Entity, ManyToOne, UpdateDateColumn } from 't
 import { Guild } from './Guild';
 import { Role } from './Role';
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (guildId)' })
+@Entity()
 export class Rank {
-	@Column({ length: 32, primary: true, nullable: false })
-	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.ranks, { primary: true, nullable: false })
-	public guild: Guild;
-
 	@Column({ length: 32, primary: true, nullable: false })
 	public roleId: string;
 
@@ -22,6 +16,12 @@ export class Rank {
 
 	@UpdateDateColumn()
 	public updatedAt: Date;
+
+	@Column({ length: 32, nullable: false })
+	public guildId: string;
+
+	@ManyToOne(type => Guild, g => g.ranks, { nullable: false })
+	public guild: Guild;
 
 	@Column()
 	public numInvites: number;

@@ -573,7 +573,7 @@
 				"total": "T"
 			},
 			"comparedTo": "{{{to}}}と比較した変更",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - 招待数:**{{ total }}**  (全体の招待数**{{ regular }}** , ボーナス招待:**{{ custom }}** , 偽の招待数:**{{ fake }}** , 退出数:**{{ leave }}**)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "{{{from}}}からの招待",
 			"invalidDate": "無効な日付：{{date}}",
 			"legend": "`T` = 合計\n`R` = 全体の招待数\r\n`B` = ボーナス招待数\r\n`F` = 偽の招待数\r\n`L` = 退出数",
@@ -589,7 +589,8 @@
 					"compare": "現在のリーダーボード順位が比較される日付"
 				}
 			},
-			"title": "リーダーボード"
+			"title": "リーダーボード",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

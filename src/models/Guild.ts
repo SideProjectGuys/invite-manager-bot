@@ -19,7 +19,7 @@ import { ScheduledAction } from './ScheduledAction';
 import { Strike } from './Strike';
 import { StrikeConfig } from './StrikeConfig';
 
-@Entity({ engine: 'NDBCLUSTER PARTITION BY KEY (id)' })
+@Entity()
 export class Guild {
 	@Column({ length: 32, primary: true })
 	public id: string;

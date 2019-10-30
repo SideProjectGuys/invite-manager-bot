@@ -573,7 +573,7 @@
 				"total": "G"
 			},
 			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Ungültiges Datum: {{ date }}",
 			"legend": "`G` = Gesamt\n`R` = Regulär\r\n`B` = Bonus\r\n`F` = Fake\r\n`V` = Verlassen",
@@ -589,7 +589,8 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Rangliste"
+			"title": "Rangliste",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
