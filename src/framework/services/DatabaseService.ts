@@ -218,7 +218,7 @@ export class DatabaseService {
 	}
 	public async saveInviteCodes(inviteCodes: Partial<InviteCode>[]) {
 		await this.insertOrUpdate(
-			'leave',
+			'invite_code',
 			[
 				'guildId',
 				'createdAt',
