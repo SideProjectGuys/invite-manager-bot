@@ -326,7 +326,7 @@ export class DatabaseService {
 	}
 	public async saveJoin(join: Partial<Join>) {
 		const res = await this.insertOrUpdate(
-			'leave',
+			'join',
 			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
 			[],
 			[join]
