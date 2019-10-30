@@ -41,6 +41,8 @@ export default class extends Command {
 			days = duration.asDays();
 			if (days < 5) {
 				days = 5;
+			} else if (days > 120) {
+				days = 120;
 			}
 		}
 
@@ -55,39 +57,13 @@ export default class extends Command {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
-			const joins = await this.client.repo.join
-				.createQueryBuilder()
-				.select('YEAR(createdAt)', 'year')
-				.addSelect('MONTH(createdAt)', 'month')
-				.addSelect('DAY(createdAt)', 'day')
-				.addSelect('COUNT(id)', 'total')
-				.groupBy('YEAR(createdAt)')
-				.addGroupBy('MONTH(createdAt)')
-				.addGroupBy('DAY(createdAt)')
-				.where(`guildId = :guildId`, { guildId: guild.id })
-				.orderBy('MAX(createdAt)', 'DESC')
-				.limit(days)
-				.getRawMany();
-
+			const joins = await this.client.db.getJoinsPerDay(guild.id, days);
 			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = join.total));
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
-			const leaves = await this.client.repo.leave
-				.createQueryBuilder()
-				.select('YEAR(createdAt)', 'year')
-				.addSelect('MONTH(createdAt)', 'month')
-				.addSelect('DAY(createdAt)', 'day')
-				.addSelect('COUNT(id)', 'total')
-				.groupBy('YEAR(createdAt)')
-				.addGroupBy('MONTH(createdAt)')
-				.addGroupBy('DAY(createdAt)')
-				.where(`guildId = :guildId`, { guildId: guild.id })
-				.orderBy('MAX(createdAt)', 'DESC')
-				.limit(days)
-				.getRawMany();
-
+			const leaves = await this.client.db.getLeavesPerDay(guild.id, days);
 			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = leave.total));
 		}
 

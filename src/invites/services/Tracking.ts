@@ -322,18 +322,13 @@ export class TrackingService {
 
 		// We need the invite codes in the DB for the join
 		if (codes.length > 0) {
-			await this.client.repo.inviteCode
-				.createQueryBuilder()
-				.insert()
-				.values(codes)
-				.orUpdate({ overwrite: ['uses'] })
-				.execute();
+			await this.client.db.saveInviteCodes(codes);
 		}
 
 		// Insert the join
 		let joinId: number = null;
 		if (exactMatchCode) {
-			const insert = await this.client.repo.join.insert({
+			joinId = await this.client.db.saveJoin({
 				exactMatchCode: exactMatchCode,
 				memberId: member.id,
 				guildId: guild.id,
@@ -341,8 +336,6 @@ export class TrackingService {
 				invalidatedReason: null,
 				cleared: false
 			});
-			const join = await this.client.repo.join.findOne(insert.identifiers[0]);
-			joinId = join.id;
 		}
 
 		// Get settings
@@ -548,12 +541,11 @@ export class TrackingService {
 			}
 		]);
 
-		const insert = await this.client.repo.leave.insert({
+		const leaveId = await this.client.db.saveLeave({
 			memberId: member.id,
 			guildId: guild.id,
 			joinId: join ? join.id : null
 		});
-		const leave = await this.client.repo.leave.findOne(insert.identifiers[0]);
 
 		// Get settings
 		const sets = await this.client.cache.settings.get(guild.id);
@@ -570,7 +562,7 @@ export class TrackingService {
 
 		// Exit if we can't find the join
 		if (!join || !join.exactMatch || !join.exactMatch.code) {
-			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leave.id}`);
+			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leaveId}`);
 			if (leaveChannel) {
 				leaveChannel
 					.createMessage(
@@ -619,7 +611,7 @@ export class TrackingService {
 		let newLeaves = 0;
 		if (inviterId && sets.autoSubtractLeaves) {
 			const threshold = Number(sets.autoSubtractLeaveThreshold);
-			const timeDiff = moment.utc(join.createdAt).diff(moment.utc(leave.createdAt), 's');
+			const timeDiff = moment.utc(join.createdAt).diff(moment().utc(), 's');
 
 			if (timeDiff < threshold) {
 				const { affected } = await this.client.repo.join.update(
@@ -747,12 +739,7 @@ export class TrackingService {
 
 		// Then insert invite codes
 		if (codes.length > 0) {
-			return this.client.repo.inviteCode
-				.createQueryBuilder()
-				.insert()
-				.values(codes)
-				.orUpdate({ overwrite: ['uses'] })
-				.execute();
+			await this.client.db.saveInviteCodes(codes);
 		}
 	}
 

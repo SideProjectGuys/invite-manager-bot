@@ -39,32 +39,19 @@ export class InvitesService {
 	}
 
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
-		const inviteCodePromise = this.client.repo.inviteCode
-			.createQueryBuilder()
-			.select('SUM(uses - clearedAmount)', 'total')
-			.where('guildId = :guildId AND inviterId = :memberId AND uses > clearedAmount', { guildId, memberId })
-			.getRawOne();
-		const joinsPromise = this.client.repo.join
-			.createQueryBuilder('join')
-			.select('COUNT(id)', 'total')
-			.select('invalidatedReason', 'invalidatedReason')
-			.where('join.guildId = :guildId AND invalidatedReason IS NOT NULL AND cleared = 0', { guildId })
-			.leftJoin('join.exactMatch', 'exactMatch')
-			.andWhere('exactMatch.inviterId = :memberId', { memberId })
-			.getRawMany();
+		const inviteCodePromise = this.client.db.getInviteCodeTotalForMember(guildId, memberId);
+		const joinsPromise = this.client.db.getInvalidatedJoinsForMember(guildId, memberId);
 		const customInvitesPromise = this.client.db.getCustomInviteTotalForMember(guildId, memberId);
 
-		const [invCode, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
-
-		const regular = Number(invCode.total);
+		const [regular, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach((j: any) => {
+		js.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				fake -= Number(j.total);
+				fake -= j.total;
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				leave -= Number(j.total);
+				leave -= j.total;
 			}
 		});
 
@@ -78,44 +65,21 @@ export class InvitesService {
 	}
 
 	public async generateLeaderboard(guildId: string) {
-		const inviteCodePromise = this.client.repo.inviteCode
-			.createQueryBuilder('inviteCode')
-			.select('SUM(inviteCode.uses - inviteCode.clearedAmount)', 'total')
-			.addSelect('inviteCode.inviterId', 'inviterId')
-			.addSelect('inviter.name', 'inviterName')
-			.addSelect('inviter.discriminator', 'inviterDiscriminator')
-			.leftJoin('inviteCode.inviter', 'inviter')
-			.where('inviteCode.guildId = :guildId AND inviteCode.uses > inviteCode.clearedAmount', { guildId })
-			.groupBy('inviteCode.inviterId')
-			.getRawMany();
-
-		const joinsPromise = this.client.repo.join
-			.createQueryBuilder('join')
-			.select('COUNT(join.id)', 'total')
-			.addSelect('exactMatch.inviterId', 'inviterId')
-			.addSelect('inviter.name', 'inviterName')
-			.addSelect('inviter.discriminator', 'inviterDiscriminator')
-			.addSelect('join.invalidatedReason', 'invalidatedReason')
-			.leftJoin('join.exactMatch', 'exactMatch')
-			.leftJoin('exactMatch.inviter', 'inviter')
-			.where('join.guildId = :guildId AND join.invalidatedReason IS NOT NULL AND join.cleared = 0', { guildId })
-			.groupBy('exactMatch.inviterId')
-			.addGroupBy('join.invalidatedReason')
-			.getRawMany();
-
+		const inviteCodePromise = this.client.db.getInviteCodesForGuild(guildId);
+		const joinsPromise = this.client.db.getJoinsForGuild(guildId);
 		const customInvitesPromise = this.client.db.getCustomInvitesForGuild(guildId);
 
 		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const entries: Map<string, LeaderboardEntry> = new Map();
 		invCodes.forEach(inv => {
-			const id = inv.inviterId;
+			const id = inv.id;
 			entries.set(id, {
 				id,
-				name: inv.inviterName,
-				discriminator: inv.inviterDiscriminator,
-				total: Number(inv.total),
-				regular: Number(inv.total),
+				name: inv.name,
+				discriminator: inv.discriminator,
+				total: inv.total,
+				regular: inv.total,
 				custom: 0,
 				fakes: 0,
 				leaves: 0
@@ -123,7 +87,7 @@ export class InvitesService {
 		});
 
 		js.forEach(join => {
-			const id = join.inviterId;
+			const id = join.id;
 			let fake = 0;
 			let leave = 0;
 			if (join.invalidatedReason === JoinInvalidatedReason.fake) {
@@ -139,8 +103,8 @@ export class InvitesService {
 			} else {
 				entries.set(id, {
 					id,
-					name: join.inviterName,
-					discriminator: join.inviterDiscriminator,
+					name: join.name,
+					discriminator: join.discriminator,
 					total: -(fake + leave),
 					regular: 0,
 					custom: 0,

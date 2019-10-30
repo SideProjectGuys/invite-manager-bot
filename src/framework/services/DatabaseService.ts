@@ -9,7 +9,10 @@ import { DBStat } from '../../models/DBStat';
 import { Guild } from '../../models/Guild';
 import { GuildSetting } from '../../models/GuildSetting';
 import { Incident } from '../../models/Incident';
+import { InviteCode } from '../../models/InviteCode';
 import { InviteCodeSetting } from '../../models/InviteCodeSetting';
+import { Join, JoinInvalidatedReason } from '../../models/Join';
+import { Leave } from '../../models/Leave';
 import { Log } from '../../models/Log';
 import { Member } from '../../models/Member';
 import { MemberSetting } from '../../models/MemberSetting';
@@ -37,7 +40,7 @@ export class DatabaseService {
 
 	private async query<T>(query: string, values: any[]) {
 		const q = mysql.format(query, values);
-		console.log('QUERY', q);
+		console.log('SELECT:', q);
 		const [rows] = await this.pool.execute<RowDataPacket[]>(q);
 		return rows as T[];
 	}
@@ -71,13 +74,13 @@ export class DatabaseService {
 				)
 			]
 		);
-		console.log('QUERY', query);
+		console.log('INSERT:', query);
 		const [ok] = await this.pool.execute<OkPacket>(query);
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
 		const query = mysql.format(`DELETE FROM ?? WHERE ${where}`, [table, ...values]);
-		console.log('QUERY', query);
+		console.log('DELETE:', query);
 		const [ok] = await this.pool.execute<OkPacket>(query);
 		return ok;
 	}
@@ -191,6 +194,50 @@ export class DatabaseService {
 		await this.delete('role_permission', '`roleId` = ? AND `command` = ?', [roleId, command]);
 	}
 
+	// --------------
+	//   InviteCode
+	// --------------
+	public async getInviteCodesForGuild(guildId: string) {
+		return this.query<{ total: number; id: string; name: string; discriminator: string }>(
+			'SELECT SUM(ic.`uses` - ic.`clearedAmount`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
+				'FROM `invite_code` ic INNER JOIN `member` m ON m.`id` = ic.`inviterId` ' +
+				'WHERE ic.`guildId` = ? AND ic.`uses` > ic.`clearedAmount` GROUP BY ic.`inviterId`',
+			[guildId]
+		);
+	}
+	public async getInviteCodeTotalForMember(guildId: string, memberId: string) {
+		const res = await this.query<{ total: number }>(
+			'SELECT SUM(`uses` - `clearedAmount`) AS total FROM `invite_code` WHERE `guildId` = ? AND `memberId` = ? AND `uses` > 0',
+			[guildId, memberId]
+		);
+		if (res.length > 0) {
+			const num = Number(res[0].total);
+			return isFinite(num) ? num : 0;
+		}
+		return 0;
+	}
+	public async saveInviteCodes(inviteCodes: Partial<InviteCode>[]) {
+		await this.insertOrUpdate(
+			'leave',
+			[
+				'guildId',
+				'createdAt',
+				'channelId',
+				'code',
+				'isVanity',
+				'isWidget',
+				'clearedAmount',
+				'inviterId',
+				'maxAge',
+				'maxUses',
+				'temporary',
+				'uses'
+			],
+			['uses'],
+			inviteCodes
+		);
+	}
+
 	// -----------------------
 	//   InviteCode settings
 	// -----------------------
@@ -242,6 +289,65 @@ export class DatabaseService {
 			guildId,
 			memberId
 		]);
+	}
+
+	// --------
+	//   Join
+	// --------
+	public async getJoinsForGuild(guildId: string) {
+		return this.query<{
+			total: number;
+			id: string;
+			name: string;
+			discriminator: string;
+			invalidatedReason: JoinInvalidatedReason;
+		}>(
+			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, j.`invalidatedReason` AS invalidatedReason ' +
+				'FROM `join` j INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` INNER JOIN `member` m ON m.`id` = ic.`inviterId` ' +
+				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 GROUP BY ic.`inviterId`, j.`invalidatedReason`',
+			[guildId]
+		);
+	}
+	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
+		return this.query<{ total: number; invalidatedReason: JoinInvalidatedReason }>(
+			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason FROM `join` j ' +
+				'INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` WHERE j.`guildId` = ? AND ' +
+				'`invalidatedReason` IS NOT NULL AND `cleared` = 0 AND ic.`inviterId` = ?',
+			[guildId, memberId]
+		);
+	}
+	public async getJoinsPerDay(guildId: string, days: number) {
+		return this.query<{ year: number; month: number; day: number; total: number }>(
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
+				'COUNT(`id`) AS total FROM `join` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
+				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
+			[guildId, days]
+		);
+	}
+	public async saveJoin(join: Partial<Join>) {
+		const res = await this.insertOrUpdate(
+			'leave',
+			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
+			[],
+			[join]
+		);
+		return res.insertId;
+	}
+
+	// ---------
+	//   Leave
+	// ---------
+	public async saveLeave(leave: Partial<Leave>) {
+		const res = await this.insertOrUpdate('leave', ['guildId', 'memberId', 'joinId'], [], [leave]);
+		return res.insertId;
+	}
+	public async getLeavesPerDay(guildId: string, days: number) {
+		return this.query<{ year: number; month: number; day: number; total: number }>(
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
+				'COUNT(`id`) AS total FROM `leave` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
+				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
+			[guildId, days]
+		);
 	}
 
 	// ----------------
