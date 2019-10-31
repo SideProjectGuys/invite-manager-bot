@@ -78,7 +78,7 @@ export class DatabaseService {
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
+		const [ok] = await this.pool.query<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
 		return ok;
 	}
 
