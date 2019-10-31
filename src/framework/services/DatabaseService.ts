@@ -1,4 +1,4 @@
-import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2';
+import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
 import { BotSetting } from '../../models/BotSetting';
@@ -39,16 +39,9 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
-		return new Promise<T[]>((resolve, reject) => {
-			const q = this.pool.execute<RowDataPacket[]>(query, values, (err, rows, fields) => {
-				console.log(q.sql);
-				if (err) {
-					reject(err);
-				} else {
-					resolve(rows as T[]);
-				}
-			});
-		});
+		console.log(mysql.format(query, values));
+		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
+		return rows as T[];
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
 		const res = await this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
@@ -59,49 +52,34 @@ export class DatabaseService {
 	}
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
 		const colQuery = cols.map(c => `\`${c}\``).join(',');
-		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
-		return new Promise<OkPacket>((resolve, reject) => {
-			const q = this.pool.execute<OkPacket>(
-				`INSERT INTO ${table} (${colQuery}) VALUES ?` +
-					(updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
-				[
-					values.map(val =>
-						cols.map(col => {
-							let v: any = val[col];
-							if (v instanceof Date) {
-								v = v
-									.toISOString()
-									.slice(0, 19)
-									.replace('T', ' ');
-							} else if (typeof v === 'object' && v !== null) {
-								v = JSON.stringify(v);
-							}
-							return v;
-						})
-					)
-				],
-				(err, rows) => {
-					console.log(q.sql);
-					if (err) {
-						reject(err);
-					} else {
-						resolve(rows);
-					}
+		const updateQuery =
+			updateCols.length > 0
+				? `ON DUPLICATE KEY UPDATE ${updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',')}`
+				: '';
+		const query = `INSERT INTO ${table} (${colQuery}) VALUES ? ${updateQuery}`;
+
+		const vals = values.map(val =>
+			cols.map(col => {
+				let v: any = val[col];
+				if (v instanceof Date) {
+					v = v
+						.toISOString()
+						.slice(0, 19)
+						.replace('T', ' ');
+				} else if (typeof v === 'object' && v !== null) {
+					v = JSON.stringify(v);
 				}
-			);
-		});
+				return v;
+			})
+		);
+
+		console.log(mysql.format(query, [vals]));
+		const [ok] = await this.pool.execute<OkPacket>(query, [vals]);
+		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		return new Promise<void>((resolve, reject) => {
-			const q = this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values, err => {
-				console.log(q.sql);
-				if (err) {
-					reject(err);
-				} else {
-					resolve();
-				}
-			});
-		});
+		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values);
+		return ok;
 	}
 
 	// ---------
