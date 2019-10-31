@@ -49,9 +49,9 @@ export class InvitesService {
 		let leave = 0;
 		js.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				fake -= j.total;
+				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				leave -= j.total;
+				leave -= Number(j.total);
 			}
 		});
 
@@ -78,8 +78,8 @@ export class InvitesService {
 				id,
 				name: inv.name,
 				discriminator: inv.discriminator,
-				total: inv.total,
-				regular: inv.total,
+				total: Number(inv.total),
+				regular: Number(inv.total),
 				custom: 0,
 				fakes: 0,
 				leaves: 0

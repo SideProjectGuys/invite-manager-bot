@@ -58,13 +58,13 @@ export default class extends Command {
 			description = t('cmd.graph.joins.text');
 
 			const joins = await this.client.db.getJoinsPerDay(guild.id, days);
-			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = join.total));
+			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = Number(join.total)));
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
 			const leaves = await this.client.db.getLeavesPerDay(guild.id, days);
-			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = leave.total));
+			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = Number(leave.total)));
 		}
 
 		const labels: string[] = [];

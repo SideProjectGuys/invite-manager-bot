@@ -201,7 +201,7 @@ export class DatabaseService {
 		return this.findMany<InviteCode>('invite_code', '`guildId` IN(?)', [guildIds]);
 	}
 	public async getInviteCodesForGuild(guildId: string) {
-		return this.query<{ total: number; id: string; name: string; discriminator: string }>(
+		return this.query<{ total: string; id: string; name: string; discriminator: string }>(
 			'SELECT SUM(ic.`uses` - ic.`clearedAmount`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
 				'FROM `invite_code` ic INNER JOIN `member` m ON m.`id` = ic.`inviterId` ' +
 				'WHERE ic.`guildId` = ? AND ic.`uses` > ic.`clearedAmount` GROUP BY ic.`inviterId`',
@@ -215,7 +215,7 @@ export class DatabaseService {
 		]);
 	}
 	public async getInviteCodeTotalForMember(guildId: string, memberId: string) {
-		const res = await this.query<{ total: number }>(
+		const res = await this.query<{ total: string }>(
 			'SELECT SUM(`uses` - `clearedAmount`) AS total FROM `invite_code` WHERE `guildId` = ? AND `inviterId` = ? AND `uses` > 0',
 			[guildId, memberId]
 		);
@@ -275,7 +275,7 @@ export class DatabaseService {
 		return this.findMany<CustomInvite>('custom_invite', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
 	}
 	public async getCustomInvitesForGuild(guildId: string) {
-		return this.query<{ total: number; id: string; name: string; discriminator: string }>(
+		return this.query<{ total: string; id: string; name: string; discriminator: string }>(
 			'SELECT SUM(ci.`amount`) AS total, ci.`memberId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
 				'FROM `custom_invite` ci INNER JOIN `member` m ON m.`id` = ci.`memberId` ' +
 				'WHERE ci.`guildId` = ? AND ci.`cleared` = 0 GROUP BY ci.`memberId`',
@@ -283,7 +283,7 @@ export class DatabaseService {
 		);
 	}
 	public async getCustomInviteTotalForMember(guildId: string, memberId: string) {
-		const res = await this.query<{ total: number }>(
+		const res = await this.query<{ total: string }>(
 			'SELECT SUM(`amount`) AS total FROM `custom_invite` WHERE `guildId` = ? AND `memberId` = ? AND `cleared` = 0',
 			[guildId, memberId]
 		);
@@ -316,7 +316,7 @@ export class DatabaseService {
 	// --------
 	public async getJoinsForGuild(guildId: string) {
 		return this.query<{
-			total: number;
+			total: string;
 			id: string;
 			name: string;
 			discriminator: string;
@@ -329,7 +329,7 @@ export class DatabaseService {
 		);
 	}
 	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
-		return this.query<{ total: number; invalidatedReason: JoinInvalidatedReason }>(
+		return this.query<{ total: string; invalidatedReason: JoinInvalidatedReason }>(
 			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason FROM `join` j ' +
 				'INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` WHERE j.`guildId` = ? AND ' +
 				'j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 AND ic.`inviterId` = ? GROUP BY j.`invalidatedReason`',
@@ -337,7 +337,7 @@ export class DatabaseService {
 		);
 	}
 	public async getJoinsPerDay(guildId: string, days: number) {
-		return this.query<{ year: number; month: number; day: number; total: number }>(
+		return this.query<{ year: string; month: string; day: string; total: string }>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
 				'COUNT(`id`) AS total FROM `join` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
 				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
@@ -362,7 +362,7 @@ export class DatabaseService {
 		return res.insertId;
 	}
 	public async getLeavesPerDay(guildId: string, days: number) {
-		return this.query<{ year: number; month: number; day: number; total: number }>(
+		return this.query<{ year: string; month: string; day: string; total: string }>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
 				'COUNT(`id`) AS total FROM `leave` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
 				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
@@ -510,7 +510,7 @@ export class DatabaseService {
 		return this.findMany<Strike>('strike', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
 	}
 	public async getStrikeAmount(guildId: string, memberId: string) {
-		const res = await this.query<{ total: number }>(
+		const res = await this.query<{ total: string }>(
 			'SELECT SUM(amount) AS total FROM `strike` WHERE `guildId` = ? AND `memberId` = ?',
 			[guildId, memberId]
 		);
