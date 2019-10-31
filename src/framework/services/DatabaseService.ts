@@ -39,16 +39,17 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
-		console.log(mysql.format(query, values));
 		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
 		return rows as T[];
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
-		const res = await this.query<T>(`SELECT ??.* FROM ?? WHERE ${where} LIMIT 1`, [table, table, ...values]);
+		const query = mysql.format(`SELECT ??.* FROM ?? WHERE ${where} LIMIT 1`, [table, table]);
+		const res = await this.query<T>(query, values);
 		return res[0];
 	}
 	private async findMany<T>(table: string, where: string, values: any[]): Promise<T[]> {
-		return this.query<T>(`SELECT ??.* FROM ?? WHERE ${where}`, [table, table, ...values]);
+		const query = mysql.format(`SELECT ??.* FROM ?? WHERE ${where}`, [table, table]);
+		return this.query<T>(query, values);
 	}
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
 		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
