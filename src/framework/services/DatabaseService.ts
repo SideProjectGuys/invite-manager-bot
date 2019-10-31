@@ -455,6 +455,9 @@ export class DatabaseService {
 			vals.push(search.ignoredJoinId);
 		}
 
+		if (Object.values(JoinInvalidatedReason).includes(newInvalidatedReason as any)) {
+			newInvalidatedReason = `\`${newInvalidatedReason}\``;
+		}
 		const ok = await this.run(
 			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
 				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
@@ -500,7 +503,7 @@ export class DatabaseService {
 	}
 	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
 		return this.query(
-			'UPDATE `join` j LEFT JOIN `leaves` l ON l.`joinId` = j.`id` SET `invalidatedReason` = ' +
+			'UPDATE `join` j LEFT JOIN `leave` l ON l.`joinId` = j.`id` SET `invalidatedReason` = ' +
 				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
 				'WHERE j.`guildId` = ? AND (j.`invalidatedReason` IS NULL OR j.`invalidatedReason` = "leave")',
 			[guildId, autoSubtractLeaveThreshold]
