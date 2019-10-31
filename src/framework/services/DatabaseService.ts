@@ -39,6 +39,7 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
+		console.log(mysql.format(query, values));
 		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
 		return rows as T[];
 	}
