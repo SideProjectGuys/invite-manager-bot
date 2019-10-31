@@ -456,7 +456,7 @@ export class DatabaseService {
 		}
 
 		if (Object.values(JoinInvalidatedReason).includes(newInvalidatedReason as any)) {
-			newInvalidatedReason = `\`${newInvalidatedReason}\``;
+			newInvalidatedReason = `'${newInvalidatedReason}'`;
 		}
 		const ok = await this.run(
 			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
