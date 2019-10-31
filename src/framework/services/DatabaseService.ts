@@ -50,11 +50,12 @@ export class DatabaseService {
 		return this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where}`, values);
 	}
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
+		const colQuery = cols.map(c => `\`${c}\``).join(',');
 		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
 		const [ok] = await this.pool.execute<OkPacket>(
-			`INSERT INTO ${table} (??) VALUES ?` + (updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
+			`INSERT INTO ${table} (${colQuery}) VALUES ?` +
+				(updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
 			[
-				cols,
 				values.map(val =>
 					cols.map(col => {
 						let v: any = val[col];
