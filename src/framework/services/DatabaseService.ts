@@ -450,11 +450,12 @@ export class DatabaseService {
 			ignoredJoinQuery = 'AND `id` != ?';
 			vals.push(search.ignoredJoinId);
 		}
-		const [ok] = await this.query<OkPacket>(
+
+		const query =
 			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
-				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
-			vals
-		);
+			`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`;
+		console.log(mysql.format(query, vals));
+		const [ok] = await this.query<OkPacket>(query, vals);
 		return ok.affectedRows;
 	}
 	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
