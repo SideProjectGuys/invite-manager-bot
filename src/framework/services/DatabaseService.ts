@@ -1,4 +1,4 @@
-import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
+import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2';
 
 import { IMClient } from '../../client';
 import { BotSetting } from '../../models/BotSetting';
@@ -39,8 +39,16 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
-		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
-		return rows as T[];
+		return new Promise<T[]>((resolve, reject) => {
+			const q = this.pool.execute<RowDataPacket[]>(query, values, (err, rows, fields) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(rows as T[]);
+				}
+			});
+			console.log(q.sql);
+		});
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
 		const res = await this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
@@ -52,31 +60,48 @@ export class DatabaseService {
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
 		const colQuery = cols.map(c => `\`${c}\``).join(',');
 		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
-		const [ok] = await this.pool.execute<OkPacket>(
-			`INSERT INTO ${table} (${colQuery}) VALUES ?` +
-				(updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
-			[
-				values.map(val =>
-					cols.map(col => {
-						let v: any = val[col];
-						if (v instanceof Date) {
-							v = v
-								.toISOString()
-								.slice(0, 19)
-								.replace('T', ' ');
-						} else if (typeof v === 'object' && v !== null) {
-							v = JSON.stringify(v);
-						}
-						return v;
-					})
-				)
-			]
-		);
-		return ok;
+		return new Promise<OkPacket>((resolve, reject) => {
+			const q = this.pool.execute<OkPacket>(
+				`INSERT INTO ${table} (${colQuery}) VALUES ?` +
+					(updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
+				[
+					values.map(val =>
+						cols.map(col => {
+							let v: any = val[col];
+							if (v instanceof Date) {
+								v = v
+									.toISOString()
+									.slice(0, 19)
+									.replace('T', ' ');
+							} else if (typeof v === 'object' && v !== null) {
+								v = JSON.stringify(v);
+							}
+							return v;
+						})
+					)
+				],
+				(err, rows) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(rows);
+					}
+				}
+			);
+			console.log(q.sql);
+		});
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values);
-		return ok;
+		return new Promise<void>((resolve, reject) => {
+			const q = this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values, err => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve();
+				}
+			});
+			console.log(q.sql);
+		});
 	}
 
 	// ---------
