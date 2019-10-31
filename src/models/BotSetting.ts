@@ -1,5 +1,3 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
-
 import { BotSettingsObject } from '../settings';
 
 export enum BotSettingsKey {
@@ -24,17 +22,9 @@ export enum ActivityType {
 	watching = 'watching'
 }
 
-@Entity()
 export class BotSetting {
-	@Column({ length: 32, primary: true })
 	public id: string;
-
-	@CreateDateColumn()
-	public createdAt: Date;
-
-	@UpdateDateColumn()
-	public updatedAt: Date;
-
-	@Column({ type: 'json' })
+	public createdAt?: Date;
+	public updatedAt?: Date;
 	public value: BotSettingsObject;
 }

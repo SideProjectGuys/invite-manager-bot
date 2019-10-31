@@ -52,9 +52,9 @@ export default class extends Command {
 			if (!user) {
 				user = {
 					id: strike.memberId,
-					username: strike.member.name,
-					discriminator: strike.member.discriminator,
-					createdAt: strike.member.createdAt.getTime(),
+					username: strike.memberName,
+					discriminator: strike.memberDiscriminator,
+					createdAt: moment(strike.memberCreatedAt).valueOf(),
 					avatarURL: undefined
 				};
 			}

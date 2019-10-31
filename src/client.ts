@@ -1,7 +1,6 @@
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
-import { getRepository, Repository } from 'typeorm';
 
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
@@ -21,7 +20,6 @@ import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
 import { GuildSettingsKey } from './models/GuildSetting';
-import { Join } from './models/Join';
 import { LogAction } from './models/Log';
 import { PunishmentCache } from './moderation/cache/PunishmentsCache';
 import { StrikesCache } from './moderation/cache/StrikesCache';
@@ -69,9 +67,6 @@ export class IMClient extends Client {
 	public hasStarted: boolean = false;
 
 	public db: DatabaseService;
-	public repo: {
-		join: Repository<Join>;
-	};
 	public cache: {
 		inviteCodes: InviteCodeSettingsCache;
 		invites: InvitesCache;
@@ -150,9 +145,6 @@ export class IMClient extends Client {
 		this.shardCount = shardCount;
 
 		this.db = new DatabaseService(this);
-		this.repo = {
-			join: getRepository(Join)
-		};
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),

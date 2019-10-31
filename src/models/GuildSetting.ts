@@ -1,8 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm';
-
 import { GuildSettingsObject } from '../settings';
-
-import { Guild } from './Guild';
 
 export enum GuildSettingsKey {
 	// General
@@ -158,21 +154,9 @@ export enum AnnouncementVoice {
 	Joey = 'Joey'
 }
 
-@Entity()
 export class GuildSetting {
-	@Column({ length: 32, primary: true, nullable: false })
 	public guildId: string;
-
-	@OneToOne(type => Guild, g => g.setting, { primary: true, nullable: false })
-	@JoinColumn()
-	public guild: Guild;
-
-	@CreateDateColumn()
-	public createdAt: Date;
-
-	@UpdateDateColumn()
-	public updatedAt: Date;
-
-	@Column({ type: 'json' })
+	public createdAt?: Date;
+	public updatedAt?: Date;
 	public value: GuildSettingsObject;
 }

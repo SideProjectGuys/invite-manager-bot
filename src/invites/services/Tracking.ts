@@ -1,7 +1,6 @@
 import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { In, Not } from 'typeorm';
 
 import { IMClient } from '../../client';
 import { GuildSettingsKey } from '../../models/GuildSetting';
@@ -367,16 +366,10 @@ export class TrackingService {
 		// Auto remove leaves if enabled
 		let removedLeaves = 0;
 		if (sets.autoSubtractLeaves) {
-			const { affected } = await this.client.repo.join.update(
-				{
-					guildId: guild.id,
-					memberId: member.id,
-					invalidatedReason: JoinInvalidatedReason.leave
-				},
-				{
-					invalidatedReason: null
-				}
-			);
+			const affected = await this.client.db.updateJoinInvalidatedReason(null, guild.id, {
+				invalidatedReason: JoinInvalidatedReason.leave,
+				memberId: member.id
+			});
 			removedLeaves = affected;
 		}
 
@@ -414,17 +407,11 @@ export class TrackingService {
 		// Auto remove fakes if enabled
 		let newFakes = 0;
 		if (sets.autoSubtractFakes) {
-			const { affected } = await this.client.repo.join.update(
-				{
-					id: Not(joinId),
-					guildId: guild.id,
-					memberId: member.id,
-					invalidatedReason: null
-				},
-				{
-					invalidatedReason: JoinInvalidatedReason.fake
-				}
-			);
+			const affected = await this.client.db.updateJoinInvalidatedReason(JoinInvalidatedReason.fake, guild.id, {
+				invalidatedReason: null,
+				memberId: member.id,
+				ignoredJoinId: joinId
+			});
 			newFakes = affected;
 		}
 
@@ -516,14 +503,7 @@ export class TrackingService {
 			return;
 		}
 
-		const join = await this.client.repo.join.findOne({
-			where: {
-				guildId: guild.id,
-				memberId: member.id
-			},
-			order: { createdAt: 'DESC' },
-			relations: ['exactMatch', 'exactMatch.inviter', 'exactMatch.channel']
-		});
+		const join = await this.client.db.getNewestJoinForMember(guild.id, member.id);
 
 		// We need the member in the DB for the leave
 		await this.client.db.saveMembers([
@@ -554,7 +534,7 @@ export class TrackingService {
 		}
 
 		// Exit if we can't find the join
-		if (!join || !join.exactMatch || !join.exactMatch.code) {
+		if (!join || !join.exactMatchCode) {
 			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leaveId}`);
 			if (leaveChannel) {
 				leaveChannel
@@ -577,13 +557,13 @@ export class TrackingService {
 			return;
 		}
 
-		const inviteCode = join.exactMatch.code;
-		const inviteChannelId = join.exactMatch.channelId;
-		const inviteChannelName = join.exactMatch.channel.name;
+		const inviteCode = join.exactMatchCode;
+		const inviteChannelId = join.channelId;
+		const inviteChannelName = join.channelName;
 
-		const inviterId = join.exactMatch.inviterId;
-		const inviterName = join.exactMatch.inviter.name;
-		const inviterDiscriminator = join.exactMatch.inviter.discriminator;
+		const inviterId = join.inviterId;
+		const inviterName = join.inviterName;
+		const inviterDiscriminator = join.inviterDiscriminator;
 
 		let inviter: BasicMember = guild.members.get(inviterId);
 		if (!inviter) {
@@ -607,15 +587,10 @@ export class TrackingService {
 			const timeDiff = moment.utc(join.createdAt).diff(moment().utc(), 's');
 
 			if (timeDiff < threshold) {
-				const { affected } = await this.client.repo.join.update(
-					{
-						id: join.id,
-						invalidatedReason: null
-					},
-					{
-						invalidatedReason: JoinInvalidatedReason.leave
-					}
-				);
+				const affected = await this.client.db.updateJoinInvalidatedReason(JoinInvalidatedReason.leave, guild.id, {
+					invalidatedReason: null,
+					joinId: join.id
+				});
 				newLeaves = affected;
 			}
 		}

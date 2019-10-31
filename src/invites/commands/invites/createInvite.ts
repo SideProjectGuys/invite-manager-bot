@@ -1,4 +1,5 @@
 import { Message, TextChannel } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -65,6 +66,7 @@ export default class extends Command {
 				code: inv.code,
 				maxAge: 0,
 				maxUses: 0,
+				createdAt: moment(inv.createdAt).toDate(),
 				temporary: false,
 				channelId: inv.channel.id,
 				uses: 0,

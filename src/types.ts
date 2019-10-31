@@ -101,7 +101,6 @@ export enum InvitesCommand {
 	createInvite = 'createInvite',
 	addInvites = 'addInvites',
 	clearInvites = 'clearInvites',
-	fake = 'fake',
 	info = 'info',
 	inviteCodes = 'inviteCodes',
 	inviteDetails = 'inviteDetails',

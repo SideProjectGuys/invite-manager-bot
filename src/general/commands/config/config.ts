@@ -255,15 +255,9 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all fake invalidations
-				await this.client.repo.join.update(
-					{
-						guildId: guild.id,
-						invalidatedReason: JoinInvalidatedReason.fake
-					},
-					{
-						invalidatedReason: null
-					}
-				);
+				await this.client.db.updateJoinInvalidatedReason(null, guild.id, {
+					invalidatedReason: JoinInvalidatedReason.fake
+				});
 			}
 		}
 
@@ -274,15 +268,9 @@ export default class extends Command {
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all leave invalidations
-				await this.client.repo.join.update(
-					{
-						guildId: guild.id,
-						invalidatedReason: JoinInvalidatedReason.leave
-					},
-					{
-						invalidatedReason: null
-					}
-				);
+				await this.client.db.updateJoinInvalidatedReason(null, guild.id, {
+					invalidatedReason: JoinInvalidatedReason.leave
+				});
 			}
 		}
 

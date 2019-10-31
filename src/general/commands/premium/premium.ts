@@ -44,7 +44,7 @@ export default class extends Command {
 		const embed = this.createEmbed();
 
 		const sub = await this.client.db.getActivePremiumSubscriptionForMember(message.author.id);
-		const guildSubs = await this.client.db.getPremiumSubscriptionGuildsForSubscription(sub.id);
+		const guildSubs = sub ? await this.client.db.getPremiumSubscriptionGuildsForSubscription(sub.id) : [];
 
 		if (!action) {
 			if (!sub) {
@@ -83,7 +83,7 @@ export default class extends Command {
 
 				let guildList = '';
 				guildSubs.forEach(guildSub => {
-					const guildName = guildSub.guild.name;
+					const guildName = guildSub.guildName;
 					guildList += `- **${guildName}**` + (guildSub.guildId === guildId ? ' *(This server)*' : '') + '\n';
 				});
 				if (guildId) {

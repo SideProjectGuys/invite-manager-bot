@@ -1,6 +1,5 @@
 import { Message } from 'eris';
 import { Moment } from 'moment';
-import { In, IsNull, Not } from 'typeorm';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -50,17 +49,7 @@ export default class extends Command {
 
 		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.client.repo.join.update(
-			{
-				guildId: guild.id,
-				...(codes.length > 0 && {
-					exactMatchCode: In(codes.map(ic => ic.code))
-				})
-			},
-			{
-				cleared: true
-			}
-		);
+		await this.client.db.updateJoinClearedStatus(true, guild.id, codes.map(ic => ic.code));
 
 		if (clearBonus) {
 			// Clear invites

@@ -226,7 +226,8 @@ export class DatabaseService {
 	}
 	public async updateInviteCodeClearedAmount(clearedAmount: number | string, guildId: string, memberId?: string) {
 		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
-		await this.query(`UPDATE invite_code SET \`clearedAmount\` = ?? WHERE \`guildId\` = ? ${memberQuery}`, [
+		const clearColumn = typeof clearedAmount === 'number' ? '?' : '??';
+		await this.query(`UPDATE invite_code SET \`clearedAmount\` = ${clearColumn} WHERE \`guildId\` = ? ${memberQuery}`, [
 			clearedAmount,
 			guildId,
 			memberId
@@ -314,18 +315,27 @@ export class DatabaseService {
 	//   Join
 	// --------
 	public async getJoinsForGuild(guildId: string) {
-		return this.query<{
+		type AccumulatedJoin = {
 			total: string;
 			id: string;
 			name: string;
 			discriminator: string;
 			invalidatedReason: JoinInvalidatedReason;
-		}>(
-			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, j.`invalidatedReason` AS invalidatedReason ' +
+		};
+		return this.query<AccumulatedJoin>(
+			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, ' +
+				'j.`invalidatedReason` AS invalidatedReason ' +
 				'FROM `join` j INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` INNER JOIN `member` m ON m.`id` = ic.`inviterId` ' +
 				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 GROUP BY ic.`inviterId`, j.`invalidatedReason`',
 			[guildId]
 		);
+	}
+	public async getMaxJoinIdsForGuild(guildId: string) {
+		const res = await this.execute<{ id: string }>(
+			'SELECT MAX(j.`id`) AS id FROM `join` j WHERE j.`guildId` = ? GROUP BY j.`exactMatchCode`, j.`memberId`',
+			[guildId]
+		);
+		return res.map(r => Number(r.id));
 	}
 	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
 		return this.query<{ total: string; invalidatedReason: JoinInvalidatedReason }>(
@@ -337,11 +347,123 @@ export class DatabaseService {
 	}
 	public async getJoinsPerDay(guildId: string, days: number) {
 		return this.query<{ year: string; month: string; day: string; total: string }>(
-			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
-				'COUNT(`id`) AS total FROM `join` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
-				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
+				'FROM `join` ' +
+				'WHERE `guildId` = ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
+				'ORDER BY MAX(`createdAt`) ASC ' +
+				'LIMIT ? ',
 			[guildId, days]
 		);
+	}
+	public async getFirstJoinForMember(guildId: string, memberId: string) {
+		const res = await this.execute<Join>(
+			'SELECT j.* FROM `join` j ' +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` ASC LIMIT 1',
+			[guildId, memberId]
+		);
+		return res[0];
+	}
+	public async getPreviousJoinForMember(guildId: string, memberId: string) {
+		const res = await this.execute<Join>(
+			'SELECT j.* FROM `join` j ' +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` DESC LIMIT 1,1',
+			[guildId, memberId]
+		);
+		return res[0];
+	}
+	public async getNewestJoinForMember(guildId: string, memberId: string) {
+		type ExtendedJoin = Join & {
+			inviterId: string;
+			inviterName: string;
+			inviterDiscriminator: string;
+			channelId: string;
+			channelName: string;
+		};
+		const res = await this.execute<ExtendedJoin>(
+			'SELECT j.*, m.`id` AS inviterId, m.`name` AS inviterName, m.`discriminator` AS inviterDiscriminator, ' +
+				'c.`id` AS channelId, c.`name` AS channelName ' +
+				'FROM `join` j ' +
+				'INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` ' +
+				'INNER JOIN `member` m ON m.`id` = ic.`inviterId` ' +
+				'INNER JOIN `channel` c ON c.`id` = ic.`channelId` ' +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` DESC LIMIT 1',
+			[guildId, memberId]
+		);
+		return res[0];
+	}
+	public async getJoinsForMember(guildId: string, memberId: string) {
+		return this.execute<Join & { inviterId: string }>(
+			'SELECT j.*, ic.`inviterId` AS inviterId FROM `join` j INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` ' +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ORDER BY j.`createdAt` DESC LIMIT 100',
+			[guildId, memberId]
+		);
+	}
+	public async getTotalJoinsForMember(guildId: string, memberId: string) {
+		const res = await this.execute<{ total: string }>(
+			'SELECT COUNT(j.`id`) AS total FROM `join` j WHERE j.`guildId` = ? AND j.`memberId` = ?',
+			[guildId, memberId]
+		);
+		return Number(res[0].total);
+	}
+	public async getInvitedMembers(guildId: string, memberId: string) {
+		return this.execute<{ memberId: string; createdAt: string }>(
+			'SELECT j.`memberId` AS memberId, MAX(j.`createdAt`) AS createdAt FROM `join` j ' +
+				'INNER JOIN `invite_code` ic ON ic.`code` = j.`exactMatchCode` ' +
+				'WHERE j.`guildId` = ? AND `invalidatedReason` IS NULL AND ic.`inviterId` = ? ' +
+				'GROUP BY j.`memberId` ' +
+				'ORDER BY MAX(j.`createdAt`) DESC ',
+			[guildId, memberId]
+		);
+	}
+	public async updateJoinInvalidatedReason(
+		newInvalidatedReason: JoinInvalidatedReason | string,
+		guildId: string,
+		search?: {
+			invalidatedReason: JoinInvalidatedReason;
+			memberId?: string;
+			joinId?: number;
+			ignoredJoinId?: number;
+		}
+	) {
+		const vals: any[] = [guildId];
+		let reasonQuery = '';
+		if (search && search.memberId) {
+			reasonQuery = 'AND `invalidatedReason` = ?';
+			vals.push(search.invalidatedReason);
+		}
+		let memberQuery = '';
+		if (search && search.memberId) {
+			memberQuery = 'AND `memberId` = ?';
+			vals.push(search.memberId);
+		}
+		let joinQuery = '';
+		if (search && search.memberId) {
+			joinQuery = 'AND `id` = ?';
+			vals.push(search.joinId);
+		}
+		let ignoredJoinQuery = '';
+		if (search && search.memberId) {
+			ignoredJoinQuery = 'AND `id` != ?';
+			vals.push(search.ignoredJoinId);
+		}
+		const [ok] = await this.execute<OkPacket>(
+			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
+				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
+			vals
+		);
+		return ok.affectedRows;
+	}
+	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
+		const codeQuery = exactMatchCodes.length > 0 ? 'AND `exactMatchCode` IN(?)' : '';
+		await this.query(`UPDATE \`join\` SET \`cleared\` = ? WHERE \`guildId\` = ? ${codeQuery}`, [
+			newCleared,
+			guildId,
+			exactMatchCodes
+		]);
 	}
 	public async saveJoin(join: Partial<Join>) {
 		const res = await this.insertOrUpdate(
@@ -362,10 +484,21 @@ export class DatabaseService {
 	}
 	public async getLeavesPerDay(guildId: string, days: number) {
 		return this.query<{ year: string; month: string; day: string; total: string }>(
-			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, ' +
-				'COUNT(`id`) AS total FROM `leave` WHERE `guildId` = ? ORDER BY `MAX(createdAt)` GROUP BY ' +
-				'YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) LIMIT ?',
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
+				'FROM `leave` ' +
+				'WHERE `guildId` = ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
+				'ORDER BY MAX(`createdAt`) ASC ' +
+				'LIMIT ? ',
 			[guildId, days]
+		);
+	}
+	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
+		return this.query(
+			'UPDATE `join` j LEFT JOIN `leaves` l ON l.`joinId` = j.`id` SET `invalidatedReason` = ' +
+				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
+				'WHERE j.`guildId` = ? AND (j.`invalidatedReason` IS NULL OR j.`invalidatedReason` = "leave")',
+			[guildId, autoSubtractLeaveThreshold]
 		);
 	}
 
@@ -477,9 +610,11 @@ export class DatabaseService {
 		return res[0];
 	}
 	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
-		return this.findMany<PremiumSubscriptionGuild>('premium_subscription_guild', '`subscriptionId` = ?', [
-			subscriptionId
-		]);
+		return this.execute<PremiumSubscriptionGuild & { guildName: string }>(
+			'SELECT psg.*, g.`name` as guildName FROM `premium_subscription_guild` psg ' +
+				'INNER JOIN `guild` g ON g.`id` = psg.`guildId` WHERE psg.`subscriptionId` = ?',
+			[subscriptionId]
+		);
 	}
 	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
 		const res = await this.query<PremiumSubscriptionGuild>(
@@ -503,7 +638,13 @@ export class DatabaseService {
 	//   Strike
 	// ----------
 	public async getStrike(guildId: string, id: number) {
-		return this.findOne<Strike>('strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
+		type ExtendedStrike = Strike & { memberName: string; memberDiscriminator: string; memberCreatedAt: string };
+		const res = await this.execute<ExtendedStrike>(
+			'SELECT s.*, m.`name` as memberName, m.`discriminator` as memberDiscriminator, m.`createdAt` as memberCreatedAt ' +
+				'FROM `strike` s INNER JOIN `member` m ON m.`id` = s.`memberId` WHERE s.`guildId` = ? AND s.`id` = ?',
+			[guildId, id]
+		);
+		return res[0];
 	}
 	public async getStrikesForMember(guildId: string, memberId: string) {
 		return this.findMany<Strike>('strike', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);

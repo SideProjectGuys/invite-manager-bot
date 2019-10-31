@@ -1,7 +1,3 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
-import { Guild } from './Guild';
-
 export enum ViolationType {
 	invites = 'invites',
 	links = 'links',
@@ -15,27 +11,11 @@ export enum ViolationType {
 	hoist = 'hoist'
 }
 
-@Entity()
-@Index(['guild', 'type'], { unique: true })
 export class StrikeConfig {
-	@PrimaryGeneratedColumn()
 	public id: number;
-
-	@Column({ length: 32, nullable: false })
 	public guildId: string;
-
-	@ManyToOne(type => Guild, g => g.strikeConfigs, { nullable: false })
-	public guild: Guild;
-
-	@CreateDateColumn()
-	public createdAt: Date;
-
-	@UpdateDateColumn()
-	public updatedAt: Date;
-
-	@Column({ type: 'enum', enum: Object.values(ViolationType) })
+	public createdAt?: Date;
+	public updatedAt?: Date;
 	public type: ViolationType;
-
-	@Column()
 	public amount: number;
 }

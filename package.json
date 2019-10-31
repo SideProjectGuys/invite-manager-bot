@@ -46,7 +46,6 @@
 		"mysql2": "2.0.0",
 		"pako": "1.0.10",
 		"reflect-metadata": "0.1.13",
-		"typeorm": "0.2.20",
 		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
 		"ytdl-core": "1.0.0"

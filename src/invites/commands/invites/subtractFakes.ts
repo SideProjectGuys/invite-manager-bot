@@ -16,26 +16,14 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
-		const maxJoins = await this.client.repo.join
-			.createQueryBuilder()
-			.select('MAX(id)', 'id')
-			.groupBy('exactMatch')
-			.addGroupBy('member')
-			.where('guildId = :guildId', { guildId: guild.id })
-			.getRawMany();
-
-		if (maxJoins.length === 0) {
+		const jIds = await this.client.db.getMaxJoinIdsForGuild(guild.id);
+		if (jIds.length === 0) {
 			return this.sendReply(message, t('cmd.subtractFakes.none'));
 		}
 
-		const jIds = maxJoins.map(j => j.id).join(',');
-		await this.client.repo.join.update(
-			{
-				guildId: guild.id
-			},
-			{
-				invalidatedReason: () => `CASE WHEN id IN (${jIds}) THEN invalidatedReason ELSE 'fake' END`
-			}
+		await this.client.db.updateJoinInvalidatedReason(
+			`CASE WHEN id IN (${jIds.join(',')}) THEN \`invalidatedReason\` ELSE 'fake' END`,
+			guild.id
 		);
 
 		this.client.cache.invites.flush(guild.id);

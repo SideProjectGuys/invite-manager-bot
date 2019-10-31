@@ -157,23 +157,12 @@ export class InvitesService {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await this.client.repo.join.count({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				}
-			});
+			numJoins = await this.client.db.getTotalJoinsForMember(guild.id, member.id);
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await this.client.repo.join.findOne({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: { createdAt: 'ASC' }
-			});
+			const temp = await this.client.db.getFirstJoinForMember(guild.id, member.id);
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
 			}
@@ -181,17 +170,9 @@ export class InvitesService {
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await this.client.repo.join.find({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: { createdAt: 'DESC' },
-				skip: 1,
-				take: 1
-			});
-			if (temp.length > 0) {
-				prevJoin = moment(temp[0].createdAt);
+			const temp = await this.client.db.getPreviousJoinForMember(guild.id, member.id);
+			if (temp) {
+				prevJoin = moment(temp.createdAt);
 			}
 		}
 

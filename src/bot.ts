@@ -1,34 +1,6 @@
 import { configureScope, init } from '@sentry/node';
-import 'reflect-metadata';
-import { createConnection } from 'typeorm';
 
 import { IMClient } from './client';
-import { BotSetting } from './models/BotSetting';
-import { Channel } from './models/Channel';
-import { CommandUsage } from './models/CommandUsage';
-import { CustomInvite } from './models/CustomInvite';
-import { DBStat } from './models/DBStat';
-import { Guild } from './models/Guild';
-import { GuildSetting } from './models/GuildSetting';
-import { Incident } from './models/Incident';
-import { InviteCode } from './models/InviteCode';
-import { InviteCodeSetting } from './models/InviteCodeSetting';
-import { Join } from './models/Join';
-import { Leave } from './models/Leave';
-import { Log } from './models/Log';
-import { Member } from './models/Member';
-import { MemberSetting } from './models/MemberSetting';
-import { MusicNode } from './models/MusicNode';
-import { PremiumSubscription } from './models/PremiumSubscription';
-import { PremiumSubscriptionGuild } from './models/PremiumSubscriptionGuild';
-import { Punishment } from './models/Punishment';
-import { PunishmentConfig } from './models/PunishmentConfig';
-import { Rank } from './models/Rank';
-import { Role } from './models/Role';
-import { RolePermission } from './models/RolePermission';
-import { ScheduledAction } from './models/ScheduledAction';
-import { Strike } from './models/Strike';
-import { StrikeConfig } from './models/StrikeConfig';
 
 const pkg = require('../package.json');
 const config = require('../config.json');
@@ -66,58 +38,25 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 	console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
-console.log('-------------------------------------');
-console.log('Syncing database...');
-console.log('-------------------------------------');
-createConnection({
-	...config.database,
-	entities: [
-		BotSetting,
-		Channel,
-		CommandUsage,
-		CustomInvite,
-		DBStat,
-		Guild,
-		Incident,
-		InviteCode,
-		InviteCodeSetting,
-		Join,
-		Leave,
-		Log,
-		Member,
-		MemberSetting,
-		MusicNode,
-		PremiumSubscription,
-		PremiumSubscriptionGuild,
-		Punishment,
-		PunishmentConfig,
-		Rank,
-		Role,
-		RolePermission,
-		ScheduledAction,
-		GuildSetting,
-		Strike,
-		StrikeConfig
-	]
-})
-	.then(async () => {
-		console.log('-------------------------------------');
-		console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
-		console.log('-------------------------------------');
-		const client = new IMClient({
-			version: pkg.version,
-			token,
-			type,
-			instance,
-			shardId,
-			shardCount,
-			flags,
-			config
-		});
+const main = async () => {
+	console.log('-------------------------------------');
+	console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
+	console.log('-------------------------------------');
+	const client = new IMClient({
+		version: pkg.version,
+		token,
+		type,
+		instance,
+		shardId,
+		shardCount,
+		flags,
+		config
+	});
 
-		console.log('-------------------------------------');
-		console.log('Starting bot...');
-		console.log('-------------------------------------');
-		await client.connect();
-	})
-	.catch(err => console.error(err));
+	console.log('-------------------------------------');
+	console.log('Starting bot...');
+	console.log('-------------------------------------');
+	await client.connect();
+};
+
+main().catch(err => console.error(err));

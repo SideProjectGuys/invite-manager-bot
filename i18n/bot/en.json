@@ -518,7 +518,8 @@
 				"text": "These invites expire after a certain time.",
 				"title": "Temporary"
 			},
-			"title": "You have the following codes on the server {{ guild }}"
+			"title": "You have the following codes on the server {{ guild }}",
+			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
@@ -1160,7 +1161,9 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
+		"banMembers": "permissions.banMembers",
+		"kickMembers": "permissions.kickMembers"
 	},
 	"prompt": {
 		"canceled": "Canceled"

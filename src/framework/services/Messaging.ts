@@ -90,7 +90,7 @@ export class MessagingService {
 
 		const content = convertEmbedToPlain(e);
 
-		const handleException = (err: Error, reportIndicent = true): undefined => {
+		const handleException = (err: Error, reportIndicent = true) => {
 			withScope(scope => {
 				if (target instanceof GuildChannel) {
 					scope.setUser({ id: target.guild.id });
@@ -119,40 +119,40 @@ export class MessagingService {
 					target.guild
 				);
 			}
-			return undefined;
 		};
 
 		return new Promise<Message>((resolve, reject) => {
 			// Fallback functions when sending message fails
-			const sendDM = (error?: any) => {
+			const sendDM = async (error?: any): Promise<Message> => {
 				if (!fallbackUser) {
 					return undefined;
 				}
 
-				return fallbackUser
-					.getDMChannel()
-					.then(dmChannel => {
-						let msg =
-							'I encountered an error when trying to send a message. ' +
-							'Please report this to a developer:\n```' +
-							`${error.message}\n\n${error.message}\`\`\``;
-
-						if (error.code === 50013) {
-							const name = this.client.user.username;
-							msg =
-								`**${name} does not have permissions to post to that channel.\n` +
-								`Please allow ${name} to send messages in the <#${target.id}> channel.**\n\n`;
-						}
-
-						return dmChannel
-							.createMessage(msg)
-							.then(resolve)
-							.catch(err2 => handleException(err2, false));
-					})
-					.catch(err2 => handleException(err2, false));
+				try {
+					const dmChannel = await fallbackUser.getDMChannel();
+					let msg =
+						'I encountered an error when trying to send a message. ' +
+						'Please report this to a developer:\n```' +
+						`${error.message}\n\n${error.message}\`\`\``;
+					if (error.code === 50013) {
+						const name = this.client.user.username;
+						msg =
+							`**${name} does not have permissions to post to that channel.\n` +
+							`Please allow ${name} to send messages in the <#${target.id}> channel.**\n\n`;
+					}
+					try {
+						return await dmChannel.createMessage(msg);
+					} catch (err) {
+						handleException(err, false);
+						return undefined;
+					}
+				} catch (err2) {
+					handleException(err2, false);
+					return undefined;
+				}
 			};
 
-			const sendPlain = (error?: any) => {
+			const sendPlain = async (error?: any): Promise<Message> => {
 				// If we don't have permission to send messages try DM
 				if (
 					target instanceof GuildChannel &&
@@ -161,16 +161,15 @@ export class MessagingService {
 					return sendDM({ code: 50013 });
 				}
 
-				return target
-					.createMessage(content)
-					.then(resolve)
-					.catch(err => {
-						handleException(err);
-						return sendDM(error);
-					});
+				try {
+					return await target.createMessage(content);
+				} catch (err) {
+					handleException(err);
+					return sendDM(error);
+				}
 			};
 
-			const send = () => {
+			const send = async (): Promise<Message> => {
 				// If we don't have permissions to embed links try plain content
 				if (
 					target instanceof GuildChannel &&
@@ -180,16 +179,15 @@ export class MessagingService {
 					return sendPlain();
 				}
 
-				return target
-					.createMessage({ embed: e })
-					.then(resolve)
-					.catch(error => {
-						handleException(error);
-						return sendPlain(error);
-					});
+				try {
+					return await target.createMessage({ embed: e });
+				} catch (err) {
+					handleException(err);
+					return sendPlain(err);
+				}
 			};
 
-			return send();
+			resolve(send());
 		});
 	}
 

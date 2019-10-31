@@ -167,7 +167,11 @@ export default class extends Command {
 			});
 		}
 
-		await this.sendEmbed(await message.author.getDMChannel(), embed);
-		await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
+		const msg = await this.sendEmbed(await message.author.getDMChannel(), embed);
+		if (msg) {
+			await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
+		} else {
+			await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.error')}`);
+		}
 	}
 }

@@ -1,6 +1,5 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { IsNull, Not } from 'typeorm';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -63,28 +62,23 @@ export default class extends Command {
 		const replyMessage = await this.sendReply(message, embed);
 		embed.description = null;
 
-		const invitedMembers = await this.client.repo.join
-			.createQueryBuilder('join')
-			.select('MAX(join.createdAt)', 'createdAt')
-			.where(`join.guildId = :guildId AND invalidatedReason IS NULL`, { guildId: guild.id })
-			.groupBy('memberId')
-			.orderBy('MAX(join.createdAt)', 'DESC')
-			.leftJoin('join.exactMatch', 'exactMatch')
-			.andWhere('exactMatch.inviterId = :userId', { userId: user.id })
-			.getRawMany();
-
+		const invitedMembers = await this.client.db.getInvitedMembers(guild.id, user.id);
 		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
 		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 		const bonusInvs = customInvs.filter(ci => !ci.cleared);
 
 		if (details === InfoDetails.bonus) {
+			await replyMessage.delete();
+
 			// Exit if we have no bonus invites
 			if (bonusInvs.length <= 0) {
 				embed.fields.push({
 					name: t('cmd.info.bonusInvites.title'),
 					value: t('cmd.info.bonusInvites.more')
 				});
+				return this.sendReply(message, embed);
 			}
+
 			const maxPage = Math.ceil(bonusInvs.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
@@ -111,6 +105,8 @@ export default class extends Command {
 				return embed;
 			});
 		} else if (details === InfoDetails.members) {
+			await replyMessage.delete();
+
 			// Exit if we have no invited members
 			if (invitedMembers.length <= 0) {
 				embed.fields.push({
@@ -142,31 +138,15 @@ export default class extends Command {
 		// let ranks = await settings.get('ranks');
 
 		const invCodes = await this.client.db.getInviteCodesForMember(guild.id, user.id);
-
-		const js = await this.client.repo.join
-			.createQueryBuilder()
-			.select('COUNT(id)', 'total')
-			.addSelect('invalidatedReason', 'invalidatedReason')
-			.addSelect('cleared', 'cleared')
-			.where('guildId = :guildId AND exactMatchCode IN(:codes) AND invalidatedReason IS NOT NULL', {
-				guildId: guild.id,
-				codes: invCodes.map(i => i.code)
-			})
-			.groupBy('invalidatedReason')
-			.addGroupBy('cleared')
-			.getRawMany();
+		const invalidJoins = await this.client.db.getInvalidatedJoinsForMember(guild.id, user.id);
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach(j => {
+		invalidJoins.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				if (!j.cleared) {
-					fake -= Number(j.total);
-				}
+				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				if (!j.cleared) {
-					leave -= Number(j.total);
-				}
+				leave -= Number(j.total);
 			}
 		});
 
@@ -214,15 +194,7 @@ export default class extends Command {
 			});
 		}
 
-		const joinCount = Math.max(
-			await this.client.repo.join.count({
-				where: {
-					guildId: guild.id,
-					memberId: user.id
-				}
-			}),
-			0
-		);
+		const joinCount = await this.client.db.getTotalJoinsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.info.joined.title'),
@@ -262,15 +234,7 @@ export default class extends Command {
 			inline: true
 		});
 
-		const ownJoins = await this.client.repo.join.find({
-			where: {
-				guildId: guild.id,
-				memberId: user.id,
-				exactMatch: Not(IsNull())
-			},
-			relations: ['exactMatch'],
-			order: { createdAt: 'DESC' }
-		});
+		const ownJoins = await this.client.db.getJoinsForMember(guild.id, user.id);
 
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
@@ -283,7 +247,7 @@ export default class extends Command {
 					joinTimes[text] = {};
 				}
 
-				const id = join.exactMatch.inviterId;
+				const id = join.inviterId;
 				if (joinTimes[text][id]) {
 					joinTimes[text][id]++;
 				} else {

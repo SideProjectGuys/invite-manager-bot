@@ -1,7 +1,6 @@
 import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import { LessThanOrEqual, MoreThan } from 'typeorm';
 
 import { IMClient } from '../../client';
 import { PunishmentType } from '../../models/PunishmentConfig';
