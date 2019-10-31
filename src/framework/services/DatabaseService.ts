@@ -56,7 +56,7 @@ export class DatabaseService {
 			updateCols.length > 0
 				? `ON DUPLICATE KEY UPDATE ${updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',')}`
 				: '';
-		const query = `INSERT INTO ${table} (${colQuery}) VALUES ? ${updateQuery}`;
+		const query = `INSERT INTO \`${table}\` (${colQuery}) VALUES ? ${updateQuery}`;
 
 		const vals = values.map(val =>
 			cols.map(col => {
@@ -78,7 +78,7 @@ export class DatabaseService {
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values);
+		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
 		return ok;
 	}
 
