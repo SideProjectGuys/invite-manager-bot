@@ -74,7 +74,7 @@ export class DatabaseService {
 		);
 
 		console.log(mysql.format(query, [vals]));
-		const [ok] = await this.pool.execute<OkPacket>(query, [vals]);
+		const [ok] = await this.pool.query<OkPacket>(query, [vals]);
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
