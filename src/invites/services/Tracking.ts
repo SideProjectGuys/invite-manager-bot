@@ -138,9 +138,11 @@ export class TrackingService {
 			const allRoles = await guild.getRESTRoles();
 			const allRanks = await this.client.cache.ranks.get(guild.id);
 			const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
-			await this.client.db.removeRanks(oldRoleIds);
+			for (const roleId of oldRoleIds) {
+				await this.client.db.removeRank(roleId);
+			}
 		} else {
-			await this.client.db.removeRanks([role.id]);
+			await this.client.db.removeRank(role.id);
 		}
 	}
 

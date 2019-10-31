@@ -21,8 +21,8 @@ export default class extends Command {
 		const allRanks = await this.client.cache.ranks.get(guild.id);
 		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
 
-		if (oldRoleIds.length > 0) {
-			await this.client.db.removeRanks(oldRoleIds);
+		for (const roleId of oldRoleIds) {
+			await this.client.db.removeRank(roleId);
 		}
 
 		this.client.cache.ranks.flush(guild.id);

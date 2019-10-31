@@ -42,8 +42,12 @@ export class DatabaseService {
 		const [rows] = await this.pool.query<RowDataPacket[]>(query, values);
 		return rows as T[];
 	}
+	private async execute<T>(query: string, values: any[]) {
+		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
+		return rows as T[];
+	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
-		const res = await this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
+		const res = await this.execute<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
 		return res[0];
 	}
 	private async findMany<T>(table: string, where: string, values: any[]): Promise<T[]> {
@@ -165,8 +169,8 @@ export class DatabaseService {
 			ranks
 		);
 	}
-	public async removeRanks(roleIds: string[]) {
-		await this.delete('rank', `\`roleId\` IN(${roleIds.map(() => '?').join(',')})`, roleIds);
+	public async removeRank(roleId: string) {
+		await this.delete('rank', `\`roleId\` = ?`, [roleId]);
 	}
 
 	// --------------------
