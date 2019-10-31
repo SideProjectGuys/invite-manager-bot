@@ -39,7 +39,6 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
-		console.log(mysql.format(query, values));
 		const [rows] = await this.pool.query<RowDataPacket[]>(query, values);
 		return rows as T[];
 	}
@@ -73,12 +72,11 @@ export class DatabaseService {
 			})
 		);
 
-		console.log(mysql.format(query, [vals]));
 		const [ok] = await this.pool.query<OkPacket>(query, [vals]);
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.query<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
+		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
 		return ok;
 	}
 
@@ -168,7 +166,7 @@ export class DatabaseService {
 		);
 	}
 	public async removeRanks(roleIds: string[]) {
-		await this.delete('rank', '`roleId` IN(?)', [roleIds]);
+		await this.delete('rank', `\`roleId\` IN(${roleIds.map(() => '?').join(',')})`, roleIds);
 	}
 
 	// --------------------
