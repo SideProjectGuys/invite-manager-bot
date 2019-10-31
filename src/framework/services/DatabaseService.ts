@@ -38,6 +38,10 @@ export class DatabaseService {
 		this.pool = mysql.createPool(client.config.database);
 	}
 
+	private async run(query: string, values: any[]) {
+		const [ok] = await this.pool.query<OkPacket>(query, values);
+		return ok;
+	}
 	private async query<T>(query: string, values: any[]) {
 		const [rows] = await this.pool.query<RowDataPacket[]>(query, values);
 		return rows as T[];
@@ -451,11 +455,11 @@ export class DatabaseService {
 			vals.push(search.ignoredJoinId);
 		}
 
-		const query =
+		const ok = await this.run(
 			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
-			`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`;
-		console.log(mysql.format(query, vals));
-		const [ok] = await this.query<OkPacket>(query, vals);
+				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
+			vals
+		);
 		return ok.affectedRows;
 	}
 	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
