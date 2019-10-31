@@ -41,13 +41,13 @@ export class DatabaseService {
 	private async query<T>(query: string, values: any[]) {
 		return new Promise<T[]>((resolve, reject) => {
 			const q = this.pool.execute<RowDataPacket[]>(query, values, (err, rows, fields) => {
+				console.log(q.sql);
 				if (err) {
 					reject(err);
 				} else {
 					resolve(rows as T[]);
 				}
 			});
-			console.log(q.sql);
 		});
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
@@ -81,6 +81,7 @@ export class DatabaseService {
 					)
 				],
 				(err, rows) => {
+					console.log(q.sql);
 					if (err) {
 						reject(err);
 					} else {
@@ -88,19 +89,18 @@ export class DatabaseService {
 					}
 				}
 			);
-			console.log(q.sql);
 		});
 	}
 	private async delete(table: string, where: string, values: any[]) {
 		return new Promise<void>((resolve, reject) => {
 			const q = this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values, err => {
+				console.log(q.sql);
 				if (err) {
 					reject(err);
 				} else {
 					resolve();
 				}
 			});
-			console.log(q.sql);
 		});
 	}
 
