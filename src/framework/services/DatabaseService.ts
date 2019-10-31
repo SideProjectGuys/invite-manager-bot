@@ -43,20 +43,17 @@ export class DatabaseService {
 		return rows as T[];
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
-		const query = mysql.format(`SELECT ??.* FROM ?? WHERE ${where} LIMIT 1`, [table, table]);
-		const res = await this.query<T>(query, values);
+		const res = await this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
 		return res[0];
 	}
 	private async findMany<T>(table: string, where: string, values: any[]): Promise<T[]> {
-		const query = mysql.format(`SELECT ??.* FROM ?? WHERE ${where}`, [table, table]);
-		return this.query<T>(query, values);
+		return this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where}`, values);
 	}
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
 		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
 		const [ok] = await this.pool.execute<OkPacket>(
-			`INSERT INTO ?? (??) VALUES ?` + (updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
+			`INSERT INTO ${table} (??) VALUES ?` + (updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
 			[
-				table,
 				cols,
 				values.map(val =>
 					cols.map(col => {
@@ -77,7 +74,7 @@ export class DatabaseService {
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ?? WHERE ${where}`, [table, ...values]);
+		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ${table} WHERE ${where}`, values);
 		return ok;
 	}
 
