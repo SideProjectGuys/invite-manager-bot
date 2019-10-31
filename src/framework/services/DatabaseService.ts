@@ -39,9 +39,7 @@ export class DatabaseService {
 	}
 
 	private async query<T>(query: string, values: any[]) {
-		const q = mysql.format(query, values);
-		console.log('SELECT:', q);
-		const [rows] = await this.pool.execute<RowDataPacket[]>(q);
+		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
 		return rows as T[];
 	}
 	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
@@ -53,7 +51,7 @@ export class DatabaseService {
 	}
 	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
 		const updateQuery = updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',');
-		const query = mysql.format(
+		const [ok] = await this.pool.execute<OkPacket>(
 			`INSERT INTO ?? (??) VALUES ?` + (updateCols.length > 0 ? ` ON DUPLICATE KEY UPDATE ${updateQuery}` : ''),
 			[
 				table,
@@ -74,14 +72,10 @@ export class DatabaseService {
 				)
 			]
 		);
-		console.log('INSERT:', query);
-		const [ok] = await this.pool.execute<OkPacket>(query);
 		return ok;
 	}
 	private async delete(table: string, where: string, values: any[]) {
-		const query = mysql.format(`DELETE FROM ?? WHERE ${where}`, [table, ...values]);
-		console.log('DELETE:', query);
-		const [ok] = await this.pool.execute<OkPacket>(query);
+		const [ok] = await this.pool.execute<OkPacket>(`DELETE FROM ?? WHERE ${where}`, [table, ...values]);
 		return ok;
 	}
 
