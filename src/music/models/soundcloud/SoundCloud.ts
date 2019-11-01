@@ -31,6 +31,7 @@ export class Soundcloud extends MusicPlatform {
 	}
 
 	public async getByLink(link: string): Promise<SoundcloudMusicItem> {
+		link = encodeURIComponent(link);
 		const scLink = `http://api.soundcloud.com/resolve?url=${link}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
 		const scData: SoundcloudResponse = (await axios.get(scLink)).data;
 
@@ -50,6 +51,7 @@ export class Soundcloud extends MusicPlatform {
 	}
 
 	public async search(searchTerm: string, maxResults?: number): Promise<SoundcloudMusicItem[]> {
+		searchTerm = encodeURIComponent(searchTerm);
 		const scLink = `http://api.soundcloud.com/tracks?q=${searchTerm}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
 		const scData = (await axios.get(scLink)).data;
 
