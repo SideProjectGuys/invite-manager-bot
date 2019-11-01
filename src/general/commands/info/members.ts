@@ -16,8 +16,6 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
-		await guild.getRESTMembers();
-
 		const ONE_SECOND = 1000;
 		const ONE_MINUTE = 60 * ONE_SECOND;
 		const ONE_HOUR = 60 * ONE_MINUTE;
@@ -25,6 +23,15 @@ export default class extends Command {
 		const ONE_WEEK = 7 * ONE_DAY;
 		const ONE_MONTH = 4 * ONE_WEEK;
 		const todayTimestamp = new Date().getTime();
+
+		const msg = await this.sendReply(message, 'Checking all members...');
+
+		let lastId: string;
+		const steps = Math.ceil(guild.memberCount / 1000);
+		for (let i = 0; i < steps; i++) {
+			const mems = await guild.getRESTMembers(1000, lastId);
+			lastId = mems[mems.length - 1].id;
+		}
 
 		const botCount = guild.members.filter(m => m.user.bot).length;
 		const humanCount = guild.memberCount - botCount;
@@ -70,6 +77,6 @@ export default class extends Command {
 			inline: true
 		});
 
-		return this.sendReply(message, embed);
+		await msg.edit({ content: '', embed });
 	}
 }
