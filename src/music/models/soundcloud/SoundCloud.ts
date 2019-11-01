@@ -44,7 +44,7 @@ export class Soundcloud extends MusicPlatform {
 			title: scData.title,
 			link: scData.permalink_url,
 			imageUrl: scData.artwork_url,
-			artist: scData.user.username,
+			artist: scData.user ? scData.user.username : '',
 			audioUrl: `${scData.stream_url}?client_id=${SOUNDCLOUD_CLIENT_ID}`,
 			duration: scData.duration
 		});
@@ -62,7 +62,7 @@ export class Soundcloud extends MusicPlatform {
 					title: scData.title,
 					link: scData.permalink_url,
 					imageUrl: scData.artwork_url,
-					artist: scData.user.username,
+					artist: scData.user ? scData.user.username : '',
 					audioUrl: `${scData.stream_url}?client_id=${SOUNDCLOUD_CLIENT_ID}`,
 					duration: scData.duration
 				})
