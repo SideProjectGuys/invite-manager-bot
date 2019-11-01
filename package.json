@@ -44,11 +44,11 @@
 		"knex": "0.19.5",
 		"moment": "2.24.0",
 		"mysql2": "2.0.0",
-		"pako": "1.0.10",
 		"reflect-metadata": "0.1.13",
 		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
-		"ytdl-core": "1.0.0"
+		"ytdl-core": "1.0.0",
+		"zlib-sync": "0.1.6"
 	},
 	"devDependencies": {
 		"@sentry/cli": "1.48.0",
