@@ -229,7 +229,7 @@ export class DatabaseService {
 		return 0;
 	}
 	public async updateInviteCodeClearedAmount(clearedAmount: number | string, guildId: string, memberId?: string) {
-		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
+		const memberQuery = memberId ? 'AND `inviterId` = ?' : '';
 		const clearColumn = typeof clearedAmount === 'number' ? '?' : '??';
 		await this.query(`UPDATE invite_code SET \`clearedAmount\` = ${clearColumn} WHERE \`guildId\` = ? ${memberQuery}`, [
 			clearedAmount,
