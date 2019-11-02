@@ -478,19 +478,16 @@ export class CommandsService {
 			});
 
 			if (guild) {
-				this.client.dbQueue.addIncident(
-					{
-						id: null,
-						guildId: guild.id,
-						error: error.message,
-						details: {
-							command: cmd.name,
-							author: message.author.id,
-							message: message.content
-						}
-					},
-					guild
-				);
+				this.client.db.saveIncident(guild, {
+					id: null,
+					guildId: guild.id,
+					error: error.message,
+					details: {
+						command: cmd.name,
+						author: message.author.id,
+						message: message.content
+					}
+				});
 			}
 
 			await this.client.msg.sendReply(
@@ -504,19 +501,15 @@ export class CommandsService {
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			this.client.dbQueue.addCommandUsage(
-				{
-					id: null,
-					guildId: guild.id,
-					memberId: message.author.id,
-					command: cmd.name,
-					args: args.join(' '),
-					errored: error !== null,
-					time: execTime
-				},
-				guild,
-				message.author
-			);
+			this.client.db.saveCommandUsage(guild, message.author, {
+				id: null,
+				guildId: guild.id,
+				memberId: message.author.id,
+				command: cmd.name,
+				args: args.join(' '),
+				errored: error !== null,
+				time: execTime
+			});
 		}
 	}
 }

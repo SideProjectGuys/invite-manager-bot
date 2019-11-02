@@ -105,19 +105,16 @@ export class MessagingService {
 				captureException(err);
 			});
 			if (reportIndicent && target instanceof GuildChannel) {
-				this.client.dbQueue.addIncident(
-					{
-						id: null,
-						guildId: target.guild.id,
-						error: err.message,
-						details: {
-							channel: target.id,
-							embed,
-							content
-						}
-					},
-					target.guild
-				);
+				this.client.db.saveIncident(target.guild, {
+					id: null,
+					guildId: target.guild.id,
+					error: err.message,
+					details: {
+						channel: target.id,
+						embed,
+						content
+					}
+				});
 			}
 		};
 

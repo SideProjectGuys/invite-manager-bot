@@ -1,3 +1,4 @@
+import { Guild as DiscordGuild } from 'eris';
 import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
@@ -8,7 +9,7 @@ import { PunishmentConfig, PunishmentType } from '../../moderation/models/Punish
 import { Strike } from '../../moderation/models/Strike';
 import { StrikeConfig, ViolationType } from '../../moderation/models/StrikeConfig';
 import { MusicNode } from '../../music/models/MusicNode';
-import { BotType } from '../../types';
+import { BasicUser, BotType } from '../../types';
 import { BotSetting } from '../models/BotSetting';
 import { Channel } from '../models/Channel';
 import { CommandUsage } from '../models/CommandUsage';
@@ -33,9 +34,21 @@ export class DatabaseService {
 	private client: IMClient;
 	private pool: Pool;
 
+	private guilds: Set<DiscordGuild> = new Set();
+	private doneGuilds: Set<String> = new Set();
+
+	private users: Set<BasicUser> = new Set();
+	private doneUsers: Set<String> = new Set();
+
+	private logActions: Partial<Log>[] = [];
+	private cmdUsages: Partial<CommandUsage>[] = [];
+	private incidents: Partial<Incident>[] = [];
+
 	public constructor(client: IMClient) {
 		this.client = client;
 		this.pool = mysql.createPool(client.config.database);
+
+		setInterval(() => this.syncDB(), 10000);
 	}
 
 	private async run(query: string, values: any[]) {
@@ -523,14 +536,36 @@ export class DatabaseService {
 	// --------
 	//   Logs
 	// --------
-	public async saveLogs(logs: Partial<Log>[]) {
+	public saveLog(guild: DiscordGuild, user: BasicUser, action: Partial<Log>) {
+		if (!this.doneGuilds.has(guild.id)) {
+			this.guilds.add(guild);
+		}
+
+		if (!this.doneUsers.has(user.id)) {
+			this.users.add(user);
+		}
+
+		this.logActions.push(action);
+	}
+	private async saveLogs(logs: Partial<Log>[]) {
 		await this.insertOrUpdate('log', ['guildId', 'memberId', 'action', 'message', 'data'], [], logs);
 	}
 
 	// ------------------
 	//   Command usages
 	// ------------------
-	public async saveCommandUsages(commandUsages: Partial<CommandUsage>[]) {
+	public saveCommandUsage(guild: DiscordGuild, user: BasicUser, cmdUsage: Partial<CommandUsage>) {
+		if (!this.doneGuilds.has(guild.id)) {
+			this.guilds.add(guild);
+		}
+
+		if (!this.doneUsers.has(user.id)) {
+			this.users.add(user);
+		}
+
+		this.cmdUsages.push(cmdUsage);
+	}
+	private async saveCommandUsages(commandUsages: Partial<CommandUsage>[]) {
 		await this.insertOrUpdate(
 			'command_usage',
 			['guildId', 'memberId', 'command', 'args', 'time', 'errored'],
@@ -542,7 +577,13 @@ export class DatabaseService {
 	// -------------
 	//   Incidents
 	// -------------
-	public async saveIncidents(indicents: Partial<Incident>[]) {
+	public saveIncident(guild: DiscordGuild, indicent: Partial<Incident>) {
+		if (!this.doneGuilds.has(guild.id)) {
+			this.guilds.add(guild);
+		}
+		this.incidents.push(indicent);
+	}
+	private async saveIncidents(indicents: Partial<Incident>[]) {
 		await this.insertOrUpdate('incident', ['guildId', 'error', 'details'], [], indicents);
 	}
 
@@ -720,5 +761,58 @@ export class DatabaseService {
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
 		await this.delete('punishment_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
+	}
+
+	// ----------------------
+	//   DB Sync
+	// ----------------------
+	private async syncDB() {
+		if (this.logActions.length === 0 && this.cmdUsages.length === 0 && this.incidents.length === 0) {
+			return;
+		}
+
+		console.time('syncDB');
+
+		const newGuilds = [...this.guilds.values()];
+		this.guilds.clear();
+		if (newGuilds.length > 0) {
+			await this.client.db.saveGuilds(
+				newGuilds.map(guild => ({
+					id: guild.id,
+					name: guild.name,
+					icon: guild.icon,
+					memberCount: guild.memberCount
+				}))
+			);
+			newGuilds.forEach(g => this.doneGuilds.add(g.id));
+		}
+
+		const newUsers = [...this.users.values()];
+		this.users.clear();
+		if (newUsers.length > 0) {
+			await this.client.db.saveMembers(
+				newUsers.map(user => ({
+					id: user.id,
+					name: user.username,
+					discriminator: user.discriminator
+				}))
+			);
+			newUsers.forEach(u => this.doneUsers.add(u.id));
+		}
+
+		const promises: Promise<any[]>[] = [];
+		if (this.logActions.length > 0) {
+			promises.push(this.saveLogs(this.logActions).then(() => (this.logActions = [])));
+		}
+		if (this.cmdUsages.length > 0) {
+			promises.push(this.saveCommandUsages(this.cmdUsages).then(() => (this.cmdUsages = [])));
+		}
+		if (this.incidents.length > 0) {
+			promises.push(this.saveIncidents(this.incidents).then(() => (this.incidents = [])));
+		}
+
+		await Promise.all(promises);
+
+		console.timeEnd('syncDB');
 	}
 }

@@ -10,7 +10,6 @@ import { GuildSettingsKey } from './framework/models/GuildSetting';
 import { LogAction } from './framework/models/Log';
 import { CommandsService } from './framework/services/Commands';
 import { DatabaseService } from './framework/services/DatabaseService';
-import { DBQueueService } from './framework/services/DBQueue';
 import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
@@ -80,7 +79,6 @@ export class IMClient extends Client {
 		strikes: StrikesCache;
 		music: MusicCache;
 	};
-	public dbQueue: DBQueueService;
 
 	public rabbitmq: RabbitMqService;
 	public shardId: number;
@@ -158,7 +156,6 @@ export class IMClient extends Client {
 			strikes: new StrikesCache(this),
 			music: new MusicCache(this)
 		};
-		this.dbQueue = new DBQueueService(this);
 		this.rabbitmq = new RabbitMqService(this);
 		this.msg = new MessagingService(this);
 		this.mod = new ModerationService(this);
@@ -486,20 +483,16 @@ export class IMClient extends Client {
 			}
 		}
 
-		this.dbQueue.addLogAction(
-			{
-				id: null,
-				guildId: guild.id,
-				memberId: message.author.id,
-				action,
-				message: message.content,
-				data,
-				createdAt: new Date(),
-				updatedAt: new Date()
-			},
-			guild,
-			message.author
-		);
+		this.db.saveLog(guild, message.author, {
+			id: null,
+			guildId: guild.id,
+			memberId: message.author.id,
+			action,
+			message: message.content,
+			data,
+			createdAt: new Date(),
+			updatedAt: new Date()
+		});
 	}
 
 	public async getCounts() {
