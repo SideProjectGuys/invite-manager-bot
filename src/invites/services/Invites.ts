@@ -2,10 +2,10 @@ import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { GuildSettingsKey, RankAssignmentStyle } from '../../models/GuildSetting';
-import { JoinInvalidatedReason } from '../../models/Join';
-import { Rank } from '../../models/Rank';
+import { GuildSettingsKey, RankAssignmentStyle } from '../../framework/models/GuildSetting';
+import { JoinInvalidatedReason } from '../../framework/models/Join';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
+import { Rank } from '../models/Rank';
 
 export interface LeaderboardEntry {
 	id: string;

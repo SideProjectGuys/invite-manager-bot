@@ -1,9 +1,9 @@
 import { IMClient } from '../../client';
-import { ActivityStatus, ActivityType } from '../../models/BotSetting';
-import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../../models/GuildSetting';
 import { InternalSettingsTypes, SettingsInfo } from '../../settings';
 import { MusicPlatformType } from '../../types';
 import { Context } from '../commands/Command';
+import { ActivityStatus, ActivityType } from '../models/BotSetting';
+import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../models/GuildSetting';
 
 import {
 	ArrayResolver,

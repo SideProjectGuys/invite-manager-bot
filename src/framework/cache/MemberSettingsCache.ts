@@ -1,5 +1,5 @@
-import { MemberSettingsKey } from '../../models/MemberSetting';
 import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
+import { MemberSettingsKey } from '../models/MemberSetting';
 
 import { Cache } from './Cache';
 

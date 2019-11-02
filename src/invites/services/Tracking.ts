@@ -3,8 +3,8 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { GuildSettingsKey } from '../../models/GuildSetting';
-import { JoinInvalidatedReason } from '../../models/Join';
+import { GuildSettingsKey } from '../../framework/models/GuildSetting';
+import { JoinInvalidatedReason } from '../../framework/models/Join';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
 

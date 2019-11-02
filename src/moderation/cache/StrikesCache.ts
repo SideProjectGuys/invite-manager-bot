@@ -1,5 +1,5 @@
 import { Cache } from '../../framework/cache/Cache';
-import { StrikeConfig } from '../../models/StrikeConfig';
+import { StrikeConfig } from '../models/StrikeConfig';
 
 export class StrikesCache extends Cache<StrikeConfig[]> {
 	public async init() {

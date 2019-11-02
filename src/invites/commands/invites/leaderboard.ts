@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LeaderboardStyle } from '../../../framework/models/GuildSetting';
 import { NumberResolver } from '../../../framework/resolvers';
-import { LeaderboardStyle } from '../../../models/GuildSetting';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
 const usersPerPage = 10;

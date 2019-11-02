@@ -1,5 +1,5 @@
-import { GuildSettingsKey } from '../../models/GuildSetting';
 import { guildDefaultSettings, guildSettingsInfo, GuildSettingsObject, toDbValue } from '../../settings';
+import { GuildSettingsKey } from '../models/GuildSetting';
 
 import { Cache } from './Cache';
 

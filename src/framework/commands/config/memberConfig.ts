@@ -1,30 +1,30 @@
-import { Embed, Invite, Message } from 'eris';
+import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../../framework/resolvers';
-import { InviteCodeSettingsKey } from '../../../models/InviteCodeSetting';
-import { LogAction } from '../../../models/Log';
-import { beautify, inviteCodeSettingsInfo } from '../../../settings';
-import { BotCommand, CommandGroup } from '../../../types';
+import { beautify, memberSettingsInfo } from '../../../settings';
+import { BasicUser, BotCommand, CommandGroup } from '../../../types';
+import { LogAction } from '../../models/Log';
+import { MemberSettingsKey } from '../../models/MemberSetting';
+import { EnumResolver, SettingsValueResolver, UserResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.inviteCodeConfig,
-			aliases: ['invite-code-config', 'icc'],
+			name: BotCommand.memberConfig,
+			aliases: ['member-config', 'memconf', 'mc'],
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(InviteCodeSettingsKey))
+					resolver: new EnumResolver(client, Object.values(MemberSettingsKey))
 				},
 				{
-					name: 'inviteCode',
-					resolver: InviteCodeResolver
+					name: 'user',
+					resolver: UserResolver
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, inviteCodeSettingsInfo),
+					resolver: new SettingsValueResolver(client, memberSettingsInfo),
 					rest: true
 				}
 			],
@@ -36,57 +36,52 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
+		[key, user, value]: [MemberSettingsKey, BasicUser, any],
 		flags: {},
 		context: Context
 	): Promise<any> {
-		const { guild, settings, t } = context;
+		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
 
 		if (!key) {
-			embed.title = t('cmd.inviteCodeConfig.title');
-			embed.description = t('cmd.inviteCodeConfig.text', { prefix });
+			embed.title = t('cmd.memberConfig.title');
+			embed.description = t('cmd.memberConfig.text', { prefix });
 
-			const keys = Object.keys(InviteCodeSettingsKey);
+			const keys = Object.keys(MemberSettingsKey);
 			embed.fields.push({
-				name: t('cmd.inviteCodeConfig.keys.title'),
+				name: t('cmd.memberConfig.keys.title'),
 				value: keys.join('\n')
 			});
 
 			return this.sendReply(message, embed);
 		}
 
-		const info = inviteCodeSettingsInfo[key];
+		const info = memberSettingsInfo[key];
 
-		if (!inv) {
-			const allSets = await this.client.cache.inviteCodes.get(guild.id);
+		if (!user) {
+			const allSets = await this.client.cache.members.get(guild.id);
 			if (allSets.size > 0) {
-				allSets.forEach((set, invCode) =>
+				allSets.forEach((set, memberId) =>
 					embed.fields.push({
-						name: invCode,
+						name: guild.members.get(memberId).username,
 						value: beautify(info.type, set[key])
 					})
 				);
 			} else {
-				embed.description = t('cmd.inviteCodeConfig.noneSet');
+				embed.description = t('cmd.memberConfig.notSet');
 			}
 			return this.sendReply(message, embed);
 		}
 
-		// Check if this is actually a real invite code
-		if (inv.guild.id !== guild.id) {
-			return this.sendReply(message, t('cmd.inviteCodeConfig.codeForOtherGuild'));
-		}
-
-		const codeSettings = await this.client.cache.inviteCodes.getOne(guild.id, inv.code);
-		const oldVal = codeSettings[key];
-		embed.title = `${inv.code} - ${key}`;
+		const memSettings = await this.client.cache.members.getOne(guild.id, user.id);
+		const oldVal = memSettings[key];
+		embed.title = `${user.username}#${user.discriminator} - ${key}`;
 
 		if (typeof value === typeof undefined) {
 			// If we have no new value, just print the old one
 			// Check if the old one is set
-			if (oldVal !== null) {
+			if (oldVal) {
 				embed.description = t('cmd.inviteCodeConfig.current.text', {
 					prefix,
 					key
@@ -106,7 +101,7 @@ export default class extends Command {
 					value: beautify(info.type, oldVal)
 				});
 			} else {
-				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
+				embed.description = t('cmd.memberConfig.current.notSet', {
 					prefix,
 					key
 				});
@@ -114,10 +109,9 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
-		// If the value is null we want to clear it. Check if that's allowed.
 		if (value === null) {
 			if (!info.clearable) {
-				return this.sendReply(message, t('cmd.inviteCodeConfig.canNotClear', { prefix, key }));
+				await this.sendReply(message, t('cmd.memberConfig.canNotClear', { prefix, key }));
 			}
 		} else {
 			// Only validate the config setting if we're not resetting or clearing it
@@ -129,18 +123,18 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.inviteCodes.setOne(guild.id, inv.code, key, value);
+		value = await this.client.cache.members.setOne(guild.id, user.id, key, value);
 
 		if (value === oldVal) {
-			embed.description = t('cmd.inviteCodeConfig.sameValue');
+			embed.description = t('cmd.memberConfig.sameValue');
 			embed.fields.push({
-				name: t('cmd.inviteCodeConfig.current.title'),
+				name: t('cmd.memberConfig.current.title'),
 				value: beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
 
-		embed.description = t('cmd.inviteCodeConfig.changed.text', { prefix, key });
+		embed.description = t('cmd.memberConfig.changed.text', { prefix, key });
 
 		// Log the settings change
 		await this.client.logAction(guild, message, LogAction.config, {
@@ -151,14 +145,14 @@ export default class extends Command {
 
 		if (oldVal !== null) {
 			embed.fields.push({
-				name: t('cmd.inviteCodeConfig.previous.title'),
+				name: t('cmd.memberConfig.previous.title'),
 				value: beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
-			name: t('cmd.inviteCodeConfig.new.title'),
-			value: value !== null ? beautify(info.type, value) : t('cmd.inviteCodeConfig.none')
+			name: t('cmd.memberConfig.new.title'),
+			value: value !== null ? beautify(info.type, value) : t('cmd.memberConfig.none')
 		});
 
 		// Do any post processing, such as example messages
@@ -172,7 +166,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: InviteCodeSettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: MemberSettingsKey, value: any, { t, me }: Context): string | null {
 		return null;
 	}
 
@@ -180,7 +174,7 @@ export default class extends Command {
 	private async after(
 		message: Message,
 		embed: Embed,
-		key: InviteCodeSettingsKey,
+		key: MemberSettingsKey,
 		value: any,
 		context: Context
 	): Promise<Function> {

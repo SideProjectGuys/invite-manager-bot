@@ -1,4 +1,4 @@
-import { MemberSettingsObject } from '../settings';
+import { MemberSettingsObject } from '../../settings';
 
 export enum MemberSettingsKey {
 	hideFromLeaderboard = 'hideFromLeaderboard'

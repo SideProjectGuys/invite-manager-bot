@@ -1,4 +1,4 @@
-import { InviteCodeSettingsObject } from '../settings';
+import { InviteCodeSettingsObject } from '../../settings';
 
 export enum InviteCodeSettingsKey {
 	name = 'name',

@@ -2,8 +2,8 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { BotCommand, CommandGroup, PromptResult } from '../../../types';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

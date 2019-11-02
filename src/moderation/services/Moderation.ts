@@ -3,10 +3,10 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { PunishmentType } from '../../models/PunishmentConfig';
-import { ViolationType } from '../../models/StrikeConfig';
 import { GuildSettingsObject } from '../../settings';
 import { BasicUser } from '../../types';
+import { PunishmentType } from '../models/PunishmentConfig';
+import { ViolationType } from '../models/StrikeConfig';
 
 interface Arguments {
 	guild: Guild;

@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { LogAction } from '../../../models/Log';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {

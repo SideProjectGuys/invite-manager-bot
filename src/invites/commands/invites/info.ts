@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { JoinInvalidatedReason } from '../../../framework/models/Join';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
-import { JoinInvalidatedReason } from '../../../models/Join';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 const ENTRIES_PER_PAGE = 20;

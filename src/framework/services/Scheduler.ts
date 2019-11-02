@@ -3,7 +3,7 @@ import { Guild } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { ScheduledAction, ScheduledActionType } from '../../models/ScheduledAction';
+import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
 export class SchedulerService {
 	private client: IMClient = null;

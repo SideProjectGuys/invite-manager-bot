@@ -1,5 +1,5 @@
 import { Cache } from '../../framework/cache/Cache';
-import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
+import { InviteCodeSettingsKey } from '../../framework/models/InviteCodeSetting';
 import { inviteCodeDefaultSettings, inviteCodeSettingsInfo, InviteCodeSettingsObject, toDbValue } from '../../settings';
 
 export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSettingsObject>> {

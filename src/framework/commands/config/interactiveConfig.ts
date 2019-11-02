@@ -1,11 +1,11 @@
 import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { SettingsValueResolver } from '../../../framework/resolvers';
-import { GuildSettingsKey } from '../../../models/GuildSetting';
 import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../../settings';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { GuildSettingsKey } from '../../models/GuildSetting';
+import { SettingsValueResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 interface ConfigMenu {
 	items: [GuildSettingsKey, SettingsInfo<any>][];

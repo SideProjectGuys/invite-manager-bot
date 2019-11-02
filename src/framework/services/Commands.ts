@@ -11,7 +11,7 @@ import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
 
 const CMD_DIRS = [
-	resolve(__dirname, '../../general/commands'),
+	resolve(__dirname, '../commands'),
 	resolve(__dirname, '../../invites/commands'),
 	resolve(__dirname, '../../moderation/commands'),
 	resolve(__dirname, '../../music/commands')

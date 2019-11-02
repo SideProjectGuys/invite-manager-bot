@@ -1,4 +1,4 @@
-import { GuildSettingsObject } from '../settings';
+import { GuildSettingsObject } from '../../settings';
 
 export enum GuildSettingsKey {
 	// General

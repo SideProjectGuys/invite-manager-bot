@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver } from '../../../framework/resolvers';
 import { BotCommand, CommandGroup } from '../../../types';
+import { EnumResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 enum ExportType {
 	leaderboard = 'leaderboard'

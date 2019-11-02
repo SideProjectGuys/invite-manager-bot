@@ -2,9 +2,9 @@ import { Message, Role } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { CommandResolver, RoleResolver } from '../../../framework/resolvers';
 import { BotCommand, CommandGroup, InvitesCommand } from '../../../types';
+import { CommandResolver, RoleResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

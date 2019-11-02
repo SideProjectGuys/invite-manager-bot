@@ -3,8 +3,8 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { MemberResolver, StringResolver } from '../../../framework/resolvers';
-import { PunishmentType } from '../../../models/PunishmentConfig';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

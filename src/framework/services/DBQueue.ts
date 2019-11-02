@@ -1,10 +1,10 @@
 import { Guild } from 'eris';
 
 import { IMClient } from '../../client';
-import { CommandUsage } from '../../models/CommandUsage';
-import { Incident } from '../../models/Incident';
-import { Log } from '../../models/Log';
 import { BasicUser } from '../../types';
+import { CommandUsage } from '../models/CommandUsage';
+import { Incident } from '../models/Incident';
+import { Log } from '../models/Log';
 
 export class DBQueueService {
 	private client: IMClient = null;

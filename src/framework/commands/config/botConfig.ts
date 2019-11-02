@@ -1,12 +1,12 @@
 import { Embed, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver, SettingsValueResolver } from '../../../framework/resolvers';
-import { BotSettingsKey } from '../../../models/BotSetting';
-import { LogAction } from '../../../models/Log';
 import { beautify, botSettingsInfo } from '../../../settings';
 import { BotCommand, CommandGroup } from '../../../types';
+import { BotSettingsKey } from '../../models/BotSetting';
+import { LogAction } from '../../models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

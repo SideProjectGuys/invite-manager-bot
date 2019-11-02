@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
-import { InviteCode } from '../../../models/InviteCode';
+import { InviteCode } from '../../../framework/models/InviteCode';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
 export default class extends Command {

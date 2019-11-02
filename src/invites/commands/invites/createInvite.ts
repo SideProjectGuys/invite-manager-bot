@@ -3,8 +3,8 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { InviteCodeSettingsKey } from '../../../framework/models/InviteCodeSetting';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
-import { InviteCodeSettingsKey } from '../../../models/InviteCodeSetting';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
 export default class extends Command {

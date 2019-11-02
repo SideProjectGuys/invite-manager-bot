@@ -4,8 +4,8 @@ import { Context } from 'vm';
 import { IMClient } from '../../../client';
 import { Command } from '../../../framework/commands/Command';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { PunishmentType } from '../../../models/PunishmentConfig';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

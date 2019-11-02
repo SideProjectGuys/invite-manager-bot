@@ -3,9 +3,9 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver } from '../../../framework/resolvers';
 import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
+import { EnumResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 enum Action {
 	Check = 'Check',

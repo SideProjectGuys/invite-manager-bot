@@ -1,13 +1,13 @@
 import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver, SettingsValueResolver } from '../../../framework/resolvers';
-import { GuildSettingsKey } from '../../../models/GuildSetting';
-import { JoinInvalidatedReason } from '../../../models/Join';
-import { LogAction } from '../../../models/Log';
 import { beautify, guildSettingsInfo } from '../../../settings';
 import { BotCommand, CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
+import { GuildSettingsKey } from '../../models/GuildSetting';
+import { JoinInvalidatedReason } from '../../models/Join';
+import { LogAction } from '../../models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

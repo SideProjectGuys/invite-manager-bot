@@ -2,8 +2,8 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { RoleResolver } from '../../../framework/resolvers';
-import { LogAction } from '../../../models/Log';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {

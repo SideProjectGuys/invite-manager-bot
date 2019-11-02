@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { CommandResolver } from '../../../framework/resolvers';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { CommandResolver } from '../../resolvers';
+import { Command, Context } from '../Command';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

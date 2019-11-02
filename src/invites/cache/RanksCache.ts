@@ -1,5 +1,5 @@
 import { Cache } from '../../framework/cache/Cache';
-import { Rank } from '../../models/Rank';
+import { Rank } from '../models/Rank';
 
 export class RanksCache extends Cache<Rank[]> {
 	public async init() {

@@ -1,6 +1,6 @@
 import { Guild, VoiceChannel } from 'eris';
 
-import { AnnouncementVoice } from '../../models/GuildSetting';
+import { AnnouncementVoice } from '../../framework/models/GuildSetting';
 import { GuildSettingsObject } from '../../settings';
 import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../types';
 import { MusicService } from '../services/MusicService';

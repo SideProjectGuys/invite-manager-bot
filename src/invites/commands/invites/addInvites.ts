@@ -2,8 +2,8 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { LogAction } from '../../../models/Log';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 const BIGINT_MAX_VALUE = 9223372036854775807;

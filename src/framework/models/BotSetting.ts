@@ -1,4 +1,4 @@
-import { BotSettingsObject } from '../settings';
+import { BotSettingsObject } from '../../settings';
 
 export enum BotSettingsKey {
 	activityStatus = 'activityStatus',
