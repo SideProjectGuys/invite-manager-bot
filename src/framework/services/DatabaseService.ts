@@ -182,13 +182,15 @@ export class DatabaseService {
 	//   Members
 	// -----------
 	public async getMember(id: string) {
-		return this.findOne<Member>('', 'member', '`id` = ?', [id]);
+		return this.findOne<Member>(GLOBAL_SHARD_ID, 'member', '`id` = ?', [id]);
 	}
 	public async getMembersByName(name: string, discriminator?: string) {
-		return this.findMany<Member>('member', '`name` LIKE ?' + (discriminator ? ' AND `discriminator` LIKE ?' : ''), [
-			`%${name}%`,
-			`%${discriminator}%`
-		]);
+		return this.findMany<Member>(
+			GLOBAL_SHARD_ID,
+			'member',
+			'`name` LIKE ?' + (discriminator ? ' AND `discriminator` LIKE ?' : ''),
+			[`%${name}%`, `%${discriminator}%`]
+		);
 	}
 	public async saveMembers(members: Partial<Member>[]) {
 		await this.insertOrUpdate(

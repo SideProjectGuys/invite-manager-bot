@@ -150,7 +150,7 @@ export default class extends Command {
 
 		const oldPerms = await this.client.db.getRolePermissions(guild.id, role.id, cmd.name);
 		if (oldPerms) {
-			await this.client.db.removeRolePermissions(oldPerms.roleId, oldPerms.command);
+			await this.client.db.removeRolePermissions(guild.id, oldPerms.roleId, oldPerms.command);
 
 			await this.sendReply(
 				message,

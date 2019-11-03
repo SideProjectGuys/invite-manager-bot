@@ -309,7 +309,7 @@ export class TrackingService {
 
 		// Update old invite codes that were used
 		if (updatedCodes.length > 0) {
-			await this.client.db.incrementInviteCodesUse(updatedCodes);
+			await this.client.db.incrementInviteCodesUse(guild.id, updatedCodes);
 		}
 
 		// We need the invite codes in the DB for the join
