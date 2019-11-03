@@ -38,7 +38,7 @@ export class SchedulerService {
 			date: date,
 			reason: reason
 		});
-		const action = await this.client.db.getScheduledAction(newId);
+		const action = await this.client.db.getScheduledAction(guildId, newId);
 		this.createTimer(action);
 	}
 
@@ -53,7 +53,7 @@ export class SchedulerService {
 
 			try {
 				await this.scheduledActionFunctions[action.actionType](guild, action.args);
-				await this.client.db.removeScheduledAction(action.id);
+				await this.client.db.removeScheduledAction(action.guildId, action.id);
 			} catch (error) {
 				withScope(scope => {
 					scope.setExtra('action', JSON.stringify(action));
@@ -63,11 +63,6 @@ export class SchedulerService {
 		};
 		const timer = setTimeout(func, millisUntilAction);
 		this.scheduledActionTimers.set(action.id, timer);
-	}
-
-	public async cancelScheduledAction(actionId: number) {
-		await this.client.db.removeScheduledAction(actionId);
-		await this.removeTimer(actionId);
 	}
 
 	private async removeTimer(actionId: number) {

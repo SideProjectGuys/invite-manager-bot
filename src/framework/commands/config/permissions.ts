@@ -148,7 +148,7 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
-		const oldPerms = await this.client.db.getRolePermissions(role.id, cmd.name);
+		const oldPerms = await this.client.db.getRolePermissions(guild.id, role.id, cmd.name);
 		if (oldPerms) {
 			await this.client.db.removeRolePermissions(oldPerms.roleId, oldPerms.command);
 
@@ -170,7 +170,7 @@ export default class extends Command {
 				}
 			]);
 
-			await this.client.db.saveRolePermissions([
+			await this.client.db.saveRolePermissions(guild.id, [
 				{
 					command: cmd.name,
 					roleId: role.id

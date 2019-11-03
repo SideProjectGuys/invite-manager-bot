@@ -30,7 +30,7 @@ export default class extends Command {
 		const rank = ranks.find(r => r.roleId === role.id);
 
 		if (rank) {
-			await this.client.db.removeRank(rank.roleId);
+			await this.client.db.removeRank(guild.id, rank.roleId);
 
 			await this.client.logAction(guild, message, LogAction.removeRank, {
 				roleId: role.id
