@@ -10,6 +10,7 @@ import { Strike } from '../../moderation/models/Strike';
 import { StrikeConfig, ViolationType } from '../../moderation/models/StrikeConfig';
 import { MusicNode } from '../../music/models/MusicNode';
 import { BasicUser, BotType } from '../../types';
+import { getShardIdForGuild } from '../../util';
 import { BotSetting } from '../models/BotSetting';
 import { Channel } from '../models/Channel';
 import { CommandUsage } from '../models/CommandUsage';
@@ -30,9 +31,11 @@ import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
 import { ScheduledAction } from '../models/ScheduledAction';
 
+const DB_COUNT = 128;
+
 export class DatabaseService {
 	private client: IMClient;
-	private pool: Pool;
+	private pools: Map<number, Pool> = new Map();
 
 	private guilds: Set<DiscordGuild> = new Set();
 	private doneGuilds: Set<String> = new Set();
@@ -46,37 +49,54 @@ export class DatabaseService {
 
 	public constructor(client: IMClient) {
 		this.client = client;
-		this.pool = mysql.createPool(client.config.database);
+		for (const db of client.config.databases) {
+			const range = db.range;
+			delete db.range;
+
+			const pool = mysql.createPool(db);
+			for (let i = range.from; i <= range.to; i++) {
+				this.pools.set(i, pool);
+			}
+		}
 
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	private async run(query: string, values: any[]) {
-		const [ok] = await this.pool.query<OkPacket>(query, values);
-		return ok;
+	private getDbInfo(guildId: string): [number, Pool] {
+		const dbId = getShardIdForGuild(guildId, DB_COUNT);
+		return [dbId, this.pools.get(dbId)];
 	}
-	private async query<T>(query: string, values: any[]) {
-		const [rows] = await this.pool.query<RowDataPacket[]>(query, values);
+
+	private async findOne<T>(guildId: string, table: string, where: string, values: any[]): Promise<T> {
+		const [dbId, pool] = this.getDbInfo(guildId);
+		const [rows] = await pool.execute<RowDataPacket[]>(
+			`SELECT \`${table}\`.* FROM \`im_${dbId}\`.\`${table}\` WHERE ${where} LIMIT 1`,
+			values
+		);
+		return rows[0] as T;
+	}
+	private async findMany<T>(guildId: string, table: string, where: string, values: any[]): Promise<T[]> {
+		const [dbId, pool] = this.getDbInfo(guildId);
+		const [rows] = await pool.query<RowDataPacket[]>(
+			`SELECT \`${table}\`.* FROM \`im_${dbId}\`.\`${table}\` WHERE ${where}`,
+			values
+		);
 		return rows as T[];
 	}
-	private async execute<T>(query: string, values: any[]) {
-		const [rows] = await this.pool.execute<RowDataPacket[]>(query, values);
-		return rows as T[];
-	}
-	private async findOne<T>(table: string, where: string, values: any[]): Promise<T> {
-		const res = await this.execute<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where} LIMIT 1`, values);
-		return res[0];
-	}
-	private async findMany<T>(table: string, where: string, values: any[]): Promise<T[]> {
-		return this.query<T>(`SELECT \`${table}\`.* FROM \`${table}\` WHERE ${where}`, values);
-	}
-	private async insertOrUpdate<T>(table: string, cols: (keyof T)[], updateCols: (keyof T)[], values: Partial<T>[]) {
+	private async insertOrUpdate<T>(
+		guildId: string,
+		table: string,
+		cols: (keyof T)[],
+		updateCols: (keyof T)[],
+		values: Partial<T>[]
+	) {
 		const colQuery = cols.map(c => `\`${c}\``).join(',');
 		const updateQuery =
 			updateCols.length > 0
 				? `ON DUPLICATE KEY UPDATE ${updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',')}`
 				: '';
-		const query = `INSERT INTO \`${table}\` (${colQuery}) VALUES ? ${updateQuery}`;
+		const [dbId, pool] = this.getDbInfo(guildId);
+		const query = `INSERT INTO \`im_${dbId}\`.\`${table}\` (${colQuery}) VALUES ? ${updateQuery}`;
 
 		const vals = values.map(val =>
 			cols.map(col => {
@@ -93,11 +113,12 @@ export class DatabaseService {
 			})
 		);
 
-		const [ok] = await this.pool.query<OkPacket>(query, [vals]);
+		const [ok] = await pool.query<OkPacket>(query, [vals]);
 		return ok;
 	}
-	private async delete(table: string, where: string, values: any[]) {
-		const [ok] = await this.pool.query<OkPacket>(`DELETE FROM \`${table}\` WHERE ${where}`, values);
+	private async delete(guildId: string, table: string, where: string, values: any[]) {
+		const [dbId, pool] = this.getDbInfo(guildId);
+		const [ok] = await pool.query<OkPacket>(`DELETE FROM \`im_${dbId}\`.\`${table}\` WHERE ${where}`, values);
 		return ok;
 	}
 
@@ -105,35 +126,48 @@ export class DatabaseService {
 	//   Guild
 	// ---------
 	public async getGuild(id: string) {
-		return this.findOne<Guild>('guild', '`id` = ?', [id]);
+		return this.findOne<Guild>(id, 'guild', '`id` = ?', [id]);
 	}
 	public async getBannedGuilds(ids: string[]) {
 		return this.findMany<Guild>('guild', '`id` IN (?) AND `banReason` IS NOT NULL', ids);
 	}
 	public async saveGuilds(guilds: Partial<Guild>[]) {
-		await this.insertOrUpdate(
-			'guild',
-			['id', 'name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
-			['name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
-			guilds
-		);
+		const guildMap: Map<number, Array<Partial<Guild>>> = new Map();
+		for (const guild of guilds) {
+			const id = getShardIdForGuild(guild.id, DB_COUNT);
+			const gs = guildMap.get(id);
+			if (gs) {
+				gs.push(guild);
+			} else {
+				guildMap.set(id, [guild]);
+			}
+		}
+		for (const gs of guildMap.values()) {
+			await this.insertOrUpdate(
+				gs[0].id,
+				'guild',
+				['id', 'name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
+				['name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
+				guilds
+			);
+		}
 	}
 
 	// ------------------
 	//   Guild settings
 	// ------------------
 	public async getGuildSettings(guildId: string) {
-		return this.findOne<GuildSetting>('guild_setting', '`guildId` = ?', [guildId]);
+		return this.findOne<GuildSetting>(guildId, 'guild_setting', '`guildId` = ?', [guildId]);
 	}
 	public async saveGuildSettings(settings: Partial<GuildSetting>) {
-		await this.insertOrUpdate('guild_setting', ['guildId', 'value'], ['value'], [settings]);
+		await this.insertOrUpdate(settings.guildId, 'guild_setting', ['guildId', 'value'], ['value'], [settings]);
 	}
 
 	// ------------
 	//   Channels
 	// ------------
 	public async saveChannels(channels: Partial<Channel>[]) {
-		await this.insertOrUpdate('channel', ['guildId', 'id', 'name'], ['name'], channels);
+		await this.insertOrUpdate(channels[0].guildId, 'channel', ['guildId', 'id', 'name'], ['name'], channels);
 	}
 
 	// -----------
@@ -156,10 +190,16 @@ export class DatabaseService {
 	//   Member settings
 	// -------------------
 	public async getMemberSettingsForGuild(guildId: string) {
-		return this.findMany<MemberSetting>('member_setting', '`guildId` = ?', [guildId]);
+		return this.findMany<MemberSetting>(guildId, 'member_setting', '`guildId` = ?', [guildId]);
 	}
 	public async saveMemberSettings(settings: Partial<MemberSetting>) {
-		await this.insertOrUpdate('member_setting', ['guildId', 'memberId', 'value'], ['value'], [settings]);
+		await this.insertOrUpdate(
+			settings.guildId,
+			'member_setting',
+			['guildId', 'memberId', 'value'],
+			['value'],
+			[settings]
+		);
 	}
 
 	// ---------
@@ -169,21 +209,28 @@ export class DatabaseService {
 		return this.findOne<Role>('role', '`id` = ?', [id]);
 	}
 	public async saveRoles(roles: Partial<Role>[]) {
-		await this.insertOrUpdate('role', ['id', 'createdAt', 'guildId', 'name', 'color'], ['name', 'color'], roles);
+		await this.insertOrUpdate(
+			roles[0].guildId,
+			'role',
+			['id', 'createdAt', 'guildId', 'name', 'color'],
+			['name', 'color'],
+			roles
+		);
 	}
 
 	// ---------
 	//   Ranks
 	// ---------
 	public async getRanksForGuild(guildId: string) {
-		return this.findMany<Rank>('rank', '`guildId` = ?', [guildId]);
+		return this.findMany<Rank>(guildId, 'rank', '`guildId` = ?', [guildId]);
 	}
-	public async saveRanks(ranks: Partial<Rank>[]) {
+	public async saveRank(rank: Partial<Rank>) {
 		await this.insertOrUpdate(
+			rank.guildId,
 			'rank',
 			['guildId', 'roleId', 'numInvites', 'description'],
 			['numInvites', 'description'],
-			ranks
+			[rank]
 		);
 	}
 	public async removeRank(roleId: string) {
@@ -225,7 +272,7 @@ export class DatabaseService {
 		);
 	}
 	public async getInviteCodesForMember(guildId: string, memberId: string) {
-		return this.findMany<InviteCode>('invite_code', '`guildId` = ? AND `inviterId` = ? ORDER BY `uses` DESC', [
+		return this.findMany<InviteCode>(guildId, 'invite_code', '`guildId` = ? AND `inviterId` = ? ORDER BY `uses` DESC', [
 			guildId,
 			memberId
 		]);
@@ -255,6 +302,7 @@ export class DatabaseService {
 	}
 	public async saveInviteCodes(inviteCodes: Partial<InviteCode>[]) {
 		await this.insertOrUpdate(
+			inviteCodes[0].guildId,
 			'invite_code',
 			[
 				'guildId',
@@ -279,17 +327,26 @@ export class DatabaseService {
 	//   InviteCode settings
 	// -----------------------
 	public async getInviteCodeSettingsForGuild(guildId: string) {
-		return this.findMany<InviteCodeSetting>('invite_code_setting', '`guildId` = ?', [guildId]);
+		return this.findMany<InviteCodeSetting>(guildId, 'invite_code_setting', '`guildId` = ?', [guildId]);
 	}
 	public async saveInviteCodeSettings(settings: Partial<InviteCodeSetting>) {
-		await this.insertOrUpdate('invite_code_setting', ['guildId', 'inviteCode', 'value'], ['value'], [settings]);
+		await this.insertOrUpdate(
+			settings.guildId,
+			'invite_code_setting',
+			['guildId', 'inviteCode', 'value'],
+			['value'],
+			[settings]
+		);
 	}
 
 	// ----------------
 	//   CustomInvite
 	// ----------------
 	public async getCustomInvitesForMember(guildId: string, memberId: string) {
-		return this.findMany<CustomInvite>('custom_invite', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
+		return this.findMany<CustomInvite>(guildId, 'custom_invite', '`guildId` = ? AND `memberId` = ?', [
+			guildId,
+			memberId
+		]);
 	}
 	public async getCustomInvitesForGuild(guildId: string) {
 		return this.query<{ total: string; id: string; name: string; discriminator: string }>(
@@ -312,6 +369,7 @@ export class DatabaseService {
 	}
 	public async saveCustomInvite(customInvite: Partial<CustomInvite>) {
 		const res = await this.insertOrUpdate(
+			customInvite.guildId,
 			'custom_invite',
 			['guildId', 'memberId', 'creatorId', 'amount', 'reason'],
 			[],
@@ -471,8 +529,9 @@ export class DatabaseService {
 		if (Object.values(JoinInvalidatedReason).includes(newInvalidatedReason as any)) {
 			newInvalidatedReason = `'${newInvalidatedReason}'`;
 		}
-		const ok = await this.run(
-			`UPDATE \`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
+		const [dbId, pool] = this.getDbInfo(guildId);
+		const [ok] = await pool.query<OkPacket>(
+			`UPDATE \`im_${dbId}\`.\`join\` SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
 				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
 			vals
 		);
@@ -488,6 +547,7 @@ export class DatabaseService {
 	}
 	public async saveJoin(join: Partial<Join>) {
 		const res = await this.insertOrUpdate(
+			join.guildId,
 			'join',
 			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
 			[],
@@ -500,7 +560,7 @@ export class DatabaseService {
 	//   Leave
 	// ---------
 	public async saveLeave(leave: Partial<Leave>) {
-		const res = await this.insertOrUpdate('leave', ['guildId', 'memberId', 'joinId'], [], [leave]);
+		const res = await this.insertOrUpdate(leave.guildId, 'leave', ['guildId', 'memberId', 'joinId'], [], [leave]);
 		return res.insertId;
 	}
 	public async getLeavesPerDay(guildId: string, days: number) {
@@ -618,6 +678,7 @@ export class DatabaseService {
 	}
 	public async saveScheduledAction(action: Partial<ScheduledAction>) {
 		const res = await this.insertOrUpdate(
+			action.guildId,
 			'scheduled_action',
 			['guildId', 'date', 'actionType', 'args', 'reason'],
 			[],
@@ -674,10 +735,10 @@ export class DatabaseService {
 		return res[0];
 	}
 	public async savePremiumSubscriptionGuild(sub: Partial<PremiumSubscriptionGuild>) {
-		await this.insertOrUpdate('premium_subscription_guild', ['guildId', 'subscriptionId'], [], [sub]);
+		await this.insertOrUpdate(sub.guildId, 'premium_subscription_guild', ['guildId', 'subscriptionId'], [], [sub]);
 	}
 	public async removePremiumSubscriptionGuild(guildId: string, subscriptionId: number) {
-		await this.delete('premium_subscription_guild', '`guildId` = ? AND `subscriptionId` = ?', [
+		await this.delete(guildId, 'premium_subscription_guild', '`guildId` = ? AND `subscriptionId` = ?', [
 			guildId,
 			subscriptionId
 		]);
@@ -696,7 +757,7 @@ export class DatabaseService {
 		return res[0];
 	}
 	public async getStrikesForMember(guildId: string, memberId: string) {
-		return this.findMany<Strike>('strike', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
+		return this.findMany<Strike>(guildId, 'strike', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
 	}
 	public async getStrikeAmount(guildId: string, memberId: string) {
 		const res = await this.query<{ total: string }>(
@@ -710,33 +771,34 @@ export class DatabaseService {
 		return 0;
 	}
 	public async saveStrike(strike: Partial<Strike>) {
-		await this.insertOrUpdate('strike', ['guildId', 'memberId', 'type', 'amount'], [], [strike]);
+		await this.insertOrUpdate(strike.guildId, 'strike', ['guildId', 'memberId', 'type', 'amount'], [], [strike]);
 	}
 	public async removeStrike(guildId: string, id: number) {
-		await this.delete('strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
+		await this.delete(guildId, 'strike', '`guildId` = ? AND `id` = ?', [guildId, id]);
 	}
 
 	// ------------------
 	//   Strike configs
 	// ------------------
 	public async getStrikeConfigsForGuild(guildId: string) {
-		return this.findMany<StrikeConfig>('strike_config', '`guildId` = ? ORDER BY `amount` DESC', [guildId]);
+		return this.findMany<StrikeConfig>(guildId, 'strike_config', '`guildId` = ? ORDER BY `amount` DESC', [guildId]);
 	}
 	public async saveStrikeConfig(config: Partial<StrikeConfig>) {
-		await this.insertOrUpdate('strike_config', ['guildId', 'type', 'amount'], ['amount'], [config]);
+		await this.insertOrUpdate(config.guildId, 'strike_config', ['guildId', 'type', 'amount'], ['amount'], [config]);
 	}
 	public async removeStrikeConfig(guildId: string, type: ViolationType) {
-		await this.delete('strike_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
+		await this.delete(guildId, 'strike_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
 	}
 
 	// --------------
 	//   Punishment
 	// --------------
 	public async getPunishment(guildId: string, id: number) {
-		return this.findOne<Punishment>('punishment', '`guildId` = ? AND id = ?', [guildId, id]);
+		return this.findOne<Punishment>(guildId, 'punishment', '`guildId` = ? AND id = ?', [guildId, id]);
 	}
 	public async savePunishment(punishment: Partial<Punishment>) {
 		await this.insertOrUpdate(
+			punishment.guildId,
 			'punishment',
 			['guildId', 'type', 'amount', 'args', 'creatorId', 'memberId', 'reason'],
 			[],
@@ -744,23 +806,31 @@ export class DatabaseService {
 		);
 	}
 	public async removePunishment(guildId: string, id: number) {
-		await this.delete('punishment', '`guildId` = ? AND `id` = ?', [guildId, id]);
+		await this.delete(guildId, 'punishment', '`guildId` = ? AND `id` = ?', [guildId, id]);
 	}
 	public async getPunishmentsForMember(guildId: string, memberId: string) {
-		return this.findMany<Punishment>('punishment', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
+		return this.findMany<Punishment>(guildId, 'punishment', '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
 	}
 
 	// ----------------------
 	//   Punishment configs
 	// ----------------------
 	public async getPunishmentConfigsForGuild(guildId: string) {
-		return this.findMany<PunishmentConfig>('punishment_config', '`guildId` = ? ORDER BY `amount` DESC', [guildId]);
+		return this.findMany<PunishmentConfig>(guildId, 'punishment_config', '`guildId` = ? ORDER BY `amount` DESC', [
+			guildId
+		]);
 	}
 	public async savePunishmentConfig(config: Partial<PunishmentConfig>) {
-		await this.insertOrUpdate('punishment_config', ['guildId', 'type', 'amount', 'args'], ['amount', 'args'], [config]);
+		await this.insertOrUpdate(
+			config.guildId,
+			'punishment_config',
+			['guildId', 'type', 'amount', 'args'],
+			['amount', 'args'],
+			[config]
+		);
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
-		await this.delete('punishment_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
+		await this.delete(guildId, 'punishment_config', '`guildId` = ? AND `type` = ?', [guildId, type]);
 	}
 
 	// ----------------------

@@ -79,16 +79,14 @@ export default class extends Command {
 		if (rank) {
 			rank.numInvites = invites;
 			rank.description = descr;
-			await this.client.db.saveRanks([rank]);
+			await this.client.db.saveRank(rank);
 		} else {
-			await this.client.db.saveRanks([
-				{
-					guildId: role.guild.id,
-					roleId: role.id,
-					numInvites: invites,
-					description: descr
-				}
-			]);
+			await this.client.db.saveRank({
+				guildId: role.guild.id,
+				roleId: role.id,
+				numInvites: invites,
+				description: descr
+			});
 			isNew = true;
 		}
 
