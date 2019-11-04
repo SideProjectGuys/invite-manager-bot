@@ -61,7 +61,8 @@ export default class extends Command {
 			{
 				id: user.id,
 				name: user.username,
-				discriminator: user.discriminator
+				discriminator: user.discriminator,
+				guildId: guild.id
 			}
 		]);
 

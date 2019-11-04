@@ -1,4 +1,4 @@
-import { Guild as DiscordGuild, Textable } from 'eris';
+import { Guild as DiscordGuild } from 'eris';
 import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
@@ -70,7 +70,7 @@ export class DatabaseService {
 	private guilds: Set<DiscordGuild> = new Set();
 	private doneGuilds: Set<String> = new Set();
 
-	private users: Set<BasicUser> = new Set();
+	private users: Set<BasicUser & { guildId: string }> = new Set();
 	private doneUsers: Set<String> = new Set();
 
 	private logActions: Partial<Log>[] = [];
@@ -138,7 +138,7 @@ export class DatabaseService {
 			);
 		}
 		const rows = await Promise.all(promises);
-		return rows.flat() as T[];
+		return rows.reduce((acc, val) => acc.concat(val as T[]), [] as T[]);
 	}
 	private async insertOrUpdate<T>(
 		table: TABLE,
@@ -233,10 +233,10 @@ export class DatabaseService {
 	// -----------
 	//   Members
 	// -----------
-	public async getMember(id: string) {
+	public async getMember(guildId: string, id: string) {
 		return this.findOne<Member>(GLOBAL_SHARD_ID, TABLE.members, '`id` = ?', [id]);
 	}
-	public async getMembersByName(name: string, discriminator?: string) {
+	public async getMembersByName(guildId: string, name: string, discriminator?: string) {
 		return this.findMany<Member>(
 			GLOBAL_SHARD_ID,
 			TABLE.members,
@@ -244,13 +244,13 @@ export class DatabaseService {
 			[`%${name}%`, `%${discriminator}%`]
 		);
 	}
-	public async saveMembers(members: Partial<Member>[]) {
+	public async saveMembers(members: Array<Partial<Member> & { guildId: string }>) {
 		await this.insertOrUpdate(
 			TABLE.members,
 			['id', 'name', 'discriminator'],
 			['name', 'discriminator'],
 			members,
-			() => GLOBAL_SHARD_ID
+			m => m.guildId
 		);
 	}
 
@@ -719,7 +719,7 @@ export class DatabaseService {
 		}
 
 		if (!this.doneUsers.has(user.id)) {
-			this.users.add(user);
+			this.users.add({ ...user, guildId: guild.id });
 		}
 
 		this.logActions.push(action);
@@ -743,7 +743,7 @@ export class DatabaseService {
 		}
 
 		if (!this.doneUsers.has(user.id)) {
-			this.users.add(user);
+			this.users.add({ ...user, guildId: guild.id });
 		}
 
 		this.cmdUsages.push(cmdUsage);
@@ -1009,7 +1009,8 @@ export class DatabaseService {
 				newUsers.map(user => ({
 					id: user.id,
 					name: user.username,
-					discriminator: user.discriminator
+					discriminator: user.discriminator,
+					guildId: user.guildId
 				}))
 			);
 			newUsers.forEach(u => this.doneUsers.add(u.id));

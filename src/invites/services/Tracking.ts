@@ -273,7 +273,8 @@ export class TrackingService {
 			.map(m => ({
 				id: m.id,
 				name: m.username,
-				discriminator: m.discriminator
+				discriminator: m.discriminator,
+				guildId: guild.id
 			}));
 		if (newMembers.length > 0) {
 			await this.client.db.saveMembers(newMembers);
@@ -510,7 +511,8 @@ export class TrackingService {
 			{
 				id: member.id,
 				name: member.user.username,
-				discriminator: member.user.discriminator
+				discriminator: member.user.discriminator,
+				guildId: guild.id
 			}
 		]);
 
@@ -667,7 +669,7 @@ export class TrackingService {
 				id: m.id,
 				name: m.username,
 				discriminator: m.discriminator,
-				createdAt: moment(m.createdAt).toDate()
+				guildId: guild.id
 			}));
 		if (newMembers.length > 0) {
 			promises.push(this.client.db.saveMembers(newMembers));
