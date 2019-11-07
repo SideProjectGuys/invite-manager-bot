@@ -234,11 +234,11 @@ export class DatabaseService {
 	//   Members
 	// -----------
 	public async getMember(guildId: string, id: string) {
-		return this.findOne<Member>(GLOBAL_SHARD_ID, TABLE.members, '`id` = ?', [id]);
+		return this.findOne<Member>(guildId, TABLE.members, '`id` = ?', [id]);
 	}
 	public async getMembersByName(guildId: string, name: string, discriminator?: string) {
 		return this.findMany<Member>(
-			GLOBAL_SHARD_ID,
+			guildId,
 			TABLE.members,
 			'`name` LIKE ?' + (discriminator ? ' AND `discriminator` LIKE ?' : ''),
 			[`%${name}%`, `%${discriminator}%`]
@@ -498,7 +498,7 @@ export class DatabaseService {
 		return rows as AccumulatedJoin[];
 	}
 	public async getMaxJoinIdsForGuild(guildId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT MAX(j.\`id\`) AS id FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? GROUP BY j.\`exactMatchCode\`, j.\`memberId\``,
 			[guildId]
@@ -506,7 +506,7 @@ export class DatabaseService {
 		return rows.map(r => Number(r.id));
 	}
 	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason ' +
 				`FROM ${db}.${TABLE.joins} j ` +
@@ -518,7 +518,7 @@ export class DatabaseService {
 		return rows as Array<{ total: string; invalidatedReason: JoinInvalidatedReason }>;
 	}
 	public async getJoinsPerDay(guildId: string, days: number) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.joins} ` +
@@ -531,7 +531,7 @@ export class DatabaseService {
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}
 	public async getFirstJoinForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
 				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
@@ -541,7 +541,7 @@ export class DatabaseService {
 		return rows[0] as Join;
 	}
 	public async getPreviousJoinForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
 				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
@@ -558,7 +558,7 @@ export class DatabaseService {
 			channelId: string;
 			channelName: string;
 		};
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			'SELECT j.*, m.`id` AS inviterId, m.`name` AS inviterName, m.`discriminator` AS inviterDiscriminator, ' +
 				'c.`id` AS channelId, c.`name` AS channelName ' +
@@ -573,7 +573,7 @@ export class DatabaseService {
 		return rows[0] as ExtendedJoin;
 	}
 	public async getJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			'SELECT j.*, ic.`inviterId` AS inviterId ' +
 				`FROM ${db}.${TABLE.joins} j ` +
@@ -585,7 +585,7 @@ export class DatabaseService {
 		return rows as Array<Join & { inviterId: string }>;
 	}
 	public async getTotalJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT COUNT(j.\`id\`) AS total FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? AND j.\`memberId\` = ?`,
 			[guildId, memberId]
@@ -593,7 +593,7 @@ export class DatabaseService {
 		return Number(rows[0].total);
 	}
 	public async getInvitedMembers(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			'SELECT j.`memberId` AS memberId, MAX(j.`createdAt`) AS createdAt ' +
 				`FROM ${db}.${TABLE.joins} j ` +
@@ -649,7 +649,7 @@ export class DatabaseService {
 		return ok.affectedRows;
 	}
 	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const codeQuery = exactMatchCodes.length > 0 ? 'AND `exactMatchCode` IN(?)' : '';
 		await pool.query(`UPDATE ${db}.${TABLE.joins} SET \`cleared\` = ? WHERE \`guildId\` = ? ${codeQuery}`, [
 			newCleared,
@@ -676,7 +676,7 @@ export class DatabaseService {
 		return res[0].insertId;
 	}
 	public async getLeavesPerDay(guildId: string, days: number) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.leaves} ` +
@@ -689,7 +689,7 @@ export class DatabaseService {
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}
 	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
+		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.execute<OkPacket>(
 			`UPDATE ${db}.${TABLE.joins} j ` +
 				`LEFT JOIN ${db}.${TABLE.leaves} l ON l.\`joinId\` = j.\`id\` SET \`invalidatedReason\` = ` +
@@ -850,6 +850,7 @@ export class DatabaseService {
 		return rows[0] as PremiumSubscriptionGuild;
 	}
 	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
+		// TODO: This doesn't work becaues the guilds table isn't global, but we need the guild name
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT psg.*, g.\`name\` as guildName FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
