@@ -31,7 +31,6 @@ import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
 import { ScheduledAction } from '../models/ScheduledAction';
 
-const DB_COUNT = 4;
 const GLOBAL_SHARD_ID = 0;
 
 enum TABLE {
@@ -65,6 +64,7 @@ enum TABLE {
 
 export class DatabaseService {
 	private client: IMClient;
+	private dbCount: number = 1;
 	private pools: Map<number, Pool> = new Map();
 
 	private guilds: Set<DiscordGuild> = new Set();
@@ -87,6 +87,8 @@ export class DatabaseService {
 			for (let i = range.from; i <= range.to; i++) {
 				this.pools.set(i, pool);
 			}
+
+			this.dbCount = Math.max(this.dbCount, range.to);
 		}
 
 		setInterval(() => this.syncDB(), 10000);
@@ -96,7 +98,7 @@ export class DatabaseService {
 		if (typeof shard === 'number') {
 			return [`\`im_${shard}\``, this.pools.get(shard)];
 		} else {
-			const db = getShardIdForGuild(shard, DB_COUNT);
+			const db = getShardIdForGuild(shard, this.dbCount);
 			return [`\`im_${db}\``, this.pools.get(db)];
 		}
 	}
