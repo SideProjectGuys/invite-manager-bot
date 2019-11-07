@@ -383,7 +383,7 @@ export class DatabaseService {
 	}
 	public async incrementInviteCodesUse(guildId: string, codes: string[]) {
 		const [db, pool] = this.getDbInfo(guildId);
-		await pool.execute(`UPDATE ${db}.${TABLE.inviteCodes} SET \`uses\` = \`uses\` + 1 WHERE \`code\` IN(?)`, [codes]);
+		await pool.query(`UPDATE ${db}.${TABLE.inviteCodes} SET \`uses\` = \`uses\` + 1 WHERE \`code\` IN(?)`, [codes]);
 	}
 	public async saveInviteCodes(inviteCodes: Partial<InviteCode>[]) {
 		await this.insertOrUpdate(
