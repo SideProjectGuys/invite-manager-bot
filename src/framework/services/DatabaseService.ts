@@ -344,8 +344,8 @@ export class DatabaseService {
 		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT SUM(ic.`uses` - ic.`clearedAmount`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
-				`FROM \`im_${db}\`.${TABLE.inviteCodes} ic ` +
-				`INNER JOIN \`im_${db}\`.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
+				`FROM ${db}.${TABLE.inviteCodes} ic ` +
+				`INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
 				'WHERE ic.`guildId` = ? AND ic.`uses` > ic.`clearedAmount` ' +
 				'GROUP BY ic.`inviterId`',
 			[guildId]
