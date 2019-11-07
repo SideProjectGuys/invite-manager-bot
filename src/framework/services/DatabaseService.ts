@@ -91,6 +91,8 @@ export class DatabaseService {
 			this.dbCount = Math.max(this.dbCount, range.to);
 		}
 
+		console.log(`We're connected to ${this.dbCount} db shards on ${client.config.databases.length} different servers`);
+
 		setInterval(() => this.syncDB(), 10000);
 	}
 
