@@ -699,7 +699,7 @@ export class DatabaseService {
 				`LEFT JOIN ${db}.${TABLE.leaves} l ON l.\`joinId\` = j.\`id\` SET \`invalidatedReason\` = ` +
 				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
 				'WHERE j.`guildId` = ? AND (j.`invalidatedReason` IS NULL OR j.`invalidatedReason` = "leave")',
-			[guildId, autoSubtractLeaveThreshold]
+			[autoSubtractLeaveThreshold, guildId]
 		);
 		return rows;
 	}
