@@ -621,22 +621,22 @@ export class DatabaseService {
 	) {
 		const vals: any[] = [guildId];
 		let reasonQuery = '';
-		if (search && search.memberId) {
+		if (search && typeof search.invalidatedReason !== 'undefined') {
 			reasonQuery = 'AND `invalidatedReason` = ?';
 			vals.push(search.invalidatedReason);
 		}
 		let memberQuery = '';
-		if (search && search.memberId) {
+		if (search && typeof search.memberId !== 'undefined') {
 			memberQuery = 'AND `memberId` = ?';
 			vals.push(search.memberId);
 		}
 		let joinQuery = '';
-		if (search && search.memberId) {
+		if (search && typeof search.joinId !== 'undefined') {
 			joinQuery = 'AND `id` = ?';
 			vals.push(search.joinId);
 		}
 		let ignoredJoinQuery = '';
-		if (search && search.memberId) {
+		if (search && typeof search.ignoredJoinId !== 'undefined') {
 			ignoredJoinQuery = 'AND `id` != ?';
 			vals.push(search.ignoredJoinId);
 		}
