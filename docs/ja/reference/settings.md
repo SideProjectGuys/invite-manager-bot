@@ -160,13 +160,30 @@ There are many config options that can be set. You don't have to set all of them
 
 #### 音楽
 
-| Setting                                                          | Description                                                      |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [音楽の音量](#musicvolume)                                       | ボットが音声チャネルに参加したときに設定されるデフォルトの音量。 |
-| [次の曲をアナウンスする](#announcenextsong)                      | 次の曲を音声チャンネルでアナウンスするかどうか。                 |
-| [アナウンスの声](#announcementvoice)                             | 次の曲の発表で使われる声。                                       |
-| [トークで音楽をフェード](#fademusicontalk)                       | 有効にすると、人々が話している間、音楽は消えます。               |
-| [ミュージックのフェードが終了するまでの時間](#fademusicenddelay) | 音量が正常に戻るまでに誰も話していない秒数の遅延。               |
+| Setting                    | Description                                                      |
+| -------------------------- | ---------------------------------------------------------------- |
+| [音楽の音量](#musicvolume) | ボットが音声チャネルに参加したときに設定されるデフォルトの音量。 |
+
+#### settings.groups.music.announcement.title
+
+| Setting                                     | Description                                      |
+| ------------------------------------------- | ------------------------------------------------ |
+| [次の曲をアナウンスする](#announcenextsong) | 次の曲を音声チャンネルでアナウンスするかどうか。 |
+| [アナウンスの声](#announcementvoice)        | 次の曲の発表で使われる声。                       |
+
+#### settings.groups.music.fadeMusic.title
+
+| Setting                                                          | Description                                        |
+| ---------------------------------------------------------------- | -------------------------------------------------- |
+| [トークで音楽をフェード](#fademusicontalk)                       | 有効にすると、人々が話している間、音楽は消えます。 |
+| [ミュージックのフェードが終了するまでの時間](#fademusicenddelay) | 音量が正常に戻るまでに誰も話していない秒数の遅延。 |
+
+#### settings.groups.music.platform.title
+
+| Setting                                                          | Description                                 |
+| ---------------------------------------------------------------- | ------------------------------------------- |
+| [settings.defaultMusicPlatform.title](#defaultmusicplatform)     | settings.defaultMusicPlatform.description   |
+| [settings.disabledMusicPlatforms.title](#disabledmusicplatforms) | settings.disabledMusicPlatforms.description |
 
 <a name=prefix></a>
 
@@ -204,11 +221,11 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `ar`, `bg`, `cs`, `de`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`, `el`
+Possible values: `de`, `en`, `es`, `fr`, `it`, `nl`, `pt`, `ro`, `sv`
 
 Example:
 
-`!config lang ar`
+`!config lang de`
 
 <a name=logChannel></a>
 
@@ -1611,3 +1628,33 @@ Default: `1`
 
 Reset to default:
 `!config fadeMusicEndDelay default`
+
+<a name=defaultMusicPlatform></a>
+
+---
+
+## settings.defaultMusicPlatform.title
+
+settings.defaultMusicPlatform.description
+
+Type: `Enum<MusicPlatformTypes>`
+
+Default: `soundcloud`
+
+Reset to default:
+`!config defaultMusicPlatform default`
+
+<a name=disabledMusicPlatforms></a>
+
+---
+
+## settings.disabledMusicPlatforms.title
+
+settings.disabledMusicPlatforms.description
+
+Type: `Enum<MusicPlatformTypes>[]`
+
+Default: ``
+
+Reset to default:
+`!config disabledMusicPlatforms default`

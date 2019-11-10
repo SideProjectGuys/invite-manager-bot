@@ -1,6 +1,6 @@
 import { VoiceConnection, VoiceConnectionManager } from 'eris';
 
-import { MusicItem } from './modules/music/models/MusicItem';
+import { MusicItem } from './music/models/MusicItem';
 
 export enum BotType {
 	regular = 'regular',
@@ -66,8 +66,7 @@ export enum ShardCommand {
 
 export enum ChartType {
 	joins = 'joins',
-	leaves = 'leaves',
-	usage = 'usage'
+	leaves = 'leaves'
 }
 
 export enum BotCommand {
@@ -102,7 +101,6 @@ export enum InvitesCommand {
 	createInvite = 'createInvite',
 	addInvites = 'addInvites',
 	clearInvites = 'clearInvites',
-	fake = 'fake',
 	info = 'info',
 	inviteCodes = 'inviteCodes',
 	inviteDetails = 'inviteDetails',
@@ -128,6 +126,7 @@ export enum ModerationCommand {
 	check = 'check',
 	caseDelete = 'caseDelete',
 	caseView = 'caseView',
+	caseEdit = 'caseEdit',
 
 	ban = 'ban',
 	mute = 'mute',
@@ -177,7 +176,7 @@ export interface MusicQueue {
 	queue: MusicItem[];
 }
 
-export enum MusicPlatformTypes {
+export enum MusicPlatformType {
 	YouTube = 'youtube',
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',

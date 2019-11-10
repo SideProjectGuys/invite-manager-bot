@@ -2,7 +2,7 @@ import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
+import { ClientCacheObject, IMClient } from '../../client';
 import { ShardCommand } from '../../types';
 import { FakeChannel } from '../../util';
 
@@ -211,7 +211,7 @@ export class RabbitMqService {
 					});
 				}
 
-				const sets = await this.client.cache.settings.get(guildId);
+				const sets = await this.client.cache.guilds.get(guildId);
 				const perms = guild.members.get(this.client.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};
@@ -269,8 +269,22 @@ export class RabbitMqService {
 				break;
 
 			case ShardCommand.FLUSH_CACHE:
-				Object.values(this.client.cache).forEach(c => c.flush(guildId));
-				await sendResponse({});
+				const errors: string[] = [];
+				const cacheNames = content.caches as (keyof ClientCacheObject)[];
+
+				if (!content.caches) {
+					Object.values(this.client.cache).forEach(c => c.flush(guildId));
+				} else {
+					for (const cacheName of cacheNames) {
+						const cache = this.client.cache[cacheName];
+						if (cache) {
+							cache.flush(guildId);
+						} else {
+							errors.push('Invalid cache name ' + cacheName);
+						}
+					}
+				}
+				await sendResponse({ error: errors.join('\n') });
 				break;
 
 			case ShardCommand.RELOAD_MUSIC_NODES:
@@ -382,7 +396,7 @@ export class RabbitMqService {
 			channels: channelCount,
 			roles: roleCount,
 			ranks: this.client.cache.ranks.getSize(),
-			settings: this.client.cache.settings.getSize(),
+			settings: this.client.cache.guilds.getSize(),
 			premium: this.client.cache.premium.getSize(),
 			permissions: this.client.cache.permissions.getSize(),
 			strikes: this.client.cache.strikes.getSize(),

@@ -1,14 +1,9 @@
 import { IMClient } from '../../client';
-import {
-	ActivityStatus,
-	ActivityType,
-	AnnouncementVoice,
-	Lang,
-	LeaderboardStyle,
-	RankAssignmentStyle
-} from '../../sequelize';
 import { InternalSettingsTypes, SettingsInfo } from '../../settings';
+import { MusicPlatformType } from '../../types';
 import { Context } from '../commands/Command';
+import { ActivityStatus, ActivityType } from '../models/BotSetting';
+import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../models/GuildSetting';
 
 import {
 	ArrayResolver,
@@ -45,7 +40,12 @@ export class SettingsValueResolver extends Resolver {
 			'Enum<RankAssignmentStyle>': new EnumResolver(client, Object.values(RankAssignmentStyle)),
 			'Enum<AnnouncementVoice>': new EnumResolver(client, Object.values(AnnouncementVoice)),
 			'Enum<ActivityType>': new EnumResolver(client, Object.values(ActivityType)),
-			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus))
+			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus)),
+			'Enum<MusicPlatformTypes>': new EnumResolver(client, Object.values(MusicPlatformType)),
+			'Enum<MusicPlatformTypes>[]': new ArrayResolver(
+				client,
+				new EnumResolver(client, Object.values(MusicPlatformType))
+			)
 		};
 	}
 

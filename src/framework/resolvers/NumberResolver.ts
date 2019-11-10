@@ -26,12 +26,12 @@ export class NumberResolver extends Resolver {
 
 		if (this.min) {
 			if (val < this.min) {
-				throw Error(t('arguments.number.tooSmall'));
+				throw Error(t(`resolvers.${this.getType()}.tooSmall`));
 			}
 		}
 		if (this.max) {
 			if (val > this.max) {
-				throw Error(t('arguments.number.tooLarge'));
+				throw Error(t(`resolvers.${this.getType()}.tooLarge`));
 			}
 		}
 

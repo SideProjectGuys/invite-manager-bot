@@ -5,15 +5,20 @@ import i18n from 'i18n';
 import { basename, resolve } from 'path';
 
 import { IMClient } from '../../client';
-import { defaultSettings } from '../../settings';
+import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
 
-const cmdDir = resolve(__dirname, '../../modules/');
-const idRegex: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
-const rateLimit = 1; // max commands per second
-const cooldown = 5; // in seconds
+const CMD_DIRS = [
+	resolve(__dirname, '../commands'),
+	resolve(__dirname, '../../invites/commands'),
+	resolve(__dirname, '../../moderation/commands'),
+	resolve(__dirname, '../../music/commands')
+];
+const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
+const RATE_LIMIT = 1; // max commands per second
+const COOLDOWN = 5; // in seconds
 
 export class CommandsService {
 	private client: IMClient;
@@ -77,7 +82,7 @@ export class CommandsService {
 					console.log(`Loaded \x1b[34m${inst.name}\x1b[0m from ` + `\x1b[2m${basename(file)}\x1b[0m`);
 				}
 			});
-		loadRecursive(cmdDir);
+		CMD_DIRS.forEach(dir => loadRecursive(dir));
 
 		console.log(`Loaded \x1b[32m${this.commands.length}\x1b[0m commands!`);
 
@@ -109,7 +114,7 @@ export class CommandsService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild ? await this.client.cache.settings.get(guild.id) : { ...defaultSettings };
+		const sets = guild ? await this.client.cache.guilds.get(guild.id) : { ...guildDefaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
@@ -130,8 +135,8 @@ export class CommandsService {
 		// Process prefix first so we can use any possible prefixes
 		if (content.startsWith(sets.prefix)) {
 			content = content.substring(sets.prefix.length).trim();
-		} else if (idRegex.test(content)) {
-			const matches = content.match(idRegex);
+		} else if (ID_REGEX.test(content)) {
+			const matches = content.match(ID_REGEX);
 
 			if (matches[1] !== this.client.user.id) {
 				return;
@@ -211,15 +216,15 @@ export class CommandsService {
 					warned: false
 				};
 				this.commandCalls.set(message.author.id, lastCall);
-			} else if (now - lastCall.last < (1 / rateLimit) * 1000) {
+			} else if (now - lastCall.last < (1 / RATE_LIMIT) * 1000) {
 				// Only warn the first time we hit the rate limit
 				if (!lastCall.warned) {
 					lastCall.warned = true;
-					lastCall.last = now + cooldown * 1000;
+					lastCall.last = now + COOLDOWN * 1000;
 					await this.client.msg.sendReply(
 						message,
 						t('permissions.rateLimit', {
-							cooldown: cooldown.toString()
+							cooldown: COOLDOWN.toString()
 						})
 					);
 				}
@@ -473,19 +478,16 @@ export class CommandsService {
 			});
 
 			if (guild) {
-				this.client.dbQueue.addIncident(
-					{
-						id: null,
-						guildId: guild.id,
-						error: error.message,
-						details: {
-							command: cmd.name,
-							author: message.author.id,
-							message: message.content
-						}
-					},
-					guild
-				);
+				this.client.db.saveIncident(guild, {
+					id: null,
+					guildId: guild.id,
+					error: error.message,
+					details: {
+						command: cmd.name,
+						author: message.author.id,
+						message: message.content
+					}
+				});
 			}
 
 			await this.client.msg.sendReply(
@@ -499,19 +501,15 @@ export class CommandsService {
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			this.client.dbQueue.addCommandUsage(
-				{
-					id: null,
-					guildId: guild.id,
-					memberId: message.author.id,
-					command: cmd.name,
-					args: args.join(' '),
-					errored: error !== null,
-					time: execTime
-				},
-				guild,
-				message.author
-			);
+			this.client.db.saveCommandUsage(guild, message.author, {
+				id: null,
+				guildId: guild.id,
+				memberId: message.author.id,
+				command: cmd.name,
+				args: args.join(' '),
+				errored: error !== null,
+				time: execTime
+			});
 		}
 	}
 }

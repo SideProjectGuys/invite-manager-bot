@@ -1,4 +1,3 @@
-import { members } from '../../sequelize';
 import { BasicUser } from '../../types';
 import { Context } from '../commands/Command';
 
@@ -24,10 +23,10 @@ export class UserResolver extends Resolver {
 			}
 			// Then try our database
 			if (!user) {
-				user = await members.findOne({ where: { id }, raw: true }).then(u => ({
+				user = await this.client.db.getMember(guild.id, id).then(u => ({
 					...u,
 					username: u.name,
-					createdAt: (u.createdAt as Date).getTime(),
+					createdAt: u.createdAt.getTime(),
 					avatarURL: undefined
 				}));
 			}
@@ -63,39 +62,26 @@ export class UserResolver extends Resolver {
 
 			// Try to find exact match in DB
 			if (users.length === 0) {
-				users = await members
-					.findAll({
-						where: { name: username, ...(discriminator && { discriminator }) },
-						raw: true
-					})
-					.then(us =>
-						us.map(u => ({
-							...u,
-							username: u.name,
-							createdAt: (u.createdAt as Date).getTime(),
-							avatarURL: undefined
-						}))
-					);
+				users = await this.client.db.getMembersByName(guild.id, username, discriminator).then(us =>
+					us.map(u => ({
+						...u,
+						username: u.name,
+						createdAt: u.createdAt.getTime(),
+						avatarURL: undefined
+					}))
+				);
 			}
 
 			// Try to find partial match in DB
 			if (users.length === 0) {
-				users = await members
-					.findAll({
-						where: {
-							name: `%${username}%`,
-							...(discriminator && { discriminator: `%${discriminator}%` })
-						},
-						raw: true
-					})
-					.then(us =>
-						us.map(u => ({
-							...u,
-							username: u.name,
-							createdAt: (u.createdAt as Date).getTime(),
-							avatarURL: undefined
-						}))
-					);
+				users = await this.client.db.getMembersByName(guild.id, username, discriminator).then(us =>
+					us.map(u => ({
+						...u,
+						username: u.name,
+						createdAt: u.createdAt.getTime(),
+						avatarURL: undefined
+					}))
+				);
 			}
 
 			if (users.length === 1) {

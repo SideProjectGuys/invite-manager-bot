@@ -1,7 +1,7 @@
-import { Guild, Member, Message, Permission } from 'eris';
+import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { SettingsObject } from '../../settings';
+import { GuildSettingsObject } from '../../settings';
 import {
 	BotCommand,
 	CommandGroup,
@@ -62,7 +62,7 @@ export type Context = {
 	guild: Guild;
 	me: Member;
 	t: TranslateFunc;
-	settings: SettingsObject;
+	settings: GuildSettingsObject;
 	isPremium: boolean;
 };
 

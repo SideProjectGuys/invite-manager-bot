@@ -458,7 +458,8 @@
 				"role": "Any role, for example: @Admin",
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string": "Any text",
-				"string[]": "A list of words, for example: word another \"word with space\""
+				"string[]": "A list of words, for example: word another \"word with space\"",
+				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
 			},
 			"welcome": "Use the reactions to pick one of the available options."
 		},
@@ -517,7 +518,8 @@
 				"text": "These invites expire after a certain time.",
 				"title": "Temporary"
 			},
-			"title": "You have the following codes on the server {{ guild }}"
+			"title": "You have the following codes on the server {{ guild }}",
+			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
@@ -573,7 +575,7 @@
 				"total": "T"
 			},
 			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** {{{ change }}} **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalid date: {{ date }}",
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
@@ -589,7 +591,8 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Leaderboard"
+			"title": "Leaderboard",
+			"lastUpdate": "Last updated {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -1158,7 +1161,9 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
+		"banMembers": "permissions.banMembers",
+		"kickMembers": "permissions.kickMembers"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1234,124 +1239,124 @@
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"description": "settings.autoModAllCapsEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with A LOT OF CAPS."
 		},
 		"autoModAllCapsMinCharacters": {
-			"description": "settings.autoModAllCapsMinCharacters.description",
-			"title": "Min. Characters"
+			"title": "Min. Characters",
+			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
-			"description": "settings.autoModAllCapsPercentageCaps.description",
-			"title": "Percentage CAPs"
+			"title": "Percentage CAPs",
+			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
 		},
 		"autoModDeleteBotMessage": {
-			"description": "settings.autoModDeleteBotMessage.description",
-			"title": "Delete Bot Messages"
+			"title": "Delete Bot Messages",
+			"description": "Automatically delete the bots own messages (keeps your chat clean)."
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
-			"title": "Delete Bot Message Timeout"
+			"title": "Delete Bot Message Timeout",
+			"description": "The timeout after which bot messages are deleted."
 		},
 		"autoModDisabledForOldMembers": {
-			"description": "settings.autoModDisabledForOldMembers.description",
-			"title": "Disabled for Old Members"
+			"title": "Disabled for Old Members",
+			"description": "Disabled auto moderation for members that have been in your server for a long time."
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"description": "settings.autoModDisabledForOldMembersThreshold.description",
-			"title": "Old Members Threshold"
+			"title": "Old Members Threshold",
+			"description": "The amount of time a member has to be in your server to be considered 'old'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"description": "settings.autoModDuplicateTextEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate duplicate messages (copy-paste spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"description": "settings.autoModEmojisEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with an excessive amount of emojis."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
-			"title": "Max # of Emojis"
+			"title": "Max # of Emojis",
+			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
 		},
 		"autoModEnabled": {
-			"description": "settings.autoModEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"description": "settings.autoModHoistEnabled.description",
-			"title": "Dehoist Enabled"
+			"title": "Enabled",
+			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
 		},
 		"autoModIgnoredChannels": {
-			"description": "settings.autoModIgnoredChannels.description",
-			"title": "Ignored Channels"
+			"title": "Ignored Channels",
+			"description": "Channels that are ignored while automatically moderating."
 		},
 		"autoModIgnoredRoles": {
-			"description": "settings.autoModIgnoredRoles.description",
-			"title": "Ignored Roles"
+			"title": "Ignored Roles",
+			"description": "Any members with these roles will not automatically be moderated."
 		},
 		"autoModInvitesEnabled": {
-			"description": "settings.autoModInvitesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically scan messages for discord invite links and remove them."
 		},
 		"autoModLinksBlacklist": {
-			"description": "settings.autoModLinksBlacklist.description",
-			"title": "Blacklist"
+			"title": "Blacklist",
+			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"description": "settings.autoModLinksEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
-			"description": "settings.autoModLinksFollowRedirects.description",
-			"title": "Follow Redirects"
+			"title": "Follow Redirects",
+			"description": "Enable this to resolve redirects for links."
 		},
 		"autoModLinksWhitelist": {
-			"description": "settings.autoModLinksWhitelist.description",
-			"title": "Whitelist"
+			"title": "Whitelist",
+			"description": "A list of links that users are allowed to post."
 		},
 		"autoModLogEnabled": {
-			"description": "settings.autoModLogEnabled.description",
-			"title": "Log Enabled"
+			"title": "Log Enabled",
+			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"description": "settings.autoModMentionRolesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of roles a member can mention in a message."
 		},
 		"autoModMentionUsersEnabled": {
-			"description": "settings.autoModMentionUsersEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of users."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of users a member can mention in a message."
 		},
 		"autoModModeratedChannels": {
-			"description": "settings.autoModModeratedChannels.description",
-			"title": "Moderated Channels"
+			"title": "Moderated Channels",
+			"description": "The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels)."
 		},
 		"autoModModeratedRoles": {
-			"description": "settings.autoModModeratedRoles.description",
-			"title": "Moderated Roles"
+			"title": "Moderated Roles",
+			"description": "The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles)."
 		},
 		"autoModQuickMessagesEnabled": {
-			"description": "settings.autoModQuickMessagesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate users sending a lot of messages in a short time."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
-			"title": "# of Messages"
+			"title": "# of Messages",
+			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "A list of words that are banned.",
@@ -1484,11 +1489,23 @@
 			},
 			"music": {
 				"title": "Music",
+				"description": "Music Settings",
 				"general": {
 					"title": "Music",
 					"description": "General Music Settings"
 				},
-				"description": "Music Settings"
+				"announcement": {
+					"title": "Announcement",
+					"description": "Announces the next song."
+				},
+				"fadeMusic": {
+					"title": "Fade Music",
+					"description": "Makes the music quieter when someone talks."
+				},
+				"platform": {
+					"title": "Platform",
+					"description": "The various platforms used to play music."
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1594,11 +1611,15 @@
 		"fadeMusicEndDelay": {
 			"title": "Fade Music End Delay",
 			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+		},
+		"defaultMusicPlatform": {
+			"title": "Default Music Platform",
+			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+		},
+		"disabledMusicPlatforms": {
+			"title": "Disabled Music Platforms",
+			"description": "Music platforms that are disabled and cannot be used to play music."
 		}
-	},
-	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
 		"notPlaying": "There is currently no music being played!",

@@ -1,4 +1,4 @@
-# Translations
+# الترجمات
 
 other.translations.description
 

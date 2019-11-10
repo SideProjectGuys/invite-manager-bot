@@ -1,13 +1,13 @@
-# Quick Start
+# 快速開始
 
-## Setup
+## 設定
 
-start.quick.setup.description
+開始.快速.設定.敘述
 
-### 1. start.quick.setup.first.title
+### 1. 開始.快速.設定.第一.標題
 
-start.quick.setup.first.description
+開始.快速.設定.第一.敘述
 
-### 2. start.quick.setup.second.title
+### 2. 開始.快速.設定.第二.標題
 
-start.quick.setup.second.description
+開始.快速.設定.第二.敘述

@@ -1,7 +1,6 @@
 import { configureScope, init } from '@sentry/node';
 
 import { IMClient } from './client';
-import { sequelize } from './sequelize';
 
 const pkg = require('../package.json');
 const config = require('../config.json');
@@ -39,10 +38,7 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 	console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
-console.log('-------------------------------------');
-console.log('Syncing database...');
-console.log('-------------------------------------');
-sequelize.sync().then(async () => {
+const main = async () => {
 	console.log('-------------------------------------');
 	console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
 	console.log('-------------------------------------');
@@ -60,5 +56,7 @@ sequelize.sync().then(async () => {
 	console.log('-------------------------------------');
 	console.log('Starting bot...');
 	console.log('-------------------------------------');
-	client.connect();
-});
+	await client.connect();
+};
+
+main().catch(err => console.error(err));

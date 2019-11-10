@@ -1,17 +1,16 @@
 import { Channel, Role } from 'eris';
 
+import { ActivityStatus, ActivityType, BotSettingsKey } from './framework/models/BotSetting';
 import {
-	ActivityStatus,
-	ActivityType,
 	AnnouncementVoice,
-	BotSettingsKey,
-	InviteCodeSettingsKey,
+	GuildSettingsKey,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
-	RankAssignmentStyle,
-	SettingsKey
-} from './sequelize';
+	RankAssignmentStyle
+} from './framework/models/GuildSetting';
+import { InviteCodeSettingsKey } from './framework/models/InviteCodeSetting';
+import { MemberSettingsKey } from './framework/models/MemberSetting';
+import { MusicPlatformType } from './types';
 
 export type InternalSettingsTypes =
 	| 'Boolean'
@@ -28,7 +27,9 @@ export type InternalSettingsTypes =
 	| 'Enum<Lang>'
 	| 'Enum<AnnouncementVoice>'
 	| 'Enum<ActivityStatus>'
-	| 'Enum<ActivityType>';
+	| 'Enum<ActivityType>'
+	| 'Enum<MusicPlatformTypes>'
+	| 'Enum<MusicPlatformTypes>[]';
 
 export interface SettingsInfo<T> {
 	type: InternalSettingsTypes;
@@ -59,13 +60,16 @@ export enum SettingsGroup {
 	mentions = 'mentions',
 	emojis = 'emojis',
 	music = 'music',
-	bot = 'bot'
+	bot = 'bot',
+	fadeMusic = 'fadeMusic',
+	announcement = 'announcement',
+	platform = 'platform'
 }
 
 // ------------------------------------
-// Settings
+// GuildSettings
 // ------------------------------------
-export interface SettingsObject {
+export interface GuildSettingsObject {
 	prefix: string;
 	lang: Lang;
 	logChannel: string;
@@ -158,10 +162,13 @@ export interface SettingsObject {
 	fadeMusicOnTalk: boolean;
 	fadeMusicStartDuration: number;
 	fadeMusicEndDelay: number;
+
+	defaultMusicPlatform: MusicPlatformType;
+	disabledMusicPlatforms: MusicPlatformType[];
 }
 
-export const settingsInfo: {
-	[k in SettingsKey]: SettingsInfo<SettingsObject[k]>;
+export const guildSettingsInfo: {
+	[k in GuildSettingsKey]: SettingsInfo<GuildSettingsObject[k]>;
 } = {
 	prefix: {
 		type: 'String',
@@ -551,33 +558,44 @@ export const settingsInfo: {
 
 	announceNextSong: {
 		type: 'Boolean',
-		grouping: [SettingsGroup.music, SettingsGroup.general],
+		grouping: [SettingsGroup.music, SettingsGroup.announcement],
 		defaultValue: true
 	},
 	announcementVoice: {
 		type: 'Enum<AnnouncementVoice>',
-		grouping: [SettingsGroup.music, SettingsGroup.general],
+		grouping: [SettingsGroup.music, SettingsGroup.announcement],
 		defaultValue: AnnouncementVoice.Joanna,
 		possibleValues: Object.values(AnnouncementVoice)
 	},
 
 	fadeMusicOnTalk: {
 		type: 'Boolean',
-		grouping: [SettingsGroup.music, SettingsGroup.general],
+		grouping: [SettingsGroup.music, SettingsGroup.fadeMusic],
 		defaultValue: true
 	},
 	fadeMusicEndDelay: {
 		type: 'Number',
-		grouping: [SettingsGroup.music, SettingsGroup.general],
+		grouping: [SettingsGroup.music, SettingsGroup.fadeMusic],
 		defaultValue: 1.0
+	},
+
+	defaultMusicPlatform: {
+		type: 'Enum<MusicPlatformTypes>',
+		grouping: [SettingsGroup.music, SettingsGroup.platform],
+		defaultValue: MusicPlatformType.SoundCloud
+	},
+	disabledMusicPlatforms: {
+		type: 'Enum<MusicPlatformTypes>[]',
+		grouping: [SettingsGroup.music, SettingsGroup.platform],
+		defaultValue: []
 	}
 };
 
-export const defaultSettings: SettingsObject = {} as any;
-Object.keys(settingsInfo).forEach((k: SettingsKey) => {
-	const info = settingsInfo[k];
+export const guildDefaultSettings: GuildSettingsObject = {} as any;
+Object.keys(guildSettingsInfo).forEach((k: GuildSettingsKey) => {
+	const info = guildSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	(defaultSettings[k] as any) = settingsInfo[k].defaultValue;
+	(guildDefaultSettings[k] as any) = guildSettingsInfo[k].defaultValue;
 });
 
 // ------------------------------------
@@ -725,34 +743,29 @@ function _toDbValue(type: string, value: any): string {
 	return value;
 }
 
-export function beautify(info: SettingsInfo<any>, value: any) {
+export function beautify(type: InternalSettingsTypes, value: any) {
 	if (typeof value === 'undefined' || value === null) {
 		return null;
 	}
 
-	switch (info.type) {
+	if (type.endsWith('[]')) {
+		return value.map((v: any) => beautify(type.substring(0, type.length - 2) as InternalSettingsTypes, v)).join(' ');
+	}
+
+	switch (type) {
 		case 'Boolean':
 			return value ? 'True' : 'False';
 
 		case 'Role':
 			return `<@&${value}>`;
 
-		case 'Role[]':
-			return value.map((v: any) => `<@&${v}>`).join(' ');
-
 		case 'Channel':
 			return `<#${value}>`;
 
-		case 'Channel[]':
-			return value.map((v: string) => `<#${v}>`).join(' ');
-
-		case 'String[]':
-			return value.map((v: string) => '`' + v + '`').join(', ');
-
 		default:
 			if (typeof value === 'string' && value.length > 1000) {
-				return value.substr(0, 1000) + '...';
+				return '`' + value.substr(0, 1000) + '`...';
 			}
-			return value;
+			return `\`${value}\``;
 	}
 }

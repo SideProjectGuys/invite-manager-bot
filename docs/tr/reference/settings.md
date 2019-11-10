@@ -160,13 +160,30 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Music
 
-| Setting                                     | Description                                                                               |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [Müzik Ses Düzeyi](#musicvolume)            | The default volume that is set when the bot joins a voice channel.                        |
-| [Sıradaki Şarkıyı Duyur](#announcenextsong) | Whether or not the next song should be announced in the voice channel.                    |
-| [Announcement Voice](#announcementvoice)    | The voice used in the next song announcements.                                            |
-| [Fade Music On Talk](#fademusicontalk)      | If enabled, the music will fade down while people are talking.                            |
-| [Fade Music End Delay](#fademusicenddelay)  | The delay of how many seconds noone has to speak for the volume to return back to normal. |
+| Setting                          | Description                                                        |
+| -------------------------------- | ------------------------------------------------------------------ |
+| [Müzik Ses Düzeyi](#musicvolume) | The default volume that is set when the bot joins a voice channel. |
+
+#### settings.groups.music.announcement.title
+
+| Setting                                     | Description                                                            |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| [Sıradaki Şarkıyı Duyur](#announcenextsong) | Whether or not the next song should be announced in the voice channel. |
+| [Announcement Voice](#announcementvoice)    | The voice used in the next song announcements.                         |
+
+#### settings.groups.music.fadeMusic.title
+
+| Setting                                    | Description                                                                               |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| [Fade Music On Talk](#fademusicontalk)     | If enabled, the music will fade down while people are talking.                            |
+| [Fade Music End Delay](#fademusicenddelay) | The delay of how many seconds noone has to speak for the volume to return back to normal. |
+
+#### settings.groups.music.platform.title
+
+| Setting                                                          | Description                                 |
+| ---------------------------------------------------------------- | ------------------------------------------- |
+| [settings.defaultMusicPlatform.title](#defaultmusicplatform)     | settings.defaultMusicPlatform.description   |
+| [settings.disabledMusicPlatforms.title](#disabledmusicplatforms) | settings.disabledMusicPlatforms.description |
 
 <a name=prefix></a>
 
@@ -204,11 +221,11 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `ar`, `bg`, `cs`, `de`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`, `el`
+Possible values: `de`, `en`, `es`, `fr`, `it`, `nl`, `pt`, `ro`, `sv`
 
 Example:
 
-`!config lang ar`
+`!config lang de`
 
 <a name=logChannel></a>
 
@@ -1611,3 +1628,33 @@ Default: `1`
 
 Reset to default:
 `!config fadeMusicEndDelay default`
+
+<a name=defaultMusicPlatform></a>
+
+---
+
+## settings.defaultMusicPlatform.title
+
+settings.defaultMusicPlatform.description
+
+Type: `Enum<MusicPlatformTypes>`
+
+Default: `soundcloud`
+
+Reset to default:
+`!config defaultMusicPlatform default`
+
+<a name=disabledMusicPlatforms></a>
+
+---
+
+## settings.disabledMusicPlatforms.title
+
+settings.disabledMusicPlatforms.description
+
+Type: `Enum<MusicPlatformTypes>[]`
+
+Default: ``
+
+Reset to default:
+`!config disabledMusicPlatforms default`

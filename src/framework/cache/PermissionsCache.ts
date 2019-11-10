@@ -1,4 +1,3 @@
-import { rolePermissions, roles } from '../../sequelize';
 import { BotCommand, InvitesCommand, ModerationCommand, MusicCommand } from '../../types';
 
 import { Cache } from './Cache';
@@ -13,15 +12,7 @@ export class PermissionsCache extends Cache<PermissionsObject> {
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {
-		const perms = await rolePermissions.findAll({
-			include: [
-				{
-					model: roles,
-					where: { guildId }
-				}
-			],
-			raw: true
-		});
+		const perms = await this.client.db.getRolePermissionsForGuild(guildId);
 
 		const obj: PermissionsObject = {};
 
