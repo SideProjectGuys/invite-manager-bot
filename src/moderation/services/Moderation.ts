@@ -3,13 +3,14 @@ import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
-import { punishmentConfigs, punishments, PunishmentType, sequelize, strikes, ViolationType } from '../../sequelize';
-import { SettingsObject } from '../../settings';
+import { GuildSettingsObject } from '../../settings';
 import { BasicUser } from '../../types';
+import { PunishmentType } from '../models/PunishmentConfig';
+import { ViolationType } from '../models/StrikeConfig';
 
 interface Arguments {
 	guild: Guild;
-	settings: SettingsObject;
+	settings: GuildSettingsObject;
 }
 
 interface PunishmentDetails {
@@ -72,7 +73,10 @@ export class ModerationService {
 		const scanMessageCache = () => {
 			const now = moment();
 			this.messageCache.forEach((value, key) => {
-				this.messageCache.set(key, value.filter(m => now.diff(m.createdAt, 'second') < 60));
+				this.messageCache.set(
+					key,
+					value.filter(m => now.diff(m.createdAt, 'second') < 60)
+				);
 			});
 		};
 		setInterval(scanMessageCache, 60 * 1000);
@@ -108,7 +112,7 @@ export class ModerationService {
 			return;
 		}
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -184,7 +188,7 @@ export class ModerationService {
 				continue;
 			}
 
-			await message.delete();
+			await message.delete().catch(() => undefined);
 
 			await this.logViolationModAction(guild, message.author, strike.type, strike.amount, [
 				{ name: 'Channel', value: channel.name },
@@ -287,7 +291,7 @@ export class ModerationService {
 		logEmbed.description += `**Punishment**: ${type}\n`;
 
 		if (extra) {
-			extra.forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
+			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
@@ -305,16 +309,12 @@ export class ModerationService {
 	public async addStrikesAndPunish(member: Member, type: ViolationType, amount: number, args: Arguments) {
 		await this.informAboutStrike(member, type, amount, args.settings);
 
-		const strikesBefore =
-			(await strikes.sum('amount', {
-				where: {
-					guildId: args.guild.id,
-					memberId: member.id
-				}
-			})) || 0;
+		let strikesBefore = await this.client.db.getStrikeAmount(args.guild.id, member.id);
+		if (isNaN(strikesBefore) || !isFinite(strikesBefore)) {
+			strikesBefore = 0;
+		}
 
-		await strikes.create({
-			id: null,
+		await this.client.db.saveStrike({
 			guildId: args.guild.id,
 			memberId: member.id,
 			amount,
@@ -323,16 +323,8 @@ export class ModerationService {
 
 		const strikesAfter = strikesBefore + amount;
 
-		const punishmentConfig = await punishmentConfigs.find({
-			where: {
-				guildId: args.guild.id,
-				amount: {
-					[sequelize.Op.gt]: strikesBefore,
-					[sequelize.Op.lte]: strikesAfter
-				}
-			},
-			order: [['amount', 'DESC']]
-		});
+		const punishmentConfigs = await this.client.cache.punishments.get(args.guild.id);
+		const punishmentConfig = punishmentConfigs.find(c => c.amount > strikesBefore && c.amount < strikesAfter);
 
 		if (punishmentConfig) {
 			const func = this.punishmentFunctions[punishmentConfig.type];
@@ -348,8 +340,7 @@ export class ModerationService {
 				return;
 			}
 
-			await punishments.create({
-				id: null,
+			await this.client.db.savePunishment({
 				guildId: args.guild.id,
 				memberId: member.id,
 				type: punishmentConfig.type,
@@ -564,7 +555,7 @@ export class ModerationService {
 			return;
 		}
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -663,7 +654,7 @@ export class ModerationService {
 		}
 	}
 
-	private async sendReplyAndDelete(message: Message, embed: Embed, settings: SettingsObject) {
+	private async sendReplyAndDelete(message: Message, embed: Embed, settings: GuildSettingsObject) {
 		if (settings.autoModDeleteBotMessage && settings.autoModDeleteBotMessageTimeoutInSeconds === 0) {
 			return;
 		}
@@ -673,7 +664,7 @@ export class ModerationService {
 		}
 	}
 
-	public async informAboutStrike(member: Member, type: ViolationType, amount: number, settings: SettingsObject) {
+	public async informAboutStrike(member: Member, type: ViolationType, amount: number, settings: GuildSettingsObject) {
 		const dmChannel = await member.user.getDMChannel();
 
 		const message = i18n.__(
@@ -711,7 +702,7 @@ export class ModerationService {
 	public async informAboutPunishment(
 		member: Member,
 		type: PunishmentType,
-		settings: SettingsObject,
+		settings: GuildSettingsObject,
 		{ reason, amount }: PunishmentDetails
 	) {
 		const dmChannel = await member.user.getDMChannel();

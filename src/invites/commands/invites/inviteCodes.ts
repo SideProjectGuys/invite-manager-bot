@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
-import { channels, InviteCodeAttributes, inviteCodes, members } from '../../../sequelize';
+import { InviteCode } from '../../../framework/models/InviteCode';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -30,23 +30,7 @@ export default class extends Command {
 	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const lang = settings.lang;
 
-		let codes: InviteCodeAttributes[] = await inviteCodes.findAll({
-			where: {
-				guildId: guild.id
-			},
-			include: [
-				{
-					attributes: [],
-					model: members,
-					as: 'inviter',
-					where: {
-						id: message.author.id
-					},
-					required: true
-				}
-			],
-			raw: true
-		});
+		let codes = await this.client.db.getInviteCodesForMember(guild.id, message.author.id);
 
 		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter(code => code.inviter && code.inviter.id === message.author.id)
@@ -55,7 +39,7 @@ export default class extends Command {
 		const newCodes = activeCodes.filter(code => !codes.find(c => c.code === code.code));
 
 		if (newCodes.length > 0) {
-			const newDbCodes: InviteCodeAttributes[] = newCodes.map(code => ({
+			const newDbCodes: InviteCode[] = newCodes.map(code => ({
 				code: code.code,
 				channelId: code.channel ? code.channel.id : null,
 				maxAge: code.maxAge,
@@ -87,17 +71,17 @@ export default class extends Command {
 			}
 
 			// Insert any new codes that haven't been used yet
-			await channels.bulkCreate(
-				newCodes.map(c => ({
-					id: c.channel.id,
-					guildId: c.guild.id,
-					name: c.channel.name
-				})),
-				{
-					updateOnDuplicate: ['name']
-				}
-			);
-			await inviteCodes.bulkCreate(newDbCodes);
+			if (newCodes.length > 0) {
+				await this.client.db.saveChannels(
+					newCodes.map(c => ({
+						id: c.channel.id,
+						guildId: c.guild.id,
+						name: c.channel.name
+					}))
+				);
+
+				await this.client.db.saveInviteCodes(newDbCodes);
+			}
 
 			codes = codes.concat(newDbCodes);
 		}
@@ -183,7 +167,11 @@ export default class extends Command {
 			});
 		}
 
-		await this.sendEmbed(await message.author.getDMChannel(), embed);
-		await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
+		const msg = await this.sendEmbed(await message.author.getDMChannel(), embed);
+		if (msg) {
+			await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.dmSent')}`);
+		} else {
+			await this.sendReply(message, `<@!${message.author.id}>, ${t('cmd.inviteCodes.error')}`);
+		}
 	}
 }

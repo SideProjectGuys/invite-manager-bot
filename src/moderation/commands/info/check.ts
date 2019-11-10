@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { UserResolver } from '../../../framework/resolvers';
-import { punishments, strikes } from '../../../sequelize';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 
 export default class extends Command {
@@ -31,13 +30,7 @@ export default class extends Command {
 			title: user.username
 		});
 
-		const strikeList = await strikes.findAll({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			}
-		});
-
+		const strikeList = await this.client.db.getStrikesForMember(guild.id, user.id);
 		const strikeTotal = strikeList.reduce((acc, s) => acc + s.amount, 0);
 
 		embed.fields.push({
@@ -49,12 +42,7 @@ export default class extends Command {
 			inline: false
 		});
 
-		const punishmentList = await punishments.findAll({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			}
-		});
+		const punishmentList = await this.client.db.getPunishmentsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.check.punishments.total'),
@@ -87,6 +75,7 @@ export default class extends Command {
 		const punishmentText = punishmentList
 			.map(p =>
 				t('cmd.check.punishments.entry', {
+					id: `**${p.id}**`,
 					punishment: `**${p.type}**`,
 					amount: `**${p.amount}**`,
 					date: moment(p.createdAt)

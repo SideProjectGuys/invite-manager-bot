@@ -31,6 +31,7 @@ export class Soundcloud extends MusicPlatform {
 	}
 
 	public async getByLink(link: string): Promise<SoundcloudMusicItem> {
+		link = encodeURIComponent(link);
 		const scLink = `http://api.soundcloud.com/resolve?url=${link}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
 		const scData: SoundcloudResponse = (await axios.get(scLink)).data;
 
@@ -43,13 +44,14 @@ export class Soundcloud extends MusicPlatform {
 			title: scData.title,
 			link: scData.permalink_url,
 			imageUrl: scData.artwork_url,
-			artist: scData.user.username,
+			artist: scData.user ? scData.user.username : '',
 			audioUrl: `${scData.stream_url}?client_id=${SOUNDCLOUD_CLIENT_ID}`,
 			duration: scData.duration
 		});
 	}
 
 	public async search(searchTerm: string, maxResults?: number): Promise<SoundcloudMusicItem[]> {
+		searchTerm = encodeURIComponent(searchTerm);
 		const scLink = `http://api.soundcloud.com/tracks?q=${searchTerm}&client_id=${SOUNDCLOUD_CLIENT_ID}`;
 		const scData = (await axios.get(scLink)).data;
 
@@ -60,7 +62,7 @@ export class Soundcloud extends MusicPlatform {
 					title: scData.title,
 					link: scData.permalink_url,
 					imageUrl: scData.artwork_url,
-					artist: scData.user.username,
+					artist: scData.user ? scData.user.username : '',
 					audioUrl: `${scData.stream_url}?client_id=${SOUNDCLOUD_CLIENT_ID}`,
 					duration: scData.duration
 				})

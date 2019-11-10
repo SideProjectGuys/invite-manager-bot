@@ -1,11 +1,10 @@
 import { Message } from 'eris';
 import { Moment } from 'moment';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { BooleanResolver, DateResolver, UserResolver } from '../../../framework/resolvers';
-import { customInvites, inviteCodes, joins, LogAction, sequelize } from '../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -46,59 +45,17 @@ export default class extends Command {
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;
 
-		await inviteCodes.update(
-			{
-				clearedAmount: sequelize.col('uses') as any
-			},
-			{
-				where: {
-					guildId: guild.id,
-					inviterId: memberId ? memberId : { [Op.ne]: null }
-				}
-			}
-		);
+		await this.client.db.updateInviteCodeClearedAmount('uses', guild.id, memberId);
 
-		await joins.update(
-			{
-				cleared: true
-			},
-			{
-				where: {
-					guildId: guild.id,
-					...(memberId && {
-						exactMatchCode: (await inviteCodes.findAll({
-							where: { guildId: guild.id, inviterId: memberId }
-						})).map(ic => ic.code)
-					})
-				}
-			}
-		);
+		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
+
+		await this.client.db.updateJoinClearedStatus(true, guild.id, codes.map(ic => ic.code));
 
 		if (clearBonus) {
 			// Clear invites
-			await customInvites.update(
-				{
-					cleared: true
-				},
-				{
-					where: {
-						guildId: guild.id,
-						...(memberId && { memberId })
-					}
-				}
-			);
+			await this.client.db.clearCustomInvites(true, guild.id, memberId);
 		} else {
-			await customInvites.update(
-				{
-					cleared: false
-				},
-				{
-					where: {
-						guildId: guild.id,
-						...(memberId && { memberId })
-					}
-				}
-			);
+			await this.client.db.clearCustomInvites(false, guild.id, memberId);
 		}
 
 		if (memberId) {

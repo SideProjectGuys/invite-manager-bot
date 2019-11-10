@@ -48,19 +48,20 @@ function geti18n(config) {
 	i18n.configure(config);
 }
 
-let child = spawn(
-	/^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-	['run', 'build'],
-	{
-		stdio: 'inherit'
-	}
-);
+let child = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['run', 'build'], {
+	stdio: 'inherit'
+});
 
 child.on('error', error => console.log(error));
 
 child.on('close', () => {
 	const cmds = [];
-	const cmdDir = path.resolve('./bin/modules/');
+	const cmdDirs = [
+		path.resolve('./bin/framework/commands'),
+		path.resolve('./bin//invites/commands'),
+		path.resolve('./bin/moderation/commands'),
+		path.resolve('./bin/music/commands')
+	];
 	const fakeClient = {
 		msg: {
 			createEmbed: () => {},
@@ -97,7 +98,11 @@ child.on('close', () => {
 				cmds.push(inst);
 			}
 		});
-	loadRecursive(cmdDir);
+
+	for (const dir of cmdDirs) {
+		loadRecursive(dir);
+	}
+
 	console.log(`Loaded \x1b[32m${cmds.length}\x1b[0m commands!`);
 
 	const getAllFiles = dir => {
@@ -134,8 +139,7 @@ child.on('close', () => {
 			fs.mkdirSync(`./docs/${niceLocale}`);
 		}
 
-		const _tBot = (phrase, replacements) =>
-			i18nBot.__({ locale, phrase }, replacements);
+		const _tBot = (phrase, replacements) => i18nBot.__({ locale, phrase }, replacements);
 
 		if (!fs.existsSync(`./docs/${niceLocale}/reference/`)) {
 			fs.mkdirSync(`./docs/${niceLocale}/reference/`);
@@ -145,19 +149,13 @@ child.on('close', () => {
 			let out = '';
 			if (path.length > 0) {
 				const prefix = '#'.repeat(path.length + 2);
-				out += `${prefix} ${_tBot(
-					`settings.groups.${path.join('.')}.title`
-				)}\n\n`;
+				out += `${prefix} ${_tBot(`settings.groups.${path.join('.')}.title`)}\n\n`;
 				if (group.__settings) {
 					out += `| Setting | Description |\n|---|---|\n`;
 					out += group.__settings
 						.map(
 							key =>
-								`| [${_tBot(
-									`settings.${key}.title`
-								)}](#${key.toLowerCase()}) | ${_tBot(
-									`settings.${key}.description`
-								)}`
+								`| [${_tBot(`settings.${key}.title`)}](#${key.toLowerCase()}) | ${_tBot(`settings.${key}.description`)}`
 						)
 						.join('\n');
 				}
@@ -177,19 +175,17 @@ child.on('close', () => {
 			if (!cmd.args.some(a => a.required)) {
 				examples.push('```text\n' + `!${cmd.name}` + '\n```\n');
 			}
-			return examples.concat(
-				cmd.extraExamples.map(e => '```text\n' + e + '\n```\n')
-			);
+			return examples.concat(cmd.extraExamples.map(e => '```text\n' + e + '\n```\n'));
 		}
 
 		// Import after compile
-		const { settingsInfo } = require('../bin/settings.js');
+		const { guildSettingsInfo } = require('../bin/settings.js');
 		const { CommandGroup } = require('../bin/types');
 
 		// Generate config docs
 		const settings = {};
-		Object.keys(settingsInfo).forEach(key => {
-			const info = settingsInfo[key];
+		Object.keys(guildSettingsInfo).forEach(key => {
+			const info = guildSettingsInfo[key];
 			let text = `---\n## ${_tBot(`settings.${key}.title`)}\n\n`;
 			text += `${_tBot(`settings.${key}.description`)}\n\n`;
 			text += `Type: \`${info.type}\`\n\n`;
@@ -202,9 +198,7 @@ child.on('close', () => {
 				text += `\`!config ${key} false\`\n\n`;
 			} else {
 				if (info.possibleValues) {
-					text += `Possible values: ${info.possibleValues
-						.map(v => `\`${v}\``)
-						.join(', ')}\n\n`;
+					text += `Possible values: ${info.possibleValues.map(v => `\`${v}\``).join(', ')}\n\n`;
 					text += `Example:\n\n`;
 					text += `\`!config ${key} ${info.possibleValues[0]}\`\n\n`;
 				}
@@ -245,16 +239,15 @@ child.on('close', () => {
 		outSettings += '## Overview\n\n';
 		outSettings += generateGroup([], settings);
 
-		outSettings += Object.keys(settingsInfo)
-			.map(key => `<a name=${key}></a>\n\n` + settingsInfo[key].markdown)
+		outSettings += Object.keys(guildSettingsInfo)
+			.map(key => `<a name=${key}></a>\n\n` + guildSettingsInfo[key].markdown)
 			.join('\n\n');
 
 		fs.writeFileSync(`./docs/${niceLocale}/reference/settings.md`, outSettings);
 
 		// Generate command docs
 		let outCmds = '# Commands\n\n';
-		outCmds +=
-			'To get a list of available commands, do !help on your server.\n\n';
+		outCmds += 'To get a list of available commands, do !help on your server.\n\n';
 
 		outCmds +=
 			'## Arguments & Flags\n\nMost commands accept arguments and/or flags.  \n' +
@@ -268,9 +261,7 @@ child.on('close', () => {
 
 		outCmds += '## Overview\n\n';
 		Object.keys(CommandGroup).forEach(group => {
-			const groupCmds = cmds
-				.filter(c => c.group === group)
-				.sort((a, b) => a.name.localeCompare(b.name));
+			const groupCmds = cmds.filter(c => c.group === group).sort((a, b) => a.name.localeCompare(b.name));
 			if (groupCmds.length === 0) {
 				return;
 			}
@@ -367,14 +358,11 @@ child.on('close', () => {
 		const niceLocale = locale.replace('_', '-');
 		console.log(`  ${niceLocale}`);
 
-		const _tDocs = (phrase, replacements) =>
-			i18nDocs.__({ locale, phrase }, replacements);
+		const _tDocs = (phrase, replacements) => i18nDocs.__({ locale, phrase }, replacements);
 
 		const docFiles = getAllFiles(`./docs/_base/`);
 		docFiles.forEach(docFile => {
-			const newPath = path
-				.relative('./docs/_base/', docFile)
-				.replace(/\.md/gi, '');
+			const newPath = path.relative('./docs/_base/', docFile).replace(/\.md/gi, '');
 
 			let text = fs.readFileSync(docFile, 'utf8');
 			text = text.replace(langRegex, niceLocale);
@@ -383,9 +371,7 @@ child.on('close', () => {
 				if (args[1]) {
 					replace = JSON.parse(`{${args[1]}}`);
 					Object.keys(replace).forEach(key => {
-						replace[key] = replace[key].replace(varRegex, (s, ...args) =>
-							_tDocs(args[0])
-						);
+						replace[key] = replace[key].replace(varRegex, (s, ...args) => _tDocs(args[0]));
 					});
 				}
 				return _tDocs(args[0], replace);

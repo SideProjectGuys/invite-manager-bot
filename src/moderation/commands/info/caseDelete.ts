@@ -3,7 +3,6 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { strikes } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
 
 export default class extends Command {
@@ -37,15 +36,10 @@ export default class extends Command {
 			})
 		});
 
-		const strike = await strikes.findOne({
-			where: {
-				id: caseNumber,
-				guildId: guild.id
-			}
-		});
+		const strike = await this.client.db.getStrike(guild.id, caseNumber);
 
 		if (strike) {
-			await strike.destroy();
+			await this.client.db.removeStrike(strike.guildId, strike.id);
 			embed.description = t('cmd.caseDelete.done', {
 				id: `${strike.id}`
 			});

@@ -2,8 +2,8 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { RoleResolver } from '../../../framework/resolvers';
-import { LogAction, ranks } from '../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -26,18 +26,13 @@ export default class extends Command {
 	}
 
 	public async action(message: Message, [role]: [Role], flags: {}, { guild, t }: Context): Promise<any> {
-		const rank = await ranks.find({
-			where: {
-				guildId: role.guild.id,
-				roleId: role.id
-			}
-		});
+		const ranks = await this.client.cache.ranks.get(guild.id);
+		const rank = ranks.find(r => r.roleId === role.id);
 
 		if (rank) {
-			await rank.destroy();
+			await this.client.db.removeRank(guild.id, rank.roleId);
 
 			await this.client.logAction(guild, message, LogAction.removeRank, {
-				rankId: rank.id,
 				roleId: role.id
 			});
 

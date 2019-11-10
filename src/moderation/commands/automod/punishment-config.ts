@@ -4,8 +4,8 @@ import { Context } from 'vm';
 import { IMClient } from '../../../client';
 import { Command } from '../../../framework/commands/Command';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { punishmentConfigs, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -35,7 +35,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[punishment, strikes, args]: [PunishmentType, number, string],
+		[punishmentType, strikes, args]: [PunishmentType, number, string],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
@@ -43,16 +43,10 @@ export default class extends Command {
 			title: t('cmd.punishmentConfig.title')
 		});
 
-		const punishmentQuery = {
-			guildId: guild.id,
-			type: punishment
-		};
-		if (typeof punishment === typeof undefined) {
+		const punishmentConfigList = await this.client.cache.punishments.get(guild.id);
+
+		if (typeof punishmentType === typeof undefined) {
 			const allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			const punishmentConfigList = await punishmentConfigs.findAll({
-				where: { guildId: guild.id },
-				order: [['amount', 'DESC']]
-			});
 			const unusedPunishment = allPunishments.filter(p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0);
 			embed.description = punishmentConfigList
 				.map(pcl =>
@@ -67,25 +61,25 @@ export default class extends Command {
 				value: `\n${unusedPunishment.map(v => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const pc = await punishmentConfigs.find({ where: punishmentQuery });
+			const pc = punishmentConfigList.find(c => c.type === punishmentType);
 			embed.description = t('cmd.punishmentConfig.text', {
-				punishment: `**${pc ? pc.type : punishment}**`,
+				punishment: `**${pc ? pc.type : punishmentType}**`,
 				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await punishmentConfigs.destroy({ where: punishmentQuery });
+			await this.client.db.removePunishmentConfig(guild.id, punishmentType);
 			embed.description = t('cmd.punishmentConfig.deletedText', {
-				punishment: `**${punishment}**`
+				punishment: `**${punishmentType}**`
 			});
 		} else {
-			punishmentConfigs.insertOrUpdate({
-				id: null,
+			await this.client.db.savePunishmentConfig({
+				guildId: guild.id,
+				type: punishmentType,
 				amount: strikes,
-				args: args,
-				...punishmentQuery
+				args: args
 			});
 			embed.description = t('cmd.punishmentConfig.text', {
-				punishment: `**${punishment}**`,
+				punishment: `**${punishmentType}**`,
 				strikes: `**${strikes}**`
 			});
 		}

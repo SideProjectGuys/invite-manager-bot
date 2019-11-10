@@ -1,11 +1,10 @@
 import { Message } from 'eris';
 import moment from 'moment';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { JoinInvalidatedReason } from '../../../framework/models/Join';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
-import { customInvites, inviteCodes, JoinInvalidatedReason, joins, members, sequelize } from '../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 const ENTRIES_PER_PAGE = 20;
@@ -57,49 +56,29 @@ export default class extends Command {
 		const lang = settings.lang;
 
 		const embed = this.createEmbed({
-			title: `${user.username}#${user.discriminator}`
+			title: `${user.username}#${user.discriminator}`,
+			description: 'Loading...'
 		});
+		const replyMessage = await this.sendReply(message, embed);
+		embed.description = null;
 
-		const invitedMembers = await joins.findAll({
-			attributes: ['memberId', [sequelize.fn('MAX', sequelize.col('join.createdAt')), 'createdAt']],
-			where: {
-				guildId: guild.id,
-				invalidatedReason: null
-			},
-			group: [sequelize.col('memberId')],
-			order: [sequelize.literal('MAX(join.createdAt) DESC')],
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					where: {
-						inviterId: user.id
-					}
-				}
-			],
-			raw: true
-		});
-
-		const customInvs = await customInvites.findAll({
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			},
-			order: [['createdAt', 'DESC']],
-			raw: true
-		});
-
+		const invitedMembers = await this.client.db.getInvitedMembers(guild.id, user.id);
+		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
+		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 		const bonusInvs = customInvs.filter(ci => !ci.cleared);
 
 		if (details === InfoDetails.bonus) {
+			await replyMessage.delete();
+
 			// Exit if we have no bonus invites
 			if (bonusInvs.length <= 0) {
 				embed.fields.push({
 					name: t('cmd.info.bonusInvites.title'),
 					value: t('cmd.info.bonusInvites.more')
 				});
+				return this.sendReply(message, embed);
 			}
+
 			const maxPage = Math.ceil(bonusInvs.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
@@ -126,6 +105,8 @@ export default class extends Command {
 				return embed;
 			});
 		} else if (details === InfoDetails.members) {
+			await replyMessage.delete();
+
 			// Exit if we have no invited members
 			if (invitedMembers.length <= 0) {
 				embed.fields.push({
@@ -140,7 +121,7 @@ export default class extends Command {
 
 			return this.showPaginated(message, p, maxPage, page => {
 				let inviteText = '';
-				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((join: any) => {
+				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(join => {
 					const time = moment(join.createdAt)
 						.locale(lang)
 						.fromNow();
@@ -156,37 +137,16 @@ export default class extends Command {
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invCodes = await inviteCodes.findAll({
-			where: {
-				guildId: guild.id,
-				inviterId: user.id
-			},
-			order: [['uses', 'DESC']],
-			raw: true
-		});
-
-		const js = await joins.findAll({
-			attributes: ['invalidatedReason', 'cleared', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
-			where: {
-				guildId: guild.id,
-				exactMatchCode: { [Op.in]: invCodes.map(i => i.code) },
-				invalidatedReason: { [Op.ne]: null }
-			},
-			group: ['invalidatedReason', 'cleared'],
-			raw: true
-		});
+		const invCodes = await this.client.db.getInviteCodesForMember(guild.id, user.id);
+		const invalidJoins = await this.client.db.getInvalidatedJoinsForMember(guild.id, user.id);
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach((j: any) => {
+		invalidJoins.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
-				if (!j.cleared) {
-					fake -= Number(j.total);
-				}
+				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
-				if (!j.cleared) {
-					leave -= Number(j.total);
-				}
+				leave -= Number(j.total);
 			}
 		});
 
@@ -201,9 +161,9 @@ export default class extends Command {
 		let clearCustom = 0;
 		customInvs.forEach(ci => {
 			if (ci.cleared) {
-				clearCustom += ci.amount;
+				clearCustom += Number(ci.amount);
 			} else {
-				custom += ci.amount;
+				custom += Number(ci.amount);
 			}
 		});
 
@@ -234,15 +194,7 @@ export default class extends Command {
 			});
 		}
 
-		const joinCount = Math.max(
-			await joins.count({
-				where: {
-					guildId: guild.id,
-					memberId: user.id
-				}
-			}),
-			0
-		);
+		const joinCount = await this.client.db.getTotalJoinsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.info.joined.title'),
@@ -282,34 +234,12 @@ export default class extends Command {
 			inline: true
 		});
 
-		const ownJoins = await joins.findAll({
-			attributes: ['createdAt'],
-			where: {
-				guildId: guild.id,
-				memberId: user.id
-			},
-			order: [['createdAt', 'DESC']],
-			include: [
-				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					include: [
-						{
-							attributes: [],
-							model: members,
-							as: 'inviter'
-						}
-					]
-				}
-			],
-			raw: true
-		});
+		const ownJoins = await this.client.db.getJoinsForMember(guild.id, user.id);
 
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-			ownJoins.forEach((join: any) => {
+			ownJoins.forEach(join => {
 				const text = moment(join.createdAt)
 					.locale(lang)
 					.fromNow();
@@ -317,7 +247,7 @@ export default class extends Command {
 					joinTimes[text] = {};
 				}
 
-				const id = join['exactMatch.inviterId'];
+				const id = join.inviterId;
 				if (joinTimes[text][id]) {
 					joinTimes[text][id]++;
 				} else {
@@ -497,6 +427,6 @@ export default class extends Command {
 			});
 		}
 
-		await this.sendReply(message, embed);
+		await replyMessage.edit({ embed });
 	}
 }

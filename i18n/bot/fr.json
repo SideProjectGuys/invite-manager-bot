@@ -590,7 +590,7 @@
 				}
 			},
 			"title": "Classement",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Dernière mise à jour {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -792,7 +792,7 @@
 				"args": {
 					"member": "Utilisateur dont les messages sont supprimés.",
 					"quantity": "Combien de messages doivent être supprimés?",
-					"user": "User whose messages are deleted."
+					"user": "L'utilisateur dont les messages sont supprimés."
 				},
 				"description": "Purger les messages dans un canal."
 			},
@@ -1168,7 +1168,7 @@
 		"boolean": {
 			"invalid": "Ce n'est pas une valeur oui/non valide.",
 			"type": "Booléen",
-			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
+			"typeInfo": "Cet argument prend la valeur `vrai` ou `faux`. Vous pouvez aussi utiliser `oui` ou `non`."
 		},
 		"channel": {
 			"multiple": "Plusieurs salons trouvés. {{{ channels }}}",
@@ -1235,124 +1235,124 @@
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"description": "settings.autoModAllCapsEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Modère automatiquement les messages avec BEAUCOUP DE MAJUSCULES."
 		},
 		"autoModAllCapsMinCharacters": {
-			"description": "settings.autoModAllCapsMinCharacters.description",
-			"title": "Caractères minimum"
+			"title": "Caractères minimum",
+			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
-			"description": "settings.autoModAllCapsPercentageCaps.description",
-			"title": "Percentage Caps"
+			"title": "Percentage Caps",
+			"description": "Le pourcentage de caractères en majuscules dans le message pour que celui-ci soit modéré."
 		},
 		"autoModDeleteBotMessage": {
-			"description": "settings.autoModDeleteBotMessage.description",
-			"title": "Supprimer les messages du Bot"
+			"title": "Supprimer les messages du Bot",
+			"description": "Supprime automatiquement les messages du bot (garde le chat propre)"
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
-			"title": "Délai de suppression des messages du bot."
+			"title": "Délai de suppression des messages du bot.",
+			"description": "The timeout after which bot messages are deleted."
 		},
 		"autoModDisabledForOldMembers": {
-			"description": "settings.autoModDisabledForOldMembers.description",
-			"title": "Désactivé pour les anciens membres"
+			"title": "Désactivé pour les anciens membres",
+			"description": "Disabled auto moderation for members that have been in your server for a long time."
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"description": "settings.autoModDisabledForOldMembersThreshold.description",
-			"title": "Seuil pour les anciens membres"
+			"title": "Seuil pour les anciens membres",
+			"description": "L'ancienneté d'un membre requise dans votre serveur pour être considéré comme \"ancien\"."
 		},
 		"autoModDuplicateTextEnabled": {
-			"description": "settings.autoModDuplicateTextEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Modère automatiquement les messages dupliqués (spam copié-collé)"
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
-			"title": "Timeframe"
+			"title": "Timeframe",
+			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"description": "settings.autoModEmojisEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Modère automatiquement les messages avec trop d'emojis."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
-			"title": "Nombre maximal d'émojis"
+			"title": "Nombre maximal d'émojis",
+			"description": "Le maximum d'emojis autorisés avant de modérer le message."
 		},
 		"autoModEnabled": {
-			"description": "settings.autoModEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"description": "settings.autoModHoistEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
 		},
 		"autoModIgnoredChannels": {
-			"description": "settings.autoModIgnoredChannels.description",
-			"title": "Salons ignorés"
+			"title": "Salons ignorés",
+			"description": "Channels that are ignored while automatically moderating."
 		},
 		"autoModIgnoredRoles": {
-			"description": "settings.autoModIgnoredRoles.description",
-			"title": "Rôles ignorés"
+			"title": "Rôles ignorés",
+			"description": "Any members with these roles will not automatically be moderated."
 		},
 		"autoModInvitesEnabled": {
-			"description": "settings.autoModInvitesEnabled.description",
-			"title": "Les invitations sont désormais modérées"
+			"title": "Les invitations sont désormais modérées",
+			"description": "Automatically scan messages for discord invite links and remove them."
 		},
 		"autoModLinksBlacklist": {
-			"description": "settings.autoModLinksBlacklist.description",
-			"title": "Liste noire"
+			"title": "Liste noire",
+			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"description": "settings.autoModLinksEnabled.description",
-			"title": "Les liens sont désormais modérés"
+			"title": "Les liens sont désormais modérés",
+			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
-			"description": "settings.autoModLinksFollowRedirects.description",
-			"title": "Suivre les redirections"
+			"title": "Suivre les redirections",
+			"description": "Enable this to resolve redirects for links."
 		},
 		"autoModLinksWhitelist": {
-			"description": "settings.autoModLinksWhitelist.description",
-			"title": "Liste blanche"
+			"title": "Liste blanche",
+			"description": "Une liste de liens que les utilisateurs peuvent poster."
 		},
 		"autoModLogEnabled": {
-			"description": "settings.autoModLogEnabled.description",
-			"title": "Mod Log Channel"
+			"title": "Mod Log Channel",
+			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"description": "settings.autoModMentionRolesEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
-			"title": "Nombre maximal de mentions de rôle par message"
+			"title": "Nombre maximal de mentions de rôle par message",
+			"description": "The maximum amount of roles a member can mention in a message."
 		},
 		"autoModMentionUsersEnabled": {
-			"description": "settings.autoModMentionUsersEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Automatically moderate messages that mention an excessive amount of users."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
-			"title": "Nombre maximal de mentions utilisateurs par message"
+			"title": "Nombre maximal de mentions utilisateurs par message",
+			"description": "The maximum amount of users a member can mention in a message."
 		},
 		"autoModModeratedChannels": {
-			"description": "settings.autoModModeratedChannels.description",
-			"title": "Salons modérés"
+			"title": "Salons modérés",
+			"description": "The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels)."
 		},
 		"autoModModeratedRoles": {
-			"description": "settings.autoModModeratedRoles.description",
-			"title": "Rôles modérés"
+			"title": "Rôles modérés",
+			"description": "The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles)."
 		},
 		"autoModQuickMessagesEnabled": {
-			"description": "settings.autoModQuickMessagesEnabled.description",
-			"title": "Activé"
+			"title": "Activé",
+			"description": "Automatically moderate users sending a lot of messages in a short time."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
-			"title": "Nombre de messages"
+			"title": "Nombre de messages",
+			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
-			"title": "Timeframe"
+			"title": "Timeframe",
+			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "Une liste de mots bannis.",
@@ -1485,11 +1485,23 @@
 			},
 			"music": {
 				"title": "Musique",
+				"description": "Paramètres de la musique",
 				"general": {
 					"title": "Musique",
 					"description": "Paramètres généraux de musique"
 				},
-				"description": "Paramètres de la musique"
+				"announcement": {
+					"title": "Announcement",
+					"description": "Announces the next song."
+				},
+				"fadeMusic": {
+					"title": "Fade Music",
+					"description": "Makes the music quieter when someone talks."
+				},
+				"platform": {
+					"title": "Platform",
+					"description": "The various platforms used to play music."
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1595,11 +1607,79 @@
 		"fadeMusicEndDelay": {
 			"title": "Fin du délai de baisse du volume",
 			"description": "Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale."
+		},
+		"defaultMusicPlatform": {
+			"title": "Default Music Platform",
+			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+		},
+		"disabledMusicPlatforms": {
+			"title": "Disabled Music Platforms",
+			"description": "Music platforms that are disabled and cannot be used to play music."
 		}
 	},
-	"arguments": {
-		"invalid": "Les arguments donnés sont invalides.",
-		"missingRequired": "Paramètre requis manquant `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
+		}
 	},
 	"music": {
 		"notPlaying": "Aucune musique n'est jouée !",

@@ -1,4 +1,3 @@
-import { premiumSubscriptionGuilds, premiumSubscriptions, sequelize } from '../../sequelize';
 import { BotType } from '../../types';
 
 import { Cache } from './Cache';
@@ -15,25 +14,7 @@ export class PremiumCache extends Cache<boolean> {
 			return true;
 		}
 
-		const sub = await premiumSubscriptionGuilds.findOne({
-			where: {
-				guildId
-			},
-			include: [
-				{
-					attributes: [],
-					model: premiumSubscriptions,
-					where: {
-						validUntil: {
-							[sequelize.Op.gte]: new Date()
-						}
-					},
-					required: true
-				}
-			],
-			paranoid: false
-		});
-
+		const sub = await this.client.db.getActivePremiumSubscriptionGuildForGuild(guildId);
 		return !!sub;
 	}
 }

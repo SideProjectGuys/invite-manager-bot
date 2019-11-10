@@ -1,3 +1,3 @@
-# Webpanel
+# لوحة التحكم
 
 other.webpanel.description

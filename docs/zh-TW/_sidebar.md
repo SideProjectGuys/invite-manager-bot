@@ -1,14 +1,14 @@
 - 開始
 
-  - [Quick Start](/zh-TW/getting-started/quick-start.md)
+  - [快速開始](/zh-TW/getting-started/quick-start.md)
   - [常見問題](/zh-TW/getting-started/faq.md)
   - [初期的機器人](/zh-TW/getting-started/alpha.md)
-  - [Pro Bot](/zh-TW/getting-started/pro.md)
+  - [高級機器人](/zh-TW/getting-started/pro.md)
 
-- Reference
+- 參考資料
 
-  - [Commands](/zh-TW/reference/commands.md)
-  - [Configs / Settings](/zh-TW/reference/settings.md)
+  - [指令](/zh-TW/reference/commands.md)
+  - [配置 / 設定](/zh-TW/reference/settings.md)
 
 - 付費
 
@@ -16,7 +16,7 @@
   - [價位](/zh-TW/premium/tiers.md)
   - [設定](/zh-TW/premium/setup.md)
 
-- 模組
+- Modules
 
   - 邀請管理
 
@@ -26,7 +26,7 @@
 
   - 審核
 
-    - [連擊](/zh-TW/modules/moderation/strikes.md)
+    - [Strikes](/zh-TW/modules/moderation/strikes.md)
     - [懲罰](/zh-TW/modules/moderation/punishments.md)
 
   - 音樂

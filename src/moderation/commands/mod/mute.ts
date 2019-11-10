@@ -3,9 +3,10 @@ import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { DurationResolver, MemberResolver, StringResolver } from '../../../framework/resolvers';
-import { members, punishments, PunishmentType, ScheduledActionType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -53,17 +54,19 @@ export default class extends Command {
 			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
-				await targetMember.addRole(mutedRole, reason);
+				await targetMember.addRole(mutedRole, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
-				await members.insertOrUpdate({
-					id: targetMember.user.id,
-					name: targetMember.user.username,
-					discriminator: targetMember.user.discriminator
-				});
+				await this.client.db.saveMembers([
+					{
+						id: targetMember.user.id,
+						name: targetMember.user.username,
+						discriminator: targetMember.user.discriminator,
+						guildId: guild.id
+					}
+				]);
 
-				const punishment = await punishments.create({
-					id: null,
+				await this.client.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.mute,
@@ -76,8 +79,8 @@ export default class extends Command {
 				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetMember.user,
-					punishment.type,
-					punishment.amount,
+					PunishmentType.mute,
+					0,
 					[{ name: 'Reason', value: reason }],
 					message.author
 				);
@@ -92,6 +95,7 @@ export default class extends Command {
 						ScheduledActionType.unmute,
 						{ memberId: targetMember.id, roleId: mutedRole },
 						moment()
+							.locale(settings.lang)
 							.add(duration)
 							.toDate(),
 						'Unmute from timed `!mute` command'

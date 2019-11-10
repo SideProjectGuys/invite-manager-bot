@@ -1,5 +1,5 @@
 import { Cache } from '../../framework/cache/Cache';
-import { inviteCodeSettings, InviteCodeSettingsKey } from '../../sequelize';
+import { InviteCodeSettingsKey } from '../../framework/models/InviteCodeSetting';
 import { inviteCodeDefaultSettings, inviteCodeSettingsInfo, InviteCodeSettingsObject, toDbValue } from '../../settings';
 
 export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSettingsObject>> {
@@ -8,12 +8,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
-		const sets = await inviteCodeSettings.findAll({
-			where: {
-				guildId
-			},
-			raw: true
-		});
+		const sets = await this.client.db.getInviteCodeSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach(set => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
@@ -45,19 +40,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			inviteCodeSettings.bulkCreate(
-				[
-					{
-						id: null,
-						inviteCode,
-						guildId,
-						value: set
-					}
-				],
-				{
-					updateOnDuplicate: ['value', 'updatedAt']
-				}
-			);
+			await this.client.db.saveInviteCodeSettings({ inviteCode, guildId, value: set });
 		}
 
 		return dbVal;

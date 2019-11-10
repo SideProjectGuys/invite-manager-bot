@@ -3,8 +3,8 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { members, punishments, PunishmentType } from '../../../sequelize';
 import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -57,17 +57,19 @@ export default class extends Command {
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
 			try {
-				await this.client.banGuildMember(guild.id, targetUser.id, days, reason);
+				await this.client.banGuildMember(guild.id, targetUser.id, days, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
-				await members.insertOrUpdate({
-					id: targetUser.id,
-					name: targetUser.username,
-					discriminator: targetUser.discriminator
-				});
+				await this.client.db.saveMembers([
+					{
+						id: targetMember.user.id,
+						name: targetMember.user.username,
+						discriminator: targetMember.user.discriminator,
+						guildId: guild.id
+					}
+				]);
 
-				const punishment = await punishments.create({
-					id: null,
+				await this.client.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetUser.id,
 					type: PunishmentType.ban,
@@ -80,8 +82,8 @@ export default class extends Command {
 				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetUser,
-					punishment.type,
-					punishment.amount,
+					PunishmentType.ban,
+					0,
 					[{ name: 'Reason', value: reason }],
 					message.author
 				);

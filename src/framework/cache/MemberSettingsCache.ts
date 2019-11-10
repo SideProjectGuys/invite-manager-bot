@@ -1,5 +1,5 @@
-import { memberSettings, MemberSettingsKey } from '../../sequelize';
 import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
+import { MemberSettingsKey } from '../models/MemberSetting';
 
 import { Cache } from './Cache';
 
@@ -9,12 +9,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
-		const sets = await memberSettings.findAll({
-			where: {
-				guildId
-			},
-			raw: true
-		});
+		const sets = await this.client.db.getMemberSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach(set => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
@@ -46,19 +41,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			memberSettings.bulkCreate(
-				[
-					{
-						id: null,
-						memberId: userId,
-						guildId,
-						value: set
-					}
-				],
-				{
-					updateOnDuplicate: ['value', 'updatedAt']
-				}
-			);
+			await this.client.db.saveMemberSettings({ memberId: userId, guildId, value: set });
 		}
 
 		return dbVal;

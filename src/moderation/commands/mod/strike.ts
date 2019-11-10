@@ -3,8 +3,8 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { EnumResolver, MemberResolver, NumberResolver } from '../../../framework/resolvers';
-import { ViolationType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { ViolationType } from '../../models/StrikeConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {

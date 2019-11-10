@@ -1,25 +1,16 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import moment from 'moment';
-import { Op } from 'sequelize';
 
 import { IMClient } from '../../client';
-import {
-	customInvites,
-	inviteCodes,
-	JoinInvalidatedReason,
-	joins,
-	members,
-	memberSettings,
-	RankAssignmentStyle,
-	RankInstance,
-	sequelize,
-	SettingsKey
-} from '../../sequelize';
+import { GuildSettingsKey, RankAssignmentStyle } from '../../framework/models/GuildSetting';
+import { JoinInvalidatedReason } from '../../framework/models/Join';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
+import { Rank } from '../models/Rank';
 
 export interface LeaderboardEntry {
 	id: string;
 	name: string;
+	discriminator: string;
 	total: number;
 	regular: number;
 	custom: number;
@@ -48,52 +39,15 @@ export class InvitesService {
 	}
 
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
-		const inviteCodePromise = inviteCodes.findOne({
-			attributes: [[sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
-			where: {
-				guildId: guildId,
-				inviterId: memberId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			raw: true
-		});
-		const joinsPromise = joins.findAll({
-			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('id')), 'total']],
-			where: {
-				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
-			},
-			include: [
-				{
-					attributes: [],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					where: { inviterId: memberId }
-				}
-			],
-			group: ['invalidatedReason'],
-			raw: true
-		});
-		const customInvitesPromise = customInvites.findOne({
-			attributes: [[sequelize.fn('SUM', sequelize.col('amount')), 'total']],
-			where: {
-				guildId: guildId,
-				memberId: memberId,
-				cleared: false
-			},
-			raw: true
-		});
+		const inviteCodePromise = this.client.db.getInviteCodeTotalForMember(guildId, memberId);
+		const joinsPromise = this.client.db.getInvalidatedJoinsForMember(guildId, memberId);
+		const customInvitesPromise = this.client.db.getCustomInviteTotalForMember(guildId, memberId);
 
-		const [invCode, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
-
-		const regular = Number((invCode as any).total);
-		const custom = Number((customInvs as any).total);
+		const [regular, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach((j: any) => {
+		js.forEach(j => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
 				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
@@ -111,76 +65,19 @@ export class InvitesService {
 	}
 
 	public async generateLeaderboard(guildId: string) {
-		const inviteCodePromise = inviteCodes.findAll({
-			attributes: ['inviterId', [sequelize.fn('SUM', sequelize.literal('uses - clearedAmount')), 'total']],
-			include: [
-				{
-					attributes: ['name', 'discriminator'],
-					model: members,
-					as: 'inviter',
-					required: true
-				}
-			],
-			where: {
-				guildId: guildId,
-				uses: { [Op.gt]: sequelize.col('inviteCode.clearedAmount') }
-			},
-			group: ['inviterId'],
-			raw: true
-		});
-
-		const joinsPromise = joins.findAll({
-			attributes: ['invalidatedReason', [sequelize.fn('COUNT', sequelize.col('join.id')), 'total']],
-			where: {
-				guildId,
-				invalidatedReason: { [Op.ne]: null },
-				cleared: false
-			},
-			include: [
-				{
-					attributes: ['inviterId'],
-					model: inviteCodes,
-					as: 'exactMatch',
-					required: true,
-					include: [
-						{
-							attributes: ['name', 'discriminator'],
-							model: members,
-							as: 'inviter',
-							required: true
-						}
-					]
-				}
-			],
-			group: ['exactMatch.inviterId', 'invalidatedReason'],
-			raw: true
-		});
-
-		const customInvitesPromise = customInvites.findAll({
-			attributes: ['memberId', [sequelize.fn('SUM', sequelize.col('amount')), 'total']],
-			where: {
-				guildId: guildId,
-				cleared: false
-			},
-			include: [
-				{
-					attributes: ['name', 'discriminator'],
-					model: members,
-					required: true
-				}
-			],
-			group: ['memberId'],
-			raw: true
-		});
+		const inviteCodePromise = this.client.db.getInviteCodesForGuild(guildId);
+		const joinsPromise = this.client.db.getJoinsForGuild(guildId);
+		const customInvitesPromise = this.client.db.getCustomInvitesForGuild(guildId);
 
 		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const entries: Map<string, LeaderboardEntry> = new Map();
-		invCodes.forEach((inv: any) => {
-			const id = inv.inviterId;
+		invCodes.forEach(inv => {
+			const id = inv.id;
 			entries.set(id, {
 				id,
-				name: inv['inviter.name'],
+				name: inv.name,
+				discriminator: inv.discriminator,
 				total: Number(inv.total),
 				regular: Number(inv.total),
 				custom: 0,
@@ -189,8 +86,8 @@ export class InvitesService {
 			});
 		});
 
-		js.forEach((join: any) => {
-			const id = join['exactMatch.inviterId'];
+		js.forEach(join => {
+			const id = join.id;
 			let fake = 0;
 			let leave = 0;
 			if (join.invalidatedReason === JoinInvalidatedReason.fake) {
@@ -206,7 +103,8 @@ export class InvitesService {
 			} else {
 				entries.set(id, {
 					id,
-					name: join['exactMatch.inviter.name'],
+					name: join.name,
+					discriminator: join.discriminator,
 					total: -(fake + leave),
 					regular: 0,
 					custom: 0,
@@ -216,8 +114,8 @@ export class InvitesService {
 			}
 		});
 
-		customInvs.forEach((inv: any) => {
-			const id = inv.memberId;
+		customInvs.forEach(inv => {
+			const id = inv.id;
 			const custom = Number(inv.total);
 			const entry = entries.get(id);
 			if (entry) {
@@ -226,7 +124,8 @@ export class InvitesService {
 			} else {
 				entries.set(id, {
 					id,
-					name: inv['member.name'],
+					name: inv.name,
+					discriminator: inv.discriminator,
 					total: custom,
 					regular: 0,
 					custom: custom,
@@ -258,23 +157,12 @@ export class InvitesService {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await joins.count({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				}
-			});
+			numJoins = await this.client.db.getTotalJoinsForMember(guild.id, member.id);
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await joins.find({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: [['createdAt', 'ASC']]
-			});
+			const temp = await this.client.db.getFirstJoinForMember(guild.id, member.id);
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
 			}
@@ -282,14 +170,7 @@ export class InvitesService {
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await joins.find({
-				where: {
-					guildId: guild.id,
-					memberId: member.id
-				},
-				order: [['createdAt', 'DESC']],
-				offset: 1
-			});
+			const temp = await this.client.db.getPreviousJoinForMember(guild.id, member.id);
 			if (temp) {
 				prevJoin = moment(temp.createdAt);
 			}
@@ -345,9 +226,9 @@ export class InvitesService {
 
 	public async promoteIfQualified(guild: Guild, member: Member, me: Member, totalInvites: number) {
 		let nextRankName = '';
-		let nextRank: RankInstance = null;
+		let nextRank: Rank = null;
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 		const style = settings.rankAssignmentStyle;
 
 		const allRanks = await this.client.cache.ranks.get(guild.id);
@@ -424,7 +305,7 @@ export class InvitesService {
 					}
 				} else {
 					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
-					await this.client.cache.settings.setOne(guild.id, SettingsKey.rankAnnouncementChannel, null);
+					await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
 				}
 			}
 		}

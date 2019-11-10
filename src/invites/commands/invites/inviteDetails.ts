@@ -4,7 +4,6 @@ import moment from 'moment';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { UserResolver } from '../../../framework/resolvers';
-import { inviteCodes } from '../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -28,14 +27,7 @@ export default class extends Command {
 	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		const target = user ? user : message.author;
 
-		const invs = await inviteCodes.findAll({
-			where: {
-				guildId: guild.id,
-				inviterId: target.id
-			},
-			order: [['uses', 'DESC']],
-			raw: true
-		});
+		const invs = await this.client.db.getInviteCodesForMember(guild.id, target.id);
 
 		if (invs.length === 0) {
 			await this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));

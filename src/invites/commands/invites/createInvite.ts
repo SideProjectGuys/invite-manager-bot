@@ -1,9 +1,10 @@
 import { Message, TextChannel } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { InviteCodeSettingsKey } from '../../../framework/models/InviteCodeSetting';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
-import { channels, inviteCodes, InviteCodeSettingsKey } from '../../../sequelize';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -52,25 +53,30 @@ export default class extends Command {
 			name ? name : null
 		);
 
-		await channels.insertOrUpdate({
-			id: inv.channel.id,
-			name: inv.channel.name,
-			guildId: guild.id
-		});
+		await this.client.db.saveChannels([
+			{
+				id: inv.channel.id,
+				name: inv.channel.name,
+				guildId: guild.id
+			}
+		]);
 
-		await inviteCodes.insertOrUpdate({
-			code: inv.code,
-			maxAge: 0,
-			maxUses: 0,
-			temporary: false,
-			channelId: inv.channel.id,
-			uses: 0,
-			guildId: inv.guild.id,
-			inviterId: message.author.id,
-			clearedAmount: 0,
-			isVanity: false,
-			isWidget: false
-		});
+		await this.client.db.saveInviteCodes([
+			{
+				code: inv.code,
+				maxAge: 0,
+				maxUses: 0,
+				createdAt: moment(inv.createdAt).toDate(),
+				temporary: false,
+				channelId: inv.channel.id,
+				uses: 0,
+				guildId: inv.guild.id,
+				inviterId: message.author.id,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: false
+			}
+		]);
 
 		await this.client.cache.inviteCodes.setOne(guild.id, inv.code, InviteCodeSettingsKey.name, name);
 

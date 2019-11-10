@@ -3,8 +3,8 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { MemberResolver, StringResolver } from '../../../framework/resolvers';
-import { members, punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -41,13 +41,16 @@ export default class extends Command {
 			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.warn, settings, { reason });
 
 			// Make sure member exists in DB
-			await members.insertOrUpdate({
-				id: targetMember.user.id,
-				name: targetMember.user.username,
-				discriminator: targetMember.user.discriminator
-			});
+			await this.client.db.saveMembers([
+				{
+					id: targetMember.user.id,
+					name: targetMember.user.username,
+					discriminator: targetMember.user.discriminator,
+					guildId: guild.id
+				}
+			]);
 
-			const punishment = await punishments.create({
+			await this.client.db.savePunishment({
 				id: null,
 				guildId: guild.id,
 				memberId: targetMember.id,
@@ -58,7 +61,7 @@ export default class extends Command {
 				creatorId: message.author.id
 			});
 
-			await this.client.mod.logPunishmentModAction(guild, targetMember.user, punishment.type, punishment.amount, [
+			await this.client.mod.logPunishmentModAction(guild, targetMember.user, PunishmentType.warn, 0, [
 				{ name: 'Mod', value: `<@${message.author.id}>` },
 				{ name: 'Reason', value: reason }
 			]);

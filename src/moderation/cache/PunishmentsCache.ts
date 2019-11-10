@@ -1,16 +1,12 @@
 import { Cache } from '../../framework/cache/Cache';
-import { PunishmentConfigInstance, punishmentConfigs } from '../../sequelize';
+import { PunishmentConfig } from '../models/PunishmentConfig';
 
-export class PunishmentCache extends Cache<PunishmentConfigInstance[]> {
+export class PunishmentCache extends Cache<PunishmentConfig[]> {
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(guildId: string): Promise<PunishmentConfigInstance[]> {
-		return await punishmentConfigs.findAll({
-			where: {
-				guildId
-			}
-		});
+	protected async _get(guildId: string): Promise<PunishmentConfig[]> {
+		return this.client.db.getPunishmentConfigsForGuild(guildId);
 	}
 }

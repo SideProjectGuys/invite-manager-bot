@@ -1,14 +1,15 @@
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
 
+import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
 import { PremiumCache } from './framework/cache/PremiumCache';
-import { SettingsCache } from './framework/cache/SettingsCache';
+import { GuildSettingsKey } from './framework/models/GuildSetting';
+import { LogAction } from './framework/models/Log';
 import { CommandsService } from './framework/services/Commands';
-import { DBQueueService } from './framework/services/DBQueue';
+import { DatabaseService } from './framework/services/DatabaseService';
 import { MessagingService } from './framework/services/Messaging';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
@@ -24,8 +25,7 @@ import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
 import { MusicCache } from './music/cache/MusicCache';
 import { MusicService } from './music/services/MusicService';
-import { botSettings, dbStats, guilds, LogAction, settings, SettingsKey } from './sequelize';
-import { botDefaultSettings, BotSettingsObject, defaultSettings } from './settings';
+import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
 
 i18n.configure({
@@ -56,6 +56,20 @@ export interface ClientOptions {
 	config: any;
 }
 
+export interface ClientCacheObject {
+	inviteCodes: InviteCodeSettingsCache;
+	invites: InvitesCache;
+	leaderboard: LeaderboardCache;
+	ranks: RanksCache;
+	members: MemberSettingsCache;
+	permissions: PermissionsCache;
+	premium: PremiumCache;
+	punishments: PunishmentCache;
+	guilds: GuildSettingsCache;
+	strikes: StrikesCache;
+	music: MusicCache;
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
@@ -65,20 +79,8 @@ export class IMClient extends Client {
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
 
-	public cache: {
-		inviteCodes: InviteCodeSettingsCache;
-		invites: InvitesCache;
-		leaderboard: LeaderboardCache;
-		ranks: RanksCache;
-		members: MemberSettingsCache;
-		permissions: PermissionsCache;
-		premium: PremiumCache;
-		punishments: PunishmentCache;
-		settings: SettingsCache;
-		strikes: StrikesCache;
-		music: MusicCache;
-	};
-	public dbQueue: DBQueueService;
+	public db: DatabaseService;
+	public cache: ClientCacheObject;
 
 	public rabbitmq: RabbitMqService;
 	public shardId: number;
@@ -139,7 +141,10 @@ export class IMClient extends Client {
 		this.shardCount = shardCount;
 		this.flags = flags;
 		this.config = config;
+		this.shardId = shardId;
+		this.shardCount = shardCount;
 
+		this.db = new DatabaseService(this);
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
@@ -149,11 +154,10 @@ export class IMClient extends Client {
 			permissions: new PermissionsCache(this),
 			premium: new PremiumCache(this),
 			punishments: new PunishmentCache(this),
-			settings: new SettingsCache(this),
+			guilds: new GuildSettingsCache(this),
 			strikes: new StrikesCache(this),
 			music: new MusicCache(this)
 		};
-		this.dbQueue = new DBQueueService(this);
 		this.rabbitmq = new RabbitMqService(this);
 		this.msg = new MessagingService(this);
 		this.mod = new ModerationService(this);
@@ -193,7 +197,7 @@ export class IMClient extends Client {
 
 		this.hasStarted = true;
 
-		const set = await botSettings.find({ where: { id: this.user.id } });
+		const set = await this.db.getBotSettings(this.user.id);
 		this.settings = set ? set.value : { ...botDefaultSettings };
 
 		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
@@ -203,7 +207,7 @@ export class IMClient extends Client {
 		await Promise.all(Object.values(this.cache).map(c => c.init()));
 
 		// Insert guilds into db
-		await guilds.bulkCreate(
+		await this.db.saveGuilds(
 			this.guilds.map(g => ({
 				id: g.id,
 				name: g.name,
@@ -211,19 +215,10 @@ export class IMClient extends Client {
 				memberCount: g.memberCount,
 				deletedAt: null,
 				banReason: null
-			})),
-			{
-				updateOnDuplicate: ['name', 'icon', 'memberCount', 'updatedAt', 'deletedAt']
-			}
+			}))
 		);
 
-		const bannedGuilds = await guilds.findAll({
-			where: {
-				id: this.guilds.map(g => g.id),
-				banReason: { [Op.not]: null }
-			},
-			raw: true
-		});
+		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map(g => g.id));
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async guild => {
@@ -234,9 +229,7 @@ export class IMClient extends Client {
 				const dmChannel = await this.getDMChannel(guild.ownerID);
 				await dmChannel
 					.createMessage(
-						'Hi! Thanks for inviting me to your server `' +
-							guild.name +
-							'`!\n\n' +
+						`Hi! Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
 							'It looks like this guild was banned from using the InviteManager bot.\n' +
 							'If you believe this was a mistake please contact staff on our support server.\n\n' +
 							`${this.config.bot.links.support}\n\n` +
@@ -287,36 +280,31 @@ export class IMClient extends Client {
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
+		const dbGuild = await this.db.getGuild(guild.id);
 
-		const dbGuild = await guilds.findById(guild.id, { paranoid: false });
 		if (!dbGuild) {
-			await guilds.insertOrUpdate({
-				id: guild.id,
-				name: guild.name,
-				icon: guild.iconURL,
-				memberCount: guild.memberCount,
-				deletedAt: null,
-				banReason: null
-			});
+			await this.db.saveGuilds([
+				{
+					id: guild.id,
+					name: guild.name,
+					icon: guild.iconURL,
+					memberCount: guild.memberCount,
+					createdAt: moment(guild.createdAt).toDate(),
+					deletedAt: null,
+					banReason: null
+				}
+			]);
 
 			const defChannel = await this.getDefaultChannel(guild);
 			const newSettings = {
-				...defaultSettings,
-				[SettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
+				...guildDefaultSettings,
+				[GuildSettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
 			};
 
-			await settings.bulkCreate(
-				[
-					{
-						id: null,
-						guildId: guild.id,
-						value: newSettings
-					}
-				],
-				{
-					ignoreDuplicates: true
-				}
-			);
+			await this.db.saveGuildSettings({
+				guildId: guild.id,
+				value: newSettings
+			});
 		} else if (dbGuild.banReason !== null) {
 			await channel
 				.createMessage(
@@ -329,9 +317,13 @@ export class IMClient extends Client {
 				.catch(() => undefined);
 			await guild.leave();
 			return;
-		} else if (dbGuild.deletedAt) {
-			dbGuild.setDataValue('deletedAt', null);
-			await dbGuild.save();
+		}
+
+		// Clear the deleted timestamp if it's still set
+		// We have to do this before checking premium or it will fail
+		if (dbGuild && dbGuild.deletedAt) {
+			dbGuild.deletedAt = null;
+			await this.db.saveGuilds([dbGuild]);
 		}
 
 		// Check pro bot
@@ -386,11 +378,15 @@ export class IMClient extends Client {
 		}
 
 		// Remove the guild (only sets the 'deletedAt' timestamp)
-		await guilds.destroy({
-			where: {
-				id: guild.id
+		await this.db.saveGuilds([
+			{
+				id: guild.id,
+				name: guild.name,
+				icon: guild.iconURL,
+				memberCount: guild.memberCount,
+				deletedAt: new Date()
 			}
-		});
+		]);
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
@@ -439,7 +435,7 @@ export class IMClient extends Client {
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {
-		const modLogChannelId = (await this.cache.settings.get(guild.id)).modLogChannel;
+		const modLogChannelId = (await this.cache.guilds.get(guild.id)).modLogChannel;
 
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
@@ -450,7 +446,7 @@ export class IMClient extends Client {
 	}
 
 	public async logAction(guild: Guild, message: Message, action: LogAction, data: any) {
-		const logChannelId = (await this.cache.settings.get(guild.id)).logChannel;
+		const logChannelId = (await this.cache.guilds.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;
@@ -489,20 +485,16 @@ export class IMClient extends Client {
 			}
 		}
 
-		this.dbQueue.addLogAction(
-			{
-				id: null,
-				guildId: guild.id,
-				memberId: message.author.id,
-				action,
-				message: message.content,
-				data,
-				createdAt: new Date(),
-				updatedAt: new Date()
-			},
-			guild,
-			message.author
-		);
+		this.db.saveLog(guild, message.author, {
+			id: null,
+			guildId: guild.id,
+			memberId: message.author.id,
+			action,
+			message: message.content,
+			data,
+			createdAt: new Date(),
+			updatedAt: new Date()
+		});
 	}
 
 	public async getCounts() {
@@ -513,13 +505,11 @@ export class IMClient extends Client {
 				.isAfter(this.counts.cachedAt)
 		) {
 			console.log('Fetching data counts from DB...');
-			const rows = await dbStats.findAll({
-				where: { key: ['guilds', 'members'] }
-			});
+			const stats = await this.db.getDbStats();
 			this.counts = {
 				cachedAt: moment(),
-				guilds: rows.find(r => r.key === 'guilds').value,
-				members: rows.find(r => r.key === 'members').value
+				guilds: stats.guilds,
+				members: stats.members
 			};
 		}
 

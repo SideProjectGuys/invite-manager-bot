@@ -3,8 +3,8 @@ import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
 import { IMClient } from '../../client';
-import { AnnouncementVoice, musicNodes } from '../../sequelize';
-import { BotType, LavaTrack } from '../../types';
+import { AnnouncementVoice } from '../../framework/models/GuildSetting';
+import { LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
@@ -65,12 +65,7 @@ export class MusicService {
 
 	public async loadMusicNodes() {
 		// Load nodes from database
-		const typeFilter =
-			this.client.type === BotType.custom ? 'isCustom' : this.client.type === BotType.pro ? 'isPremium' : 'isRegular';
-		this.nodes = await musicNodes.findAll({
-			where: { [typeFilter]: true },
-			raw: true
-		});
+		this.nodes = await this.client.db.getMusicNodes();
 
 		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {

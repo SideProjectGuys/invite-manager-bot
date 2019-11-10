@@ -5,13 +5,13 @@ import i18n from 'i18n';
 import { basename, resolve } from 'path';
 
 import { IMClient } from '../../client';
-import { defaultSettings } from '../../settings';
+import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
 
 const CMD_DIRS = [
-	resolve(__dirname, '../../general/commands'),
+	resolve(__dirname, '../commands'),
 	resolve(__dirname, '../../invites/commands'),
 	resolve(__dirname, '../../moderation/commands'),
 	resolve(__dirname, '../../music/commands')
@@ -114,7 +114,7 @@ export class CommandsService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild ? await this.client.cache.settings.get(guild.id) : { ...defaultSettings };
+		const sets = guild ? await this.client.cache.guilds.get(guild.id) : { ...guildDefaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
@@ -478,19 +478,16 @@ export class CommandsService {
 			});
 
 			if (guild) {
-				this.client.dbQueue.addIncident(
-					{
-						id: null,
-						guildId: guild.id,
-						error: error.message,
-						details: {
-							command: cmd.name,
-							author: message.author.id,
-							message: message.content
-						}
-					},
-					guild
-				);
+				this.client.db.saveIncident(guild, {
+					id: null,
+					guildId: guild.id,
+					error: error.message,
+					details: {
+						command: cmd.name,
+						author: message.author.id,
+						message: message.content
+					}
+				});
 			}
 
 			await this.client.msg.sendReply(
@@ -504,19 +501,15 @@ export class CommandsService {
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			this.client.dbQueue.addCommandUsage(
-				{
-					id: null,
-					guildId: guild.id,
-					memberId: message.author.id,
-					command: cmd.name,
-					args: args.join(' '),
-					errored: error !== null,
-					time: execTime
-				},
-				guild,
-				message.author
-			);
+			this.client.db.saveCommandUsage(guild, message.author, {
+				id: null,
+				guildId: guild.id,
+				memberId: message.author.id,
+				command: cmd.name,
+				args: args.join(' '),
+				errored: error !== null,
+				time: execTime
+			});
 		}
 	}
 }

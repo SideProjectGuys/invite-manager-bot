@@ -1,7 +1,6 @@
 {
 	"devToken": "",
 	"sentryDsn": "",
-	"ownerGuildIds": [],
 	"bot": {
 		"type": "regular",
 		"ids": {
@@ -33,12 +32,36 @@
 		"password": "guest",
 		"prefix": ""
 	},
-	"sequelize": {
-		"dialect": "mysql",
-		"host": "localhost",
-		"port": 3306,
-		"username": "root",
-		"password": "",
-		"database": "im"
-	}
+	"databases": [
+		{
+			"host": "localhost",
+			"port": 3306,
+			"user": "root",
+			"password": "",
+			"range": {
+				"from": 0,
+				"to": 0
+			}
+		},
+		{
+			"host": "localhost",
+			"port": 3306,
+			"user": "root",
+			"password": "",
+			"range": {
+				"from": 1,
+				"to": 32
+			}
+		},
+		{
+			"host": "localhost",
+			"port": 3306,
+			"user": "root",
+			"password": "",
+			"range": {
+				"from": 33,
+				"to": 64
+			}
+		}
+	]
 }

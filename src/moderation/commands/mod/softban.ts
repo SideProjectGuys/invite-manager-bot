@@ -3,8 +3,8 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { MemberResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { members, punishments, PunishmentType } from '../../../sequelize';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { PunishmentType } from '../../models/PunishmentConfig';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -54,14 +54,16 @@ export default class extends Command {
 				await targetMember.unban('softban');
 
 				// Make sure member exists in DB
-				await members.insertOrUpdate({
-					id: targetMember.user.id,
-					name: targetMember.user.username,
-					discriminator: targetMember.user.discriminator
-				});
+				await this.client.db.saveMembers([
+					{
+						id: targetMember.user.id,
+						name: targetMember.user.username,
+						discriminator: targetMember.user.discriminator,
+						guildId: guild.id
+					}
+				]);
 
-				const punishment = await punishments.create({
-					id: null,
+				await this.client.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.softban,
@@ -74,8 +76,8 @@ export default class extends Command {
 				await this.client.mod.logPunishmentModAction(
 					guild,
 					targetMember.user,
-					punishment.type,
-					punishment.amount,
+					PunishmentType.softban,
+					0,
 					[{ name: 'Reason', value: reason }],
 					message.author
 				);

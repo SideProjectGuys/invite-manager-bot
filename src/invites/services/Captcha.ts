@@ -55,7 +55,7 @@ export class CaptchaService {
 			return;
 		}
 
-		const sets = await this.client.cache.settings.get(guild.id);
+		const sets = await this.client.cache.guilds.get(guild.id);
 		if (!sets.captchaVerificationOnJoin) {
 			return;
 		}

@@ -4,7 +4,6 @@ import moment, { Duration } from 'moment';
 import { IMClient } from '../../client';
 import { Command, Context } from '../../framework/commands/Command';
 import { DurationResolver, EnumResolver } from '../../framework/resolvers';
-import { commandUsage, joins, leaves, sequelize } from '../../sequelize';
 import { ChartType, CommandGroup, InvitesCommand } from '../../types';
 import { Chart } from '../models/Chart';
 
@@ -42,6 +41,8 @@ export default class extends Command {
 			days = duration.asDays();
 			if (days < 5) {
 				days = 5;
+			} else if (days > 120) {
+				days = 120;
 			}
 		}
 
@@ -56,77 +57,14 @@ export default class extends Command {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
-			const js = await joins.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
-
-			js.forEach((j: any) => (vs[`${j.year}-${j.month}-${j.day}`] = j.total));
+			const joins = await this.client.db.getJoinsPerDay(guild.id, days);
+			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = Number(join.total)));
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
-			const lvs = await leaves.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
-
-			lvs.forEach((l: any) => (vs[`${l.year}-${l.month}-${l.day}`] = l.total));
-		} else if (type === ChartType.usage) {
-			title = t('cmd.graph.usage.title');
-			description = t('cmd.graph.usage.text');
-
-			const us = await commandUsage.findAll({
-				attributes: [
-					[sequelize.fn('YEAR', sequelize.col('createdAt')), 'year'],
-					[sequelize.fn('MONTH', sequelize.col('createdAt')), 'month'],
-					[sequelize.fn('DAY', sequelize.col('createdAt')), 'day'],
-					[sequelize.fn('COUNT', 'id'), 'total']
-				],
-				group: [
-					sequelize.fn('YEAR', sequelize.col('createdAt')),
-					sequelize.fn('MONTH', sequelize.col('createdAt')),
-					sequelize.fn('DAY', sequelize.col('createdAt'))
-				],
-				where: {
-					guildId: guild.id
-				},
-				order: [sequelize.literal('MAX(createdAt) DESC')],
-				limit: days,
-				raw: true
-			});
-
-			us.forEach((u: any) => (vs[`${u.year}-${u.month}-${u.day}`] = u.total));
+			const leaves = await this.client.db.getLeavesPerDay(guild.id, days);
+			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = Number(leave.total)));
 		}
 
 		const labels: string[] = [];

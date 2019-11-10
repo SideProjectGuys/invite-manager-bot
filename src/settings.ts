@@ -1,17 +1,15 @@
 import { Channel, Role } from 'eris';
 
+import { ActivityStatus, ActivityType, BotSettingsKey } from './framework/models/BotSetting';
 import {
-	ActivityStatus,
-	ActivityType,
 	AnnouncementVoice,
-	BotSettingsKey,
-	InviteCodeSettingsKey,
+	GuildSettingsKey,
 	Lang,
 	LeaderboardStyle,
-	MemberSettingsKey,
-	RankAssignmentStyle,
-	SettingsKey
-} from './sequelize';
+	RankAssignmentStyle
+} from './framework/models/GuildSetting';
+import { InviteCodeSettingsKey } from './framework/models/InviteCodeSetting';
+import { MemberSettingsKey } from './framework/models/MemberSetting';
 import { MusicPlatformType } from './types';
 
 export type InternalSettingsTypes =
@@ -69,9 +67,9 @@ export enum SettingsGroup {
 }
 
 // ------------------------------------
-// Settings
+// GuildSettings
 // ------------------------------------
-export interface SettingsObject {
+export interface GuildSettingsObject {
 	prefix: string;
 	lang: Lang;
 	logChannel: string;
@@ -169,8 +167,8 @@ export interface SettingsObject {
 	disabledMusicPlatforms: MusicPlatformType[];
 }
 
-export const settingsInfo: {
-	[k in SettingsKey]: SettingsInfo<SettingsObject[k]>;
+export const guildSettingsInfo: {
+	[k in GuildSettingsKey]: SettingsInfo<GuildSettingsObject[k]>;
 } = {
 	prefix: {
 		type: 'String',
@@ -593,11 +591,11 @@ export const settingsInfo: {
 	}
 };
 
-export const defaultSettings: SettingsObject = {} as any;
-Object.keys(settingsInfo).forEach((k: SettingsKey) => {
-	const info = settingsInfo[k];
+export const guildDefaultSettings: GuildSettingsObject = {} as any;
+Object.keys(guildSettingsInfo).forEach((k: GuildSettingsKey) => {
+	const info = guildSettingsInfo[k];
 	info.clearable = info.type.endsWith('[]') || info.defaultValue === null;
-	(defaultSettings[k] as any) = settingsInfo[k].defaultValue;
+	(guildDefaultSettings[k] as any) = guildSettingsInfo[k].defaultValue;
 });
 
 // ------------------------------------

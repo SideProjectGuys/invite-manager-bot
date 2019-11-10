@@ -2,8 +2,8 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { customInvites, LogAction, members } from '../../../sequelize';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
 const BIGINT_MAX_VALUE = 9223372036854775807;
@@ -57,20 +57,21 @@ export default class extends Command {
 		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
-		await members.insertOrUpdate({
-			id: user.id,
-			name: user.username,
-			discriminator: user.discriminator
-		});
+		await this.client.db.saveMembers([
+			{
+				id: user.id,
+				name: user.username,
+				discriminator: user.discriminator,
+				guildId: guild.id
+			}
+		]);
 
-		const createdInv = await customInvites.create({
-			id: null,
+		const customInviteId = await this.client.db.saveCustomInvite({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
-			amount,
-			reason,
-			cleared: false
+			amount: `${amount}`,
+			reason
 		});
 
 		// Update cache
@@ -78,7 +79,7 @@ export default class extends Command {
 		invites.total += amount;
 
 		await this.client.logAction(guild, message, LogAction.addInvites, {
-			customInviteId: createdInv.id,
+			customInviteId,
 			targetId: user.id,
 			amount,
 			reason

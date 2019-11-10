@@ -1,9 +1,10 @@
 import { Message, Role } from 'eris';
+import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
+import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { LogAction, ranks, roles } from '../../../sequelize';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
 export default class extends Command {
@@ -41,13 +42,15 @@ export default class extends Command {
 		flags: {},
 		{ guild, t, me }: Context
 	): Promise<any> {
-		await roles.insertOrUpdate({
-			id: role.id,
-			name: role.name,
-			guildId: role.guild.id,
-			color: role.color.toString(16),
-			createdAt: role.createdAt
-		});
+		await this.client.db.saveRoles([
+			{
+				id: role.id,
+				name: role.name,
+				guildId: role.guild.id,
+				color: role.color.toString(16),
+				createdAt: moment(role.createdAt).toDate()
+			}
+		]);
 
 		let myRole: Role;
 		me.roles.forEach(r => {
@@ -68,39 +71,26 @@ export default class extends Command {
 			);
 		}
 
-		let rank = await ranks.find({
-			where: {
-				guildId: role.guild.id,
-				roleId: role.id
-			},
-			paranoid: false // Turn off paranoid mode, because if this rank already exists we need to reuse it
-		});
-
+		const ranks = await this.client.cache.ranks.get(guild.id);
+		const rank = ranks.find(r => r.roleId === role.id);
 		const descr = description ? description : '';
 
 		let isNew = false;
 		if (rank) {
-			if (rank.deletedAt !== null) {
-				isNew = true;
-			}
 			rank.numInvites = invites;
 			rank.description = descr;
-			rank.setDataValue('deletedAt', null);
-			rank.save();
+			await this.client.db.saveRank(rank);
 		} else {
-			rank = await ranks.create({
-				id: null,
+			await this.client.db.saveRank({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
-				description: descr,
-				deletedAt: null
+				description: descr
 			});
 			isNew = true;
 		}
 
 		await this.client.logAction(guild, message, isNew ? LogAction.addRank : LogAction.updateRank, {
-			rankId: rank.id,
 			roleId: role.id,
 			numInvites: invites,
 			description

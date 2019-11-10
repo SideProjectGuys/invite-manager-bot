@@ -1,3 +1,3 @@
-# Pro Bot
+# 高級機器人
 
-start.pro.description
+開始.高級.敘述
