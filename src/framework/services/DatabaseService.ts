@@ -857,11 +857,17 @@ export class DatabaseService {
 		// TODO: This doesn't work becaues the guilds table isn't global, but we need the guild name
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.execute<RowDataPacket[]>(
-			`SELECT psg.*, g.\`name\` as guildName FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.guilds} g ON g.\`id\` = psg.\`guildId\` WHERE psg.\`subscriptionId\` = ?`,
+			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
 			[subscriptionId]
 		);
-		return rows as Array<PremiumSubscriptionGuild & { guildName: string }>;
+		const guilds = await this.findManyOnAllShards<Guild>(
+			TABLE.guilds,
+			`id IN(?)`,
+			rows.map(r => r.guildId)
+		);
+		return rows.map(r => ({ ...r, guildName: guilds.find(g => g.id === r.guildId).name })) as Array<
+			PremiumSubscriptionGuild & { guildName: string }
+		>;
 	}
 	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
