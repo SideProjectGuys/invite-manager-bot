@@ -1,12 +1,12 @@
-# FAQs}
+# الأسئلة الشائعة}
 
-## How do I change the prefix of the bot?
+## كيف أغير بريفكس البوت?
 
-You can do `!config prefix -` to change the prefix.
+يمكنك القيام `!config prefix -` لتغيير البريفكس.
 
-If you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix.
+إذا كنت لا تعرف البريفكس الحالية الخاصة بك ، فيمكنك عمل بادئة تهيئة `@InviteManager config prefix` لرؤية البريفكس
 
-## How do I set join and leave messages?
+## كيف أختار رسائل الدخول والخروج?
 
 Set the channel by doing
 
@@ -18,7 +18,7 @@ or
 
 After doing that, new joins and leaves will be posted to that channel.
 
-## Can I customize the join and leave messages?
+## هل أستطيع أن اعدل على رسالة الدخول والخروج?
 
 Absolutely! You can change the message by doing for example
 
@@ -30,7 +30,7 @@ or
 
 There are many placeholders available. You can see the full list on the '[Custom Messages](/ar/modules/invites/custom-messages.md)' page.
 
-## What are 'Ranks' and how can I use them?
+## ماهي ال`رتب` وكيف أستطيع استخدامها?
 
 Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!
 

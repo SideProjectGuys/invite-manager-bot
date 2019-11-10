@@ -72,8 +72,8 @@ There are many config options that can be set. You don't have to set all of them
 | Setting                                                        | Description                                                |
 | -------------------------------------------------------------- | ---------------------------------------------------------- |
 | [تمكين](#automodenabled)                                       | settings.autoModEnabled.description                        |
-| [Moderated Channels](#automodmoderatedchannels)                | settings.autoModModeratedChannels.description              |
-| [Moderated Roles](#automodmoderatedroles)                      | settings.autoModModeratedRoles.description                 |
+| [القنوات الادارية](#automodmoderatedchannels)                  | settings.autoModModeratedChannels.description              |
+| [الرتب الادارية](#automodmoderatedroles)                       | settings.autoModModeratedRoles.description                 |
 | [القنوات المتجاهلة](#automodignoredchannels)                   | settings.autoModIgnoredChannels.description                |
 | [تجاهل الأدوار](#automodignoredroles)                          | settings.autoModIgnoredRoles.description                   |
 | [رتبه صامته](#mutedrole)                                       | settings.mutedRole.description                             |
@@ -105,7 +105,7 @@ There are many config options that can be set. You don't have to set all of them
 | Setting                                          | Description                                      |
 | ------------------------------------------------ | ------------------------------------------------ |
 | [تمكين](#automodlinksenabled)                    | settings.autoModLinksEnabled.description         |
-| [Whitelist](#automodlinkswhitelist)              | settings.autoModLinksWhitelist.description       |
+| [القائمة البيضاء](#automodlinkswhitelist)        | settings.autoModLinksWhitelist.description       |
 | [القائمة السوداء](#automodlinksblacklist)        | settings.autoModLinksBlacklist.description       |
 | [Follow Redirects](#automodlinksfollowredirects) | settings.autoModLinksFollowRedirects.description |
 
@@ -160,13 +160,30 @@ There are many config options that can be set. You don't have to set all of them
 
 #### موسيقى
 
+| Setting                           | Description                                          |
+| --------------------------------- | ---------------------------------------------------- |
+| [طبقة صوت الموسيقى](#musicvolume) | الصوت المعتاد الذي تم ضبطه عند دخول بوت لقناه صوتيه. |
+
+#### settings.groups.music.announcement.title
+
+| Setting                                    | Description                                                         |
+| ------------------------------------------ | ------------------------------------------------------------------- |
+| [اعلان الاغنيه التاليه](#announcenextsong) | ما إذا كان سيتم الإعلان عن الأغنية التالية في القناة الصوتية أم لا. |
+| [صوت الاعلانات.](#announcementvoice)       | الصوت المستخدم في إعلانات الأغنية التاليه.                          |
+
+#### settings.groups.music.fadeMusic.title
+
 | Setting                                            | Description                                                                      |
 | -------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [طبقة صوت الموسيقى](#musicvolume)                  | الصوت المعتاد الذي تم ضبطه عند دخول بوت لقناه صوتيه.                             |
-| [اعلان الاغنيه التاليه](#announcenextsong)         | ما إذا كان سيتم الإعلان عن الأغنية التالية في القناة الصوتية أم لا.              |
-| [صوت الاعلانات.](#announcementvoice)               | الصوت المستخدم في إعلانات الأغنية التاليه.                                       |
 | [تلاشي الموسيقى على التكلم](#fademusicontalk)      | اذا مفعل, الموسيقى ستبدأ بالتلاشي عندما يتحدث الناس                              |
 | [تلاشي الموسيقى نهايه التأخير](#fademusicenddelay) | تأخر عدد الثواني التي يجب ألا يتحدث فيها أحد من أجل عودة مستوى الصوت إلى طبيعته. |
+
+#### settings.groups.music.platform.title
+
+| Setting                                                          | Description                                 |
+| ---------------------------------------------------------------- | ------------------------------------------- |
+| [settings.defaultMusicPlatform.title](#defaultmusicplatform)     | settings.defaultMusicPlatform.description   |
+| [settings.disabledMusicPlatforms.title](#disabledmusicplatforms) | settings.disabledMusicPlatforms.description |
 
 <a name=prefix></a>
 
@@ -204,11 +221,11 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `ar`, `bg`, `cs`, `de`, `en`, `es`, `fr`, `id_ID`, `it`, `ja`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `tr`, `zh_CN`, `zh_TW`, `ur_PK`, `sv`, `sr`, `hu`, `lt`, `el`
+Possible values: `de`, `en`, `es`, `fr`, `it`, `nl`, `pt`, `ro`, `sv`
 
 Example:
 
-`!config lang ar`
+`!config lang de`
 
 <a name=logChannel></a>
 
@@ -685,7 +702,7 @@ Disable:
 
 ---
 
-## Moderated Channels
+## القنوات الادارية
 
 settings.autoModModeratedChannels.description
 
@@ -706,7 +723,7 @@ Examples:
 
 ---
 
-## Moderated Roles
+## الرتب الادارية
 
 settings.autoModModeratedRoles.description
 
@@ -1081,7 +1098,7 @@ Disable:
 
 ---
 
-## Whitelist
+## القائمة البيضاء
 
 settings.autoModLinksWhitelist.description
 
@@ -1611,3 +1628,33 @@ Default: `1`
 
 Reset to default:
 `!config fadeMusicEndDelay default`
+
+<a name=defaultMusicPlatform></a>
+
+---
+
+## settings.defaultMusicPlatform.title
+
+settings.defaultMusicPlatform.description
+
+Type: `Enum<MusicPlatformTypes>`
+
+Default: `soundcloud`
+
+Reset to default:
+`!config defaultMusicPlatform default`
+
+<a name=disabledMusicPlatforms></a>
+
+---
+
+## settings.disabledMusicPlatforms.title
+
+settings.disabledMusicPlatforms.description
+
+Type: `Enum<MusicPlatformTypes>[]`
+
+Default: ``
+
+Reset to default:
+`!config disabledMusicPlatforms default`

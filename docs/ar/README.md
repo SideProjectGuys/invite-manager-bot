@@ -2,21 +2,21 @@
 
 ## Reference
 
-- [Commands](/ar/reference/commands.md)
-- [Configs / Settings](/ar/reference/settings.md)
+- [الأوامر](/ar/reference/commands.md)
+- [الاعدادات](/ar/reference/settings.md)
 
-## Getting Started
+## ابدء
 
-To get started, just run the `!setup` command on your server.
+للبدء ، ما عليك سوى تشغيل الأمر `! setup` على الخادم الخاص بك.
 
-### Invite Management
+### تدبير الدعوات
 
-While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.
+أثناء وجود الروبوت لدينا على الخادم الخاص بك ، فإننا نتتبع كل دعوة تحدث على الخادم الخاص بك. الخلاف يظهر لك فقط من لديه عدد الدعوات. يحلل الروبوت لدينا أيضًا من تمت دعوته من قبل. هذا يسمح لبوتنا باكتشاف الدعوات المزيفة ومعرفة من يحاول خداع نظام الدعوة.
 
-### Moderation
+### الإشراف
 
-Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes](/ar/modules/moderation/strikes.md) and [punishments](/ar/modules/moderation/punishments.md) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.
+يتيح لك نظام الاعتدال الجديد الخاص بنا تعديل العديد من الأشياء تلقائيًا. يرجى مراجعة موقعنا [strikes](/ar/modules/moderation/strikes.md) وايضا [punishments](/ar/modules/moderation/punishments.md) صفحات لمزيد من المعلومات. باختصار ، يقدم الروبوت الخاص بنا "strikes" للأشخاص الذين يسيئون التصرف ، وبعد كمية معينة من الضربات ، يتلقى المستخدم عقوبة. كل هذا هو شكلي من قبل المستخدم.
 
-## Premium
+## النسخة المدفوعة
 
-To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page](/ar/premium/features.md).
+لدفع فاتورة الخادم الخاص بنا ، نحن نقدم نسخة مميزة من الروبوت. لرؤية جميع الميزات الإضافية التي تحصل عليها ، يرجى زيارة موقعنا [pricing page](/ar/premium/features.md).

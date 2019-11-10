@@ -1,7 +1,7 @@
-# Open Source
+# المصدر المفتوح
 
 other.openSource.description
 
-## Main Bot
+## بوت أساسي
 
 other.openSource.bot.description

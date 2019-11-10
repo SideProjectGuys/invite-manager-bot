@@ -1,44 +1,44 @@
-- Getting Started
+- ابدء
 
   - [Quick Start](/ar/getting-started/quick-start.md)
-  - [FAQs](/ar/getting-started/faq.md)
-  - [Alpha Bot](/ar/getting-started/alpha.md)
+  - [الأسئلة الشائعة](/ar/getting-started/faq.md)
+  - [البوت التجريبي](/ar/getting-started/alpha.md)
   - [Pro Bot](/ar/getting-started/pro.md)
 
 - Reference
 
-  - [Commands](/ar/reference/commands.md)
-  - [Configs / Settings](/ar/reference/settings.md)
+  - [الأوامر](/ar/reference/commands.md)
+  - [الاعدادات](/ar/reference/settings.md)
 
-- Premium
+- النسخة المدفوعة
 
-  - [Features](/ar/premium/features.md)
-  - [Tiers](/ar/premium/tiers.md)
-  - [Setup](/ar/premium/setup.md)
+  - [الخصائص](/ar/premium/features.md)
+  - [مستويات](/ar/premium/tiers.md)
+  - [تأسيس](/ar/premium/setup.md)
 
-- Modules
+- الخصائص
 
-  - Invite Management
+  - تدبير الدعوات
 
-    - [Overview](/ar/modules/invites/overview.md)
-    - [Custom message](/ar/modules/invites/custom-messages.md)
-      - [Examples](/ar/modules/invites/examples.md)
+    - [نظرة عامة](/ar/modules/invites/overview.md)
+    - [رسالة مخصص](/ar/modules/invites/custom-messages.md)
+      - [أمثلة](/ar/modules/invites/examples.md)
 
-  - Moderation
+  - الإشراف
 
-    - [Strikes](/ar/modules/moderation/strikes.md)
-    - [Punishments](/ar/modules/moderation/punishments.md)
+    - [ضربات](/ar/modules/moderation/strikes.md)
+    - [العقوبات](/ar/modules/moderation/punishments.md)
 
-  - Music
+  - الموسيقى
 
-    - [Overview](/ar/modules/music/overview.md)
+    - [نظرة عامة](/ar/modules/music/overview.md)
 
-- Other
+- أخرى
 
-  - [Webpanel](/ar/other/webpanel.md)
-  - [Translations](/ar/other/translations.md)
-  - [Donating](/ar/other/donating.md)
-  - [Support](/ar/other/support.md)
-  - [Changelog](/ar/other/changelog.md)
-  - [Roadmap](/ar/other/roadmap.md)
-  - [Open Source](/ar/other/open-source.md)
+  - [لوحة التحكم](/ar/other/webpanel.md)
+  - [الترجمات](/ar/other/translations.md)
+  - [التبرع](/ar/other/donating.md)
+  - [الدعم الفني](/ar/other/support.md)
+  - [التحديثات](/ar/other/changelog.md)
+  - [خريطة الطريق](/ar/other/roadmap.md)
+  - [المصدر المفتوح](/ar/other/open-source.md)

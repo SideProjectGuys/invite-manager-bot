@@ -1,7 +1,7 @@
-# Donating
+# التبرع
 
 other.donating.description
 
-## Crypto
+## التشفير
 
 other.donating.crypto.description
