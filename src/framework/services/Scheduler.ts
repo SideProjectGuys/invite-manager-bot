@@ -94,6 +94,6 @@ export class SchedulerService {
 			return;
 		}
 
-		await member.removeRole(roleId);
+		await member.removeRole(roleId, 'Timed unmute');
 	}
 }

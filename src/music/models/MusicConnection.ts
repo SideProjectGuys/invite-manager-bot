@@ -140,7 +140,7 @@ export class MusicConnection {
 		if (this.player) {
 			this.switchChannel(channel);
 		} else {
-			this.settings = await this.service.client.cache.settings.get(this.guild.id);
+			this.settings = await this.service.client.cache.guilds.get(this.guild.id);
 			this.volume = this.settings.musicVolume;
 
 			this.voiceChannel = channel;

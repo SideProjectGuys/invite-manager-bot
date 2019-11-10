@@ -73,7 +73,10 @@ export class ModerationService {
 		const scanMessageCache = () => {
 			const now = moment();
 			this.messageCache.forEach((value, key) => {
-				this.messageCache.set(key, value.filter(m => now.diff(m.createdAt, 'second') < 60));
+				this.messageCache.set(
+					key,
+					value.filter(m => now.diff(m.createdAt, 'second') < 60)
+				);
 			});
 		};
 		setInterval(scanMessageCache, 60 * 1000);
@@ -109,7 +112,7 @@ export class ModerationService {
 			return;
 		}
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -552,7 +555,7 @@ export class ModerationService {
 			return;
 		}
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {

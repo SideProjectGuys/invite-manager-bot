@@ -38,7 +38,7 @@ export default class extends Command {
 		const embed = this.client.mod.createBasicEmbed(targetUser);
 
 		try {
-			await guild.unbanMember(targetUser.id, reason);
+			await guild.unbanMember(targetUser.id, encodeURIComponent(reason));
 
 			const logEmbed = this.client.mod.createBasicEmbed(message.author);
 

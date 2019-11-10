@@ -57,7 +57,7 @@ export default class extends Command {
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
 			try {
-				await this.client.banGuildMember(guild.id, targetUser.id, days, reason);
+				await this.client.banGuildMember(guild.id, targetUser.id, days, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
 				await this.client.db.saveMembers([

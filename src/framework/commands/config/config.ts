@@ -102,7 +102,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.settings.setOne(guild.id, key, value);
+		value = await this.client.cache.guilds.setOne(guild.id, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.config.sameValue');

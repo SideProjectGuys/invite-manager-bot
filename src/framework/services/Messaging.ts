@@ -209,7 +209,7 @@ export class MessagingService {
 			if (await this.client.cache.premium.get(guild.id)) {
 				return this.createEmbed(temp, false);
 			} else {
-				const lang = (await this.client.cache.settings.get(guild.id)).lang;
+				const lang = (await this.client.cache.guilds.get(guild.id)).lang;
 				msg += '\n\n' + i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
 			}
 		} catch (e) {

@@ -5,7 +5,7 @@ import moment, { Moment } from 'moment';
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
 import { PremiumCache } from './framework/cache/PremiumCache';
-import { SettingsCache } from './framework/cache/SettingsCache';
+import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { GuildSettingsKey } from './framework/models/GuildSetting';
 import { LogAction } from './framework/models/Log';
 import { CommandsService } from './framework/services/Commands';
@@ -75,7 +75,7 @@ export class IMClient extends Client {
 		permissions: PermissionsCache;
 		premium: PremiumCache;
 		punishments: PunishmentCache;
-		settings: SettingsCache;
+		guilds: GuildSettingsCache;
 		strikes: StrikesCache;
 		music: MusicCache;
 	};
@@ -152,7 +152,7 @@ export class IMClient extends Client {
 			permissions: new PermissionsCache(this),
 			premium: new PremiumCache(this),
 			punishments: new PunishmentCache(this),
-			settings: new SettingsCache(this),
+			guilds: new GuildSettingsCache(this),
 			strikes: new StrikesCache(this),
 			music: new MusicCache(this)
 		};
@@ -433,7 +433,7 @@ export class IMClient extends Client {
 	}
 
 	public async logModAction(guild: Guild, embed: Embed) {
-		const modLogChannelId = (await this.cache.settings.get(guild.id)).modLogChannel;
+		const modLogChannelId = (await this.cache.guilds.get(guild.id)).modLogChannel;
 
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
@@ -444,7 +444,7 @@ export class IMClient extends Client {
 	}
 
 	public async logAction(guild: Guild, message: Message, action: LogAction, data: any) {
-		const logChannelId = (await this.cache.settings.get(guild.id)).logChannel;
+		const logChannelId = (await this.cache.guilds.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;

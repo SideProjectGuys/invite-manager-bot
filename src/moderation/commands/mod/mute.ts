@@ -54,7 +54,7 @@ export default class extends Command {
 			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
-				await targetMember.addRole(mutedRole, reason);
+				await targetMember.addRole(mutedRole, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
 				await this.client.db.saveMembers([

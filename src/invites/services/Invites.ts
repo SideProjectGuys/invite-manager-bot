@@ -228,7 +228,7 @@ export class InvitesService {
 		let nextRankName = '';
 		let nextRank: Rank = null;
 
-		const settings = await this.client.cache.settings.get(guild.id);
+		const settings = await this.client.cache.guilds.get(guild.id);
 		const style = settings.rankAssignmentStyle;
 
 		const allRanks = await this.client.cache.ranks.get(guild.id);
@@ -305,7 +305,7 @@ export class InvitesService {
 					}
 				} else {
 					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
-					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
+					await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
 				}
 			}
 		}

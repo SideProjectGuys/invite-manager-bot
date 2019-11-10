@@ -332,7 +332,7 @@ export class TrackingService {
 		}
 
 		// Get settings
-		const sets = await this.client.cache.settings.get(guild.id);
+		const sets = await this.client.cache.guilds.get(guild.id);
 		const lang = sets.lang;
 		const joinChannelId = sets.joinMessageChannel;
 
@@ -344,13 +344,13 @@ export class TrackingService {
 				console.error(`Guild ${guild.id} has invalid join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 			} else if (!(joinChannel instanceof TextChannel)) {
 				// Someone set a non-text channel as join channel
 				console.error(`Guild ${guild.id} has non-text join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
 			} else if (!joinChannel.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)) {
@@ -358,7 +358,7 @@ export class TrackingService {
 				console.error(`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 
 				joinChannel = undefined;
 			}
@@ -385,7 +385,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -398,7 +398,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -425,7 +425,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -479,7 +479,7 @@ export class TrackingService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+					await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 				}
 			});
 		}
@@ -523,7 +523,7 @@ export class TrackingService {
 		});
 
 		// Get settings
-		const sets = await this.client.cache.settings.get(guild.id);
+		const sets = await this.client.cache.guilds.get(guild.id);
 		const lang = sets.lang;
 		const leaveChannelId = sets.leaveMessageChannel;
 
@@ -532,7 +532,7 @@ export class TrackingService {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(`Guild ${guild.id} has invalid leave ` + `message channel ${leaveChannelId}`);
 			// Reset the channel
-			await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.leaveMessageChannel, null);
+			await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.leaveMessageChannel, null);
 		}
 
 		// Exit if we can't find the join
@@ -552,7 +552,7 @@ export class TrackingService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 						}
 					});
 			}
@@ -619,7 +619,7 @@ export class TrackingService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.client.cache.settings.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+					await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
 				}
 			});
 		}

@@ -159,7 +159,7 @@ export default class extends Command {
 				const key = sel.value as GuildSettingsKey;
 
 				if (guildSettingsInfo[key].type === 'Boolean') {
-					await this.client.cache.settings.setOne(context.guild.id, key, context.settings[key] ? false : true);
+					await this.client.cache.guilds.setOne(context.guild.id, key, context.settings[key] ? false : true);
 				} else {
 					const subChoice = await this.changeConfigSetting(context, authorId, msg, key);
 					if (subChoice === undefined) {
@@ -309,7 +309,7 @@ export default class extends Command {
 				}
 
 				if (typeof newVal !== 'undefined') {
-					await this.client.cache.settings.setOne(context.guild.id, key, newVal);
+					await this.client.cache.guilds.setOne(context.guild.id, key, newVal);
 				}
 			} else {
 				// Change a non-list setting
@@ -333,7 +333,7 @@ export default class extends Command {
 
 					const newValue = toDbValue(info, rawNewVal);
 
-					await this.client.cache.settings.setOne(context.guild.id, key, newValue);
+					await this.client.cache.guilds.setOne(context.guild.id, key, newValue);
 					return 'up';
 				} catch (err) {
 					error = err.message;

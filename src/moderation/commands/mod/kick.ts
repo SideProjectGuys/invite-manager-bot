@@ -42,7 +42,7 @@ export default class extends Command {
 			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.kick, settings, { reason });
 
 			try {
-				await targetMember.kick(reason);
+				await this.client.kickGuildMember(guild.id, targetMember.id, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
 				await this.client.db.saveMembers([

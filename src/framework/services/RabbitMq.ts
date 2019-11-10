@@ -211,7 +211,7 @@ export class RabbitMqService {
 					});
 				}
 
-				const sets = await this.client.cache.settings.get(guildId);
+				const sets = await this.client.cache.guilds.get(guildId);
 				const perms = guild.members.get(this.client.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};
@@ -382,7 +382,7 @@ export class RabbitMqService {
 			channels: channelCount,
 			roles: roleCount,
 			ranks: this.client.cache.ranks.getSize(),
-			settings: this.client.cache.settings.getSize(),
+			settings: this.client.cache.guilds.getSize(),
 			premium: this.client.cache.premium.getSize(),
 			permissions: this.client.cache.permissions.getSize(),
 			strikes: this.client.cache.strikes.getSize(),

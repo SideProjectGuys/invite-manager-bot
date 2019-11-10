@@ -28,12 +28,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(
-		message: Message,
-		[duration, _page]: [moment.Duration, number],
-		{ compare }: { compare: moment.Duration },
-		{ guild, t, settings }: Context
-	): Promise<any> {
+	public async action(message: Message, [_page]: [number], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		let invs = await this.client.cache.leaderboard.get(guild.id);
 		const cachedAt = this.client.cache.leaderboard.getCacheMeta(guild.id).cachedAt;
 		if (settings.hideLeftMembersFromLeaderboard) {

@@ -3,7 +3,7 @@ import { GuildSettingsKey } from '../models/GuildSetting';
 
 import { Cache } from './Cache';
 
-export class SettingsCache extends Cache<GuildSettingsObject> {
+export class GuildSettingsCache extends Cache<GuildSettingsObject> {
 	public async init() {
 		// TODO
 	}
