@@ -2,10 +2,10 @@ import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
+import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
 import { PremiumCache } from './framework/cache/PremiumCache';
-import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { GuildSettingsKey } from './framework/models/GuildSetting';
 import { LogAction } from './framework/models/Log';
 import { CommandsService } from './framework/services/Commands';
@@ -56,6 +56,20 @@ export interface ClientOptions {
 	config: any;
 }
 
+export interface ClientCacheObject {
+	inviteCodes: InviteCodeSettingsCache;
+	invites: InvitesCache;
+	leaderboard: LeaderboardCache;
+	ranks: RanksCache;
+	members: MemberSettingsCache;
+	permissions: PermissionsCache;
+	premium: PremiumCache;
+	punishments: PunishmentCache;
+	guilds: GuildSettingsCache;
+	strikes: StrikesCache;
+	music: MusicCache;
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
@@ -66,19 +80,7 @@ export class IMClient extends Client {
 	public hasStarted: boolean = false;
 
 	public db: DatabaseService;
-	public cache: {
-		inviteCodes: InviteCodeSettingsCache;
-		invites: InvitesCache;
-		leaderboard: LeaderboardCache;
-		ranks: RanksCache;
-		members: MemberSettingsCache;
-		permissions: PermissionsCache;
-		premium: PremiumCache;
-		punishments: PunishmentCache;
-		guilds: GuildSettingsCache;
-		strikes: StrikesCache;
-		music: MusicCache;
-	};
+	public cache: ClientCacheObject;
 
 	public rabbitmq: RabbitMqService;
 	public shardId: number;

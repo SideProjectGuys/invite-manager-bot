@@ -2,7 +2,7 @@ import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
+import { ClientCacheObject, IMClient } from '../../client';
 import { ShardCommand } from '../../types';
 import { FakeChannel } from '../../util';
 
@@ -269,8 +269,22 @@ export class RabbitMqService {
 				break;
 
 			case ShardCommand.FLUSH_CACHE:
-				Object.values(this.client.cache).forEach(c => c.flush(guildId));
-				await sendResponse({});
+				const errors: string[] = [];
+				const cacheNames = content.caches as (keyof ClientCacheObject)[];
+
+				if (!content.caches) {
+					Object.values(this.client.cache).forEach(c => c.flush(guildId));
+				} else {
+					for (const cacheName of cacheNames) {
+						const cache = this.client.cache[cacheName];
+						if (cache) {
+							cache.flush(guildId);
+						} else {
+							errors.push('Invalid cache name ' + cacheName);
+						}
+					}
+				}
+				await sendResponse({ error: errors.join('\n') });
 				break;
 
 			case ShardCommand.RELOAD_MUSIC_NODES:
