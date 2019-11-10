@@ -188,7 +188,7 @@ export class ModerationService {
 				continue;
 			}
 
-			await message.delete();
+			await message.delete().catch(() => undefined);
 
 			await this.logViolationModAction(guild, message.author, strike.type, strike.amount, [
 				{ name: 'Channel', value: channel.name },
@@ -291,7 +291,7 @@ export class ModerationService {
 		logEmbed.description += `**Punishment**: ${type}\n`;
 
 		if (extra) {
-			extra.forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
+			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
