@@ -1,5 +1,4 @@
 import { Message, Role } from 'eris';
-import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup, InvitesCommand } from '../../../types';
@@ -166,7 +165,7 @@ export default class extends Command {
 					name: role.name,
 					color: role.color.toString(16),
 					guildId: role.guild.id,
-					createdAt: moment(role.createdAt).toDate()
+					createdAt: new Date(role.createdAt)
 				}
 			]);
 

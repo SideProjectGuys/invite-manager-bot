@@ -186,10 +186,7 @@ export class DatabaseService {
 				cols.map(col => {
 					let v: any = val[col];
 					if (v instanceof Date) {
-						v = v
-							.toISOString()
-							.slice(0, 19)
-							.replace('T', ' ');
+						return v;
 					} else if (typeof v === 'object' && v !== null) {
 						v = JSON.stringify(v);
 					}
@@ -580,8 +577,8 @@ export class DatabaseService {
 				'c.`id` AS channelId, c.`name` AS channelName ' +
 				`FROM ${db}.${TABLE.joins} j ` +
 				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				`INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
-				`INNER JOIN ${db}.${TABLE.channels} c ON c.\`id\` = ic.\`channelId\` ` +
+				`LEFT JOIN ${db}.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
+				`LEFT JOIN ${db}.${TABLE.channels} c ON c.\`id\` = ic.\`channelId\` ` +
 				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
 				'ORDER BY j.`createdAt` DESC LIMIT 1',
 			[guildId, memberId]
@@ -634,8 +631,12 @@ export class DatabaseService {
 		const vals: any[] = [guildId];
 		let reasonQuery = '';
 		if (search && typeof search.invalidatedReason !== 'undefined') {
-			reasonQuery = 'AND `invalidatedReason` = ?';
-			vals.push(search.invalidatedReason);
+			if (search.invalidatedReason === null) {
+				reasonQuery = 'AND `invalidatedReason` IS NULL';
+			} else {
+				reasonQuery = 'AND `invalidatedReason` = ?';
+				vals.push(search.invalidatedReason);
+			}
 		}
 		let memberQuery = '';
 		if (search && typeof search.memberId !== 'undefined') {
@@ -657,6 +658,13 @@ export class DatabaseService {
 			newInvalidatedReason = `'${newInvalidatedReason}'`;
 		}
 		const [db, pool] = this.getDbInfo(guildId);
+		console.log(
+			mysql.format(
+				`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
+					`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
+				vals
+			)
+		);
 		const [ok] = await pool.query<OkPacket>(
 			`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
 				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,

@@ -1,5 +1,4 @@
 import { Message, Role } from 'eris';
-import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -48,7 +47,7 @@ export default class extends Command {
 				name: role.name,
 				guildId: role.guild.id,
 				color: role.color.toString(16),
-				createdAt: moment(role.createdAt).toDate()
+				createdAt: new Date(role.createdAt)
 			}
 		]);
 
