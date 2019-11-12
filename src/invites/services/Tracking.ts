@@ -516,11 +516,13 @@ export class TrackingService {
 			}
 		]);
 
-		const leaveId = await this.client.db.saveLeave({
-			memberId: member.id,
-			guildId: guild.id,
-			joinId: join ? join.id : null
-		});
+		if (join) {
+			await this.client.db.saveLeave({
+				memberId: member.id,
+				guildId: guild.id,
+				joinId: join.id
+			});
+		}
 
 		// Get settings
 		const sets = await this.client.cache.guilds.get(guild.id);
@@ -537,7 +539,7 @@ export class TrackingService {
 
 		// Exit if we can't find the join
 		if (!join || !join.exactMatchCode) {
-			console.log(`Could not find join for ${member.id} in ` + `${guild.id} leaveId: ${leaveId}`);
+			console.log(`Could not find join for ${member.id} in ` + `${guild.id}`);
 			if (leaveChannel) {
 				leaveChannel
 					.createMessage(
