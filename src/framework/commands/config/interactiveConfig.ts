@@ -45,7 +45,7 @@ export default class extends Command {
 			message.channel instanceof GuildChannel &&
 			message.channel.permissionsOf(this.client.user.id).has(GuildPermission.MANAGE_MESSAGES)
 		) {
-			await message.delete();
+			await message.delete().catch(() => undefined);
 		}
 
 		const msg = await this.sendReply(message, embed);
@@ -355,7 +355,7 @@ export default class extends Command {
 					await msg.removeReaction(emoji.name, userId);
 					resolve();
 				} else if (userMsg.author && userMsg.author.id === authorId) {
-					await userMsg.delete();
+					await userMsg.delete().catch(() => undefined);
 					new SettingsValueResolver(this.client, guildSettingsInfo)
 						.resolve(userMsg.content, context, [key])
 						.then(v => resolve(v))
@@ -446,7 +446,7 @@ export default class extends Command {
 				this.client.removeListener('messageReactionAdd', func);
 
 				if (emoji.name === this.cancel) {
-					await msg.delete();
+					await msg.delete().catch(() => undefined);
 					resolve();
 					return;
 				}
@@ -472,7 +472,7 @@ export default class extends Command {
 			const timeOutFunc = async () => {
 				this.client.removeListener('messageReactionAdd', func);
 
-				await msg.delete();
+				await msg.delete().catch(() => undefined);
 
 				resolve(undefined);
 			};

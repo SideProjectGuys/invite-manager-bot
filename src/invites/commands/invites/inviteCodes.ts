@@ -41,6 +41,7 @@ export default class extends Command {
 		if (newCodes.length > 0) {
 			const newDbCodes: InviteCode[] = newCodes.map(code => ({
 				code: code.code,
+				createdAt: new Date(code.createdAt),
 				channelId: code.channel ? code.channel.id : null,
 				maxAge: code.maxAge,
 				maxUses: code.maxUses,
@@ -57,6 +58,7 @@ export default class extends Command {
 			if (vanityInv && vanityInv.code) {
 				newDbCodes.push({
 					code: vanityInv.code,
+					createdAt: new Date(),
 					channelId: null,
 					guildId: guild.id,
 					inviterId: null,

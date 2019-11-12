@@ -107,7 +107,7 @@ export class DatabaseService {
 
 	private async findOne<T>(shard: number | string, table: TABLE, where: string, values: any[]): Promise<T> {
 		const [db, pool] = this.getDbInfo(shard);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT ${table}.* FROM ${db}.${table} WHERE ${where} LIMIT 1`,
 			values
 		);
@@ -124,22 +124,34 @@ export class DatabaseService {
 		values: O[],
 		selector: (obj: O) => number | string = o => o as any
 	): Promise<T[]> {
-		const map: Map<string, [Pool, O[]]> = new Map();
+		const map: Map<Pool, Map<string, O[]>> = new Map();
 		for (const value of values) {
 			const [id, pool] = this.getDbInfo(selector(value));
-			const poolData = map.get(id);
+			const poolData = map.get(pool);
 			if (poolData) {
-				poolData[1].push(value);
+				const shardData = poolData.get(id);
+				if (shardData) {
+					shardData.push(value);
+				} else {
+					poolData.set(id, [value]);
+				}
 			} else {
-				map.set(id, [pool, [value]]);
+				const shardData = new Map<string, O[]>();
+				shardData.set(id, [value]);
+				map.set(pool, shardData);
 			}
 		}
 
 		const promises: Promise<RowDataPacket[]>[] = [];
-		for (const [db, [pool, vals]] of map.entries()) {
-			promises.push(
-				pool.query<RowDataPacket[]>(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`, vals).then(([rs]) => rs)
-			);
+		for (const [pool, poolData] of map.entries()) {
+			const queries: string[] = [];
+			let poolValues: O[] = [];
+			for (const [db, vals] of poolData.entries()) {
+				queries.push(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`);
+				poolValues = poolValues.concat(vals);
+			}
+			const query = queries.join(' UNION ');
+			promises.push(pool.query<RowDataPacket[]>(query, poolValues).then(([rs]) => rs));
 		}
 		const rows = await Promise.all(promises);
 		return rows.reduce((acc, val) => acc.concat(val as T[]), [] as T[]);
@@ -857,11 +869,17 @@ export class DatabaseService {
 		// TODO: This doesn't work becaues the guilds table isn't global, but we need the guild name
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.execute<RowDataPacket[]>(
-			`SELECT psg.*, g.\`name\` as guildName FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.guilds} g ON g.\`id\` = psg.\`guildId\` WHERE psg.\`subscriptionId\` = ?`,
+			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
 			[subscriptionId]
 		);
-		return rows as Array<PremiumSubscriptionGuild & { guildName: string }>;
+		const guilds = await this.findManyOnAllShards<Guild>(
+			TABLE.guilds,
+			`id IN(?)`,
+			rows.map(r => r.guildId)
+		);
+		return rows.map(r => ({ ...r, guildName: guilds.find(g => g.id === r.guildId).name })) as Array<
+			PremiumSubscriptionGuild & { guildName: string }
+		>;
 	}
 	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
