@@ -122,7 +122,7 @@ export class TrackingService {
 				name: role.name,
 				color: color,
 				guildId: role.guild.id,
-				createdAt: moment(role.createdAt).toDate()
+				createdAt: new Date(role.createdAt)
 			}
 		]);
 	}
@@ -293,7 +293,7 @@ export class TrackingService {
 		}
 
 		const codes = newAndUsedCodes.map(inv => ({
-			createdAt: inv.createdAt ? moment(inv.createdAt).toDate() : new Date(),
+			createdAt: inv.createdAt ? new Date(inv.createdAt) : new Date(),
 			code: inv.code,
 			channelId: inv.channel ? inv.channel.id : null,
 			isNative: !inv.inviter || inv.inviter.id !== this.client.user.id,
@@ -325,7 +325,7 @@ export class TrackingService {
 				exactMatchCode: exactMatchCode,
 				memberId: member.id,
 				guildId: guild.id,
-				createdAt: moment(member.joinedAt).toDate(),
+				createdAt: new Date(member.joinedAt),
 				invalidatedReason: null,
 				cleared: false
 			});
@@ -506,17 +506,17 @@ export class TrackingService {
 
 		const join = await this.client.db.getNewestJoinForMember(guild.id, member.id);
 
-		// We need the member in the DB for the leave
-		await this.client.db.saveMembers([
-			{
-				id: member.id,
-				name: member.user.username,
-				discriminator: member.user.discriminator,
-				guildId: guild.id
-			}
-		]);
-
 		if (join) {
+			// We need the member in the DB for the leave
+			await this.client.db.saveMembers([
+				{
+					id: member.id,
+					name: member.user.username,
+					discriminator: member.user.discriminator,
+					guildId: guild.id
+				}
+			]);
+
 			await this.client.db.saveLeave({
 				memberId: member.id,
 				guildId: guild.id,
@@ -532,7 +532,7 @@ export class TrackingService {
 		// Check if leave channel is valid
 		const leaveChannel = leaveChannelId ? (guild.channels.get(leaveChannelId) as TextChannel) : undefined;
 		if (leaveChannelId && !leaveChannel) {
-			console.error(`Guild ${guild.id} has invalid leave ` + `message channel ${leaveChannelId}`);
+			console.error(`Guild ${guild.id} has invalid leave message channel ${leaveChannelId}`);
 			// Reset the channel
 			await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.leaveMessageChannel, null);
 		}
@@ -588,7 +588,7 @@ export class TrackingService {
 		let newLeaves = 0;
 		if (inviterId && sets.autoSubtractLeaves) {
 			const threshold = Number(sets.autoSubtractLeaveThreshold);
-			const timeDiff = moment.utc(join.createdAt).diff(moment().utc(), 's');
+			const timeDiff = moment().diff(moment(join.createdAt), 's');
 
 			if (timeDiff < threshold) {
 				const affected = await this.client.db.updateJoinInvalidatedReason(JoinInvalidatedReason.leave, guild.id, {
