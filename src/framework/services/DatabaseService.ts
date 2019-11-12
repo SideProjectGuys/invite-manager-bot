@@ -107,7 +107,7 @@ export class DatabaseService {
 
 	private async findOne<T>(shard: number | string, table: TABLE, where: string, values: any[]): Promise<T> {
 		const [db, pool] = this.getDbInfo(shard);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT ${table}.* FROM ${db}.${table} WHERE ${where} LIMIT 1`,
 			values
 		);
