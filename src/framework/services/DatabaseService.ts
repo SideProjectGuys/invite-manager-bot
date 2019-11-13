@@ -444,7 +444,7 @@ export class DatabaseService {
 	}
 	public async getCustomInvitesForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT SUM(ci.`amount`) AS total, ci.`memberId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
 				`FROM ${db}.${TABLE.customInvites} ci ` +
 				`INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = ci.\`memberId\` ` +
@@ -456,7 +456,7 @@ export class DatabaseService {
 	}
 	public async getCustomInviteTotalForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT SUM(\`amount\`) AS total FROM ${db}.${TABLE.customInvites} WHERE \`guildId\` = ? AND \`memberId\` = ? AND \`cleared\` = 0`,
 			[guildId, memberId]
 		);
@@ -498,7 +498,7 @@ export class DatabaseService {
 			invalidatedReason: JoinInvalidatedReason;
 		};
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, ' +
 				'j.`invalidatedReason` AS invalidatedReason ' +
 				`FROM ${db}.${TABLE.joins} j ` +
@@ -512,7 +512,7 @@ export class DatabaseService {
 	}
 	public async getMaxJoinIdsForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT MAX(j.\`id\`) AS id FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? GROUP BY j.\`exactMatchCode\`, j.\`memberId\``,
 			[guildId]
 		);
@@ -520,7 +520,7 @@ export class DatabaseService {
 	}
 	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason ' +
 				`FROM ${db}.${TABLE.joins} j ` +
 				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
@@ -532,7 +532,7 @@ export class DatabaseService {
 	}
 	public async getJoinsPerDay(guildId: string, days: number) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.joins} ` +
 				'WHERE `guildId` = ? ' +
@@ -545,7 +545,7 @@ export class DatabaseService {
 	}
 	public async getFirstJoinForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
 				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
 				'ORDER BY j.`createdAt` ASC LIMIT 1',
@@ -555,7 +555,7 @@ export class DatabaseService {
 	}
 	public async getPreviousJoinForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
 				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
 				'ORDER BY j.`createdAt` DESC LIMIT 1,1',
@@ -572,7 +572,7 @@ export class DatabaseService {
 			channelName: string;
 		};
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT j.*, m.`id` AS inviterId, m.`name` AS inviterName, m.`discriminator` AS inviterDiscriminator, ' +
 				'c.`id` AS channelId, c.`name` AS channelName ' +
 				`FROM ${db}.${TABLE.joins} j ` +
@@ -587,7 +587,7 @@ export class DatabaseService {
 	}
 	public async getJoinsForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT j.*, ic.`inviterId` AS inviterId ' +
 				`FROM ${db}.${TABLE.joins} j ` +
 				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
@@ -599,7 +599,7 @@ export class DatabaseService {
 	}
 	public async getTotalJoinsForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT COUNT(j.\`id\`) AS total FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? AND j.\`memberId\` = ?`,
 			[guildId, memberId]
 		);
@@ -607,7 +607,7 @@ export class DatabaseService {
 	}
 	public async getInvitedMembers(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT j.`memberId` AS memberId, MAX(j.`createdAt`) AS createdAt ' +
 				`FROM ${db}.${TABLE.joins} j ` +
 				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
@@ -714,7 +714,7 @@ export class DatabaseService {
 	}
 	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<OkPacket>(
+		const [rows] = await pool.query<OkPacket>(
 			`UPDATE ${db}.${TABLE.joins} j ` +
 				`LEFT JOIN ${db}.${TABLE.leaves} l ON l.\`joinId\` = j.\`id\` SET \`invalidatedReason\` = ` +
 				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
@@ -865,7 +865,7 @@ export class DatabaseService {
 	// ------------------------------
 	public async getFreePremiumSubscriptionGuildForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
 				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
 				`WHERE psg.\`guildId\` = ? AND ps.\`isFreeTier\` = 1 LIMIT 1`,
@@ -876,7 +876,7 @@ export class DatabaseService {
 	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
 		// TODO: This doesn't work becaues the guilds table isn't global, but we need the guild name
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
 			[subscriptionId]
 		);
@@ -891,7 +891,7 @@ export class DatabaseService {
 	}
 	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
 				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
 				`WHERE psg.\`guildId\` = ? AND ps.\`validUntil\` > NOW() LIMIT 1`,
@@ -921,7 +921,7 @@ export class DatabaseService {
 	public async getStrike(guildId: string, id: number) {
 		type ExtendedStrike = Strike & { memberName: string; memberDiscriminator: string; memberCreatedAt: string };
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT s.*, m.`name` as memberName, m.`discriminator` as memberDiscriminator, m.`createdAt` as memberCreatedAt ' +
 				`FROM ${db}.${TABLE.strikes} s INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = s.\`memberId\` WHERE s.\`guildId\` = ? AND s.\`id\` = ?`,
 			[guildId, id]
@@ -933,7 +933,7 @@ export class DatabaseService {
 	}
 	public async getStrikeAmount(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.execute<RowDataPacket[]>(
+		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT SUM(amount) AS total FROM ${db}.${TABLE.strikes} WHERE \`guildId\` = ? AND \`memberId\` = ?`,
 			[guildId, memberId]
 		);
