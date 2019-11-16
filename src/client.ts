@@ -107,7 +107,7 @@ export class IMClient extends Client {
 		guilds: number;
 		members: number;
 	};
-	public disabledGuilds: Set<string>;
+	public disabledGuilds: Set<string> = new Set();
 
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
@@ -170,8 +170,7 @@ export class IMClient extends Client {
 
 		// Services
 		this.cmds.init();
-
-		this.disabledGuilds = new Set();
+		this.rabbitmq.init();
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
@@ -191,8 +190,7 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Setup remaining services
-		await this.rabbitmq.init();
+		// Setup services that require all guilds
 		await this.scheduler.init();
 
 		this.hasStarted = true;
@@ -518,6 +516,7 @@ export class IMClient extends Client {
 
 	private async updateGatewayInfo() {
 		if (
+			!this.gatewayInfoCachedAt ||
 			moment()
 				.subtract(4, 'hours')
 				.isAfter(this.gatewayInfoCachedAt)

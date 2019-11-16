@@ -20,18 +20,18 @@
 	"cmd": {
 		"addInvites": {
 			"amount": {
-				"negative": "移除**{{ amount }}**邀請從{{{ member }}}，現在有：**{{ totalInvites }}**邀請。",
-				"positive": "新增**{{ amount }}**邀請從{{{ member }}}，現在有：**{{ totalInvites }}**邀請。"
+				"negative": "{{{ member }}}移除**{{ amount }}**邀請，現在有：**{{ totalInvites }}**邀請。",
+				"positive": "{{{ member }}}新增**{{ amount }}**邀請，現在有：**{{ totalInvites }}**邀請。"
 			},
 			"self": {
 				"args": {
-					"amount": "使用者的邀請數量將會獲得/遺失。使用一個負(-)數來移除邀請。",
+					"amount": "使用者的邀請數量將獲得/遺失。使用一個負(-)數來移除邀請。",
 					"reason": "新增/移除邀請的原因。",
-					"user": "使用者將會收到/遺失額外獎勵的邀請。"
+					"user": "使用者將收到/遺失額外獎勵的邀請。"
 				},
 				"description": "新增/移除成員的邀請。"
 			},
-			"zero": "新增零邀請真的說不通…",
+			"zero": "新增零邀請真的不合邏輯……",
 			"numberTooLarge": "您提供的數字太大了。",
 			"numberTooSmall": "您提供的數字太小了。"
 		},
@@ -40,9 +40,9 @@
 			"roleTooHigh": "身分組{{{ role }}}高於我的身分組({{{ myRole }}})，所以我不能指派它給獲得它的成員。",
 			"self": {
 				"args": {
-					"info": "一個使用者將會看見的敘述所以他們能更知道這個等級。",
+					"info": "一個使用者將看見的敘述所以他們能更知道這個等級。",
 					"invites": "需要的邀請數量來達到等級。",
-					"role": "使用者將會收到的身分組當達到等級時。"
+					"role": "使用者將收到的身分組當達到等級時。"
 				},
 				"description": "新增一個新的等級。"
 			},
@@ -61,7 +61,7 @@
 				},
 				"description": "從伺服器封鎖一個成員。",
 				"flags": {
-					"deleteMessageDays": "如果指定將會刪除被封鎖成員近幾日內的訊息。"
+					"deleteMessageDays": "如果指定將刪除被封鎖成員近幾日內的訊息。"
 				}
 			},
 			"canNotSoftBan": "指令.封鎖.不能軟封鎖"
@@ -73,150 +73,150 @@
 			},
 			"current": {
 				"clear": "使用`{{ prefix }}botConfig {{ key }} none`來清除它。",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"notSet": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}config {{ key }} 1`來設定它。",
+				"text": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}botConfig {{ key }} 1`來更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
+				"title": "目前的值"
 			},
-			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"customOnly": "**這個指令目前只有自定義機器人可用。**\n如果您在尋找您的伺服器配置，請使用`{{ prefix }}config`指令。\n\n參觀我們的patreon頁面來學習更多關於您如何可以獲得您自己的自定義機器人：{{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord的實況活動只支援twitch.tv網址。"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "新的值"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "沒有",
+			"notSet": "這些設定還沒被設定。",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "預覽"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "以前的值"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "這個配置已經被設定到那個值。",
 			"self": {
 				"args": {
-					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "您想要顯示/更改的機器人配置設定。",
+					"value": "新設定的值。"
 				},
-				"description": "Show and change the config of the bot."
+				"description": "顯示和更改機器人的配置。"
 			},
-			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"text": "以下是您的機器人的所有配置設定。\n使用`{{ prefix }}botConfig 1`來觀看單一設定\n使用`{{ prefix }}botConfig 2 3`來設定配置4 到 5",
+			"title": "自定義機器人配置"
 		},
 		"botInfo": {
-			"guilds": "Guilds",
-			"members": "Members",
+			"guilds": "伺服器",
+			"members": "成員",
 			"premium": {
-				"active": "This server has an **active premium** subscription.",
-				"custom": "You are using a custom version of the bot!",
-				"none": "This server currently **does not** have premium.",
-				"title": "Premium"
+				"active": "這個伺服器有一個**啟動付費**訂閱。",
+				"custom": "您正在使用一個自定義版本的機器人！",
+				"none": "這個伺服器目前**沒有**付費。",
+				"title": "付費"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "得到關於機器人的一般資訊。"
 			},
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "目前的Shard",
+				"total": "總共的Shards"
 			},
-			"uptime": "Uptime",
-			"version": "Version"
+			"uptime": "正常運作時間",
+			"version": "版本"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "案件刪除",
+			"notFound": "案件未找到",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "案件編號",
+					"reason": "移除案件的原因。"
 				},
-				"description": "Delete a specific case."
+				"description": "刪除一個特定案件。"
 			},
-			"title": "Case #{{ id }}"
+			"title": "案件#{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "案件未找到",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "案件編號"
 				},
-				"description": "View info about a specific case."
+				"description": "觀看一個特定案件的資訊。"
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
-			"title": "Case #{{ id }}"
+			"strike": "{{{ member }}}收到{{{ amount }}} strikes因為違反{{{ violation }}}規則{{{ date }}}。",
+			"title": "案件#{{ id }}"
 		},
 		"check": {
-			"noHistory": "User does not have any history.",
+			"noHistory": "使用者沒有任何歷史。",
 			"punishments": {
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
-				"title": "Punishments",
-				"total": "Punishments Total",
-				"totalText": "{{{ amount }}} punishments."
+				"entry": "{{ punishment }}因為他有{{ amount }} strikes {{ date }}",
+				"title": "懲罰",
+				"total": "總共的懲罰",
+				"totalText": "{{{ amount }}}懲罰。"
 			},
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "檢查使用者。"
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "檢查使用者的violation和懲罰歷史。"
 			},
 			"strikes": {
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
+				"entry": "#{{ id }}—收到{{ amount }} strikes因為{{ violation }} {{ date }}",
 				"title": "Strikes",
-				"total": "Strikes Total",
-				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
+				"total": "總共的Strikes",
+				"totalText": "收到{{{ total }}} strikes因為{{{ amount }}} violations。"
 			}
 		},
 		"clean": {
-			"error": "Error",
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"error": "錯誤",
+			"invalidQuantity": "您必須指定一個正數來清除訊息。",
 			"self": {
 				"args": {
-					"member": "User whose messages get deleted.",
-					"numberOfMessages": "Number of messages that will be searched.",
-					"quantity": "How many messages should be deleted.",
-					"type": "The type of messages that will be deleted."
+					"member": "訊息被刪除的使用者。",
+					"numberOfMessages": "將被搜尋的訊息數量。",
+					"quantity": "多少個訊息應該被刪除。",
+					"type": "該類型的訊息將被刪除。"
 				},
-				"description": "Clean a channel of certain message types."
+				"description": "清除一個頻道中一些類型的訊息。"
 			},
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"text": "刪除{{ amount }}訊息。\n這個訊息將在5秒內被刪除。",
+			"title": "刪除訊息",
+			"textReactions": "刪除包含反應的{{ amount }}訊息。"
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "All messages shorter than this will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"maxTextLength": "所有短於這個的訊息將被刪除。",
+					"numberOfMessages": "將被搜尋的訊息數量。"
 				},
-				"description": "Clear short messages"
+				"description": "清除短訊息"
 			}
 		},
 		"cleanText": {
 			"self": {
 				"args": {
-					"numberOfMessages": "Number of messages that will be searched.",
-					"text": "All messages containing this word will be deleted."
+					"numberOfMessages": "將被搜尋的訊息數量。",
+					"text": "所有包含這個字的訊息將被刪除。"
 				},
-				"description": "Delete messages containing certain keywords."
+				"description": "刪除包含一些關鍵字的訊息。"
 			}
 		},
 		"clearInvites": {
-			"done": "Cleared invites for {{ amount }} users!",
+			"done": "清除{{ amount }}使用者的邀請！",
 			"self": {
 				"args": {
-					"clearBonus": "Pass `true` if you want to remove bonus invites, otherwise `false` (default).",
-					"user": "The user to clear all invites from. If omitted clears all users."
+					"clearBonus": "傳送`true`如果您想要移除額外獎勵的邀請，否則`false`（預設值）。",
+					"user": "要被清除所有邀請的使用者。如果省略則清除所有使用者。"
 				},
-				"description": "Clear invites of the server/a user.",
+				"description": "清除伺服器/一個使用者的邀請。",
 				"flags": {
-					"clearBonus": "Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched.",
-					"date": "The date start at which invites should be counted. Default is today."
+					"clearBonus": "增加此標誌來清除額外獎勵的邀請。否則額外獎勵的邀請被留下不會改變。",
+					"date": "應該開始被計算的邀請的日期。預設值是今日。"
 				}
 			}
 		},
 		"config": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `config {{ key }} default` to reset it to the default value.",
+			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`config {{ key }} default`來重置它到預設值。",
 			"changed": {
 				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
 			},
@@ -458,7 +458,8 @@
 				"role": "Any role, for example: @Admin",
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string": "Any text",
-				"string[]": "A list of words, for example: word another \"word with space\""
+				"string[]": "A list of words, for example: word another \"word with space\"",
+				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
 			},
 			"welcome": "Use the reactions to pick one of the available options."
 		},
@@ -517,7 +518,8 @@
 				"text": "These invites expire after a certain time.",
 				"title": "Temporary"
 			},
-			"title": "You have the following codes on the server {{ guild }}"
+			"title": "You have the following codes on the server {{ guild }}",
+			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
@@ -1159,7 +1161,9 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
+		"banMembers": "permissions.banMembers",
+		"kickMembers": "permissions.kickMembers"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1235,124 +1239,124 @@
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"description": "settings.autoModAllCapsEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with A LOT OF CAPS."
 		},
 		"autoModAllCapsMinCharacters": {
-			"description": "settings.autoModAllCapsMinCharacters.description",
-			"title": "Min. Characters"
+			"title": "Min. Characters",
+			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
-			"description": "settings.autoModAllCapsPercentageCaps.description",
-			"title": "Percentage CAPs"
+			"title": "Percentage CAPs",
+			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
 		},
 		"autoModDeleteBotMessage": {
-			"description": "settings.autoModDeleteBotMessage.description",
-			"title": "Delete Bot Messages"
+			"title": "Delete Bot Messages",
+			"description": "Automatically delete the bots own messages (keeps your chat clean)."
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
-			"title": "Delete Bot Message Timeout"
+			"title": "Delete Bot Message Timeout",
+			"description": "The timeout after which bot messages are deleted."
 		},
 		"autoModDisabledForOldMembers": {
-			"description": "settings.autoModDisabledForOldMembers.description",
-			"title": "Disabled for Old Members"
+			"title": "Disabled for Old Members",
+			"description": "Disabled auto moderation for members that have been in your server for a long time."
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"description": "settings.autoModDisabledForOldMembersThreshold.description",
-			"title": "Old Members Threshold"
+			"title": "Old Members Threshold",
+			"description": "The amount of time a member has to be in your server to be considered 'old'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"description": "settings.autoModDuplicateTextEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate duplicate messages (copy-paste spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"description": "settings.autoModEmojisEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with an excessive amount of emojis."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
-			"title": "Max # of Emojis"
+			"title": "Max # of Emojis",
+			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
 		},
 		"autoModEnabled": {
-			"description": "settings.autoModEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"description": "settings.autoModHoistEnabled.description",
-			"title": "Dehoist Enabled"
+			"title": "Enabled",
+			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
 		},
 		"autoModIgnoredChannels": {
-			"description": "settings.autoModIgnoredChannels.description",
-			"title": "Ignored Channels"
+			"title": "Ignored Channels",
+			"description": "Channels that are ignored while automatically moderating."
 		},
 		"autoModIgnoredRoles": {
-			"description": "settings.autoModIgnoredRoles.description",
-			"title": "Ignored Roles"
+			"title": "Ignored Roles",
+			"description": "Any members with these roles will not automatically be moderated."
 		},
 		"autoModInvitesEnabled": {
-			"description": "settings.autoModInvitesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically scan messages for discord invite links and remove them."
 		},
 		"autoModLinksBlacklist": {
-			"description": "settings.autoModLinksBlacklist.description",
-			"title": "Blacklist"
+			"title": "Blacklist",
+			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"description": "settings.autoModLinksEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
-			"description": "settings.autoModLinksFollowRedirects.description",
-			"title": "Follow Redirects"
+			"title": "Follow Redirects",
+			"description": "Enable this to resolve redirects for links."
 		},
 		"autoModLinksWhitelist": {
-			"description": "settings.autoModLinksWhitelist.description",
-			"title": "Whitelist"
+			"title": "Whitelist",
+			"description": "A list of links that users are allowed to post."
 		},
 		"autoModLogEnabled": {
-			"description": "settings.autoModLogEnabled.description",
-			"title": "Log Enabled"
+			"title": "Log Enabled",
+			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"description": "settings.autoModMentionRolesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of roles a member can mention in a message."
 		},
 		"autoModMentionUsersEnabled": {
-			"description": "settings.autoModMentionUsersEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of users."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of users a member can mention in a message."
 		},
 		"autoModModeratedChannels": {
-			"description": "settings.autoModModeratedChannels.description",
-			"title": "Moderated Channels"
+			"title": "Moderated Channels",
+			"description": "The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels)."
 		},
 		"autoModModeratedRoles": {
-			"description": "settings.autoModModeratedRoles.description",
-			"title": "Moderated Roles"
+			"title": "Moderated Roles",
+			"description": "The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles)."
 		},
 		"autoModQuickMessagesEnabled": {
-			"description": "settings.autoModQuickMessagesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate users sending a lot of messages in a short time."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
-			"title": "# of Messages"
+			"title": "# of Messages",
+			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "A list of words that are banned.",
@@ -1485,11 +1489,23 @@
 			},
 			"music": {
 				"title": "Music",
+				"description": "Music Settings",
 				"general": {
 					"title": "Music",
 					"description": "General Music Settings"
 				},
-				"description": "Music Settings"
+				"announcement": {
+					"title": "Announcement",
+					"description": "Announces the next song."
+				},
+				"fadeMusic": {
+					"title": "Fade Music",
+					"description": "Makes the music quieter when someone talks."
+				},
+				"platform": {
+					"title": "Platform",
+					"description": "The various platforms used to play music."
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1595,11 +1611,15 @@
 		"fadeMusicEndDelay": {
 			"title": "Fade Music End Delay",
 			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+		},
+		"defaultMusicPlatform": {
+			"title": "Default Music Platform",
+			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+		},
+		"disabledMusicPlatforms": {
+			"title": "Disabled Music Platforms",
+			"description": "Music platforms that are disabled and cannot be used to play music."
 		}
-	},
-	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
 		"notPlaying": "There is currently no music being played!",

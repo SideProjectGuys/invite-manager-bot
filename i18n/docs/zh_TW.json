@@ -1,5 +1,5 @@
 {
-	"lang": "英語",
+	"lang": "中文台灣",
 	"modules": {
 		"title": "Modules",
 		"invites": {
@@ -17,7 +17,7 @@
 		},
 		"moderation": {
 			"title": "審核",
-			"description": "我們商標的全新審核系統允許您自動審核很多東西。請閱讀我們的[strikes]({{{ linkStrikes }}})和[懲罰]({{{ linkPunishments }}})頁面來獲得更多資訊。簡單來說，我們的機器人會給予'Strikes'當人們行為不端時，而且當他們達到一定數量的連擊時，他們便會受到懲罰。這些都可以透過使用者自行配置。",
+			"description": "我們商標的全新審核系統允許您自動審核很多東西。請閱讀我們的[strikes]({{{ linkStrikes }}})和[懲罰]({{{ linkPunishments }}})頁面來獲得更多資訊。簡單來說，我們的機器人會給予「strikes」當人們行為不端時，然後當他們達到一定數量的strikes時，他們便會受到懲罰。這些都可以透過使用者自行配置。",
 			"punishments": {
 				"title": "懲罰"
 			},
@@ -74,7 +74,7 @@
 	},
 	"premium": {
 		"title": "付費",
-		"description": "贊助我們的伺服器的話，我們會提供一個付費版的機器人。如果您想知道所有額外的特點，可以參觀我們的網站[價格頁面]({{{ link }}})。",
+		"description": "給付我們的伺服器帳單，我們會提供一個付費版本的機器人。如果您想知道所有額外的特點，可以參觀我們的網站[價格頁面]({{{ link }}})。",
 		"features": {
 			"title": "特色"
 		},
@@ -90,7 +90,7 @@
 		"description": "想要開始的話，只要執行`!setup`指令在您的伺服器上。",
 		"alpha": {
 			"title": "初期的機器人",
-			"intro": "`InviteManager Alpha`機器人是我們拿來測試新特色用的機器人。這些新的特色在初期的機器人不會一直穩定，但如果您使用這個機器人，您將會是第一個看到這些特色而且您可以給我們回饋讓我們知道如何把他們變得更好在他們被放進主要機器人之前。",
+			"intro": "`InviteManager Alpha`機器人是我們拿來測試新特色用的機器人。這些新的特色在初期的機器人不會一直穩定，但如果您使用這個機器人，您將會是第一個看到這些特色而且您可以給我們回饋讓我們知道如何把他們變得更好在他們將被放進主要機器人之前。",
 			"linkDescription": "邀請InviteManager Alpha的連結在這裡"
 		},
 		"faq": {
@@ -101,15 +101,15 @@
 			},
 			"joinLeaveChannel": {
 				"title": "我如何設定加入和離開訊息？",
-				"description": "設定頻道用\n\n`!config joinMessageChannel #channel`\n\n或\n\n`!config leaveMessageChannel #channel`。\n\n設定完之後，新的加入和離開訊息就會被顯示在該頻道。"
+				"description": "設定頻道用\n\n`!config joinMessageChannel #channel`\n\n或\n\n`!config leaveMessageChannel #channel`。\n\n設定完之後，新的加入和離開訊息將被顯示在該頻道。"
 			},
 			"joinLeaveMessage": {
 				"title": "我可以製作加入和離開訊息嗎？",
 				"description": "絕對可以！你可以更改訊息操作範例\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\n或\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`。\n\n有很多預留字是可用的。你可以看到完整的清單在'[自定義訊息]({{{ link }}})'頁面。"
 			},
 			"ranks": {
-				"title": "甚麼是'等級'然後我要如何使用它們？",
-				"description": "等級用於分配身分組給人們當他們達到一定數量的邀請。例如，如果您有一個身分組叫做`@Beginner`然後您希望當人們達到5以上的邀請數量時被加入該身分組，您需要為此創立一個等級就像這樣：`!add-rank @Beginner 5 （然後如果您需要一個敘述可以寫在此）`。只要有人達到5邀請時，他就會自動被加入該身分組！"
+				"title": "甚麼是「等級」然後我要如何使用它們？",
+				"description": "等級用於分配身分組給人們當他們達到一定數量的邀請。例如，如果您有一個身分組叫做`@Beginner`然後您希望當人們達到5以上的邀請數量時被加入該身分組，您需要為此創立一個等級就像這樣：`!add-rank @Beginner 5 （然後如果您需要一個敘述可以寫在此）`。只要有人達到5邀請時，他將自動被加入該身分組！"
 			},
 			"channel": {
 				"title": "我要如何禁用機器人在所有的頻道但可以使用在其中一個/一些？",
@@ -117,7 +117,7 @@
 			},
 			"limitations": {
 				"title": "限制：沒有高級追蹤在機器人加入以前。",
-				"description": "高級追蹤（誰邀請誰）只運作在當您邀請機器人之後。機器人將會持續知道所有人的邀請數量在您邀請了它之後，不必擔心。只有額外訊息的缺失而且加入的成員可以被收集當您邀請機器人之後。"
+				"description": "高級追蹤（誰邀請誰）只運作在當您邀請機器人之後。機器人將持續知道所有人的邀請數量在您邀請了它之後，不必擔心。只有額外訊息的缺失而且加入的成員可以被收集當您邀請機器人之後。"
 			}
 		},
 		"pro": {

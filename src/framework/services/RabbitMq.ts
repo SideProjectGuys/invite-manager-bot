@@ -28,36 +28,38 @@ export class RabbitMqService {
 		this.msgQueue = [];
 	}
 
-	public async init() {
+	public init() {
 		if (this.client.flags.includes('--no-rabbitmq')) {
 			return;
 		}
 
-		try {
-			this.conn = await connect(this.client.config.rabbitmq);
-			this.conn.on('close', async err => {
+		connect(this.client.config.rabbitmq)
+			.then(async conn => {
+				this.conn = conn;
+				this.conn.on('close', async err => {
+					console.error(err);
+					this.conn = null;
+
+					setTimeout(() => this.init(), this.connRetry * 30);
+					this.connRetry++;
+				});
+				this.conn.on('error', async err => {
+					console.error(err);
+					this.conn = null;
+
+					setTimeout(() => this.init(), this.connRetry * 30);
+					this.connRetry++;
+				});
+
+				await this.initChannel();
+			})
+			.catch(err => {
 				console.error(err);
 				this.conn = null;
 
 				setTimeout(() => this.init(), this.connRetry * 30);
 				this.connRetry++;
 			});
-			this.conn.on('error', async err => {
-				console.error(err);
-				this.conn = null;
-
-				setTimeout(() => this.init(), this.connRetry * 30);
-				this.connRetry++;
-			});
-
-			await this.initChannel();
-		} catch (err) {
-			console.error(err);
-			this.conn = null;
-
-			setTimeout(() => this.init(), this.connRetry * 30);
-			this.connRetry++;
-		}
 	}
 
 	private async initChannel() {
