@@ -107,7 +107,7 @@ resolvers.duration.typeInfo
 | --------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------- |
 | [botConfig](#botConfig)                 | Mostrar y cambiar la configuración del Bot.                                  | !botConfig [key][value]                     |
 | [config](#config)                       | Muestra y cambia la configuración del servidor.                              | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | Interactive Config                                                           | !interactiveConfig                          |
+| [interactiveConfig](#interactiveConfig) | Configuración interactiva                                                    | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Muestra y cambia la configuración de los códigos de invitación del servidor. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Muestra y cambia la configuración de los miembros del servidor.              | !memberConfig [key][user] [value]           |
 | [permissions](#permissions)             | Configura permisos para usar comandos.                                       | !permissions [cmd][role]                    |
@@ -117,7 +117,7 @@ resolvers.duration.typeInfo
 | Command             | Description                                                                                        | Usage           |
 | ------------------- | -------------------------------------------------------------------------------------------------- | --------------- |
 | [botInfo](#botInfo) | Obtén información general sobre el bot.                                                            | !botInfo        |
-| [credits](#credits) | Show developers and contributors of the bot.                                                       | !credits        |
+| [credits](#credits) | Mostrar desarrolladores y colaboradores del bot.                                                   | !credits        |
 | [getBot](#getBot)   | Consigue un link de invitación para el bot.                                                        | !getBot         |
 | [help](#help)       | Mostrar ayuda.                                                                                     | !help [command] |
 | [members](#members) | Muestra el conteo de miembros del servidor actual.                                                 | !members        |
@@ -282,9 +282,9 @@ Banea a un usuario del servidor.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type              | Description                                                                           |
+| --------------------------------- | --------- | ----------------- | ------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Si se especifica, eliminará los mensajes de los miembros prohibidos hace muchos días. |
 
 ### Examples
 
@@ -555,10 +555,10 @@ Limpia invitaciones del servidor/un usuario.
 
 ### Flags
 
-| Flag                       | Short      | Type                | Description                                                                              |
-| -------------------------- | ---------- | ------------------- | ---------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | La fecha de inicio en la cual se comenzarán a contar las invitaciones. Por defecto; hoy. |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched. |
+| Flag                       | Short      | Type                | Description                                                                                                                                   |
+| -------------------------- | ---------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | La fecha de inicio en la cual se comenzarán a contar las invitaciones. Por defecto; hoy.                                                      |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | Agregue esta bandera para borrar las invitaciones de bonificación también. De lo contrario, las invitaciones de bonificación quedan intactas. |
 
 ### Examples
 
@@ -646,7 +646,7 @@ Crea códigos de invitación únicos.
 
 ## !credits
 
-Show developers and contributors of the bot.
+Mostrar desarrolladores y colaboradores del bot.
 
 ### Usage
 
@@ -880,7 +880,7 @@ Muestra información de un miembro en especifico.
 
 ## !interactiveConfig
 
-Interactive Config
+Configuración interactiva
 
 ### Usage
 
@@ -919,11 +919,11 @@ Muestra y cambia la configuración de los códigos de invitación del servidor.
 
 ### Arguments
 
-| Argument   | Type                       | Required | Description                                                | Details                                          |
-| ---------- | -------------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------ |
-| key        | [Enum](#Enum)              | No       | El ajuste de configuración que quieres mostrar/cambiar.    | Use one of the following values: `name`, `roles` |
-| inviteCode | [Invite Code](#InviteCode) | No       | The invite code for which you want to change the settings. |                                                  |
-| value      | [Value](#Value)            | No       | El nuevo valor del ajuste.                                 |                                                  |
+| Argument   | Type                       | Required | Description                                                         | Details                                          |
+| ---------- | -------------------------- | -------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| key        | [Enum](#Enum)              | No       | El ajuste de configuración que quieres mostrar/cambiar.             | Use one of the following values: `name`, `roles` |
+| inviteCode | [Invite Code](#InviteCode) | No       | El código de invitación para el que desea cambiar la configuración. |                                                  |
+| value      | [Value](#Value)            | No       | El nuevo valor del ajuste.                                          |                                                  |
 
 ### Examples
 
@@ -1205,11 +1205,11 @@ Muestra y cambia la configuración de los miembros del servidor.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                | Details                                                |
-| -------- | --------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | The member config setting which you want to show/change.   | Use one of the following values: `hideFromLeaderboard` |
-| user     | [User](#User)   | No       | El miembro para el que se muestra/cambia la configuración. |                                                        |
-| value    | [Value](#Value) | No       | El nuevo valor del ajuste.                                 |                                                        |
+| Argument | Type            | Required | Description                                                               | Details                                                |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------- | ------------------------------------------------------ |
+| key      | [Enum](#Enum)   | No       | La configuración de configuración de miembro que desea mostrar / cambiar. | Use one of the following values: `hideFromLeaderboard` |
+| user     | [User](#User)   | No       | El miembro para el que se muestra/cambia la configuración.                |                                                        |
+| value    | [Value](#Value) | No       | El nuevo valor del ajuste.                                                |                                                        |
 
 ### Examples
 
@@ -1295,7 +1295,7 @@ Mute a user
 
 | Argument | Type              | Required | Description                                        | Details |
 | -------- | ----------------- | -------- | -------------------------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | The user that should be muted.                     |         |
+| user     | [Member](#Member) | Yes      | El usuario que debe estar silenciado.              |         |
 | reason   | [Text](#Text)     | No       | La razón por la cual este usuario está silenciado. |         |
 
 ### Flags
@@ -2145,10 +2145,10 @@ Unban a user
 
 ### Arguments
 
-| Argument | Type          | Required | Description                           | Details |
-| -------- | ------------- | -------- | ------------------------------------- | ------- |
-| user     | [User](#User) | Yes      | The user that should be unbanned.     |         |
-| reason   | [Text](#Text) | No       | The reason why this user is unbanned. |         |
+| Argument | Type          | Required | Description                                         | Details |
+| -------- | ------------- | -------- | --------------------------------------------------- | ------- |
+| user     | [User](#User) | Yes      | The user that should be unbanned.                   |         |
+| reason   | [Text](#Text) | No       | La razón por la cual este usuario no está excluido. |         |
 
 ### Examples
 
@@ -2192,9 +2192,9 @@ Unmute a user
 
 ### Arguments
 
-| Argument | Type              | Required | Description                      | Details |
-| -------- | ----------------- | -------- | -------------------------------- | ------- |
-| user     | [Member](#Member) | Yes      | The user that should be unmuted. |         |
+| Argument | Type              | Required | Description                              | Details |
+| -------- | ----------------- | -------- | ---------------------------------------- | ------- |
+| user     | [Member](#Member) | Yes      | El usuario que debe estar sin silenciar. |         |
 
 ### Examples
 

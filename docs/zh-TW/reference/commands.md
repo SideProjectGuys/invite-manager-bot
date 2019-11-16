@@ -80,7 +80,7 @@ resolvers.duration.typeInfo
 | Command                           | Description                                      | Usage                                                            |
 | --------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
 | [addInvites](#addInvites)         | 新增/移除成員的邀請。                            | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Clear invites of the server/a user.              | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [clearInvites](#clearInvites)     | 清除伺服器/一個使用者的邀請。                    | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
 | [createInvite](#createInvite)     | Creates unique invite codes.                     | !createInvite \<name\> [channel]                                 |
 | [info](#info)                     | Show info about a specific member.               | !info \<user\> [details][page]                                   |
 | [inviteCodes](#inviteCodes)       | Get a list of all your invite codes              | !inviteCodes                                                     |
@@ -105,7 +105,7 @@ resolvers.duration.typeInfo
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
+| [botConfig](#botConfig)                 | 顯示和更改機器人的配置。                                  | !botConfig [key][value]                     |
 | [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
@@ -116,7 +116,7 @@ resolvers.duration.typeInfo
 
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Get general information about the bot.                                            | !botInfo        |
+| [botInfo](#botInfo) | 得到關於機器人的一般資訊。                                                        | !botInfo        |
 | [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
@@ -139,12 +139,12 @@ resolvers.duration.typeInfo
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | 從伺服器封鎖一個成員。                                                                                                                        | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
-| [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
+| [caseDelete](#caseDelete)             | 刪除一個特定案件。                                                                                                                            | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | 觀看一個特定案件的資訊。                                                                                                                      | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | 檢查使用者的 violation 和懲罰歷史。                                                                                                           | !check \<user\>                                                  |
+| [clean](#clean)                       | 清除一個頻道中一些類型的訊息。                                                                                                                | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | 清除短訊息                                                                                                                                    | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | 刪除包含一些關鍵字的訊息。                                                                                                                    | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
@@ -205,11 +205,11 @@ resolvers.duration.typeInfo
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                | Details |
-| -------- | ----------------- | -------- | ---------------------------------------------------------- | ------- |
-| user     | [User](#User)     | Yes      | 使用者將會收到/遺失額外獎勵的邀請。                        |         |
-| amount   | [Number](#Number) | Yes      | 使用者的邀請數量將會獲得/遺失。使用一個負(-)數來移除邀請。 |         |
-| reason   | [Text](#Text)     | No       | 新增/移除邀請的原因。                                      |         |
+| Argument | Type              | Required | Description                                              | Details |
+| -------- | ----------------- | -------- | -------------------------------------------------------- | ------- |
+| user     | [User](#User)     | Yes      | 使用者將收到/遺失額外獎勵的邀請。                        |         |
+| amount   | [Number](#Number) | Yes      | 使用者的邀請數量將獲得/遺失。使用一個負(-)數來移除邀請。 |         |
+| reason   | [Text](#Text)     | No       | 新增/移除邀請的原因。                                    |         |
 
 ### Examples
 
@@ -243,11 +243,11 @@ resolvers.duration.typeInfo
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                        | Details |
-| -------- | ----------------- | -------- | -------------------------------------------------- | ------- |
-| role     | [Role](#Role)     | Yes      | 使用者將會收到的身分組當達到等級時。               |         |
-| invites  | [Number](#Number) | Yes      | 需要的邀請數量來達到等級。                         |         |
-| info     | [Text](#Text)     | No       | 一個使用者將會看見的敘述所以他們能更知道這個等級。 |         |
+| Argument | Type              | Required | Description                                      | Details |
+| -------- | ----------------- | -------- | ------------------------------------------------ | ------- |
+| role     | [Role](#Role)     | Yes      | 使用者將收到的身分組當達到等級時。               |         |
+| invites  | [Number](#Number) | Yes      | 需要的邀請數量來達到等級。                       |         |
+| info     | [Text](#Text)     | No       | 一個使用者將看見的敘述所以他們能更知道這個等級。 |         |
 
 ### Examples
 
@@ -282,9 +282,9 @@ resolvers.duration.typeInfo
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                |
-| --------------------------------- | --------- | ----------------- | ------------------------------------------ |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | 如果指定將會刪除被封鎖成員近幾日內的訊息。 |
+| Flag                              | Short     | Type              | Description                              |
+| --------------------------------- | --------- | ----------------- | ---------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | 如果指定將刪除被封鎖成員近幾日內的訊息。 |
 
 ### Examples
 
@@ -294,7 +294,7 @@ resolvers.duration.typeInfo
 
 ## !botConfig
 
-Show and change the config of the bot.
+顯示和更改機器人的配置。
 
 ### Usage
 
@@ -310,10 +310,10 @@ Show and change the config of the bot.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| Argument | Type            | Required | Description                       | Details                                                                                                                                     |
+| -------- | --------------- | -------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | 您想要顯示/更改的機器人配置設定。 | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [Value](#Value) | No       | 新設定的值。                      |                                                                                                                                             |
 
 ### Examples
 
@@ -327,7 +327,7 @@ Show and change the config of the bot.
 
 ## !botInfo
 
-Get general information about the bot.
+得到關於機器人的一般資訊。
 
 ### Usage
 
@@ -351,7 +351,7 @@ Get general information about the bot.
 
 ## !caseDelete
 
-Delete a specific case.
+刪除一個特定案件。
 
 ### Usage
 
@@ -367,10 +367,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description      | Details |
+| ---------- | ----------------- | -------- | ---------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | 案件編號         |         |
+| reason     | [Text](#Text)     | No       | 移除案件的原因。 |         |
 
 ### Examples
 
@@ -384,7 +384,7 @@ Delete a specific case.
 
 ## !caseView
 
-View info about a specific case.
+觀看一個特定案件的資訊。
 
 ### Usage
 
@@ -402,7 +402,7 @@ View info about a specific case.
 
 | Argument   | Type              | Required | Description | Details |
 | ---------- | ----------------- | -------- | ----------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number |         |
+| caseNumber | [Number](#Number) | Yes      | 案件編號    |         |
 
 ### Examples
 
@@ -416,7 +416,7 @@ View info about a specific case.
 
 ## !check
 
-Check violation and punishment history of a user.
+檢查使用者的 violation 和懲罰歷史。
 
 ### Usage
 
@@ -430,9 +430,9 @@ Check violation and punishment history of a user.
 
 ### Arguments
 
-| Argument | Type          | Required | Description    | Details |
-| -------- | ------------- | -------- | -------------- | ------- |
-| user     | [User](#User) | Yes      | User to check. |         |
+| Argument | Type          | Required | Description  | Details |
+| -------- | ------------- | -------- | ------------ | ------- |
+| user     | [User](#User) | Yes      | 檢查使用者。 |         |
 
 ### Examples
 
@@ -450,7 +450,7 @@ Check violation and punishment history of a user.
 
 ## !clean
 
-Clean a channel of certain message types.
+清除一個頻道中一些類型的訊息。
 
 ### Usage
 
@@ -464,10 +464,10 @@ Clean a channel of certain message types.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                | Details                                                                                                            |
-| ---------------- | ----------------- | -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| type             | [Enum](#Enum)     | Yes      | The type of messages that will be deleted. | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.  |                                                                                                                    |
+| Argument         | Type              | Required | Description            | Details                                                                                                            |
+| ---------------- | ----------------- | -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| type             | [Enum](#Enum)     | Yes      | 該類型的訊息將被刪除。 | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
+| numberOfMessages | [Number](#Number) | No       | 將被搜尋的訊息數量。   |                                                                                                                    |
 
 ### Examples
 
@@ -477,7 +477,7 @@ Clean a channel of certain message types.
 
 ## !cleanShort
 
-Clear short messages
+清除短訊息
 
 ### Usage
 
@@ -493,10 +493,10 @@ Clear short messages
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                     | Details |
-| ---------------- | ----------------- | -------- | ----------------------------------------------- | ------- |
-| maxTextLength    | [Number](#Number) | Yes      | All messages shorter than this will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.       |         |
+| Argument         | Type              | Required | Description                  | Details |
+| ---------------- | ----------------- | -------- | ---------------------------- | ------- |
+| maxTextLength    | [Number](#Number) | Yes      | 所有短於這個的訊息將被刪除。 |         |
+| numberOfMessages | [Number](#Number) | No       | 將被搜尋的訊息數量。         |         |
 
 ### Examples
 
@@ -506,7 +506,7 @@ Clear short messages
 
 ## !cleanText
 
-Delete messages containing certain keywords.
+刪除包含一些關鍵字的訊息。
 
 ### Usage
 
@@ -522,10 +522,10 @@ Delete messages containing certain keywords.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                        | Details |
-| ---------------- | ----------------- | -------- | -------------------------------------------------- | ------- |
-| text             | [Text](#Text)     | Yes      | All messages containing this word will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.          |         |
+| Argument         | Type              | Required | Description                    | Details |
+| ---------------- | ----------------- | -------- | ------------------------------ | ------- |
+| text             | [Text](#Text)     | Yes      | 所有包含這個字的訊息將被刪除。 |         |
+| numberOfMessages | [Number](#Number) | No       | 將被搜尋的訊息數量。           |         |
 
 ### Examples
 
@@ -535,7 +535,7 @@ Delete messages containing certain keywords.
 
 ## !clearInvites
 
-Clear invites of the server/a user.
+清除伺服器/一個使用者的邀請。
 
 ### Usage
 
@@ -549,16 +549,16 @@ Clear invites of the server/a user.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                      | Details |
-| -------- | ------------- | -------- | ---------------------------------------------------------------- | ------- |
-| user     | [User](#User) | No       | The user to clear all invites from. If omitted clears all users. |         |
+| Argument | Type          | Required | Description                                          | Details |
+| -------- | ------------- | -------- | ---------------------------------------------------- | ------- |
+| user     | [User](#User) | No       | 要被清除所有邀請的使用者。如果省略則清除所有使用者。 |         |
 
 ### Flags
 
-| Flag                       | Short      | Type                | Description                                                                              |
-| -------------------------- | ---------- | ------------------- | ---------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | The date start at which invites should be counted. Default is today.                     |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched. |
+| Flag                       | Short      | Type                | Description                                                        |
+| -------------------------- | ---------- | ------------------- | ------------------------------------------------------------------ |
+| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | 應該開始被計算的邀請的日期。預設值是今日。                         |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | 增加此標誌來清除額外獎勵的邀請。否則額外獎勵的邀請被留下不會改變。 |
 
 ### Examples
 

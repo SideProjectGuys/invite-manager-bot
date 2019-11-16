@@ -16,4 +16,4 @@
 - [Pусский](/ru/README.md)
 - [Türkçe](/tr/README.md)
 - [中文（中国）](/zh-CN/README.md)
-- [英語](/zh-TW/README.md)
+- [中文台灣](/zh-TW/README.md)
