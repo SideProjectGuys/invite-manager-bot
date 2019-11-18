@@ -64,7 +64,7 @@
 					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "I cannot softban this user."
 		},
 		"botConfig": {
 			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
@@ -459,7 +459,7 @@
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string": "Any text",
 				"string[]": "A list of words, for example: word another \"word with space\"",
-				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "Use the reactions to pick one of the available options."
 		},
@@ -1162,8 +1162,8 @@
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
-		"banMembers": "permissions.banMembers",
-		"kickMembers": "permissions.kickMembers"
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1462,7 +1462,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "General"
 				},
 				"invites": {
@@ -1569,7 +1569,7 @@
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Muted Role"
 		},
 		"prefix": {

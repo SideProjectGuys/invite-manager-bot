@@ -64,7 +64,7 @@
 					"deleteMessageDays": "Si spécifié, cela va supprimer les messages du membre banni ce nombre de jours en arrière."
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "I cannot softban this user."
 		},
 		"botConfig": {
 			"canNotClear": "Le paramètre **{{ key }}** ne peut pas être effacé. Vous pouvez utiliser `{{ prefix }}botConfig {{ key }} default` pour le remettre à zéro.",
@@ -458,7 +458,8 @@
 				"role": "N'importe quel rôle, par exemple: @Admin",
 				"role[]": "Une liste de rôles, par exemple: @Admin @Mod",
 				"string": "N'importe quel texte",
-				"string[]": "Une liste de mots, par exemple pour: licorne magique, \"mot avec espace\""
+				"string[]": "Une liste de mots, par exemple pour: licorne magique, \"mot avec espace\"",
+				"enum<musicplatformtypes>[]": "Une liste de types de platformes de musique"
 			},
 			"welcome": "Utilisez les réactions pour choisir l'une des options disponibles."
 		},
@@ -469,7 +470,7 @@
 			"current": {
 				"clear": "Utilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` pour effacer.",
 				"notSet": "Cette configuration n'est pas définie.\n\nUtilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` pour la définir.",
-				"text": "Cette configuration de code d'invitation est actuellement définie.\n\nUtilisez `{{prefix}} inviteCodeConfig {{clé}} {{code}}\" style = \"box-sizing: border-box; sélection de l'utilisateur: aucune; arrière-plan: rgba (133, 91, 213, 0,2); affichage: inline-block; padding-right: 6px; padding-left: 6px; hauteur de ligne: 18px; border-radius: 10px 0px 0px 10px; taille de police: 12px; vertical-align: text-top; couleur: hériter; curseur: pointeur; marge: 0px 2px; largeur minimale: 26px; text-align: center; \"> 1` pour le changer.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} default` pour le rétablir à la valeur par défaut.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\` pour le supprimer.\n\n\"class =\" o-link o-link - muet u-textAlign-center u-textDecoration-no espace \"style =\" marge: 0px; padding-top: 6px! important; padding-right: 0px; padding-bottom: 6px! important; padding-left: 0px; bordure: 0px non transparent; vertical-align: inherit; taille de la boîte: boîte à bordure; couleur de fond: transparent; texte-décoration: aucun; taille de police: 0.714rem! important; poids de la police: hériter; line-height: hériter; espacement des lettres: initial; style de police: hériter; text-align: center! important; display: block! important; couleur: rgb (130, 129, 129); transition: couleur 0,1 s atténuation, opacité 0,1 s atténuation, couleur d'arrière-plan 0,1 s atténuation; \">",
+				"text": "Cette configuration de code d'invitation est actuellement définie.\n\nUtilisez `{{prefix}} inviteCodeConfig {{clé}} {{code}}\" style = \"box-sizing: border-box; sélection de l'utilisateur: aucune; arrière-plan: rgba (133, 91, 213, 0,2); affichage: inline-block; padding-right: 6px; padding-left: 6px; hauteur de ligne: 18px; border-radius: 10px 0px 0px 10px; taille de police: 12px; vertical-align: text-top; couleur: hériter; curseur: pointeur; marge: 0px 2px; largeur minimale: 26px; text-align: center; \"> 1` pour le changer.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} default` pour le rétablir à la valeur par défaut.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\` pour le supprimer.",
 				"title": "Valeur actuelle"
 			},
 			"keys": {
@@ -517,7 +518,8 @@
 				"text": "Ces invitations expirent après un certain temps.",
 				"title": "Temporaire"
 			},
-			"title": "Vous avez les codes d'invitation suivants sur le serveur {{ guild }}"
+			"title": "Vous avez les codes d'invitation suivants sur le serveur {{ guild }}",
+			"error": "Je n'ai pas pu vous envoyer vos codes d'invitation, assurez-vous d'autoriser les messages privés de ce serveur."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
@@ -573,7 +575,7 @@
 				"total": "T"
 			},
 			"comparedTo": "changements par rapport à {{ to }}",
-			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invitations (**{{ regular }}** normales, **{{ custom }}** bonus, **{{ fake }}** fausses, **{{ leave }}** partis)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalide: {{ date }}",
 			"legend": "`T` = Total\n`O` = Ordinaire\n`B` = Bonus\n`F` = Faux\n`P` = Partis",
@@ -1159,7 +1161,9 @@
 		"viewAuditLogs": "Voir les logs du serveur",
 		"manageMessages": "Gérer les messages",
 		"readMessageHistory": "Lire l'historique des messages",
-		"missing": "Il me manque la permission {{{ permissions }}} dans {{{ channel }}}"
+		"missing": "Il me manque la permission {{{ permissions }}} dans {{{ channel }}}",
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Annulé"
@@ -1174,7 +1178,7 @@
 			"multiple": "Plusieurs salons trouvés. {{{ channels }}}",
 			"notFound": "Salon non trouvé.",
 			"type": "Salon",
-			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
+			"typeInfo": "Cet argument attend un salon Discord. Vous pouvez utiliser une de ces méthodes pour donner un salon :\n\n- Mentionner le salon `#general`\n- Utiliser l'ID : `409846838129197057`\n- Utiliser le nom : `general`\n- Utiliser des guillemets si le nom contient un espace : `\"general avec des espaces\"`"
 		},
 		"command": {
 			"multiple": "Plusieurs commandes trouvées. {{{ commands }}}",
@@ -1187,7 +1191,7 @@
 			"invalid": "Valeur invalide.",
 			"validValues": "Utilisez une des valeurs suivantes : {{{ values }}}",
 			"type": "Énumération",
-			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
+			"typeInfo": "Cet argument attend une valeur d'une liste spécifique de valeurs.\n\n> Selon la commande les valeurs valides peuvent changer. Utilisez `!help <command>` (ex : `!help addRank`) pour avoir plus d'informations sur la commande et les valeurs valides pour cette commande."
 		},
 		"invalid": "Valeur invalide pour `{{ arg }}` : {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
@@ -1205,17 +1209,17 @@
 			"multiple": "Plusieurs rôles trouvés. {{{ roles }}}",
 			"notFound": "Rôle non trouvé.",
 			"type": "Role",
-			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
+			"typeInfo": "Cet argument attend un role Discord. Vous pouvez utiliser une de ces méthodes pour donner un role :\n\n- Mentionner le role `@Admin`\n- Utiliser l'ID : `102785693046026240`\n- Utiliser le nom : `Admin`\n- Utiliser des guillemets si le nom contient un espace : `\"Admin avec des espaces\"`"
 		},
 		"user": {
 			"multiple": "Plusieurs utilisateurs trouvés. {{{ users }}}",
 			"notFound": "L'utilisateur n'a pas été trouvé.",
 			"type": "Utilisateur",
-			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
+			"typeInfo": "Cet argument attend un utilisateur Discord. Vous pouvez utiliser une de ces méthodes pour donner un utilisateur :\n\n- Mentionner l'utilisateur `@Valandur`\n- Utiliser l'ID : `102785693046026240`\n- Utiliser le nom : `Valandur`\n- Utiliser des guillemets si le nom contient un espace : `\"Valandur avec des espaces\"`"
 		},
 		"string": {
 			"type": "Texte",
-			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
+			"typeInfo": "Cet argument attend du texte. Vous pouvez utiliser des guillemets (`\"Texte avec des guillemets\") pour du texte avec des espaces.\n\n> Si le texte est le dernier argument vous n'avez pas besoin d'utiliser des guillemets."
 		},
 		"settingsvalue": {
 			"type": "Valeur"
@@ -1230,7 +1234,7 @@
 		},
 		"invitecode": {
 			"type": "Code d'invitation",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "Cet argument attend un code d'invitation Discord.\n\n> Vous pouvez donner uniquement le code après `https://discord.gg/` pour annuler l'aperçu créé par Discord."
 		}
 	},
 	"settings": {
@@ -1240,7 +1244,7 @@
 		},
 		"autoModAllCapsMinCharacters": {
 			"title": "Caractères minimum",
-			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
+			"description": "La quantité minimale de caractères dans un message à prendre en compte pour la modération (définir sur '3' ignorerait 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
 			"title": "Percentage Caps",
@@ -1458,7 +1462,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "Générale"
 				},
 				"invites": {
@@ -1565,7 +1569,7 @@
 			"title": "Supprimer les messages d'avertissement"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Rôle muet"
 		},
 		"prefix": {
@@ -1615,70 +1619,6 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
-		}
-	},
-	"strikeConfig": {
-		"invites": {
-			"title": "Invite Links",
-			"description": "A member posts an invite link to a Discord server."
-		},
-		"links": {
-			"title": "Links",
-			"description": "Someone posts a link to a website."
-		},
-		"words": {
-			"title": "Banned words",
-			"description": "A member uses a explicitly banned word."
-		},
-		"allCaps": {
-			"title": "CAPS",
-			"description": "Messages containing an excessive amount of CAPS."
-		},
-		"duplicateText": {
-			"title": "Duplicate Text",
-			"description": "Someone keeps posting the same message (copy-pasta)."
-		},
-		"quickMessages": {
-			"title": "Spamming",
-			"description": "Members send a lot of mesages in a short amount of time."
-		},
-		"mentionUsers": {
-			"title": "Mention Users",
-			"description": "Someone posts a message mentioning a lot of other people."
-		},
-		"mentionRoles": {
-			"title": "Mention Roles",
-			"description": "Someone posts a message mentioning a lot of roles."
-		},
-		"emojis": {
-			"title": "Emojis",
-			"description": "Messages made up of mostly emojis."
-		},
-		"hoist": {
-			"title": "Hoisting",
-			"description": "Someone adds special characters to their name to be listed at the top."
-		}
-	},
-	"punishmentConfig": {
-		"ban": {
-			"title": "Ban",
-			"description": "Ban the member from the server."
-		},
-		"kick": {
-			"title": "Kick",
-			"description": "Kick the member from the server."
-		},
-		"softban": {
-			"title": "Softban",
-			"description": "Ban and then immediately unban a member."
-		},
-		"warn": {
-			"title": "Warn",
-			"description": "Send a warning message to the member"
-		},
-		"mute": {
-			"title": "Mute",
-			"description": "Mute the member."
 		}
 	},
 	"music": {

@@ -250,13 +250,14 @@ export class MusicConnection {
 
 		const next = this.musicQueueCache.queue.shift();
 		if (next) {
-			let sanitizedTitle = next.title;
-			IGNORED_ANNOUNCEMENT_WORDS.forEach(word => (sanitizedTitle = sanitizedTitle.replace(word, '')));
-
 			if (this.settings.announceNextSong) {
-				await this.playAnnouncement(this.settings.announcementVoice, 'Playing: ' + sanitizedTitle).catch(
-					() => undefined
-				);
+				let sanitizedTitle = next.title || '';
+				IGNORED_ANNOUNCEMENT_WORDS.forEach(word => (sanitizedTitle = sanitizedTitle.replace(word, '')));
+				if (sanitizedTitle) {
+					await this.playAnnouncement(this.settings.announcementVoice, 'Playing: ' + sanitizedTitle).catch(
+						() => undefined
+					);
+				}
 			}
 
 			const stream = await next.getStreamUrl().catch(() => undefined);

@@ -64,7 +64,7 @@
 					"deleteMessageDays": "BANしたユーザーのメッセージを指定した日数分を削除します"
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "I cannot softban this user."
 		},
 		"botConfig": {
 			"canNotClear": "構成設定** {{key}} **はクリアできません。 デフォルト値にリセットするために `{{prefix}} botConfig {{key}} default`を使うことができます。",
@@ -458,7 +458,8 @@
 				"role": "任意の役職、例えば@Admin",
 				"role[]": "役職のリスト、例えば：@Admin @Mod",
 				"string": "任意のテキスト",
-				"string[]": "単語のリスト、例えば： \"スペースのある単語\""
+				"string[]": "単語のリスト、例えば： \"スペースのある単語\"",
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "リアクションを使用して、利用可能なオプションの1つを選択してください。"
 		},
@@ -517,7 +518,8 @@
 				"text": "これらの招待は一定期間後に期限が切れます。",
 				"title": "一時的"
 			},
-			"title": "サーバー{{guild}}に次のコードがあります。"
+			"title": "サーバー{{guild}}に次のコードがあります。",
+			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
 		},
 		"inviteDetails": {
 			"entry": "** {{uses}} **から{{{code}}} - 作成日** {{createdAt}} **",
@@ -1159,7 +1161,9 @@
 		"viewAuditLogs": "サーバーログの表示",
 		"manageMessages": "メッセージの管理",
 		"readMessageHistory": "メッセージの履歴を見る",
-		"missing": "InviteManagerは{{{ channel }}}の{{{ permissions }}}許可がありません"
+		"missing": "InviteManagerは{{{ channel }}}の{{{ permissions }}}許可がありません",
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "キャンセルしました。"
@@ -1235,124 +1239,124 @@
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"description": "settings.autoModAllCapsEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate messages with A LOT OF CAPS."
 		},
 		"autoModAllCapsMinCharacters": {
-			"description": "settings.autoModAllCapsMinCharacters.description",
-			"title": "最小文字"
+			"title": "最小文字",
+			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
-			"description": "settings.autoModAllCapsPercentageCaps.description",
-			"title": "煽りのパーセント"
+			"title": "煽りのパーセント",
+			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
 		},
 		"autoModDeleteBotMessage": {
-			"description": "settings.autoModDeleteBotMessage.description",
-			"title": "BOTのメッセージを削除"
+			"title": "BOTのメッセージを削除",
+			"description": "Automatically delete the bots own messages (keeps your chat clean)."
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
-			"title": "ボットメッセージタイムアウトの削除"
+			"title": "ボットメッセージタイムアウトの削除",
+			"description": "The timeout after which bot messages are deleted."
 		},
 		"autoModDisabledForOldMembers": {
-			"description": "settings.autoModDisabledForOldMembers.description",
-			"title": "古いメンバーには無効"
+			"title": "古いメンバーには無効",
+			"description": "Disabled auto moderation for members that have been in your server for a long time."
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"description": "settings.autoModDisabledForOldMembersThreshold.description",
-			"title": "古いメンバーのしきい値"
+			"title": "古いメンバーのしきい値",
+			"description": "The amount of time a member has to be in your server to be considered 'old'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"description": "settings.autoModDuplicateTextEnabled.description",
-			"title": "有効化"
+			"title": "有効化",
+			"description": "Automatically moderate duplicate messages (copy-paste spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
-			"title": "秒単位のタイムフレーム"
+			"title": "秒単位のタイムフレーム",
+			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"description": "settings.autoModEmojisEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate messages with an excessive amount of emojis."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
-			"title": "絵文字の最大数"
+			"title": "絵文字の最大数",
+			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
 		},
 		"autoModEnabled": {
-			"description": "settings.autoModEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"description": "settings.autoModHoistEnabled.description",
-			"title": "デホイストが有効"
+			"title": "Enabled",
+			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
 		},
 		"autoModIgnoredChannels": {
-			"description": "settings.autoModIgnoredChannels.description",
-			"title": "無視されるチャンネル"
+			"title": "無視されるチャンネル",
+			"description": "Channels that are ignored while automatically moderating."
 		},
 		"autoModIgnoredRoles": {
-			"description": "settings.autoModIgnoredRoles.description",
-			"title": "無視される役職"
+			"title": "無視される役職",
+			"description": "Any members with these roles will not automatically be moderated."
 		},
 		"autoModInvitesEnabled": {
-			"description": "settings.autoModInvitesEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically scan messages for discord invite links and remove them."
 		},
 		"autoModLinksBlacklist": {
-			"description": "settings.autoModLinksBlacklist.description",
-			"title": "ブラックリスト"
+			"title": "ブラックリスト",
+			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"description": "settings.autoModLinksEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
-			"description": "settings.autoModLinksFollowRedirects.description",
-			"title": "リダイレクトをフォローする"
+			"title": "リダイレクトをフォローする",
+			"description": "Enable this to resolve redirects for links."
 		},
 		"autoModLinksWhitelist": {
-			"description": "settings.autoModLinksWhitelist.description",
-			"title": "ホワイトリスト"
+			"title": "ホワイトリスト",
+			"description": "A list of links that users are allowed to post."
 		},
 		"autoModLogEnabled": {
-			"description": "settings.autoModLogEnabled.description",
-			"title": "ログが有効化されました"
+			"title": "ログが有効化されました",
+			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"description": "settings.autoModMentionRolesEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
-			"title": "メンション"
+			"title": "メンション",
+			"description": "The maximum amount of roles a member can mention in a message."
 		},
 		"autoModMentionUsersEnabled": {
-			"description": "settings.autoModMentionUsersEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate messages that mention an excessive amount of users."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
-			"title": "メンション"
+			"title": "メンション",
+			"description": "The maximum amount of users a member can mention in a message."
 		},
 		"autoModModeratedChannels": {
-			"description": "settings.autoModModeratedChannels.description",
-			"title": "管理チャンネル"
+			"title": "管理チャンネル",
+			"description": "The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels)."
 		},
 		"autoModModeratedRoles": {
-			"description": "settings.autoModModeratedRoles.description",
-			"title": "管理役職"
+			"title": "管理役職",
+			"description": "The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles)."
 		},
 		"autoModQuickMessagesEnabled": {
-			"description": "settings.autoModQuickMessagesEnabled.description",
-			"title": "有効"
+			"title": "有効",
+			"description": "Automatically moderate users sending a lot of messages in a short time."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
-			"title": "#のメッセージ数"
+			"title": "#のメッセージ数",
+			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
-			"title": "秒単位のタイムフレーム"
+			"title": "秒単位のタイムフレーム",
+			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "禁止されている単語のリスト。",
@@ -1458,7 +1462,7 @@
 					"title": "絵文字"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "総合"
 				},
 				"invites": {
@@ -1485,11 +1489,23 @@
 			},
 			"music": {
 				"title": "音楽",
+				"description": "音楽の設定",
 				"general": {
 					"title": "音楽",
 					"description": "総合的な音楽の設定"
 				},
-				"description": "音楽の設定"
+				"announcement": {
+					"title": "Announcement",
+					"description": "Announces the next song."
+				},
+				"fadeMusic": {
+					"title": "Fade Music",
+					"description": "Makes the music quieter when someone talks."
+				},
+				"platform": {
+					"title": "Platform",
+					"description": "The various platforms used to play music."
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1553,7 +1569,7 @@
 			"title": "警告メッセージを削除"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "ミュート役職"
 		},
 		"prefix": {
@@ -1595,11 +1611,15 @@
 		"fadeMusicEndDelay": {
 			"title": "ミュージックのフェードが終了するまでの時間",
 			"description": "音量が正常に戻るまでに誰も話していない秒数の遅延。"
+		},
+		"defaultMusicPlatform": {
+			"title": "Default Music Platform",
+			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+		},
+		"disabledMusicPlatforms": {
+			"title": "Disabled Music Platforms",
+			"description": "Music platforms that are disabled and cannot be used to play music."
 		}
-	},
-	"arguments": {
-		"invalid": "指定した引数が無効です。",
-		"missingRequired": "必要な引数`{{ name }}`がありません。\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
 		"notPlaying": "現在再生中の音楽はありません。",
