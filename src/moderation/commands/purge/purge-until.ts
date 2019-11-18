@@ -29,17 +29,20 @@ export default class extends Command {
 			title: t('cmd.purgeUntil.title')
 		});
 
-		const messages: Message[] = await message.channel.getMessages(100, undefined, untilMessageID);
+		const messages: Message[] = await message.channel.getMessages(1000, undefined, untilMessageID).catch(() => []);
 
 		if (messages.length === 0) {
 			embed.description = t('cmd.purgeUntil.none');
 			return this.sendReply(message, embed);
-		} else if (messages.length > 100) {
+		} else if (!messages.some(m => m.id === untilMessageID)) {
 			embed.description = t('cmd.purgeUntil.msgNotFound');
 			return this.sendReply(message, embed);
 		} else {
 			try {
-				await this.client.deleteMessages(message.channel.id, messages.map(m => m.id));
+				await this.client.deleteMessages(
+					message.channel.id,
+					messages.map(m => m.id)
+				);
 
 				embed.description = t('cmd.purgeUntil.text', {
 					amount: `**${messages.length}**`
