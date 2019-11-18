@@ -42,7 +42,8 @@ export default class extends Command {
 			return this.sendReply(message, t('permissions.createInstantInvite'));
 		}
 
-		const inv = await channel.createInvite(
+		const inv = await this.client.createChannelInvite(
+			channel.id,
 			{
 				maxAge: 0,
 				maxUses: 0,
