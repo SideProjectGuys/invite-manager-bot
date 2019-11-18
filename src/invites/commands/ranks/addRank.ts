@@ -6,6 +6,9 @@ import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, InvitesCommand } from '../../../types';
 
+const MIN = -2147483648;
+const MAX = 2147483647;
+
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -19,7 +22,7 @@ export default class extends Command {
 				},
 				{
 					name: 'invites',
-					resolver: NumberResolver,
+					resolver: new NumberResolver(client, MIN, MAX),
 					required: true
 				},
 				{

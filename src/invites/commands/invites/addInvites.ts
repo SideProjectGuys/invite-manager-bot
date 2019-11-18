@@ -6,9 +6,6 @@ import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
-const MAX_VALUE = Number.MAX_SAFE_INTEGER;
-const MIN_VALUE = Number.MIN_SAFE_INTEGER;
-
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
@@ -46,12 +43,6 @@ export default class extends Command {
 	): Promise<any> {
 		if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
-		}
-		if (amount > MAX_VALUE) {
-			return this.sendReply(message, t('cmd.addInvites.numberTooLarge'));
-		}
-		if (amount < MIN_VALUE) {
-			return this.sendReply(message, t('cmd.addInvites.numberTooSmall'));
 		}
 
 		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
