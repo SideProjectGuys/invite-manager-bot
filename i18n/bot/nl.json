@@ -61,10 +61,10 @@
 				},
 				"description": "Verban een gebruiker van de server.",
 				"flags": {
-					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+					"deleteMessageDays": "Als dit opgegeven is, worden de berichten van de opgegeven dagen verwijderd."
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "I cannot softban this user."
 		},
 		"botConfig": {
 			"canNotClear": "De configuratie setting **{{ key }}** kan niet verwijdert worden. Je kan `{{ prefix }}botConfig {{ key }} default` doen om het te resetten naar de standaard waarde.",
@@ -458,7 +458,8 @@
 				"role": "Een rol, bijvoorbeeld: @Admin",
 				"role[]": "Een lijst van rollen, bijvoorbeeld: @Admin @Mod",
 				"string": "Een tekst",
-				"string[]": "Een lijst van woorden, bijvoorbeeld: woord nog een \"woord met spatie\""
+				"string[]": "Een lijst van woorden, bijvoorbeeld: woord nog een \"woord met spatie\"",
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "Gebruik de reacties om een van de mogelijke opties te kiezen."
 		},
@@ -517,7 +518,8 @@
 				"text": "Deze invites verlopen na een bepaalde tijd.",
 				"title": "Tijdelijke"
 			},
-			"title": "Je hebt de volgende codes in de server {{ guild }}"
+			"title": "Je hebt de volgende codes in de server {{ guild }}",
+			"error": "Ik kan je niet je invite codes versturen. Zorg dat je je prive berichten aan hebt staan voor deze server."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** van {{{ code }}} - aangemaakt op **{{ createdAt }}**",
@@ -573,7 +575,7 @@
 				"total": "T"
 			},
 			"comparedTo": "wijzigingen vergeleken met {{ to }}",
-			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake }}** nep, **{{ leave }}** leaves)",
 			"from": "Invites sinds {{{ from }}}",
 			"invalidDate": "Ongeldige datum: {{ date }}",
 			"legend": "`T` = Totaal\n`R` = Regular\n`B` = Bonus\n`F` = Fake\n`L` = Leaves",
@@ -590,7 +592,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Laatst geupdate {{{ lastUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -727,7 +729,7 @@
 				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
 				"done": "Je hebt een betaalde abonnement geldig tot {{{ valid }}}.\n\nGebruik {{{ cmd }}} voor meer informatie.",
 				"notFound": "Je account heeft geen premium abonnement.\n\nAls je premium hebt gekocht via Patreon, zorg dan dat je patreon account gekoppeld is aan je discord account. Voer dan het commando opnieuw uit.",
-				"title": "Check foor een Premium Abonnement"
+				"title": "Check voor een Premium Abonnement"
 			},
 			"deactivate": {
 				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
@@ -792,7 +794,7 @@
 				"args": {
 					"member": "Van wie de berichten worden verwijdert",
 					"quantity": "Hoeveel berichten er verwijdert zullen worden.",
-					"user": "User whose messages are deleted."
+					"user": "De gebruiker van wie de berichten worden verwijderd."
 				},
 				"description": "Verwijder berichten in een kanaal."
 			},
@@ -826,11 +828,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "Het aantal berichten die zullen worden verwijderd",
+					"reason": "De reden waarom je het gaat verwijderen",
+					"user": "De gebruiker waarvan je het gaat verwijderen"
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Verwijder invites van een gebruiker"
 			}
 		},
 		"removeRank": {
@@ -904,7 +906,7 @@
 				},
 				"description": "Ban en dan unban een gebruiker automatisch van de server.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Het aantal berichten die zullen worden verwijderd"
 				}
 			},
 			"unBanError": "De gebruiker is verbannen maar kan niet worden geunbanned...\n{{ error }}"
@@ -1007,11 +1009,11 @@
 				},
 				"description": "Waarschuw een gebruikt."
 			},
-			"text": "You have been warned on server {{ guild }}\n{{ text }}"
+			"text": "Je hebt een waarschuwing gekregen in de server {{ guild }}\n{{ text }}"
 		},
 		"disconnect": {
 			"self": {
-				"description": "Disconnect the bot from the current voice channel."
+				"description": "Laat de bot de huidige spraakkanaal verlaten."
 			}
 		},
 		"lyrics": {
@@ -1034,69 +1036,69 @@
 		},
 		"nowPlaying": {
 			"self": {
-				"description": "Shows information about the currently playing song",
+				"description": "Laat informatie zien over het huidige muziek",
 				"flags": {
-					"pin": "Pin the now playing message and update it automatically whenever a new song plays."
+					"pin": "Pint het muziek dat nu speelt en update het automatisch wanneer er een nieuwe muziek afspeelt."
 				}
 			},
-			"playTime": "Playtime"
+			"playTime": "Speeltijd"
 		},
 		"pause": {
 			"self": {
-				"description": "Pause the current song."
+				"description": "Zet het huidige muziek op pauze."
 			}
 		},
 		"play": {
 			"self": {
-				"description": "Play the song if the queue is empty, otherwise it will add the song to the end of the queue.",
+				"description": "Speel het muziek als de wachtrij leeg is, anders wordt het muziek toegevoegd aan het einde van de wachtrij.",
 				"flags": {
-					"platform": "Select the platform where you want the song to be played.",
-					"next": "If set, it will play this song next instead of adding it to the end of the queue."
+					"platform": "Selecteer de platform waar je wilt dat het muziek op wordt gespeeld.",
+					"next": "Als dit gezet is, wordt het volgende muziek afgespeeld in plaats van dat het wordt toegevoegd aan het einde van de wachtrij."
 				},
 				"args": {
-					"link": "The link to a specific song or a search term."
+					"link": "De link naar een muziek of een zoek opdracht."
 				}
 			}
 		},
 		"queue": {
 			"self": {
-				"description": "Display the songs in the queue."
+				"description": "Laat de muziek in de wachtrij zien."
 			},
-			"empty": "Queue is currently empty. Use the play command to add songs to it."
+			"empty": "De wachtrij is op nu leeg. Gebruik de play commando om muziek toe te voegen."
 		},
 		"repeat": {
 			"self": {
-				"description": "Set the song to be played on repeat."
+				"description": "Zet de muziek op herhaaldelijk afspelen."
 			},
-			"enabled": "This song will now play on repeat.",
-			"disabled": "This song will not be played on repeat anymore."
+			"enabled": "Deze muziek wordt nu herhaaldelijk afgespeeld.",
+			"disabled": "Deze muziek wordt niet meer herhaaldelijk afgespeeld."
 		},
 		"resume": {
 			"self": {
-				"description": "Resume the current song."
+				"description": "Hervat de muziek muziek."
 			}
 		},
 		"rewind": {
 			"self": {
-				"description": "Rewind the song and start from the beginning."
+				"description": "Laat het nummer opnieuw afspelen."
 			}
 		},
 		"search": {
 			"self": {
-				"description": "Search for the search term and let you chose one of the results.",
+				"description": "Zoek voor iets en laat je 1 van de resultaten kiezen.",
 				"flags": {
-					"platform": "Select the platform where you want the song to be played."
+					"platform": "Selecteer het platvorm waarop je het muziek wilt hebben afgespeeld."
 				},
 				"args": {
-					"search": "The search term"
+					"search": "De zoeterm"
 				}
 			},
-			"title": "Results for {{ term }}",
-			"noResults": "No results found!"
+			"title": "Resultaten voor {{ term }}",
+			"noResults": "Geen resultaten gevonden!"
 		},
 		"seek": {
 			"self": {
-				"description": "Skip to a specific part of the song.",
+				"description": "Spoel verder naar een bepaald stuk van de muziek.",
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
@@ -1159,7 +1161,9 @@
 		"viewAuditLogs": "View Audit Logs",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}"
+		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1235,124 +1239,124 @@
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"description": "settings.autoModAllCapsEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with A LOT OF CAPS."
 		},
 		"autoModAllCapsMinCharacters": {
-			"description": "settings.autoModAllCapsMinCharacters.description",
-			"title": "Min. Characters"
+			"title": "Min. Characters",
+			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
 		},
 		"autoModAllCapsPercentageCaps": {
-			"description": "settings.autoModAllCapsPercentageCaps.description",
-			"title": "Percentage CAPs"
+			"title": "Percentage CAPs",
+			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
 		},
 		"autoModDeleteBotMessage": {
-			"description": "settings.autoModDeleteBotMessage.description",
-			"title": "Delete Bot Messages"
+			"title": "Delete Bot Messages",
+			"description": "Automatically delete the bots own messages (keeps your chat clean)."
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"description": "settings.autoModDeleteBotMessageTimeoutInSeconds.description",
-			"title": "Delete Bot Message Timeout"
+			"title": "Delete Bot Message Timeout",
+			"description": "The timeout after which bot messages are deleted."
 		},
 		"autoModDisabledForOldMembers": {
-			"description": "settings.autoModDisabledForOldMembers.description",
-			"title": "Disabled for Old Members"
+			"title": "Disabled for Old Members",
+			"description": "Disabled auto moderation for members that have been in your server for a long time."
 		},
 		"autoModDisabledForOldMembersThreshold": {
-			"description": "settings.autoModDisabledForOldMembersThreshold.description",
-			"title": "Old Members Threshold"
+			"title": "Old Members Threshold",
+			"description": "The amount of time a member has to be in your server to be considered 'old'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"description": "settings.autoModDuplicateTextEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate duplicate messages (copy-paste spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"description": "settings.autoModDuplicateTextTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"description": "settings.autoModEmojisEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages with an excessive amount of emojis."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"description": "settings.autoModEmojisMaxNumberOfEmojis.description",
-			"title": "Max # of Emojis"
+			"title": "Max # of Emojis",
+			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
 		},
 		"autoModEnabled": {
-			"description": "settings.autoModEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"description": "settings.autoModHoistEnabled.description",
-			"title": "Dehoist Enabled"
+			"title": "Enabled",
+			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
 		},
 		"autoModIgnoredChannels": {
-			"description": "settings.autoModIgnoredChannels.description",
-			"title": "Ignored Channels"
+			"title": "Ignored Channels",
+			"description": "Channels that are ignored while automatically moderating."
 		},
 		"autoModIgnoredRoles": {
-			"description": "settings.autoModIgnoredRoles.description",
-			"title": "Ignored Roles"
+			"title": "Ignored Roles",
+			"description": "Any members with these roles will not automatically be moderated."
 		},
 		"autoModInvitesEnabled": {
-			"description": "settings.autoModInvitesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically scan messages for discord invite links and remove them."
 		},
 		"autoModLinksBlacklist": {
-			"description": "settings.autoModLinksBlacklist.description",
-			"title": "Blacklist"
+			"title": "Blacklist",
+			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"description": "settings.autoModLinksEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
-			"description": "settings.autoModLinksFollowRedirects.description",
-			"title": "Follow Redirects"
+			"title": "Follow Redirects",
+			"description": "Enable this to resolve redirects for links."
 		},
 		"autoModLinksWhitelist": {
-			"description": "settings.autoModLinksWhitelist.description",
-			"title": "Whitelist"
+			"title": "Whitelist",
+			"description": "A list of links that users are allowed to post."
 		},
 		"autoModLogEnabled": {
-			"description": "settings.autoModLogEnabled.description",
-			"title": "Log Enabled"
+			"title": "Log Enabled",
+			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"description": "settings.autoModMentionRolesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
-			"description": "settings.autoModMentionRolesMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of roles a member can mention in a message."
 		},
 		"autoModMentionUsersEnabled": {
-			"description": "settings.autoModMentionUsersEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate messages that mention an excessive amount of users."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
-			"description": "settings.autoModMentionUsersMaxNumberOfMentions.description",
-			"title": "Max # of Mentions"
+			"title": "Max # of Mentions",
+			"description": "The maximum amount of users a member can mention in a message."
 		},
 		"autoModModeratedChannels": {
-			"description": "settings.autoModModeratedChannels.description",
-			"title": "Moderated Channels"
+			"title": "Moderated Channels",
+			"description": "The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels)."
 		},
 		"autoModModeratedRoles": {
-			"description": "settings.autoModModeratedRoles.description",
-			"title": "Moderated Roles"
+			"title": "Moderated Roles",
+			"description": "The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles)."
 		},
 		"autoModQuickMessagesEnabled": {
-			"description": "settings.autoModQuickMessagesEnabled.description",
-			"title": "Enabled"
+			"title": "Enabled",
+			"description": "Automatically moderate users sending a lot of messages in a short time."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
-			"description": "settings.autoModQuickMessagesNumberOfMessages.description",
-			"title": "# of Messages"
+			"title": "# of Messages",
+			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
-			"description": "settings.autoModQuickMessagesTimeframeInSeconds.description",
-			"title": "Timeframe in Seconds"
+			"title": "Timeframe in Seconds",
+			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "A list of words that are banned.",
@@ -1458,7 +1462,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "General"
 				},
 				"invites": {
@@ -1485,11 +1489,23 @@
 			},
 			"music": {
 				"title": "Music",
+				"description": "Music Settings",
 				"general": {
 					"title": "Music",
 					"description": "General Music Settings"
 				},
-				"description": "Music Settings"
+				"announcement": {
+					"title": "Announcement",
+					"description": "Announces the next song."
+				},
+				"fadeMusic": {
+					"title": "Fade Music",
+					"description": "Makes the music quieter when someone talks."
+				},
+				"platform": {
+					"title": "Platform",
+					"description": "The various platforms used to play music."
+				}
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1553,7 +1569,7 @@
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Muted Role"
 		},
 		"prefix": {
@@ -1595,11 +1611,15 @@
 		"fadeMusicEndDelay": {
 			"title": "Fade Music End Delay",
 			"description": "The delay of how many seconds noone has to speak for the volume to return back to normal."
+		},
+		"defaultMusicPlatform": {
+			"title": "Default Music Platform",
+			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+		},
+		"disabledMusicPlatforms": {
+			"title": "Disabled Music Platforms",
+			"description": "Music platforms that are disabled and cannot be used to play music."
 		}
-	},
-	"arguments": {
-		"invalid": "The arguments you provided are invalid.",
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}"
 	},
 	"music": {
 		"notPlaying": "There is currently no music being played!",
