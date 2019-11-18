@@ -50,7 +50,7 @@ export default class extends Command {
 				temporary: false,
 				unique: true
 			},
-			name ? name : null
+			name ? encodeURIComponent(name) : undefined
 		);
 
 		await this.client.db.saveChannels([
