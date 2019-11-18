@@ -129,8 +129,7 @@ export class MessagingService {
 					const dmChannel = await fallbackUser.getDMChannel();
 					let msg =
 						'I encountered an error when trying to send a message. ' +
-						'Please report this to a developer:\n```' +
-						`${error.message}\n\n${error.message}\`\`\``;
+						`Please report this to a developer:\n\`\`\`${error ? error.message : 'Unknown'}\`\`\``;
 					if (error.code === 50013) {
 						const name = this.client.user.username;
 						msg =
