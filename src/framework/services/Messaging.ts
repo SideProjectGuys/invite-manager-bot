@@ -139,7 +139,11 @@ export class MessagingService {
 					try {
 						return await dmChannel.createMessage(msg);
 					} catch (err) {
-						handleException(err, false);
+						if (err.code === 50007) {
+							// Cannot send messages to this user
+						} else {
+							handleException(err, false);
+						}
 						return undefined;
 					}
 				} catch (err2) {
