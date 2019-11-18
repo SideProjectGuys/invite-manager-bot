@@ -30,7 +30,9 @@ export default class extends Command {
 		const steps = Math.ceil(guild.memberCount / 1000);
 		for (let i = 0; i < steps; i++) {
 			const mems = await guild.getRESTMembers(1000, lastId);
-			lastId = mems[mems.length - 1].id;
+			if (mems.length > 0) {
+				lastId = mems[mems.length - 1].id;
+			}
 		}
 
 		const botCount = guild.members.filter(m => m.user.bot).length;
