@@ -6,8 +6,8 @@ import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
-const BIGINT_MAX_VALUE = 9223372036854775807;
-const BIGINT_MIN_VALUE = -9223372036854775808;
+const MAX_VALUE = Number.MAX_SAFE_INTEGER;
+const MIN_VALUE = Number.MIN_SAFE_INTEGER;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -47,10 +47,10 @@ export default class extends Command {
 		if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
-		if (amount > BIGINT_MAX_VALUE) {
+		if (amount > MAX_VALUE) {
 			return this.sendReply(message, t('cmd.addInvites.numberTooLarge'));
 		}
-		if (amount < BIGINT_MIN_VALUE) {
+		if (amount < MIN_VALUE) {
 			return this.sendReply(message, t('cmd.addInvites.numberTooSmall'));
 		}
 
