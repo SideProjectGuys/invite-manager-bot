@@ -69,7 +69,12 @@ export class InvitesService {
 		const joinsPromise = this.client.db.getJoinsForGuild(guildId);
 		const customInvitesPromise = this.client.db.getCustomInvitesForGuild(guildId);
 
-		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
+		// TODO: This is typed as "any" because of a typescript bug https://github.com/microsoft/TypeScript/issues/34925
+		const [invCodes, js, customInvs]: [any[], any[], any[]] = await Promise.all([
+			inviteCodePromise,
+			joinsPromise,
+			customInvitesPromise
+		]);
 
 		const entries: Map<string, LeaderboardEntry> = new Map();
 		invCodes.forEach(inv => {
