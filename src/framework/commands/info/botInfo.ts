@@ -16,7 +16,12 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { t, settings, isPremium }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		args: any[],
+		flags: {},
+		{ t, guild, settings, isPremium }: Context
+	): Promise<any> {
 		const lang = settings.lang;
 
 		const counts = await this.client.getCounts();
@@ -57,7 +62,7 @@ export default class extends Command {
 		// Shard info
 		embed.fields.push({
 			name: t('cmd.botInfo.shards.current'),
-			value: this.client.shardId.toString(),
+			value: `${this.client.shardId} (${this.client.db.getDbShardForGuild(guild.id)})`,
 			inline: true
 		});
 		embed.fields.push({

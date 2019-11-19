@@ -96,13 +96,17 @@ export class DatabaseService {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	private getDbInfo(shard: number | string): [string, Pool] {
-		if (typeof shard === 'number') {
-			return [`\`im_${shard}\``, this.pools.get(shard)];
+	private getDbInfo(dbShardOrGuildId: number | string): [string, Pool] {
+		if (typeof dbShardOrGuildId === 'number') {
+			return [`\`im_${dbShardOrGuildId}\``, this.pools.get(dbShardOrGuildId)];
 		} else {
-			const db = getShardIdForGuild(shard, this.dbCount);
+			const db = getShardIdForGuild(dbShardOrGuildId, this.dbCount);
 			return [`\`im_${db}\``, this.pools.get(db)];
 		}
+	}
+
+	public getDbShardForGuild(guildId: string) {
+		return getShardIdForGuild(guildId, this.dbCount);
 	}
 
 	private async findOne<T>(shard: number | string, table: TABLE, where: string, values: any[]): Promise<T> {
