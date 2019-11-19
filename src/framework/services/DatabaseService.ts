@@ -1026,7 +1026,7 @@ export class DatabaseService {
 				newGuilds.map(guild => ({
 					id: guild.id,
 					name: guild.name,
-					icon: guild.icon,
+					icon: guild.iconURL,
 					memberCount: guild.memberCount
 				}))
 			);
