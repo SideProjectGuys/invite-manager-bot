@@ -140,7 +140,8 @@ export enum LeaderboardStyle {
 
 export enum RankAssignmentStyle {
 	all = 'all',
-	highest = 'highest'
+	highest = 'highest',
+	onlyAdd = 'onlyAdd'
 }
 
 export enum AnnouncementVoice {

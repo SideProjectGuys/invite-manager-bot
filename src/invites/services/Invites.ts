@@ -316,23 +316,24 @@ export class InvitesService {
 		}
 
 		if (me.permission.has(GuildPermission.MANAGE_ROLES)) {
-			// No matter what the rank assignment style is
-			// we always want to remove any roles that we don't have
-			notReached
-				.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
-				.forEach(r =>
-					this.client
-						.removeGuildMemberRole(guild.id, member.id, r.id, 'Not have enough invites for rank')
-						.catch(() => undefined)
-				);
-
 			// Filter dangerous roles
 			dangerous = reached.filter(
 				r => r.permissions.has(GuildPermission.ADMINISTRATOR) || r.permissions.has(GuildPermission.MANAGE_GUILD)
 			);
 			reached = reached.filter(r => dangerous.indexOf(r) === -1);
 
-			if (style === RankAssignmentStyle.all) {
+			if (style !== RankAssignmentStyle.onlyAdd) {
+				// Remove roles that we haven't reached yet
+				notReached
+					.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
+					.forEach(r =>
+						this.client
+							.removeGuildMemberRole(guild.id, member.id, r.id, 'Not have enough invites for rank')
+							.catch(() => undefined)
+					);
+			}
+
+			if (style === RankAssignmentStyle.all || style === RankAssignmentStyle.onlyAdd) {
 				// Add all roles that we've reached to the member
 				const newRoles = reached.filter(r => !member.roles.includes(r.id));
 				// Roles that the member should have but we can't assign
