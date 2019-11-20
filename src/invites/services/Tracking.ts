@@ -604,6 +604,18 @@ export class TrackingService {
 		invites.leave -= newLeaves;
 		invites.total = invites.regular + invites.custom + invites.fake + invites.leave;
 
+		if (inviter && inviter instanceof Member) {
+			// Demote the inviter if required
+			let me = guild.members.get(this.client.user.id);
+			if (!me) {
+				me = await guild.getRESTMember(this.client.user.id).catch(() => undefined);
+			}
+
+			if (me) {
+				await this.client.invs.promoteIfQualified(guild, inviter, me, invites.total);
+			}
+		}
+
 		const leaveMessageFormat = sets.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
 			const msg = await this.client.invs.fillJoinLeaveTemplate(leaveMessageFormat, guild, member, invites, {
