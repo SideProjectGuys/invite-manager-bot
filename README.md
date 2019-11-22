@@ -35,5 +35,8 @@ This is the code repository for the InviteManager Discord Bot.
 ### Setup
 
 1. `npm install`
+1. Setup databases
+   1. Use the `scripts/db/setup_db0.sql` script to set up the global database `im_0`
+   1. Use the `scripts/db/setup_dbx.sql` script to set up the data databases `im_1`, `im_2`, ... (you need at least one)
 1. Copy the `config.example.json` to `config.json` and fill in required data
 1. `npm start`
