@@ -5,25 +5,27 @@ import { BotCommand, CommandGroup } from '../../../types';
 import { Command, Context } from '../Command';
 
 // Developers
-const developers: string[] = ['Andy', 'Valandur', 'santjum', 'legendarylol'];
+const developers: string[] = ['Andy#1801', 'Valandur#3581', 'santjum#0450', 'legendarylol#8215'];
 
 // Staff
-const moderators: string[] = ['SemiMute', 'theGordHoard', 'Mennoplays'];
+const moderators: string[] = ['GTA Tetris#4587', '愛 | fαkєr유蘇#1553', 'SemiMute#2018', 'Mennoplays#5943'];
 
-const staff: string[] = ['CelestialStriden', 'Lukas', 'Audio', 'ᴊᴀᴄᴋ❤ Crush', 'Lukas1703'];
+const staff: string[] = ['OmeGa#9999', 'Alan Wen#3344', 'Braydon#6223', 'Simplee ♪ Li .#2222', 'Dedsec#0001'];
 
 const translators: string[] = [
-	'amiog',
-	'CyberDarkBR',
-	'qq1zz',
-	'Lorio',
-	'legendarylol',
-	'Lukas',
-	'Mennoplays',
-	'RMG | RoHellowtf💤',
-	'Thę_Olaoleo',
-	'Izmoqwy',
-	'サロにぃ/Saroniii'
+	'legendarylol#8215',
+	'Mennoplays#5943',
+	'Simplee ♪ Li .#2222',
+	'サロにぃ/Saroniii#3621',
+	'CyberWhiteBR#7805',
+	'Gugu72#2059',
+	'ImRoyal_Raddar#0001',
+	'Lorio#0666',
+	'Lukas17#2252',
+	'Izmoqwy#0423',
+	'Qbiczeq#3641',
+	'qq1zz (REAL) (New Account)2374#1204',
+	'《Ն·Բ》ĂĆRΣANØ#1391'
 ];
 
 export default class extends Command {
