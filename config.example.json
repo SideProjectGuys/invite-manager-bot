@@ -50,17 +50,7 @@
 			"password": "",
 			"range": {
 				"from": 1,
-				"to": 32
-			}
-		},
-		{
-			"host": "localhost",
-			"port": 3306,
-			"user": "root",
-			"password": "",
-			"range": {
-				"from": 33,
-				"to": 64
+				"to": 1
 			}
 		}
 	]

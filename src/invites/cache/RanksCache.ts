@@ -7,6 +7,7 @@ export class RanksCache extends Cache<Rank[]> {
 	}
 
 	protected async _get(guildId: string): Promise<Rank[]> {
-		return this.client.db.getRanksForGuild(guildId);
+		const ranks = await this.client.db.getRanksForGuild(guildId);
+		return ranks.sort((a, b) => a.numInvites - b.numInvites);
 	}
 }
