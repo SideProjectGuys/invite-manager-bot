@@ -592,7 +592,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
