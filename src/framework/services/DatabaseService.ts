@@ -878,7 +878,6 @@ export class DatabaseService {
 		return rows[0] as PremiumSubscriptionGuild;
 	}
 	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
-		// TODO: This doesn't work becaues the guilds table isn't global, but we need the guild name
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
@@ -889,9 +888,10 @@ export class DatabaseService {
 			`id IN(?)`,
 			rows.map(r => r.guildId)
 		);
-		return rows.map(r => ({ ...r, guildName: guilds.find(g => g.id === r.guildId).name })) as Array<
-			PremiumSubscriptionGuild & { guildName: string }
-		>;
+		return rows.map(r => ({
+			...r,
+			guildName: (guilds.find(g => g.id === r.guildId) || { name: r.guildId }).name
+		})) as Array<PremiumSubscriptionGuild & { guildName: string }>;
 	}
 	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);

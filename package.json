@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "9.1.0",
+	"version": "9.1.1",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -42,11 +42,11 @@
 		"i18n": "0.8.4",
 		"iheart": "3.1.1",
 		"moment": "2.24.0",
-		"mysql2": "2.0.0",
+		"mysql2": "2.0.1",
 		"reflect-metadata": "0.1.13",
 		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
-		"ytdl-core": "1.0.0",
+		"ytdl-core": "1.0.1",
 		"zlib-sync": "0.1.6"
 	},
 	"devDependencies": {
@@ -54,11 +54,11 @@
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
 		"@types/mysql2": "github:types/mysql2",
-		"@types/node": "12.12.8",
+		"@types/node": "12.12.12",
 		"@types/xmldoc": "1.1.4",
 		"cross-env": "6.0.3",
 		"docsify": "4.9.4",
-		"docsify-cli": "4.3.0",
+		"docsify-cli": "4.4.0",
 		"fs-extra": "8.1.0",
 		"husky": "3.1.0",
 		"prettier": "1.19.1",

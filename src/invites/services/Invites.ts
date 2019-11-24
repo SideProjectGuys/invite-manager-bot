@@ -240,7 +240,8 @@ export class InvitesService {
 
 		// Return early if we don't have any ranks so we do not
 		// get any permission issues for MANAGE_ROLES
-		if (allRanks.length === 0) {
+		// or if we're trying to promote a bot
+		if (allRanks.length === 0 || member.bot) {
 			return;
 		}
 

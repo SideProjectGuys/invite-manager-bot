@@ -30,7 +30,7 @@ export default class extends Command {
 
 	public async action(message: Message, [_page]: [number], flags: {}, { guild, t, settings }: Context): Promise<any> {
 		let invs = await this.client.cache.leaderboard.get(guild.id);
-		const cachedAt = this.client.cache.leaderboard.getCacheMeta(guild.id).cachedAt;
+		const meta = this.client.cache.leaderboard.getCacheMeta(guild.id);
 		if (settings.hideLeftMembersFromLeaderboard) {
 			invs = invs.filter(e => guild.members.has(e.id));
 		}
@@ -46,7 +46,8 @@ export default class extends Command {
 				.fromNow()}**`
 		});
 		const lastUpdateText = t('cmd.leaderboard.lastUpdate', {
-			lastUpdate: `**${cachedAt.locale(settings.lang).fromNow()}**`
+			lastUpdate: `**${meta.cachedAt.locale(settings.lang).fromNow()}**`,
+			nextUpdate: `**${meta.validUntil.locale(settings.lang).fromNow()}**`
 		});
 
 		if (invs.length === 0) {

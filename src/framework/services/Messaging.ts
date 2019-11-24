@@ -226,11 +226,13 @@ export class MessagingService {
 		const date = typeof value === 'string' ? value : value.calendar();
 		const duration = typeof value === 'string' ? value : moment.duration(value.diff(moment())).humanize();
 		const timeAgo = typeof value === 'string' ? value : value.fromNow();
+		const calendar = typeof value === 'string' ? value : value.calendar();
 
 		return msg
 			.replace(new RegExp(`{${name}:date}`, 'g'), date)
 			.replace(new RegExp(`{${name}:duration}`, 'g'), duration)
-			.replace(new RegExp(`{${name}:timeAgo}`, 'g'), timeAgo);
+			.replace(new RegExp(`{${name}:timeAgo}`, 'g'), timeAgo)
+			.replace(new RegExp(`{${name}:calendar}`, 'g'), calendar);
 	}
 
 	public async prompt(message: Message, promptStr: string): Promise<[PromptResult, Message]> {
