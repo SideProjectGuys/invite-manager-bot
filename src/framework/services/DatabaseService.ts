@@ -836,11 +836,15 @@ export class DatabaseService {
 	// ------------------------
 	//   Premium subscription
 	// ------------------------
-	public async getActivePremiumSubscriptionForMember(memberId: string) {
-		return this.findOne<PremiumSubscription>(
+	public async getPremiumSubscriptionsForMember(
+		memberId: string,
+		onlyActive: boolean = true,
+		onlyFree: boolean = false
+	) {
+		return this.findMany<PremiumSubscription>(
 			GLOBAL_SHARD_ID,
 			TABLE.premiumSubscriptions,
-			'`memberId` = ? AND `validUntil` > NOW()',
+			'`memberId` = ? ' + (onlyActive ? 'AND `validUntil` > NOW() ' : '') + (onlyFree ? 'AND `isFreeTier` = 1 ' : ''),
 			[memberId]
 		);
 	}
@@ -858,21 +862,24 @@ export class DatabaseService {
 	// ------------------------------
 	//   Premium subscription guild
 	// ------------------------------
-	public async getFreePremiumSubscriptionGuildForGuild(guildId: string) {
+	public async getPremiumSubscriptionGuildForGuild(guildId: string, onlyActive: boolean = true) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
-				`WHERE psg.\`guildId\` = ? AND ps.\`isFreeTier\` = 1 LIMIT 1`,
+				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`memberId\` = psg.\`memberId\` ` +
+				`WHERE psg.\`guildId\` = ? ` +
+				(onlyActive ? `AND ps.\`validUntil\` > NOW() ` : '') +
+				`ORDER BY ps.\`validUntil\` DESC ` +
+				`LIMIT 1`,
 			[guildId]
 		);
 		return rows[0] as PremiumSubscriptionGuild;
 	}
-	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
+	public async getPremiumSubscriptionGuildsForMember(memberId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
-			[subscriptionId]
+			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`memberId\` = ?`,
+			[memberId]
 		);
 		const guilds = await this.findManyOnAllShards<Guild>(
 			TABLE.guilds,
@@ -884,29 +891,19 @@ export class DatabaseService {
 			guildName: (guilds.find(g => g.id === r.guildId) || { name: r.guildId }).name
 		})) as Array<PremiumSubscriptionGuild & { guildName: string }>;
 	}
-	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
-				`WHERE psg.\`guildId\` = ? AND ps.\`validUntil\` > NOW() LIMIT 1`,
-			[guildId]
-		);
-		return rows[0] as PremiumSubscriptionGuild;
-	}
 	public async savePremiumSubscriptionGuild(sub: Partial<PremiumSubscriptionGuild>) {
 		await this.insertOrUpdate(
 			TABLE.premiumSubscriptionGuilds,
-			['guildId', 'subscriptionId'],
+			['guildId', 'memberId'],
 			[],
 			[sub],
 			() => GLOBAL_SHARD_ID
 		);
 	}
-	public async removePremiumSubscriptionGuild(guildId: string, subscriptionId: number) {
-		await this.delete(GLOBAL_SHARD_ID, TABLE.premiumSubscriptionGuilds, '`guildId` = ? AND `subscriptionId` = ?', [
+	public async removePremiumSubscriptionGuild(memberId: string, guildId: string) {
+		await this.delete(GLOBAL_SHARD_ID, TABLE.premiumSubscriptionGuilds, '`guildId` = ? AND `memberId` = ?', [
 			guildId,
-			subscriptionId
+			memberId
 		]);
 	}
 
