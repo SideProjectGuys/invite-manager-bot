@@ -130,7 +130,7 @@ export class MessagingService {
 					let msg =
 						'I encountered an error when trying to send a message. ' +
 						`Please report this to a developer:\n\`\`\`${error ? error.message : 'Unknown'}\`\`\``;
-					if (error.code === 50013) {
+					if (error && error.code === 50013) {
 						const name = this.client.user.username;
 						msg =
 							`**${name} does not have permissions to post to that channel.\n` +
