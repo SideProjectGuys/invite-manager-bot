@@ -126,7 +126,8 @@ export class DatabaseService {
 		table: TABLE,
 		where: string,
 		values: O[],
-		selector: (obj: O) => number | string = o => o as any
+		selector: (obj: O) => number | string = o => o as any,
+		dataSelector: (obj: O) => any = o => o
 	): Promise<T[]> {
 		const map: Map<Pool, Map<string, O[]>> = new Map();
 		for (const value of values) {
@@ -135,9 +136,9 @@ export class DatabaseService {
 			if (poolData) {
 				const shardData = poolData.get(id);
 				if (shardData) {
-					shardData.push(value);
+					shardData.push(dataSelector(value));
 				} else {
-					poolData.set(id, [value]);
+					poolData.set(id, [dataSelector(value)]);
 				}
 			} else {
 				const shardData = new Map<string, O[]>();
@@ -149,10 +150,10 @@ export class DatabaseService {
 		const promises: Promise<RowDataPacket[]>[] = [];
 		for (const [pool, poolData] of map.entries()) {
 			const queries: string[] = [];
-			let poolValues: O[] = [];
+			const poolValues: O[][] = [];
 			for (const [db, vals] of poolData.entries()) {
 				queries.push(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`);
-				poolValues = poolValues.concat(vals);
+				poolValues.push(vals);
 			}
 			const query = queries.join(' UNION ');
 			promises.push(pool.query<RowDataPacket[]>(query, poolValues).then(([rs]) => rs));
@@ -826,6 +827,7 @@ export class DatabaseService {
 		return this.findOne<ScheduledAction>(guildId, TABLE.scheduledActions, '`id` = ?', [id]);
 	}
 	public async getScheduledActionsForGuilds(guildIds: string[]) {
+		// TODO: Fix
 		return this.findManyOnAllShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
 	}
 	public async saveScheduledAction(action: Partial<ScheduledAction>) {
