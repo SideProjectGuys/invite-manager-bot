@@ -1,11 +1,14 @@
 import { Message } from 'eris';
-import moment, { Duration } from 'moment';
+import moment, { Moment } from 'moment';
 
 import { IMClient } from '../../client';
 import { Command, Context } from '../../framework/commands/Command';
-import { DurationResolver, EnumResolver } from '../../framework/resolvers';
+import { DateResolver, EnumResolver } from '../../framework/resolvers';
 import { ChartType, CommandGroup, InvitesCommand } from '../../types';
 import { Chart } from '../models/Chart';
+
+const DEFAULT_DAYS = 30;
+const COLORS = ['blue', 'red', 'black'];
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -19,8 +22,12 @@ export default class extends Command {
 					required: true
 				},
 				{
-					name: 'duration',
-					resolver: DurationResolver
+					name: 'from',
+					resolver: DateResolver
+				},
+				{
+					name: 'to',
+					resolver: DateResolver
 				}
 			],
 			group: CommandGroup.Other,
@@ -32,69 +39,94 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[type, duration]: [ChartType, Duration],
+		[type, from, to]: [ChartType, Moment, Moment],
 		flags: {},
 		{ guild, t }: Context
 	): Promise<any> {
-		let days = 60;
-		if (duration) {
-			days = duration.asDays();
-			if (days < 5) {
-				days = 5;
-			} else if (days > 120) {
-				days = 120;
-			}
+		if (!to) {
+			to = moment();
+		}
+		if (!from) {
+			from = to.clone().subtract(DEFAULT_DAYS, 'days');
 		}
 
-		const start = moment().subtract(days, 'day');
-		const end = moment();
+		const days = to.diff(from, 'days');
+		if (days < 5) {
+			await this.sendReply(message, t('cmd.graph.minDays', { days: 5 }));
+			return;
+		} else if (days > 120) {
+			await this.sendReply(message, t('cmd.graph.maxDays', { days: 120 }));
+			return;
+		}
 
 		let title = '';
 		let description = '';
-		const vs: { [x: string]: number } = {};
 
-		if (type === ChartType.joins) {
+		const dates: Moment[] = [];
+		const vs: Map<string, number>[] = [];
+		for (const curr = from.clone(); to.diff(curr, 'days') >= 0; curr.add(1, 'days')) {
+			dates.push(curr.clone());
+		}
+
+		const addDataset = () => {
+			const map: Map<string, number> = new Map();
+			dates.forEach(date => map.set(date.format('YYYY-MM-DD'), 0));
+			vs.push(map);
+			return map;
+		};
+
+		if (type === ChartType.joinsAndLeaves) {
+			title = t('cmd.graph.joinsAndLeaves.title');
+			description = t('cmd.graph.joinsAndLeaves.text');
+
+			const joinsMap = addDataset();
+			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
+			fs.forEach(join => joinsMap.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
+
+			const leavesMap = addDataset();
+			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
+			lvs.forEach(leave => leavesMap.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
+		} else if (type === ChartType.joins) {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
-			const joins = await this.client.db.getJoinsPerDay(guild.id, days);
-			joins.forEach(join => (vs[`${join.year}-${join.month}-${join.day}`] = Number(join.total)));
+			const map = addDataset();
+			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
+			joins.forEach(join => map.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
-			const leaves = await this.client.db.getLeavesPerDay(guild.id, days);
-			leaves.forEach(leave => (vs[`${leave.year}-${leave.month}-${leave.day}`] = Number(leave.total)));
+			const map = addDataset();
+			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
+			leaves.forEach(leave => map.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
 		}
 
-		const labels: string[] = [];
-		const data: number[] = [];
+		const datasets: any[] = [];
+		for (const v of vs) {
+			const color = COLORS[datasets.length];
+			const data = [...v.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(e => e[1]);
 
-		for (const m = moment(start); m.diff(end, 'days') <= 0; m.add(1, 'days')) {
-			labels.push(m.format('DD.MM.YYYY'));
-			const val = vs[m.format('YYYY-M-D')];
-			data.push(val ? val : 0);
+			datasets.push({
+				label: 'Data',
+				borderColor: color,
+				pointBorderColor: color,
+				pointBackgroundColor: color,
+				pointBorderWidth: 0,
+				pointRadius: 1,
+				fill: true,
+				borderWidth: 2,
+				data,
+				datalabels: {
+					align: 'end',
+					anchor: 'end'
+				}
+			});
 		}
 
 		const config = {
-			labels,
-			datasets: [
-				{
-					label: 'Data',
-					borderColor: 'black',
-					pointBorderColor: 'black',
-					pointBackgroundColor: 'black',
-					pointBorderWidth: 0,
-					pointRadius: 1,
-					fill: true,
-					borderWidth: 2,
-					data,
-					datalabels: {
-						align: 'end',
-						anchor: 'end'
-					}
-				}
-			]
+			labels: dates.map(d => d.format('DD.MM.YYYY')),
+			datasets
 		};
 
 		const chart = new Chart();

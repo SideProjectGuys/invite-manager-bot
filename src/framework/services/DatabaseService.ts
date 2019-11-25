@@ -535,16 +535,14 @@ export class DatabaseService {
 		);
 		return rows as Array<{ total: string; invalidatedReason: JoinInvalidatedReason }>;
 	}
-	public async getJoinsPerDay(guildId: string, days: number) {
+	public async getJoinsPerDay(guildId: string, from: Date, to: Date) {
 		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.joins} ` +
-				'WHERE `guildId` = ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
-				'ORDER BY MAX(`createdAt`) ASC ' +
-				'LIMIT ? ',
-			[guildId, days]
+				'WHERE `guildId` = ? AND `createdAt` > ? AND `createdAt` < ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
 		);
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}
@@ -697,16 +695,14 @@ export class DatabaseService {
 		const res = await this.insertOrUpdate(TABLE.leaves, ['guildId', 'memberId', 'joinId'], [], [leave], l => l.guildId);
 		return res[0].insertId;
 	}
-	public async getLeavesPerDay(guildId: string, days: number) {
+	public async getLeavesPerDay(guildId: string, from: Date, to: Date) {
 		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.leaves} ` +
-				'WHERE `guildId` = ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
-				'ORDER BY MAX(`createdAt`) ASC ' +
-				'LIMIT ? ',
-			[guildId, days]
+				'WHERE `guildId` = ? AND `createdAt` > ? AND `createdAt` < ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
 		);
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}

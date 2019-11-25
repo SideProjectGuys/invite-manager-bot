@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "This chart shows the number of users leaving your server.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
-			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
