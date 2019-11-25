@@ -663,13 +663,6 @@ export class DatabaseService {
 			newInvalidatedReason = `'${newInvalidatedReason}'`;
 		}
 		const [db, pool] = this.getDbInfo(guildId);
-		console.log(
-			mysql.format(
-				`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
-					`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
-				vals
-			)
-		);
 		const [ok] = await pool.query<OkPacket>(
 			`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
 				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
