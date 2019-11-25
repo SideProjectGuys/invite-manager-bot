@@ -61,6 +61,7 @@ export class SchedulerService {
 				});
 			}
 		};
+		console.log(`Scheduling timer in ${millisUntilAction} for ${action.id}`);
 		const timer = setTimeout(func, millisUntilAction);
 		this.scheduledActionTimers.set(action.id, timer);
 	}
@@ -75,6 +76,7 @@ export class SchedulerService {
 
 	private async scheduleScheduledActions() {
 		const actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map(g => g.id));
+		console.log(`Scheduling ${actions.length} actions from db`);
 		actions.forEach(action => this.createTimer(action));
 	}
 
