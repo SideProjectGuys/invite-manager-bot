@@ -25,7 +25,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Premium,
 			guildOnly: false,
-			defaultAdminOnly: true,
+			defaultAdminOnly: false,
 			extraExamples: ['!premium check', '!premium activate', '!premium deactivate']
 		});
 	}
@@ -124,6 +124,8 @@ export default class extends Command {
 					embed.description = t('cmd.premium.activate.noGuild');
 				} else if (isPremium) {
 					embed.description = t('cmd.premium.activate.currentlyActive');
+				} else if (!message.member.permission.has(GuildPermission.MANAGE_GUILD)) {
+					embed.description = t('cmd.premium.activate.permissions');
 				} else if (!subs) {
 					embed.description = t('cmd.premium.activate.noSubscription', {
 						cmd: '`' + settings.prefix + 'premium`'
@@ -150,8 +152,8 @@ export default class extends Command {
 					embed.description = t('cmd.premium.deactivate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (!message.member.permission.has(GuildPermission.ADMINISTRATOR)) {
-					embed.description = t('cmd.premium.deactivate.adminOnly');
+				} else if (!message.member.permission.has(GuildPermission.MANAGE_GUILD)) {
+					embed.description = t('cmd.premium.deactivate.permissions');
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
 				} else {
