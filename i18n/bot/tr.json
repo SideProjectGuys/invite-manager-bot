@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Bu tablo sunucunuza katılan kullanıcı sayısını gösterir.",
-				"title": "Kullanıcı katılıyor"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "Bu tablo sunucunuzdan ayrılan kullanıcı sayısını gösterir.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir."
 			},
-			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Komut kullanımı"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Liderlik Tablosu",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

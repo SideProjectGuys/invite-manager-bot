@@ -1,3 +1,3 @@
-# Pro Bot
+# Bot Pro
 
 start.pro.description

@@ -181,7 +181,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                         | Usage                      |
 | ----------------------------------- | ------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir. | !graph \<type\> [duration] |
+| [graph](#graph)                     | Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir. | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | Make a role mentionable for 60 seconds or until it was used.        | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Mention an unmentionable role.                                      | !mentionRole \<role\>      |
 
@@ -767,7 +767,7 @@ Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir.
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +777,11 @@ Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                        | Details                                            |
-| -------- | --------------------- | -------- | ---------------------------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | Gösterilecek tablonun türü.        | Use one of the following values: `joins`, `leaves` |
-| duration | [Duration](#Duration) | No       | The duration period for the chart. |                                                    |
+| Argument | Type          | Required | Description                 | Details                                                              |
+| -------- | ------------- | -------- | --------------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | Gösterilecek tablonun türü. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date) | No       | cmd.graph.self.args.from    |                                                                      |
+| to       | [Date](#Date) | No       | cmd.graph.self.args.to      |                                                                      |
 
 ### Examples
 

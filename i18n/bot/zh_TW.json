@@ -64,7 +64,7 @@
 					"deleteMessageDays": "如果指定將刪除被封鎖成員近幾日內的訊息。"
 				}
 			},
-			"canNotSoftBan": "指令.封鎖.不能軟封鎖"
+			"canNotSoftBan": "我不能軟封鎖這個使用者。 "
 		},
 		"botConfig": {
 			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
@@ -74,7 +74,7 @@
 			"current": {
 				"clear": "使用`{{ prefix }}botConfig {{ key }} none`來清除它。",
 				"notSet": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}config {{ key }} 1`來設定它。",
-				"text": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}botConfig {{ key }} 1`來更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
+				"text": "這個配置目前被設定。\n使用`{{ prefix }}botConfig {{ key }} 1`來更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
 				"title": "目前的值"
 			},
 			"customOnly": "**這個指令目前只有自定義機器人可用。**\n如果您在尋找您的伺服器配置，請使用`{{ prefix }}config`指令。\n\n參觀我們的patreon頁面來學習更多關於您如何可以獲得您自己的自定義機器人：{{{ patreon }}}",
@@ -101,7 +101,7 @@
 				},
 				"description": "顯示和更改機器人的配置。"
 			},
-			"text": "以下是您的機器人的所有配置設定。\n使用`{{ prefix }}botConfig 1`來觀看單一設定\n使用`{{ prefix }}botConfig 2 3`來設定配置4 到 5",
+			"text": "以下是您的機器人的所有配置設定。\n使用`{{ prefix }}botConfig 1` 來檢視單一設定\n使用`{{ prefix }}botConfig 2 3` 來設定配置 4 到 5",
 			"title": "自定義機器人配置"
 		},
 		"botInfo": {
@@ -141,7 +141,7 @@
 				"args": {
 					"caseNumber": "案件編號"
 				},
-				"description": "觀看一個特定案件的資訊。"
+				"description": "檢視一個特定案件的資訊。"
 			},
 			"strike": "{{{ member }}}收到{{{ amount }}} strikes因為違反{{{ violation }}}規則{{{ date }}}。",
 			"title": "案件#{{ id }}"
@@ -218,70 +218,70 @@
 		"config": {
 			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`config {{ key }} default`來重置它到預設值。",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
+				"text": "這個配置已經被更改。\n使用`{{ prefix }}config {{ key }} 1`來再次更改它。\n使用`{{ prefix }}config {{ key }} default`來重置它到預設值。"
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"clear": "使用`{{ prefix }}config {{ key }} none`來清除它。",
+				"notSet": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}config {{ key }} 1`來設定它。",
+				"text": "這個配置目前被設定。\n使用`{{ prefix }}config {{ key }} 1`來更改它。\n使用`{{ prefix }}config {{ key }} default`來重置它到預設值。",
+				"title": "目前的值"
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"canNotReadMessages": "我沒有權限來**讀取訊息**在那個頻道。",
+				"canNotSendEmbeds": "我沒有權限來**嵌入連結**在那個頻道。",
+				"canNotSendMessages": "我沒有權限來**發送訊息**在那個頻道。",
+				"mustBeTextChannel": "那個頻道不是一個文字頻道。"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "新的值"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "沒有",
+			"notSet": "這些設定還沒被設定。",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "預覽"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "以前的值"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "這個配置已經被設定到那個值。",
 			"self": {
 				"args": {
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "您想要顯示/更改的配置設定。",
+					"value": "新設定的值。"
 				},
-				"description": "Show and change the config of the server."
+				"description": "顯示和更改伺服器的配置。"
 			},
-			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-			"title": "Your config settings"
+			"text": "以下是您的伺服器的所有配置設定。\n使用`{{ prefix }}config 1` 來檢視單一設定\n使用`{{ prefix }}config 2 3` 來設定配置 4 到 5 ",
+			"title": "您的配置設定"
 		},
 		"createInvite": {
-			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
+			"done": "創立邀請代碼**{{{ code }}}**名字為**{{ name }}**在{{{ channel }}}。",
 			"self": {
 				"args": {
-					"channel": "The channel for which the invite code is created. Uses the current channel by default.",
-					"name": "The name of the invite code."
+					"channel": "邀請代碼被創立在頻道。使用目前的頻道為默認。",
+					"name": "邀請代碼的名字。"
 				},
-				"description": "Creates unique invite codes."
+				"description": "創立獨特的邀請代碼。"
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "開發人員",
+			"moderators": "審核人員",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "顯示機器人的開發人員和合作人員。"
 			},
-			"staff": "Staff",
-			"translators": "Translators"
+			"staff": "員工",
+			"translators": "翻譯人員"
 		},
-		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
+		"error": "執行指令時發生一個錯誤。請報告這個給一個開發人員：\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "請等候當我們準備檔案時……",
 			"self": {
 				"args": {
-					"type": "The type of export you want."
+					"type": "輸出您想要的類型。"
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "輸出InviteManager的資料到一個csv表單。"
 			},
 			"title": "InviteManager - Export"
 		},
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "This chart shows the number of users leaving your server.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
-			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -459,7 +461,7 @@
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string": "Any text",
 				"string[]": "A list of words, for example: word another \"word with space\"",
-				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "Use the reactions to pick one of the available options."
 		},
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -1162,8 +1164,8 @@
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
-		"banMembers": "permissions.banMembers",
-		"kickMembers": "permissions.kickMembers"
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1462,7 +1464,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "General"
 				},
 				"invites": {
@@ -1569,7 +1571,7 @@
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Muted Role"
 		},
 		"prefix": {

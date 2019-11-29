@@ -182,7 +182,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                      | Usage                      |
 | ----------------------------------- | ---------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | このサーバー上のさまざまな統計グラフを表示します。               | !graph \<type\> [duration] |
+| [graph](#graph)                     | このサーバー上のさまざまな統計グラフを表示します。               | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | 役割を 60 秒間またはそれが使用されるまでメンション可能にします。 | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | メンションできない役職についてメンションしてください。           | !mentionRole \<role\>      |
 
@@ -768,7 +768,7 @@ cmd.fixRanks.self.description
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -778,10 +778,11 @@ cmd.fixRanks.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description              | Details                                    |
-| -------- | ----------------- | -------- | ------------------------ | ------------------------------------------ |
-| type     | [列挙型](#列挙型) | Yes      | 表示するチャートの種類。 | 以下のいずれかの値を使用:`joins`, `leaves` |
-| duration | [期間](#期間)     | No       | チャートの期間。         |                                            |
+| Argument | Type              | Required | Description              | Details                                                      |
+| -------- | ----------------- | -------- | ------------------------ | ------------------------------------------------------------ |
+| type     | [列挙型](#列挙型) | Yes      | 表示するチャートの種類。 | 以下のいずれかの値を使用:`joins`, `joinsAndLeaves`, `leaves` |
+| from     | [日付](#日付)     | No       | cmd.graph.self.args.from |                                                              |
+| to       | [日付](#日付)     | No       | cmd.graph.self.args.to   |                                                              |
 
 ### Examples
 

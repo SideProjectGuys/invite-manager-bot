@@ -181,7 +181,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                               | Usage                      |
 | ----------------------------------- | ------------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Muestra gráficos sobre varias estadísticas en este servidor.              | !graph \<type\> [duration] |
+| [graph](#graph)                     | Muestra gráficos sobre varias estadísticas en este servidor.              | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | Crea un rol que se pueda mencionar por 60 segundos o hasta que sea usado. | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Menciona un rol inmencionable.                                            | !mentionRole \<role\>      |
 
@@ -767,7 +767,7 @@ Muestra gráficos sobre varias estadísticas en este servidor.
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +777,11 @@ Muestra gráficos sobre varias estadísticas en este servidor.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                             | Details                                            |
-| -------- | --------------------- | -------- | --------------------------------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | El tipo de gráfico a mostrar.           | Use one of the following values: `joins`, `leaves` |
-| duration | [Duration](#Duration) | No       | El período de duración para el gráfico. |                                                    |
+| Argument | Type          | Required | Description                   | Details                                                              |
+| -------- | ------------- | -------- | ----------------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | El tipo de gráfico a mostrar. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date) | No       | cmd.graph.self.args.from      |                                                                      |
+| to       | [Date](#Date) | No       | cmd.graph.self.args.to        |                                                                      |
 
 ### Examples
 

@@ -13,47 +13,46 @@ Cet argument prend la valeur `vrai` ou `faux`. Vous pouvez aussi utiliser `oui` 
 
 ### Nombre
 
-Veuillez spécifier un nombre valide
+Veuillez spécifier un nombre
 
 ### Énumération
 
-This arguments expects a value from a specific set of valid values.
+Cet argument attend une valeur d'une liste spécifique de valeurs.
 
-> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.
+> Selon la commande les valeurs valides peuvent changer. Utilisez `!help <command>` (ex : `!help addRank`) pour avoir plus d'informations sur la commande et les valeurs valides pour cette commande.
 
 ### Code d'invitation
 
-This arguments expects a Discord Invite Code.
+Cet argument attend un code d'invitation Discord.
 
-> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.
+> Vous pouvez donner uniquement le code après `https://discord.gg/` pour annuler l'aperçu créé par Discord.
 
 ### Utilisateur
 
-This arguments expects a Discord User. You can use any of the following methods to provide a user:
+Cet argument attend un utilisateur Discord. Vous pouvez utiliser une de ces méthodes pour donner un utilisateur :
 
-- Mention the user: `@Valandur`
-- Use their ID: `102785693046026240`
-- Use their name: `Valandur`
-- Use their name and discriminator: `Valandur#3581`
-- Use quotes if their name has a space: `"Valandur with a space"`
+- Mentionner l'utilisateur `@Valandur`
+- Utiliser l'ID : `102785693046026240`
+- Utiliser le nom : `Valandur`
+- Utiliser des guillemets si le nom contient un espace : `"Valandur avec des espaces"`
 
 ### Role
 
-This arguments expects a Discord Role. You can use any of the following methods to provide a role:
+Cet argument attend un role Discord. Vous pouvez utiliser une de ces méthodes pour donner un role :
 
-- Mention the role: `@Admin`
-- Use the ID: `102785693046026240`
-- Use the name: `Admin`
-- Use quotes if the name has a space: `"Admin with a space"`
+- Mentionner le role `@Admin`
+- Utiliser l'ID : `102785693046026240`
+- Utiliser le nom : `Admin`
+- Utiliser des guillemets si le nom contient un espace : `"Admin avec des espaces"`
 
 ### Salon
 
-This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:
+Cet argument attend un salon Discord. Vous pouvez utiliser une de ces méthodes pour donner un salon :
 
-- Mention the channel: `#general`
-- Use the ID: `409846838129197057`
-- Use the name: `general`
-- Use quotes if the name has a space: `"general with a space"`
+- Mentionner le salon `#general`
+- Utiliser l'ID : `409846838129197057`
+- Utiliser le nom : `general`
+- Utiliser des guillemets si le nom contient un espace : `"general avec des espaces"`
 
 ### Commande
 
@@ -61,9 +60,9 @@ resolvers.command.typeInfo
 
 ### Texte
 
-This arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.
+Cet argument attend du texte. Vous pouvez utiliser des guillemets (`"Texte avec des guillemets") pour du texte avec des espaces.
 
-> If the text is the last argument you don't have to use quotes.
+> Si le texte est le dernier argument vous n'avez pas besoin d'utiliser des guillemets.
 
 ### Date
 
@@ -146,8 +145,8 @@ resolvers.duration.typeInfo
 | [cleanShort](#cleanShort)             | Effacer les messages courts.                                                                                             | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Supprimer les messages contenant certains mots clefs.                                                                    | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Expulser un membre du serveur.                                                                                           | !kick \<member\> [reason]                                        |
-| [mute](#mute)                         | Muter un joueur                                                                                                          | !mute [-d value\|--duration=value] \<user\> [reason]             |
-| [punishmentConfig](#punishmentConfig) | Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.                                            | !punishmentConfig [punishment][strikes] [args]                   |
+| [mute](#mute)                         | Rendre muet un utilisateur                                                                                               | !mute [-d value\|--duration=value] \<user\> [reason]             |
+| [punishmentConfig](#punishmentConfig) | Configurez les punitions lorsque vous atteignez un certain nombre d'avertissements.                                      | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purger les messages dans un canal.                                                                                       | !purge \<quantity\> [user]                                       |
 | [purgeUntil](#purgeUntil)             | Purger les messages dans un salon jusqu'à un message spécifié.                                                           | !purgeUntil \<messageID\>                                        |
 | [softBan](#softBan)                   | Bannir puis automatiquement dé-bannir un membre du serveur.                                                              | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
@@ -181,7 +180,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                                       | Usage                      |
 | ----------------------------------- | --------------------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Affiche des graphiques sur différentes statistiques sur ce serveur.               | !graph \<type\> [duration] |
+| [graph](#graph)                     | Affiche des graphiques sur différentes statistiques sur ce serveur.               | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | Faites un rôle mentionnable pendant 60 secondes ou jusqu'à ce qu'il soit utilisé. | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Mentionnez un rôle non-mentionnable.                                              | !mentionRole \<role\>      |
 
@@ -767,7 +766,7 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +776,11 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                      | Details                                                |
-| -------- | --------------------------- | -------- | -------------------------------- | ------------------------------------------------------ |
-| type     | [Énumération](#Énumération) | Yes      | Le type de graphique à afficher. | Utilisez une des valeurs suivantes : `joins`, `leaves` |
-| duration | [Durée](#Durée)             | No       | La période du graphique.         |                                                        |
+| Argument | Type                        | Required | Description                      | Details                                                                  |
+| -------- | --------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------------ |
+| type     | [Énumération](#Énumération) | Yes      | Le type de graphique à afficher. | Utilisez une des valeurs suivantes : `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date)               | No       | cmd.graph.self.args.from         |                                                                          |
+| to       | [Date](#Date)               | No       | cmd.graph.self.args.to           |                                                                          |
 
 ### Examples
 
@@ -1283,7 +1283,7 @@ Mentionnez un rôle non-mentionnable.
 
 ## !mute
 
-Muter un joueur
+Rendre muet un utilisateur
 
 ### Usage
 
@@ -1514,7 +1514,7 @@ Informations sur la version premium d'InviteManager.
 
 ## !punishmentConfig
 
-Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.
+Configurez les punitions lorsque vous atteignez un certain nombre d'avertissements.
 
 ### Usage
 
@@ -1528,11 +1528,11 @@ Configurez les punitions lorsque vous atteignez un certain nombre de Strikes.
 
 ### Arguments
 
-| Argument   | Type                        | Required | Description                                           | Details                                                                       |
-| ---------- | --------------------------- | -------- | ----------------------------------------------------- | ----------------------------------------------------------------------------- |
-| punishment | [Énumération](#Énumération) | No       | Type de punitions à utiliser.                         | Utilisez une des valeurs suivantes : `ban`, `kick`, `mute`, `softban`, `warn` |
-| strikes    | [Nombre](#Nombre)           | No       | Nombre de Strikes pour que cette peine soit utilisée. |                                                                               |
-| args       | [Texte](#Texte)             | No       | Arguments passés pour la sanction.                    |                                                                               |
+| Argument   | Type                        | Required | Description                                                  | Details                                                                       |
+| ---------- | --------------------------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| punishment | [Énumération](#Énumération) | No       | Type de punitions à utiliser.                                | Utilisez une des valeurs suivantes : `ban`, `kick`, `mute`, `softban`, `warn` |
+| strikes    | [Nombre](#Nombre)           | No       | Nombre d'avertissements pour que cette peine soit appliquée. |                                                                               |
+| args       | [Texte](#Texte)             | No       | Arguments passés pour la sanction.                           |                                                                               |
 
 ### Examples
 

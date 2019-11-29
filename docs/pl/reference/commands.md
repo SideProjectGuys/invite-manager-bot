@@ -181,7 +181,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                   | Usage                      |
 | ----------------------------------- | ------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Pokazuje wykresy dotyczące różnych statystyk na tym serwerze. | !graph \<type\> [duration] |
+| [graph](#graph)                     | Pokazuje wykresy dotyczące różnych statystyk na tym serwerze. | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | Make a role mentionable for 60 seconds or until it was used.  | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Mention an unmentionable role.                                | !mentionRole \<role\>      |
 
@@ -767,7 +767,7 @@ Pokazuje wykresy dotyczące różnych statystyk na tym serwerze.
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +777,11 @@ Pokazuje wykresy dotyczące różnych statystyk na tym serwerze.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                  | Details                                            |
-| -------- | --------------------- | -------- | ---------------------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | Typ wykresu do wyświetlenia. | Use one of the following values: `joins`, `leaves` |
-| duration | [Duration](#Duration) | No       | Okres trwania wykresu.       |                                                    |
+| Argument | Type          | Required | Description                  | Details                                                              |
+| -------- | ------------- | -------- | ---------------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | Typ wykresu do wyświetlenia. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date) | No       | cmd.graph.self.args.from     |                                                                      |
+| to       | [Date](#Date) | No       | cmd.graph.self.args.to       |                                                                      |
 
 ### Examples
 

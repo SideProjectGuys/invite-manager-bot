@@ -64,7 +64,7 @@
 					"deleteMessageDays": "Si spécifié, cela va supprimer les messages du membre banni ce nombre de jours en arrière."
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "Je ne peux pas bannir cet utilisateur"
 		},
 		"botConfig": {
 			"canNotClear": "Le paramètre **{{ key }}** ne peut pas être effacé. Vous pouvez utiliser `{{ prefix }}botConfig {{ key }} default` pour le remettre à zéro.",
@@ -162,7 +162,7 @@
 			},
 			"strikes": {
 				"entry": "#{{ id }} - A reçu {{ amount }} avertissements pour {{ violation }} {{ date }}",
-				"title": "Strikes ",
+				"title": "Avertissements",
 				"total": "Nombre total d'avertissements",
 				"totalText": "{{{ total }}} avertissements reçus pour {{{ amount }}} infractions."
 			}
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Ce graphique indique le nombre d'utilisateurs rejoignant votre serveur.",
-				"title": "Utilisateur rejoignant"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "Ce graphique montre le nombre d'utilisateurs quittant votre serveur.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Affiche des graphiques sur différentes statistiques sur ce serveur."
 			},
-			"usage": {
-				"text": "Ce graphique montre l'utilisation des commandes InviteManager sur ce serveur.",
-				"title": "Usage de la commande"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Utilisateurs rejoignant et quittant",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -376,7 +378,7 @@
 					"text": "**{{ total }}** (**{{ regular }}** regular, **{{ custom }}** bonus)",
 					"title": "Invitations effacées."
 				},
-				"text": "**{{ total }}** (**{{ regular }}** regulier, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** quitté)",
+				"text": "**{{ total }}** (**{{ regular }}** normales, **{{ custom }}** bonus, **{{ fake }}** fausses, **{{ leave }}** partis)",
 				"title": "Invitations"
 			},
 			"joined": {
@@ -470,7 +472,7 @@
 			"current": {
 				"clear": "Utilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` pour effacer.",
 				"notSet": "Cette configuration n'est pas définie.\n\nUtilisez `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` pour la définir.",
-				"text": "Cette configuration de code d'invitation est actuellement définie.\n\nUtilisez `{{prefix}} inviteCodeConfig {{clé}} {{code}}\" style = \"box-sizing: border-box; sélection de l'utilisateur: aucune; arrière-plan: rgba (133, 91, 213, 0,2); affichage: inline-block; padding-right: 6px; padding-left: 6px; hauteur de ligne: 18px; border-radius: 10px 0px 0px 10px; taille de police: 12px; vertical-align: text-top; couleur: hériter; curseur: pointeur; marge: 0px 2px; largeur minimale: 26px; text-align: center; \"> 1` pour le changer.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} default` pour le rétablir à la valeur par défaut.\nUtilisez `{{prefix}} inviteCodeConfig {{key}} {{code}} none \\` pour le supprimer.",
+				"text": "Cette configuration de code d'invitation est actuellement défini.\n\nUtilisez `{{ prefix }} inviteCodeConfig {{ key }} {{ code }} <value>` pour la changer.\nUtilisez `{{ prefix }} inviteCodeConfig {{ key }} {{ code }} default` pour la rétablir à la valeur par défaut.\nUtilisez `{{ prefix }} inviteCodeConfig {{ key }} {{ code }} none \\` pour la supprimer.",
 				"title": "Valeur actuelle"
 			},
 			"keys": {
@@ -494,8 +496,8 @@
 				},
 				"description": "Affiche et modifie la configuration des codes d'invitation du serveur."
 			},
-			"text": "Set configs for individual invite codes.",
-			"title": "Invite Code Config",
+			"text": "Défini les paramètres pour les codes d'invitations individuelles.",
+			"title": "Configuration des codes d'invitations",
 			"noneSet": "Aucune configuration définie !"
 		},
 		"inviteCodes": {
@@ -522,7 +524,7 @@
 			"error": "Je n'ai pas pu vous envoyer vos codes d'invitation, assurez-vous d'autoriser les messages privés de ce serveur."
 		},
 		"inviteDetails": {
-			"entry": "**{{ uses }}** from {{{ code }}} - created **{{ createdAt }}**",
+			"entry": "**{{ uses }}** de {{{ code }}} - créée **{{ createdAt }}**",
 			"noInviteCodes": "Vous n'avez pas encore de code d'invitation.",
 			"self": {
 				"args": {
@@ -533,7 +535,7 @@
 		},
 		"invites": {
 			"amount": {
-				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
+				"other": "{{{ target }}} a {{ total }} invitations ! ({{ regular }} normales, {{ custom }} bonus, {{ fake }} fausses, {{ leave }} partis)",
 				"self": "Vous avez {{ total }} invitations ! ({{ regular }} ordinaires, {{ custom }} bonus, {{ fake }} faux, {{ leave }} partis)"
 			},
 			"highestRank": {
@@ -541,7 +543,7 @@
 				"self": "Félicitations, vous avez le rang le plus élevé !"
 			},
 			"nextRank": {
-				"other": "{{{ target }}} needs **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!",
+				"other": "{{{ target }}} a besoin de **{{ nextRankPointsDiff }}** invitations en plus pour atteindre le rang **{{ nextRankName }}** !",
 				"self": "Vous avez besoin de **{{ nextRankPointsDiff }}** invitations en plus pour atteindre le rang **{{ nextRankName }}** !"
 			},
 			"self": {
@@ -576,8 +578,8 @@
 			},
 			"comparedTo": "changements par rapport à {{ to }}",
 			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invitations (**{{ regular }}** normales, **{{ custom }}** bonus, **{{ fake }}** fausses, **{{ leave }}** partis)",
-			"from": "Invites since {{{ from }}}",
-			"invalidDate": "Invalide: {{ date }}",
+			"from": "Invitations depuis {{{ from }}}",
+			"invalidDate": "Date invalide : {{ date }}",
 			"legend": "`T` = Total\n`O` = Ordinaire\n`B` = Bonus\n`F` = Faux\n`P` = Partis",
 			"noInvites": "Aucune invitations",
 			"self": {
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Classement",
-			"lastUpdate": "Dernière mise à jour {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -688,7 +690,7 @@
 					"reason": "La raison de pourquoi l'utilisateur est muet.",
 					"user": "L'utilisateur qui doit être rendu muet."
 				},
-				"description": "Muter un joueur"
+				"description": "Rendre muet un utilisateur"
 			}
 		},
 		"permissions": {
@@ -779,11 +781,11 @@
 				"args": {
 					"args": "Arguments passés pour la sanction.",
 					"punishment": "Type de punitions à utiliser.",
-					"strikes": "Nombre de Strikes pour que cette peine soit utilisée."
+					"strikes": "Nombre d'avertissements pour que cette peine soit appliquée."
 				},
-				"description": "Configurez les punitions lorsque vous atteignez un certain nombre de Strikes."
+				"description": "Configurez les punitions lorsque vous atteignez un certain nombre d'avertissements."
 			},
-			"text": "{{ strikes }} strikes sont punies de {{ punition }}",
+			"text": "{{ strikes }} avertissements sont punis par {{ punishment }}",
 			"title": "Configuration des punitions",
 			"unusedPunishment": "Punition inutilisée"
 		},
@@ -1162,8 +1164,8 @@
 		"manageMessages": "Gérer les messages",
 		"readMessageHistory": "Lire l'historique des messages",
 		"missing": "Il me manque la permission {{{ permissions }}} dans {{{ channel }}}",
-		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
+		"banMembers": "Banni des membres",
+		"kickMembers": "Expulse des membres"
 	},
 	"prompt": {
 		"canceled": "Annulé"
@@ -1203,7 +1205,7 @@
 		"number": {
 			"invalid": "Ce n'est pas un nombre valide.",
 			"type": "Nombre",
-			"typeInfo": "Veuillez spécifier un nombre valide"
+			"typeInfo": "Veuillez spécifier un nombre"
 		},
 		"role": {
 			"multiple": "Plusieurs rôles trouvés. {{{ roles }}}",
@@ -1256,11 +1258,11 @@
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
 			"title": "Délai de suppression des messages du bot.",
-			"description": "The timeout after which bot messages are deleted."
+			"description": "Le temps après lequel les messages du bot sont supprimés"
 		},
 		"autoModDisabledForOldMembers": {
 			"title": "Désactivé pour les anciens membres",
-			"description": "Disabled auto moderation for members that have been in your server for a long time."
+			"description": "Désactive la modération automatique pour les membres qui sont dans votre serveur depuis longtemps."
 		},
 		"autoModDisabledForOldMembersThreshold": {
 			"title": "Seuil pour les anciens membres",
@@ -1272,7 +1274,7 @@
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
 			"title": "Timeframe",
-			"description": "The timeframe whithin which messages will be considered duplicates."
+			"description": "L'écart de temps pour que les messages identiques soient considérés comme dupliqués."
 		},
 		"autoModEmojisEnabled": {
 			"title": "Activé",
@@ -1284,23 +1286,23 @@
 		},
 		"autoModEnabled": {
 			"title": "Activé",
-			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
+			"description": "Modère automatiquement les messages (des règles peuvent être activées ou désactivées)."
 		},
 		"autoModHoistEnabled": {
 			"title": "Activé",
-			"description": "Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list)."
+			"description": "Donne automatiquement des pseudos aux membres si ils essaient de tricher (en utilisant des caractères spéciaux pour apparaître en haut de la liste)."
 		},
 		"autoModIgnoredChannels": {
 			"title": "Salons ignorés",
-			"description": "Channels that are ignored while automatically moderating."
+			"description": "Salons ignorés lors de la modération automatique."
 		},
 		"autoModIgnoredRoles": {
 			"title": "Rôles ignorés",
-			"description": "Any members with these roles will not automatically be moderated."
+			"description": "N'importe quel membre avec ce rôle ne sera pas automatiquement modéré."
 		},
 		"autoModInvitesEnabled": {
 			"title": "Les invitations sont désormais modérées",
-			"description": "Automatically scan messages for discord invite links and remove them."
+			"description": "Vérifie automatiquement les messages pour enlever les invitations Discord."
 		},
 		"autoModLinksBlacklist": {
 			"title": "Liste noire",

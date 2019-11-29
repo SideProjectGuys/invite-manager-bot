@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "يوضح هذا المخطط عدد المستخدمين الذين ينضمون إلى السيرفر الخاص بك.",
-				"title": "انضمام المستخدم"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "يوضح هذا المخطط عدد المستخدمين الذين يغادرون السيرفر الخاص بك.",
@@ -325,9 +325,11 @@
 				},
 				"description": "يعرض الرسوم البيانية حول الإحصائيات المختلفة على هذا السيرفر."
 			},
-			"usage": {
-				"text": "يوضح هذا المخطط استخدام أوامر البوت الخاص بنا على هذا السيرفر.",
-				"title": "استعمال الاوامر"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "لائحة المتصدرين",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

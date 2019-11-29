@@ -181,7 +181,7 @@ resolvers.duration.typeInfo
 
 | Command                             | Description                                                   | Usage                      |
 | ----------------------------------- | ------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | يعرض الرسوم البيانية حول الإحصائيات المختلفة على هذا السيرفر. | !graph \<type\> [duration] |
+| [graph](#graph)                     | يعرض الرسوم البيانية حول الإحصائيات المختلفة على هذا السيرفر. | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | ذكر الرتبة لمدة 60 ثانية أو حتى عندما يتم استخدامه.           | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | اذكر الرتبة الذي لا يمكن ذكرها                                | !mentionRole \<role\>      |
 
@@ -767,7 +767,7 @@ cmd.fixRanks.self.description
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +777,11 @@ cmd.fixRanks.self.description
 
 ### Arguments
 
-| Argument | Type                           | Required | Description       | Details                                            |
-| -------- | ------------------------------ | -------- | ----------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)                  | Yes      | نوع المخطط لعرضه. | Use one of the following values: `joins`, `leaves` |
-| duration | [المدة الزمنية](#المدةالزمنية) | No       | مدة للمخطط.       |                                                    |
+| Argument | Type            | Required | Description              | Details                                                              |
+| -------- | --------------- | -------- | ------------------------ | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum)   | Yes      | نوع المخطط لعرضه.        | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.from |                                                                      |
+| to       | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.to   |                                                                      |
 
 ### Examples
 

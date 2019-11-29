@@ -2,6 +2,6 @@
 
 other.openSource.description
 
-## Main Bot
+## Bot principal
 
 other.openSource.bot.description

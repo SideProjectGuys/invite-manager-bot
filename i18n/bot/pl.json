@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Ten wykres pokazuje liczbę użytkowników dołączających do twojego serwera.",
-				"title": "Na serwer dołącza"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "Ten wykres pokazuje liczbę użytkowników opuszczających twój serwer.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Pokazuje wykresy dotyczące różnych statystyk na tym serwerze."
 			},
-			"usage": {
-				"text": "Ten wykres przedstawia użycie poleceń InviteManager na tym serwerze.",
-				"title": "Użycie komendy"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

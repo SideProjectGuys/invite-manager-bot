@@ -64,7 +64,7 @@
 					"deleteMessageDays": "Si se especifica, eliminará los mensajes de los miembros prohibidos hace muchos días."
 				}
 			},
-			"canNotSoftBan": "cmd.ban.canNotSoftBan"
+			"canNotSoftBan": "I cannot softban this user."
 		},
 		"botConfig": {
 			"canNotClear": "La configuración ** ** {{clave}} ** no se puede borrar. Puede usar `{{prefix}} botConfig {{key}} default` para restablecerlo al valor predeterminado.",
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Este gráfico muestra el numero de usuarios entrando a tu servidor.",
-				"title": "Usuario entrando"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "Este gráfico muestra el numero de usuarios saliendo de tu servidor.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Muestra gráficos sobre varias estadísticas en este servidor."
 			},
-			"usage": {
-				"text": "Este gráfico muestra el uso de comandos de InviteManager en tu servidor.",
-				"title": "Uso del comando"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -459,7 +461,7 @@
 				"role[]": "Una lista de roles, por ejemplo: @Admin @Mod",
 				"string": "Cualquier texto",
 				"string[]": "Una lista de palabras, por ejemplo: palabra otra \"palabra con espacio\"",
-				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "Usa las reacciones para elegir una de las opciones disponibles."
 		},
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Tabla de puntaje",
-			"lastUpdate": "Última actualización {{{lastUpdate}}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -1162,8 +1164,8 @@
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
-		"banMembers": "permissions.banMembers",
-		"kickMembers": "permissions.kickMembers"
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Cancelado"
@@ -1462,7 +1464,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "General"
 				},
 				"invites": {
@@ -1569,7 +1571,7 @@
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Rol silenciado"
 		},
 		"prefix": {

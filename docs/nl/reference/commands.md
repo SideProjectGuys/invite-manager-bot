@@ -87,7 +87,7 @@ resolvers.duration.typeInfo
 | [inviteDetails](#inviteDetails)   | Zie details waar je je invites vandaan komen.      | !inviteDetails [user]                                            |
 | [invites](#invites)               | Zie persoonlijke invites.                          | !invites [user]                                                  |
 | [leaderboard](#leaderboard)       | Laat de mensen zien met de meeste invites.         | !leaderboard [page]                                              |
-| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description                 | !removeInvites \<user\> \<amount\> [reason]                      |
+| [removeInvites](#removeInvites)   | Verwijder invites van een gebruiker                | !removeInvites \<user\> \<amount\> [reason]                      |
 | [restoreInvites](#restoreInvites) | Zat alle vorige verwijderde invites terug.         | !restoreInvites [user]                                           |
 | [subtractFakes](#subtractFakes)   | Verwijder fake invites van alle gebruikers.        | !subtractFakes                                                   |
 | [subtractLeaves](#subtractLeaves) | Verwijder leaves voor alle gebruikers.             | !subtractLeaves                                                  |
@@ -160,28 +160,28 @@ resolvers.duration.typeInfo
 
 ### Music
 
-| Command                   | Description                                                                                  | Usage                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | Disconnect the bot from the current voice channel.                                           | !disconnect                                             |
-| [lyrics](#lyrics)         | Show lyrics of the currently playing song.                                                   | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | Create a mashup of 2 songs.                                                                  | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | Shows information about the currently playing song                                           | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | Pause the current song.                                                                      | !pause                                                  |
-| [play](#play)             | Play the song if the queue is empty, otherwise it will add the song to the end of the queue. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | Display the songs in the queue.                                                              | !queue                                                  |
-| [repeat](#repeat)         | Set the song to be played on repeat.                                                         | !repeat                                                 |
-| [resume](#resume)         | Resume the current song.                                                                     | !resume                                                 |
-| [rewind](#rewind)         | Rewind the song and start from the beginning.                                                | !rewind                                                 |
-| [search](#search)         | Search for the search term and let you chose one of the results.                             | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | Skip to a specific part of the song.                                                         | !seek [duration]                                        |
-| [skip](#skip)             | Skip the current song and play the next song in the queue.                                   | !skip [amount]                                          |
-| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.                         | !volume [volume]                                        |
+| Command                   | Description                                                                                                 | Usage                                                   |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | Laat de bot de huidige spraakkanaal verlaten.                                                               | !disconnect                                             |
+| [lyrics](#lyrics)         | Show lyrics of the currently playing song.                                                                  | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | Create a mashup of 2 songs.                                                                                 | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | Laat informatie zien over het huidige muziek                                                                | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | Zet het huidige muziek op pauze.                                                                            | !pause                                                  |
+| [play](#play)             | Speel het muziek als de wachtrij leeg is, anders wordt het muziek toegevoegd aan het einde van de wachtrij. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | Laat de muziek in de wachtrij zien.                                                                         | !queue                                                  |
+| [repeat](#repeat)         | Zet de muziek op herhaaldelijk afspelen.                                                                    | !repeat                                                 |
+| [resume](#resume)         | Hervat de muziek muziek.                                                                                    | !resume                                                 |
+| [rewind](#rewind)         | Laat het nummer opnieuw afspelen.                                                                           | !rewind                                                 |
+| [search](#search)         | Zoek voor iets en laat je 1 van de resultaten kiezen.                                                       | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | Spoel verder naar een bepaald stuk van de muziek.                                                           | !seek [duration]                                        |
+| [skip](#skip)             | Skip the current song and play the next song in the queue.                                                  | !skip [amount]                                          |
+| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.                                        | !volume [volume]                                        |
 
 ### Other
 
 | Command                             | Description                                                                | Usage                      |
 | ----------------------------------- | -------------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph)                     | Laat verschillende soorten grafieken zien van je server statistieken.      | !graph \<type\> [duration] |
+| [graph](#graph)                     | Laat verschillende soorten grafieken zien van je server statistieken.      | !graph \<type\> [from][to] |
 | [makeMentionable](#makeMentionable) | Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt. | !makeMentionable \<role\>  |
 | [mentionRole](#mentionRole)         | Mention een niet mentionable role.                                         | !mentionRole \<role\>      |
 
@@ -284,7 +284,7 @@ Verban een gebruiker van de server.
 
 | Flag                              | Short     | Type              | Description                                                                  |
 | --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Als dit opgegeven is, worden de berichten van de opgegeven dagen verwijderd. |
 
 ### Examples
 
@@ -666,7 +666,7 @@ Zie de ontwikkelaars en de mensen die hebben helpen aan de bot.
 
 ## !disconnect
 
-Disconnect the bot from the current voice channel.
+Laat de bot de huidige spraakkanaal verlaten.
 
 ### Usage
 
@@ -767,7 +767,7 @@ Laat verschillende soorten grafieken zien van je server statistieken.
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +777,11 @@ Laat verschillende soorten grafieken zien van je server statistieken.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                  | Details                                            |
-| -------- | --------------------- | -------- | ---------------------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | De type grafiek om te zien.  | Use one of the following values: `joins`, `leaves` |
-| duration | [Duration](#Duration) | No       | De tijdsduur voor de grafiek |                                                    |
+| Argument | Type          | Required | Description                 | Details                                                              |
+| -------- | ------------- | -------- | --------------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | De type grafiek om te zien. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date) | No       | cmd.graph.self.args.from    |                                                                      |
+| to       | [Date](#Date) | No       | cmd.graph.self.args.to      |                                                                      |
 
 ### Examples
 
@@ -1312,7 +1313,7 @@ Mute een gebruiker
 
 ## !nowPlaying
 
-Shows information about the currently playing song
+Laat informatie zien over het huidige muziek
 
 ### Usage
 
@@ -1327,9 +1328,9 @@ Shows information about the currently playing song
 
 ### Flags
 
-| Flag                | Short     | Type                | Description                                                                        |
-| ------------------- | --------- | ------------------- | ---------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Pin the now playing message and update it automatically whenever a new song plays. |
+| Flag                | Short     | Type                | Description                                                                                    |
+| ------------------- | --------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Pint het muziek dat nu speelt en update het automatisch wanneer er een nieuwe muziek afspeelt. |
 
 ### Examples
 
@@ -1343,7 +1344,7 @@ Shows information about the currently playing song
 
 ## !pause
 
-Pause the current song.
+Zet het huidige muziek op pauze.
 
 ### Usage
 
@@ -1418,7 +1419,7 @@ Mention de bot
 
 ## !play
 
-Play the song if the queue is empty, otherwise it will add the song to the end of the queue.
+Speel het muziek als de wachtrij leeg is, anders wordt het muziek toegevoegd aan het einde van de wachtrij.
 
 ### Usage
 
@@ -1434,14 +1435,14 @@ Play the song if the queue is empty, otherwise it will add the song to the end o
 
 | Argument | Type          | Required | Description                                   | Details |
 | -------- | ------------- | -------- | --------------------------------------------- | ------- |
-| link     | [Text](#Text) | Yes      | The link to a specific song or a search term. |         |
+| link     | [Text](#Text) | Yes      | De link naar een muziek of een zoek opdracht. |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                | Description                                                                       |
-| ------------------------ | --------- | ------------------- | --------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Select the platform where you want the song to be played.                         |
-| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | If set, it will play this song next instead of adding it to the end of the queue. |
+| Flag                     | Short     | Type                | Description                                                                                                                  |
+| ------------------------ | --------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Selecteer de platform waar je wilt dat het muziek op wordt gespeeld.                                                         |
+| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | Als dit gezet is, wordt het volgende muziek afgespeeld in plaats van dat het wordt toegevoegd aan het einde van de wachtrij. |
 
 ### Examples
 
@@ -1560,10 +1561,10 @@ Verwijder berichten in een kanaal.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                    | Details |
-| -------- | ----------------- | -------- | ---------------------------------------------- | ------- |
-| quantity | [Number](#Number) | Yes      | Hoeveel berichten er verwijdert zullen worden. |         |
-| user     | [User](#User)     | No       | User whose messages are deleted.               |         |
+| Argument | Type              | Required | Description                                          | Details |
+| -------- | ----------------- | -------- | ---------------------------------------------------- | ------- |
+| quantity | [Number](#Number) | Yes      | Hoeveel berichten er verwijdert zullen worden.       |         |
+| user     | [User](#User)     | No       | De gebruiker van wie de berichten worden verwijderd. |         |
 
 ### Examples
 
@@ -1602,7 +1603,7 @@ Verwijder berichten in een kanaal tot een specifiek aan berichten.
 
 ## !queue
 
-Display the songs in the queue.
+Laat de muziek in de wachtrij zien.
 
 ### Usage
 
@@ -1653,7 +1654,7 @@ Zie alle ranks.
 
 ## !removeInvites
 
-cmd.removeInvites.self.description
+Verwijder invites van een gebruiker
 
 ### Usage
 
@@ -1667,11 +1668,11 @@ cmd.removeInvites.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| user     | [User](#User)     | Yes      | cmd.removeInvites.self.args.user   |         |
-| amount   | [Number](#Number) | Yes      | cmd.removeInvites.self.args.amount |         |
-| reason   | [Text](#Text)     | No       | cmd.removeInvites.self.args.reason |         |
+| Argument | Type              | Required | Description                                       | Details |
+| -------- | ----------------- | -------- | ------------------------------------------------- | ------- |
+| user     | [User](#User)     | Yes      | De gebruiker waarvan je het gaat verwijderen      |         |
+| amount   | [Number](#Number) | Yes      | Het aantal berichten die zullen worden verwijderd |         |
+| reason   | [Text](#Text)     | No       | De reden waarom je het gaat verwijderen           |         |
 
 ### Examples
 
@@ -1727,7 +1728,7 @@ Verwijder een rank.
 
 ## !repeat
 
-Set the song to be played on repeat.
+Zet de muziek op herhaaldelijk afspelen.
 
 ### Usage
 
@@ -1791,7 +1792,7 @@ Zat alle vorige verwijderde invites terug.
 
 ## !resume
 
-Resume the current song.
+Hervat de muziek muziek.
 
 ### Usage
 
@@ -1815,7 +1816,7 @@ Resume the current song.
 
 ## !rewind
 
-Rewind the song and start from the beginning.
+Laat het nummer opnieuw afspelen.
 
 ### Usage
 
@@ -1839,7 +1840,7 @@ Rewind the song and start from the beginning.
 
 ## !search
 
-Search for the search term and let you chose one of the results.
+Zoek voor iets en laat je 1 van de resultaten kiezen.
 
 ### Usage
 
@@ -1849,15 +1850,15 @@ Search for the search term and let you chose one of the results.
 
 ### Arguments
 
-| Argument | Type          | Required | Description     | Details |
-| -------- | ------------- | -------- | --------------- | ------- |
-| search   | [Text](#Text) | Yes      | The search term |         |
+| Argument | Type          | Required | Description | Details |
+| -------- | ------------- | -------- | ----------- | ------- |
+| search   | [Text](#Text) | Yes      | De zoeterm  |         |
 
 ### Flags
 
-| Flag                     | Short     | Type          | Description                                               |
-| ------------------------ | --------- | ------------- | --------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | Select the platform where you want the song to be played. |
+| Flag                     | Short     | Type          | Description                                                         |
+| ------------------------ | --------- | ------------- | ------------------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | Selecteer het platvorm waarop je het muziek wilt hebben afgespeeld. |
 
 ### Examples
 
@@ -1867,7 +1868,7 @@ Search for the search term and let you chose one of the results.
 
 ## !seek
 
-Skip to a specific part of the song.
+Spoel verder naar een bepaald stuk van de muziek.
 
 ### Usage
 
@@ -1971,9 +1972,9 @@ Ban en dan unban een gebruiker automatisch van de server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                              |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.softBan.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                       |
+| --------------------------------- | --------- | ----------------- | ------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Het aantal berichten die zullen worden verwijderd |
 
 ### Examples
 

@@ -64,7 +64,7 @@
 					"deleteMessageDays": "Als dit opgegeven is, worden de berichten van de opgegeven dagen verwijderd."
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "Ik kan deze gebruiker niet softbannen."
 		},
 		"botConfig": {
 			"canNotClear": "De configuratie setting **{{ key }}** kan niet verwijdert worden. Je kan `{{ prefix }}botConfig {{ key }} default` doen om het te resetten naar de standaard waarde.",
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server gejoind zijn.",
-				"title": "Gebruikers die gejoind zijn"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server geleaved zijn.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Laat verschillende soorten grafieken zien van je server statistieken."
 			},
-			"usage": {
-				"text": "Deze grafiek laat de hoeveelheid gebruikte commando's zien voor deze server.",
-				"title": "Commando gebruik"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -459,7 +461,7 @@
 				"role[]": "Een lijst van rollen, bijvoorbeeld: @Admin @Mod",
 				"string": "Een tekst",
 				"string[]": "Een lijst van woorden, bijvoorbeeld: woord nog een \"woord met spatie\"",
-				"enum<musicplatformtypes>[]": "A list of music platform types"
+				"enum<musicplatformtypes>[]": "Een lijst met muziek platvorm types."
 			},
 			"welcome": "Gebruik de reacties om een van de mogelijke opties te kiezen."
 		},
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Laatst geupdate {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {

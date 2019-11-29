@@ -1,4 +1,4 @@
-# Donating
+# Faire un don
 
 other.donating.description
 
