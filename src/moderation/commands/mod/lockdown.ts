@@ -69,7 +69,7 @@ export default class extends Command {
 			);
 			await this.client.scheduler.removeScheduledAction(guild.id, scheduledUnlockAction.id);
 
-			await this.sendReply(message, t('cmd.lockdown.channelUnlocked'));
+			await this.sendReply(message, t('cmd.lockdown.channelUnlocked', { channel: `<#${channel.id}>` }));
 
 			return;
 		}
@@ -120,6 +120,6 @@ export default class extends Command {
 			'Channel lockdown'
 		);
 
-		await this.sendReply(message, t('cmd.lockdown.channelLockedDown'));
+		await this.sendReply(message, t('cmd.lockdown.channelLockedDown', { channel: `<#${channel.id}>` }));
 	}
 }
