@@ -2,13 +2,10 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
-import { EnumResolver, StringResolver } from '../../../framework/resolvers';
+import { StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
 
-enum PlaceholderMode {
-	create = 'create',
-	edit = 'edit'
-}
+const THUMBS_UP = '👍';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
@@ -16,11 +13,6 @@ export default class extends Command {
 			name: ManagementCommand.placeholder,
 			aliases: ['ph'],
 			args: [
-				{
-					name: 'mode',
-					resolver: new EnumResolver(client, Object.values(PlaceholderMode)),
-					required: true
-				},
 				{
 					name: 'message',
 					resolver: StringResolver,
@@ -45,8 +37,8 @@ export default class extends Command {
 	public async action(
 		message: Message,
 		[placeholder]: [string],
-		{ messageId }: { messageId: string },
-		{ t, me, guild }: Context
+		{ edit: messageId }: { edit: string },
+		{ t, guild }: Context
 	): Promise<any> {
 		if (!messageId) {
 			if (!placeholder) {
@@ -59,7 +51,8 @@ export default class extends Command {
 				guildId: guild.id,
 				channelId: newMessage.channel.id,
 				id: newMessage.id,
-				content: newMessage.content
+				content: newMessage.content,
+				embeds: newMessage.embeds
 			});
 
 			return;
@@ -67,15 +60,28 @@ export default class extends Command {
 
 		const dbMessage = await this.client.db.getMessageById(guild.id, messageId);
 
+		if (!dbMessage) {
+			return this.sendReply(message, t('cmd.placeholder.noMessageFoundInDatabase'));
+		}
+
 		if (!placeholder) {
 			// Return current message
-			await this.sendReply(message, dbMessage.content);
-
+			const msg = dbMessage.content || dbMessage.embeds[0];
+			await this.sendReply(message, msg);
 			return;
 		}
 
 		// Edit message
 		const embed = this.createEmbed({ description: placeholder });
-		await this.client.editMessage(dbMessage.channelId, dbMessage.id, { embed });
+		const editMessage = await this.client.editMessage(dbMessage.channelId, dbMessage.id, { embed });
+		await this.client.db.saveMessage({
+			guildId: guild.id,
+			channelId: editMessage.channel.id,
+			id: editMessage.id,
+			content: editMessage.content,
+			embeds: editMessage.embeds
+		});
+
+		await this.client.addMessageReaction(message.channel.id, message.id, THUMBS_UP);
 	}
 }

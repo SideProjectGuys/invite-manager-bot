@@ -5,6 +5,7 @@ import { IMClient } from '../../client';
 import { CustomInvite } from '../../invites/models/CustomInvite';
 import { Rank } from '../../invites/models/Rank';
 import { Message } from '../../management/models/Message';
+import { ReactionRole } from '../../management/models/ReactionRole';
 import { Punishment } from '../../moderation/models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../../moderation/models/PunishmentConfig';
 import { Strike } from '../../moderation/models/Strike';
@@ -57,6 +58,7 @@ enum TABLE {
 	punishmentConfigs = '`punishmentConfigs`',
 	punishments = '`punishments`',
 	ranks = '`ranks`',
+	reactionRoles = '`reactionRoles`',
 	rolePermissions = '`rolePermissions`',
 	roles = '`roles`',
 	scheduledActions = '`scheduledActions`',
@@ -1015,10 +1017,34 @@ export class DatabaseService {
 	public async saveMessage(message: Partial<Message>) {
 		return this.insertOrUpdate(
 			TABLE.messages,
-			['guildId', 'channelId', 'id', 'content'],
-			['content'],
+			['guildId', 'channelId', 'id', 'content', 'embeds'],
+			['content', 'embeds'],
 			[message],
 			m => m.guildId
+		);
+	}
+
+	// ------------------
+	//   Reaction roles
+	// ------------------
+	public async getReactionRolesForGuild(guildId: string) {
+		return this.findMany<ReactionRole>(guildId, TABLE.reactionRoles, '`guildId` = ?', [guildId]);
+	}
+	public async saveReactionRole(reactionRole: Partial<ReactionRole>) {
+		return this.insertOrUpdate(
+			TABLE.reactionRoles,
+			['guildId', 'channelId', 'messageId', 'emoji', 'roleId'],
+			['roleId'],
+			[reactionRole],
+			r => r.guildId
+		);
+	}
+	public async removeReactionRole(guildId: string, channelId: string, messageId: string, emoji: string) {
+		await this.delete(
+			guildId,
+			TABLE.reactionRoles,
+			'`guildId` = ? AND `channelId` = ? AND `messageId` = ? AND `emoji` = ?',
+			[guildId, channelId, messageId, emoji]
 		);
 	}
 

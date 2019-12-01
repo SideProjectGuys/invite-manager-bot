@@ -21,6 +21,8 @@ import { RanksCache } from './invites/cache/RanksCache';
 import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
+import { ReactionRoleCache } from './management/cache/ReactionRoleCache';
+import { ManagementService } from './management/services/ManagementService';
 import { PunishmentCache } from './moderation/cache/PunishmentsCache';
 import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
@@ -69,6 +71,7 @@ export interface ClientCacheObject {
 	guilds: GuildSettingsCache;
 	strikes: StrikesCache;
 	music: MusicCache;
+	reactionRoles: ReactionRoleCache;
 }
 
 export class IMClient extends Client {
@@ -96,6 +99,7 @@ export class IMClient extends Client {
 	public music: MusicService;
 	public tracking: TrackingService;
 	public premium: PremiumService;
+	public management: ManagementService;
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
@@ -158,7 +162,8 @@ export class IMClient extends Client {
 			punishments: new PunishmentCache(this),
 			guilds: new GuildSettingsCache(this),
 			strikes: new StrikesCache(this),
-			music: new MusicCache(this)
+			music: new MusicCache(this),
+			reactionRoles: new ReactionRoleCache(this)
 		};
 		this.rabbitmq = new RabbitMqService(this);
 		this.msg = new MessagingService(this);
@@ -170,6 +175,7 @@ export class IMClient extends Client {
 		this.tracking = new TrackingService(this);
 		this.music = new MusicService(this);
 		this.premium = new PremiumService(this);
+		this.management = new ManagementService(this);
 
 		// Services
 		this.cmds.init();

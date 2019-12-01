@@ -146,6 +146,7 @@ export enum ModerationCommand {
 
 export enum ManagementCommand {
 	placeholder = 'placeholder',
+	reactionRole = 'reactionRole',
 	makeMentionable = 'makeMentionable',
 	mentionRole = 'mentionRole'
 }

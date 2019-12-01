@@ -816,7 +816,8 @@
 				"description": "Purge messages in a channel up until a specified message."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Delete Messages"
+			"title": "Delete Messages",
+			"inProgress": "cmd.purgeUntil.inProgress"
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -1129,6 +1130,22 @@
 			"self": {
 				"description": "cmd.fixRanks.self.description"
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "cmd.placeholder.self.flags.edit"
+				},
+				"args": {
+					"message": "cmd.placeholder.self.args.message"
+				},
+				"description": "cmd.placeholder.self.description"
+			},
+			"noMessageFoundInDatabase": "cmd.placeholder.noMessageFoundInDatabase"
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "cmd.reactionRole.noMessageFoundInDatabase",
+			"unknownEmojiBotNeedsToBeInGuildWithEmoji": "cmd.reactionRole.unknownEmojiBotNeedsToBeInGuildWithEmoji"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",

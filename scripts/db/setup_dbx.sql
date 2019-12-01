@@ -353,7 +353,24 @@ CREATE TABLE `messages` (
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `content` text COLLATE utf8mb4_unicode_ci
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `embeds` json DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reactionRoles`
+--
+
+CREATE TABLE `reactionRoles` (
+  `channelId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `messageId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roleId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `emoji` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -530,8 +547,13 @@ ALTER TABLE `strikes`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`guildId`, `channelId`, `id`),
-  ADD KEY `channelId` (`channelId`),
   ADD KEY `id` (`id`);
+
+--
+-- Indexes for table `reactionRoles`
+--
+ALTER TABLE `reactionRoles`
+  ADD PRIMARY KEY (`guildId`, `channelId`, `messageId`, `emoji`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

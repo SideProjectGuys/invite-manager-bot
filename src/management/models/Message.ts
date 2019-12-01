@@ -5,4 +5,5 @@ export class Message {
 	public createdAt: Date;
 	public updatedAt: Date;
 	public content: string;
+	public embeds: any;
 }
