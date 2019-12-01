@@ -9,7 +9,8 @@ export enum GuildSettingsKey {
 	channels = 'channels',
 	ignoredChannels = 'ignoredChannels',
 
-	// Join and leave message
+	// Join and leave
+	joinRoles = 'joinRoles',
 	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',
 	leaveMessage = 'leaveMessage',
