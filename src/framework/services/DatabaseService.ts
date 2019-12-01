@@ -4,6 +4,7 @@ import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 import { IMClient } from '../../client';
 import { CustomInvite } from '../../invites/models/CustomInvite';
 import { Rank } from '../../invites/models/Rank';
+import { Message } from '../../management/models/Message';
 import { Punishment } from '../../moderation/models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../../moderation/models/PunishmentConfig';
 import { Strike } from '../../moderation/models/Strike';
@@ -49,6 +50,7 @@ enum TABLE {
 	logs = '`logs`',
 	members = '`members`',
 	memberSettings = '`memberSettings`',
+	messages = '`messages`',
 	musicNodes = '`musicNodes`',
 	premiumSubscriptionGuilds = '`premiumSubscriptionGuilds`',
 	premiumSubscriptions = '`premiumSubscriptions`',
@@ -999,6 +1001,25 @@ export class DatabaseService {
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
 		await this.delete(guildId, TABLE.punishmentConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
+	}
+
+	// ------------
+	//   Messages
+	// ------------
+	public async getMessageById(guildId: string, messageId: string) {
+		return this.findOne<Message>(guildId, TABLE.messages, '`guildId` = ? AND `id` = ?', [guildId, messageId]);
+	}
+	public async getMessagesForGuild(guildId: string) {
+		return this.findMany<Message>(guildId, TABLE.messages, '`guildId` = ?', [guildId]);
+	}
+	public async saveMessage(message: Partial<Message>) {
+		return this.insertOrUpdate(
+			TABLE.messages,
+			['guildId', 'channelId', 'id', 'content'],
+			['content'],
+			[message],
+			m => m.guildId
+		);
 	}
 
 	// ----------------------

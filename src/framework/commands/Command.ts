@@ -7,6 +7,7 @@ import {
 	CommandGroup,
 	GuildPermission,
 	InvitesCommand,
+	ManagementCommand,
 	ModerationCommand,
 	MusicCommand
 } from '../../types';
@@ -44,7 +45,7 @@ interface FlagInfo {
 }
 
 export interface CommandOptions {
-	name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
+	name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
 	aliases: string[];
 	args?: Arg[];
 	flags?: Flag[];
@@ -70,7 +71,7 @@ export abstract class Command {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand;
+	public name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
 
 	public aliases: string[];
 	public args: Arg[];

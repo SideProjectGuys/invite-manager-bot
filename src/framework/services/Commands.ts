@@ -14,7 +14,8 @@ const CMD_DIRS = [
 	resolve(__dirname, '../commands'),
 	resolve(__dirname, '../../invites/commands'),
 	resolve(__dirname, '../../moderation/commands'),
-	resolve(__dirname, '../../music/commands')
+	resolve(__dirname, '../../music/commands'),
+	resolve(__dirname, '../../management/commands')
 ];
 const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second

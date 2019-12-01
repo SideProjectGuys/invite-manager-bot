@@ -341,6 +341,23 @@ CREATE TABLE `strikes` (
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `channelId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `content` text COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
 --
 -- Indexes for dumped tables
 --
@@ -507,6 +524,14 @@ ALTER TABLE `strikes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `guildId` (`guildId`),
   ADD KEY `memberId` (`memberId`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`guildId`, `channelId`, `id`),
+  ADD KEY `channelId` (`channelId`),
+  ADD KEY `id` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
