@@ -4,6 +4,8 @@ import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 import { IMClient } from '../../client';
 import { CustomInvite } from '../../invites/models/CustomInvite';
 import { Rank } from '../../invites/models/Rank';
+import { Message } from '../../management/models/Message';
+import { ReactionRole } from '../../management/models/ReactionRole';
 import { Punishment } from '../../moderation/models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../../moderation/models/PunishmentConfig';
 import { Strike } from '../../moderation/models/Strike';
@@ -49,12 +51,14 @@ enum TABLE {
 	logs = '`logs`',
 	members = '`members`',
 	memberSettings = '`memberSettings`',
+	messages = '`messages`',
 	musicNodes = '`musicNodes`',
 	premiumSubscriptionGuilds = '`premiumSubscriptionGuilds`',
 	premiumSubscriptions = '`premiumSubscriptions`',
 	punishmentConfigs = '`punishmentConfigs`',
 	punishments = '`punishments`',
 	ranks = '`ranks`',
+	reactionRoles = '`reactionRoles`',
 	rolePermissions = '`rolePermissions`',
 	roles = '`roles`',
 	scheduledActions = '`scheduledActions`',
@@ -999,6 +1003,49 @@ export class DatabaseService {
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
 		await this.delete(guildId, TABLE.punishmentConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
+	}
+
+	// ------------
+	//   Messages
+	// ------------
+	public async getMessageById(guildId: string, messageId: string) {
+		return this.findOne<Message>(guildId, TABLE.messages, '`guildId` = ? AND `id` = ?', [guildId, messageId]);
+	}
+	public async getMessagesForGuild(guildId: string) {
+		return this.findMany<Message>(guildId, TABLE.messages, '`guildId` = ?', [guildId]);
+	}
+	public async saveMessage(message: Partial<Message>) {
+		return this.insertOrUpdate(
+			TABLE.messages,
+			['guildId', 'channelId', 'id', 'content', 'embeds'],
+			['content', 'embeds'],
+			[message],
+			m => m.guildId
+		);
+	}
+
+	// ------------------
+	//   Reaction roles
+	// ------------------
+	public async getReactionRolesForGuild(guildId: string) {
+		return this.findMany<ReactionRole>(guildId, TABLE.reactionRoles, '`guildId` = ?', [guildId]);
+	}
+	public async saveReactionRole(reactionRole: Partial<ReactionRole>) {
+		return this.insertOrUpdate(
+			TABLE.reactionRoles,
+			['guildId', 'channelId', 'messageId', 'emoji', 'roleId'],
+			['roleId'],
+			[reactionRole],
+			r => r.guildId
+		);
+	}
+	public async removeReactionRole(guildId: string, channelId: string, messageId: string, emoji: string) {
+		await this.delete(
+			guildId,
+			TABLE.reactionRoles,
+			'`guildId` = ? AND `channelId` = ? AND `messageId` = ? AND `emoji` = ?',
+			[guildId, channelId, messageId, emoji]
+		);
 	}
 
 	// ----------------------

@@ -90,10 +90,7 @@ export enum BotCommand {
 
 	export = 'export',
 	premium = 'premium',
-	tryPremium = 'tryPremium',
-
-	makeMentionable = 'makeMentionable',
-	mentionRole = 'mentionRole'
+	tryPremium = 'tryPremium'
 
 	/*report = 'report',*/
 }
@@ -145,6 +142,13 @@ export enum ModerationCommand {
 	purgeSafe = 'purgeSafe',
 	purgeUntil = 'purgeUntil',
 	purge = 'purge'
+}
+
+export enum ManagementCommand {
+	placeholder = 'placeholder',
+	reactionRole = 'reactionRole',
+	makeMentionable = 'makeMentionable',
+	mentionRole = 'mentionRole'
 }
 
 export enum MusicCommand {
