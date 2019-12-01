@@ -540,7 +540,7 @@ export class DatabaseService {
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.joins} ` +
-				'WHERE `guildId` = ? AND `createdAt` > ? AND `createdAt` < ? ' +
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
 				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
 			[guildId, from, to]
 		);
@@ -700,7 +700,7 @@ export class DatabaseService {
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.leaves} ` +
-				'WHERE `guildId` = ? AND `createdAt` > ? AND `createdAt` < ? ' +
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
 				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
 			[guildId, from, to]
 		);
