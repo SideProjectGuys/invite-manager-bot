@@ -50,6 +50,9 @@ export default class extends Command {
 			from = to.clone().subtract(DEFAULT_DAYS, 'days');
 		}
 
+		from = from.startOf('day');
+		to = to.endOf('day');
+
 		const days = to.diff(from, 'days');
 		if (days < 5) {
 			await this.sendReply(message, t('cmd.graph.minDays', { days: 5 }));
