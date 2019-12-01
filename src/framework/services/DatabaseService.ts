@@ -31,7 +31,7 @@ import { PremiumSubscription } from '../models/PremiumSubscription';
 import { PremiumSubscriptionGuild } from '../models/PremiumSubscriptionGuild';
 import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
-import { ScheduledAction } from '../models/ScheduledAction';
+import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
 const GLOBAL_SHARD_ID = 0;
 
@@ -819,8 +819,13 @@ export class DatabaseService {
 	public async getScheduledAction(guildId: string, id: number) {
 		return this.findOne<ScheduledAction>(guildId, TABLE.scheduledActions, '`id` = ?', [id]);
 	}
+	public async getScheduledActionsForGuildByType(guildId: string, type: ScheduledActionType) {
+		return this.findMany<ScheduledAction>(guildId, TABLE.scheduledActions, '`guildId` = ? AND `actionType` = ?', [
+			guildId,
+			type
+		]);
+	}
 	public async getScheduledActionsForGuilds(guildIds: string[]) {
-		// TODO: Fix
 		return this.findManyOnAllShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
 	}
 	public async saveScheduledAction(action: Partial<ScheduledAction>) {

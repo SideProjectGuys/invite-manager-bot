@@ -135,6 +135,7 @@ export enum ModerationCommand {
 	unhoist = 'unhoist',
 	unmute = 'unmute',
 	warn = 'warn',
+	lockdown = 'lockdown',
 
 	clean = 'clean',
 	cleanText = 'cleanText',

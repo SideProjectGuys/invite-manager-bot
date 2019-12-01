@@ -1146,6 +1146,10 @@
 		"reactionRole": {
 			"noMessageFoundInDatabase": "cmd.reactionRole.noMessageFoundInDatabase",
 			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "cmd.lockdown.channelUnlocked",
+			"channelLockedDown": "cmd.lockdown.channelLockedDown"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
