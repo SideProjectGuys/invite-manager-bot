@@ -6,7 +6,7 @@ import { BooleanResolver, RoleResolver, StringResolver } from '../../../framewor
 import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
 
 const THUMBS_UP = '👍';
-const CUSTOM_EMOJI_REGEX = /<:(\w+):(\d+)>/;
+const CUSTOM_EMOJI_REGEX = /<(?:.*)?:(\w+):(\d+)>/;
 
 export default class extends Command {
 	public constructor(client: IMClient) {
