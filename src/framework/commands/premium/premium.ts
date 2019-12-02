@@ -163,7 +163,7 @@ export default class extends Command {
 
 				const userId = message.author.id;
 				const res = await axios
-					.get(`https://api.invman.gg/patreon/check/?userId=${userId}`, {
+					.get(`https://api.invitemanager.gg/patreon/check/?userId=${userId}`, {
 						auth: this.client.config.bot.apiAuth
 					})
 					.catch(() => undefined);
