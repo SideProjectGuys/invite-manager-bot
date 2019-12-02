@@ -17,6 +17,9 @@ export class ManagementService {
 			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
 
 			const reactionRole = reactionRoles.find(role => {
+				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
+					return false;
+				}
 				const splits = role.emoji.split(':');
 				if (splits.length === 1) {
 					return emoji.name === splits[0];
@@ -34,6 +37,9 @@ export class ManagementService {
 		if (message.channel instanceof TextChannel) {
 			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
 			const reactionRole = reactionRoles.find(role => {
+				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
+					return false;
+				}
 				const splits = role.emoji.split(':');
 				if (splits.length === 1) {
 					return emoji.name === splits[0];
