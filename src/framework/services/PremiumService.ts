@@ -12,7 +12,7 @@ export class PremiumService {
 
 	public async checkPatreon(userId: string) {
 		const res = await axios
-			.get(`https://api.invman.gg/patreon/check/?userId=${userId}`, {
+			.get(`https://api.invitemanager.gg/patreon/check/?userId=${userId}`, {
 				auth: this.client.config.bot.apiAuth
 			})
 			.catch(() => undefined);
