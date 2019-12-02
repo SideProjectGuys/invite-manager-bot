@@ -141,6 +141,7 @@ export default class extends Command {
 			cmd.name === BotCommand.inviteCodeConfig ||
 			cmd.name === BotCommand.memberConfig ||
 			cmd.name === BotCommand.permissions ||
+			cmd.name === BotCommand.interactiveConfig ||
 			cmd.name === InvitesCommand.addRank ||
 			cmd.name === InvitesCommand.removeRank
 		) {
