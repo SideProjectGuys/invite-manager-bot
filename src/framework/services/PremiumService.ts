@@ -2,12 +2,66 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { IMClient } from '../../client';
+import { BotType } from '../../types';
 
 export class PremiumService {
 	private client: IMClient = null;
 
 	public constructor(client: IMClient) {
 		this.client = client;
+	}
+
+	public async init() {
+		if (this.client.type !== BotType.pro) {
+			return;
+		}
+
+		setInterval(() => this.checkGuilds(), 1 * 60 * 60 * 1000);
+	}
+
+	private async checkGuilds() {
+		if (this.client.type !== BotType.pro) {
+			return;
+		}
+
+		console.log('Checking all guilds for premium...');
+		for (const guild of this.client.guilds.values()) {
+			let premium = await this.client.cache.premium._get(guild.id);
+
+			if (!premium) {
+				// Let's try and see if this guild had pro before, and if maybe
+				// the member renewed it, but it didn't update.
+				const oldPremium = await this.client.db.getPremiumSubscriptionGuildForGuild(guild.id, false);
+				if (oldPremium) {
+					await this.checkPatreon(oldPremium.memberId);
+					premium = await this.client.cache.premium._get(guild.id);
+				}
+
+				if (!premium) {
+					const dmChannel = await this.client.getDMChannel(guild.ownerID);
+					await dmChannel
+						.createMessage(
+							'Hi!' +
+								`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
+								'I am the pro version of InviteManager, and only available to people ' +
+								'that support me on Patreon with the pro tier.\n\n' +
+								'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+								'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+								'I will be leaving your server soon, thanks for having me!'
+						)
+						.catch(() => undefined);
+					const onTimeout = async () => {
+						// Check one last time before leaving
+						if (await this.client.cache.premium._get(guild.id)) {
+							return;
+						}
+
+						await guild.leave();
+					};
+					setTimeout(onTimeout, 3 * 60 * 1000);
+				}
+			}
+		}
 	}
 
 	public async checkPatreon(userId: string) {

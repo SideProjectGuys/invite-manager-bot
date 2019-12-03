@@ -278,7 +278,7 @@ export class IMClient extends Client {
 										'that support me on Patreon with the pro tier.\n\n' +
 										'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
 										'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
-										'I will be leaving your server now, thanks for having me!'
+										'I will be leaving your server soon, thanks for having me!'
 								)
 								.catch(() => undefined);
 							const onTimeout = async () => {
@@ -337,7 +337,7 @@ export class IMClient extends Client {
 						'It looks like this guild was banned from using the InviteManager bot.\n' +
 						'If you believe this was a mistake please contact staff on our support server.\n\n' +
 						`${this.config.bot.links.support}\n\n` +
-						'I will be leaving your server now, thanks for having me!'
+						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
 			await guild.leave();
