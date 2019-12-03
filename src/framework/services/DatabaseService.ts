@@ -696,7 +696,13 @@ export class DatabaseService {
 	//   Leave
 	// ---------
 	public async saveLeave(leave: Partial<Leave>) {
-		const res = await this.insertOrUpdate(TABLE.leaves, ['guildId', 'memberId', 'joinId'], [], [leave], l => l.guildId);
+		const res = await this.insertOrUpdate(
+			TABLE.leaves,
+			['guildId', 'memberId', 'joinId'],
+			['joinId'],
+			[leave],
+			l => l.guildId
+		);
 		return res[0].insertId;
 	}
 	public async getLeavesPerDay(guildId: string, from: Date, to: Date) {
