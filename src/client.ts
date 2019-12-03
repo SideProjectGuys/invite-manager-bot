@@ -282,13 +282,14 @@ export class IMClient extends Client {
 								)
 								.catch(() => undefined);
 							const onTimeout = async () => {
+								// Check one last time before leaving
 								if (await this.cache.premium._get(guild.id)) {
 									return;
 								}
 
 								await guild.leave();
 							};
-							setTimeout(onTimeout, 2 * 60 * 1000);
+							setTimeout(onTimeout, 3 * 60 * 1000);
 						}
 					}
 					break;
