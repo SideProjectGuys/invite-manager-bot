@@ -290,88 +290,88 @@
 				"entry": {
 					"multi": "**{{ name }}** (**{{ times }}** times)",
 					"single": "**{{ name }}**",
-					"text": "**{{ name }}** joined **{{ times }} times**, invited by:"
+					"text": "**{{ name }}** 加入了 **{{ times }} 次**, 邀請人:"
 				}
 			},
-			"none": "No fake invites detected so far.",
-			"noneSinceJoin": "There have been no fake invites since the bot has been added to this server.",
+			"none": "暫時未偵測到虛假邀請",
+			"noneSinceJoin": "自從機器人被邀請進服後都未偵測到虛假邀請",
 			"self": {
 				"args": {
 					"page": "Which page of the fake list to get."
 				},
-				"description": "Help find users trying to cheat."
+				"description": "幫助尋找嘗試欺騙邀請的玩家"
 			},
-			"title": "Fake invites"
+			"title": "虛假邀請"
 		},
 		"getBot": {
 			"self": {
-				"description": "Get an invite link for the bot."
+				"description": "拿到機器人的邀請鏈接"
 			},
-			"title": "Add InviteManager to your server"
+			"title": "把 InviteManager 邀請到您的伺服"
 		},
 		"graph": {
 			"joins": {
-				"text": "This chart shows the number of users joining your server.",
-				"title": "Users joining"
+				"text": "這個圖表顯示進入你伺服的用戶",
+				"title": "已加入的用戶"
 			},
 			"leaves": {
-				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"text": "這個圖表顯示離開你伺服的用戶",
+				"title": "已退出用戶"
 			},
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "顯示的圖表類型"
 				},
-				"description": "Shows graphs about various stats on this server."
+				"description": "顯示關於這個伺服的各種統計資料"
 			},
-			"minDays": "You have to select at least {{{ days }}} days",
-			"maxDays": "You may select at most {{{ days }}} days",
+			"minDays": "你至少要選擇 {{{ days }}} 天",
+			"maxDays": "你最多能選擇 {{{ days }}} 天",
 			"joinsAndLeaves": {
-				"title": "Users joining and leaving",
-				"text": "This chart shows the number of users joining and leaving your server."
+				"title": "已加入和退出用戶",
+				"text": "這個圖表顯示已加入和退出伺服的用戶"
 			}
 		},
 		"help": {
 			"aliases": {
-				"title": "Aliases"
+				"title": "別名"
 			},
 			"command": {
-				"title": "Command"
+				"title": "指令"
 			},
 			"description": {
-				"title": "Description"
+				"title": "介紹"
 			},
-			"links": "Links",
-			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
+			"links": "鏈接",
+			"missingPermissions": "機器人目前缺少以下權限: {{{ value }}}",
 			"self": {
 				"args": {
 					"command": "The command to get detailed information for."
 				},
-				"description": "Display help."
+				"description": "顯示幫助"
 			},
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
+			"text": "這列表顯示你可以使用的所有指令。你可以通過 `{{ prefix }}help <指令>` 來搜索特定的指令（例子： `{{ prefix }}help add-ranks`）",
 			"usage": {
-				"title": "Usage"
+				"title": "使用方法"
 			}
 		},
 		"info": {
 			"bonusInvites": {
-				"details": "Use {{{ cmd }}} for details.",
+				"details": "使用 {{{ cmd }}} 來知道詳情。",
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "This member has received no bonuses so far",
-				"noReason": "No reason",
-				"title": "Bonus invites"
+				"more": "增加 {{ amount }} 個獎勵邀請",
+				"none": "這個用戶沒有獲得任何獎勵邀請。",
+				"noReason": "沒有原因",
+				"title": "獎勵邀請"
 			},
 			"created": {
-				"title": "Created"
+				"title": "已創建"
 			},
 			"invitedMembers": {
-				"details": "Use {{{ cmd }}} for details.",
+				"details": "使用 {{{ cmd }}} 來知道詳情",
 				"more": "Plus another {{ amount }} more invited members",
-				"none": "This member has not invited anyone else so far",
-				"title": "Invited members"
+				"none": "這個用戶暫時還沒有邀請過任何人",
+				"title": "已邀請用戶"
 			},
 			"invites": {
 				"clear": {
@@ -725,7 +725,8 @@
 				"done": "Premium has been successfully activated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Activate premium on this server"
+				"title": "Activate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -738,7 +739,8 @@
 				"done": "Premium has been successfully deactivated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Deactivate premium on this server"
+				"title": "Deactivate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -765,7 +767,7 @@
 			"premium": {
 				"activate": "Use {{{ cmd }}} to activate it on this server",
 				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
-				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -814,7 +816,8 @@
 				"description": "Purge messages in a channel up until a specified message."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Delete Messages"
+			"title": "Delete Messages",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -822,7 +825,7 @@
 			"self": {
 				"description": "Show all ranks.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "Ranks"
@@ -830,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -858,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "FAQs and more"
 			},
 			"help": {
@@ -908,7 +911,7 @@
 				},
 				"description": "Ban and then automatically unban a member from the server.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "The user was but could not be unbanned...\n{{ error }}"
@@ -1125,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Done fixing ranks.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1187,7 +1210,7 @@
 			"notFound": "Command not found.",
 			"type": "Command",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1228,11 +1251,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Duration",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Invite Code",

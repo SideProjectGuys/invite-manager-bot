@@ -17,6 +17,12 @@ There are many config options that can be set. You don't have to set all of them
 
 ### davetler
 
+#### settings.groups.invites.general.title
+
+| Setting                                | Description                    |
+| -------------------------------------- | ------------------------------ |
+| [settings.joinRoles.title](#joinroles) | settings.joinRoles.description |
+
 #### gelenler
 
 | Setting                                | Description                                      |
@@ -298,6 +304,21 @@ Default: ``
 
 Reset to default:
 `!config ignoredChannels default`
+
+<a name=joinRoles></a>
+
+---
+
+## settings.joinRoles.title
+
+settings.joinRoles.description
+
+Type: `Role[]`
+
+Default: ``
+
+Reset to default:
+`!config joinRoles default`
 
 <a name=joinMessage></a>
 

@@ -17,6 +17,12 @@ There are many config options that can be set. You don't have to set all of them
 
 ### Invitations
 
+#### settings.groups.invites.general.title
+
+| Setting                                | Description                    |
+| -------------------------------------- | ------------------------------ |
+| [settings.joinRoles.title](#joinroles) | settings.joinRoles.description |
+
 #### Arrivées
 
 | Setting                                | Description                                              |
@@ -84,7 +90,7 @@ There are many config options that can be set. You don't have to set all of them
 
 | Setting                                                                               | Description                                                                   |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [Mod Log Channel](#automodlogenabled)                                                 | Log any moderation actions that the bot makes.                                |
+| [Mod Log Channel](#automodlogenabled)                                                 | Enregistre toutes les actions faites par le bot.                              |
 | [Salon des journaux de modération](#modlogchannel)                                    | Le salon où les notes de modérations seront postées.                          |
 | [Supprimer les messages du Bot](#automoddeletebotmessage)                             | Supprime automatiquement les messages du bot (garde le chat propre)           |
 | [Délai de suppression des messages du bot.](#automoddeletebotmessagetimeoutinseconds) | Le temps après lequel les messages du bot sont supprimés                      |
@@ -102,12 +108,12 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Liens
 
-| Setting                                                  | Description                                                                             |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [Les liens sont désormais modérés](#automodlinksenabled) | Automatically remove messages containing links (you can set a whitelist and blacklist). |
-| [Liste blanche](#automodlinkswhitelist)                  | Une liste de liens que les utilisateurs peuvent poster.                                 |
-| [Liste noire](#automodlinksblacklist)                    | Blacklist certain links which users won't be able to post.                              |
-| [Suivre les redirections](#automodlinksfollowredirects)  | Enable this to resolve redirects for links.                                             |
+| Setting                                                  | Description                                                                                                            |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [Les liens sont désormais modérés](#automodlinksenabled) | Retire automatiquement les messages contenant des liens (vous pouvez configurer une liste blanche et une liste noire). |
+| [Liste blanche](#automodlinkswhitelist)                  | Une liste de liens que les utilisateurs peuvent poster.                                                                |
+| [Liste noire](#automodlinksblacklist)                    | Met sur liste noire certains liens que les utilisateurs ne pourront pas envoyer.                                       |
+| [Suivre les redirections](#automodlinksfollowredirects)  | Activez ceci pour corriger les redirections de liens.                                                                  |
 
 #### Mots bannis
 
@@ -135,18 +141,18 @@ There are many config options that can be set. You don't have to set all of them
 
 | Setting                                                     | Description                                                                           |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [Activé](#automodquickmessagesenabled)                      | Automatically moderate users sending a lot of messages in a short time.               |
+| [Activé](#automodquickmessagesenabled)                      | Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.  |
 | [Nombre de messages](#automodquickmessagesnumberofmessages) | The number of messages that have to be sent within the timeframe to trigger the rule. |
 | [Timeframe](#automodquickmessagestimeframeinseconds)        | The timeframe within which a user is allowed to send a maximum amount of messages.    |
 
 #### Mentions
 
-| Setting                                                                                        | Description                                                                |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [Activé](#automodmentionusersenabled)                                                          | Automatically moderate messages that mention an excessive amount of users. |
-| [Nombre maximal de mentions utilisateurs par message](#automodmentionusersmaxnumberofmentions) | The maximum amount of users a member can mention in a message.             |
-| [Activé](#automodmentionrolesenabled)                                                          | Automatically moderate messages that mention an excessive amount of roles. |
-| [Nombre maximal de mentions de rôle par message](#automodmentionrolesmaxnumberofmentions)      | The maximum amount of roles a member can mention in a message.             |
+| Setting                                                                                        | Description                                                                             |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Activé](#automodmentionusersenabled)                                                          | Retire automatiquement les messages avec un nombre excessif de mentions d'utilisateurs. |
+| [Nombre maximal de mentions utilisateurs par message](#automodmentionusersmaxnumberofmentions) | Le nombre maximal de d'utilisateurs qu'un membre peut mentionner en un message.         |
+| [Activé](#automodmentionrolesenabled)                                                          | Retire automatiquement les messages avec trop de mentions de rôles.                     |
+| [Nombre maximal de mentions de rôle par message](#automodmentionrolesmaxnumberofmentions)      | Le nombre maximal de rôles qu'un membre peut mentionner en un message.                  |
 
 #### Emojis
 
@@ -298,6 +304,21 @@ Default: ``
 
 Reset to default:
 `!config ignoredChannels default`
+
+<a name=joinRoles></a>
+
+---
+
+## settings.joinRoles.title
+
+settings.joinRoles.description
+
+Type: `Role[]`
+
+Default: ``
+
+Reset to default:
+`!config joinRoles default`
 
 <a name=joinMessage></a>
 
@@ -851,7 +872,7 @@ Examples:
 
 ## Mod Log Channel
 
-Log any moderation actions that the bot makes.
+Enregistre toutes les actions faites par le bot.
 
 Type: `Boolean`
 
@@ -1077,7 +1098,7 @@ Disable:
 
 ## Les liens sont désormais modérés
 
-Automatically remove messages containing links (you can set a whitelist and blacklist).
+Retire automatiquement les messages contenant des liens (vous pouvez configurer une liste blanche et une liste noire).
 
 Type: `Boolean`
 
@@ -1121,7 +1142,7 @@ Examples:
 
 ## Liste noire
 
-Blacklist certain links which users won't be able to post.
+Met sur liste noire certains liens que les utilisateurs ne pourront pas envoyer.
 
 Type: `String[]`
 
@@ -1142,7 +1163,7 @@ Examples:
 
 ## Suivre les redirections
 
-Enable this to resolve redirects for links.
+Activez ceci pour corriger les redirections de liens.
 
 Type: `Boolean`
 
@@ -1318,7 +1339,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate users sending a lot of messages in a short time.
+Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.
 
 Type: `Boolean`
 
@@ -1383,7 +1404,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate messages that mention an excessive amount of users.
+Retire automatiquement les messages avec un nombre excessif de mentions d'utilisateurs.
 
 Type: `Boolean`
 
@@ -1406,7 +1427,7 @@ Disable:
 
 ## Nombre maximal de mentions utilisateurs par message
 
-The maximum amount of users a member can mention in a message.
+Le nombre maximal de d'utilisateurs qu'un membre peut mentionner en un message.
 
 Type: `Number`
 
@@ -1427,7 +1448,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate messages that mention an excessive amount of roles.
+Retire automatiquement les messages avec trop de mentions de rôles.
 
 Type: `Boolean`
 
@@ -1450,7 +1471,7 @@ Disable:
 
 ## Nombre maximal de mentions de rôle par message
 
-The maximum amount of roles a member can mention in a message.
+Le nombre maximal de rôles qu'un membre peut mentionner en un message.
 
 Type: `Number`
 

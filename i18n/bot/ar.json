@@ -725,7 +725,8 @@
 				"done": "تم تنشيط Premium بنجاح لهذا الخادم",
 				"noGuild": "أنت مجبر على تشغيل هذا الأمر داخل الخادم",
 				"noSubscription": "ليس لديك اشتراك نشطبرpremium .\n\nاستخدم {{{cmd}}} لمزيد من المعلومات.",
-				"title": "متفعيل premium على هذا الخادم"
+				"title": "متفعيل premium على هذا الخادم",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "تم رفض دفعتك للقسط ، يرجى التحقق من Patreon الخاص بك.",
@@ -738,7 +739,8 @@
 				"done": "تم إلغاء تنشيط Premium بنجاح لهذا الخادم.",
 				"noGuild": "يجب عليك تشغيل هذا الأمر داخل الخادم.",
 				"noSubscription": "ليس لديك اشتراك نشط نشط.\nاستخدم {{{cmd}}} لمزيد من المعلومات.",
-				"title": "إلغاء تنشيط قسط على هذا الخادم"
+				"title": "إلغاء تنشيط قسط على هذا الخادم",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -765,7 +767,7 @@
 			"premium": {
 				"activate": "استخدم {{{cmd}}} لتنشيطه على هذا الخادم",
 				"deactivate": "استخدم {{{cmd}}} لإلغاء تنشيطه على هذا الخادم",
-				"text": "الاشتراك المميز الخاص بك صالح لمدة {{date}} أخرى.\nلقد قمت بتنشيط القسط على خوادم {{{limit}}}.\n{{{guildList}}}\n[ماذا يمكنني أن أفعل مع قسط؟] ({{{link}}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager بريميوم"
 			},
 			"self": {
@@ -814,7 +816,8 @@
 				"description": "Purge messages in a channel up until a specified message."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Delete Messages"
+			"title": "Delete Messages",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -822,7 +825,7 @@
 			"self": {
 				"description": "اظهار كل الرتب.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "الرتب"
@@ -830,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -858,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "يمكن العثور على دليل كامل حول إعداد Android هنا: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "الأسئلة المتداولة وأكثر من ذلك"
 			},
 			"help": {
@@ -908,7 +911,7 @@
 				},
 				"description": "Ban and then automatically unban a member from the server.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "The user was but could not be unbanned...\n{{ error }}"
@@ -1125,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Done fixing ranks.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1187,7 +1210,7 @@
 			"notFound": "لم يتم ايجاد الأمر.",
 			"type": "أمر",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1228,11 +1251,11 @@
 		},
 		"date": {
 			"type": "تاريخ",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "المدة الزمنية",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "رقم الدعوة",

@@ -725,7 +725,8 @@
 				"done": "このサーバーのプレミアムは正常に有効化されました。",
 				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
 				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
-				"title": "このサーバーでプレミアムを有効にする"
+				"title": "このサーバーでプレミアムを有効にする",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "使用料の支払いが拒否されました。Patreonを確認してください。",
@@ -738,7 +739,8 @@
 				"done": "このサーバーのプレミアムは無効になりました。",
 				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
 				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
-				"title": "このサーバーのプレミアムを無効にする"
+				"title": "このサーバーのプレミアムを無効にする",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -765,7 +767,7 @@
 			"premium": {
 				"activate": "このサーバーでアクティブにするには{{{cmd}}}を使用してください",
 				"deactivate": "このサーバーで{{{cmd}}}を使用して無効にしてください。",
-				"text": "プレミアム登録は他の{{date}}に有効です。\n\n{{{limit}}}サーバーでプレミアムを有効にしました。\n{{{guildList}}}\n\n[プレミアムで何ができますか？]（{{{link}}}）",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManagerプレミアム"
 			},
 			"self": {
@@ -814,7 +816,8 @@
 				"description": "指定されたメッセージまでチャネル内のメッセージを削除します。"
 			},
 			"text": "{{amount}}件のメッセージを削除しました。\nこのメッセージは5秒以内に削除されます。",
-			"title": "メッセージを削除"
+			"title": "メッセージを削除",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **招待数:{{ numInvites }} ** {{ description }}",
@@ -822,7 +825,7 @@
 			"self": {
 				"description": "すべてのランクを見る",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "ランク"
@@ -830,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -858,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "ボットの設定に関する完全なガイドはここにあります：https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "よくある質問"
 			},
 			"help": {
@@ -908,7 +911,7 @@
 				},
 				"description": "サーバーからメンバーをBANしてから自動的にBAN解除します。",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "ユーザーはBANされていましたが、BANを解除できなかった。\n{{error}}"
@@ -1125,8 +1128,28 @@
 		"fixRanks": {
 			"done": "ランクの修正が完了しました。",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
@@ -1187,7 +1210,7 @@
 			"notFound": "コマンドが見つかりませんでした。",
 			"type": "コマンド",
 			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "不正な値です。",
@@ -1228,11 +1251,11 @@
 		},
 		"date": {
 			"type": "日付",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "期間",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "招待コード",

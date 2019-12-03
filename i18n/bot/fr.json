@@ -325,11 +325,11 @@
 				},
 				"description": "Affiche des graphiques sur différentes statistiques sur ce serveur."
 			},
-			"minDays": "You have to select at least {{{ days }}} days",
-			"maxDays": "You may select at most {{{ days }}} days",
+			"minDays": "Vous devez sélectionner au moins {{{ days }}} jours",
+			"maxDays": "Vous pouvez sélectionner maximum {{{ days }}} jours",
 			"joinsAndLeaves": {
 				"title": "Utilisateurs rejoignant et quittant",
-				"text": "This chart shows the number of users joining and leaving your server."
+				"text": "Ce graphique montre le nombre d'utilisateurs quittant et rejoignant votre serveur."
 			}
 		},
 		"help": {
@@ -594,7 +594,7 @@
 				}
 			},
 			"title": "Classement",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
+			"lastUpdate": "Dernière mise à jour {{{ lastUpdate }}}, prochaine mise à jour {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -725,7 +725,8 @@
 				"done": "Le premium a correctement été activé sur ce serveur.",
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
-				"title": "Activer le premium sur ce serveur"
+				"title": "Activer le premium sur ce serveur",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "Votre paiement pour le premium a été refusé, veuillez vérifier votre Patreon.",
@@ -738,7 +739,8 @@
 				"done": "Le premium a correctement été désactivé sur ce serveur.",
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
-				"title": "Désactiver le premium sur ce serveur"
+				"title": "Désactiver le premium sur ce serveur",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -765,7 +767,7 @@
 			"premium": {
 				"activate": "Utilisez la commande {{{ cmd }}} pour l'activer sur ce serveur.",
 				"deactivate": "Utilisez la commande {{{ cmd }}} pour le désactiver sur ce serveur.",
-				"text": "Votre abonnement premium est valable pendant encore {{ date }}\n\nVous avez activé le premium sur {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Que puis-je faire avec premium ?]({{{ link }}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -814,7 +816,8 @@
 				"description": "Purger les messages dans un salon jusqu'à un message spécifié."
 			},
 			"text": "Messages {{ amount }} supprimés.\nCe message sera supprimé dans 5 secondes. ",
-			"title": "Messages supprimés"
+			"title": "Messages supprimés",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invitations** {{ description }}",
@@ -822,7 +825,7 @@
 			"self": {
 				"description": "Montrer tous les rangs.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "Rangs"
@@ -830,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -858,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "Un guide complet sur la configuration du bot peut être trouvé ici: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "FAQs et plus"
 			},
 			"help": {
@@ -908,7 +911,7 @@
 				},
 				"description": "Bannir puis automatiquement dé-bannir un membre du serveur.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "L'utilisateur était mais ne peut plus être dé-banni...\n{{ error }}"
@@ -1125,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Arrangement des grades terminer.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivées et de départs de type \"Embed\" est une fonction premium. Le premium n'a pas l'air d'être activé sur ce serveur. Merci de nous contacter pour en savoir plus sur comment acheter le premium.",
@@ -1187,7 +1210,7 @@
 			"notFound": "Commande inconnue.",
 			"type": "Commande",
 			"validValues": "Utilisez une des valeurs suivantes : {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Valeur invalide.",
@@ -1228,11 +1251,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Durée",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Code d'invitation",
@@ -1306,15 +1329,15 @@
 		},
 		"autoModLinksBlacklist": {
 			"title": "Liste noire",
-			"description": "Blacklist certain links which users won't be able to post."
+			"description": "Met sur liste noire certains liens que les utilisateurs ne pourront pas envoyer."
 		},
 		"autoModLinksEnabled": {
 			"title": "Les liens sont désormais modérés",
-			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
+			"description": "Retire automatiquement les messages contenant des liens (vous pouvez configurer une liste blanche et une liste noire)."
 		},
 		"autoModLinksFollowRedirects": {
 			"title": "Suivre les redirections",
-			"description": "Enable this to resolve redirects for links."
+			"description": "Activez ceci pour corriger les redirections de liens."
 		},
 		"autoModLinksWhitelist": {
 			"title": "Liste blanche",
@@ -1322,23 +1345,23 @@
 		},
 		"autoModLogEnabled": {
 			"title": "Mod Log Channel",
-			"description": "Log any moderation actions that the bot makes."
+			"description": "Enregistre toutes les actions faites par le bot."
 		},
 		"autoModMentionRolesEnabled": {
 			"title": "Activé",
-			"description": "Automatically moderate messages that mention an excessive amount of roles."
+			"description": "Retire automatiquement les messages avec trop de mentions de rôles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
 			"title": "Nombre maximal de mentions de rôle par message",
-			"description": "The maximum amount of roles a member can mention in a message."
+			"description": "Le nombre maximal de rôles qu'un membre peut mentionner en un message."
 		},
 		"autoModMentionUsersEnabled": {
 			"title": "Activé",
-			"description": "Automatically moderate messages that mention an excessive amount of users."
+			"description": "Retire automatiquement les messages avec un nombre excessif de mentions d'utilisateurs."
 		},
 		"autoModMentionUsersMaxNumberOfMentions": {
 			"title": "Nombre maximal de mentions utilisateurs par message",
-			"description": "The maximum amount of users a member can mention in a message."
+			"description": "Le nombre maximal de d'utilisateurs qu'un membre peut mentionner en un message."
 		},
 		"autoModModeratedChannels": {
 			"title": "Salons modérés",
@@ -1350,7 +1373,7 @@
 		},
 		"autoModQuickMessagesEnabled": {
 			"title": "Activé",
-			"description": "Automatically moderate users sending a lot of messages in a short time."
+			"description": "Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement."
 		},
 		"autoModQuickMessagesNumberOfMessages": {
 			"title": "Nombre de messages",

@@ -725,7 +725,8 @@
 				"done": "Premium is succesvol geactiveerd voor deze server.",
 				"noGuild": "Je moet deze commando gebruiken binnen een server.",
 				"noSubscription": "Je hebt geen betaalde abonnement.\n\nGebruik {{{ cmd }}} voor meer informatie.",
-				"title": "Activeer premium op deze server"
+				"title": "Activeer premium op deze server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
@@ -738,7 +739,8 @@
 				"done": "Premium is succesvol gedeactiveerd voor deze server.",
 				"noGuild": "Je moet deze commando gebruiken binnen een server.",
 				"noSubscription": "Je hebt een geen betaalde abonnement\n\nGebruik {{{ cmd }}} voor meer informatie.",
-				"title": "Deactiveer premium op deze server"
+				"title": "Deactiveer premium op deze server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -765,7 +767,7 @@
 			"premium": {
 				"activate": "Gebruik {{{ cmd }}} om het te activeren op deze server",
 				"deactivate": "Gebruik {{{ cmd }}} om het te deactiveren op deze server",
-				"text": "Je premium abonnement geldig voor {{ date }}.\n\nJe hebt premium geactiveerd op {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Wat kan ik doen met premium?]({{{ link }}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -814,7 +816,8 @@
 				"description": "Verwijder berichten in een kanaal tot een specifiek aan berichten."
 			},
 			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
-			"title": "Verwijder Berichten"
+			"title": "Verwijder Berichten",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
@@ -822,7 +825,7 @@
 			"self": {
 				"description": "Zie alle ranks.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "Ranken"
@@ -830,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "Het aantal berichten die zullen worden verwijderd",
-					"reason": "De reden waarom je het gaat verwijderen",
-					"user": "De gebruiker waarvan je het gaat verwijderen"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "Verwijder invites van een gebruiker"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -858,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "Een complete guide voor het opzetten van de bot kan hier gevonden worden: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "Vraag en antwoorden en meer"
 			},
 			"help": {
@@ -908,7 +911,7 @@
 				},
 				"description": "Ban en dan unban een gebruiker automatisch van de server.",
 				"flags": {
-					"deleteMessageDays": "Het aantal berichten die zullen worden verwijderd"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "De gebruiker is verbannen maar kan niet worden geunbanned...\n{{ error }}"
@@ -1125,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Done fixing ranks.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1187,7 +1210,7 @@
 			"notFound": "Command not found.",
 			"type": "Command",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1228,11 +1251,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Duration",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Invite Code",
