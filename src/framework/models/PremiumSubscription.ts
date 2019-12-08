@@ -1,5 +1,6 @@
 export class PremiumSubscription {
 	public id: string;
+	public memberId: string;
 	public createdAt?: Date;
 	public updatedAt?: Date;
 	public amount: number;
@@ -7,6 +8,5 @@ export class PremiumSubscription {
 	public isFreeTier: boolean;
 	public isPatreon: boolean;
 	public validUntil: Date;
-	public memberId: string;
 	public reason: string;
 }
