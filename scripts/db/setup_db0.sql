@@ -76,13 +76,13 @@ CREATE TABLE `premiumSubscriptionGuilds` (
 
 CREATE TABLE `premiumSubscriptions` (
   `id` int(11) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `amount` decimal(10,2) DEFAULT NULL,
   `maxGuilds` int(11) NOT NULL DEFAULT '5',
   `isFreeTier` tinyint(1) NOT NULL DEFAULT '0',
   `isPatreon` tinyint(1) NOT NULL DEFAULT '0',
   `validUntil` datetime DEFAULT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `memberId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
