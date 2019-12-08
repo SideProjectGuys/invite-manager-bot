@@ -4,6 +4,8 @@ import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 import { IMClient } from '../../client';
 import { CustomInvite } from '../../invites/models/CustomInvite';
 import { Rank } from '../../invites/models/Rank';
+import { Message } from '../../management/models/Message';
+import { ReactionRole } from '../../management/models/ReactionRole';
 import { Punishment } from '../../moderation/models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../../moderation/models/PunishmentConfig';
 import { Strike } from '../../moderation/models/Strike';
@@ -29,7 +31,7 @@ import { PremiumSubscription } from '../models/PremiumSubscription';
 import { PremiumSubscriptionGuild } from '../models/PremiumSubscriptionGuild';
 import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
-import { ScheduledAction } from '../models/ScheduledAction';
+import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
 const GLOBAL_SHARD_ID = 0;
 
@@ -49,12 +51,14 @@ enum TABLE {
 	logs = '`logs`',
 	members = '`members`',
 	memberSettings = '`memberSettings`',
+	messages = '`messages`',
 	musicNodes = '`musicNodes`',
 	premiumSubscriptionGuilds = '`premiumSubscriptionGuilds`',
 	premiumSubscriptions = '`premiumSubscriptions`',
 	punishmentConfigs = '`punishmentConfigs`',
 	punishments = '`punishments`',
 	ranks = '`ranks`',
+	reactionRoles = '`reactionRoles`',
 	rolePermissions = '`rolePermissions`',
 	roles = '`roles`',
 	scheduledActions = '`scheduledActions`',
@@ -126,7 +130,8 @@ export class DatabaseService {
 		table: TABLE,
 		where: string,
 		values: O[],
-		selector: (obj: O) => number | string = o => o as any
+		selector: (obj: O) => number | string = o => o as any,
+		dataSelector: (obj: O) => any = o => o
 	): Promise<T[]> {
 		const map: Map<Pool, Map<string, O[]>> = new Map();
 		for (const value of values) {
@@ -135,9 +140,9 @@ export class DatabaseService {
 			if (poolData) {
 				const shardData = poolData.get(id);
 				if (shardData) {
-					shardData.push(value);
+					shardData.push(dataSelector(value));
 				} else {
-					poolData.set(id, [value]);
+					poolData.set(id, [dataSelector(value)]);
 				}
 			} else {
 				const shardData = new Map<string, O[]>();
@@ -149,10 +154,10 @@ export class DatabaseService {
 		const promises: Promise<RowDataPacket[]>[] = [];
 		for (const [pool, poolData] of map.entries()) {
 			const queries: string[] = [];
-			let poolValues: O[] = [];
+			const poolValues: O[][] = [];
 			for (const [db, vals] of poolData.entries()) {
 				queries.push(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`);
-				poolValues = poolValues.concat(vals);
+				poolValues.push(vals);
 			}
 			const query = queries.join(' UNION ');
 			promises.push(pool.query<RowDataPacket[]>(query, poolValues).then(([rs]) => rs));
@@ -534,16 +539,14 @@ export class DatabaseService {
 		);
 		return rows as Array<{ total: string; invalidatedReason: JoinInvalidatedReason }>;
 	}
-	public async getJoinsPerDay(guildId: string, days: number) {
+	public async getJoinsPerDay(guildId: string, from: Date, to: Date) {
 		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.joins} ` +
-				'WHERE `guildId` = ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
-				'ORDER BY MAX(`createdAt`) ASC ' +
-				'LIMIT ? ',
-			[guildId, days]
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
 		);
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}
@@ -662,13 +665,6 @@ export class DatabaseService {
 			newInvalidatedReason = `'${newInvalidatedReason}'`;
 		}
 		const [db, pool] = this.getDbInfo(guildId);
-		console.log(
-			mysql.format(
-				`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
-					`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
-				vals
-			)
-		);
 		const [ok] = await pool.query<OkPacket>(
 			`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
 				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
@@ -700,19 +696,23 @@ export class DatabaseService {
 	//   Leave
 	// ---------
 	public async saveLeave(leave: Partial<Leave>) {
-		const res = await this.insertOrUpdate(TABLE.leaves, ['guildId', 'memberId', 'joinId'], [], [leave], l => l.guildId);
+		const res = await this.insertOrUpdate(
+			TABLE.leaves,
+			['guildId', 'memberId', 'joinId'],
+			['joinId'],
+			[leave],
+			l => l.guildId
+		);
 		return res[0].insertId;
 	}
-	public async getLeavesPerDay(guildId: string, days: number) {
+	public async getLeavesPerDay(guildId: string, from: Date, to: Date) {
 		const [db, pool] = this.getDbInfo(guildId);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
 				`FROM ${db}.${TABLE.leaves} ` +
-				'WHERE `guildId` = ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`) ' +
-				'ORDER BY MAX(`createdAt`) ASC ' +
-				'LIMIT ? ',
-			[guildId, days]
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
 		);
 		return rows as Array<{ year: string; month: string; day: string; total: string }>;
 	}
@@ -825,6 +825,12 @@ export class DatabaseService {
 	public async getScheduledAction(guildId: string, id: number) {
 		return this.findOne<ScheduledAction>(guildId, TABLE.scheduledActions, '`id` = ?', [id]);
 	}
+	public async getScheduledActionsForGuildByType(guildId: string, type: ScheduledActionType) {
+		return this.findMany<ScheduledAction>(guildId, TABLE.scheduledActions, '`guildId` = ? AND `actionType` = ?', [
+			guildId,
+			type
+		]);
+	}
 	public async getScheduledActionsForGuilds(guildIds: string[]) {
 		return this.findManyOnAllShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
 	}
@@ -845,11 +851,15 @@ export class DatabaseService {
 	// ------------------------
 	//   Premium subscription
 	// ------------------------
-	public async getActivePremiumSubscriptionForMember(memberId: string) {
-		return this.findOne<PremiumSubscription>(
+	public async getPremiumSubscriptionsForMember(
+		memberId: string,
+		onlyActive: boolean = true,
+		onlyFree: boolean = false
+	) {
+		return this.findMany<PremiumSubscription>(
 			GLOBAL_SHARD_ID,
 			TABLE.premiumSubscriptions,
-			'`memberId` = ? AND `validUntil` > NOW()',
+			'`memberId` = ? ' + (onlyActive ? 'AND `validUntil` > NOW() ' : '') + (onlyFree ? 'AND `isFreeTier` = 1 ' : ''),
 			[memberId]
 		);
 	}
@@ -867,21 +877,24 @@ export class DatabaseService {
 	// ------------------------------
 	//   Premium subscription guild
 	// ------------------------------
-	public async getFreePremiumSubscriptionGuildForGuild(guildId: string) {
+	public async getPremiumSubscriptionGuildForGuild(guildId: string, onlyActive: boolean = true) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
-				`WHERE psg.\`guildId\` = ? AND ps.\`isFreeTier\` = 1 LIMIT 1`,
+				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`memberId\` = psg.\`memberId\` ` +
+				`WHERE psg.\`guildId\` = ? ` +
+				(onlyActive ? `AND ps.\`validUntil\` > NOW() ` : '') +
+				`ORDER BY ps.\`validUntil\` DESC ` +
+				`LIMIT 1`,
 			[guildId]
 		);
 		return rows[0] as PremiumSubscriptionGuild;
 	}
-	public async getPremiumSubscriptionGuildsForSubscription(subscriptionId: number) {
+	public async getPremiumSubscriptionGuildsForMember(memberId: string) {
 		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
 		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`subscriptionId\` = ?`,
-			[subscriptionId]
+			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`memberId\` = ?`,
+			[memberId]
 		);
 		const guilds = await this.findManyOnAllShards<Guild>(
 			TABLE.guilds,
@@ -893,29 +906,19 @@ export class DatabaseService {
 			guildName: (guilds.find(g => g.id === r.guildId) || { name: r.guildId }).name
 		})) as Array<PremiumSubscriptionGuild & { guildName: string }>;
 	}
-	public async getActivePremiumSubscriptionGuildForGuild(guildId: string) {
-		const [db, pool] = this.getDbInfo(GLOBAL_SHARD_ID);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg ` +
-				`INNER JOIN ${db}.${TABLE.premiumSubscriptions} ps ON ps.\`id\` = psg.\`subscriptionId\` ` +
-				`WHERE psg.\`guildId\` = ? AND ps.\`validUntil\` > NOW() LIMIT 1`,
-			[guildId]
-		);
-		return rows[0] as PremiumSubscriptionGuild;
-	}
 	public async savePremiumSubscriptionGuild(sub: Partial<PremiumSubscriptionGuild>) {
 		await this.insertOrUpdate(
 			TABLE.premiumSubscriptionGuilds,
-			['guildId', 'subscriptionId'],
+			['guildId', 'memberId'],
 			[],
 			[sub],
 			() => GLOBAL_SHARD_ID
 		);
 	}
-	public async removePremiumSubscriptionGuild(guildId: string, subscriptionId: number) {
-		await this.delete(GLOBAL_SHARD_ID, TABLE.premiumSubscriptionGuilds, '`guildId` = ? AND `subscriptionId` = ?', [
+	public async removePremiumSubscriptionGuild(memberId: string, guildId: string) {
+		await this.delete(GLOBAL_SHARD_ID, TABLE.premiumSubscriptionGuilds, '`guildId` = ? AND `memberId` = ?', [
 			guildId,
-			subscriptionId
+			memberId
 		]);
 	}
 
@@ -1011,6 +1014,49 @@ export class DatabaseService {
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
 		await this.delete(guildId, TABLE.punishmentConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
+	}
+
+	// ------------
+	//   Messages
+	// ------------
+	public async getMessageById(guildId: string, messageId: string) {
+		return this.findOne<Message>(guildId, TABLE.messages, '`guildId` = ? AND `id` = ?', [guildId, messageId]);
+	}
+	public async getMessagesForGuild(guildId: string) {
+		return this.findMany<Message>(guildId, TABLE.messages, '`guildId` = ?', [guildId]);
+	}
+	public async saveMessage(message: Partial<Message>) {
+		return this.insertOrUpdate(
+			TABLE.messages,
+			['guildId', 'channelId', 'id', 'content', 'embeds'],
+			['content', 'embeds'],
+			[message],
+			m => m.guildId
+		);
+	}
+
+	// ------------------
+	//   Reaction roles
+	// ------------------
+	public async getReactionRolesForGuild(guildId: string) {
+		return this.findMany<ReactionRole>(guildId, TABLE.reactionRoles, '`guildId` = ?', [guildId]);
+	}
+	public async saveReactionRole(reactionRole: Partial<ReactionRole>) {
+		return this.insertOrUpdate(
+			TABLE.reactionRoles,
+			['guildId', 'channelId', 'messageId', 'emoji', 'roleId'],
+			['roleId'],
+			[reactionRole],
+			r => r.guildId
+		);
+	}
+	public async removeReactionRole(guildId: string, channelId: string, messageId: string, emoji: string) {
+		await this.delete(
+			guildId,
+			TABLE.reactionRoles,
+			'`guildId` = ? AND `channelId` = ? AND `messageId` = ? AND `emoji` = ?',
+			[guildId, channelId, messageId, emoji]
+		);
 	}
 
 	// ----------------------

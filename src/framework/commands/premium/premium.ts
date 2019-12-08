@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Message } from 'eris';
 import moment from 'moment';
 
@@ -26,7 +25,7 @@ export default class extends Command {
 			],
 			group: CommandGroup.Premium,
 			guildOnly: false,
-			defaultAdminOnly: true,
+			defaultAdminOnly: false,
 			extraExamples: ['!premium check', '!premium activate', '!premium deactivate']
 		});
 	}
@@ -40,14 +39,15 @@ export default class extends Command {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
 		const guildId = guild ? guild.id : undefined;
+		const memberId = message.author.id;
 
 		const embed = this.createEmbed();
 
-		const sub = await this.client.db.getActivePremiumSubscriptionForMember(message.author.id);
-		const guildSubs = sub ? await this.client.db.getPremiumSubscriptionGuildsForSubscription(sub.id) : [];
+		const subs = await this.client.db.getPremiumSubscriptionsForMember(memberId, true);
+		const guildSubs = subs ? await this.client.db.getPremiumSubscriptionGuildsForMember(memberId) : [];
 
 		if (!action) {
-			if (!sub) {
+			if (!subs || subs.length === 0) {
 				embed.title = t('cmd.premium.noPremium.title');
 				embed.description = t('cmd.premium.noPremium.text');
 
@@ -77,7 +77,9 @@ export default class extends Command {
 			} else {
 				embed.title = t('cmd.premium.premium.title');
 
-				const date = moment(sub.validUntil)
+				const maxDate = subs.reduce((acc, sub) => Math.max(acc, moment(sub.validUntil).unix()), 0);
+				const date = moment
+					.unix(maxDate)
 					.locale(lang)
 					.fromNow(true);
 
@@ -102,7 +104,7 @@ export default class extends Command {
 					}
 				}
 
-				const limit = `**${guildSubs.length}/${sub.maxGuilds}**`;
+				const limit = `**${guildSubs.length}/${subs.reduce((acc, sub) => Math.max(acc, sub.maxGuilds), 0)}**`;
 
 				embed.description =
 					t('cmd.premium.premium.text', {
@@ -122,16 +124,19 @@ export default class extends Command {
 					embed.description = t('cmd.premium.activate.noGuild');
 				} else if (isPremium) {
 					embed.description = t('cmd.premium.activate.currentlyActive');
-				} else if (!sub) {
+				} else if (!message.member.permission.has(GuildPermission.MANAGE_GUILD)) {
+					embed.description = t('cmd.premium.activate.permissions');
+				} else if (!subs) {
 					embed.description = t('cmd.premium.activate.noSubscription', {
 						cmd: '`' + settings.prefix + 'premium`'
 					});
 				} else {
-					if (guildSubs.length >= sub.maxGuilds) {
+					const maxGuilds = subs.reduce((acc, sub) => Math.max(acc, sub.maxGuilds), 0);
+					if (guildSubs.length >= maxGuilds) {
 						embed.description = t('cmd.premium.activate.maxGuilds');
 					} else {
 						await this.client.db.savePremiumSubscriptionGuild({
-							subscriptionId: sub.id,
+							memberId,
 							guildId
 						});
 
@@ -147,12 +152,12 @@ export default class extends Command {
 					embed.description = t('cmd.premium.deactivate.customBot');
 				} else if (!guildId) {
 					embed.description = t('cmd.premium.deactivate.noGuild');
-				} else if (!message.member.permission.has(GuildPermission.ADMINISTRATOR)) {
-					embed.description = t('cmd.premium.deactivate.adminOnly');
+				} else if (!message.member.permission.has(GuildPermission.MANAGE_GUILD)) {
+					embed.description = t('cmd.premium.deactivate.permissions');
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
 				} else {
-					await this.client.db.removePremiumSubscriptionGuild(guildId, sub.id);
+					await this.client.db.removePremiumSubscriptionGuild(memberId, guildId);
 
 					this.client.cache.premium.flush(guildId);
 
@@ -161,44 +166,17 @@ export default class extends Command {
 			} else if (action === Action.Check) {
 				embed.title = t('cmd.premium.check.title');
 
-				const userId = message.author.id;
-				const res = await axios
-					.get(`https://api.invitemanager.gg/patreon/check/?userId=${userId}`, {
-						auth: this.client.config.bot.apiAuth
-					})
-					.catch(() => undefined);
+				const res = await this.client.premium.checkPatreon(memberId);
 
-				if (!res) {
+				if (res === 'not_found') {
 					embed.description = t('cmd.premium.check.notFound');
-				} else if (res.data.last_charge_status !== 'Paid') {
+				} else if (res === 'declined') {
 					embed.description = t('cmd.premium.check.declined');
-				} else if (res.data.patron_status !== 'active_patron') {
-					embed.description = t('cmd.premium.check.paused', {
-						since: res.data.last_charge_date
-					});
+				} else if (res === 'paused') {
+					embed.description = t('cmd.premium.check.paused');
 				} else {
-					const day = moment(res.data.last_charge_date).date();
-					const validUntil = moment()
-						.add(1, 'month')
-						.date(day)
-						.add(1, 'day');
-
-					if (sub) {
-						sub.validUntil = validUntil.toDate();
-						await this.client.db.savePremiumSubscription(sub);
-					} else {
-						await this.client.db.savePremiumSubscription({
-							memberId: userId,
-							validUntil: validUntil.toDate(),
-							amount: res.data.currently_entitled_amount_cents / 100,
-							maxGuilds: 5,
-							isFreeTier: false,
-							reason: '!premium check'
-						});
-					}
-
 					embed.description = t('cmd.premium.check.done', {
-						valid: validUntil.locale(lang).calendar(),
+						valid: res.locale(lang).calendar(),
 						cmd: '`' + settings.prefix + 'premium`'
 					});
 				}

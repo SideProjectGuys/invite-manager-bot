@@ -51,7 +51,7 @@ CREATE TABLE `commandUsages` (
 CREATE TABLE `customInvites` (
   `id` int(11) NOT NULL,
   `amount` bigint(11) DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cleared` tinyint(4) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `guilds` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `memberCount` int(11) DEFAULT NULL,
-  `banReason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `banReason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deletedAt` datetime DEFAULT NULL
@@ -111,7 +111,7 @@ CREATE TABLE `incidents` (
 
 CREATE TABLE `inviteCodes` (
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `maxAge` int(11) DEFAULT NULL,
   `maxUses` int(11) DEFAULT NULL,
   `uses` int(11) DEFAULT NULL,
@@ -245,7 +245,7 @@ CREATE TABLE `punishments` (
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `memberId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `creatorId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -304,7 +304,7 @@ CREATE TABLE `scheduledActions` (
   `actionType` enum('unmute') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `args` json DEFAULT NULL,
   `date` datetime DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -340,6 +340,40 @@ CREATE TABLE `strikes` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `channelId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `embeds` json DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reactionRoles`
+--
+
+CREATE TABLE `reactionRoles` (
+  `channelId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `messageId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roleId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `emoji` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Indexes for dumped tables
@@ -507,6 +541,19 @@ ALTER TABLE `strikes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `guildId` (`guildId`),
   ADD KEY `memberId` (`memberId`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`guildId`, `channelId`, `id`),
+  ADD KEY `id` (`id`);
+
+--
+-- Indexes for table `reactionRoles`
+--
+ALTER TABLE `reactionRoles`
+  ADD PRIMARY KEY (`guildId`, `channelId`, `messageId`, `emoji`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

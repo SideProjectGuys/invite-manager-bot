@@ -1,44 +1,44 @@
-- Getting Started
+- Commencer
 
-  - [Quick Start](/fr/getting-started/quick-start.md)
-  - [FAQs](/fr/getting-started/faq.md)
-  - [Alpha Bot](/fr/getting-started/alpha.md)
-  - [Pro Bot](/fr/getting-started/pro.md)
+  - [Guide de démarrage rapide](/fr/getting-started/quick-start.md)
+  - [Questions Courantes](/fr/getting-started/faq.md)
+  - [Bot en Alpha](/fr/getting-started/alpha.md)
+  - [Bot Pro](/fr/getting-started/pro.md)
 
-- Reference
+- Référence
 
-  - [Commands](/fr/reference/commands.md)
-  - [Configs / Settings](/fr/reference/settings.md)
+  - [Commandes](/fr/reference/commands.md)
+  - [Configurations / Paramètres](/fr/reference/settings.md)
 
-- Premium
+- Prime
 
-  - [Features](/fr/premium/features.md)
+  - [Fonctionnalités](/fr/premium/features.md)
   - [Tiers](/fr/premium/tiers.md)
-  - [Setup](/fr/premium/setup.md)
+  - [Installation](/fr/premium/setup.md)
 
 - Modules
 
-  - Invite Management
+  - Gestion des invitations
 
-    - [Overview](/fr/modules/invites/overview.md)
-    - [Custom message](/fr/modules/invites/custom-messages.md)
+    - [Vue d'ensemble](/fr/modules/invites/overview.md)
+    - [Message personnalisé](/fr/modules/invites/custom-messages.md)
       - [Examples](/fr/modules/invites/examples.md)
 
-  - Moderation
+  - Modération
 
-    - [Strikes](/fr/modules/moderation/strikes.md)
-    - [Punishments](/fr/modules/moderation/punishments.md)
+    - [Avertissements](/fr/modules/moderation/strikes.md)
+    - [Sanctions](/fr/modules/moderation/punishments.md)
 
-  - Music
+  - Musique
 
-    - [Overview](/fr/modules/music/overview.md)
+    - [Vue d'ensemble](/fr/modules/music/overview.md)
 
-- Other
+- Autre
 
   - [Webpanel](/fr/other/webpanel.md)
-  - [Translations](/fr/other/translations.md)
-  - [Donating](/fr/other/donating.md)
+  - [Traductions](/fr/other/translations.md)
+  - [Faire un don](/fr/other/donating.md)
   - [Support](/fr/other/support.md)
-  - [Changelog](/fr/other/changelog.md)
+  - [Notes de mises à jour](/fr/other/changelog.md)
   - [Roadmap](/fr/other/roadmap.md)
   - [Open Source](/fr/other/open-source.md)

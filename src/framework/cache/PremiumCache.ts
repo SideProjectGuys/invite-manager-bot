@@ -14,7 +14,7 @@ export class PremiumCache extends Cache<boolean> {
 			return true;
 		}
 
-		const sub = await this.client.db.getActivePremiumSubscriptionGuildForGuild(guildId);
+		const sub = await this.client.db.getPremiumSubscriptionGuildForGuild(guildId);
 		return !!sub;
 	}
 }

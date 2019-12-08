@@ -77,6 +77,7 @@ export interface GuildSettingsObject {
 	channels: string[];
 	ignoredChannels: string[];
 
+	joinRoles: string[];
 	joinMessage: string;
 	joinMessageChannel: string;
 	leaveMessage: string;
@@ -204,6 +205,11 @@ export const guildSettingsInfo: {
 		defaultValue: []
 	},
 
+	joinRoles: {
+		type: 'Role[]',
+		grouping: [SettingsGroup.invites, SettingsGroup.general],
+		defaultValue: []
+	},
 	joinMessage: {
 		type: 'String',
 		grouping: [SettingsGroup.invites, SettingsGroup.joins],

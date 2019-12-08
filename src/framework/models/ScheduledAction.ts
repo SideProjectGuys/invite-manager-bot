@@ -1,5 +1,6 @@
 export enum ScheduledActionType {
-	unmute = 'unmute'
+	unmute = 'unmute',
+	unlock = 'unlock'
 }
 
 export class ScheduledAction {

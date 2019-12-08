@@ -9,7 +9,8 @@ export enum GuildSettingsKey {
 	channels = 'channels',
 	ignoredChannels = 'ignoredChannels',
 
-	// Join and leave message
+	// Join and leave
+	joinRoles = 'joinRoles',
 	joinMessage = 'joinMessage',
 	joinMessageChannel = 'joinMessageChannel',
 	leaveMessage = 'leaveMessage',
@@ -121,15 +122,29 @@ export enum GuildSettingsKey {
 }
 
 export enum Lang {
+	ar = 'ar',
+	bg = 'bg',
+	cs = 'cs',
 	de = 'de',
+	el = 'el',
 	en = 'en',
 	es = 'es',
 	fr = 'fr',
+	hu = 'hu',
+	id_ID = 'id_ID',
 	it = 'it',
+	ja = 'ja',
+	lt = 'lt',
 	nl = 'nl',
+	pl = 'pl',
 	pt = 'pt',
+	pt_BR = 'pt_BR',
 	ro = 'ro',
-	sv = 'sv'
+	ru = 'ru',
+	sr = 'sr',
+	tr = 'tr',
+	zh_CN = 'zh_CN',
+	zh_TW = 'zh_TW'
 }
 
 export enum LeaderboardStyle {

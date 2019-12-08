@@ -57,7 +57,10 @@ This arguments expects a Discord Channel. You can use any of the following metho
 
 ### Command
 
-resolvers.command.typeInfo
+This argument expects a command of this bot. You can use any of the following methods to provide a command:
+
+- Use the command name: `invites`
+- Use an alias of the command: `p`
 
 ### Text
 
@@ -67,46 +70,54 @@ This arguments expects any text. You can use quotes (`"Text with quotes"`) for t
 
 ### Date
 
-resolvers.date.typeInfo
+This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`
 
 ### Duration
 
-resolvers.duration.typeInfo
+This argument expects a duration. The following duration types are supported:
+
+- Seconds: `s` (`5s` = 5 seconds)
+- Minutes: `min` (`3min` = 3 minutes)
+- Hours: `h` (`4h` = 4 hours)
+- Days: `d` (`2d` = 2 days)
+- Weeks: `w` (`1w` = 1 week)
+- Months: `mo` (`6mo` = 6 months)
+- Years: `y` (`10y` = 10 years)
 
 ## Overview
 
 ### Invites
 
-| Command                           | Description                                      | Usage                                                            |
-| --------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | 新增/移除成員的邀請。                            | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | 清除伺服器/一個使用者的邀請。                    | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | Creates unique invite codes.                     | !createInvite \<name\> [channel]                                 |
-| [info](#info)                     | Show info about a specific member.               | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | Get a list of all your invite codes              | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | Shows details about where your invites are from. | !inviteDetails [user]                                            |
-| [invites](#invites)               | Show personal invites.                           | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Show members with most invites.                  | !leaderboard [page]                                              |
-| [removeInvites](#removeInvites)   | cmd.removeInvites.self.description               | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | Restore all previously cleared invites.          | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | Remove fake invites from all users.              | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | Remove leaves from all users                     | !subtractLeaves                                                  |
+| Command                           | Description                                        | Usage                                                            |
+| --------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | 新增/移除成員的邀請。                              | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | 清除伺服器/一個使用者的邀請。                      | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | 創立獨特的邀請代碼。                               | !createInvite \<name\> [channel]                                 |
+| [info](#info)                     | Show info about a specific member.                 | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | Get a list of all your invite codes                | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | Shows details about where your invites are from.   | !inviteDetails [user]                                            |
+| [invites](#invites)               | Show personal invites.                             | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | Show members with most invites.                    | !leaderboard [page]                                              |
+| [removeInvites](#removeInvites)   | Removes a specified amount of invites from a user. | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | Restore all previously cleared invites.            | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | Remove fake invites from all users.                | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | Remove leaves from all users                       | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                   | Usage                                |
-| ------------------------- | ----------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | 新增一個新的等級。            | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | cmd.fixRanks.self.description | !fixRanks                            |
-| [ranks](#ranks)           | Show all ranks.               | !ranks [page]                        |
-| [removeRank](#removeRank) | Remove a rank.                | !removeRank \<rank\>                 |
+| Command                   | Description                                   | Usage                                |
+| ------------------------- | --------------------------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | 新增一個新的等級。                            | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | Deletes any ranks where the role was deleted. | !fixRanks                            |
+| [ranks](#ranks)           | Show all ranks.                               | !ranks [page]                        |
+| [removeRank](#removeRank) | Remove a rank.                                | !removeRank \<rank\>                 |
 
 ### Config
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
 | [botConfig](#botConfig)                 | 顯示和更改機器人的配置。                                  | !botConfig [key][value]                     |
-| [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
+| [config](#config)                       | 顯示和更改伺服器的配置。                                  | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Show and change the config of members of the server.      | !memberConfig [key][user] [value]           |
@@ -117,9 +128,9 @@ resolvers.duration.typeInfo
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
 | [botInfo](#botInfo) | 得到關於機器人的一般資訊。                                                        | !botInfo        |
-| [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
-| [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
-| [help](#help)       | Display help.                                                                     | !help [command] |
+| [credits](#credits) | 顯示機器人的開發人員和合作人員。                                                  | !credits        |
+| [getBot](#getBot)   | 拿到機器人的邀請鏈接                                                              | !getBot         |
+| [help](#help)       | 顯示幫助                                                                          | !help [command] |
 | [members](#members) | Show member count of current server.                                              | !members        |
 | [ping](#ping)       | Ping the bot                                                                      | !ping           |
 | [prefix](#prefix)   | Shows the current prefix of the bot.                                              | !prefix         |
@@ -130,7 +141,7 @@ resolvers.duration.typeInfo
 
 | Command                   | Description                                                               | Usage             |
 | ------------------------- | ------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Export data of InviteManager to a csv sheet.                              | !export \<type\>  |
+| [export](#export)         | 輸出 InviteManager 的資料到一個 csv 表單。                                | !export \<type\>  |
 | [premium](#premium)       | Info about premium version of InviteManager.                              | !premium [action] |
 | [tryPremium](#tryPremium) | Try the premium version of InviteManager for free for a limited duration. | !tryPremium       |
 
@@ -140,12 +151,13 @@ resolvers.duration.typeInfo
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | 從伺服器封鎖一個成員。                                                                                                                        | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
 | [caseDelete](#caseDelete)             | 刪除一個特定案件。                                                                                                                            | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | 觀看一個特定案件的資訊。                                                                                                                      | !caseView \<caseNumber\>                                         |
+| [caseView](#caseView)                 | 檢視一個特定案件的資訊。                                                                                                                      | !caseView \<caseNumber\>                                         |
 | [check](#check)                       | 檢查使用者的 violation 和懲罰歷史。                                                                                                           | !check \<user\>                                                  |
 | [clean](#clean)                       | 清除一個頻道中一些類型的訊息。                                                                                                                | !clean \<type\> [numberOfMessages]                               |
 | [cleanShort](#cleanShort)             | 清除短訊息                                                                                                                                    | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | 刪除包含一些關鍵字的訊息。                                                                                                                    | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
+| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
@@ -179,11 +191,9 @@ resolvers.duration.typeInfo
 
 ### Other
 
-| Command                             | Description                                                  | Usage                      |
-| ----------------------------------- | ------------------------------------------------------------ | -------------------------- |
-| [graph](#graph)                     | Shows graphs about various stats on this server.             | !graph \<type\> [duration] |
-| [makeMentionable](#makeMentionable) | Make a role mentionable for 60 seconds or until it was used. | !makeMentionable \<role\>  |
-| [mentionRole](#mentionRole)         | Mention an unmentionable role.                               | !mentionRole \<role\>      |
+| Command         | Description                    | Usage                      |
+| --------------- | ------------------------------ | -------------------------- |
+| [graph](#graph) | 顯示關於這個伺服的各種統計資料 | !graph \<type\> [from][to] |
 
 <a name='addInvites'></a>
 
@@ -384,7 +394,7 @@ resolvers.duration.typeInfo
 
 ## !caseView
 
-觀看一個特定案件的資訊。
+檢視一個特定案件的資訊。
 
 ### Usage
 
@@ -580,7 +590,7 @@ resolvers.duration.typeInfo
 
 ## !config
 
-Show and change the config of the server.
+顯示和更改伺服器的配置。
 
 ### Usage
 
@@ -594,10 +604,10 @@ Show and change the config of the server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| -------- | --------------- | -------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The config setting which you want to show/change. | Use one of the following values: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `defaultMusicPlatform`, `disabledMusicPlatforms`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Value](#Value) | No       | The new value of the setting.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Argument | Type            | Required | Description                 | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------- | --------------- | -------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | 您想要顯示/更改的配置設定。 | Use one of the following values: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `defaultMusicPlatform`, `disabledMusicPlatforms`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `joinRoles`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
+| value    | [Value](#Value) | No       | 新設定的值。                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 ### Examples
 
@@ -611,7 +621,7 @@ Show and change the config of the server.
 
 ## !createInvite
 
-Creates unique invite codes.
+創立獨特的邀請代碼。
 
 ### Usage
 
@@ -625,10 +635,10 @@ Creates unique invite codes.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                                            | Details |
-| -------- | ------------------- | -------- | -------------------------------------------------------------------------------------- | ------- |
-| name     | [Text](#Text)       | Yes      | The name of the invite code.                                                           |         |
-| channel  | [Channel](#Channel) | No       | The channel for which the invite code is created. Uses the current channel by default. |         |
+| Argument | Type                | Required | Description                                  | Details |
+| -------- | ------------------- | -------- | -------------------------------------------- | ------- |
+| name     | [Text](#Text)       | Yes      | 邀請代碼的名字。                             |         |
+| channel  | [Channel](#Channel) | No       | 邀請代碼被創立在頻道。使用目前的頻道為默認。 |         |
 
 ### Examples
 
@@ -646,7 +656,7 @@ Creates unique invite codes.
 
 ## !credits
 
-Show developers and contributors of the bot.
+顯示機器人的開發人員和合作人員。
 
 ### Usage
 
@@ -686,7 +696,7 @@ Disconnect the bot from the current voice channel.
 
 ## !export
 
-Export data of InviteManager to a csv sheet.
+輸出 InviteManager 的資料到一個 csv 表單。
 
 ### Usage
 
@@ -696,9 +706,9 @@ Export data of InviteManager to a csv sheet.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                  | Details                                        |
-| -------- | ------------- | -------- | ---------------------------- | ---------------------------------------------- |
-| type     | [Enum](#Enum) | Yes      | The type of export you want. | Use one of the following values: `leaderboard` |
+| Argument | Type          | Required | Description        | Details                                        |
+| -------- | ------------- | -------- | ------------------ | ---------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | 輸出您想要的類型。 | Use one of the following values: `leaderboard` |
 
 ### Examples
 
@@ -712,7 +722,7 @@ Export data of InviteManager to a csv sheet.
 
 ## !fixRanks
 
-cmd.fixRanks.self.description
+Deletes any ranks where the role was deleted.
 
 ### Usage
 
@@ -736,7 +746,7 @@ cmd.fixRanks.self.description
 
 ## !getBot
 
-Get an invite link for the bot.
+拿到機器人的邀請鏈接
 
 ### Usage
 
@@ -762,12 +772,12 @@ Get an invite link for the bot.
 
 ## !graph
 
-Shows graphs about various stats on this server.
+顯示關於這個伺服的各種統計資料
 
 ### Usage
 
 ```text
-!graph <type> [duration]
+!graph <type> [from] [to]
 ```
 
 ### Aliases
@@ -777,10 +787,11 @@ Shows graphs about various stats on this server.
 
 ### Arguments
 
-| Argument | Type                  | Required | Description                        | Details                                            |
-| -------- | --------------------- | -------- | ---------------------------------- | -------------------------------------------------- |
-| type     | [Enum](#Enum)         | Yes      | The type of chart to display.      | Use one of the following values: `joins`, `leaves` |
-| duration | [Duration](#Duration) | No       | The duration period for the chart. |                                                    |
+| Argument | Type          | Required | Description              | Details                                                              |
+| -------- | ------------- | -------- | ------------------------ | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum) | Yes      | 顯示的圖表類型           | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Date](#Date) | No       | cmd.graph.self.args.from |                                                                      |
+| to       | [Date](#Date) | No       | cmd.graph.self.args.to   |                                                                      |
 
 ### Examples
 
@@ -802,7 +813,7 @@ Shows graphs about various stats on this server.
 
 ## !help
 
-Display help.
+顯示幫助
 
 ### Usage
 
@@ -812,9 +823,9 @@ Display help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------- | ------------------- | -------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Command](#Command) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type                | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------- | ------------------- | -------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [Command](#Command) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -1100,6 +1111,38 @@ Show members with most invites.
 !leaderboard 30d 6
 ```
 
+<a name='lockdown'></a>
+
+---
+
+## !lockdown
+
+cmd.lockdown.self.description
+
+### Usage
+
+```text
+!lockdown [-t value|--timeout=value] [channel]
+```
+
+### Arguments
+
+| Argument | Type                | Required | Description                    | Details |
+| -------- | ------------------- | -------- | ------------------------------ | ------- |
+| channel  | [Channel](#Channel) | No       | cmd.lockdown.self.args.channel |         |
+
+### Flags
+
+| Flag                    | Short     | Type                  | Description                     |
+| ----------------------- | --------- | --------------------- | ------------------------------- |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | cmd.lockdown.self.flags.timeout |
+
+### Examples
+
+```text
+!lockdown
+```
+
 <a name='lyrics'></a>
 
 ---
@@ -1124,41 +1167,6 @@ Show lyrics of the currently playing song.
 
 ```text
 !lyrics
-```
-
-<a name='makeMentionable'></a>
-
----
-
-## !makeMentionable
-
-Make a role mentionable for 60 seconds or until it was used.
-
-### Usage
-
-```text
-!makeMentionable <role>
-```
-
-### Aliases
-
-- `!make-mentionable`
-- `!mm`
-
-### Arguments
-
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | The role that you want to mention. |         |
-
-### Examples
-
-```text
-!makeMentionable @Role
-```
-
-```text
-!makeMentionable "Role with space"
 ```
 
 <a name='mashup'></a>
@@ -1240,41 +1248,6 @@ Show member count of current server.
 
 ```text
 !members
-```
-
-<a name='mentionRole'></a>
-
----
-
-## !mentionRole
-
-Mention an unmentionable role.
-
-### Usage
-
-```text
-!mentionRole <role>
-```
-
-### Aliases
-
-- `!mention-role`
-- `!mr`
-
-### Arguments
-
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| role     | [Role](#Role) | Yes      | The role that you want to mention. |         |
-
-### Examples
-
-```text
-!mentionRole @Role
-```
-
-```text
-!mentionRole "Role with space"
 ```
 
 <a name='mute'></a>
@@ -1381,10 +1354,10 @@ Configure permissions to use commands.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------- | ------------------- | -------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Argument | Type                | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------- | ------------------- | -------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Command](#Command) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Role](#Role)       | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ### Examples
 
@@ -1637,9 +1610,9 @@ Show all ranks.
 
 ### Arguments
 
-| Argument | Type              | Required | Description              | Details |
-| -------- | ----------------- | -------- | ------------------------ | ------- |
-| page     | [Number](#Number) | No       | cmd.ranks.self.args.page |         |
+| Argument | Type              | Required | Description                         | Details |
+| -------- | ----------------- | -------- | ----------------------------------- | ------- |
+| page     | [Number](#Number) | No       | The page of the ranks list to show. |         |
 
 ### Examples
 
@@ -1653,7 +1626,7 @@ Show all ranks.
 
 ## !removeInvites
 
-cmd.removeInvites.self.description
+Removes a specified amount of invites from a user.
 
 ### Usage
 
@@ -1667,11 +1640,11 @@ cmd.removeInvites.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                        | Details |
-| -------- | ----------------- | -------- | ---------------------------------- | ------- |
-| user     | [User](#User)     | Yes      | cmd.removeInvites.self.args.user   |         |
-| amount   | [Number](#Number) | Yes      | cmd.removeInvites.self.args.amount |         |
-| reason   | [Text](#Text)     | No       | cmd.removeInvites.self.args.reason |         |
+| Argument | Type              | Required | Description                          | Details |
+| -------- | ----------------- | -------- | ------------------------------------ | ------- |
+| user     | [User](#User)     | Yes      | The user to remove the invites from. |         |
+| amount   | [Number](#Number) | Yes      | The amount of invites to remove.     |         |
+| reason   | [Text](#Text)     | No       | The reason for removing the invites. |         |
 
 ### Examples
 
@@ -1971,9 +1944,9 @@ Ban and then automatically unban a member from the server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                              |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | cmd.softBan.self.flags.deleteMessageDays |
+| Flag                              | Short     | Type              | Description                                        |
+| --------------------------------- | --------- | ----------------- | -------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Delete messages from the user this many days back. |
 
 ### Examples
 

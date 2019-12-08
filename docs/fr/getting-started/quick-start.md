@@ -1,6 +1,6 @@
-# Quick Start
+# Guide de démarrage rapide
 
-## Setup
+## Installation
 
 start.quick.setup.description
 

@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "This chart shows the number of users leaving your server.",
@@ -325,9 +325,11 @@
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
-			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -723,7 +725,8 @@
 				"done": "Premium has been successfully activated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Activate premium on this server"
+				"title": "Activate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -736,7 +739,8 @@
 				"done": "Premium has been successfully deactivated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Deactivate premium on this server"
+				"title": "Deactivate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -763,7 +767,7 @@
 			"premium": {
 				"activate": "Use {{{ cmd }}} to activate it on this server",
 				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
-				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -812,7 +816,8 @@
 				"description": "Purge messages in a channel up until a specified message."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Delete Messages"
+			"title": "Delete Messages",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -820,7 +825,7 @@
 			"self": {
 				"description": "Show all ranks.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "Cargos"
@@ -828,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -856,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "FAQs e mais."
 			},
 			"help": {
@@ -906,7 +911,7 @@
 				},
 				"description": "Ban and then automatically unban a member from the server.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "The user was but could not be unbanned...\n{{ error }}"
@@ -1123,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Done fixing ranks.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1185,7 +1210,7 @@
 			"notFound": "Command not found.",
 			"type": "Command",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1226,11 +1251,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Duration",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Invite Code",

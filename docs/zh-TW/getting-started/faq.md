@@ -4,7 +4,7 @@
 
 您可以用`!config prefix -`來更改前綴指令。
 
-如果您不知道當前的前綴指令，您可以用`@InviteManager config prefix`來得知前綴指令。
+如果您不知道目前的前綴指令，您可以用`@InviteManager config prefix`來得知前綴指令。
 
 ## 我如何設定加入和離開訊息？
 

@@ -1,43 +1,38 @@
-# FAQs}
+# Questions Courantes}
 
-## How do I change the prefix of the bot?
+## Comment je change le préfix du bot?
 
-You can do `!config prefix -` to change the prefix.
+Vous pouvez faire `!config prefix -` pour changer le préfixe.
 
-If you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix.
+Si vous ne connaissez pas votre préfixe actuel, vous pouvez utiliser `@InviteManager config prefix` pour afficher le préfixe.
 
-## How do I set join and leave messages?
+## Comment je définie des messages d'arrivés et de départs?
 
-Set the channel by doing
-
-`!config joinMessageChannel #channel`
-
-or
+Définissez le salon en faisant
+`!config joinMessageChannel #channel` ou
 
 `!config leaveMessageChannel #channel`.
+Après cela, les prochain messages seront affichées sur ce salon.
 
-After doing that, new joins and leaves will be posted to that channel.
+## Est-ce que je peut personnaliser les messages d'arrivées et de départs?
 
-## Can I customize the join and leave messages?
+Absolument! Vous pouvez changer le message en faisant par exemple
+``!config joinMessage {memberMention} **viens d'arriver**; Invité par **{inviterName}** (**{numInvites}** invitations)`
 
-Absolutely! You can change the message by doing for example
+ou
 
-`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`
+`!config leaveMessage {memberName} **à quitté**; Invité par **{inviterName}**`.
 
-or
+Il existe de nombreux espaces réservés disponibles. Vous pouvez voir la liste complète sur la page '[Messages personnalisés](/fr/modules/invites/custom-messages.md)'.
 
-`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
+## Qu'est-ce que 'Ranks' et comment puis-je les utiliser?
 
-There are many placeholders available. You can see the full list on the '[Custom Messages](/fr/modules/invites/custom-messages.md)' page.
+Les rôles sont utilisés pour attribuer des rôles aux personnes lorsqu'elles atteignent un certain nombre d'invitations. Par exemple. Si vous avez un rôle appelé `@Débutant` et que vous voulez que des personnes qui ont 5 invitations ou plus soient ajoutées à ce rôle, vous devrez créer un rôles comme ceci:`!add-rankadd-rank @Débutant 5 (et si vous voulez une description ici)`.Dès que quelqu'un aura 5 invitations, il sera automatiquement ajouté à ce rôle!
 
-## What are 'Ranks' and how can I use them?
+## Comment puis-je désactiver le bot dans un ou plusieurs salon ?
 
-Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!
+Supprimez les autorisations de lecture dans les salons où vous ne souhaitez pas que le bot réponde.
 
-## How can I disable the bot in all but one/some channels?
+## Limitation: pas de suivi avancé avant que le bot ne sois ajouté
 
-Take away the read message permissions in the channels where you don't want the bot to reply.
-
-## Limitation: No advanced tracking before the bot joins
-
-Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot.
+Le suivi avancé (qui a invité qui) ne fonctionne qu'après que vous ayez invité le bot. Le bot saura toujours le nombre d'invitations de tout le monde après l'invitation, ne vous inquiétez pas. Seules les informations supplémentaires sont manquantes et ne peuvent être collectées que pour les membres qui rejoignent après que vous ayez invité le bot.

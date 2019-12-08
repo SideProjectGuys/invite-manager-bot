@@ -62,12 +62,10 @@ CREATE TABLE `musicNodes` (
 --
 
 CREATE TABLE `premiumSubscriptionGuilds` (
-  `id` int(11) NOT NULL,
+  `memberId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `subscriptionId` int(11) DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deletedAt` datetime DEFAULT NULL
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -78,14 +76,13 @@ CREATE TABLE `premiumSubscriptionGuilds` (
 
 CREATE TABLE `premiumSubscriptions` (
   `id` int(11) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `amount` decimal(10,2) DEFAULT NULL,
   `maxGuilds` int(11) NOT NULL DEFAULT '5',
   `isFreeTier` tinyint(1) NOT NULL DEFAULT '0',
+  `isPatreon` tinyint(1) NOT NULL DEFAULT '0',
   `validUntil` datetime DEFAULT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deletedAt` datetime DEFAULT NULL,
-  `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `memberId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -116,16 +113,14 @@ ALTER TABLE `musicNodes`
 -- Indexes for table `premiumSubscriptionGuilds`
 --
 ALTER TABLE `premiumSubscriptionGuilds`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `guildId` (`guildId`),
-  ADD KEY `premiumSubscriptionId` (`subscriptionId`);
+  ADD PRIMARY KEY (`memberId`, `guildId`),
+  ADD KEY `guildId` (`guildId`);
 
 --
 -- Indexes for table `premiumSubscriptions`
 --
 ALTER TABLE `premiumSubscriptions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `guildId` (`guildId`),
   ADD KEY `memberId` (`memberId`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

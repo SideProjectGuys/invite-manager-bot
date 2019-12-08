@@ -64,7 +64,7 @@
 					"deleteMessageDays": "BANしたユーザーのメッセージを指定した日数分を削除します"
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "私は できない ソフトバン この ユーザー."
 		},
 		"botConfig": {
 			"canNotClear": "構成設定** {{key}} **はクリアできません。 デフォルト値にリセットするために `{{prefix}} botConfig {{key}} default`を使うことができます。",
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "このチャートはあなたのサーバーに参加しているユーザーの数を示しています。",
-				"title": "ユーザーが参加"
+				"title": "Users joining"
 			},
 			"leaves": {
 				"text": "このチャートはサーバーから抜けたユーザーの数を示しています。",
@@ -325,9 +325,11 @@
 				},
 				"description": "このサーバー上のさまざまな統計グラフを表示します。"
 			},
-			"usage": {
-				"text": "このチャートは、このサーバーでのInviteManagerコマンドの使用グラフを示しています。",
-				"title": "コマンドの使い方"
+			"minDays": "You have to select at least {{{ days }}} days",
+			"maxDays": "You may select at most {{{ days }}} days",
+			"joinsAndLeaves": {
+				"title": "Users joining and leaving",
+				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},
 		"help": {
@@ -459,7 +461,7 @@
 				"role[]": "役職のリスト、例えば：@Admin @Mod",
 				"string": "任意のテキスト",
 				"string[]": "単語のリスト、例えば： \"スペースのある単語\"",
-				"enum<musicplatformtypes>[]": "A list of music platform types"
+				"enum<musicplatformtypes>[]": "音楽プラットフォームの種類のリスト"
 			},
 			"welcome": "リアクションを使用して、利用可能なオプションの1つを選択してください。"
 		},
@@ -519,7 +521,7 @@
 				"title": "一時的"
 			},
 			"title": "サーバー{{guild}}に次のコードがあります。",
-			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
+			"error": "私はできた あなたを送りません あなたの招待 コード, 念のため あなたは許可しています プライベートメッセージ このサーバーから."
 		},
 		"inviteDetails": {
 			"entry": "** {{uses}} **から{{{code}}} - 作成日** {{createdAt}} **",
@@ -575,7 +577,7 @@
 				"total": "T"
 			},
 			"comparedTo": "{{{to}}}と比較した変更",
-			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
+			"entry": "**{{ pos }}** ポジション **{{{ name }}}** 名 **{{ total }}** 誘う (**{{ regular }}** レギュラー, **{{ custom }}** ボーナス, **{{ fake }}** 偽, **{{ leave }}** 枝葉)",
 			"from": "{{{from}}}からの招待",
 			"invalidDate": "無効な日付：{{date}}",
 			"legend": "`T` = 合計\n`R` = 全体の招待数\r\n`B` = ボーナス招待数\r\n`F` = 偽の招待数\r\n`L` = 退出数",
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "リーダーボード",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "最後の更新 {{{ lastUpdate }}}, 次の更新 {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -723,7 +725,8 @@
 				"done": "このサーバーのプレミアムは正常に有効化されました。",
 				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
 				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
-				"title": "このサーバーでプレミアムを有効にする"
+				"title": "このサーバーでプレミアムを有効にする",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "使用料の支払いが拒否されました。Patreonを確認してください。",
@@ -736,7 +739,8 @@
 				"done": "このサーバーのプレミアムは無効になりました。",
 				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
 				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
-				"title": "このサーバーのプレミアムを無効にする"
+				"title": "このサーバーのプレミアムを無効にする",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -763,7 +767,7 @@
 			"premium": {
 				"activate": "このサーバーでアクティブにするには{{{cmd}}}を使用してください",
 				"deactivate": "このサーバーで{{{cmd}}}を使用して無効にしてください。",
-				"text": "プレミアム登録は他の{{date}}に有効です。\n\n{{{limit}}}サーバーでプレミアムを有効にしました。\n{{{guildList}}}\n\n[プレミアムで何ができますか？]（{{{link}}}）",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManagerプレミアム"
 			},
 			"self": {
@@ -812,7 +816,8 @@
 				"description": "指定されたメッセージまでチャネル内のメッセージを削除します。"
 			},
 			"text": "{{amount}}件のメッセージを削除しました。\nこのメッセージは5秒以内に削除されます。",
-			"title": "メッセージを削除"
+			"title": "メッセージを削除",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **招待数:{{ numInvites }} ** {{ description }}",
@@ -820,7 +825,7 @@
 			"self": {
 				"description": "すべてのランクを見る",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "ランク"
@@ -828,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -856,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "ボットの設定に関する完全なガイドはここにあります：https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "よくある質問"
 			},
 			"help": {
@@ -906,7 +911,7 @@
 				},
 				"description": "サーバーからメンバーをBANしてから自動的にBAN解除します。",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "ユーザーはBANされていましたが、BANを解除できなかった。\n{{error}}"
@@ -1123,8 +1128,28 @@
 		"fixRanks": {
 			"done": "ランクの修正が完了しました。",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
@@ -1162,8 +1187,8 @@
 		"manageMessages": "メッセージの管理",
 		"readMessageHistory": "メッセージの履歴を見る",
 		"missing": "InviteManagerは{{{ channel }}}の{{{ permissions }}}許可がありません",
-		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
+		"banMembers": "禁止メンバー",
+		"kickMembers": "キックメンバー"
 	},
 	"prompt": {
 		"canceled": "キャンセルしました。"
@@ -1185,7 +1210,7 @@
 			"notFound": "コマンドが見つかりませんでした。",
 			"type": "コマンド",
 			"validValues": "以下のいずれかの値を使用:{{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "不正な値です。",
@@ -1226,11 +1251,11 @@
 		},
 		"date": {
 			"type": "日付",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "期間",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "招待コード",
@@ -1240,15 +1265,15 @@
 	"settings": {
 		"autoModAllCapsEnabled": {
 			"title": "有効",
-			"description": "Automatically moderate messages with A LOT OF CAPS."
+			"description": "自動的に 適度な メッセージ とともに 多くのキャップ"
 		},
 		"autoModAllCapsMinCharacters": {
 			"title": "最小文字",
-			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
+			"description": "あの ミニマム 量 の キャラクター に メッセージ へ なる 検討する ために 適度な (セッティング へ '3' しましょう 無視する 'オーケー')."
 		},
 		"autoModAllCapsPercentageCaps": {
 			"title": "煽りのパーセント",
-			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
+			"description": "あの 割合 の キャラクター の あの メッセージ それ 持ってる へ なる クリック数 ために あの ルール へ 引き金."
 		},
 		"autoModDeleteBotMessage": {
 			"title": "BOTのメッセージを削除",

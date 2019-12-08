@@ -481,7 +481,7 @@ export default class extends Command {
 		});
 	}
 
-	private validate(key: GuildSettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: GuildSettingsKey, value: any, { t, isPremium, me }: Context): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
@@ -507,6 +507,10 @@ export default class extends Command {
 				if (!channel.permissionsOf(me.id).has(GuildPermission.EMBED_LINKS)) {
 					return t('cmd.config.invalid.canNotSendEmbeds');
 				}
+			}
+		} else if (key === GuildSettingsKey.joinRoles) {
+			if (!isPremium && value && value.length > 1) {
+				return t('cmd.config.invalid.multipleJoinRolesIsPremium');
 			}
 		}
 

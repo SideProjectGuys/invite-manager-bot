@@ -32,7 +32,7 @@ export default class extends Command {
 		embed.title = t('cmd.tryPremium.title');
 		if (isPremium) {
 			embed.description = t('cmd.tryPremium.currentlyActive');
-		} else if (await this.guildHadTrial(guild.id)) {
+		} else if (await this.memberHadTrial(message.author.id)) {
 			embed.description = t('cmd.tryPremium.alreadyUsed', {
 				prefix
 			});
@@ -53,17 +53,17 @@ export default class extends Command {
 				return this.sendReply(message, t('prompt.canceled'));
 			}
 
-			const subId = await this.client.db.savePremiumSubscription({
+			await this.client.db.savePremiumSubscription({
 				amount: 0,
 				maxGuilds: 1,
 				isFreeTier: true,
 				validUntil: validUntil.toDate(),
 				memberId: message.author.id,
-				reason: '!try-premium'
+				reason: ''
 			});
 			await this.client.db.savePremiumSubscriptionGuild({
-				guildId: guild.id,
-				subscriptionId: subId
+				memberId: message.author.id,
+				guildId: guild.id
 			});
 
 			this.client.cache.premium.flush(guild.id);
@@ -76,8 +76,8 @@ export default class extends Command {
 		return this.sendReply(message, embed);
 	}
 
-	private async guildHadTrial(guildId: string): Promise<boolean> {
-		const sub = await this.client.db.getFreePremiumSubscriptionGuildForGuild(guildId);
-		return !!sub;
+	private async memberHadTrial(memberId: string): Promise<boolean> {
+		const sub = await this.client.db.getPremiumSubscriptionsForMember(memberId, false, true);
+		return sub && sub.length > 0;
 	}
 }

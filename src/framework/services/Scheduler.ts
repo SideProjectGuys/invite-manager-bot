@@ -16,7 +16,8 @@ export class SchedulerService {
 		this.client = client;
 		this.scheduledActionTimers = new Map();
 		this.scheduledActionFunctions = {
-			[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a)
+			[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a),
+			[ScheduledActionType.unlock]: null
 		};
 	}
 
@@ -39,7 +40,13 @@ export class SchedulerService {
 			reason: reason
 		});
 		const action = await this.client.db.getScheduledAction(guildId, newId);
-		this.createTimer(action);
+		if (action.date !== null) {
+			this.createTimer(action);
+		}
+	}
+
+	public async getScheduledActionsOfType(guildId: string, type: ScheduledActionType) {
+		return this.client.db.getScheduledActionsForGuildByType(guildId, type);
 	}
 
 	private createTimer(action: ScheduledAction) {
@@ -52,7 +59,10 @@ export class SchedulerService {
 			}
 
 			try {
-				await this.scheduledActionFunctions[action.actionType](guild, action.args);
+				const scheduledFunc = this.scheduledActionFunctions[action.actionType];
+				if (scheduledFunc) {
+					await scheduledFunc(guild, action.args);
+				}
 				await this.client.db.removeScheduledAction(action.guildId, action.id);
 			} catch (error) {
 				withScope(scope => {
@@ -61,20 +71,25 @@ export class SchedulerService {
 				});
 			}
 		};
+		console.log(`Scheduling timer in ${millisUntilAction} for ${action.id}`);
 		const timer = setTimeout(func, millisUntilAction);
 		this.scheduledActionTimers.set(action.id, timer);
 	}
 
-	private async removeTimer(actionId: number) {
+	public async removeScheduledAction(guildId: string, actionId: number) {
 		const timer = this.scheduledActionTimers.get(actionId);
 		if (timer) {
 			clearTimeout(timer);
 			this.scheduledActionTimers.delete(actionId);
 		}
+
+		await this.client.db.removeScheduledAction(guildId, actionId);
 	}
 
 	private async scheduleScheduledActions() {
-		const actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map(g => g.id));
+		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map(g => g.id));
+		actions = actions.filter(a => a.date !== null);
+		console.log(`Scheduling ${actions.length} actions from db`);
 		actions.forEach(action => this.createTimer(action));
 	}
 
@@ -95,5 +110,9 @@ export class SchedulerService {
 		}
 
 		await member.removeRole(roleId, 'Timed unmute');
+	}
+
+	private async unlock(guild: Guild, { channelId, roleId }: { channelId: string; roleId: string }) {
+		console.log('SCHEDULED TASK: UNLOCK', guild.id, channelId, roleId);
 	}
 }

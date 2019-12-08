@@ -26,37 +26,35 @@ export default class extends Command {
 
 	public async action(message: Message, [untilMessageID]: [string], flags: {}, { guild, t }: Context): Promise<any> {
 		const embed = this.createEmbed({
-			title: t('cmd.purgeUntil.title')
+			title: t('cmd.purgeUntil.title'),
+			description: t('cmd.purgeUntil.inProgress')
 		});
 
-		const messages: Message[] = await message.channel.getMessages(1000, undefined, untilMessageID).catch(() => []);
+		const response = await this.sendReply(message, embed);
 
-		if (messages.length === 0) {
-			embed.description = t('cmd.purgeUntil.none');
-			return this.sendReply(message, embed);
-		} else if (!messages.some(m => m.id === untilMessageID)) {
-			embed.description = t('cmd.purgeUntil.msgNotFound');
-			return this.sendReply(message, embed);
-		} else {
+		let amount = 0;
+		let messages: Message[];
+		while (!messages || messages.length > 1) {
+			messages = await message.channel.getMessages(1000, undefined, untilMessageID);
+
 			try {
 				await this.client.deleteMessages(
 					message.channel.id,
-					messages.map(m => m.id)
+					messages.filter(m => m.id !== response.id).map(m => m.id)
 				);
 
-				embed.description = t('cmd.purgeUntil.text', {
-					amount: `**${messages.length}**`
-				});
-			} catch (error) {
-				embed.title = t('cmd.purgeUntil.error');
-				embed.description = JSON.stringify(error);
-			}
-
-			const response = await this.sendReply(message, embed);
-			if (response) {
-				const func = () => response.delete().catch(() => undefined);
-				setTimeout(func, 5000);
+				amount += messages.length;
+			} catch {
+				break;
 			}
 		}
+
+		embed.description = t('cmd.purgeUntil.text', {
+			amount: `**${amount}**`
+		});
+		await response.edit({ embed });
+
+		const func = () => response.delete().catch(() => undefined);
+		setTimeout(func, 5000);
 	}
 }

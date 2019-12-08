@@ -11,6 +11,7 @@ import { LogAction } from './framework/models/Log';
 import { CommandsService } from './framework/services/Commands';
 import { DatabaseService } from './framework/services/DatabaseService';
 import { MessagingService } from './framework/services/Messaging';
+import { PremiumService } from './framework/services/PremiumService';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
 import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache';
@@ -20,6 +21,8 @@ import { RanksCache } from './invites/cache/RanksCache';
 import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
+import { ReactionRoleCache } from './management/cache/ReactionRoleCache';
+import { ManagementService } from './management/services/ManagementService';
 import { PunishmentCache } from './moderation/cache/PunishmentsCache';
 import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
@@ -68,6 +71,7 @@ export interface ClientCacheObject {
 	guilds: GuildSettingsCache;
 	strikes: StrikesCache;
 	music: MusicCache;
+	reactionRoles: ReactionRoleCache;
 }
 
 export class IMClient extends Client {
@@ -94,6 +98,8 @@ export class IMClient extends Client {
 	public invs: InvitesService;
 	public music: MusicService;
 	public tracking: TrackingService;
+	public premium: PremiumService;
+	public management: ManagementService;
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
@@ -156,7 +162,8 @@ export class IMClient extends Client {
 			punishments: new PunishmentCache(this),
 			guilds: new GuildSettingsCache(this),
 			strikes: new StrikesCache(this),
-			music: new MusicCache(this)
+			music: new MusicCache(this),
+			reactionRoles: new ReactionRoleCache(this)
 		};
 		this.rabbitmq = new RabbitMqService(this);
 		this.msg = new MessagingService(this);
@@ -167,6 +174,8 @@ export class IMClient extends Client {
 		this.invs = new InvitesService(this);
 		this.tracking = new TrackingService(this);
 		this.music = new MusicService(this);
+		this.premium = new PremiumService(this);
+		this.management = new ManagementService(this);
 
 		// Services
 		this.cmds.init();
@@ -248,22 +257,40 @@ export class IMClient extends Client {
 
 				case BotType.pro:
 					// If this is the pro bot then leave any guilds that aren't pro
-					const premium = await this.cache.premium._get(guild.id);
+					let premium = await this.cache.premium._get(guild.id);
 
 					if (!premium) {
-						const dmChannel = await this.getDMChannel(guild.ownerID);
-						await dmChannel
-							.createMessage(
-								'Hi!' +
-									`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
-									'I am the pro version of InviteManager, and only available to people ' +
-									'that support me on Patreon with the pro tier.\n\n' +
-									'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-									'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
-									'I will be leaving your server now, thanks for having me!'
-							)
-							.catch(() => undefined);
-						await guild.leave();
+						// Let's try and see if this guild had pro before, and if maybe
+						// the member renewed it, but it didn't update.
+						const oldPremium = await this.db.getPremiumSubscriptionGuildForGuild(guild.id, false);
+						if (oldPremium) {
+							await this.premium.checkPatreon(oldPremium.memberId);
+							premium = await this.cache.premium._get(guild.id);
+						}
+
+						if (!premium) {
+							const dmChannel = await this.getDMChannel(guild.ownerID);
+							await dmChannel
+								.createMessage(
+									'Hi!' +
+										`Thanks for inviting me to your server \`${guild.name}\`!\n\n` +
+										'I am the pro version of InviteManager, and only available to people ' +
+										'that support me on Patreon with the pro tier.\n\n' +
+										'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
+										'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+										'I will be leaving your server soon, thanks for having me!'
+								)
+								.catch(() => undefined);
+							const onTimeout = async () => {
+								// Check one last time before leaving
+								if (await this.cache.premium._get(guild.id)) {
+									return;
+								}
+
+								await guild.leave();
+							};
+							setTimeout(onTimeout, 3 * 60 * 1000);
+						}
 					}
 					break;
 
@@ -310,7 +337,7 @@ export class IMClient extends Client {
 						'It looks like this guild was banned from using the InviteManager bot.\n' +
 						'If you believe this was a mistake please contact staff on our support server.\n\n' +
 						`${this.config.bot.links.support}\n\n` +
-						'I will be leaving your server now, thanks for having me!'
+						'I will be leaving your server soon, thanks for having me!'
 				)
 				.catch(() => undefined);
 			await guild.leave();
@@ -340,7 +367,14 @@ export class IMClient extends Client {
 							'I will be leaving your server soon, thanks for having me!'
 					)
 					.catch(() => undefined);
-				setTimeout(() => guild.leave().catch(() => undefined), 5 * 60 * 1000);
+				const onTimeout = async () => {
+					if (await this.cache.premium._get(guild.id)) {
+						return;
+					}
+
+					await guild.leave();
+				};
+				setTimeout(onTimeout, 2 * 60 * 1000);
 				return;
 			}
 		}

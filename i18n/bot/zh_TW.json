@@ -64,7 +64,7 @@
 					"deleteMessageDays": "如果指定將刪除被封鎖成員近幾日內的訊息。"
 				}
 			},
-			"canNotSoftBan": "指令.封鎖.不能軟封鎖"
+			"canNotSoftBan": "我不能軟封鎖這個使用者。 "
 		},
 		"botConfig": {
 			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
@@ -74,7 +74,7 @@
 			"current": {
 				"clear": "使用`{{ prefix }}botConfig {{ key }} none`來清除它。",
 				"notSet": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}config {{ key }} 1`來設定它。",
-				"text": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}botConfig {{ key }} 1`來更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
+				"text": "這個配置目前被設定。\n使用`{{ prefix }}botConfig {{ key }} 1`來更改它。\n使用`{{ prefix }}botConfig {{ key }} default`來重置它到預設值。",
 				"title": "目前的值"
 			},
 			"customOnly": "**這個指令目前只有自定義機器人可用。**\n如果您在尋找您的伺服器配置，請使用`{{ prefix }}config`指令。\n\n參觀我們的patreon頁面來學習更多關於您如何可以獲得您自己的自定義機器人：{{{ patreon }}}",
@@ -101,7 +101,7 @@
 				},
 				"description": "顯示和更改機器人的配置。"
 			},
-			"text": "以下是您的機器人的所有配置設定。\n使用`{{ prefix }}botConfig 1`來觀看單一設定\n使用`{{ prefix }}botConfig 2 3`來設定配置4 到 5",
+			"text": "以下是您的機器人的所有配置設定。\n使用`{{ prefix }}botConfig 1` 來檢視單一設定\n使用`{{ prefix }}botConfig 2 3` 來設定配置 4 到 5",
 			"title": "自定義機器人配置"
 		},
 		"botInfo": {
@@ -141,7 +141,7 @@
 				"args": {
 					"caseNumber": "案件編號"
 				},
-				"description": "觀看一個特定案件的資訊。"
+				"description": "檢視一個特定案件的資訊。"
 			},
 			"strike": "{{{ member }}}收到{{{ amount }}} strikes因為違反{{{ violation }}}規則{{{ date }}}。",
 			"title": "案件#{{ id }}"
@@ -218,70 +218,70 @@
 		"config": {
 			"canNotClear": "配置設定**{{ key }}**不能被清除。您可以使用`config {{ key }} default`來重置它到預設值。",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}config {{ key }} <value>` to change it again.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default."
+				"text": "這個配置已經被更改。\n使用`{{ prefix }}config {{ key }} 1`來再次更改它。\n使用`{{ prefix }}config {{ key }} default`來重置它到預設值。"
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"clear": "使用`{{ prefix }}config {{ key }} none`來清除它。",
+				"notSet": "這個配置目前**沒有**被設定。\n使用`{{ prefix }}config {{ key }} 1`來設定它。",
+				"text": "這個配置目前被設定。\n使用`{{ prefix }}config {{ key }} 1`來更改它。\n使用`{{ prefix }}config {{ key }} default`來重置它到預設值。",
+				"title": "目前的值"
 			},
 			"invalid": {
-				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
-				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
-				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"canNotReadMessages": "我沒有權限來**讀取訊息**在那個頻道。",
+				"canNotSendEmbeds": "我沒有權限來**嵌入連結**在那個頻道。",
+				"canNotSendMessages": "我沒有權限來**發送訊息**在那個頻道。",
+				"mustBeTextChannel": "那個頻道不是一個文字頻道。"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "新的值"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "沒有",
+			"notSet": "這些設定還沒被設定。",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "預覽"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "以前的值"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "這個配置已經被設定到那個值。",
 			"self": {
 				"args": {
-					"key": "The config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "您想要顯示/更改的配置設定。",
+					"value": "新設定的值。"
 				},
-				"description": "Show and change the config of the server."
+				"description": "顯示和更改伺服器的配置。"
 			},
-			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-			"title": "Your config settings"
+			"text": "以下是您的伺服器的所有配置設定。\n使用`{{ prefix }}config 1` 來檢視單一設定\n使用`{{ prefix }}config 2 3` 來設定配置 4 到 5 ",
+			"title": "您的配置設定"
 		},
 		"createInvite": {
-			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
+			"done": "創立邀請代碼**{{{ code }}}**名字為**{{ name }}**在{{{ channel }}}。",
 			"self": {
 				"args": {
-					"channel": "The channel for which the invite code is created. Uses the current channel by default.",
-					"name": "The name of the invite code."
+					"channel": "邀請代碼被創立在頻道。使用目前的頻道為默認。",
+					"name": "邀請代碼的名字。"
 				},
-				"description": "Creates unique invite codes."
+				"description": "創立獨特的邀請代碼。"
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "開發人員",
+			"moderators": "審核人員",
 			"self": {
-				"description": "Show developers and contributors of the bot."
+				"description": "顯示機器人的開發人員和合作人員。"
 			},
-			"staff": "Staff",
-			"translators": "Translators"
+			"staff": "員工",
+			"translators": "翻譯人員"
 		},
-		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
+		"error": "執行指令時發生一個錯誤。請報告這個給一個開發人員：\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "請等候當我們準備檔案時……",
 			"self": {
 				"args": {
-					"type": "The type of export you want."
+					"type": "輸出您想要的類型。"
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "輸出InviteManager的資料到一個csv表單。"
 			},
 			"title": "InviteManager - Export"
 		},
@@ -290,86 +290,88 @@
 				"entry": {
 					"multi": "**{{ name }}** (**{{ times }}** times)",
 					"single": "**{{ name }}**",
-					"text": "**{{ name }}** joined **{{ times }} times**, invited by:"
+					"text": "**{{ name }}** 加入了 **{{ times }} 次**, 邀請人:"
 				}
 			},
-			"none": "No fake invites detected so far.",
-			"noneSinceJoin": "There have been no fake invites since the bot has been added to this server.",
+			"none": "暫時未偵測到虛假邀請",
+			"noneSinceJoin": "自從機器人被邀請進服後都未偵測到虛假邀請",
 			"self": {
 				"args": {
 					"page": "Which page of the fake list to get."
 				},
-				"description": "Help find users trying to cheat."
+				"description": "幫助尋找嘗試欺騙邀請的玩家"
 			},
-			"title": "Fake invites"
+			"title": "虛假邀請"
 		},
 		"getBot": {
 			"self": {
-				"description": "Get an invite link for the bot."
+				"description": "拿到機器人的邀請鏈接"
 			},
-			"title": "Add InviteManager to your server"
+			"title": "把 InviteManager 邀請到您的伺服"
 		},
 		"graph": {
 			"joins": {
-				"text": "This chart shows the number of users joining your server.",
-				"title": "User joining"
+				"text": "這個圖表顯示進入你伺服的用戶",
+				"title": "已加入的用戶"
 			},
 			"leaves": {
-				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"text": "這個圖表顯示離開你伺服的用戶",
+				"title": "已退出用戶"
 			},
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "顯示的圖表類型"
 				},
-				"description": "Shows graphs about various stats on this server."
+				"description": "顯示關於這個伺服的各種統計資料"
 			},
-			"usage": {
-				"text": "This chart shows the usage of InviteManager commands on this server.",
-				"title": "Command usage"
+			"minDays": "你至少要選擇 {{{ days }}} 天",
+			"maxDays": "你最多能選擇 {{{ days }}} 天",
+			"joinsAndLeaves": {
+				"title": "已加入和退出用戶",
+				"text": "這個圖表顯示已加入和退出伺服的用戶"
 			}
 		},
 		"help": {
 			"aliases": {
-				"title": "Aliases"
+				"title": "別名"
 			},
 			"command": {
-				"title": "Command"
+				"title": "指令"
 			},
 			"description": {
-				"title": "Description"
+				"title": "介紹"
 			},
-			"links": "Links",
-			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
+			"links": "鏈接",
+			"missingPermissions": "機器人目前缺少以下權限: {{{ value }}}",
 			"self": {
 				"args": {
 					"command": "The command to get detailed information for."
 				},
-				"description": "Display help."
+				"description": "顯示幫助"
 			},
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
+			"text": "這列表顯示你可以使用的所有指令。你可以通過 `{{ prefix }}help <指令>` 來搜索特定的指令（例子： `{{ prefix }}help add-ranks`）",
 			"usage": {
-				"title": "Usage"
+				"title": "使用方法"
 			}
 		},
 		"info": {
 			"bonusInvites": {
-				"details": "Use {{{ cmd }}} for details.",
+				"details": "使用 {{{ cmd }}} 來知道詳情。",
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
-				"more": "Plus another {{ amount }} more bonus invites",
-				"none": "This member has received no bonuses so far",
-				"noReason": "No reason",
-				"title": "Bonus invites"
+				"more": "增加 {{ amount }} 個獎勵邀請",
+				"none": "這個用戶沒有獲得任何獎勵邀請。",
+				"noReason": "沒有原因",
+				"title": "獎勵邀請"
 			},
 			"created": {
-				"title": "Created"
+				"title": "已創建"
 			},
 			"invitedMembers": {
-				"details": "Use {{{ cmd }}} for details.",
+				"details": "使用 {{{ cmd }}} 來知道詳情",
 				"more": "Plus another {{ amount }} more invited members",
-				"none": "This member has not invited anyone else so far",
-				"title": "Invited members"
+				"none": "這個用戶暫時還沒有邀請過任何人",
+				"title": "已邀請用戶"
 			},
 			"invites": {
 				"clear": {
@@ -459,7 +461,7 @@
 				"role[]": "A list of roles, for example: @Admin @Mod",
 				"string": "Any text",
 				"string[]": "A list of words, for example: word another \"word with space\"",
-				"enum<musicplatformtypes>[]": "cmd.interactiveConfig.values.enum<musicplatformtypes>[]"
+				"enum<musicplatformtypes>[]": "A list of music platform types"
 			},
 			"welcome": "Use the reactions to pick one of the available options."
 		},
@@ -592,7 +594,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}"
+			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -723,7 +725,8 @@
 				"done": "Premium has been successfully activated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Activate premium on this server"
+				"title": "Activate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -736,7 +739,8 @@
 				"done": "Premium has been successfully deactivated for this server.",
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
-				"title": "Deactivate premium on this server"
+				"title": "Deactivate premium on this server",
+				"permissions": "You need the `Manage Server` permissions to use this command in this server."
 			},
 			"feature": {
 				"embeds": {
@@ -763,7 +767,7 @@
 			"premium": {
 				"activate": "Use {{{ cmd }}} to activate it on this server",
 				"deactivate": "Use {{{ cmd }}} to deactivate it on this server",
-				"text": "Your premium subscription is valid for another {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -812,7 +816,8 @@
 				"description": "Purge messages in a channel up until a specified message."
 			},
 			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Delete Messages"
+			"title": "Delete Messages",
+			"inProgress": "Purging..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invites** {{ description }}",
@@ -820,7 +825,7 @@
 			"self": {
 				"description": "Show all ranks.",
 				"args": {
-					"page": "cmd.ranks.self.args.page"
+					"page": "The page of the ranks list to show."
 				}
 			},
 			"title": "Ranks"
@@ -828,11 +833,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "cmd.removeInvites.self.args.amount",
-					"reason": "cmd.removeInvites.self.args.reason",
-					"user": "cmd.removeInvites.self.args.user"
+					"amount": "The amount of invites to remove.",
+					"reason": "The reason for removing the invites.",
+					"user": "The user to remove the invites from."
 				},
-				"description": "cmd.removeInvites.self.description"
+				"description": "Removes a specified amount of invites from a user."
 			}
 		},
 		"removeRank": {
@@ -856,7 +861,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/bot/",
+				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
 				"title": "FAQs and more"
 			},
 			"help": {
@@ -906,7 +911,7 @@
 				},
 				"description": "Ban and then automatically unban a member from the server.",
 				"flags": {
-					"deleteMessageDays": "cmd.softBan.self.flags.deleteMessageDays"
+					"deleteMessageDays": "Delete messages from the user this many days back."
 				}
 			},
 			"unBanError": "The user was but could not be unbanned...\n{{ error }}"
@@ -1123,8 +1128,28 @@
 		"fixRanks": {
 			"done": "Done fixing ranks.",
 			"self": {
-				"description": "cmd.fixRanks.self.description"
+				"description": "Deletes any ranks where the role was deleted."
 			}
+		},
+		"placeholder": {
+			"self": {
+				"flags": {
+					"edit": "The message id of the placeholder to edit."
+				},
+				"args": {
+					"message": "The message of the placeholder."
+				},
+				"description": "Creates a new or edits an existing placeholder message."
+			},
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+		},
+		"reactionRole": {
+			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+		},
+		"lockdown": {
+			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1162,8 +1187,8 @@
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
-		"banMembers": "permissions.banMembers",
-		"kickMembers": "permissions.kickMembers"
+		"banMembers": "Ban Members",
+		"kickMembers": "Kick Members"
 	},
 	"prompt": {
 		"canceled": "Canceled"
@@ -1185,7 +1210,7 @@
 			"notFound": "Command not found.",
 			"type": "Command",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "resolvers.command.typeInfo"
+			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1226,11 +1251,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "resolvers.date.typeInfo"
+			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Duration",
-			"typeInfo": "resolvers.duration.typeInfo"
+			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Invite Code",
@@ -1462,7 +1487,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "settings.groups.moderation.general.title",
+					"description": "General moderation settings which apply to all submodules.",
 					"title": "General"
 				},
 				"invites": {
@@ -1569,7 +1594,7 @@
 			"title": "Delete Warn Messages"
 		},
 		"mutedRole": {
-			"description": "settings.mutedRole.description",
+			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
 			"title": "Muted Role"
 		},
 		"prefix": {

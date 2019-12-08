@@ -3,13 +3,13 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { RoleResolver } from '../../../framework/resolvers';
-import { BotCommand, CommandGroup } from '../../../types';
+import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
 
 export default class extends Command {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.makeMentionable,
-			aliases: ['make-mentionable', 'mm'],
+			name: ManagementCommand.mentionRole,
+			aliases: ['mention-role', 'mr'],
 			args: [
 				{
 					name: 'role',
@@ -18,15 +18,16 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Other,
+			botPermissions: [GuildPermission.MANAGE_ROLES],
 			guildOnly: true,
 			defaultAdminOnly: true,
-			extraExamples: ['!makeMentionable @Role', '!makeMentionable "Role with space"']
+			extraExamples: ['!mentionRole @Role', '!mentionRole "Role with space"']
 		});
 	}
 
 	public async action(message: Message, [role]: [Role], flags: {}, { t, me, guild }: Context): Promise<any> {
 		if (role.mentionable) {
-			return this.sendReply(message, t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` }));
+			return this.sendReply(message, t('cmd.mentionRole.alreadyDone', { role: `<@&${role.id}>` }));
 		} else {
 			let myRole: Role;
 			me.roles.forEach(r => {
@@ -46,23 +47,17 @@ export default class extends Command {
 				);
 			}
 
-			await role.edit({ mentionable: true }, 'Pinging role');
+			const res = await role.edit({ mentionable: true }, 'Pinging role');
+			if (!res) {
+				return;
+			}
 
-			const func = async (msg: Message) => {
-				if (msg.roleMentions.includes(role.id)) {
-					await role.edit({ mentionable: false }, 'Done pinging role');
-					this.client.removeListener('messageCreate', func);
-				}
-			};
+			const msg = await message.channel.createMessage(`<@&${role.id}>`).catch(() => null as Message);
+			if (!msg) {
+				return;
+			}
 
-			this.client.on('messageCreate', func);
-
-			const timeOut = () => {
-				this.client.removeListener('messageCreate', func);
-			};
-
-			setTimeout(timeOut, 60000);
-
+			await role.edit({ mentionable: false }, 'Done pinging role');
 			await message.delete().catch(() => undefined);
 		}
 	}

@@ -1,4 +1,4 @@
-import { Guild, GuildAuditLog, Invite, Member, Role, TextChannel } from 'eris';
+import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -26,7 +26,11 @@ export class TrackingService {
 		this.client = client;
 
 		client.on('ready', this.onClientReady.bind(this));
+		client.on('channelCreate', this.onChannelCreate.bind(this));
+		client.on('channelUpdate', this.onChannelUpdate.bind(this));
+		client.on('channelDelete', this.onChannelDelete.bind(this));
 		client.on('guildRoleCreate', this.onGuildRoleCreate.bind(this));
+		client.on('guildRoleUpdate', this.onGuildRoleUpdate.bind(this));
 		client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
@@ -92,6 +96,69 @@ export class TrackingService {
 		}
 	}
 
+	private async onChannelCreate(channel: AnyChannel) {
+		if (!(channel instanceof GuildChannel)) {
+			return;
+		}
+
+		// Ignore disabled guilds
+		if (this.client.disabledGuilds.has(channel.guild.id)) {
+			return;
+		}
+
+		await this.client.db.saveChannels([
+			{
+				id: channel.id,
+				name: channel.name,
+				guildId: channel.guild.id,
+				createdAt: new Date(channel.createdAt)
+			}
+		]);
+	}
+
+	private async onChannelUpdate(channel: AnyChannel, oldChannel: AnyChannel) {
+		if (!(channel instanceof GuildChannel) || !(oldChannel instanceof GuildChannel)) {
+			return;
+		}
+
+		// Ignore disabled guilds
+		if (this.client.disabledGuilds.has(channel.guild.id)) {
+			return;
+		}
+
+		await this.client.db.saveChannels([
+			{
+				id: channel.id,
+				name: channel.name,
+				guildId: channel.guild.id,
+				createdAt: new Date(channel.createdAt)
+			}
+		]);
+	}
+
+	private async onChannelDelete(channel: AnyChannel) {
+		if (!(channel instanceof GuildChannel)) {
+			return;
+		}
+
+		// Ignore disabled guilds
+		if (this.client.disabledGuilds.has(channel.guild.id)) {
+			return;
+		}
+
+		// Remove the channel from the filtered list if it is there
+		const settings = await this.client.cache.guilds.get(channel.guild.id);
+		if (settings.channels && settings.channels.some(c => c === channel.id)) {
+			await this.client.cache.guilds.setOne(
+				channel.guild.id,
+				GuildSettingsKey.channels,
+				settings.channels.filter(c => c !== channel.id)
+			);
+		}
+
+		// TODO: Delete channel
+	}
+
 	private async onGuildRoleCreate(guild: Guild, role: Role) {
 		// Ignore disabled guilds
 		if (this.client.disabledGuilds.has(guild.id)) {
@@ -103,18 +170,27 @@ export class TrackingService {
 			color = '0'.repeat(6 - color.length) + color;
 		}
 
-		// Create the guild first, because this event sometimes
-		// gets triggered before 'guildCreate' for new guilds
-		await this.client.db.saveGuilds([
+		await this.client.db.saveRoles([
 			{
-				id: guild.id,
-				name: guild.name,
-				icon: guild.iconURL,
-				memberCount: guild.memberCount,
-				deletedAt: null,
-				banReason: null
+				id: role.id,
+				name: role.name,
+				color: color,
+				guildId: role.guild.id,
+				createdAt: new Date(role.createdAt)
 			}
 		]);
+	}
+
+	private async onGuildRoleUpdate(guild: Guild, role: Role, oldRole: Role) {
+		// Ignore disabled guilds
+		if (this.client.disabledGuilds.has(guild.id)) {
+			return;
+		}
+
+		let color = role.color.toString(16);
+		if (color.length < 6) {
+			color = '0'.repeat(6 - color.length) + color;
+		}
 
 		await this.client.db.saveRoles([
 			{
@@ -165,7 +241,22 @@ export class TrackingService {
 				console.log(`DISABLING BOT FOR ${guild.id} BECAUSE PRO VERSION IS ACTIVE`);
 				this.client.disabledGuilds.add(guild.id);
 			}
+
+			// Exit either way
 			return;
+		}
+
+		// Join roles
+		const sets = await this.client.cache.guilds.get(guild.id);
+		if (sets.joinRoles && sets.joinRoles.length > 0) {
+			if (!guild.members.get(this.client.user.id).permission.has(GuildPermission.MANAGE_ROLES)) {
+				console.log(`TRYING TO SET JOIN ROLES IN ${guild.id} WITHOUT MANAGE_ROLES PERMISSION`);
+			} else {
+				const premium = await this.client.cache.premium.get(guild.id);
+				const roles = premium ? sets.joinRoles : sets.joinRoles.slice(0, 1);
+
+				roles.forEach(role => guild.addMemberRole(member.id, role, 'Join role'));
+			}
 		}
 
 		// If we don't have manage server then what are we even doing here and why did you invite our bot
@@ -331,8 +422,6 @@ export class TrackingService {
 			});
 		}
 
-		// Get settings
-		const sets = await this.client.cache.guilds.get(guild.id);
 		const lang = sets.lang;
 		const joinChannelId = sets.joinMessageChannel;
 

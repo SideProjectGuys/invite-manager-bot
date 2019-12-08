@@ -17,6 +17,12 @@ There are many config options that can be set. You don't have to set all of them
 
 ### Invitations
 
+#### settings.groups.invites.general.title
+
+| Setting                                | Description                    |
+| -------------------------------------- | ------------------------------ |
+| [settings.joinRoles.title](#joinroles) | settings.joinRoles.description |
+
 #### Arrivées
 
 | Setting                                | Description                                              |
@@ -71,23 +77,23 @@ There are many config options that can be set. You don't have to set all of them
 
 | Setting                                                                  | Description                                                                                                                                                  |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [Activé](#automodenabled)                                                | Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work).                                       |
+| [Activé](#automodenabled)                                                | Modère automatiquement les messages (des règles peuvent être activées ou désactivées).                                                                       |
 | [Salons modérés](#automodmoderatedchannels)                              | The list of moderated channels (this acts as a whitelist, leave empty to moderate all channels, or use `autoModIgnoredChannels` to ignore certain channels). |
 | [Rôles modérés](#automodmoderatedroles)                                  | The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles).    |
-| [Salons ignorés](#automodignoredchannels)                                | Channels that are ignored while automatically moderating.                                                                                                    |
-| [Rôles ignorés](#automodignoredroles)                                    | Any members with these roles will not automatically be moderated.                                                                                            |
-| [Rôle muet](#mutedrole)                                                  | settings.mutedRole.description                                                                                                                               |
-| [Désactivé pour les anciens membres](#automoddisabledforoldmembers)      | Disabled auto moderation for members that have been in your server for a long time.                                                                          |
+| [Salons ignorés](#automodignoredchannels)                                | Salons ignorés lors de la modération automatique.                                                                                                            |
+| [Rôles ignorés](#automodignoredroles)                                    | N'importe quel membre avec ce rôle ne sera pas automatiquement modéré.                                                                                       |
+| [Rôle muet](#mutedrole)                                                  | The role that is given to people who are muted. Make sure this role is denied the "Send Message" permission.                                                 |
+| [Désactivé pour les anciens membres](#automoddisabledforoldmembers)      | Désactive la modération automatique pour les membres qui sont dans votre serveur depuis longtemps.                                                           |
 | [Seuil pour les anciens membres](#automoddisabledforoldmembersthreshold) | L'ancienneté d'un membre requise dans votre serveur pour être considéré comme "ancien".                                                                      |
 
 #### Logger
 
 | Setting                                                                               | Description                                                                   |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [Mod Log Channel](#automodlogenabled)                                                 | Log any moderation actions that the bot makes.                                |
+| [Mod Log Channel](#automodlogenabled)                                                 | Enregistre toutes les actions faites par le bot.                              |
 | [Salon des journaux de modération](#modlogchannel)                                    | Le salon où les notes de modérations seront postées.                          |
 | [Supprimer les messages du Bot](#automoddeletebotmessage)                             | Supprime automatiquement les messages du bot (garde le chat propre)           |
-| [Délai de suppression des messages du bot.](#automoddeletebotmessagetimeoutinseconds) | The timeout after which bot messages are deleted.                             |
+| [Délai de suppression des messages du bot.](#automoddeletebotmessagetimeoutinseconds) | Le temps après lequel les messages du bot sont supprimés                      |
 | [Supprimer les messages de bannissement](#modpunishmentbandeletemessage)              | Si oui ou non les messages après un ban seront automatiquement supprimés.     |
 | [Supprimer les messages d'expulsion](#modpunishmentkickdeletemessage)                 | Si oui ou non les messages après un kick seront automatiquement supprimés.    |
 | [Supprime les messages de Softban](#modpunishmentsoftbandeletemessage)                | Si oui ou non les messages après un softban seront automatiquement supprimés. |
@@ -96,18 +102,18 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Invitations
 
-| Setting                                                           | Description                                                           |
-| ----------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [Les invitations sont désormais modérées](#automodinvitesenabled) | Automatically scan messages for discord invite links and remove them. |
+| Setting                                                           | Description                                                                |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Les invitations sont désormais modérées](#automodinvitesenabled) | Vérifie automatiquement les messages pour enlever les invitations Discord. |
 
 #### Liens
 
-| Setting                                                  | Description                                                                             |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [Les liens sont désormais modérés](#automodlinksenabled) | Automatically remove messages containing links (you can set a whitelist and blacklist). |
-| [Liste blanche](#automodlinkswhitelist)                  | Une liste de liens que les utilisateurs peuvent poster.                                 |
-| [Liste noire](#automodlinksblacklist)                    | Blacklist certain links which users won't be able to post.                              |
-| [Suivre les redirections](#automodlinksfollowredirects)  | Enable this to resolve redirects for links.                                             |
+| Setting                                                  | Description                                                                                                            |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [Les liens sont désormais modérés](#automodlinksenabled) | Retire automatiquement les messages contenant des liens (vous pouvez configurer une liste blanche et une liste noire). |
+| [Liste blanche](#automodlinkswhitelist)                  | Une liste de liens que les utilisateurs peuvent poster.                                                                |
+| [Liste noire](#automodlinksblacklist)                    | Met sur liste noire certains liens que les utilisateurs ne pourront pas envoyer.                                       |
+| [Suivre les redirections](#automodlinksfollowredirects)  | Activez ceci pour corriger les redirections de liens.                                                                  |
 
 #### Mots bannis
 
@@ -118,43 +124,43 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Majuscules
 
-| Setting                                            | Description                                                                                                       |
-| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| [Activé](#automodallcapsenabled)                   | Modère automatiquement les messages avec BEAUCOUP DE MAJUSCULES.                                                  |
-| [Caractères minimum](#automodallcapsmincharacters) | The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK'). |
-| [Percentage Caps](#automodallcapspercentagecaps)   | Le pourcentage de caractères en majuscules dans le message pour que celui-ci soit modéré.                         |
+| Setting                                            | Description                                                                                                                  |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [Activé](#automodallcapsenabled)                   | Modère automatiquement les messages avec BEAUCOUP DE MAJUSCULES.                                                             |
+| [Caractères minimum](#automodallcapsmincharacters) | La quantité minimale de caractères dans un message à prendre en compte pour la modération (définir sur '3' ignorerait 'OK'). |
+| [Percentage Caps](#automodallcapspercentagecaps)   | Le pourcentage de caractères en majuscules dans le message pour que celui-ci soit modéré.                                    |
 
 #### Messages doublons
 
-| Setting                                              | Description                                                         |
-| ---------------------------------------------------- | ------------------------------------------------------------------- |
-| [Activé](#automodduplicatetextenabled)               | Modère automatiquement les messages dupliqués (spam copié-collé)    |
-| [Timeframe](#automodduplicatetexttimeframeinseconds) | The timeframe whithin which messages will be considered duplicates. |
+| Setting                                              | Description                                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [Activé](#automodduplicatetextenabled)               | Modère automatiquement les messages dupliqués (spam copié-collé)                     |
+| [Timeframe](#automodduplicatetexttimeframeinseconds) | L'écart de temps pour que les messages identiques soient considérés comme dupliqués. |
 
 #### Spam
 
 | Setting                                                     | Description                                                                           |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [Activé](#automodquickmessagesenabled)                      | Automatically moderate users sending a lot of messages in a short time.               |
+| [Activé](#automodquickmessagesenabled)                      | Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.  |
 | [Nombre de messages](#automodquickmessagesnumberofmessages) | The number of messages that have to be sent within the timeframe to trigger the rule. |
 | [Timeframe](#automodquickmessagestimeframeinseconds)        | The timeframe within which a user is allowed to send a maximum amount of messages.    |
 
 #### Mentions
 
-| Setting                                                                                        | Description                                                                |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [Activé](#automodmentionusersenabled)                                                          | Automatically moderate messages that mention an excessive amount of users. |
-| [Nombre maximal de mentions utilisateurs par message](#automodmentionusersmaxnumberofmentions) | The maximum amount of users a member can mention in a message.             |
-| [Activé](#automodmentionrolesenabled)                                                          | Automatically moderate messages that mention an excessive amount of roles. |
-| [Nombre maximal de mentions de rôle par message](#automodmentionrolesmaxnumberofmentions)      | The maximum amount of roles a member can mention in a message.             |
+| Setting                                                                                        | Description                                                                             |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Activé](#automodmentionusersenabled)                                                          | Retire automatiquement les messages avec un nombre excessif de mentions d'utilisateurs. |
+| [Nombre maximal de mentions utilisateurs par message](#automodmentionusersmaxnumberofmentions) | Le nombre maximal de d'utilisateurs qu'un membre peut mentionner en un message.         |
+| [Activé](#automodmentionrolesenabled)                                                          | Retire automatiquement les messages avec trop de mentions de rôles.                     |
+| [Nombre maximal de mentions de rôle par message](#automodmentionrolesmaxnumberofmentions)      | Le nombre maximal de rôles qu'un membre peut mentionner en un message.                  |
 
 #### Emojis
 
-| Setting                                                    | Description                                                                                                               |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [Activé](#automodemojisenabled)                            | Modère automatiquement les messages avec trop d'emojis.                                                                   |
-| [Nombre maximal d'émojis](#automodemojismaxnumberofemojis) | Le maximum d'emojis autorisés avant de modérer le message.                                                                |
-| [Activé](#automodhoistenabled)                             | Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list). |
+| Setting                                                    | Description                                                                                                                                          |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Activé](#automodemojisenabled)                            | Modère automatiquement les messages avec trop d'emojis.                                                                                              |
+| [Nombre maximal d'émojis](#automodemojismaxnumberofemojis) | Le maximum d'emojis autorisés avant de modérer le message.                                                                                           |
+| [Activé](#automodhoistenabled)                             | Donne automatiquement des pseudos aux membres si ils essaient de tricher (en utilisant des caractères spéciaux pour apparaître en haut de la liste). |
 
 ### Musique
 
@@ -221,11 +227,11 @@ Default: `en`
 Reset to default:
 `!config lang default`
 
-Possible values: `de`, `en`, `es`, `fr`, `it`, `nl`, `pt`, `ro`, `sv`
+Possible values: `ar`, `bg`, `cs`, `de`, `el`, `en`, `es`, `fr`, `hu`, `id_ID`, `it`, `ja`, `lt`, `nl`, `pl`, `pt`, `pt_BR`, `ro`, `ru`, `sr`, `tr`, `zh_CN`, `zh_TW`
 
 Example:
 
-`!config lang de`
+`!config lang ar`
 
 <a name=logChannel></a>
 
@@ -298,6 +304,21 @@ Default: ``
 
 Reset to default:
 `!config ignoredChannels default`
+
+<a name=joinRoles></a>
+
+---
+
+## settings.joinRoles.title
+
+settings.joinRoles.description
+
+Type: `Role[]`
+
+Default: ``
+
+Reset to default:
+`!config joinRoles default`
 
 <a name=joinMessage></a>
 
@@ -503,7 +524,7 @@ Default: `all`
 Reset to default:
 `!config rankAssignmentStyle default`
 
-Possible values: `all`, `highest`
+Possible values: `all`, `highest`, `onlyAdd`
 
 Example:
 
@@ -681,7 +702,7 @@ Disable:
 
 ## Activé
 
-Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work).
+Modère automatiquement les messages (des règles peuvent être activées ou désactivées).
 
 Type: `Boolean`
 
@@ -746,7 +767,7 @@ Examples:
 
 ## Salons ignorés
 
-Channels that are ignored while automatically moderating.
+Salons ignorés lors de la modération automatique.
 
 Type: `Channel[]`
 
@@ -767,7 +788,7 @@ Examples:
 
 ## Rôles ignorés
 
-Any members with these roles will not automatically be moderated.
+N'importe quel membre avec ce rôle ne sera pas automatiquement modéré.
 
 Type: `Role[]`
 
@@ -788,7 +809,7 @@ Examples:
 
 ## Rôle muet
 
-settings.mutedRole.description
+The role that is given to people who are muted. Make sure this role is denied the "Send Message" permission.
 
 Type: `Role`
 
@@ -807,7 +828,7 @@ Examples:
 
 ## Désactivé pour les anciens membres
 
-Disabled auto moderation for members that have been in your server for a long time.
+Désactive la modération automatique pour les membres qui sont dans votre serveur depuis longtemps.
 
 Type: `Boolean`
 
@@ -851,7 +872,7 @@ Examples:
 
 ## Mod Log Channel
 
-Log any moderation actions that the bot makes.
+Enregistre toutes les actions faites par le bot.
 
 Type: `Boolean`
 
@@ -918,7 +939,7 @@ Disable:
 
 ## Délai de suppression des messages du bot.
 
-The timeout after which bot messages are deleted.
+Le temps après lequel les messages du bot sont supprimés
 
 Type: `Number`
 
@@ -1054,7 +1075,7 @@ Disable:
 
 ## Les invitations sont désormais modérées
 
-Automatically scan messages for discord invite links and remove them.
+Vérifie automatiquement les messages pour enlever les invitations Discord.
 
 Type: `Boolean`
 
@@ -1077,7 +1098,7 @@ Disable:
 
 ## Les liens sont désormais modérés
 
-Automatically remove messages containing links (you can set a whitelist and blacklist).
+Retire automatiquement les messages contenant des liens (vous pouvez configurer une liste blanche et une liste noire).
 
 Type: `Boolean`
 
@@ -1121,7 +1142,7 @@ Examples:
 
 ## Liste noire
 
-Blacklist certain links which users won't be able to post.
+Met sur liste noire certains liens que les utilisateurs ne pourront pas envoyer.
 
 Type: `String[]`
 
@@ -1142,7 +1163,7 @@ Examples:
 
 ## Suivre les redirections
 
-Enable this to resolve redirects for links.
+Activez ceci pour corriger les redirections de liens.
 
 Type: `Boolean`
 
@@ -1232,7 +1253,7 @@ Disable:
 
 ## Caractères minimum
 
-The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK').
+La quantité minimale de caractères dans un message à prendre en compte pour la modération (définir sur '3' ignorerait 'OK').
 
 Type: `Number`
 
@@ -1297,7 +1318,7 @@ Disable:
 
 ## Timeframe
 
-The timeframe whithin which messages will be considered duplicates.
+L'écart de temps pour que les messages identiques soient considérés comme dupliqués.
 
 Type: `Number`
 
@@ -1318,7 +1339,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate users sending a lot of messages in a short time.
+Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.
 
 Type: `Boolean`
 
@@ -1383,7 +1404,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate messages that mention an excessive amount of users.
+Retire automatiquement les messages avec un nombre excessif de mentions d'utilisateurs.
 
 Type: `Boolean`
 
@@ -1406,7 +1427,7 @@ Disable:
 
 ## Nombre maximal de mentions utilisateurs par message
 
-The maximum amount of users a member can mention in a message.
+Le nombre maximal de d'utilisateurs qu'un membre peut mentionner en un message.
 
 Type: `Number`
 
@@ -1427,7 +1448,7 @@ Examples:
 
 ## Activé
 
-Automatically moderate messages that mention an excessive amount of roles.
+Retire automatiquement les messages avec trop de mentions de rôles.
 
 Type: `Boolean`
 
@@ -1450,7 +1471,7 @@ Disable:
 
 ## Nombre maximal de mentions de rôle par message
 
-The maximum amount of roles a member can mention in a message.
+Le nombre maximal de rôles qu'un membre peut mentionner en un message.
 
 Type: `Number`
 
@@ -1515,7 +1536,7 @@ Examples:
 
 ## Activé
 
-Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list).
+Donne automatiquement des pseudos aux membres si ils essaient de tricher (en utilisant des caractères spéciaux pour apparaître en haut de la liste).
 
 Type: `Boolean`
 
