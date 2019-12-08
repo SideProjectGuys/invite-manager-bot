@@ -62,6 +62,11 @@ export default class extends Command {
 		const replyMessage = await this.sendReply(message, embed);
 		embed.description = null;
 
+		// If we couldn't send the initial message we're probably missing some permissions, so just exit
+		if (!replyMessage) {
+			return;
+		}
+
 		const invitedMembers = await this.client.db.getInvitedMembers(guild.id, user.id);
 		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
 		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
