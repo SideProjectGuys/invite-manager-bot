@@ -96,6 +96,7 @@ export default class extends Command {
 
 		if (!lowestRole) {
 			await this.sendReply(message, t('cmd.lockdown.noSuitingRoleFound'));
+			return;
 		}
 
 		await this.client.scheduler.addScheduledAction(
