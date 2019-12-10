@@ -685,7 +685,7 @@ export class DatabaseService {
 		const res = await this.insertOrUpdate(
 			TABLE.joins,
 			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
-			[],
+			['exactMatchCode'],
 			[join],
 			j => j.guildId
 		);

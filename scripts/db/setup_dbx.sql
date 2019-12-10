@@ -318,7 +318,7 @@ CREATE TABLE `scheduledActions` (
 
 CREATE TABLE `strikeConfigs` (
   `id` int(11) NOT NULL,
-  `type` enum('invites','links','words','allCaps','duplicateText','quickMessages','mentionUsers','mentionRoles','emojis') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` enum('invites','links','words','allCaps','duplicateText','quickMessages','mentionUsers','mentionRoles','emojis', 'hoist') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
