@@ -151,8 +151,6 @@ export class RabbitMqService {
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			connected: this.client.gatewayConnected,
-			gateway: this.client.gatewayInfo,
-			gatewayLastUpdate: this.client.gatewayInfoCachedAt ? this.client.gatewayInfoCachedAt.toISOString() : null,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
 			tracking: {
