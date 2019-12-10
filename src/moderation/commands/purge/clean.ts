@@ -37,11 +37,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			botPermissions: [
-				GuildPermission.READ_MESSAGE_HISTORY,
-				GuildPermission.MANAGE_MESSAGES,
-				GuildPermission.MANAGE_EMOJIS
-			],
+			botPermissions: [GuildPermission.READ_MESSAGE_HISTORY, GuildPermission.MANAGE_MESSAGES],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -91,7 +87,10 @@ export default class extends Command {
 			messagesToBeDeleted.push(message);
 
 			try {
-				await this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id));
+				await this.client.deleteMessages(
+					message.channel.id,
+					messagesToBeDeleted.map(m => m.id)
+				);
 
 				embed.title = t('cmd.clean.title');
 				embed.description = t('cmd.clean.text', {
