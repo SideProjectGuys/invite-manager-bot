@@ -258,7 +258,7 @@ CREATE TABLE `punishments` (
 
 CREATE TABLE `ranks` (
   `numInvites` int(11) DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
