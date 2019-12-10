@@ -103,8 +103,6 @@ export class IMClient extends Client {
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
-	public gatewayInfo: GatewayInfo;
-	public gatewayInfoCachedAt: Moment;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 
@@ -548,22 +546,7 @@ export class IMClient extends Client {
 		return this.counts;
 	}
 
-	private async updateGatewayInfo() {
-		if (
-			!this.gatewayInfoCachedAt ||
-			moment()
-				.subtract(4, 'hours')
-				.isAfter(this.gatewayInfoCachedAt)
-		) {
-			console.log('Fetching gateway info...');
-			this.gatewayInfo = (await this.getBotGateway()) as GatewayInfo;
-			this.gatewayInfoCachedAt = moment();
-		}
-	}
-
 	public async setActivity() {
-		await this.updateGatewayInfo();
-
 		const status = this.settings.activityStatus;
 
 		if (!this.settings.activityEnabled) {
