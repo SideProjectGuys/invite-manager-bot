@@ -23,6 +23,7 @@ export enum GuildPermission {
 	MANAGE_MESSAGES = 'manageMessages',
 	EMBED_LINKS = 'embedLinks',
 	MANAGE_GUILD = 'manageGuild',
+	MANAGE_CHANNELS = 'manageChannels',
 	VIEW_AUDIT_LOGS = 'viewAuditLogs',
 	MANAGE_ROLES = 'manageRoles',
 	CREATE_INSTANT_INVITE = 'createInstantInvite',

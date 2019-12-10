@@ -5,7 +5,7 @@ import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { ChannelResolver, DurationResolver } from '../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
@@ -31,6 +31,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
+			botPermissions: [GuildPermission.MANAGE_ROLES, GuildPermission.MANAGE_CHANNELS],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
