@@ -474,6 +474,7 @@ export class CommandsService {
 					scope.setUser({ id: guild.id });
 				}
 				scope.setTag('command', cmd.name);
+				scope.setExtra('channel', channel.id);
 				scope.setExtra('message', message.content);
 				captureException(error);
 			});

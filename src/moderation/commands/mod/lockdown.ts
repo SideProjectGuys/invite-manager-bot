@@ -50,7 +50,6 @@ export default class extends Command {
 			return;
 		}
 
-		// Get lowest role that has write permissions
 		const scheduledUnlockActions = await this.client.scheduler.getScheduledActionsOfType(
 			guild.id,
 			ScheduledActionType.unlock
@@ -75,6 +74,7 @@ export default class extends Command {
 			return;
 		}
 
+		// Get lowest role that has write permissions
 		let lowestRole: Role | null = null;
 		let lowestOverride: PermissionOverwrite | null = null;
 		for (const [id, value] of channel.permissionOverwrites) {
