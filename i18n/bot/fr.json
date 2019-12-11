@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Ce graphique indique le nombre d'utilisateurs rejoignant votre serveur.",
-				"title": "Users joining"
+				"title": "Utilisateurs ayant rejoint"
 			},
 			"leaves": {
 				"text": "Ce graphique montre le nombre d'utilisateurs quittant votre serveur.",
@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "La période du graphique.",
-					"type": "Le type de graphique à afficher."
+					"type": "Le type de graphique à afficher.",
+					"from": "cmd.graph.self.args.from",
+					"to": "cmd.graph.self.args.to"
 				},
 				"description": "Affiche des graphiques sur différentes statistiques sur ce serveur."
 			},
@@ -690,7 +692,10 @@
 					"reason": "La raison de pourquoi l'utilisateur est muet.",
 					"user": "L'utilisateur qui doit être rendu muet."
 				},
-				"description": "Rendre muet un utilisateur"
+				"description": "Rendre muet un utilisateur",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +731,7 @@
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
 				"title": "Activer le premium sur ce serveur",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "Vous avez besoin de la permission `Gérer le serveur` pour utiliser cette commande dans ce serveur."
 			},
 			"check": {
 				"declined": "Votre paiement pour le premium a été refusé, veuillez vérifier votre Patreon.",
@@ -740,7 +745,7 @@
 				"noGuild": "Vous devez exécuter cette commande depuis un serveur.",
 				"noSubscription": "Vous n'avez pas d'abonnement premium actif\n\nUtilisez la commande {{{ cmd }}} pour plus d'informations.",
 				"title": "Désactiver le premium sur ce serveur",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "Vous avez besoin de la permission `Gérer le serveur` pour utiliser cette commande dans ce serveur."
 			},
 			"feature": {
 				"embeds": {
@@ -767,7 +772,7 @@
 			"premium": {
 				"activate": "Utilisez la commande {{{ cmd }}} pour l'activer sur ce serveur.",
 				"deactivate": "Utilisez la commande {{{ cmd }}} pour le désactiver sur ce serveur.",
-				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"text": "Votre abonnement premium est valable pendant {{ date }}\n\nVous avez activé le premium sur {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Que puis-je faire avec premium ?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -1149,7 +1154,16 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivées et de départs de type \"Embed\" est une fonction premium. Le premium n'a pas l'air d'être activé sur ce serveur. Merci de nous contacter pour en savoir plus sur comment acheter le premium.",
@@ -1462,7 +1476,10 @@
 					"description": "Paramètres liés aux rangs",
 					"title": "Rangs"
 				},
-				"title": "Invitations"
+				"title": "Invitations",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1661,10 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
 		}
 	},
 	"music": {

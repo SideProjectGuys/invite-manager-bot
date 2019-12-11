@@ -101,12 +101,12 @@
 				},
 				"description": "Show and change the config of the bot."
 			},
-			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
+			"text": "Снизу весь конфиг настроек данного бота\nИспользуй `{{ prefix }}botConfig <key> ` чтобы увидеть кождую настройку\nИспользуй `{{ prefix }}botConfig <key> <value>` чтобы настроить конфиг <key> в <value>",
 			"title": "Custom Bot Config"
 		},
 		"botInfo": {
-			"guilds": "Guilds",
-			"members": "Members",
+			"guilds": "Сервера",
+			"members": "Участники",
 			"premium": {
 				"active": "This server has an **active premium** subscription.",
 				"custom": "You are using a custom version of the bot!",
@@ -121,7 +121,7 @@
 				"total": "Total Shards"
 			},
 			"uptime": "Uptime",
-			"version": "Version"
+			"version": "Версия"
 		},
 		"caseDelete": {
 			"done": "Case deleted",
@@ -168,7 +168,7 @@
 			}
 		},
 		"clean": {
-			"error": "Error",
+			"error": "Ошибка",
 			"invalidQuantity": "You must specify a positive amount of messages to clean",
 			"self": {
 				"args": {
@@ -222,9 +222,9 @@
 			},
 			"current": {
 				"clear": "Use `{{ prefix }}config {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
+				"notSet": "Этот конфиг **небыл** настроен.\nИспользуй `{{ prefix }}config {{ key }} <value>` чтобы его настроить.",
 				"text": "This config is currently set.\nUse `{{ prefix }}config {{ key }} <value>` to change it.\nUse `{{ prefix }}config {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"title": "Данное значение"
 			},
 			"invalid": {
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
@@ -233,13 +233,13 @@
 				"mustBeTextChannel": "That channel is not a text channel."
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Новое значение"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Нету",
+			"notSet": "Эти настройки не были настроины",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Предпросмотор"
 			},
 			"previous": {
 				"title": "Previous Value"
@@ -253,7 +253,7 @@
 				"description": "Show and change the config of the server."
 			},
 			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
-			"title": "Your config settings"
+			"title": "Ваши настройки конфига"
 		},
 		"createInvite": {
 			"done": "Created invite code **{{{ code }}}** named **{{ name }}** for {{{ channel }}}.",
@@ -283,7 +283,7 @@
 				},
 				"description": "Export data of InviteManager to a csv sheet."
 			},
-			"title": "InviteManager - Export"
+			"title": "InviteManager - Экспорт"
 		},
 		"fake": {
 			"join": {
@@ -307,7 +307,7 @@
 			"self": {
 				"description": "Get an invite link for the bot."
 			},
-			"title": "Add InviteManager to your server"
+			"title": "Добавить бота на вашь сервер"
 		},
 		"graph": {
 			"joins": {
@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "The type of chart to display.",
+					"from": "cmd.graph.self.args.from",
+					"to": "cmd.graph.self.args.to"
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
@@ -337,12 +339,12 @@
 				"title": "Aliases"
 			},
 			"command": {
-				"title": "Command"
+				"title": "Команда"
 			},
 			"description": {
-				"title": "Description"
+				"title": "Описание"
 			},
-			"links": "Links",
+			"links": "Ссылки",
 			"missingPermissions": "The bot is currently missing the following permissions: {{{ value }}}",
 			"self": {
 				"args": {
@@ -361,16 +363,16 @@
 				"entry": "{{ amount }} from {{{ creator }}} - {{ date }}, reason: {{ reason }}",
 				"more": "Plus another {{ amount }} more bonus invites",
 				"none": "This member has received no bonuses so far",
-				"noReason": "No reason",
-				"title": "Bonus invites"
+				"noReason": "Нету причины",
+				"title": "Бонусные преглошения"
 			},
 			"created": {
-				"title": "Created"
+				"title": "Создан"
 			},
 			"invitedMembers": {
 				"details": "Use {{{ cmd }}} for details.",
 				"more": "Plus another {{ amount }} more invited members",
-				"none": "This member has not invited anyone else so far",
+				"none": "Этот человек еще некого не приглосил",
 				"title": "Invited members"
 			},
 			"invites": {
@@ -383,7 +385,7 @@
 			},
 			"joined": {
 				"text": "{{ amount }} times",
-				"title": "Joined"
+				"title": "Пришедшие"
 			},
 			"joins": {
 				"entry": {
@@ -391,16 +393,16 @@
 					"text": "{{ total }} times {{ time }}, invited by:"
 				},
 				"more": "Plus another {{ amount }} more joins",
-				"title": "Joins",
+				"title": "Пришедшие",
 				"unknown": "unknown (this only works for new members)"
 			},
 			"lastJoined": {
 				"notInGuild": "User is not part of your guild",
-				"title": "Last joined"
+				"title": "Последний зашедший"
 			},
 			"regularInvites": {
 				"entry": "{{ uses }} from {{ code }} - created {{ createdAt }}",
-				"more": "Plus another {{ amount }} more invite codes",
+				"more": "Плюс другие {{ amount }} больше кодов для прегашений",
 				"none": "This member has not invited anyone so far",
 				"title": "Regular invites"
 			},
@@ -506,18 +508,18 @@
 			"permanent": {
 				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}",
 				"text": "These invites don't expire.",
-				"title": "Permanent"
+				"title": "Перманентный"
 			},
 			"recommendedCode": {
 				"none": "Please create a permanent invite code.",
-				"title": "Recommended invite code"
+				"title": "Рекомендованые коды инвайтов"
 			},
 			"self": {
 				"description": "Get a list of all your invite codes"
 			},
 			"temporary": {
 				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}\r\n**Expires**: {{ expires }}",
-				"text": "These invites expire after a certain time.",
+				"text": "Срок действия этих приглашений истекает через определенное время.",
 				"title": "Temporary"
 			},
 			"title": "You have the following codes on the server {{ guild }}",
@@ -535,7 +537,7 @@
 		},
 		"invites": {
 			"amount": {
-				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
+				"other": "{{{ target }}} имеет всего {{ total }} преглошений! ({{ regular }} не покинуншие, {{ custom }} бонусные, {{ fake }} фейковые, {{ leave }} покинувшие)",
 				"self": "You have {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)"
 			},
 			"highestRank": {
@@ -554,7 +556,7 @@
 			}
 		},
 		"kick": {
-			"canNotKick": "I cannot kick this user.",
+			"canNotKick": "Я не могу кикнуть этого участника.",
 			"done": "The user was successfully kicked.",
 			"error": "There was an error kicking this user:\n{{ error }}",
 			"missingPermissions": "I need the `Kick Members` permission to kick members",
@@ -568,20 +570,20 @@
 		},
 		"leaderboard": {
 			"col": {
-				"change": "Change",
-				"custom": "B",
-				"fake": "F",
-				"leave": "L",
-				"name": "Name",
+				"change": "Изменить",
+				"custom": "Б",
+				"fake": "Ф",
+				"leave": "Л",
+				"name": "Имя",
 				"regular": "R",
-				"total": "T"
+				"total": "Т"
 			},
-			"comparedTo": "changes compared to {{{ to }}}",
+			"comparedTo": "изменения сравняются в {{{ to }}}",
 			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
 			"from": "Invites since {{{ from }}}",
 			"invalidDate": "Invalid date: {{ date }}",
 			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
-			"noInvites": "No invites!",
+			"noInvites": "Нет преглошений!",
 			"self": {
 				"args": {
 					"date": "The date (& time) for which the leaderboard is shown.",
@@ -593,7 +595,7 @@
 					"compare": "The date to which the current leaderboard standings are compared to"
 				}
 			},
-			"title": "Leaderboard",
+			"title": "Доска почета",
 			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
@@ -614,7 +616,7 @@
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "{{{ role }}} is already mentionable.",
+			"alreadyDone": "{{{ role }}} теперь можно упоменать",
 			"self": {
 				"args": {
 					"role": "The role that you want to mention."
@@ -630,15 +632,15 @@
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
 				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
-				"title": "Current Value"
+				"title": "Данное значение"
 			},
 			"keys": {
 				"title": "Valid member config keys"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Новое значение"
 			},
-			"none": "None",
+			"none": "Нету",
 			"notSet": "This member config settings is currently not set for any members",
 			"previous": {
 				"title": "Previous Value"
@@ -656,15 +658,15 @@
 			"title": "Member Config"
 		},
 		"members": {
-			"bots": "Bots",
-			"humans": "Humans",
+			"bots": "Ботов",
+			"humans": "Людей",
 			"joined": {
 				"day": "Joined last 24h",
 				"month": "Joined this month",
-				"week": "Joined this week"
+				"week": "Пришедших на этой неделе"
 			},
-			"members": "Members",
-			"online": "Online",
+			"members": "Участников",
+			"online": "Онлайн",
 			"self": {
 				"description": "Show member count of current server."
 			}
@@ -690,7 +692,10 @@
 					"reason": "The reason why this user is muted.",
 					"user": "The user that should be muted."
 				},
-				"description": "Mute a user"
+				"description": "Mute a user",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -716,7 +721,7 @@
 			"self": {
 				"description": "Shows the current prefix of the bot."
 			},
-			"title": "The current prefix is {{{ prefix }}}"
+			"title": "Данней префикс это {{{ prefix }}}"
 		},
 		"premium": {
 			"activate": {
@@ -745,7 +750,7 @@
 			"feature": {
 				"embeds": {
 					"text": "You can use an embed in your join and leave messages which look a lot better.\n[See some examples here]({{{ link }}})",
-					"title": "Premium Feature: Embeds in join messages"
+					"title": "Только с премиумом: Embeds при входе на сервер"
 				},
 				"export": {
 					"text": "You can export all the joins and leaves that happened on your server since you invited our bot.",
@@ -828,7 +833,7 @@
 					"page": "The page of the ranks list to show."
 				}
 			},
-			"title": "Ranks"
+			"title": "Ранги"
 		},
 		"removeInvites": {
 			"self": {
@@ -862,7 +867,7 @@
 		"setup": {
 			"faq": {
 				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
-				"title": "FAQs and more"
+				"title": "ЧАВО и более"
 			},
 			"help": {
 				"text": "If you need help or have feedback, you can either use the `!feedback` command or join our discord support server: {{{ link }}}",
@@ -878,24 +883,24 @@
 			},
 			"manageRoles": {
 				"text": "The bot does not have the \"Manage Roles\" permissions. This permission is required to assign roles to a user. Without this permission members cannot be auto-promoted.",
-				"title": "Missing permission: Manage Roles"
+				"title": "Нету пазрешения: Упровлять ролями Manage Roles"
 			},
 			"prefix": {
 				"text": "You can change the prefix by doing `!config prefix !`\n\nIf you don't know the bots prefix, you can find it using `@InviteManager config prefix`.",
-				"title": "Changing the prefix"
+				"title": "Изменить префикс"
 			},
 			"premium": {
 				"text": "If you would like to support the development of this bot, you can do so by supporting us on Patreon: {{{ link }}}\n\nDepending on the tier, you will get some additional features.",
-				"title": "Premium"
+				"title": "Премиум"
 			},
 			"self": {
 				"description": "Help with setting up the bot and checking for problems (e.g. missing permissions)"
 			},
 			"text": "After inviting the bot, all invites will be tracked automatically.",
-			"title": "Setting up InviteManager",
+			"title": "Настройка InviteManager",
 			"viewAuditLogs": {
 				"text": "The bot does not have the `View Audit Logs` permissions. This permission allows the bot to better track invites.",
-				"title": "Missing permission: View Audit Logs"
+				"title": "Нету разрешения: Просматривать аудит лог"
 			}
 		},
 		"softBan": {
@@ -948,7 +953,7 @@
 		},
 		"subtractLeaves": {
 			"done": "Removed leaves!",
-			"none": "No leaves found.",
+			"none": "Вышедших не найдено.",
 			"self": {
 				"description": "Remove leaves from all users"
 			}
@@ -957,7 +962,7 @@
 			"self": {
 				"description": "Get an invite link to our support server."
 			},
-			"server": "Support server"
+			"server": "Сервер поддежки"
 		},
 		"tryPremium": {
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
@@ -968,7 +973,7 @@
 			},
 			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
 			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
-			"title": "InviteManager - Try Premium"
+			"title": "InviteManager - Попробуй премиум"
 		},
 		"unban": {
 			"canNotUnban": "I cannot unban this member.",
@@ -1005,7 +1010,7 @@
 		},
 		"warn": {
 			"canNotDm": "User was not able to receive DM:\n{{ error }}",
-			"canNotWarn": "I cannot warn this user.",
+			"canNotWarn": "Я немогу предупредить этого участника.",
 			"done": "The user was successfully warned.",
 			"self": {
 				"args": {
@@ -1149,7 +1154,16 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1178,12 +1192,12 @@
 	"permissions": {
 		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
 		"createInviteCode": "Create Instant Invite",
-		"manageGuild": "Manage Server",
+		"manageGuild": "Упровлять сервером",
 		"manageRoles": "Manage Roles",
 		"premiumOnly": "This command is only available for premium subscribers!",
 		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
-		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs",
+		"role": "У вас нету разрешения использывать эту команду.\nВам нужно иметь хотябы оду из данных ролей: {{{ roles }}}",
+		"viewAuditLogs": "Просматривать аудит лог",
 		"manageMessages": "Manage Messages",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
@@ -1191,7 +1205,7 @@
 		"kickMembers": "Kick Members"
 	},
 	"prompt": {
-		"canceled": "Canceled"
+		"canceled": "Отменено"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1462,7 +1476,10 @@
 					"description": "Rank related settings.",
 					"title": "Ranks"
 				},
-				"title": "Invites"
+				"title": "Invites",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1661,10 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
 		}
 	},
 	"music": {

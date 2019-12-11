@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "チャートの期間。",
-					"type": "表示するチャートの種類。"
+					"type": "表示するチャートの種類。",
+					"from": "cmd.graph.self.args.from",
+					"to": "cmd.graph.self.args.to"
 				},
 				"description": "このサーバー上のさまざまな統計グラフを表示します。"
 			},
@@ -690,7 +692,10 @@
 					"reason": "このユーザーがミュートされている理由",
 					"user": "ミュートする必要があるユーザー。"
 				},
-				"description": "ユーザーをミュートする"
+				"description": "ユーザーをミュートする",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -1149,7 +1154,16 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
@@ -1462,7 +1476,10 @@
 					"description": "関連設定をランク付けします。",
 					"title": "ランク"
 				},
-				"title": "招待"
+				"title": "招待",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1661,10 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
 		}
 	},
 	"music": {
