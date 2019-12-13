@@ -731,7 +731,8 @@
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
 				"title": "Activate premium on this server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
