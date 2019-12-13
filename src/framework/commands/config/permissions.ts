@@ -48,12 +48,18 @@ export default class extends Command {
 						rs.Everyone.push(command.name);
 					}
 				} else {
-					ps.forEach(p => {
-						if (!rs['@' + p.roleName]) {
-							rs['@' + p.roleName] = [];
-						}
-						rs['@' + p.roleName].push(command.name);
-					});
+					// Check if the everyone role is allowed to use it
+					if (ps.some(p => p.roleId === guild.id)) {
+						rs.Everyone.push(command.name);
+					} else {
+						ps.forEach(p => {
+							const roleName = '@' + p.roleName;
+							if (!rs[roleName]) {
+								rs[roleName] = [];
+							}
+							rs[roleName].push(command.name);
+						});
+					}
 				}
 			});
 
@@ -155,8 +161,8 @@ export default class extends Command {
 			await this.sendReply(
 				message,
 				t('cmd.permissions.removed', {
-					role: `<@&${role.id}>`,
-					cmds: `\`$${cmd.name}\``
+					role: role.id === guild.id ? '@everyone' : `<@&${role.id}>`,
+					cmds: `\`${cmd.name}\``
 				})
 			);
 		} else {
@@ -180,8 +186,8 @@ export default class extends Command {
 			await this.sendReply(
 				message,
 				t('cmd.permissions.added', {
-					role: `<@&${role.id}>`,
-					cmds: `\`$${cmd.name}\``
+					role: role.id === guild.id ? '@everyone' : `<@&${role.id}>`,
+					cmds: `\`${cmd.name}\``
 				})
 			);
 		}
