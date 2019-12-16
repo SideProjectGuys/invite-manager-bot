@@ -866,7 +866,7 @@ export class DatabaseService {
 	public async savePremiumSubscription(sub: Partial<PremiumSubscription>) {
 		const res = await this.insertOrUpdate(
 			TABLE.premiumSubscriptions,
-			['memberId', 'validUntil', 'isFreeTier', 'amount', 'maxGuilds', 'reason'],
+			['memberId', 'validUntil', 'isFreeTier', 'isPatreon', 'isStaff', 'amount', 'maxGuilds', 'reason'],
 			['validUntil'],
 			[sub],
 			() => GLOBAL_SHARD_ID
