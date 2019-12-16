@@ -148,8 +148,10 @@ export class RabbitMqService {
 
 	public async sendStatusToManager(err?: Error) {
 		const req = (this.client as any).requestHandler;
-		const queued = {} as any;
-		Object.keys(req.ratelimits).forEach(endpoint => (queued[endpoint] = req.ratelimits[endpoint]._queue.length));
+		const queued = Object.keys(req.ratelimits).reduce(
+			(acc, endpoint) => acc + (req.ratelimits[endpoint]._queue.length as number),
+			0
+		);
 
 		await this.sendToManager({
 			id: 'status',
@@ -158,7 +160,7 @@ export class RabbitMqService {
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
 			tracking: {
-				pendingGuilds: [...this.client.tracking.pendingGuilds.values()],
+				pendingGuilds: this.client.tracking.pendingGuilds.size,
 				initialPendingGuilds: this.client.tracking.initialPendingGuilds
 			},
 			music: {
