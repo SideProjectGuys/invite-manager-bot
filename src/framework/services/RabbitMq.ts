@@ -168,7 +168,9 @@ export class RabbitMqService {
 			},
 			cache: this.getCacheSizes(),
 			events: {
-				received: this.client.eventsReceived
+				total: this.client.eventsRaised,
+				warnings: this.client.warningsRaised,
+				errors: this.client.errorsRaised
 			},
 			requests: {
 				queued
