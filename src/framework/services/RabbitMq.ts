@@ -147,6 +147,10 @@ export class RabbitMqService {
 	}
 
 	public async sendStatusToManager(err?: Error) {
+		const req = (this.client as any).requestHandler;
+		const queued = {} as any;
+		Object.keys(req.ratelimits).forEach(endpoint => (queued[endpoint] = req.ratelimits[endpoint]._queue.length));
+
 		await this.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
@@ -160,7 +164,13 @@ export class RabbitMqService {
 			music: {
 				connections: this.client.music.getMusicConnectionGuildIds()
 			},
-			cache: this.getCacheSizes()
+			cache: this.getCacheSizes(),
+			events: {
+				received: this.client.eventsReceived
+			},
+			requests: {
+				queued
+			}
 		});
 	}
 

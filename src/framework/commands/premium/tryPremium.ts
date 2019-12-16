@@ -57,6 +57,8 @@ export default class extends Command {
 				amount: 0,
 				maxGuilds: 1,
 				isFreeTier: true,
+				isPatreon: false,
+				isStaff: false,
 				validUntil: validUntil.toDate(),
 				memberId: message.author.id,
 				reason: ''
