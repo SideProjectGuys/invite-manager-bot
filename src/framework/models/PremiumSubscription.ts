@@ -7,6 +7,7 @@ export class PremiumSubscription {
 	public maxGuilds: number;
 	public isFreeTier: boolean;
 	public isPatreon: boolean;
+	public isStaff: boolean;
 	public validUntil: Date;
 	public reason: string;
 }
