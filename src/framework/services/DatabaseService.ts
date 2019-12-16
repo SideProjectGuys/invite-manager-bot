@@ -126,7 +126,7 @@ export class DatabaseService {
 		const [rows] = await pool.query<RowDataPacket[]>(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`, values);
 		return rows as T[];
 	}
-	private async findManyOnAllShards<T, O = string>(
+	private async findManyOnSpecificShards<T, O = string>(
 		table: TABLE,
 		where: string,
 		values: O[],
@@ -223,7 +223,7 @@ export class DatabaseService {
 		return this.findOne<Guild>(id, TABLE.guilds, '`id` = ?', [id]);
 	}
 	public async getBannedGuilds(ids: string[]) {
-		return await this.findManyOnAllShards<Guild>(TABLE.guilds, '`id` IN (?) AND `banReason` IS NOT NULL', ids);
+		return await this.findManyOnSpecificShards<Guild>(TABLE.guilds, '`id` IN (?) AND `banReason` IS NOT NULL', ids);
 	}
 	public async saveGuilds(guilds: Partial<Guild>[]) {
 		await this.insertOrUpdate(
@@ -356,7 +356,7 @@ export class DatabaseService {
 	//   InviteCode
 	// --------------
 	public async getAllInviteCodesForGuilds(guildIds: string[]) {
-		return this.findManyOnAllShards<InviteCode>(TABLE.inviteCodes, '`guildId` IN(?)', guildIds);
+		return this.findManyOnSpecificShards<InviteCode>(TABLE.inviteCodes, '`guildId` IN(?)', guildIds);
 	}
 	public async getInviteCodesForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
@@ -832,7 +832,7 @@ export class DatabaseService {
 		]);
 	}
 	public async getScheduledActionsForGuilds(guildIds: string[]) {
-		return this.findManyOnAllShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
+		return this.findManyOnSpecificShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
 	}
 	public async saveScheduledAction(action: Partial<ScheduledAction>) {
 		const res = await this.insertOrUpdate(
@@ -866,7 +866,7 @@ export class DatabaseService {
 	public async savePremiumSubscription(sub: Partial<PremiumSubscription>) {
 		const res = await this.insertOrUpdate(
 			TABLE.premiumSubscriptions,
-			['memberId', 'validUntil', 'isFreeTier', 'amount', 'maxGuilds', 'reason'],
+			['memberId', 'validUntil', 'isFreeTier', 'isPatreon', 'isStaff', 'amount', 'maxGuilds', 'reason'],
 			['validUntil'],
 			[sub],
 			() => GLOBAL_SHARD_ID
@@ -896,7 +896,7 @@ export class DatabaseService {
 			`SELECT psg.* FROM ${db}.${TABLE.premiumSubscriptionGuilds} psg WHERE psg.\`memberId\` = ?`,
 			[memberId]
 		);
-		const guilds = await this.findManyOnAllShards<Guild>(
+		const guilds = await this.findManyOnSpecificShards<Guild>(
 			TABLE.guilds,
 			`id IN(?)`,
 			rows.map(r => r.guildId)

@@ -100,6 +100,7 @@ export class PremiumService {
 					maxGuilds,
 					isFreeTier: false,
 					isPatreon: true,
+					isStaff: false,
 					reason: ''
 				});
 			}

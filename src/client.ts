@@ -105,6 +105,7 @@ export class IMClient extends Client {
 	public gatewayConnected: boolean;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
+	public eventsReceived: number;
 
 	private counts: {
 		cachedAt: Moment;
@@ -132,6 +133,7 @@ export class IMClient extends Client {
 		});
 
 		this.startedAt = moment();
+		this.eventsReceived = 0;
 		this.counts = {
 			cachedAt: moment.unix(0),
 			guilds: 0,
@@ -189,6 +191,7 @@ export class IMClient extends Client {
 		this.on('shardDisconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
+		this.on('rawWS', this.onRawWS);
 	}
 
 	private async onClientReady(): Promise<void> {
@@ -603,5 +606,9 @@ export class IMClient extends Client {
 
 	private async onError(error: Error) {
 		console.error('DISCORD ERROR:', error);
+	}
+
+	private async onRawWS() {
+		this.eventsReceived++;
 	}
 }

@@ -156,7 +156,7 @@ This argument expects a duration. The following duration types are supported:
 | [cleanShort](#cleanShort)             | Effacer les messages courts.                                                                                             | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Supprimer les messages contenant certains mots clefs.                                                                    | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Expulser un membre du serveur.                                                                                           | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                            | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Rendre muet un utilisateur                                                                                               | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configurez les punitions lorsque vous atteignez un certain nombre d'avertissements.                                      | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purger les messages dans un canal.                                                                                       | !purge \<quantity\> [user]                                       |
@@ -1116,7 +1116,7 @@ Afficher les membres avec le plus d'invitations.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1126,15 +1126,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type            | Required | Description                    | Details |
-| -------- | --------------- | -------- | ------------------------------ | ------- |
-| channel  | [Salon](#Salon) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type            | Required | Description                             | Details |
+| -------- | --------------- | -------- | --------------------------------------- | ------- |
+| channel  | [Salon](#Salon) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type            | Description                     |
-| ----------------------- | --------- | --------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Durée](#Durée) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type            | Description                                                                                                  |
+| ----------------------- | --------- | --------------- | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Durée](#Durée) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1272,9 +1272,9 @@ Rendre muet un utilisateur
 
 ### Flags
 
-| Flag                     | Short     | Type            | Description                  |
-| ------------------------ | --------- | --------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Durée](#Durée) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type            | Description                       |
+| ------------------------ | --------- | --------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Durée](#Durée) | The duration to mute the user for |
 
 ### Examples
 
