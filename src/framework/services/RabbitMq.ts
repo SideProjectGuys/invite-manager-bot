@@ -167,13 +167,14 @@ export class RabbitMqService {
 				connections: this.client.music.getMusicConnectionGuildIds()
 			},
 			cache: this.getCacheSizes(),
-			events: {
-				total: this.client.eventsRaised,
-				warnings: this.client.warningsRaised,
-				errors: this.client.errorsRaised
-			},
-			requests: {
-				queued
+			stats: {
+				wsEvents: this.client.stats.wsEvents,
+				wsWarnings: this.client.stats.wsWarnings,
+				wsErrors: this.client.stats.wsErrors,
+				cmdProcessed: this.client.stats.cmdProcessed,
+				cmdErrors: this.client.stats.cmdErrors,
+				cmdHttpErrors: [...this.client.stats.cmdHttpErrors.entries()].map(([code, count]) => ({ code, count })),
+				httpRequestsQueued: queued
 			}
 		});
 	}

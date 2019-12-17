@@ -455,6 +455,8 @@ export class CommandsService {
 			i++;
 		}
 
+		this.client.stats.cmdProcessed++;
+
 		// Run command
 		let error: any = null;
 		try {
@@ -467,6 +469,12 @@ export class CommandsService {
 		const execTime = Date.now() - start;
 
 		if (error) {
+			this.client.stats.cmdErrors++;
+			if (error.code) {
+				const num = this.client.stats.cmdHttpErrors.get(error.code) || 0;
+				this.client.stats.cmdHttpErrors.set(error.code, num + 1);
+			}
+
 			console.error(error);
 
 			withScope(scope => {

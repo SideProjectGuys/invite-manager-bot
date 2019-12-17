@@ -105,9 +105,14 @@ export class IMClient extends Client {
 	public gatewayConnected: boolean;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
-	public eventsRaised: number;
-	public warningsRaised: number;
-	public errorsRaised: number;
+	public stats: {
+		wsEvents: number;
+		wsWarnings: number;
+		wsErrors: number;
+		cmdProcessed: number;
+		cmdErrors: number;
+		cmdHttpErrors: Map<number, number>;
+	};
 
 	private counts: {
 		cachedAt: Moment;
@@ -135,7 +140,14 @@ export class IMClient extends Client {
 		});
 
 		this.startedAt = moment();
-		this.eventsRaised = 0;
+		this.stats = {
+			wsEvents: 0,
+			wsWarnings: 0,
+			wsErrors: 0,
+			cmdProcessed: 0,
+			cmdErrors: 0,
+			cmdHttpErrors: new Map()
+		};
 		this.counts = {
 			cachedAt: moment.unix(0),
 			guilds: 0,
@@ -604,15 +616,15 @@ export class IMClient extends Client {
 
 	private async onWarn(warn: string) {
 		console.error('DISCORD WARNING:', warn);
-		this.warningsRaised++;
+		this.stats.wsWarnings++;
 	}
 
 	private async onError(error: Error) {
 		console.error('DISCORD ERROR:', error);
-		this.errorsRaised++;
+		this.stats.wsErrors++;
 	}
 
 	private async onRawWS() {
-		this.eventsRaised++;
+		this.stats.wsEvents++;
 	}
 }
