@@ -312,7 +312,7 @@ export class TrackingService {
 
 		let isVanity = false;
 		if (inviteCodesUsed.length === 0) {
-			const vanityInv = await guild.getVanity().catch(() => undefined);
+			const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
 			if (vanityInv && vanityInv.code) {
 				isVanity = true;
 				inviteCodesUsed.push(vanityInv.code as string);
@@ -749,7 +749,7 @@ export class TrackingService {
 		// Collect concurrent promises
 		const promises: any[] = [];
 
-		const vanityInv = await guild.getVanity().catch(() => undefined);
+		const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
 		if (vanityInv && vanityInv.code) {
 			newInviteCodes.push({
 				code: vanityInv.code,
