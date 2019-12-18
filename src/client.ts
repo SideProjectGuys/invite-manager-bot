@@ -29,7 +29,7 @@ import { ModerationService } from './moderation/services/Moderation';
 import { MusicCache } from './music/cache/MusicCache';
 import { MusicService } from './music/services/MusicService';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
-import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
+import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 i18n.configure({
 	locales: ['cs', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'pt_BR', 'ro', 'ru', 'tr'],
@@ -114,11 +114,6 @@ export class IMClient extends Client {
 		cmdHttpErrors: Map<number, number>;
 	};
 
-	private counts: {
-		cachedAt: Moment;
-		guilds: number;
-		members: number;
-	};
 	public disabledGuilds: Set<string> = new Set();
 
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
@@ -147,11 +142,6 @@ export class IMClient extends Client {
 			cmdProcessed: 0,
 			cmdErrors: 0,
 			cmdHttpErrors: new Map()
-		};
-		this.counts = {
-			cachedAt: moment.unix(0),
-			guilds: 0,
-			members: 0
 		};
 
 		this.version = version;
@@ -544,25 +534,6 @@ export class IMClient extends Client {
 		});
 	}
 
-	public async getCounts() {
-		// If cached data is older than 12 hours, update it
-		if (
-			moment()
-				.subtract(4, 'hours')
-				.isAfter(this.counts.cachedAt)
-		) {
-			console.log('Fetching data counts from DB...');
-			const stats = await this.db.getDbStats();
-			this.counts = {
-				cachedAt: moment(),
-				guilds: stats.guilds,
-				members: stats.members
-			};
-		}
-
-		return this.counts;
-	}
-
 	public async setActivity() {
 		const status = this.settings.activityStatus;
 
@@ -570,8 +541,6 @@ export class IMClient extends Client {
 			this.editStatus(status);
 			return;
 		}
-
-		const counts = await this.getCounts();
 
 		const type =
 			this.settings.activityType === 'playing'
@@ -584,11 +553,7 @@ export class IMClient extends Client {
 				? 3
 				: 0;
 
-		let name = `invitemanager.co - ${counts.guilds} servers!`;
-		if (this.settings.activityMessage) {
-			name = this.settings.activityMessage.replace(/{serverCount}/gi, counts.guilds.toString());
-		}
-
+		const name = this.settings.activityMessage || `docs.invitemanager.co!`;
 		const url = this.settings.activityUrl;
 
 		this.editStatus(status, { name, type, url });

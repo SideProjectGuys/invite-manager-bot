@@ -16,7 +16,6 @@ import { getShardIdForGuild } from '../../util';
 import { BotSetting } from '../models/BotSetting';
 import { Channel } from '../models/Channel';
 import { CommandUsage } from '../models/CommandUsage';
-import { DBStat } from '../models/DBStat';
 import { Guild } from '../models/Guild';
 import { GuildSetting } from '../models/GuildSetting';
 import { Incident } from '../models/Incident';
@@ -797,17 +796,6 @@ export class DatabaseService {
 	}
 	private async saveIncidents(indicents: Partial<Incident>[]) {
 		await this.insertOrUpdate(TABLE.incidents, ['guildId', 'error', 'details'], [], indicents, i => i.guildId);
-	}
-
-	// ------------
-	//   DB stats
-	// ------------
-	public async getDbStats() {
-		const stats = await this.findMany<DBStat>(GLOBAL_SHARD_ID, TABLE.dbStats, '`key` IN(?)', [['guilds', 'members']]);
-		return {
-			guilds: stats.find(stat => stat.key === 'guilds').value,
-			members: stats.find(stat => stat.key === 'members').value
-		};
 	}
 
 	// ---------------
