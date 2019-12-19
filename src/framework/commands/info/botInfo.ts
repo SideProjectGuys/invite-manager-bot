@@ -24,8 +24,6 @@ export default class extends Command {
 	): Promise<any> {
 		const lang = settings.lang;
 
-		const counts = await this.client.getCounts();
-
 		const embed = this.createEmbed();
 
 		// Version
@@ -45,29 +43,10 @@ export default class extends Command {
 			inline: true
 		});
 
-		// Guild count
-		embed.fields.push({
-			name: t('cmd.botInfo.guilds'),
-			value: counts.guilds.toString(),
-			inline: true
-		});
-
-		// Member count
-		embed.fields.push({
-			name: t('cmd.botInfo.members'),
-			value: counts.members.toString(),
-			inline: true
-		});
-
 		// Shard info
 		embed.fields.push({
 			name: t('cmd.botInfo.shards.current'),
 			value: `${this.client.shardId} (${this.client.db.getDbShardForGuild(guild.id)})`,
-			inline: true
-		});
-		embed.fields.push({
-			name: t('cmd.botInfo.shards.total'),
-			value: this.client.shardCount.toString(),
 			inline: true
 		});
 

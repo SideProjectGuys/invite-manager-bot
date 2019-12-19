@@ -31,7 +31,7 @@ CREATE TABLE `botSettings` (
 --
 
 CREATE TABLE `dbStats` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` double DEFAULT NULL,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -122,6 +122,22 @@ ALTER TABLE `premiumSubscriptionGuilds`
 ALTER TABLE `premiumSubscriptions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `memberId` (`memberId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `musicNodes`
+--
+ALTER TABLE `musicNodes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `premiumSubscriptions`
+--
+ALTER TABLE `premiumSubscriptions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

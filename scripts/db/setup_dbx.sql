@@ -555,6 +555,63 @@ ALTER TABLE `messages`
 ALTER TABLE `reactionRoles`
   ADD PRIMARY KEY (`guildId`, `channelId`, `messageId`, `emoji`);
 
+
+--
+-- AUTO_INCREMENT for table `commandUsages`
+--
+ALTER TABLE `commandUsages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `customInvites`
+--
+ALTER TABLE `customInvites`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `incidents`
+--
+ALTER TABLE `incidents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `joins`
+--
+ALTER TABLE `joins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `leaves`
+--
+ALTER TABLE `leaves`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `punishmentConfigs`
+--
+ALTER TABLE `punishmentConfigs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `punishments`
+--
+ALTER TABLE `punishments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,;
+--
+-- AUTO_INCREMENT for table `scheduledActions`
+--
+ALTER TABLE `scheduledActions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `strikeConfigs`
+--
+ALTER TABLE `strikeConfigs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `strikes`
+--
+ALTER TABLE `strikes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
