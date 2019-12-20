@@ -17,7 +17,7 @@ export class SchedulerService {
 		this.scheduledActionTimers = new Map();
 		this.scheduledActionFunctions = {
 			[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a),
-			[ScheduledActionType.unlock]: null
+			[ScheduledActionType.unlock]: (g, a) => this.unlock(g, a)
 		};
 	}
 
