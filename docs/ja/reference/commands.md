@@ -791,8 +791,8 @@ Deletes any ranks where the role was deleted.
 | Argument | Type              | Required | Description              | Details                                                      |
 | -------- | ----------------- | -------- | ------------------------ | ------------------------------------------------------------ |
 | type     | [列挙型](#列挙型) | Yes      | 表示するチャートの種類。 | 以下のいずれかの値を使用:`joins`, `joinsAndLeaves`, `leaves` |
-| from     | [日付](#日付)     | No       | cmd.graph.self.args.from |                                                              |
-| to       | [日付](#日付)     | No       | cmd.graph.self.args.to   |                                                              |
+| from     | [日付](#日付)     | No       | Start date of the chart  |                                                              |
+| to       | [日付](#日付)     | No       | End date of the chart    |                                                              |
 
 ### Examples
 

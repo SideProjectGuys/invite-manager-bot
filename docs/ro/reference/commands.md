@@ -790,8 +790,8 @@ Shows graphs about various stats on this server.
 | Argument | Type          | Required | Description                   | Details                                                              |
 | -------- | ------------- | -------- | ----------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | The type of chart to display. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from      |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to        |                                                                      |
+| from     | [Date](#Date) | No       | Start date of the chart       |                                                                      |
+| to       | [Date](#Date) | No       | End date of the chart         |                                                                      |
 
 ### Examples
 
