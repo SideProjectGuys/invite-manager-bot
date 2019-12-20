@@ -31,7 +31,11 @@ export default class extends Command {
 
 		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.client.db.updateJoinClearedStatus(false, guild.id, codes.map(ic => ic.code));
+		await this.client.db.updateJoinClearedStatus(
+			false,
+			guild.id,
+			codes.map(ic => ic.code)
+		);
 
 		await this.client.db.clearCustomInvites(false, guild.id, memberId);
 

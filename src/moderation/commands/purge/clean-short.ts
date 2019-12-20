@@ -51,7 +51,10 @@ export default class extends Command {
 
 		messagesToBeDeleted.push(message);
 		try {
-			await this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id));
+			await this.client.deleteMessages(
+				message.channel.id,
+				messagesToBeDeleted.map(m => m.id)
+			);
 
 			embed.title = t('cmd.clean.title');
 			embed.description = t('cmd.clean.text', {
