@@ -15,7 +15,8 @@
 		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captcha didn't match, please try again.",
+		"kickReason": "Captcha verification failed"
 	},
 	"cmd": {
 		"addInvites": {

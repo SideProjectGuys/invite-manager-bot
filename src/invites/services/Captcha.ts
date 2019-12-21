@@ -88,7 +88,7 @@ export class CaptchaService {
 				await dmChannel
 					.createMessage(sets.captchaVerificationFailedMessage.replace(/\{serverName\}/g, member.guild.name))
 					.catch(() => undefined);
-				member.kick().catch(() => undefined);
+				member.kick(i18n.__({ locale: sets.lang, phrase: 'captcha.kickReason' })).catch(() => undefined);
 				return;
 			}
 
