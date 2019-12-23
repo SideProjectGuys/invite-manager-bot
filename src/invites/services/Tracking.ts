@@ -749,7 +749,8 @@ export class TrackingService {
 		// Collect concurrent promises
 		const promises: any[] = [];
 
-		const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
+		const vanityInv =
+			(guild.vanityURL ? { code: guild.vanityURL } : false) || (await guild.getVanity().catch(() => undefined));
 		if (vanityInv && vanityInv.code) {
 			newInviteCodes.push({
 				code: vanityInv.code,

@@ -54,7 +54,8 @@ export default class extends Command {
 				isWidget: !code.inviter
 			}));
 
-			const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
+			const vanityInv =
+				(guild.vanityURL ? { code: guild.vanityURL } : false) || (await guild.getVanity().catch(() => undefined));
 			if (vanityInv && vanityInv.code) {
 				newDbCodes.push({
 					code: vanityInv.code,
