@@ -312,12 +312,19 @@ export class TrackingService {
 
 		let isVanity = false;
 		if (inviteCodesUsed.length === 0) {
-			const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
-			if (vanityInv && vanityInv.code) {
+			const vanityInv =
+				guild.vanityURL ||
+				(await guild
+					.getVanity()
+					.then(r => {
+						return r.code;
+					})
+					.catch(() => undefined));
+			if (vanityInv) {
 				isVanity = true;
-				inviteCodesUsed.push(vanityInv.code as string);
+				inviteCodesUsed.push(vanityInv as string);
 				invs.push({
-					code: vanityInv.code,
+					code: vanityInv,
 					channel: null,
 					guild,
 					inviter: null,
@@ -749,10 +756,17 @@ export class TrackingService {
 		// Collect concurrent promises
 		const promises: any[] = [];
 
-		const vanityInv = guild.vanityURL || (await guild.getVanity().catch(() => undefined));
-		if (vanityInv && vanityInv.code) {
+		const vanityInv =
+			guild.vanityURL ||
+			(await guild
+				.getVanity()
+				.then(r => {
+					return r.code;
+				})
+				.catch(() => undefined));
+		if (vanityInv) {
 			newInviteCodes.push({
-				code: vanityInv.code,
+				code: vanityInv,
 				channel: null,
 				guild,
 				inviter: null,
