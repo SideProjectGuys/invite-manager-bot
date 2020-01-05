@@ -96,8 +96,8 @@ This argument expects a duration. The following duration types are supported:
 | [info](#info)                     | Pokaż informacje o określonym członku.             | !info \<user\> [details][page]                                   |
 | [inviteCodes](#inviteCodes)       | Zdobądź listę wszystkich twoich kodów zaproszeń    | !inviteCodes                                                     |
 | [inviteDetails](#inviteDetails)   | Pokazuje szczegóły skąd są twoje zaproszenia.      | !inviteDetails [user]                                            |
-| [invites](#invites)               | Show personal invites.                             | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Show members with most invites.                    | !leaderboard [page]                                              |
+| [invites](#invites)               | Pokaż osobiste zaproszenia.                        | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | Pokaż członków z największą liczbą zaproszeń.      | !leaderboard [page]                                              |
 | [removeInvites](#removeInvites)   | Removes a specified amount of invites from a user. | !removeInvites \<user\> \<amount\> [reason]                      |
 | [restoreInvites](#restoreInvites) | Restore all previously cleared invites.            | !restoreInvites [user]                                           |
 | [subtractFakes](#subtractFakes)   | Remove fake invites from all users.                | !subtractFakes                                                   |
@@ -120,7 +120,7 @@ This argument expects a duration. The following duration types are supported:
 | [config](#config)                       | Pokaż i zmień konfigurację serwera.                  | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interaktywna konfiguracja                            | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Pokaż i zmień konfiguracje kodu zaproszenia serwera. | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | Show and change the config of members of the server. | !memberConfig [key][user] [value]           |
+| [memberConfig](#memberConfig)           | Pokaż i zmień konfigurację członków serwera.         | !memberConfig [key][user] [value]           |
 | [permissions](#permissions)             | Configure permissions to use commands.               | !permissions [cmd][role]                    |
 
 ### Info
@@ -156,7 +156,7 @@ This argument expects a duration. The following duration types are supported:
 | [clean](#clean)                       | Wyczyść kanał niektórych typów wiadomości.                                                                                                    | !clean \<type\> [numberOfMessages]                               |
 | [cleanShort](#cleanShort)             | Wyczyść krótkie wiadomości                                                                                                                    | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Usuń wiadomości zawierające określone słowa kluczowe.                                                                                         | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
+| [kick](#kick)                         | Wyrzuć członka z serwera.                                                                                                                     | !kick \<member\> [reason]                                        |
 | [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
@@ -292,9 +292,9 @@ Banuje członka z serwera.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type              | Description                                                                           |
+| --------------------------------- | --------- | ----------------- | ------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Jeśli zostanie określony, usunie wiadomości od zbanowanych członków sprzed kilku dni. |
 
 ### Examples
 
@@ -790,8 +790,8 @@ Pokazuje wykresy dotyczące różnych statystyk na tym serwerze.
 | Argument | Type          | Required | Description                  | Details                                                              |
 | -------- | ------------- | -------- | ---------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | Typ wykresu do wyświetlenia. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from     |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to       |                                                                      |
+| from     | [Date](#Date) | No       | Data rozpoczęcia wykresu     |                                                                      |
+| to       | [Date](#Date) | No       | Data zakończenia wykresu     |                                                                      |
 
 ### Examples
 
@@ -1017,7 +1017,7 @@ Pokazuje szczegóły skąd są twoje zaproszenia.
 
 ## !invites
 
-Show personal invites.
+Pokaż osobiste zaproszenia.
 
 ### Usage
 
@@ -1032,9 +1032,9 @@ Show personal invites.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                 | Details |
-| -------- | ------------- | -------- | ------------------------------------------- | ------- |
-| user     | [User](#User) | No       | The user for whom you want to show invites. |         |
+| Argument | Type          | Required | Description                                         | Details |
+| -------- | ------------- | -------- | --------------------------------------------------- | ------- |
+| user     | [User](#User) | No       | Użytkownik, dla którego chcesz pokazać zaproszenia. |         |
 
 ### Examples
 
@@ -1056,7 +1056,7 @@ Show personal invites.
 
 ## !kick
 
-Kick a member from the server.
+Wyrzuć członka z serwera.
 
 ### Usage
 
@@ -1066,10 +1066,10 @@ Kick a member from the server.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                | Details |
-| -------- | ----------------- | -------- | -------------------------- | ------- |
-| member   | [Member](#Member) | Yes      | Member to kick.            |         |
-| reason   | [Text](#Text)     | No       | Why the member was kicked. |         |
+| Argument | Type              | Required | Description                        | Details |
+| -------- | ----------------- | -------- | ---------------------------------- | ------- |
+| member   | [Member](#Member) | Yes      | Członkowie do wyrzucenia.          |         |
+| reason   | [Text](#Text)     | No       | Dlaczego członek został wyrzucony. |         |
 
 ### Examples
 
@@ -1079,7 +1079,7 @@ Kick a member from the server.
 
 ## !leaderboard
 
-Show members with most invites.
+Pokaż członków z największą liczbą zaproszeń.
 
 ### Usage
 
@@ -1093,9 +1093,9 @@ Show members with most invites.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                           | Details |
-| -------- | ----------------- | -------- | ------------------------------------- | ------- |
-| page     | [Number](#Number) | No       | Which page of the leaderboard to get. |         |
+| Argument | Type              | Required | Description                     | Details |
+| -------- | ----------------- | -------- | ------------------------------- | ------- |
+| page     | [Number](#Number) | No       | Którą stronę z tabeli liderów?. |         |
 
 ### Examples
 
@@ -1197,7 +1197,7 @@ Create a mashup of 2 songs.
 
 ## !memberConfig
 
-Show and change the config of members of the server.
+Pokaż i zmień konfigurację członków serwera.
 
 ### Usage
 
@@ -1213,11 +1213,11 @@ Show and change the config of members of the server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                              | Details                                                |
-| -------- | --------------- | -------- | -------------------------------------------------------- | ------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | The member config setting which you want to show/change. | Use one of the following values: `hideFromLeaderboard` |
-| user     | [User](#User)   | No       | The member that the setting is shown/changed for.        |                                                        |
-| value    | [Value](#Value) | No       | The new value of the setting.                            |                                                        |
+| Argument | Type            | Required | Description                                                    | Details                                                |
+| -------- | --------------- | -------- | -------------------------------------------------------------- | ------------------------------------------------------ |
+| key      | [Enum](#Enum)   | No       | Ustawienie konfiguracji członka, które chcesz pokazać/zmienić. | Use one of the following values: `hideFromLeaderboard` |
+| user     | [User](#User)   | No       | Członek, dla którego ustawienie jest pokazane/zmienione.       |                                                        |
+| value    | [Value](#Value) | No       | Nowa wartość ustawienia.                                       |                                                        |
 
 ### Examples
 

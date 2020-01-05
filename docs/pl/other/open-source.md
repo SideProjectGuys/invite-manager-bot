@@ -1,7 +1,7 @@
 # Otwarte źródło
 
-other.openSource.description
+inne.openSource.opis
 
 ## Główny Bot
 
-other.openSource.bot.description
+inne.openSource.bot.opis

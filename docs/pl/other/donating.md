@@ -1,7 +1,7 @@
 # Dotacje
 
-other.donating.description
+inne.dotacje.opis
 
 ## Kryptowaluty
 
-other.donating.crypto.description
+inne.dotacje.kryptowaluty.opis

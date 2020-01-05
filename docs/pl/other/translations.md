@@ -1,7 +1,7 @@
 # Tłumaczenia
 
-other.translations.description
+inne.tłumaczenia.opisy
 
-## other.translations.help.title
+## inne.tłumaczenia.pomoc.tytuł
 
-other.translations.help.description
+inne.tłumaczenia.pomoc.opis

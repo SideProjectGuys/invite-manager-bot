@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server gejoind zijn.",
-				"title": "Users joining"
+				"title": "Gejoinde gebruikers"
 			},
 			"leaves": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server geleaved zijn.",
@@ -322,15 +322,15 @@
 				"args": {
 					"duration": "De tijdsduur voor de grafiek",
 					"type": "De type grafiek om te zien.",
-					"from": "Start date of the chart",
-					"to": "End date of the chart"
+					"from": "Startdatum van de chart",
+					"to": "Einddatum van de chart"
 				},
 				"description": "Laat verschillende soorten grafieken zien van je server statistieken."
 			},
-			"minDays": "You have to select at least {{{ days }}} days",
-			"maxDays": "You may select at most {{{ days }}} days",
+			"minDays": "Je moet minimaal {{{ days }}} dagen selecteren",
+			"maxDays": "Je mag maximaal {{{ days }}} selecteren",
 			"joinsAndLeaves": {
-				"title": "Users joining and leaving",
+				"title": "Gebruikers die joinen en leaven",
 				"text": "This chart shows the number of users joining and leaving your server."
 			}
 		},

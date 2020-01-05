@@ -61,10 +61,10 @@
 				},
 				"description": "Banuje członka z serwera.",
 				"flags": {
-					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+					"deleteMessageDays": "Jeśli zostanie określony, usunie wiadomości od zbanowanych członków sprzed kilku dni."
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "Nie mogę softbanować tego użytkownika."
 		},
 		"botConfig": {
 			"canNotClear": "Ustawienia konfiguracji **{{ key }}** nie można usunąć. Możesz użyć `{{ prefix }}botConfig {{ key }} default`, aby przywrócić domyślną wartość.",
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Ten wykres pokazuje liczbę użytkowników dołączających do twojego serwera.",
-				"title": "Users joining"
+				"title": "Użytkownicy dołączający"
 			},
 			"leaves": {
 				"text": "Ten wykres pokazuje liczbę użytkowników opuszczających twój serwer.",
@@ -322,16 +322,16 @@
 				"args": {
 					"duration": "Okres trwania wykresu.",
 					"type": "Typ wykresu do wyświetlenia.",
-					"from": "cmd.graph.self.args.from",
-					"to": "cmd.graph.self.args.to"
+					"from": "Data rozpoczęcia wykresu",
+					"to": "Data zakończenia wykresu"
 				},
 				"description": "Pokazuje wykresy dotyczące różnych statystyk na tym serwerze."
 			},
-			"minDays": "You have to select at least {{{ days }}} days",
-			"maxDays": "You may select at most {{{ days }}} days",
+			"minDays": "Musisz wybrać co najmniej {{{ days }}} dni",
+			"maxDays": "Możesz wybrać maksymalnie {{{ days }}} dni",
 			"joinsAndLeaves": {
-				"title": "Users joining and leaving",
-				"text": "This chart shows the number of users joining and leaving your server."
+				"title": "Użytkownicy dołączający i wychodzący",
+				"text": "Ten wykres pokazuje liczbę użytkowników dołączających do serwera i wychodzących z niego."
 			}
 		},
 		"help": {
@@ -463,7 +463,7 @@
 				"role[]": "Lista ról, na przykład: @Admin @Mod ",
 				"string": "Jakikolwiek tekst",
 				"string[]": "Lista słów, na przykład: słowo inne „słowo ze spacją”",
-				"enum<musicplatformtypes>[]": "A list of music platform types"
+				"enum<musicplatformtypes>[]": "Lista platform muzycznych"
 			},
 			"welcome": "Użyj reakcji, aby wybrać jedną z dostępnych opcji."
 		},
@@ -523,7 +523,7 @@
 				"title": "Tymczasowe"
 			},
 			"title": "Posiadasz następujące kody na serwerze {{ guild }}",
-			"error": "I could not send you your invite codes, make sure you are allowing private messages from this server."
+			"error": "Nie mogłem wysłać Ci kodów zaproszeń, upewnij się, że zezwalasz na prywatne wiadomości z tego serwera."
 		},
 		"inviteDetails": {
 			"entry": "**{{ uses }}** z {{{ code }}} - utworzono **{{ createdAt }}**",
@@ -546,120 +546,120 @@
 			},
 			"nextRank": {
 				"other": "{{{ target }}} potrzebuje ** {{ nextRankPointsDiff }} ** więcej zaproszeń do osiągnięcia ** {{ nextRankName }} ** rangi!",
-				"self": "You need **{{ nextRankPointsDiff }}** more invites to reach **{{ nextRankName }}** rank!"
+				"self": "Potrzebujesz jeszcze **{{ nextRankPointsDiff }}** zaproszeń, żeby otrzymać rangę **{{ nextRankName }}**!"
 			},
 			"self": {
 				"args": {
-					"user": "The user for whom you want to show invites."
+					"user": "Użytkownik, dla którego chcesz pokazać zaproszenia."
 				},
-				"description": "Show personal invites."
+				"description": "Pokaż osobiste zaproszenia."
 			}
 		},
 		"kick": {
-			"canNotKick": "I cannot kick this user.",
-			"done": "The user was successfully kicked.",
-			"error": "There was an error kicking this user:\n{{ error }}",
-			"missingPermissions": "I need the `Kick Members` permission to kick members",
+			"canNotKick": "Nie mogę wyrzucić tego użytkownika.",
+			"done": "Użytkownik został pomyślnie wyrzucony.",
+			"error": "Wystąpił błąd podczas wyrzucania tego użytkownika:\n{{ error }}",
+			"missingPermissions": "Potrzebuję pozwolenia `Kick Members`, aby wyrzucać członków",
 			"self": {
 				"args": {
-					"member": "Member to kick.",
-					"reason": "Why the member was kicked."
+					"member": "Członkowie do wyrzucenia.",
+					"reason": "Dlaczego członek został wyrzucony."
 				},
-				"description": "Kick a member from the server."
+				"description": "Wyrzuć członka z serwera."
 			}
 		},
 		"leaderboard": {
 			"col": {
-				"change": "Change",
+				"change": "Zmiana",
 				"custom": "B",
 				"fake": "F",
-				"leave": "L",
-				"name": "Name",
-				"regular": "R",
-				"total": "T"
+				"leave": "W",
+				"name": "Nazwa",
+				"regular": "N",
+				"total": "R"
 			},
-			"comparedTo": "changes compared to {{{ to }}}",
-			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** invites (**{{ regular }}** regular, **{{ custom }}** bonus, **{{ fake }}** fake, **{{ leave }}** leaves)",
-			"from": "Invites since {{{ from }}}",
-			"invalidDate": "Invalid date: {{ date }}",
-			"legend": "`T` = Total\n`R` = Regular\r\n`B` = Bonus\r\n`F` = Fake\r\n`L` = Leaves",
-			"noInvites": "No invites!",
+			"comparedTo": "zmiany w porównaniu z {{{ to }}}",
+			"entry": "**{{ pos }}** **{{{ name }}}** - **{{ total }}** zaproszeń (**{{ regular }}** normalne , **{{ custom }}** bonusowe, **{{ fake }}** fałszywe, **{{ leave }}** wyjść)",
+			"from": "Zaprasza od {{{ from }}}",
+			"invalidDate": "Nieprawidłowa data: {{ date }}",
+			"legend": "`R` = Razem\n`N` = Normalne\r\n`B` = Bonusowe\r\n`F` = Fałszywe\r\n`W` = Wyjścia",
+			"noInvites": "Brak zaproszeń!",
 			"self": {
 				"args": {
-					"date": "The date (& time) for which the leaderboard is shown.",
-					"duration": "The duration for which to calculate the leaderboard.",
-					"page": "Which page of the leaderboard to get."
+					"date": "Data (i godzina), dla której wyświetlana jest tabela wyników.",
+					"duration": "Czas trwania, dla którego należy obliczyć tabelę wyników.",
+					"page": "Którą stronę z tabeli liderów?."
 				},
-				"description": "Show members with most invites.",
+				"description": "Pokaż członków z największą liczbą zaproszeń.",
 				"flags": {
-					"compare": "The date to which the current leaderboard standings are compared to"
+					"compare": "Data, z którą porównywane są obecne tabele wyników"
 				}
 			},
-			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
+			"title": "Tabela liderów",
+			"lastUpdate": "Ostatnia aktualizacja {{{ lastUpdate }}}, następna aktualizacja {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
 				"args": {
-					"user": "DEPRECATED - this command will be removed soon."
+					"user": "DEPRECATED - to polecenie zostanie wkrótce usunięte."
 				},
-				"description": "DEPRECATED - this command will be removed soon."
+				"description": "DEPRECATED - to polecenie zostanie wkrótce usunięte."
 			}
 		},
 		"legacyLeaderboard": {
 			"self": {
 				"args": {
-					"date": "DEPRECATED - this command will be removed soon.",
-					"page": "DEPRECATED - this command will be removed soon."
+					"date": "DEPRECATED - to polecenie zostanie wkrótce usunięte.",
+					"page": "DEPRECATED - to polecenie zostanie wkrótce usunięte."
 				},
-				"description": "DEPRECATED - this command will be removed soon."
+				"description": "DEPRECATED - to polecenie zostanie wkrótce usunięte."
 			}
 		},
 		"makeMentionable": {
-			"alreadyDone": "{{{ role }}} is already mentionable.",
+			"alreadyDone": "{{{ rola }}} jest już możliwa do wzmieniania.",
 			"self": {
 				"args": {
-					"role": "The role that you want to mention."
+					"role": "Rola, o której chcesz wspomnieć."
 				},
-				"description": "Make a role mentionable for 60 seconds or until it was used."
+				"description": "Wymień rolę na 60 sekund lub do momentu jej użycia."
 			}
 		},
 		"memberConfig": {
-			"canNotClear": "The member config setting **{{ key }}** can not be cleared. You can use `memberConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "Ustawienia konfiguracji członka ** {{ key }} ** nie można wyczyścić. Możesz użyć `memberConfig {{ key }} default`, aby zresetować go do wartości domyślnej.",
 			"changed": {
 				"text": "This member config has been changed.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it again.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none` to reset it to the default."
 			},
 			"current": {
 				"notSet": "This member config is currently **not** set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to set it.",
 				"text": "This member config is currently set.\n\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} <value>` to change it.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} default` to reset it to the default.\nUse `{{ prefix }}memberConfig {{ key }} {{ username }} none\\` to clear it.",
-				"title": "Current Value"
+				"title": "Aktualna wartość"
 			},
 			"keys": {
-				"title": "Valid member config keys"
+				"title": "Prawidłowe klucze konfiguracji członka"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nowa wartość"
 			},
-			"none": "None",
+			"none": "Żaden",
 			"notSet": "This member config settings is currently not set for any members",
 			"previous": {
-				"title": "Previous Value"
+				"title": "Poprzednia wartość"
 			},
-			"sameValue": "This member config is already set to that value",
+			"sameValue": "Ta konfiguracja członka jest już ustawiona na tę wartość",
 			"self": {
 				"args": {
-					"key": "The member config setting which you want to show/change.",
-					"user": "The member that the setting is shown/changed for.",
-					"value": "The new value of the setting."
+					"key": "Ustawienie konfiguracji członka, które chcesz pokazać/zmienić.",
+					"user": "Członek, dla którego ustawienie jest pokazane/zmienione.",
+					"value": "Nowa wartość ustawienia."
 				},
-				"description": "Show and change the config of members of the server."
+				"description": "Pokaż i zmień konfigurację członków serwera."
 			},
 			"text": "Below are all the available member config settings.\n\nUse `{{ prefix }}memberConfig <key>` to view the users which have a `<key>` setting\nUse `{{ prefix }}memberConfig <key> @user` to view the setting for a single `@user`\nUse `{{ prefix }}memberConfig <key> @user <value>` to set the config `<key>` to `<value>` for `@user`",
-			"title": "Member Config"
+			"title": "Konfiguracja członka"
 		},
 		"members": {
-			"bots": "Bots",
-			"humans": "Humans",
+			"bots": "Boty",
+			"humans": "Użytkownicy",
 			"joined": {
 				"day": "Joined last 24h",
 				"month": "Joined this month",
@@ -1665,6 +1665,70 @@
 		"joinRoles": {
 			"title": "Join Roles",
 			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

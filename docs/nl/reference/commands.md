@@ -790,8 +790,8 @@ Laat verschillende soorten grafieken zien van je server statistieken.
 | Argument | Type          | Required | Description                 | Details                                                              |
 | -------- | ------------- | -------- | --------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | De type grafiek om te zien. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | Start date of the chart     |                                                                      |
-| to       | [Date](#Date) | No       | End date of the chart       |                                                                      |
+| from     | [Date](#Date) | No       | Startdatum van de chart     |                                                                      |
+| to       | [Date](#Date) | No       | Einddatum van de chart      |                                                                      |
 
 ### Examples
 
