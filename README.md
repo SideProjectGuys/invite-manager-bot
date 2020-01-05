@@ -6,23 +6,7 @@ This is the code repository for the InviteManager Discord Bot.
 
 ## Docs
 
-- [български](docs/bg/README.md)
-- [Čeština](docs/cs/README.md)
-- [Deutsch](docs/de/README.md)
-- [Ελληνικά](docs/el/README.md)
-- [English](docs/en/README.md)
-- [Español](docs/es/README.md)
-- [Français](docs/fr/README.md)
-- [Indonesia](docs/id-ID/README.md)
-- [Italiano](docs/it/README.md)
-- [日本語](docs/ja/README.md)
-- [Nederlands](docs/nl/README.md)
-- [Polski](docs/pl/README.md)
-- [Português](docs/pt/README.md)
-- [Português do Brasil](docs/pt-BR/README.md)
-- [Română](docs/ro/README.md)
-- [Pусский](docs/ru/README.md)
-- [Türkçe](docs/tr/README.md)
+[Click here to view the documentation](https://docs.invitemanager.co)
 
 ## Self hosting quick setup
 
