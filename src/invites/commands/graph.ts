@@ -85,14 +85,14 @@ export default class extends Command {
 			const joinsMap = addDataset();
 			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
 			fs.forEach(join =>
-				joinsMap.set(`${join.year}-${join.month.padStart(2, '0')}-${join.day.padStart(2, '0')}`, Number(join.total))
+				joinsMap.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
 
 			const leavesMap = addDataset();
 			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
 			lvs.forEach(leave =>
 				leavesMap.set(
-					`${leave.year}-${leave.month.padStart(2, '0')}-${leave.day.padStart(2, '0')}`,
+					`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`,
 					Number(leave.total)
 				)
 			);
@@ -103,7 +103,7 @@ export default class extends Command {
 			const map = addDataset();
 			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
 			joins.forEach(join =>
-				map.set(`${join.year}-${join.month.padStart(2, '0')}-${join.day.padStart(2, '0')}`, Number(join.total))
+				map.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
@@ -112,7 +112,7 @@ export default class extends Command {
 			const map = addDataset();
 			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
 			leaves.forEach(leave =>
-				map.set(`${leave.year}-${leave.month.padStart(2, '0')}-${leave.day.padStart(2, '0')}`, Number(leave.total))
+				map.set(`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`, leave.total)
 			);
 		}
 

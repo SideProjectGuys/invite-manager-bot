@@ -547,7 +547,7 @@ export class DatabaseService {
 				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
 			[guildId, from, to]
 		);
-		return rows as Array<{ year: string; month: string; day: string; total: string }>;
+		return rows as Array<{ year: number; month: number; day: number; total: number }>;
 	}
 	public async getFirstJoinForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
@@ -713,7 +713,7 @@ export class DatabaseService {
 				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
 			[guildId, from, to]
 		);
-		return rows as Array<{ year: string; month: string; day: string; total: string }>;
+		return rows as Array<{ year: number; month: number; day: number; total: number }>;
 	}
 	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
 		const [db, pool] = this.getDbInfo(guildId);
