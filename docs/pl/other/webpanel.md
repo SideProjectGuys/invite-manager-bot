@@ -1,3 +1,3 @@
 # Panel internetowy
 
-other.webpanel.description
+inne.panel.opis

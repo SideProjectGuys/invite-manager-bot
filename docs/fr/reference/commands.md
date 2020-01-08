@@ -789,8 +789,8 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 | Argument | Type                        | Required | Description                      | Details                                                                  |
 | -------- | --------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------------ |
 | type     | [Énumération](#Énumération) | Yes      | Le type de graphique à afficher. | Utilisez une des valeurs suivantes : `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date)               | No       | cmd.graph.self.args.from         |                                                                          |
-| to       | [Date](#Date)               | No       | cmd.graph.self.args.to           |                                                                          |
+| from     | [Date](#Date)               | No       | Start date of the chart          |                                                                          |
+| to       | [Date](#Date)               | No       | End date of the chart            |                                                                          |
 
 ### Examples
 

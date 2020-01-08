@@ -7,26 +7,6 @@ import { MusicPlatform } from '../MusicPlatform';
 
 import { YoutubeMusicItem } from './YoutubeMusicItem';
 
-interface YoutubeVideo {
-	id: string;
-	videoId?: string;
-	contentDetails: {
-		duration: string;
-	};
-	snippet: {
-		channelTitle: string;
-		description: string;
-		thumbnails: {
-			default: {
-				height: number;
-				url: string;
-				width: number;
-			};
-		};
-		title: string;
-	};
-}
-
 export class Youtube extends MusicPlatform {
 	public supportsRewind: boolean = true;
 	public supportsSeek: boolean = true;

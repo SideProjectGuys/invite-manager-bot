@@ -67,7 +67,7 @@ export default class extends Command {
 
 		const dates: Moment[] = [];
 		const vs: Map<string, number>[] = [];
-		for (const curr = from.clone(); to.diff(curr, 'days') >= 0; curr.add(1, 'days')) {
+		for (const curr = from.clone(); to.isSameOrAfter(curr, 'days'); curr.add(1, 'days')) {
 			dates.push(curr.clone());
 		}
 
@@ -84,25 +84,36 @@ export default class extends Command {
 
 			const joinsMap = addDataset();
 			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			fs.forEach(join => joinsMap.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
+			fs.forEach(join =>
+				joinsMap.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
+			);
 
 			const leavesMap = addDataset();
 			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			lvs.forEach(leave => leavesMap.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
+			lvs.forEach(leave =>
+				leavesMap.set(
+					`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`,
+					Number(leave.total)
+				)
+			);
 		} else if (type === ChartType.joins) {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
 			const map = addDataset();
 			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			joins.forEach(join => map.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
+			joins.forEach(join =>
+				map.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
+			);
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
 			const map = addDataset();
 			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			leaves.forEach(leave => map.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
+			leaves.forEach(leave =>
+				map.set(`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`, leave.total)
+			);
 		}
 
 		const datasets: any[] = [];

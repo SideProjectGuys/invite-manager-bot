@@ -1,6 +1,6 @@
 {
 	"name": "discord-invite-manager",
-	"version": "9.2.6",
+	"version": "9.2.7",
 	"description": "",
 	"main": "./bin/bot.js",
 	"scripts": {
@@ -28,7 +28,7 @@
 	},
 	"homepage": "https://docs.invitemanager.co/",
 	"dependencies": {
-		"@sentry/node": "5.9.0",
+		"@sentry/node": "5.10.2",
 		"amqplib": "0.5.5",
 		"axios": "0.19.0",
 		"bufferutil": "4.0.1",
@@ -42,11 +42,11 @@
 		"i18n": "0.8.4",
 		"iheart": "3.1.1",
 		"moment": "2.24.0",
-		"mysql2": "2.0.1",
+		"mysql2": "2.0.2",
 		"reflect-metadata": "0.1.13",
 		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
-		"ytdl-core": "1.0.1",
+		"ytdl-core": "1.0.3",
 		"zlib-sync": "0.1.6"
 	},
 	"devDependencies": {
@@ -54,10 +54,10 @@
 		"@types/amqplib": "0.5.13",
 		"@types/i18n": "0.8.6",
 		"@types/mysql2": "github:types/mysql2",
-		"@types/node": "12.12.12",
+		"@types/node": "12.12.21",
 		"@types/xmldoc": "1.1.4",
 		"cross-env": "6.0.3",
-		"docsify": "4.9.4",
+		"docsify": "4.10.2",
 		"docsify-cli": "4.4.0",
 		"fs-extra": "8.1.0",
 		"husky": "3.1.0",
@@ -65,7 +65,7 @@
 		"pretty-quick": "2.0.1",
 		"tslint": "5.20.1",
 		"tslint-config-prettier": "1.18.0",
-		"typescript": "3.7.2",
+		"typescript": "3.7.3",
 		"typestrict": "1.0.2"
 	},
 	"engines": {

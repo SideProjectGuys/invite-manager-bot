@@ -787,11 +787,11 @@ Deletes any ranks where the role was deleted.
 
 ### Arguments
 
-| Argument | Type            | Required | Description              | Details                                                              |
-| -------- | --------------- | -------- | ------------------------ | -------------------------------------------------------------------- |
-| type     | [Enum](#Enum)   | Yes      | نوع المخطط لعرضه.        | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.from |                                                                      |
-| to       | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.to   |                                                                      |
+| Argument | Type            | Required | Description             | Details                                                              |
+| -------- | --------------- | -------- | ----------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum)   | Yes      | نوع المخطط لعرضه.       | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [تاريخ](#تاريخ) | No       | Start date of the chart |                                                                      |
+| to       | [تاريخ](#تاريخ) | No       | End date of the chart   |                                                                      |
 
 ### Examples
 

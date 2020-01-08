@@ -368,7 +368,7 @@ CREATE TABLE `reactionRoles` (
   `guildId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `messageId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `roleId` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `emoji` varchar(255) DEFAULT NULL,
+  `emoji` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -595,7 +595,7 @@ ALTER TABLE `punishmentConfigs`
 -- AUTO_INCREMENT for table `punishments`
 --
 ALTER TABLE `punishments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `scheduledActions`
 --
