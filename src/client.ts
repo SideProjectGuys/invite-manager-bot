@@ -118,13 +118,17 @@ export class IMClient extends Client {
 
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
-			disableEveryone: true,
+			allowedMentions: {
+				everyone: false
+			},
 			firstShardID: shardId - 1,
 			lastShardID: shardId - 1,
 			maxShards: shardCount,
 			disableEvents: {
 				TYPING_START: true,
-				PRESENCE_UPDATE: true
+				PRESENCE_UPDATE: true,
+				VOICE_STATE_UPDATE: true,
+				USER_UPDATE: true
 			},
 			restMode: true,
 			messageLimit: 2,

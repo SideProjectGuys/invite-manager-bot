@@ -239,6 +239,7 @@ export interface LavaPlayer extends VoiceConnection {
 	on(event: 'speakingStop', listener: (userID: string) => void): this;
 	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
 	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
+	on(event: 'userDisconnect', listener: (userID: string) => void): this;
 }
 
 export interface LavaEndEvent {
