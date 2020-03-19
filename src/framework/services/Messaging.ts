@@ -1,5 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
-import { Embed, EmbedBase, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChannel, User } from 'eris';
+import { Embed, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
@@ -10,7 +10,7 @@ const upSymbol = '🔺';
 const downSymbol = '🔻';
 const truthy = new Set(['true', 'on', 'y', 'yes', 'enable']);
 
-function convertEmbedToPlain(embed: EmbedBase) {
+function convertEmbedToPlain(embed: EmbedOptions) {
 	const url = embed.url ? `(${embed.url})` : '';
 	const authorUrl = embed.author && embed.author.url ? `(${embed.author.url})` : '';
 
