@@ -28,38 +28,37 @@ export class RabbitMqService {
 		this.msgQueue = [];
 	}
 
-	public init() {
+	public async init() {
 		if (this.client.flags.includes('--no-rabbitmq')) {
 			return;
 		}
 
-		connect(this.client.config.rabbitmq)
-			.then(async conn => {
-				this.conn = conn;
-				this.conn.on('close', async err => {
-					console.error(err);
-					this.conn = null;
-
-					setTimeout(() => this.init(), this.connRetry * 30);
-					this.connRetry++;
-				});
-				this.conn.on('error', async err => {
-					console.error(err);
-					this.conn = null;
-
-					setTimeout(() => this.init(), this.connRetry * 30);
-					this.connRetry++;
-				});
-
-				await this.initChannel();
-			})
-			.catch(err => {
+		try {
+			const conn = await connect(this.client.config.rabbitmq);
+			this.conn = conn;
+			this.conn.on('close', async (err) => {
 				console.error(err);
 				this.conn = null;
 
 				setTimeout(() => this.init(), this.connRetry * 30);
 				this.connRetry++;
 			});
+			this.conn.on('error', async (err) => {
+				console.error(err);
+				this.conn = null;
+
+				setTimeout(() => this.init(), this.connRetry * 30);
+				this.connRetry++;
+			});
+
+			await this.initChannel();
+		} catch (err) {
+			console.error(err);
+			this.conn = null;
+
+			setTimeout(() => this.init(), this.connRetry * 30);
+			this.connRetry++;
+		}
 	}
 
 	private async initChannel() {
@@ -71,15 +70,16 @@ export class RabbitMqService {
 		this.qName = `shard-${this.client.instance}-${this.client.shardId}`;
 
 		try {
+			// Regular queue
 			this.channel = await this.conn.createChannel();
-			this.channel.on('error', async err => {
+			this.channel.on('error', async (err) => {
 				console.error(err);
 				this.channel = null;
 
 				setTimeout(() => this.initChannel(), this.channelRetry * 30);
 				this.channelRetry++;
 			});
-			this.channel.on('close', async err => {
+			this.channel.on('close', async (err) => {
 				console.error(err);
 				this.channel = null;
 
@@ -91,21 +91,11 @@ export class RabbitMqService {
 				await this.sendToManager(this.msgQueue.pop(), true);
 			}
 
-			await this.channel.assertQueue(this.qName, {
-				durable: false,
-				autoDelete: true
-			});
-
-			await this.channel.assertExchange('shards', 'fanout', {
-				durable: true
-			});
-
-			await this.channel.bindQueue(this.qName, 'shards', '');
-
 			await this.channel.prefetch(5);
-			this.channel.consume(this.qName, msg => this.onShardCommand(msg), {
-				noAck: false
-			});
+			await this.channel.assertQueue(this.qName, { durable: false, autoDelete: true });
+			await this.channel.assertExchange('shards', 'fanout', { durable: true });
+			await this.channel.bindQueue(this.qName, 'shards', '');
+			this.channel.consume(this.qName, (msg) => this.onShardCommand(msg), { noAck: false });
 
 			this.channelRetry = 0;
 		} catch (err) {
@@ -207,7 +197,7 @@ export class RabbitMqService {
 
 				await sendResponse({
 					self,
-					guilds: this.client.guilds.map(g => ({
+					guilds: this.client.guilds.map((g) => ({
 						id: g.id,
 						name: g.name,
 						icon: g.iconURL,
@@ -289,7 +279,7 @@ export class RabbitMqService {
 				const cacheNames = content.caches as (keyof ClientCacheObject)[];
 
 				if (!content.caches) {
-					Object.values(this.client.cache).forEach(c => c.flush(guildId));
+					Object.values(this.client.cache).forEach((c) => c.flush(guildId));
 				} else {
 					for (const cacheName of cacheNames) {
 						const cache = this.client.cache[cacheName];
@@ -330,7 +320,7 @@ export class RabbitMqService {
 				this.client.channelGuildMap[channel.id] = guild.id;
 				guild.channels.add(channel);
 
-				channel.listener = async data => {
+				channel.listener = async (data) => {
 					console.log(data);
 					delete this.client.channelGuildMap[channel.id];
 					guild.channels.remove(channel);
@@ -401,7 +391,7 @@ export class RabbitMqService {
 		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
 		let roleCount = 0;
 
-		this.client.guilds.forEach(g => {
+		this.client.guilds.forEach((g) => {
 			channelCount += g.channels.size;
 			roleCount += g.roles.size;
 		});

@@ -37,13 +37,13 @@ i18n.configure({
 	// syncFiles: true,
 	directory: __dirname + '/../i18n/bot',
 	objectNotation: true,
-	logDebugFn: function(msg: string) {
+	logDebugFn: function (msg: string) {
 		console.log('debug', msg);
 	},
-	logWarnFn: function(msg: string) {
+	logWarnFn: function (msg: string) {
 		console.error('warn', msg);
 	},
-	logErrorFn: function(msg: string) {
+	logErrorFn: function (msg: string) {
 		console.error('error', msg);
 	}
 });
@@ -184,10 +184,6 @@ export class IMClient extends Client {
 		this.premium = new PremiumService(this);
 		this.management = new ManagementService(this);
 
-		// Services
-		this.cmds.init();
-		this.rabbitmq.init();
-
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
 		this.on('guildDelete', this.onGuildDelete);
@@ -201,6 +197,12 @@ export class IMClient extends Client {
 		this.on('rawWS', this.onRawWS);
 	}
 
+	public async init() {
+		// Services
+		await this.cmds.init();
+		await this.rabbitmq.init();
+	}
+
 	private async onClientReady(): Promise<void> {
 		if (this.hasStarted) {
 			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
@@ -208,6 +210,7 @@ export class IMClient extends Client {
 		}
 
 		// Setup services that require all guilds
+		await this.premium.init();
 		await this.scheduler.init();
 
 		this.hasStarted = true;
@@ -219,11 +222,11 @@ export class IMClient extends Client {
 		console.log(`This is the ${this.type} version of the bot.`);
 
 		// Init all caches
-		await Promise.all(Object.values(this.cache).map(c => c.init()));
+		await Promise.all(Object.values(this.cache).map((c) => c.init()));
 
 		// Insert guilds into db
 		await this.db.saveGuilds(
-			this.guilds.map(g => ({
+			this.guilds.map((g) => ({
 				id: g.id,
 				name: g.name,
 				icon: g.iconURL,
@@ -233,11 +236,11 @@ export class IMClient extends Client {
 			}))
 		);
 
-		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map(g => g.id));
+		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map((g) => g.id));
 
 		// Do some checks for all guilds
-		this.guilds.forEach(async guild => {
-			const bannedGuild = bannedGuilds.find(g => g.id === guild.id);
+		this.guilds.forEach(async (guild) => {
+			const bannedGuild = bannedGuilds.find((g) => g.id === guild.id);
 
 			// Check if the guild was banned
 			if (bannedGuild) {
@@ -462,14 +465,14 @@ export class IMClient extends Client {
 		}
 
 		// Check for a "general" channel, which is often default chat
-		const gen = guild.channels.find(c => c.name === 'general');
+		const gen = guild.channels.find((c) => c.name === 'general');
 		if (gen) {
 			return gen;
 		}
 
 		// First channel in order where the bot can speak
 		return guild.channels
-			.filter(c => c.type === ChannelType.GUILD_TEXT /*&&
+			.filter((c) => c.type === ChannelType.GUILD_TEXT /*&&
 					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/)
 			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
