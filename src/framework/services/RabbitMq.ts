@@ -3,9 +3,10 @@ import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { ClientCacheObject, IMClient } from '../../client';
 import { BotType, ShardCommand } from '../../types';
 import { FakeChannel } from '../../util';
+
+import { IMService } from './Service';
 
 interface ShardMessage {
 	id: string;
@@ -14,8 +15,7 @@ interface ShardMessage {
 	[x: string]: any;
 }
 
-export class RabbitMqService {
-	private client: IMClient;
+export class RabbitMqService extends IMService {
 	private conn: Connection;
 	private connRetry: number = 0;
 
@@ -26,12 +26,7 @@ export class RabbitMqService {
 	private qName: string;
 	private channel: Channel;
 	private channelRetry: number = 0;
-	private msgQueue: any[];
-
-	public constructor(client: IMClient) {
-		this.client = client;
-		this.msgQueue = [];
-	}
+	private msgQueue: any[] = [];
 
 	public async init() {
 		if (this.client.flags.includes('--no-rabbitmq')) {
@@ -352,7 +347,7 @@ export class RabbitMqService {
 
 			case ShardCommand.FLUSH_CACHE:
 				const errors: string[] = [];
-				const cacheNames = content.caches as (keyof ClientCacheObject)[];
+				const cacheNames = content.caches as string[];
 
 				if (!content.caches) {
 					Object.values(this.client.cache).forEach((c) => c.flush(guildId));

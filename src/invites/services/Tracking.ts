@@ -2,18 +2,16 @@ import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, T
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
 import { GuildSettingsKey } from '../../framework/models/GuildSetting';
 import { JoinInvalidatedReason } from '../../framework/models/Join';
+import { IMService } from '../../framework/services/Service';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
 
 const GUILDS_IN_PARALLEL = 10;
 const INVITE_CREATE = 40;
 
-export class TrackingService {
-	private client: IMClient;
-
+export class TrackingService extends IMService {
 	public pendingGuilds: Set<string> = new Set();
 	public initialPendingGuilds: number = 0;
 
@@ -22,22 +20,20 @@ export class TrackingService {
 	} = {};
 	private inviteStoreUpdate: { [guildId: string]: number } = {};
 
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		client.on('ready', this.onClientReady.bind(this));
-		client.on('channelCreate', this.onChannelCreate.bind(this));
-		client.on('channelUpdate', this.onChannelUpdate.bind(this));
-		client.on('channelDelete', this.onChannelDelete.bind(this));
-		client.on('guildRoleCreate', this.onGuildRoleCreate.bind(this));
-		client.on('guildRoleUpdate', this.onGuildRoleUpdate.bind(this));
-		client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
-		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
-		client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
+	public async init() {
+		this.client.on('channelCreate', this.onChannelCreate.bind(this));
+		this.client.on('channelUpdate', this.onChannelUpdate.bind(this));
+		this.client.on('channelDelete', this.onChannelDelete.bind(this));
+		this.client.on('guildRoleCreate', this.onGuildRoleCreate.bind(this));
+		this.client.on('guildRoleUpdate', this.onGuildRoleUpdate.bind(this));
+		this.client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
+		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
+		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
 	}
 
-	private async onClientReady() {
+	public async onClientReady() {
 		if (this.client.hasStarted) {
+			this.startupDone();
 			return;
 		}
 
@@ -46,18 +42,18 @@ export class TrackingService {
 		const allGuilds = [...this.client.guilds.values()].sort((a, b) => b.memberCount - a.memberCount);
 
 		// Fetch all invites from DB
-		const allCodes = await this.client.db.getAllInviteCodesForGuilds(allGuilds.map(g => g.id));
+		const allCodes = await this.client.db.getAllInviteCodesForGuilds(allGuilds.map((g) => g.id));
 
 		// Initialize our cache for each guild, so we
 		// don't need to do any if checks later
-		allGuilds.forEach(guild => {
+		allGuilds.forEach((guild) => {
 			this.pendingGuilds.add(guild.id);
 			this.inviteStore[guild.id] = {};
 		});
 
 		// Update our cache to match the DB
 		allCodes.forEach(
-			inv =>
+			(inv) =>
 				(this.inviteStore[inv.guildId][inv.code] = {
 					uses: inv.uses,
 					maxUses: inv.maxUses
@@ -79,19 +75,29 @@ export class TrackingService {
 				// Filter any guilds that have the pro bot
 				if (!this.client.disabledGuilds.has(guild.id)) {
 					// Insert data into db
-					await this.insertGuildData(guild);
+					try {
+						await this.insertGuildData(guild);
+					} catch (err) {
+						console.error(err);
+					}
 
-					console.log('EVENT(clientReady): Updated invite count for ' + guild.name);
+					console.log('Updated invite count for ' + guild.name);
 				}
 
 				this.pendingGuilds.delete(guild.id);
-				if (this.pendingGuilds.size % 50 === 0 || this.pendingGuilds.size === 0) {
+				if (this.pendingGuilds.size % 50 === 0) {
 					console.log(`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`);
 					await this.client.rabbitmq.sendStatusToManager();
 				}
 
+				if (this.pendingGuilds.size === 0) {
+					console.log(`Loaded all pending guilds, releasing start ticket`);
+					this.startupDone();
+				}
+
 				setTimeout(func, 0);
 			};
+			// tslint:disable-next-line: no-floating-promises
 			func();
 		}
 	}
@@ -148,11 +154,11 @@ export class TrackingService {
 
 		// Remove the channel from the filtered list if it is there
 		const settings = await this.client.cache.guilds.get(channel.guild.id);
-		if (settings.channels && settings.channels.some(c => c === channel.id)) {
+		if (settings.channels && settings.channels.some((c) => c === channel.id)) {
 			await this.client.cache.guilds.setOne(
 				channel.guild.id,
 				GuildSettingsKey.channels,
-				settings.channels.filter(c => c !== channel.id)
+				settings.channels.filter((c) => c !== channel.id)
 			);
 		}
 
@@ -212,7 +218,7 @@ export class TrackingService {
 		if (!role) {
 			const allRoles = await guild.getRESTRoles();
 			const allRanks = await this.client.cache.ranks.get(guild.id);
-			const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
+			const oldRoleIds = allRanks.filter((rank) => !allRoles.some((r) => r.id === rank.roleId)).map((r) => r.roleId);
 			for (const roleId of oldRoleIds) {
 				await this.client.db.removeRank(guild.id, roleId);
 			}
@@ -255,7 +261,7 @@ export class TrackingService {
 				const premium = await this.client.cache.premium.get(guild.id);
 				const roles = premium ? sets.joinRoles : sets.joinRoles.slice(0, 1);
 
-				roles.forEach(role => guild.addMemberRole(member.id, role, 'Join role'));
+				roles.forEach((role) => guild.addMemberRole(member.id, role, 'Join role'));
 			}
 		}
 
@@ -290,8 +296,8 @@ export class TrackingService {
 			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null as GuildAuditLog);
 			if (logs && logs.entries.length) {
 				const createdCodes = logs.entries
-					.filter(e => deconstruct(e.id) > lastUpdate && newInvs[e.after.code] === undefined)
-					.map(e => ({
+					.filter((e) => deconstruct(e.id) > lastUpdate && newInvs[e.after.code] === undefined)
+					.map((e) => ({
 						code: e.after.code,
 						channel: {
 							id: e.after.channel_id,
@@ -305,7 +311,7 @@ export class TrackingService {
 						temporary: e.after.temporary,
 						createdAt: deconstruct(e.id)
 					}));
-				inviteCodesUsed = inviteCodesUsed.concat(createdCodes.map(c => c.code));
+				inviteCodesUsed = inviteCodesUsed.concat(createdCodes.map((c) => c.code));
 				invs = invs.concat(createdCodes as any);
 			}
 		}
@@ -316,7 +322,7 @@ export class TrackingService {
 				guild.vanityURL ||
 				(await guild
 					.getVanity()
-					.then(r => {
+					.then((r) => {
 						return r.code;
 					})
 					.catch(() => undefined));
@@ -352,23 +358,23 @@ export class TrackingService {
 		const updatedCodes: string[] = [];
 		// These are all used codes, and all new codes combined.
 		const newAndUsedCodes = inviteCodesUsed
-			.map(code => {
-				const inv = invs.find(i => i.code === code);
+			.map((code) => {
+				const inv = invs.find((i) => i.code === code);
 				if (inv) {
 					return inv;
 				}
 				updatedCodes.push(code);
 				return null;
 			})
-			.filter(inv => !!inv)
-			.concat(invs.filter(inv => !oldInvs[inv.code]));
+			.filter((inv) => !!inv)
+			.concat(invs.filter((inv) => !oldInvs[inv.code]));
 
 		// We need the members and channels in the DB for the invite codes
 		const newMembers = newAndUsedCodes
-			.map(inv => inv.inviter)
-			.filter(inv => !!inv)
+			.map((inv) => inv.inviter)
+			.filter((inv) => !!inv)
 			.concat(member.user) // Add invitee
-			.map(m => ({
+			.map((m) => ({
 				id: m.id,
 				name: m.username,
 				discriminator: m.discriminator,
@@ -379,9 +385,9 @@ export class TrackingService {
 		}
 
 		const newChannels = newAndUsedCodes
-			.map(inv => inv.channel)
-			.filter(c => !!c)
-			.map(channel => ({
+			.map((inv) => inv.channel)
+			.filter((c) => !!c)
+			.map((channel) => ({
 				id: channel.id,
 				guildId: guild.id,
 				name: channel.name
@@ -390,7 +396,7 @@ export class TrackingService {
 			await this.client.db.saveChannels(newChannels);
 		}
 
-		const codes = newAndUsedCodes.map(inv => ({
+		const codes = newAndUsedCodes.map((inv) => ({
 			createdAt: inv.createdAt ? new Date(inv.createdAt) : new Date(),
 			code: inv.code,
 			channelId: inv.channel ? inv.channel.id : null,
@@ -470,14 +476,14 @@ export class TrackingService {
 			removedLeaves = affected;
 		}
 
-		const invite = newAndUsedCodes.find(c => c.code === exactMatchCode);
+		const invite = newAndUsedCodes.find((c) => c.code === exactMatchCode);
 
 		// Exit if we can't find the invite code used
 		if (!invite) {
 			if (joinChannel) {
 				joinChannel
 					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinUnknownInviter' }, { id: member.id }))
-					.catch(async err => {
+					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
@@ -490,7 +496,7 @@ export class TrackingService {
 			if (joinChannel) {
 				joinChannel
 					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinVanityUrl' }, { id: member.id }))
-					.catch(async err => {
+					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
@@ -517,7 +523,7 @@ export class TrackingService {
 			if (joinChannel) {
 				joinChannel
 					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinServerWidget' }, { id: member.id }))
-					.catch(async err => {
+					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
@@ -543,7 +549,7 @@ export class TrackingService {
 		if (exactMatchCode) {
 			const invCodeSettings = await this.client.cache.inviteCodes.getOne(guild.id, exactMatchCode);
 			if (invCodeSettings && invCodeSettings.roles) {
-				invCodeSettings.roles.forEach(r => member.addRole(r));
+				invCodeSettings.roles.forEach((r) => member.addRole(r));
 			}
 		}
 
@@ -571,7 +577,7 @@ export class TrackingService {
 				inviter: inviter || { user: invite.inviter }
 			});
 
-			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async err => {
+			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async (err) => {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
@@ -646,7 +652,7 @@ export class TrackingService {
 							}
 						)
 					)
-					.catch(async err => {
+					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
@@ -725,7 +731,7 @@ export class TrackingService {
 				inviter
 			});
 
-			leaveChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async err => {
+			leaveChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async (err) => {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
@@ -746,7 +752,7 @@ export class TrackingService {
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
-			inv => this.inviteStore[inv.guild.id] === undefined || this.inviteStore[inv.guild.id][inv.code] === undefined
+			(inv) => this.inviteStore[inv.guild.id] === undefined || this.inviteStore[inv.guild.id][inv.code] === undefined
 		);
 
 		// Update our local cache
@@ -760,7 +766,7 @@ export class TrackingService {
 			guild.vanityURL ||
 			(await guild
 				.getVanity()
-				.then(r => {
+				.then((r) => {
 					return r.code;
 				})
 				.catch(() => undefined));
@@ -780,9 +786,9 @@ export class TrackingService {
 
 		// Add all new inviters to db
 		const newMembers = newInviteCodes
-			.map(i => i.inviter)
-			.filter((u, i, arr) => !!u && arr.findIndex(u2 => u2 && u2.id === u.id) === i)
-			.map(m => ({
+			.map((i) => i.inviter)
+			.filter((u, i, arr) => !!u && arr.findIndex((u2) => u2 && u2.id === u.id) === i)
+			.map((m) => ({
 				id: m.id,
 				name: m.username,
 				discriminator: m.discriminator,
@@ -794,10 +800,10 @@ export class TrackingService {
 
 		// Add all new invite channels to the db
 		const newChannels = newInviteCodes
-			.filter(i => !!i.channel)
-			.map(i => guild.channels.get(i.channel.id))
-			.filter((c, i, arr) => !!c && arr.findIndex(c2 => c2.id === c.id) === i)
-			.map(c => ({
+			.filter((i) => !!i.channel)
+			.map((i) => guild.channels.get(i.channel.id))
+			.filter((c, i, arr) => !!c && arr.findIndex((c2) => c2.id === c.id) === i)
+			.map((c) => ({
 				id: c.id,
 				name: c.name,
 				guildId: guild.id,
@@ -809,7 +815,7 @@ export class TrackingService {
 
 		await Promise.all(promises);
 
-		const codes = invs.map(inv => ({
+		const codes = invs.map((inv) => ({
 			createdAt: inv.createdAt ? moment(inv.createdAt).toDate() : new Date(),
 			code: inv.code,
 			channelId: inv.channel ? inv.channel.id : null,
@@ -834,7 +840,7 @@ export class TrackingService {
 		const localInvites: {
 			[key: string]: { uses: number; maxUses: number };
 		} = {};
-		invites.forEach(value => {
+		invites.forEach((value) => {
 			localInvites[value.code] = { uses: value.uses, maxUses: value.maxUses };
 		});
 		return localInvites;
@@ -845,7 +851,7 @@ export class TrackingService {
 		newObj: { [key: string]: { uses: number; maxUses: number } }
 	): string[] {
 		const inviteCodesUsed: string[] = [];
-		Object.keys(newObj).forEach(key => {
+		Object.keys(newObj).forEach((key) => {
 			if (
 				newObj[key].uses !== 0 /* ignore new empty invites */ &&
 				(!oldObj[key] || oldObj[key].uses < newObj[key].uses)
@@ -855,7 +861,7 @@ export class TrackingService {
 		});
 		// Only check for max uses if we can't find any others
 		if (inviteCodesUsed.length === 0) {
-			Object.keys(oldObj).forEach(key => {
+			Object.keys(oldObj).forEach((key) => {
 				if (!newObj[key] && oldObj[key].uses === oldObj[key].maxUses - 1) {
 					inviteCodesUsed.push(key);
 				}

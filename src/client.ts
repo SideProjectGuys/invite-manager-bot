@@ -2,6 +2,7 @@ import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
+import { Cache } from './framework/cache/Cache';
 import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
@@ -14,6 +15,7 @@ import { MessagingService } from './framework/services/Messaging';
 import { PremiumService } from './framework/services/PremiumService';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
+import { IMService } from './framework/services/Service';
 import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache';
 import { InvitesCache } from './invites/cache/InvitesCache';
 import { LeaderboardCache } from './invites/cache/LeaderboardCache';
@@ -60,6 +62,8 @@ export interface ClientOptions {
 }
 
 export interface ClientCacheObject {
+	[key: string]: Cache<any>;
+
 	inviteCodes: InviteCodeSettingsCache;
 	invites: InvitesCache;
 	leaderboard: LeaderboardCache;
@@ -74,6 +78,23 @@ export interface ClientCacheObject {
 	reactionRoles: ReactionRoleCache;
 }
 
+export interface ClientServiceObject {
+	[key: string]: IMService;
+
+	database: DatabaseService;
+	rabbitmq: RabbitMqService;
+	message: MessagingService;
+	moderation: ModerationService;
+	scheduler: SchedulerService;
+	commands: CommandsService;
+	captcha: CaptchaService;
+	invites: InvitesService;
+	music: MusicService;
+	tracking: TrackingService;
+	premium: PremiumService;
+	management: ManagementService;
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
@@ -83,13 +104,16 @@ export class IMClient extends Client {
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
 
-	public db: DatabaseService;
-	public cache: ClientCacheObject;
-
-	public rabbitmq: RabbitMqService;
 	public shardId: number;
 	public shardCount: number;
 
+	public service: ClientServiceObject;
+	private startingServices: IMService[];
+	public cache: ClientCacheObject;
+
+	// Service shortcuts
+	public db: DatabaseService;
+	public rabbitmq: RabbitMqService;
 	public msg: MessagingService;
 	public mod: ModerationService;
 	public scheduler: SchedulerService;
@@ -100,6 +124,7 @@ export class IMClient extends Client {
 	public tracking: TrackingService;
 	public premium: PremiumService;
 	public management: ManagementService;
+	// End service shortcuts
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
@@ -157,7 +182,21 @@ export class IMClient extends Client {
 		this.shardId = shardId;
 		this.shardCount = shardCount;
 
-		this.db = new DatabaseService(this);
+		this.service = {
+			database: new DatabaseService(this),
+			rabbitmq: new RabbitMqService(this),
+			message: new MessagingService(this),
+			moderation: new ModerationService(this),
+			scheduler: new SchedulerService(this),
+			commands: new CommandsService(this),
+			captcha: new CaptchaService(this),
+			invites: new InvitesService(this),
+			tracking: new TrackingService(this),
+			music: new MusicService(this),
+			premium: new PremiumService(this),
+			management: new ManagementService(this)
+		};
+		this.startingServices = Object.values(this.service);
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
@@ -172,17 +211,20 @@ export class IMClient extends Client {
 			music: new MusicCache(this),
 			reactionRoles: new ReactionRoleCache(this)
 		};
-		this.rabbitmq = new RabbitMqService(this);
-		this.msg = new MessagingService(this);
-		this.mod = new ModerationService(this);
-		this.scheduler = new SchedulerService(this);
-		this.cmds = new CommandsService(this);
-		this.captcha = new CaptchaService(this);
-		this.invs = new InvitesService(this);
-		this.tracking = new TrackingService(this);
-		this.music = new MusicService(this);
-		this.premium = new PremiumService(this);
-		this.management = new ManagementService(this);
+
+		// Setup service shortcuts
+		this.db = this.service.database;
+		this.rabbitmq = this.service.rabbitmq;
+		this.msg = this.service.message;
+		this.mod = this.service.moderation;
+		this.scheduler = this.service.scheduler;
+		this.cmds = this.service.commands;
+		this.captcha = this.service.captcha;
+		this.invs = this.service.invites;
+		this.music = this.service.music;
+		this.tracking = this.service.tracking;
+		this.premium = this.service.premium;
+		this.management = this.service.management;
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
@@ -199,8 +241,7 @@ export class IMClient extends Client {
 
 	public async init() {
 		// Services
-		await this.cmds.init();
-		await this.rabbitmq.init();
+		await Promise.all(Object.values(this.service).map((s) => s.init()));
 	}
 
 	public async waitForStartupTicket() {
@@ -209,7 +250,7 @@ export class IMClient extends Client {
 			() => console.log(`Waiting for ticket since ${Math.floor(process.uptime() - start)} seconds...`),
 			10000
 		);
-		await this.rabbitmq.waitForStartupTicket();
+		await this.service.rabbitmq.waitForStartupTicket();
 		clearInterval(interval);
 	}
 
@@ -219,9 +260,8 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Setup services that require all guilds
-		await this.premium.init();
-		await this.scheduler.init();
+		// This is for convenience, the services could also subscribe to 'ready' event on client
+		await Promise.all(Object.values(this.service).map((s) => s.onClientReady()));
 
 		this.hasStarted = true;
 
@@ -322,6 +362,14 @@ export class IMClient extends Client {
 
 		await this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 1 * 60 * 1000);
+	}
+
+	public serviceStartupDone(service: IMService) {
+		this.startingServices = this.startingServices.filter((s) => s !== service);
+		if (this.startingServices.length === 0) {
+			console.log(`All services ready, returning start ticket`);
+			this.rabbitmq.endStartup().catch((err) => console.error(err));
+		}
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {

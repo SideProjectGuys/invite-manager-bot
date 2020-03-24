@@ -32,6 +32,8 @@ import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
 import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
+import { IMService } from './Service';
+
 const GLOBAL_SHARD_ID = 0;
 
 enum TABLE {
@@ -65,8 +67,7 @@ enum TABLE {
 	strikes = '`strikes`'
 }
 
-export class DatabaseService {
-	private client: IMClient;
+export class DatabaseService extends IMService {
 	private dbCount: number = 1;
 	private pools: Map<number, Pool> = new Map();
 
@@ -81,7 +82,8 @@ export class DatabaseService {
 	private incidents: Partial<Incident>[] = [];
 
 	public constructor(client: IMClient) {
-		this.client = client;
+		super(client);
+
 		for (const db of client.config.databases) {
 			const range = db.range;
 			delete db.range;
@@ -129,8 +131,8 @@ export class DatabaseService {
 		table: TABLE,
 		where: string,
 		values: O[],
-		selector: (obj: O) => number | string = o => o as any,
-		dataSelector: (obj: O) => any = o => o
+		selector: (obj: O) => number | string = (o) => o as any,
+		dataSelector: (obj: O) => any = (o) => o
 	): Promise<T[]> {
 		const map: Map<Pool, Map<string, O[]>> = new Map();
 		for (const value of values) {
@@ -171,10 +173,10 @@ export class DatabaseService {
 		values: Partial<T>[],
 		selector: (obj: Partial<T>) => number | string
 	) {
-		const colQuery = cols.map(c => `\`${c}\``).join(',');
+		const colQuery = cols.map((c) => `\`${c}\``).join(',');
 		const updateQuery =
 			updateCols.length > 0
-				? `ON DUPLICATE KEY UPDATE ${updateCols.map(u => `\`${u}\` = VALUES(\`${u}\`)`).join(',')}`
+				? `ON DUPLICATE KEY UPDATE ${updateCols.map((u) => `\`${u}\` = VALUES(\`${u}\`)`).join(',')}`
 				: '';
 
 		const map: Map<string, [Pool, Partial<T>[]]> = new Map();
@@ -190,8 +192,8 @@ export class DatabaseService {
 
 		const oks: OkPacket[] = [];
 		for (const [db, [pool, rawVals]] of map.entries()) {
-			const vals = rawVals.map(val =>
-				cols.map(col => {
+			const vals = rawVals.map((val) =>
+				cols.map((col) => {
 					let v: any = val[col];
 					if (v instanceof Date) {
 						return v;
@@ -230,7 +232,7 @@ export class DatabaseService {
 			['id', 'name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
 			['name', 'icon', 'memberCount', 'banReason', 'deletedAt'],
 			guilds,
-			g => g.id
+			(g) => g.id
 		);
 	}
 
@@ -241,14 +243,14 @@ export class DatabaseService {
 		return this.findOne<GuildSetting>(guildId, TABLE.guildSettings, '`guildId` = ?', [guildId]);
 	}
 	public async saveGuildSettings(settings: Partial<GuildSetting>) {
-		await this.insertOrUpdate(TABLE.guildSettings, ['guildId', 'value'], ['value'], [settings], s => s.guildId);
+		await this.insertOrUpdate(TABLE.guildSettings, ['guildId', 'value'], ['value'], [settings], (s) => s.guildId);
 	}
 
 	// ------------
 	//   Channels
 	// ------------
 	public async saveChannels(channels: Partial<Channel>[]) {
-		await this.insertOrUpdate(TABLE.channels, ['guildId', 'id', 'name'], ['name'], channels, c => c.guildId);
+		await this.insertOrUpdate(TABLE.channels, ['guildId', 'id', 'name'], ['name'], channels, (c) => c.guildId);
 	}
 
 	// -----------
@@ -271,7 +273,7 @@ export class DatabaseService {
 			['id', 'name', 'discriminator'],
 			['name', 'discriminator'],
 			members,
-			m => m.guildId
+			(m) => m.guildId
 		);
 	}
 
@@ -287,7 +289,7 @@ export class DatabaseService {
 			['guildId', 'memberId', 'value'],
 			['value'],
 			[settings],
-			s => s.guildId
+			(s) => s.guildId
 		);
 	}
 
@@ -300,7 +302,7 @@ export class DatabaseService {
 			['id', 'createdAt', 'guildId', 'name', 'color'],
 			['name', 'color'],
 			roles,
-			r => r.guildId
+			(r) => r.guildId
 		);
 	}
 
@@ -316,7 +318,7 @@ export class DatabaseService {
 			['guildId', 'roleId', 'numInvites', 'description'],
 			['numInvites', 'description'],
 			[rank],
-			r => r.guildId
+			(r) => r.guildId
 		);
 	}
 	public async removeRank(guildId: string, roleId: string) {
@@ -345,7 +347,7 @@ export class DatabaseService {
 		return rows as Array<RolePermission & { roleName: string }>;
 	}
 	public async saveRolePermissions(guildId: string, rolePermissions: Partial<RolePermission>[]) {
-		await this.insertOrUpdate(TABLE.rolePermissions, ['roleId', 'command'], [], rolePermissions, rp => guildId);
+		await this.insertOrUpdate(TABLE.rolePermissions, ['roleId', 'command'], [], rolePermissions, (rp) => guildId);
 	}
 	public async removeRolePermissions(guildId: string, roleId: string, command: string) {
 		await this.delete(guildId, TABLE.rolePermissions, '`roleId` = ? AND `command` = ?', [roleId, command]);
@@ -421,7 +423,7 @@ export class DatabaseService {
 			],
 			['uses'],
 			inviteCodes,
-			ic => ic.guildId
+			(ic) => ic.guildId
 		);
 	}
 
@@ -437,7 +439,7 @@ export class DatabaseService {
 			['guildId', 'inviteCode', 'value'],
 			['value'],
 			[settings],
-			s => s.guildId
+			(s) => s.guildId
 		);
 	}
 
@@ -480,7 +482,7 @@ export class DatabaseService {
 			['guildId', 'memberId', 'creatorId', 'amount', 'reason'],
 			[],
 			[customInvite],
-			c => c.guildId
+			(c) => c.guildId
 		);
 		return res[0].insertId;
 	}
@@ -524,7 +526,7 @@ export class DatabaseService {
 			`SELECT MAX(j.\`id\`) AS id FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? GROUP BY j.\`exactMatchCode\`, j.\`memberId\``,
 			[guildId]
 		);
-		return rows.map(r => Number(r.id));
+		return rows.map((r) => Number(r.id));
 	}
 	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
 		const [db, pool] = this.getDbInfo(guildId);
@@ -686,7 +688,7 @@ export class DatabaseService {
 			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
 			['exactMatchCode'],
 			[join],
-			j => j.guildId
+			(j) => j.guildId
 		);
 		return res[0].insertId;
 	}
@@ -700,7 +702,7 @@ export class DatabaseService {
 			['guildId', 'memberId', 'joinId'],
 			['joinId'],
 			[leave],
-			l => l.guildId
+			(l) => l.guildId
 		);
 		return res[0].insertId;
 	}
@@ -757,7 +759,7 @@ export class DatabaseService {
 			['guildId', 'memberId', 'action', 'message', 'data'],
 			[],
 			logs,
-			l => l.guildId
+			(l) => l.guildId
 		);
 	}
 
@@ -781,7 +783,7 @@ export class DatabaseService {
 			['guildId', 'memberId', 'command', 'args', 'time', 'errored'],
 			[],
 			commandUsages,
-			c => c.guildId
+			(c) => c.guildId
 		);
 	}
 
@@ -795,7 +797,7 @@ export class DatabaseService {
 		this.incidents.push(indicent);
 	}
 	private async saveIncidents(indicents: Partial<Incident>[]) {
-		await this.insertOrUpdate(TABLE.incidents, ['guildId', 'error', 'details'], [], indicents, i => i.guildId);
+		await this.insertOrUpdate(TABLE.incidents, ['guildId', 'error', 'details'], [], indicents, (i) => i.guildId);
 	}
 
 	// ---------------
@@ -828,7 +830,7 @@ export class DatabaseService {
 			['guildId', 'date', 'actionType', 'args', 'reason'],
 			[],
 			[action],
-			a => a.guildId
+			(a) => a.guildId
 		);
 		return res[0].insertId;
 	}
@@ -887,11 +889,11 @@ export class DatabaseService {
 		const guilds = await this.findManyOnSpecificShards<Guild>(
 			TABLE.guilds,
 			`id IN(?)`,
-			rows.map(r => r.guildId)
+			rows.map((r) => r.guildId)
 		);
-		return rows.map(r => ({
+		return rows.map((r) => ({
 			...r,
-			guildName: (guilds.find(g => g.id === r.guildId) || { name: r.guildId }).name
+			guildName: (guilds.find((g) => g.id === r.guildId) || { name: r.guildId }).name
 		})) as Array<PremiumSubscriptionGuild & { guildName: string }>;
 	}
 	public async savePremiumSubscriptionGuild(sub: Partial<PremiumSubscriptionGuild>) {
@@ -939,7 +941,7 @@ export class DatabaseService {
 		return 0;
 	}
 	public async saveStrike(strike: Partial<Strike>) {
-		await this.insertOrUpdate(TABLE.strikes, ['guildId', 'memberId', 'type', 'amount'], [], [strike], s => s.guildId);
+		await this.insertOrUpdate(TABLE.strikes, ['guildId', 'memberId', 'type', 'amount'], [], [strike], (s) => s.guildId);
 	}
 	public async removeStrike(guildId: string, id: number) {
 		await this.delete(guildId, TABLE.strikes, '`guildId` = ? AND `id` = ?', [guildId, id]);
@@ -952,7 +954,13 @@ export class DatabaseService {
 		return this.findMany<StrikeConfig>(guildId, TABLE.strikeConfigs, '`guildId` = ? ORDER BY `amount` DESC', [guildId]);
 	}
 	public async saveStrikeConfig(config: Partial<StrikeConfig>) {
-		await this.insertOrUpdate(TABLE.strikeConfigs, ['guildId', 'type', 'amount'], ['amount'], [config], c => c.guildId);
+		await this.insertOrUpdate(
+			TABLE.strikeConfigs,
+			['guildId', 'type', 'amount'],
+			['amount'],
+			[config],
+			(c) => c.guildId
+		);
 	}
 	public async removeStrikeConfig(guildId: string, type: ViolationType) {
 		await this.delete(guildId, TABLE.strikeConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
@@ -970,7 +978,7 @@ export class DatabaseService {
 			['guildId', 'type', 'amount', 'args', 'creatorId', 'memberId', 'reason'],
 			[],
 			[punishment],
-			p => p.guildId
+			(p) => p.guildId
 		);
 	}
 	public async removePunishment(guildId: string, id: number) {
@@ -997,7 +1005,7 @@ export class DatabaseService {
 			['guildId', 'type', 'amount', 'args'],
 			['amount', 'args'],
 			[config],
-			c => c.guildId
+			(c) => c.guildId
 		);
 	}
 	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
@@ -1019,7 +1027,7 @@ export class DatabaseService {
 			['guildId', 'channelId', 'id', 'content', 'embeds'],
 			['content', 'embeds'],
 			[message],
-			m => m.guildId
+			(m) => m.guildId
 		);
 	}
 
@@ -1035,7 +1043,7 @@ export class DatabaseService {
 			['guildId', 'channelId', 'messageId', 'emoji', 'roleId'],
 			['roleId'],
 			[reactionRole],
-			r => r.guildId
+			(r) => r.guildId
 		);
 	}
 	public async removeReactionRole(guildId: string, channelId: string, messageId: string, emoji: string) {
@@ -1061,28 +1069,28 @@ export class DatabaseService {
 		this.guilds.clear();
 		if (newGuilds.length > 0) {
 			await this.client.db.saveGuilds(
-				newGuilds.map(guild => ({
+				newGuilds.map((guild) => ({
 					id: guild.id,
 					name: guild.name,
 					icon: guild.iconURL,
 					memberCount: guild.memberCount
 				}))
 			);
-			newGuilds.forEach(g => this.doneGuilds.add(g.id));
+			newGuilds.forEach((g) => this.doneGuilds.add(g.id));
 		}
 
 		const newUsers = [...this.users.values()];
 		this.users.clear();
 		if (newUsers.length > 0) {
 			await this.client.db.saveMembers(
-				newUsers.map(user => ({
+				newUsers.map((user) => ({
 					id: user.id,
 					name: user.username,
 					discriminator: user.discriminator,
 					guildId: user.guildId
 				}))
 			);
-			newUsers.forEach(u => this.doneUsers.add(u.id));
+			newUsers.forEach((u) => this.doneUsers.add(u.id));
 		}
 
 		const promises: Promise<any[]>[] = [];

@@ -2,7 +2,7 @@ import { Guild, Member, Message } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
+import { IMService } from '../../framework/services/Service';
 
 const canvasClass = require('canvas');
 
@@ -40,13 +40,9 @@ const captchaOptions: CaptchaConfig = {
 	nofLines: 4
 };
 
-export class CaptchaService {
-	private client: IMClient;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
+export class CaptchaService extends IMService {
+	public async init() {
+		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
@@ -116,11 +112,7 @@ export class CaptchaService {
 		config.background = config.background || 'rgb(255,255,255)';
 		config.lineWidth = config.lineWidth || 2;
 		config.saveDir = config.saveDir || __dirname;
-		config.text =
-			config.text ||
-			Math.random()
-				.toString()
-				.substr(2, config.size);
+		config.text = config.text || Math.random().toString().substr(2, config.size);
 		config.noise = config.noise !== false ? true : false;
 		config.noiseColor = config.noiseColor || config.color;
 		config.complexity = config.complexity || 3;
@@ -171,7 +163,7 @@ export class CaptchaService {
 			ctx.fillText(config.text.charAt(i), 0, 0);
 		}
 
-		return new Promise<[string, string | Buffer]>(resolve => {
+		return new Promise<[string, string | Buffer]>((resolve) => {
 			if (config.fileMode === FileMode.FILE) {
 				const fs = require('fs');
 
@@ -179,19 +171,19 @@ export class CaptchaService {
 				const out = fs.createWriteStream(config.saveDir + '/' + filename);
 				const stream = canvas.pngStream();
 
-				stream.on('data', function(chunk: Buffer) {
+				stream.on('data', function (chunk: Buffer) {
 					out.write(chunk);
 				});
 
-				stream.on('end', function() {
+				stream.on('end', function () {
 					resolve([config.text, filename]);
 				});
 			} else if (config.fileMode === FileMode.BUFFER) {
-				canvas.toBuffer(function(err: Error, buf: Buffer) {
+				canvas.toBuffer(function (err: Error, buf: Buffer) {
 					resolve([config.text, buf]);
 				});
 			} else {
-				canvas.toDataURL('image/png', function(err: Error, data: Buffer) {
+				canvas.toDataURL('image/png', function (err: Error, data: Buffer) {
 					resolve([config.text, data]);
 				});
 			}
@@ -199,7 +191,7 @@ export class CaptchaService {
 	}
 
 	private async awaitMessage(member: Member, timeLeft: number) {
-		return new Promise<string>(resolve => {
+		return new Promise<string>((resolve) => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message) => {
 				if (member.id !== resp.author.id) {

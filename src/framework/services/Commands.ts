@@ -4,11 +4,12 @@ import { promises, statSync } from 'fs';
 import i18n from 'i18n';
 import { basename, resolve } from 'path';
 
-import { IMClient } from '../../client';
 import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
+
+import { IMService } from './Service';
 
 const CMD_DIRS = [
 	resolve(__dirname, '../commands'),
@@ -21,20 +22,10 @@ const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
 const COOLDOWN = 5; // in seconds
 
-export class CommandsService {
-	private client: IMClient;
-
-	public commands: Command[];
-	private cmdMap: Map<string, Command>;
-	private commandCalls: Map<string, { last: number; warned: boolean }>;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		this.commands = [];
-		this.cmdMap = new Map();
-		this.commandCalls = new Map();
-	}
+export class CommandsService extends IMService {
+	public commands: Command[] = [];
+	private cmdMap: Map<string, Command> = new Map();
+	private commandCalls: Map<string, { last: number; warned: boolean }> = new Map();
 
 	public async init() {
 		console.log(`Loading commands...`);
@@ -88,9 +79,13 @@ export class CommandsService {
 		await Promise.all(CMD_DIRS.map((dir) => loadRecursive(dir)));
 
 		console.log(`Loaded \x1b[32m${this.commands.length}\x1b[0m commands!`);
+	}
 
-		// Attach events
+	public async onClientReady() {
+		// Attach events after the bot is ready
 		this.client.on('messageCreate', this.onMessage.bind(this));
+
+		await super.onClientReady();
 	}
 
 	public async onMessage(message: Message) {

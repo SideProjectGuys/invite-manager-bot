@@ -1,22 +1,17 @@
 import axios from 'axios';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
 import { BotType } from '../../types';
 
-export class PremiumService {
-	private client: IMClient = null;
+import { IMService } from './Service';
 
-	public constructor(client: IMClient) {
-		this.client = client;
-	}
-
-	public async init() {
-		if (this.client.type !== BotType.pro) {
-			return;
+export class PremiumService extends IMService {
+	public async onClientReady() {
+		if (this.client.type === BotType.pro) {
+			setInterval(() => this.checkGuilds(), 1 * 60 * 60 * 1000);
 		}
 
-		setInterval(() => this.checkGuilds(), 1 * 60 * 60 * 1000);
+		await super.onClientReady();
 	}
 
 	private async checkGuilds() {
@@ -79,15 +74,12 @@ export class PremiumService {
 			return 'paused';
 		} else {
 			const day = moment(res.data.last_charge_date).date();
-			const validUntil = moment()
-				.add(1, 'month')
-				.date(day)
-				.add(1, 'day');
+			const validUntil = moment().add(1, 'month').date(day).add(1, 'day');
 			const amount = res.data.currently_entitled_amount_cents / 100;
 			const maxGuilds = 5;
 
 			const subs = await this.client.db.getPremiumSubscriptionsForMember(userId, false);
-			const sub = subs.find(s => s.amount === amount && s.maxGuilds === maxGuilds && s.isPatreon === true);
+			const sub = subs.find((s) => s.amount === amount && s.maxGuilds === maxGuilds && s.isPatreon === true);
 
 			if (sub) {
 				sub.validUntil = validUntil.toDate();

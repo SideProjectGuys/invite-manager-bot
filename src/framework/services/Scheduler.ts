@@ -2,27 +2,23 @@ import { captureException, withScope } from '@sentry/node';
 import { Guild } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
 import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
-export class SchedulerService {
-	private client: IMClient = null;
-	private scheduledActionTimers: Map<number, NodeJS.Timer>;
+import { IMService } from './Service';
+
+export class SchedulerService extends IMService {
+	private scheduledActionTimers: Map<number, NodeJS.Timer> = new Map();
 	private scheduledActionFunctions: {
 		[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
+	} = {
+		[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a),
+		[ScheduledActionType.unlock]: (g, a) => this.unlock(g, a)
 	};
 
-	public constructor(client: IMClient) {
-		this.client = client;
-		this.scheduledActionTimers = new Map();
-		this.scheduledActionFunctions = {
-			[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a),
-			[ScheduledActionType.unlock]: (g, a) => this.unlock(g, a)
-		};
-	}
-
-	public async init() {
+	public async onClientReady() {
 		await this.scheduleScheduledActions();
+
+		await super.onClientReady();
 	}
 
 	public async addScheduledAction(
@@ -65,7 +61,7 @@ export class SchedulerService {
 				}
 				await this.client.db.removeScheduledAction(action.guildId, action.id);
 			} catch (error) {
-				withScope(scope => {
+				withScope((scope) => {
 					scope.setExtra('action', JSON.stringify(action));
 					captureException(error);
 				});
@@ -87,10 +83,10 @@ export class SchedulerService {
 	}
 
 	private async scheduleScheduledActions() {
-		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map(g => g.id));
-		actions = actions.filter(a => a.date !== null);
+		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map((g) => g.id));
+		actions = actions.filter((a) => a.date !== null);
 		console.log(`Scheduling ${actions.length} actions from db`);
-		actions.forEach(action => this.createTimer(action));
+		actions.forEach((action) => this.createTimer(action));
 	}
 
 	//////////////////////////
