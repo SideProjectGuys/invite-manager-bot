@@ -22,6 +22,7 @@ export class RabbitMqService extends IMService {
 	private qNameStartup: string;
 	private channelStartup: Channel;
 	private startTicket: MQMessage;
+	private waitingForTicket: boolean;
 
 	private qName: string;
 	private channel: Channel;
@@ -135,6 +136,8 @@ export class RabbitMqService extends IMService {
 
 		this.channelStartup = await this.conn.createChannel();
 		this.channelStartup.on('close', async (err) => {
+			this.waitingForTicket = false;
+
 			// If we have a ticket we are probably closing the channel after startup is complete
 			if (this.startTicket) {
 				return;
@@ -154,6 +157,7 @@ export class RabbitMqService extends IMService {
 
 		// Reset the ticket
 		this.startTicket = null;
+		this.waitingForTicket = true;
 
 		// Return a promise that resolves when we aquire a start ticket (a rabbitmq message)
 		return new Promise((resolve) => {
@@ -162,6 +166,8 @@ export class RabbitMqService extends IMService {
 				this.qNameStartup,
 				(msg) => {
 					console.log(`\x1b[32mAquired start ticket!\x1b[0m`);
+
+					this.waitingForTicket = false;
 
 					// Save the ticket so we can return it to the queue when our startup is done
 					this.startTicket = msg;
@@ -228,6 +234,8 @@ export class RabbitMqService extends IMService {
 			connected: this.client.gatewayConnected,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
+			starting: !!this.startTicket,
+			waitingToStart: this.waitingForTicket,
 			tracking: {
 				pendingGuilds: this.client.tracking.pendingGuilds.size,
 				initialPendingGuilds: this.client.tracking.initialPendingGuilds
