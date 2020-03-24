@@ -161,7 +161,7 @@ export class RabbitMqService extends IMService {
 			this.channelStartup.consume(
 				this.qNameStartup,
 				(msg) => {
-					console.log(`Aquired start ticket...`);
+					console.log(`\x1b[32mAquired start ticket!\x1b[0m`);
 
 					// Save the ticket so we can return it to the queue when our startup is done
 					this.startTicket = msg;

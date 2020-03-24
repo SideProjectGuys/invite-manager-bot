@@ -91,7 +91,7 @@ export class TrackingService extends IMService {
 				}
 
 				if (this.pendingGuilds.size === 0) {
-					console.log(`Loaded all pending guilds, releasing start ticket`);
+					console.log(`\x1b[32mLoaded all pending guilds!\x1b[0m`);
 					this.startupDone();
 				}
 
