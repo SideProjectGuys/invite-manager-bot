@@ -27,7 +27,7 @@ export default class extends Command {
 
 	public async action(message: Message, [role]: [Role], flags: {}, { guild, t }: Context): Promise<any> {
 		const ranks = await this.client.cache.ranks.get(guild.id);
-		const rank = ranks.find(r => r.roleId === role.id);
+		const rank = ranks.find((r) => r.roleId === role.id);
 
 		if (rank) {
 			await this.client.db.removeRank(guild.id, rank.roleId);

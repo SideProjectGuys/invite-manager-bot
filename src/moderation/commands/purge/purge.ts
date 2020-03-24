@@ -53,7 +53,7 @@ export default class extends Command {
 		try {
 			await this.client.deleteMessages(
 				message.channel.id,
-				messages.map(m => m.id),
+				messages.map((m) => m.id),
 				'purge command'
 			);
 

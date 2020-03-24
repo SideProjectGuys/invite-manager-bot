@@ -30,7 +30,7 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.mentionRole.alreadyDone', { role: `<@&${role.id}>` }));
 		} else {
 			let myRole: Role;
-			me.roles.forEach(r => {
+			me.roles.forEach((r) => {
 				const gRole = guild.roles.get(r);
 				if (!myRole || gRole.position > myRole.position) {
 					myRole = gRole;

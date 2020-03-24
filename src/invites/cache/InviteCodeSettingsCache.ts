@@ -11,7 +11,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 		const sets = await this.client.db.getInviteCodeSettingsForGuild(guildId);
 
 		const map = new Map();
-		sets.forEach(set => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
+		sets.forEach((set) => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
 		return map;
 	}
 

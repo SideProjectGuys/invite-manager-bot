@@ -72,14 +72,14 @@ export default class extends Command {
 
 				// If moderated roles are set then only moderate those roles
 				if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
-					if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
+					if (!settings.autoModModeratedRoles.some((r) => member.roles.indexOf(r) >= 0)) {
 						excluded++;
 						continue;
 					}
 				}
 
 				// Don't moderate ignored roles
-				if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
+				if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some((ir) => member.roles.indexOf(ir) >= 0)) {
 					excluded++;
 					continue;
 				}

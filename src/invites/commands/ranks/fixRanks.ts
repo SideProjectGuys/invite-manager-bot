@@ -19,7 +19,7 @@ export default class extends Command {
 	public async action(message: Message, args: [], flags: {}, { guild, t }: Context): Promise<any> {
 		const allRoles = await guild.getRESTRoles();
 		const allRanks = await this.client.cache.ranks.get(guild.id);
-		const oldRoleIds = allRanks.filter(rank => !allRoles.some(r => r.id === rank.roleId)).map(r => r.roleId);
+		const oldRoleIds = allRanks.filter((rank) => !allRoles.some((r) => r.id === rank.roleId)).map((r) => r.roleId);
 
 		for (const roleId of oldRoleIds) {
 			await this.client.db.removeRank(guild.id, roleId);

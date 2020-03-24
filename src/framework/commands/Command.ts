@@ -96,7 +96,7 @@ export abstract class Command {
 	public constructor(client: IMClient, props: CommandOptions) {
 		this.client = client;
 		this.name = props.name;
-		this.aliases = props.aliases.map(a => a.toLowerCase());
+		this.aliases = props.aliases.map((a) => a.toLowerCase());
 		this.args = props.args ? props.args : [];
 		this.flags = props.flags ? props.flags : [];
 		this.group = props.group;
@@ -111,7 +111,7 @@ export abstract class Command {
 		this.usage = `{prefix}${this.name} `;
 
 		this.flagResolvers = new Map();
-		this.flags.forEach(flag => {
+		this.flags.forEach((flag) => {
 			const res = flag.resolver instanceof Resolver ? flag.resolver : new flag.resolver(this.client);
 			this.flagResolvers.set(flag.name, res);
 			delete flag.resolver;
@@ -122,7 +122,7 @@ export abstract class Command {
 		});
 
 		this.resolvers = [];
-		this.args.forEach(arg => {
+		this.args.forEach((arg) => {
 			if (arg.resolver instanceof Resolver) {
 				this.resolvers.push(arg.resolver);
 			} else {

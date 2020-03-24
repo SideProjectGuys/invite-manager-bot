@@ -51,6 +51,6 @@ export class ArrayResolver extends Resolver {
 			}
 		}
 
-		return await Promise.all(splits.map(s => this.resolver.resolve(s, context, previous)));
+		return await Promise.all(splits.map((s) => this.resolver.resolve(s, context, previous)));
 	}
 }

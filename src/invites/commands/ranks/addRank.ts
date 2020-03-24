@@ -55,7 +55,7 @@ export default class extends Command {
 		]);
 
 		let myRole: Role;
-		me.roles.forEach(r => {
+		me.roles.forEach((r) => {
 			const gRole = guild.roles.get(r);
 			if (!myRole || gRole.position > myRole.position) {
 				myRole = gRole;
@@ -74,7 +74,7 @@ export default class extends Command {
 		}
 
 		const ranks = await this.client.cache.ranks.get(guild.id);
-		const rank = ranks.find(r => r.roleId === role.id);
+		const rank = ranks.find((r) => r.roleId === role.id);
 		const descr = description ? description : '';
 
 		let isNew = false;

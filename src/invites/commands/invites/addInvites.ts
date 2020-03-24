@@ -111,21 +111,21 @@ export default class extends Command {
 					descr +=
 						'\n\n' +
 						t('roles.shouldHave', {
-							shouldHave: shouldHave.map(r => `<@&${r.id}>`).join(', ')
+							shouldHave: shouldHave.map((r) => `<@&${r.id}>`).join(', ')
 						});
 				}
 				if (shouldNotHave.length > 0) {
 					descr +=
 						'\n\n' +
 						t('roles.shouldNotHave', {
-							shouldNotHave: shouldNotHave.map(r => `<@&${r.id}>`).join(', ')
+							shouldNotHave: shouldNotHave.map((r) => `<@&${r.id}>`).join(', ')
 						});
 				}
 				if (dangerous.length > 0) {
 					descr +=
 						'\n\n' +
 						t('roles.dangerous', {
-							dangerous: dangerous.map(r => `<@&${r.id}>`).join(', ')
+							dangerous: dangerous.map((r) => `<@&${r.id}>`).join(', ')
 						});
 				}
 			}

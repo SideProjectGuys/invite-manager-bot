@@ -36,10 +36,7 @@ export default class extends Command {
 		// Uptime
 		embed.fields.push({
 			name: t('cmd.botInfo.uptime'),
-			value: moment
-				.duration(moment().diff(this.client.startedAt))
-				.locale(lang)
-				.humanize(),
+			value: moment.duration(moment().diff(this.client.startedAt)).locale(lang).humanize(),
 			inline: true
 		});
 

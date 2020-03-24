@@ -48,7 +48,7 @@ export default class extends Command {
 		const embed = this.createEmbed();
 
 		if (!key) {
-			const cmd = this.client.cmds.commands.find(c => c.name === BotCommand.interactiveConfig);
+			const cmd = this.client.cmds.commands.find((c) => c.name === BotCommand.interactiveConfig);
 			return cmd.action(message, [], {}, context);
 		}
 
@@ -223,7 +223,7 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.sendReply(message, preview).catch(err => this.sendReply(message, err.message));
+				return () => this.sendReply(message, preview).catch((err) => this.sendReply(message, err.message));
 			}
 		}
 
@@ -248,14 +248,14 @@ export default class extends Command {
 					name: t('cmd.config.preview.title'),
 					value: t('cmd.config.preview.nextMessage')
 				});
-				return () => this.sendReply(message, preview).catch(err => this.sendReply(message, err.message));
+				return () => this.sendReply(message, preview).catch((err) => this.sendReply(message, err.message));
 			}
 		}
 
 		if (key === GuildSettingsKey.autoSubtractFakes) {
 			if (value) {
 				// Subtract fake invites from all members
-				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractFakes);
+				const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractFakes);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all fake invalidations
@@ -268,7 +268,7 @@ export default class extends Command {
 		if (key === GuildSettingsKey.autoSubtractLeaves) {
 			if (value) {
 				// Subtract leaves from all members
-				const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
+				const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all leave invalidations
@@ -280,7 +280,7 @@ export default class extends Command {
 
 		if (key === GuildSettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.subtractLeaves);
+			const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
 			return async () => await cmd.action(message, [], {}, context);
 		}
 

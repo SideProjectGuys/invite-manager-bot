@@ -47,7 +47,7 @@ export class Youtube extends MusicPlatform {
 	public async search(searchTerm: string, maxResults: number = 10): Promise<Array<MusicItem>> {
 		const tracks = await this.service.resolveTracks(`ytsearch:${searchTerm}`);
 
-		return tracks.slice(0, maxResults).map(track => {
+		return tracks.slice(0, maxResults).map((track) => {
 			const id = track.info.identifier;
 			return new YoutubeMusicItem(this, {
 				id: id,

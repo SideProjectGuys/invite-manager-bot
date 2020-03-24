@@ -21,7 +21,7 @@ export class ChannelResolver extends Resolver {
 			}
 		} else {
 			const name = value.toLowerCase();
-			const channels = guild.channels.filter(r => {
+			const channels = guild.channels.filter((r) => {
 				const rName = r.name.toLowerCase();
 				return rName.includes(name) || name.includes(rName);
 			});
@@ -36,7 +36,7 @@ export class ChannelResolver extends Resolver {
 						t(`resolvers.${this.getType()}.multiple`, {
 							channels: channels
 								.slice(0, 10)
-								.map(c => `\`${c.name}\``)
+								.map((c) => `\`${c.name}\``)
 								.join(', ')
 						})
 					);

@@ -12,7 +12,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 		const sets = await this.client.db.getMemberSettingsForGuild(guildId);
 
 		const map = new Map();
-		sets.forEach(set => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
+		sets.forEach((set) => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
 		return map;
 	}
 
