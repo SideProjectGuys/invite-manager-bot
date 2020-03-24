@@ -135,6 +135,11 @@ export class RabbitMqService extends IMService {
 
 		this.channelStartup = await this.conn.createChannel();
 		this.channelStartup.on('close', async (err) => {
+			// If we have a ticket we are probably closing the channel after startup is complete
+			if (this.startTicket) {
+				return;
+			}
+
 			if (err) {
 				captureException(err);
 				console.error(err);
@@ -147,13 +152,16 @@ export class RabbitMqService extends IMService {
 		await this.channelStartup.prefetch(1);
 		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false });
 
+		// Reset the ticket
+		this.startTicket = null;
+
 		// Return a promise that resolves when we aquire a start ticket (a rabbitmq message)
 		return new Promise((resolve) => {
 			// Start listening on the queue for one message (our start ticket)
 			this.channelStartup.consume(
 				this.qNameStartup,
 				(msg) => {
-					console.log('Aquired start ticket...');
+					console.log(`Aquired start ticket...`);
 
 					// Save the ticket so we can return it to the queue when our startup is done
 					this.startTicket = msg;
