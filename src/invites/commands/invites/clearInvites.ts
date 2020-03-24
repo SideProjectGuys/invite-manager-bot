@@ -52,7 +52,7 @@ export default class extends Command {
 		await this.client.db.updateJoinClearedStatus(
 			true,
 			guild.id,
-			codes.map(ic => ic.code)
+			codes.map((ic) => ic.code)
 		);
 
 		if (clearBonus) {

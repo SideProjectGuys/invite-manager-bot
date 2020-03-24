@@ -53,14 +53,12 @@ export default class extends Command {
 		});
 
 		const strikeText = strikeList
-			.map(s =>
+			.map((s) =>
 				t('cmd.check.strikes.entry', {
 					id: `**${s.id}**`,
 					amount: `**${s.amount}**`,
 					violation: `**${s.type}**`,
-					date: moment(s.createdAt)
-						.locale(settings.lang)
-						.fromNow()
+					date: moment(s.createdAt).locale(settings.lang).fromNow()
 				})
 			)
 			.join('\n');
@@ -73,14 +71,12 @@ export default class extends Command {
 		}
 
 		const punishmentText = punishmentList
-			.map(p =>
+			.map((p) =>
 				t('cmd.check.punishments.entry', {
 					id: `**${p.id}**`,
 					punishment: `**${p.type}**`,
 					amount: `**${p.amount}**`,
-					date: moment(p.createdAt)
-						.locale(settings.lang)
-						.fromNow()
+					date: moment(p.createdAt).locale(settings.lang).fromNow()
 				})
 			)
 			.join('\n');

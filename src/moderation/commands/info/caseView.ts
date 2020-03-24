@@ -40,7 +40,7 @@ export default class extends Command {
 		if (strike) {
 			let user: BasicUser = await guild
 				.getRESTMember(strike.memberId)
-				.then(m => ({
+				.then((m) => ({
 					id: m.user.id,
 					username: m.username,
 					discriminator: m.discriminator,
@@ -63,12 +63,7 @@ export default class extends Command {
 				id: `${strike.id}`,
 				amount: `**${strike.amount}**`,
 				violation: `**${strike.type}**`,
-				date:
-					'**' +
-					moment(strike.createdAt)
-						.locale(settings.lang)
-						.fromNow() +
-					'**',
+				date: '**' + moment(strike.createdAt).locale(settings.lang).fromNow() + '**',
 				member: `**${user.username}#${user.discriminator}** (${user.id})`
 			});
 		} else {
