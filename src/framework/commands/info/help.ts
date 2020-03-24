@@ -61,20 +61,20 @@ export default class extends Command {
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
 			const commands = this.client.cmds.commands
-				.map(c => ({
+				.map((c) => ({
 					...c,
 					usage: c.usage.replace('{prefix}', prefix)
 				}))
 				.sort((a, b) => a.name.localeCompare(b.name));
 
-			Object.keys(CommandGroup).forEach(group => {
-				const cmds = commands.filter(c => c.group === group);
+			Object.keys(CommandGroup).forEach((group) => {
+				const cmds = commands.filter((c) => c.group === group);
 				if (cmds.length === 0) {
 					return;
 				}
 
 				let descr = '';
-				descr += cmds.map(c => '`' + c.name + '`').join(', ');
+				descr += cmds.map((c) => '`' + c.name + '`').join(', ');
 				embed.fields.push({ name: group, value: descr });
 			});
 
@@ -99,7 +99,7 @@ export default class extends Command {
 					if (missing.length > 0) {
 						embed.fields.push({
 							name: t('cmd.help.missingPermissions'),
-							value: missing.map(p => `\`${p}\``).join(', ')
+							value: missing.map((p) => `\`${p}\``).join(', ')
 						});
 					}
 				}

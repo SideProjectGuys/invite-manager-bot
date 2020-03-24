@@ -24,7 +24,7 @@ export class MemberResolver extends Resolver {
 			}
 		} else {
 			const name = value.toLowerCase();
-			const members = guild.members.filter(m => {
+			const members = guild.members.filter((m) => {
 				const mName = m.username.toLowerCase() + '#' + m.discriminator;
 				return mName.includes(name) || name.includes(mName);
 			});
@@ -38,7 +38,7 @@ export class MemberResolver extends Resolver {
 						t(`resolvers.${this.getType()}.multiple`, {
 							members: members
 								.slice(0, 10)
-								.map(m => `\`${m.username}#${m.discriminator}\``)
+								.map((m) => `\`${m.username}#${m.discriminator}\``)
 								.join(', ')
 						})
 					);

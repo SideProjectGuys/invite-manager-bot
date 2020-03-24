@@ -1,14 +1,15 @@
 import { captureException, withScope } from '@sentry/node';
 import { GuildChannel, Member, Message, PrivateChannel } from 'eris';
-import { readdirSync, statSync } from 'fs';
+import { promises, statSync } from 'fs';
 import i18n from 'i18n';
 import { basename, resolve } from 'path';
 
-import { IMClient } from '../../client';
 import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
 import { Command, Context } from '../commands/Command';
 import { BooleanResolver } from '../resolvers';
+
+import { IMService } from './Service';
 
 const CMD_DIRS = [
 	resolve(__dirname, '../commands'),
@@ -21,31 +22,22 @@ const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
 const COOLDOWN = 5; // in seconds
 
-export class CommandsService {
-	private client: IMClient;
+export class CommandsService extends IMService {
+	public commands: Command[] = [];
+	private cmdMap: Map<string, Command> = new Map();
+	private commandCalls: Map<string, { last: number; warned: boolean }> = new Map();
 
-	public commands: Command[];
-	private cmdMap: Map<string, Command>;
-	private commandCalls: Map<string, { last: number; warned: boolean }>;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		this.commands = [];
-		this.cmdMap = new Map();
-		this.commandCalls = new Map();
-	}
-
-	public init() {
+	public async init() {
 		console.log(`Loading commands...`);
 
 		// Load all commands
-		const loadRecursive = (dir: string) =>
-			readdirSync(dir).forEach((fileName: string) => {
+		const loadRecursive = async (dir: string) => {
+			const fileNames = await promises.readdir(dir);
+			for (const fileName of fileNames) {
 				const file = dir + '/' + fileName;
 
 				if (statSync(file).isDirectory()) {
-					loadRecursive(file);
+					await loadRecursive(file);
 					return;
 				}
 
@@ -72,7 +64,7 @@ export class CommandsService {
 					this.cmdMap.set(inst.name.toLowerCase(), inst);
 
 					// Register aliases
-					inst.aliases.forEach(a => {
+					inst.aliases.forEach((a) => {
 						if (this.cmdMap.has(a.toLowerCase())) {
 							console.error(`Duplicate command alias ${a}`);
 							process.exit(1);
@@ -82,13 +74,18 @@ export class CommandsService {
 
 					console.log(`Loaded \x1b[34m${inst.name}\x1b[0m from ` + `\x1b[2m${basename(file)}\x1b[0m`);
 				}
-			});
-		CMD_DIRS.forEach(dir => loadRecursive(dir));
+			}
+		};
+		await Promise.all(CMD_DIRS.map((dir) => loadRecursive(dir)));
 
 		console.log(`Loaded \x1b[32m${this.commands.length}\x1b[0m commands!`);
+	}
 
-		// Attach events
+	public async onClientReady() {
+		// Attach events after the bot is ready
 		this.client.on('messageCreate', this.onMessage.bind(this));
+
+		await super.onClientReady();
 	}
 
 	public async onMessage(message: Message) {
@@ -270,11 +267,11 @@ export class CommandsService {
 
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
-					if (!perms.some(p => member.roles.indexOf(p) >= 0)) {
+					if (!perms.some((p) => member.roles.indexOf(p) >= 0)) {
 						await this.client.msg.sendReply(
 							message,
 							t('permissions.role', {
-								roles: perms.map(p => `<@&${p}>`).join(', ')
+								roles: perms.map((p) => `<@&${p}>`).join(', ')
 							})
 						);
 						return;
@@ -294,14 +291,14 @@ export class CommandsService {
 
 			// Check command permissions
 			const missingPerms = cmd.botPermissions.filter(
-				p => !(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
+				(p) => !(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
 			);
 			if (missingPerms.length > 0) {
 				await this.client.msg.sendReply(
 					message,
 					t(`permissions.missing`, {
 						channel: `<#${channel.id}>`,
-						permissions: missingPerms.map(p => '`' + t(`permissions.${p}`) + '`').join(', ')
+						permissions: missingPerms.map((p) => '`' + t(`permissions.${p}`) + '`').join(', ')
 					})
 				);
 				return;
@@ -362,7 +359,7 @@ export class CommandsService {
 			const flagSplits = rawArg.split('=');
 			const isShort = !flagSplits[0].startsWith('--');
 			const name = flagSplits[0].replace(/-/gi, '');
-			const flag = cmd.flags.find(f => (isShort ? f.short === name : f.name === name));
+			const flag = cmd.flags.find((f) => (isShort ? f.short === name : f.name === name));
 
 			// Exit if this is not a flag
 			if (!flag) {
@@ -415,7 +412,7 @@ export class CommandsService {
 				// Since we are concatinating all arguments we have to restore quotes where required
 				rawVal = rawArgs
 					.slice(i)
-					.map(a => (a.indexOf(' ') > 0 ? `"${a}"` : a))
+					.map((a) => (a.indexOf(' ') > 0 ? `"${a}"` : a))
 					.join(' ');
 				if (rawVal.length === 0) {
 					rawVal = undefined;
@@ -477,7 +474,7 @@ export class CommandsService {
 
 			console.error(error);
 
-			withScope(scope => {
+			withScope((scope) => {
 				if (guild) {
 					scope.setUser({ id: guild.id });
 				}

@@ -23,14 +23,14 @@ export class RoleResolver extends Resolver {
 			const name = value.toLowerCase();
 
 			// Trying to find exact match
-			let roles = guild.roles.filter(r => {
+			let roles = guild.roles.filter((r) => {
 				const rName = r.name.toLowerCase();
 				return rName === name;
 			});
 
 			// If no roles found, allow for partial match
 			if (roles.length === 0) {
-				roles = guild.roles.filter(r => {
+				roles = guild.roles.filter((r) => {
 					const rName = r.name.toLowerCase();
 					return rName.includes(name) || name.includes(rName);
 				});
@@ -46,7 +46,7 @@ export class RoleResolver extends Resolver {
 						t(`resolvers.${this.getType()}.multiple`, {
 							roles: roles
 								.slice(0, 10)
-								.map(r => `\`${r.name}\``)
+								.map((r) => `\`${r.name}\``)
 								.join(', ')
 						})
 					);

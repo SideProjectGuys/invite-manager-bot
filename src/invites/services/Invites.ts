@@ -1,9 +1,9 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
 import { GuildSettingsKey, RankAssignmentStyle } from '../../framework/models/GuildSetting';
 import { JoinInvalidatedReason } from '../../framework/models/Join';
+import { IMService } from '../../framework/services/Service';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
 import { Rank } from '../models/Rank';
 
@@ -31,13 +31,7 @@ export interface InviteCounts {
 	total: number;
 }
 
-export class InvitesService {
-	private client: IMClient;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-	}
-
+export class InvitesService extends IMService {
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
 		const inviteCodePromise = this.client.db.getInviteCodeTotalForMember(guildId, memberId);
 		const joinsPromise = this.client.db.getInvalidatedJoinsForMember(guildId, memberId);
@@ -47,7 +41,7 @@ export class InvitesService {
 
 		let fake = 0;
 		let leave = 0;
-		js.forEach(j => {
+		js.forEach((j) => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
 				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
@@ -77,7 +71,7 @@ export class InvitesService {
 		]);
 
 		const entries: Map<string, LeaderboardEntry> = new Map();
-		invCodes.forEach(inv => {
+		invCodes.forEach((inv) => {
 			const id = inv.id;
 			entries.set(id, {
 				id,
@@ -91,7 +85,7 @@ export class InvitesService {
 			});
 		});
 
-		js.forEach(join => {
+		js.forEach((join) => {
 			const id = join.id;
 			let fake = 0;
 			let leave = 0;
@@ -119,7 +113,7 @@ export class InvitesService {
 			}
 		});
 
-		customInvs.forEach(inv => {
+		customInvs.forEach((inv) => {
 			const id = inv.id;
 			const custom = Number(inv.total);
 			const entry = entries.get(id);
@@ -250,7 +244,7 @@ export class InvitesService {
 		let reached: Role[] = [];
 		const notReached: Role[] = [];
 
-		allRanks.forEach(r => {
+		allRanks.forEach((r) => {
 			const role = guild.roles.get(r.roleId);
 			if (role) {
 				if (r.numInvites <= totalInvites) {
@@ -273,17 +267,17 @@ export class InvitesService {
 		});
 
 		let myRole: Role;
-		me.roles.forEach(r => {
+		me.roles.forEach((r) => {
 			const role = guild.roles.get(r);
 			if (role && (!myRole || myRole.position < role.position)) {
 				myRole = role;
 			}
 		});
 
-		const tooHighRoles = guild.roles.filter(r => r.position > myRole.position);
+		const tooHighRoles = guild.roles.filter((r) => r.position > myRole.position);
 
 		let shouldHave: Role[] = [];
-		let shouldNotHave = notReached.filter(r => tooHighRoles.includes(r) && member.roles.includes(r.id));
+		let shouldNotHave = notReached.filter((r) => tooHighRoles.includes(r) && member.roles.includes(r.id));
 
 		if (highest && !member.roles.includes(highest.id)) {
 			const rankChannelId = settings.rankAnnouncementChannel;
@@ -319,15 +313,15 @@ export class InvitesService {
 		if (me.permission.has(GuildPermission.MANAGE_ROLES)) {
 			// Filter dangerous roles
 			dangerous = reached.filter(
-				r => r.permissions.has(GuildPermission.ADMINISTRATOR) || r.permissions.has(GuildPermission.MANAGE_GUILD)
+				(r) => r.permissions.has(GuildPermission.ADMINISTRATOR) || r.permissions.has(GuildPermission.MANAGE_GUILD)
 			);
-			reached = reached.filter(r => dangerous.indexOf(r) === -1);
+			reached = reached.filter((r) => dangerous.indexOf(r) === -1);
 
 			if (style !== RankAssignmentStyle.onlyAdd) {
 				// Remove roles that we haven't reached yet
 				notReached
-					.filter(r => !tooHighRoles.includes(r) && member.roles.includes(r.id))
-					.forEach(r =>
+					.filter((r) => !tooHighRoles.includes(r) && member.roles.includes(r.id))
+					.forEach((r) =>
 						this.client
 							.removeGuildMemberRole(guild.id, member.id, r.id, 'Not have enough invites for rank')
 							.catch(() => undefined)
@@ -336,13 +330,13 @@ export class InvitesService {
 
 			if (style === RankAssignmentStyle.all || style === RankAssignmentStyle.onlyAdd) {
 				// Add all roles that we've reached to the member
-				const newRoles = reached.filter(r => !member.roles.includes(r.id));
+				const newRoles = reached.filter((r) => !member.roles.includes(r.id));
 				// Roles that the member should have but we can't assign
-				shouldHave = newRoles.filter(r => tooHighRoles.includes(r));
+				shouldHave = newRoles.filter((r) => tooHighRoles.includes(r));
 				// Assign only the roles that we can assign
 				newRoles
-					.filter(r => !tooHighRoles.includes(r))
-					.forEach(r =>
+					.filter((r) => !tooHighRoles.includes(r))
+					.forEach((r) =>
 						this.client
 							.addGuildMemberRole(guild.id, member.user.id, r.id, 'Reached a new rank by invites')
 							.catch(() => undefined)
@@ -350,13 +344,13 @@ export class InvitesService {
 			} else if (style === RankAssignmentStyle.highest) {
 				// Only add the highest role we've reached to the member
 				// Remove roles that we've reached but aren't the highest
-				const oldRoles = reached.filter(r => r !== highest && member.roles.includes(r.id));
+				const oldRoles = reached.filter((r) => r !== highest && member.roles.includes(r.id));
 				// Add more roles that we shouldn't have
-				shouldNotHave = shouldNotHave.concat(oldRoles.filter(r => tooHighRoles.includes(r)));
+				shouldNotHave = shouldNotHave.concat(oldRoles.filter((r) => tooHighRoles.includes(r)));
 				// Remove the old ones from the member
 				oldRoles
-					.filter(r => !tooHighRoles.includes(r))
-					.forEach(r =>
+					.filter((r) => !tooHighRoles.includes(r))
+					.forEach((r) =>
 						this.client
 							.removeGuildMemberRole(guild.id, member.id, r.id, 'Only keeping highest rank')
 							.catch(() => undefined)

@@ -39,8 +39,8 @@ export default class extends Command {
 				Administrators: []
 			};
 
-			this.client.cmds.commands.forEach(command => {
-				const ps = perms.filter(p => p.command === command.name);
+			this.client.cmds.commands.forEach((command) => {
+				const ps = perms.filter((p) => p.command === command.name);
 				if (!ps.length) {
 					if (command.strict) {
 						rs.Administrators.push(command.name);
@@ -49,10 +49,10 @@ export default class extends Command {
 					}
 				} else {
 					// Check if the everyone role is allowed to use it
-					if (ps.some(p => p.roleId === guild.id)) {
+					if (ps.some((p) => p.roleId === guild.id)) {
 						rs.Everyone.push(command.name);
 					} else {
-						ps.forEach(p => {
+						ps.forEach((p) => {
 							const roleName = '@' + p.roleName;
 							if (!rs[roleName]) {
 								rs[roleName] = [];
@@ -63,14 +63,14 @@ export default class extends Command {
 				}
 			});
 
-			Object.keys(rs).forEach(r => {
+			Object.keys(rs).forEach((r) => {
 				if (rs[r].length <= 0) {
 					return;
 				}
 
 				embed.fields.push({
 					name: r,
-					value: rs[r].map(c => `\`${c}\``).join(', ')
+					value: rs[r].map((c) => `\`${c}\``).join(', ')
 				});
 			});
 
@@ -121,7 +121,7 @@ export default class extends Command {
 				});
 			} else {
 				const grouped: Map<string, string[]> = new Map();
-				perms.forEach(p => {
+				perms.forEach((p) => {
 					let roles = grouped.get(p.command);
 					if (!roles) {
 						roles = [];
@@ -133,7 +133,7 @@ export default class extends Command {
 				grouped.forEach((roles, c) => {
 					embed.fields.push({
 						name: c,
-						value: roles.map(r => `<@&${r}>`).join(', ')
+						value: roles.map((r) => `<@&${r}>`).join(', ')
 					});
 				});
 			}

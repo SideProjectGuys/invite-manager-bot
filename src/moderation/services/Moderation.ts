@@ -2,7 +2,7 @@ import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
+import { IMService } from '../../framework/services/Service';
 import { GuildSettingsObject } from '../../settings';
 import { BasicUser } from '../../types';
 import { PunishmentType } from '../models/PunishmentConfig';
@@ -26,64 +26,57 @@ interface MiniMessage {
 	roleMentions: number;
 }
 
+type StrikeFunctions = {
+	[key in ViolationType]: (message: Message, args: Arguments) => Promise<boolean>;
+};
+type PunishmentFunctions = {
+	[key in PunishmentType]: (member: Member, amount: number, args: Arguments) => Promise<boolean>;
+};
+
 export const NAME_DEHOIST_PREFIX = '▼';
 export const NAME_HOIST_REGEX = /^[-.:,;|\/\\~!+*%$£€&()[\]{}°§<>?'"`^´¦@#¬]+/;
 
-export class ModerationService {
-	private client: IMClient;
-	private messageCache: Map<string, MiniMessage[]>;
-
+export class ModerationService extends IMService {
+	private messageCache: Map<string, MiniMessage[]> = new Map();
 	public getMessageCacheSize() {
 		return this.messageCache.size;
 	}
 
-	private strikeFunctions: {
-		[key in ViolationType]: (message: Message, args: Arguments) => Promise<boolean>;
+	private strikeFunctions: StrikeFunctions = {
+		[ViolationType.invites]: this.invites.bind(this),
+		[ViolationType.links]: this.links.bind(this),
+		[ViolationType.words]: this.words.bind(this),
+		[ViolationType.allCaps]: this.allCaps.bind(this),
+		[ViolationType.duplicateText]: this.duplicateText.bind(this),
+		[ViolationType.quickMessages]: this.quickMessages.bind(this),
+		[ViolationType.mentionUsers]: this.mentionUsers.bind(this),
+		[ViolationType.mentionRoles]: this.mentionRoles.bind(this),
+		[ViolationType.emojis]: this.emojis.bind(this),
+		[ViolationType.hoist]: null
 	};
-	private punishmentFunctions: {
-		[key in PunishmentType]: (member: Member, amount: number, args: Arguments) => Promise<boolean>;
+	private punishmentFunctions: PunishmentFunctions = {
+		[PunishmentType.ban]: this.ban.bind(this),
+		[PunishmentType.kick]: this.kick.bind(this),
+		[PunishmentType.softban]: this.softban.bind(this),
+		[PunishmentType.warn]: this.warn.bind(this),
+		[PunishmentType.mute]: this.mute.bind(this)
 	};
 
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		this.messageCache = new Map();
-
-		this.strikeFunctions = {
-			[ViolationType.invites]: this.invites.bind(this),
-			[ViolationType.links]: this.links.bind(this),
-			[ViolationType.words]: this.words.bind(this),
-			[ViolationType.allCaps]: this.allCaps.bind(this),
-			[ViolationType.duplicateText]: this.duplicateText.bind(this),
-			[ViolationType.quickMessages]: this.quickMessages.bind(this),
-			[ViolationType.mentionUsers]: this.mentionUsers.bind(this),
-			[ViolationType.mentionRoles]: this.mentionRoles.bind(this),
-			[ViolationType.emojis]: this.emojis.bind(this),
-			[ViolationType.hoist]: null
-		};
-
-		this.punishmentFunctions = {
-			[PunishmentType.ban]: this.ban.bind(this),
-			[PunishmentType.kick]: this.kick.bind(this),
-			[PunishmentType.softban]: this.softban.bind(this),
-			[PunishmentType.warn]: this.warn.bind(this),
-			[PunishmentType.mute]: this.mute.bind(this)
-		};
-
+	public async init() {
 		const scanMessageCache = () => {
 			const now = moment();
 			this.messageCache.forEach((value, key) => {
 				this.messageCache.set(
 					key,
-					value.filter(m => now.diff(m.createdAt, 'second') < 60)
+					value.filter((m) => now.diff(m.createdAt, 'second') < 60)
 				);
 			});
 		};
 		setInterval(scanMessageCache, 60 * 1000);
 
-		client.on('messageCreate', this.onMessage.bind(this));
-		client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
-		client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
+		this.client.on('messageCreate', this.onMessage.bind(this));
+		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
+		this.client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {
@@ -144,13 +137,13 @@ export class ModerationService {
 
 		// If moderated roles are set then only moderate those roles
 		if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
-			if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
+			if (!settings.autoModModeratedRoles.some((r) => member.roles.indexOf(r) >= 0)) {
 				return;
 			}
 		}
 
 		// Don't moderate ignored roles
-		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
+		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some((ir) => member.roles.indexOf(ir) >= 0)) {
 			return;
 		}
 
@@ -176,7 +169,7 @@ export class ModerationService {
 		let allViolations: ViolationType[] = Object.values(ViolationType);
 
 		for (const strike of strikesCache) {
-			allViolations = allViolations.filter(av => av !== strike.type);
+			allViolations = allViolations.filter((av) => av !== strike.type);
 
 			const func = this.strikeFunctions[strike.type];
 			if (!func) {
@@ -269,7 +262,7 @@ export class ModerationService {
 		}
 
 		if (extra) {
-			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push(e));
+			extra.filter((e) => !!e.value).forEach((e) => logEmbed.fields.push(e));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
@@ -291,7 +284,9 @@ export class ModerationService {
 		logEmbed.description += `**Punishment**: ${type}\n`;
 
 		if (extra) {
-			extra.filter(e => !!e.value).forEach(e => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
+			extra
+				.filter((e) => !!e.value)
+				.forEach((e) => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
@@ -324,7 +319,7 @@ export class ModerationService {
 		const strikesAfter = strikesBefore + amount;
 
 		const punishmentConfigs = await this.client.cache.punishments.get(args.guild.id);
-		const punishmentConfig = punishmentConfigs.find(c => c.amount > strikesBefore && c.amount <= strikesAfter);
+		const punishmentConfig = punishmentConfigs.find((c) => c.amount > strikesBefore && c.amount <= strikesAfter);
 
 		if (punishmentConfig) {
 			const func = this.punishmentFunctions[punishmentConfig.type];
@@ -359,7 +354,7 @@ export class ModerationService {
 			return false;
 		}
 		const inviteLinks = ['invites.referralranks.com'];
-		let hasInviteLink = inviteLinks.some(link => {
+		let hasInviteLink = inviteLinks.some((link) => {
 			return message.content.indexOf(link) >= 0;
 		});
 		if (hasInviteLink) {
@@ -389,12 +384,12 @@ export class ModerationService {
 		if (whitelist) {
 			// If both are enabled, it should also be this case
 			// All links will be rejected, except the ones on the whitelist
-			const links = whitelist.map(link => link.trim());
-			return matches.every(match => links.indexOf(match) > -1);
+			const links = whitelist.map((link) => link.trim());
+			return matches.every((match) => links.indexOf(match) > -1);
 		} else if (blacklist) {
 			// All links will be accepted, except the ones on the blacklist
-			const links = blacklist.map(link => link.trim());
-			return matches.some(match => links.indexOf(match) > -1);
+			const links = blacklist.map((link) => link.trim());
+			return matches.some((match) => links.indexOf(match) > -1);
 		} else {
 			// All links will be rejected
 			return hasLink;
@@ -423,7 +418,7 @@ export class ModerationService {
 		const words = blacklist;
 		const content = message.content.toLowerCase();
 
-		const hasBlacklistedWords = words.some(word => content.includes(word));
+		const hasBlacklistedWords = words.some((word) => content.includes(word));
 
 		return hasBlacklistedWords;
 	}
@@ -465,9 +460,9 @@ export class ModerationService {
 			// Filter old messages
 			// Filter current message
 			cachedMessages = cachedMessages.filter(
-				m => m.id !== message.id && moment().diff(m.createdAt, 'second') < timeframe
+				(m) => m.id !== message.id && moment().diff(m.createdAt, 'second') < timeframe
 			);
-			const lastMessages = cachedMessages.map(m => m.content.toLowerCase());
+			const lastMessages = cachedMessages.map((m) => m.content.toLowerCase());
 			return lastMessages.indexOf(message.content.toLowerCase()) >= 0;
 		}
 	}
@@ -484,7 +479,7 @@ export class ModerationService {
 		if (cachedMessages.length === 1) {
 			return false;
 		} else {
-			cachedMessages = cachedMessages.filter(m => moment().diff(m.createdAt, 'second') < timeframe);
+			cachedMessages = cachedMessages.filter((m) => moment().diff(m.createdAt, 'second') < timeframe);
 			return cachedMessages.length >= numberOfMessages;
 		}
 	}
@@ -569,13 +564,13 @@ export class ModerationService {
 
 		// If moderated roles are set then only moderate those roles
 		if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
-			if (!settings.autoModModeratedRoles.some(r => member.roles.indexOf(r) >= 0)) {
+			if (!settings.autoModModeratedRoles.some((r) => member.roles.indexOf(r) >= 0)) {
 				return;
 			}
 		}
 
 		// Don't moderate ignored roles
-		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some(ir => member.roles.indexOf(ir) >= 0)) {
+		if (settings.autoModIgnoredRoles && settings.autoModIgnoredRoles.some((ir) => member.roles.indexOf(ir) >= 0)) {
 			return;
 		}
 
@@ -587,7 +582,7 @@ export class ModerationService {
 
 		const type = ViolationType.hoist;
 		const strikesCache = await this.client.cache.strikes.get(guild.id);
-		const strike = strikesCache.find(s => s.type === type);
+		const strike = strikesCache.find((s) => s.type === type);
 		const amount = strike ? strike.amount : 0;
 
 		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
@@ -746,8 +741,8 @@ export class ModerationService {
 
 	public getHighestRole(guild: Guild, roles: string[]): Role {
 		return roles
-			.map(role => guild.roles.get(role))
-			.filter(role => !!role)
+			.map((role) => guild.roles.get(role))
+			.filter((role) => !!role)
 			.reduce((prev, role) => (role.position > prev.position ? role : prev), {
 				position: -1
 			} as Role);

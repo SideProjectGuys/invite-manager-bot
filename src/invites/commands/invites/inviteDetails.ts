@@ -46,9 +46,7 @@ export default class extends Command {
 				t('cmd.inviteDetails.entry', {
 					uses: inv.uses,
 					code: name,
-					createdAt: moment(inv.createdAt)
-						.locale(lang)
-						.fromNow()
+					createdAt: moment(inv.createdAt).locale(lang).fromNow()
 				}) + '\n';
 		}
 

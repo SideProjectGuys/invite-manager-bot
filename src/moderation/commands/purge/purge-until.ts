@@ -40,7 +40,7 @@ export default class extends Command {
 			try {
 				await this.client.deleteMessages(
 					message.channel.id,
-					messages.filter(m => m.id !== response.id).map(m => m.id)
+					messages.filter((m) => m.id !== response.id).map((m) => m.id)
 				);
 
 				amount += messages.length;

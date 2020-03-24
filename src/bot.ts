@@ -13,8 +13,8 @@ if (process.argv.length < 5) {
 	process.exit(1);
 }
 const rawParams = process.argv.slice(2);
-const args = rawParams.filter(a => !a.startsWith('--'));
-const flags = rawParams.filter(f => f.startsWith('--'));
+const args = rawParams.filter((a) => !a.startsWith('--'));
+const flags = rawParams.filter((f) => f.startsWith('--'));
 
 const type = config.bot.type;
 const token = args[0];
@@ -28,7 +28,7 @@ init({
 	release: pkg.version,
 	environment: process.env.NODE_ENV || 'production'
 });
-configureScope(scope => {
+configureScope((scope) => {
 	scope.setTag('botType', type);
 	scope.setTag('instance', instance);
 	scope.setTag('shard', `${shardId}/${shardCount}`);
@@ -42,6 +42,7 @@ const main = async () => {
 	console.log('-------------------------------------');
 	console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
 	console.log('-------------------------------------');
+
 	const client = new IMClient({
 		version: pkg.version,
 		token,
@@ -56,7 +57,19 @@ const main = async () => {
 	console.log('-------------------------------------');
 	console.log('Starting bot...');
 	console.log('-------------------------------------');
+
+	await client.init();
+
+	console.log('-------------------------------------');
+	console.log('Waiting for start ticket...');
+	console.log('-------------------------------------');
+
+	await client.waitForStartupTicket();
+
+	console.log('-------------------------------------');
+	console.log('Connecting to discord...');
+	console.log('-------------------------------------');
 	await client.connect();
 };
 
-main().catch(err => console.error(err));
+main().catch((err) => console.error(err));

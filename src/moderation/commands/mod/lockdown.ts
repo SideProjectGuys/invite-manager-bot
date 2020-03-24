@@ -54,7 +54,7 @@ export default class extends Command {
 			guild.id,
 			ScheduledActionType.unlock
 		);
-		const scheduledUnlockAction = scheduledUnlockActions.find(action => action.args.channelId === channel.id);
+		const scheduledUnlockAction = scheduledUnlockActions.find((action) => action.args.channelId === channel.id);
 
 		if (scheduledUnlockAction) {
 			const override = channel.permissionOverwrites.get(scheduledUnlockAction.args.roleId);

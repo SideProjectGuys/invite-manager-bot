@@ -73,7 +73,7 @@ export default class extends Command {
 
 		const addDataset = () => {
 			const map: Map<string, number> = new Map();
-			dates.forEach(date => map.set(date.format('YYYY-MM-DD'), 0));
+			dates.forEach((date) => map.set(date.format('YYYY-MM-DD'), 0));
 			vs.push(map);
 			return map;
 		};
@@ -84,13 +84,13 @@ export default class extends Command {
 
 			const joinsMap = addDataset();
 			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			fs.forEach(join =>
+			fs.forEach((join) =>
 				joinsMap.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
 
 			const leavesMap = addDataset();
 			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			lvs.forEach(leave =>
+			lvs.forEach((leave) =>
 				leavesMap.set(
 					`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`,
 					Number(leave.total)
@@ -102,7 +102,7 @@ export default class extends Command {
 
 			const map = addDataset();
 			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			joins.forEach(join =>
+			joins.forEach((join) =>
 				map.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
 		} else if (type === ChartType.leaves) {
@@ -111,7 +111,7 @@ export default class extends Command {
 
 			const map = addDataset();
 			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			leaves.forEach(leave =>
+			leaves.forEach((leave) =>
 				map.set(`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`, leave.total)
 			);
 		}
@@ -119,7 +119,7 @@ export default class extends Command {
 		const datasets: any[] = [];
 		for (const v of vs) {
 			const color = COLORS[datasets.length];
-			const data = [...v.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(e => e[1]);
+			const data = [...v.entries()].sort((a, b) => a[0].localeCompare(b[0])).map((e) => e[1]);
 
 			datasets.push({
 				label: 'Data',
@@ -139,7 +139,7 @@ export default class extends Command {
 		}
 
 		const config = {
-			labels: dates.map(d => d.format('DD.MM.YYYY')),
+			labels: dates.map((d) => d.format('DD.MM.YYYY')),
 			datasets
 		};
 

@@ -44,7 +44,7 @@ export default class extends Command {
 		flags: {},
 		context: Context
 	): Promise<any> {
-		const cmd = this.client.cmds.commands.find(c => c.name === InvitesCommand.addInvites);
+		const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.addInvites);
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

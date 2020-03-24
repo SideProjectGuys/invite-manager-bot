@@ -33,10 +33,10 @@ export default class extends Command {
 
 		const maxPage = Math.ceil(ranks.length / RANKS_PER_PAGE);
 		const startPage = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
-		await this.showPaginated(message, startPage, maxPage, page => {
+		await this.showPaginated(message, startPage, maxPage, (page) => {
 			let description = '';
 
-			ranks.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach(rank => {
+			ranks.slice(page * RANKS_PER_PAGE, (page + 1) * RANKS_PER_PAGE).forEach((rank) => {
 				description +=
 					t('cmd.ranks.entry', {
 						role: `<@&${rank.roleId}>`,
