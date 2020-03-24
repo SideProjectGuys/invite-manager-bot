@@ -1,6 +1,6 @@
 import { captureException, withScope } from '@sentry/node';
 import { GuildChannel, Member, Message, PrivateChannel } from 'eris';
-import { promises, readdir, readdirSync, statSync } from 'fs';
+import { promises, statSync } from 'fs';
 import i18n from 'i18n';
 import { basename, resolve } from 'path';
 

@@ -61,6 +61,12 @@ const main = async () => {
 	await client.init();
 
 	console.log('-------------------------------------');
+	console.log('Waiting for start ticket...');
+	console.log('-------------------------------------');
+
+	await client.waitForStartupTicket();
+
+	console.log('-------------------------------------');
 	console.log('Connecting to discord...');
 	console.log('-------------------------------------');
 	await client.connect();

@@ -203,6 +203,16 @@ export class IMClient extends Client {
 		await this.rabbitmq.init();
 	}
 
+	public async waitForStartupTicket() {
+		const start = process.uptime();
+		const interval = setInterval(
+			() => console.log(`Waiting for ticket since ${Math.floor(process.uptime() - start)} seconds...`),
+			10000
+		);
+		await this.rabbitmq.waitForStartupTicket();
+		clearInterval(interval);
+	}
+
 	private async onClientReady(): Promise<void> {
 		if (this.hasStarted) {
 			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
