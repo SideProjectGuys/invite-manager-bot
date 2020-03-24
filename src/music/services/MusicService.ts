@@ -178,4 +178,8 @@ export class MusicService extends IMService {
 		);
 		return data.tracks;
 	}
+
+	public async getGuildSettings(guildId: string) {
+		return this.client.cache.guilds.get(guildId);
+	}
 }
