@@ -231,11 +231,17 @@ export class RabbitMqService extends IMService {
 		await this.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
-			connected: this.client.gatewayConnected,
+			state: this.waitingForTicket
+				? 'waiting'
+				: !this.client.hasStarted
+				? 'init'
+				: !!this.startTicket
+				? 'starting'
+				: 'running',
+			startedAt: this.client.startedAt.toISOString(),
+			gateway: this.client.gatewayConnected,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
-			starting: !!this.startTicket,
-			waitingToStart: this.waitingForTicket,
 			tracking: {
 				pendingGuilds: this.client.tracking.pendingGuilds.size,
 				initialPendingGuilds: this.client.tracking.initialPendingGuilds

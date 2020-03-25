@@ -162,7 +162,6 @@ export class IMClient extends Client {
 			guildCreateTimeout: 60000
 		});
 
-		this.startedAt = moment();
 		this.stats = {
 			wsEvents: 0,
 			wsWarnings: 0,
@@ -264,6 +263,7 @@ export class IMClient extends Client {
 		await Promise.all(Object.values(this.service).map((s) => s.onClientReady()));
 
 		this.hasStarted = true;
+		this.startedAt = moment();
 
 		const set = await this.db.getBotSettings(this.user.id);
 		this.settings = set ? set.value : { ...botDefaultSettings };
