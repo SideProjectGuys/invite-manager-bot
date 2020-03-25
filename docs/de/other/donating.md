@@ -1,4 +1,4 @@
-# Donating
+# Spenden
 
 other.donating.description
 

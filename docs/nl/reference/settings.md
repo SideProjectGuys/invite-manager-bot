@@ -83,22 +83,22 @@ There are many config options that can be set. You don't have to set all of them
 | [Ignored Channels](#automodignoredchannels)                     | Channels that are ignored while automatically moderating.                                                                                                    |
 | [Ignored Roles](#automodignoredroles)                           | Any members with these roles will not automatically be moderated.                                                                                            |
 | [Muted Role](#mutedrole)                                        | The role that is given to people who are muted. Make sure this role is denied the "Send Message" permission.                                                 |
-| [Disabled for Old Members](#automoddisabledforoldmembers)       | Disabled auto moderation for members that have been in your server for a long time.                                                                          |
-| [Old Members Threshold](#automoddisabledforoldmembersthreshold) | The amount of time a member has to be in your server to be considered 'old'.                                                                                 |
+| [Schakel uit voor oude leden](#automoddisabledforoldmembers)    | Schakelt auto moderatie uit voor leden die die een lange tijd in je server zitten                                                                            |
+| [Old Members Threshold](#automoddisabledforoldmembersthreshold) | De tijd dat een gebruiker in je server moet zijn voordat de gebruiker wordt gezien als 'oud'.                                                                |
 
 #### Logging
 
-| Setting                                                                | Description                                                               |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| [Log Enabled](#automodlogenabled)                                      | Log any moderation actions that the bot makes.                            |
-| [Mod Log Channel](#modlogchannel)                                      | The channel where moderation logs will be posted in.                      |
-| [Delete Bot Messages](#automoddeletebotmessage)                        | Automatically delete the bots own messages (keeps your chat clean).       |
-| [Delete Bot Message Timeout](#automoddeletebotmessagetimeoutinseconds) | The timeout after which bot messages are deleted.                         |
-| [Delete Ban Messages](#modpunishmentbandeletemessage)                  | Whether or not "Ban" pushment messages will be deleted automatically.     |
-| [Delete Kick Messages](#modpunishmentkickdeletemessage)                | Whether or not "Kick" pushment messages will be deleted automatically.    |
-| [Delete Softban Messages](#modpunishmentsoftbandeletemessage)          | Whether or not "Softban" pushment messages will be deleted automatically. |
-| [Delete Warn Messages](#modpunishmentwarndeletemessage)                | Whether or not "Warn" pushment messages will be deleted automatically.    |
-| [Delete Mute Messages](#modpunishmentmutedeletemessage)                | Whether or not "Mute" pushment messages will be deleted automatically.    |
+| Setting                                                                  | Description                                                                              |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| [Log Enabled](#automodlogenabled)                                        | Log any moderation actions that the bot makes.                                           |
+| [Mod Log Channel](#modlogchannel)                                        | The channel where moderation logs will be posted in.                                     |
+| [Verwijder Bot Berichten](#automoddeletebotmessage)                      | Verwijderd automatisch de bots eigen berichten (Zorgt ervoor dat je chat netjes blijft). |
+| [Verwijder Bot Berichten Duur](#automoddeletebotmessagetimeoutinseconds) | De duur voordat de bot berichten verwijderd zijn                                         |
+| [Delete Ban Messages](#modpunishmentbandeletemessage)                    | Whether or not "Ban" pushment messages will be deleted automatically.                    |
+| [Delete Kick Messages](#modpunishmentkickdeletemessage)                  | Whether or not "Kick" pushment messages will be deleted automatically.                   |
+| [Delete Softban Messages](#modpunishmentsoftbandeletemessage)            | Whether or not "Softban" pushment messages will be deleted automatically.                |
+| [Delete Warn Messages](#modpunishmentwarndeletemessage)                  | Whether or not "Warn" pushment messages will be deleted automatically.                   |
+| [Delete Mute Messages](#modpunishmentmutedeletemessage)                  | Whether or not "Mute" pushment messages will be deleted automatically.                   |
 
 #### Invites
 
@@ -124,18 +124,18 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Caps
 
-| Setting                                          | Description                                                                                                       |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| [Enabled](#automodallcapsenabled)                | Automatically moderate messages with A LOT OF CAPS.                                                               |
-| [Min. Characters](#automodallcapsmincharacters)  | The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK'). |
-| [Percentage CAPs](#automodallcapspercentagecaps) | The percentage of characters of the message that have to be CAPs for the rule to trigger.                         |
+| Setting                                          | Description                                                                                                             |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| [Ingeschakeld](#automodallcapsenabled)           | Berichten met HEEL VEEL CAPS worden automatisch gemoderate.                                                             |
+| [Min. Tekens](#automodallcapsmincharacters)      | De minimale aantal tekens voordat het wordt gemoderate (Als je het naar `3` verzet worden woorden zoals `OK` genegeerd) |
+| [Percentage CAPs](#automodallcapspercentagecaps) | De percentage van het aantal tekens van een bericht voordat er automatisch actie wordt ondernomen.                      |
 
 #### Duplicate Messages
 
-| Setting                                                         | Description                                                         |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [Enabled](#automodduplicatetextenabled)                         | Automatically moderate duplicate messages (copy-paste spam).        |
-| [Timeframe in Seconds](#automodduplicatetexttimeframeinseconds) | The timeframe whithin which messages will be considered duplicates. |
+| Setting                                                         | Description                                                                    |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [Ingeschakeld](#automodduplicatetextenabled)                    | Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam). |
+| [Timeframe in Seconds](#automodduplicatetexttimeframeinseconds) | The timeframe whithin which messages will be considered duplicates.            |
 
 #### Spam
 
@@ -826,9 +826,9 @@ Examples:
 
 ---
 
-## Disabled for Old Members
+## Schakel uit voor oude leden
 
-Disabled auto moderation for members that have been in your server for a long time.
+Schakelt auto moderatie uit voor leden die die een lange tijd in je server zitten
 
 Type: `Boolean`
 
@@ -851,7 +851,7 @@ Disable:
 
 ## Old Members Threshold
 
-The amount of time a member has to be in your server to be considered 'old'.
+De tijd dat een gebruiker in je server moet zijn voordat de gebruiker wordt gezien als 'oud'.
 
 Type: `Number`
 
@@ -914,9 +914,9 @@ Examples:
 
 ---
 
-## Delete Bot Messages
+## Verwijder Bot Berichten
 
-Automatically delete the bots own messages (keeps your chat clean).
+Verwijderd automatisch de bots eigen berichten (Zorgt ervoor dat je chat netjes blijft).
 
 Type: `Boolean`
 
@@ -937,9 +937,9 @@ Disable:
 
 ---
 
-## Delete Bot Message Timeout
+## Verwijder Bot Berichten Duur
 
-The timeout after which bot messages are deleted.
+De duur voordat de bot berichten verwijderd zijn
 
 Type: `Number`
 
@@ -1228,9 +1228,9 @@ Examples:
 
 ---
 
-## Enabled
+## Ingeschakeld
 
-Automatically moderate messages with A LOT OF CAPS.
+Berichten met HEEL VEEL CAPS worden automatisch gemoderate.
 
 Type: `Boolean`
 
@@ -1251,9 +1251,9 @@ Disable:
 
 ---
 
-## Min. Characters
+## Min. Tekens
 
-The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK').
+De minimale aantal tekens voordat het wordt gemoderate (Als je het naar `3` verzet worden woorden zoals `OK` genegeerd)
 
 Type: `Number`
 
@@ -1274,7 +1274,7 @@ Examples:
 
 ## Percentage CAPs
 
-The percentage of characters of the message that have to be CAPs for the rule to trigger.
+De percentage van het aantal tekens van een bericht voordat er automatisch actie wordt ondernomen.
 
 Type: `Number`
 
@@ -1293,9 +1293,9 @@ Examples:
 
 ---
 
-## Enabled
+## Ingeschakeld
 
-Automatically moderate duplicate messages (copy-paste spam).
+Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam).
 
 Type: `Boolean`
 

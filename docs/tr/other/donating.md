@@ -1,7 +1,7 @@
-# Donating
+# Oy verme
 
 other.donating.description
 
-## Crypto
+## Kripto
 
 other.donating.crypto.description

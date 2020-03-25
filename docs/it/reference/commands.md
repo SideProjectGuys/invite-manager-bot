@@ -116,7 +116,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
+| [botConfig](#botConfig)                 | Mostra e modifica la configurazione del bot.              | !botConfig [key][value]                     |
 | [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
@@ -150,8 +150,8 @@ This argument expects a duration. The following duration types are supported:
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | Bandisci un membro dal server.                                                                                                                | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
+| [caseDelete](#caseDelete)             | Elimina un caso specifico.                                                                                                                    | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Visualizza informazioni su un caso specifico.                                                                                                 | !caseView \<caseNumber\>                                         |
 | [check](#check)                       | Controlla la cronologia delle violazioni e delle punizioni di un utente.                                                                      | !check \<user\>                                                  |
 | [clean](#clean)                       | Pulisci un canale da certi tipi di messaggi.                                                                                                  | !clean \<type\> [numberOfMessages]                               |
 | [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
@@ -292,9 +292,9 @@ Bandisci un membro dal server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type              | Description                                                                         |
+| --------------------------------- | --------- | ----------------- | ----------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Se specificato verranno eliminati i messaggi dei membri bannati di molti giorni fa. |
 
 ### Examples
 
@@ -304,7 +304,7 @@ Bandisci un membro dal server.
 
 ## !botConfig
 
-Show and change the config of the bot.
+Mostra e modifica la configurazione del bot.
 
 ### Usage
 
@@ -320,10 +320,10 @@ Show and change the config of the bot.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| Argument | Type            | Required | Description                                                                     | Details                                                                                                                                     |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | L'impostazione di configurazione del bot che si desidera mostrare / modificare. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [Value](#Value) | No       | Il nuovo valore dell'impostazione.                                              |                                                                                                                                             |
 
 ### Examples
 
@@ -361,7 +361,7 @@ Ottieni informazioni generali circa il bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Elimina un caso specifico.
 
 ### Usage
 
@@ -377,10 +377,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description                                | Details |
+| ---------- | ----------------- | -------- | ------------------------------------------ | ------- |
+| caseNumber | [Number](#Number) | Yes      | Numero caso                                |         |
+| reason     | [Text](#Text)     | No       | Il motivo per cui è stato rimosso il caso. |         |
 
 ### Examples
 
@@ -394,7 +394,7 @@ Delete a specific case.
 
 ## !caseView
 
-View info about a specific case.
+Visualizza informazioni su un caso specifico.
 
 ### Usage
 
@@ -412,7 +412,7 @@ View info about a specific case.
 
 | Argument   | Type              | Required | Description | Details |
 | ---------- | ----------------- | -------- | ----------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number |         |
+| caseNumber | [Number](#Number) | Yes      | Numero caso |         |
 
 ### Examples
 
