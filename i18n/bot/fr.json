@@ -322,8 +322,8 @@
 				"args": {
 					"duration": "La période du graphique.",
 					"type": "Le type de graphique à afficher.",
-					"from": "Start date of the chart",
-					"to": "End date of the chart"
+					"from": "Date de début du graphique",
+					"to": "Date de fin du graphique"
 				},
 				"description": "Affiche des graphiques sur différentes statistiques sur ce serveur."
 			},
@@ -694,7 +694,7 @@
 				},
 				"description": "Rendre muet un utilisateur",
 				"flags": {
-					"duration": "The duration to mute the user for"
+					"duration": "Le temps pendant lequel l'utilisateur est muet"
 				}
 			}
 		},
@@ -822,7 +822,7 @@
 			},
 			"text": "Messages {{ amount }} supprimés.\nCe message sera supprimé dans 5 secondes. ",
 			"title": "Messages supprimés",
-			"inProgress": "Purging..."
+			"inProgress": "Effaçage..."
 		},
 		"ranks": {
 			"entry": "{{{ role }}}: **{{ numInvites }} invitations** {{ description }}",
@@ -830,7 +830,7 @@
 			"self": {
 				"description": "Montrer tous les rangs.",
 				"args": {
-					"page": "The page of the ranks list to show."
+					"page": "La page de la liste des rangs à montrer."
 				}
 			},
 			"title": "Rangs"
@@ -838,11 +838,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "The amount of invites to remove.",
-					"reason": "The reason for removing the invites.",
-					"user": "The user to remove the invites from."
+					"amount": "Le nombre d'invitations à enlever.",
+					"reason": "La raison de l'enlèvement d'invitations.",
+					"user": "L'utilisateur à qui enlever des invitations."
 				},
-				"description": "Removes a specified amount of invites from a user."
+				"description": "Enlève un certain nombre d'invitations à un utilisateur."
 			}
 		},
 		"removeRank": {
@@ -866,7 +866,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
+				"text": "Un guide complet pour configurer le bot peut être trouvé ici : https://docs.invitemanager.co/",
 				"title": "FAQs et plus"
 			},
 			"help": {
@@ -916,7 +916,7 @@
 				},
 				"description": "Bannir puis automatiquement dé-bannir un membre du serveur.",
 				"flags": {
-					"deleteMessageDays": "Delete messages from the user this many days back."
+					"deleteMessageDays": "Supprime les messages d'un utilisateur depuis un certain nombre de jours."
 				}
 			},
 			"unBanError": "L'utilisateur était mais ne peut plus être dé-banni...\n{{ error }}"
@@ -1133,35 +1133,35 @@
 		"fixRanks": {
 			"done": "Arrangement des grades terminer.",
 			"self": {
-				"description": "Deletes any ranks where the role was deleted."
+				"description": "Supprime les rangs configurés si le rôle a été supprimé."
 			}
 		},
 		"placeholder": {
 			"self": {
 				"flags": {
-					"edit": "The message id of the placeholder to edit."
+					"edit": "L'ID du placeholder à éditer."
 				},
 				"args": {
-					"message": "The message of the placeholder."
+					"message": "Le message du placeholder."
 				},
-				"description": "Creates a new or edits an existing placeholder message."
+				"description": "Crée un nouveau, ou édite un placeholder existant."
 			},
-			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+			"noMessageFoundInDatabase": "Le placeholder avec cet ID n'a pas pu être trouvé."
 		},
 		"reactionRole": {
-			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
-			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+			"noMessageFoundInDatabase": "Le placeholder avec cet ID n'a pas pu être trouvé.",
+			"unknownEmoji": "Emoji inconnu. Le bot doit être dans le serveur d'où vient l'emoji !"
 		},
 		"lockdown": {
-			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"channelUnlocked": "Le blocage de {{{ channel }}} est terminé.",
+			"channelLockedDown": "Le salon {{{ channel }}} est maintenant bloqué.",
 			"self": {
-				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"description": "Bloque un salon spécifique (empêche tout le monde sans rôle spécial d'envoyer des messages)",
 				"flags": {
-					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+					"timeout": "La durée après laquelle le blocage se finit automatiquement. Utilisez la commande une nouvelle fois pour terminer le blocage manuellement."
 				},
 				"args": {
-					"channel": "The channel that you want to lock down."
+					"channel": "Le salon que vous voulez bloquer."
 				}
 			}
 		}
@@ -1224,7 +1224,7 @@
 			"notFound": "Commande inconnue.",
 			"type": "Commande",
 			"validValues": "Utilisez une des valeurs suivantes : {{{ values }}}",
-			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
+			"typeInfo": "Cet argument attend une commande de ce bot. Vous pouvez utiliser une de ces méthodes pour donner une commande :\n\n- Utiliser le nom de la commande : `invites`\n- Utiliser un alias de la commande : `p`"
 		},
 		"enum": {
 			"invalid": "Valeur invalide.",
@@ -1265,11 +1265,11 @@
 		},
 		"date": {
 			"type": "Date",
-			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
+			"typeInfo": "Cet argument attend une date. Vous pouvez utiliser différents formats, mais nous recommandons : `YYYY-MM-DD`"
 		},
 		"duration": {
 			"type": "Durée",
-			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
+			"typeInfo": "Cet argument attend une durée. Les durées suivantes sont supportées :\n\n- Secondes : `s` (`5s` = 5 secondes)\n- Minutes : `min` (`3min` = 3 minutes)\n- Heures : `h` (`4h` = 4 heures)\n- Jours : `d` (`2d` = 2 jours)\n- Semaines : `w` (`1w` = 1 semaine)\n- Mois : `mo` (`6mo` = 6 mois)\n- Années : `y` (`10y` = 10 ans)"
 		},
 		"invitecode": {
 			"type": "Code d'invitation",
@@ -1391,11 +1391,11 @@
 		},
 		"autoModQuickMessagesNumberOfMessages": {
 			"title": "Nombre de messages",
-			"description": "The number of messages that have to be sent within the timeframe to trigger the rule."
+			"description": "Le nombre de messages qui doivent être envoyés pendant une certaine durée pour que celui-ci soit modéré."
 		},
 		"autoModQuickMessagesTimeframeInSeconds": {
 			"title": "Timeframe",
-			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
+			"description": "La durée pendant laquelle l'utilisateur peut envoyer un nombre maximum de messages."
 		},
 		"autoModWordsBlacklist": {
 			"description": "Une liste de mots bannis.",
@@ -1478,7 +1478,7 @@
 				},
 				"title": "Invitations",
 				"general": {
-					"title": "General"
+					"title": "Général"
 				}
 			},
 			"moderation": {
@@ -1504,7 +1504,7 @@
 					"title": "Emojis"
 				},
 				"general": {
-					"description": "General moderation settings which apply to all submodules.",
+					"description": "Paramétres généraux de modération qui s'appliquent à toutes les autres règles.",
 					"title": "Générale"
 				},
 				"invites": {
@@ -1537,16 +1537,16 @@
 					"description": "Paramètres généraux de musique"
 				},
 				"announcement": {
-					"title": "Announcement",
-					"description": "Announces the next song."
+					"title": "Annonce",
+					"description": "Annonce la musique suivante."
 				},
 				"fadeMusic": {
-					"title": "Fade Music",
-					"description": "Makes the music quieter when someone talks."
+					"title": "Baisse le volume de la musique",
+					"description": "Rend la musique faible quand quelqu'un parle."
 				},
 				"platform": {
-					"title": "Platform",
-					"description": "The various platforms used to play music."
+					"title": "Plateforme",
+					"description": "Les diférentes plateformes utilisées pour jouer de la musique."
 				}
 			}
 		},
@@ -1611,7 +1611,7 @@
 			"title": "Supprimer les messages d'avertissement"
 		},
 		"mutedRole": {
-			"description": "The role that is given to people who are muted. Make sure this role is denied the \"Send Message\" permission.",
+			"description": "Le rôle donné aux utilisateurs quand ils sont rendus muets. Vérifiez que ce rôle n'a pas la permission \"Envoyer des messages\"",
 			"title": "Rôle muet"
 		},
 		"prefix": {
@@ -1655,80 +1655,80 @@
 			"description": "Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale."
 		},
 		"defaultMusicPlatform": {
-			"title": "Default Music Platform",
-			"description": "The platform that is used to search / play music when no platform is selected explicitly."
+			"title": "Plateforme de musique par défault",
+			"description": "La plateforme utilisée pour rechercher / jouer de la musique quand aucune plateforme n'est sélectionnée."
 		},
 		"disabledMusicPlatforms": {
-			"title": "Disabled Music Platforms",
-			"description": "Music platforms that are disabled and cannot be used to play music."
+			"title": "Plateformes musicales désactivées",
+			"description": "Les plateformes de musique désactivées et qui ne peuvent pas être utilisées pour jouer de la musique."
 		},
 		"joinRoles": {
-			"title": "Join Roles",
-			"description": "Roles that are assigned to all members when joining."
+			"title": "Rôles d'arrivées",
+			"description": "Rôles assignés à tous les utilisateurs quand ils rejoignent."
 		}
 	},
 	"strikeConfig": {
 		"invites": {
-			"title": "Invite Links",
-			"description": "A member posts an invite link to a Discord server."
+			"title": "Liens d'invitations",
+			"description": "Un membre poste un lien d'invitation vers un serveur Discord."
 		},
 		"links": {
-			"title": "Links",
-			"description": "Someone posts a link to a website."
+			"title": "Liens",
+			"description": "Quelqu'un poste un lien vers un site."
 		},
 		"words": {
-			"title": "Banned words",
-			"description": "A member uses a explicitly banned word."
+			"title": "Mots bannis",
+			"description": "Un membre utilise un mot banni."
 		},
 		"allCaps": {
-			"title": "CAPS",
-			"description": "Messages containing an excessive amount of CAPS."
+			"title": "MAJUSCULES",
+			"description": "Messages contenant trop de MAJUSCULES."
 		},
 		"duplicateText": {
-			"title": "Duplicate Text",
-			"description": "Someone keeps posting the same message (copy-pasta)."
+			"title": "Texte dupliqué",
+			"description": "Quelqu'un qui n'arrête pas de poster le même message (copier-coller)."
 		},
 		"quickMessages": {
-			"title": "Spamming",
-			"description": "Members send a lot of mesages in a short amount of time."
+			"title": "Spamme",
+			"description": "Membres qui envoient un grand nombre de messages dans un court instant."
 		},
 		"mentionUsers": {
-			"title": "Mention Users",
-			"description": "Someone posts a message mentioning a lot of other people."
+			"title": "Mentionne des utilisateurs",
+			"description": "Quelqu'un qui envoie un message avec un grand nombre de mentions d'utilisateurs."
 		},
 		"mentionRoles": {
-			"title": "Mention Roles",
-			"description": "Someone posts a message mentioning a lot of roles."
+			"title": "Mentionne des rôles",
+			"description": "Quelqu'un qui envoie un message avec un grand nombre de mentions de rôles."
 		},
 		"emojis": {
 			"title": "Emojis",
-			"description": "Messages made up of mostly emojis."
+			"description": "Messages constitués principalement d'emojis"
 		},
 		"hoist": {
-			"title": "Hoisting",
-			"description": "Someone adds special characters to their name to be listed at the top."
+			"title": "Se déplace en haut de la liste",
+			"description": "Quelqu'un ajoute un caractère spécial à leur nom pour être en haut de la liste."
 		}
 	},
 	"punishmentConfig": {
 		"ban": {
-			"title": "Ban",
-			"description": "Ban the member from the server."
+			"title": "Bannissement",
+			"description": "Bannir le membre du serveur."
 		},
 		"kick": {
-			"title": "Kick",
-			"description": "Kick the member from the server."
+			"title": "Expulser",
+			"description": "Expulser le membre du serveur."
 		},
 		"softban": {
 			"title": "Softban",
-			"description": "Ban and then immediately unban a member."
+			"description": "Banni puis dé-banni directement un membre."
 		},
 		"warn": {
-			"title": "Warn",
-			"description": "Send a warning message to the member"
+			"title": "Alerte",
+			"description": "Envoie un message d'alerte au membre"
 		},
 		"mute": {
-			"title": "Mute",
-			"description": "Mute the member."
+			"title": "Rendre muet",
+			"description": "Rend muet le membre."
 		}
 	},
 	"music": {

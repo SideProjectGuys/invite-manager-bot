@@ -72,68 +72,68 @@
 				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
+				"clear": "Foloseste `{{ prefix }}botConfig {{ key }} none` pentru a sterge",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"title": "Valoarea curenta"
 			},
 			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord suporta doar URL-uri de la twitch.tv pentru streaming"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Noua valoare"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Nimic",
+			"notSet": "Aceste setari nu sunt setate",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Vizualizare"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Valoarea anterioara"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Acest config este deja setat la aceasta valuare",
 			"self": {
 				"args": {
 					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"value": "Noua valuare a setarii"
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Arata si schimba configul botului"
 			},
 			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"title": "Config custom al botului"
 		},
 		"botInfo": {
 			"guilds": "Servere",
 			"members": "Membrii",
 			"premium": {
-				"active": "This server has an **active premium** subscription.",
-				"custom": "You are using a custom version of the bot!",
-				"none": "This server currently **does not** have premium.",
+				"active": "Acest server detine un **abonament premium** al botului.",
+				"custom": "Folosesti o versiune custom al botului",
+				"none": "Acest server momentan **nu are** abonament premium",
 				"title": "Premium"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Obtine informatii generale despre bot."
 			},
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "Shardul curent",
+				"total": "Sharduri totale"
 			},
 			"uptime": "Uptime",
 			"version": "Versiune"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Caz sters",
+			"notFound": "Cazul nu a fost gasit",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Numarul cazului",
+					"reason": "Motivul pentru stergerea cazului"
 				},
-				"description": "Delete a specific case."
+				"description": "Sterge un anumit caz"
 			},
-			"title": "Case #{{ id }}"
+			"title": "Cazul #{{ id }}"
 		},
 		"caseView": {
 			"notFound": "Case not found",
@@ -250,7 +250,7 @@
 					"key": "The config setting which you want to show/change.",
 					"value": "The new value of the setting."
 				},
-				"description": "Show and change the config of the server."
+				"description": "Vizualizeaza si schimba configul serverului"
 			},
 			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
 			"title": "Your config settings"
@@ -266,22 +266,22 @@
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "Developeri",
+			"moderators": "Moderatori",
 			"self": {
 				"description": "Show developers and contributors of the bot."
 			},
-			"staff": "Staff",
-			"translators": "Translators"
+			"staff": "Personalul",
+			"translators": "Traducatori"
 		},
 		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "Te rog asteapta pana pregatim fisierul",
 			"self": {
 				"args": {
 					"type": "The type of export you want."
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "Exporteaza datele InviteManager-ului in csv sheet"
 			},
 			"title": "InviteManager - Export"
 		},
@@ -290,7 +290,7 @@
 				"entry": {
 					"multi": "**{{ name }}** (**{{ times }}** times)",
 					"single": "**{{ name }}**",
-					"text": "**{{ name }}** joined **{{ times }} times**, invited by:"
+					"text": "**{{ name }}** a intrat de **{{ times }} ori**, Invitat de catre:"
 				}
 			},
 			"none": "Nicio invitatie falsa detactata pana acum.",
@@ -307,16 +307,16 @@
 			"self": {
 				"description": "Get an invite link for the bot."
 			},
-			"title": "Add InviteManager to your server"
+			"title": "Adauga-l pe InviteManager pe serverul tau!"
 		},
 		"graph": {
 			"joins": {
 				"text": "This chart shows the number of users joining your server.",
-				"title": "Users joining"
+				"title": "Utilizatori care intra"
 			},
 			"leaves": {
 				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"title": "Utilizatori care pleaca"
 			},
 			"self": {
 				"args": {

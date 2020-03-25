@@ -661,30 +661,30 @@
 			"bots": "Boty",
 			"humans": "Użytkownicy",
 			"joined": {
-				"day": "Joined last 24h",
-				"month": "Joined this month",
-				"week": "Joined this week"
+				"day": "Dołączyli w ostatnie 24 godziny",
+				"month": "Dołączyli w tym miesiącu",
+				"week": "Dołączyli w tym tygodniu"
 			},
-			"members": "Members",
+			"members": "Członkowie",
 			"online": "Online",
 			"self": {
-				"description": "Show member count of current server."
+				"description": "Pokaż liczbę członków bieżącego serwera."
 			}
 		},
 		"mentionRole": {
-			"alreadyDone": "{{{ role }}} is already mentionable.",
-			"roleTooHigh": "The mentioned role is above my highest role, so I can't change it.",
+			"alreadyDone": "{{{ role }}} ma już włączone wzmiankowanie.",
+			"roleTooHigh": "Wzmieniona rola jest powyżej mojej najwyższej roli, więc nie mogę jej zmienić.",
 			"self": {
 				"args": {
-					"role": "The role that you want to mention."
+					"role": "Rola, którą chcesz wzmienić."
 				},
-				"description": "Mention an unmentionable role."
+				"description": "Wzmień rolę, która nie jest wzmienialna."
 			}
 		},
 		"mute": {
-			"canNotMute": "Cannot mute user!",
-			"done": "User muted!",
-			"error": "There was an error muting this person.",
+			"canNotMute": "Nie można wyciszyć użytkownika",
+			"done": "Użytkownik wyciszony!",
+			"error": "Wystąpił błąd podczas wyciszania tego użytkownika.",
 			"missingRole": "Muted role not set or does not exist!",
 			"self": {
 				"args": {
@@ -1720,15 +1720,15 @@
 		},
 		"softban": {
 			"title": "Softban",
-			"description": "Ban and then immediately unban a member."
+			"description": "Zbanuj, a następnie natychmiast odblokuj członka."
 		},
 		"warn": {
-			"title": "Warn",
-			"description": "Send a warning message to the member"
+			"title": "Ostrzeżenie",
+			"description": "Wyślij wiadomość z ostrzeżeniem do użytkownika"
 		},
 		"mute": {
-			"title": "Mute",
-			"description": "Mute the member."
+			"title": "Wycisz",
+			"description": "Wycisz użytkownika."
 		}
 	},
 	"music": {
