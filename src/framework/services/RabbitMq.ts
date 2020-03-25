@@ -153,7 +153,7 @@ export class RabbitMqService extends IMService {
 		});
 
 		await this.channelStartup.prefetch(1);
-		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false });
+		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false, maxPriority: 10 });
 
 		// Reset the ticket
 		this.startTicket = null;
@@ -173,7 +173,7 @@ export class RabbitMqService extends IMService {
 					this.startTicket = msg;
 					resolve();
 				},
-				{ noAck: false }
+				{ noAck: false, priority: this.client.hasStarted ? 1 : 0 }
 			);
 		});
 	}
