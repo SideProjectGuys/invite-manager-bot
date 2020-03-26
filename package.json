@@ -9,7 +9,7 @@
 		"build": "tsc",
 		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"docs/**/*.md\" \"README.md\" \"CHANGELOG.md\"",
-		"release": "npm run build && npm run format && npm run docs && standard-version",
+		"release": "npm run build && npm run docs && npm run format && standard-version",
 		"nxv": "node ./scripts/npm-exact-versions.js",
 		"docs": "node scripts/generate-docs.js"
 	},
