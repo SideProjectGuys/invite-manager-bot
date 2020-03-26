@@ -7,6 +7,9 @@ import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction'
 
 import { IMService } from './Service';
 
+const SEND_MESSAGES = 0x00000800;
+const NOT_SEND_MESSAGES = 0x7ffff7ff;
+
 export class SchedulerService extends IMService {
 	private scheduledActionTimers: Map<number, NodeJS.Timer> = new Map();
 	private scheduledActionFunctions: {
@@ -68,7 +71,7 @@ export class SchedulerService extends IMService {
 				});
 			}
 		};
-		console.log(`Scheduling timer in ${millisUntilAction} for ${action.id}`);
+		console.log(`Scheduling timer in ${chalk.blue(millisUntilAction)} for action ${chalk.blue(action.id)}`);
 		const timer = setTimeout(func, millisUntilAction);
 		this.scheduledActionTimers.set(action.id, timer);
 	}
@@ -86,7 +89,7 @@ export class SchedulerService extends IMService {
 	private async scheduleScheduledActions() {
 		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map((g) => g.id));
 		actions = actions.filter((a) => a.date !== null);
-		console.log(`Scheduling ${chalk.blue(actions.length)} actions from db`);
+		console.log(`Scheduling ${chalk.blue(actions.length)} actions from DB`);
 		actions.forEach((action) => this.createTimer(action));
 	}
 
@@ -109,7 +112,33 @@ export class SchedulerService extends IMService {
 		await member.removeRole(roleId, 'Timed unmute');
 	}
 
-	private async unlock(guild: Guild, { channelId, roleId }: { channelId: string; roleId: string }) {
+	private async unlock(
+		guild: Guild,
+		{ channelId, roleId, wasAllowed }: { channelId: string; roleId: string; wasAllowed: boolean }
+	) {
 		console.log('SCHEDULED TASK: UNLOCK', guild.id, channelId, roleId);
+
+		let channel = guild.channels.get(channelId);
+		if (!channel) {
+			await guild.getRESTChannels();
+			channel = guild.channels.get(channelId);
+		}
+		if (!channel) {
+			console.error('SCHEDULED TASK: UNLOCK: COULD NOT FIND CHANNEL', channelId);
+			return;
+		}
+
+		const override = channel.permissionOverwrites.get(roleId);
+		const newAllow = wasAllowed ? SEND_MESSAGES : 0;
+
+		// tslint:disable: no-bitwise
+		await this.client.editChannelPermission(
+			channelId,
+			roleId,
+			override ? override.allow | newAllow : newAllow,
+			override ? override.deny & NOT_SEND_MESSAGES : 0,
+			'role',
+			'Channel lockdown'
+		);
 	}
 }

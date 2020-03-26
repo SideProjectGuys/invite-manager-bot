@@ -1164,7 +1164,8 @@
 				"args": {
 					"channel": "The channel that you want to lock down."
 				}
-			}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",

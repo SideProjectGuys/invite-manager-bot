@@ -1,5 +1,5 @@
 import { Channel, Message, PermissionOverwrite, Role, TextChannel } from 'eris';
-import { Duration } from 'moment';
+import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
 import { Command, Context } from '../../../framework/commands/Command';
@@ -100,6 +100,8 @@ export default class extends Command {
 			return;
 		}
 
+		// We always add a scheduled actions so that we know what to restore on unlock
+		// But if the user didn't specify a timeout then we set it to null so they must do it manually
 		await this.client.scheduler.addScheduledAction(
 			guild.id,
 			ScheduledActionType.unlock,
@@ -108,7 +110,7 @@ export default class extends Command {
 				roleId: lowestRole.id,
 				wasAllowed: !!(lowestOverride.allow & SEND_MESSAGES)
 			},
-			null,
+			timeout ? moment().add(timeout).toDate() : null,
 			'Unlock from timed `!lockdown` command'
 		);
 
