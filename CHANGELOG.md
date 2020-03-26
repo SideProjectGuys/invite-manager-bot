@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [9.4.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.1.1...v9.4.0) (2020-03-26)
+### [9.4.1](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.4.0...v9.4.1) (2020-03-26)
+
+### Bug Fixes
+
+- **lockdown:** Implement timeout ([fd226e6](https://github.com/SideProjectGuys/invite-manager-bot/commit/fd226e6edc9ad7676240e3d2966dda13f05f6285))
+- **promotion:** Fix rank not found error ([8beeeaf](https://github.com/SideProjectGuys/invite-manager-bot/commit/8beeeaf0b16871fe8ccb9f2a8dac792eb98c19a3))
+
+## [9.4.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.3.0...v9.4.0) (2020-03-26)
 
 ### Features
 
@@ -88,7 +95,7 @@ All notable changes to this project will be documented in this file. See [standa
 - **status:** Fix startup time. Add state ([e3e390a](https://github.com/SideProjectGuys/invite-manager-bot/commit/e3e390a6e339f51412ba12f6aa3f2cb7ffafac19))
 - **status:** Only send relevant info ([8a899c2](https://github.com/SideProjectGuys/invite-manager-bot/commit/8a899c2f5a61a4a384570d09b15819848a857154))
 
-## [9.3.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.1.1...v9.3.0) (2020-03-24)
+## [9.3.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.2.8...v9.3.0) (2020-03-24)
 
 ### Features
 

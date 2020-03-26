@@ -231,6 +231,7 @@ export class InvitesService extends IMService {
 		const style = settings.rankAssignmentStyle;
 
 		const allRanks = await this.client.cache.ranks.get(guild.id);
+		let allRoles: Role[] = [];
 
 		// Return early if we don't have any ranks so we do not
 		// get any permission issues for MANAGE_ROLES
@@ -244,27 +245,36 @@ export class InvitesService extends IMService {
 		let reached: Role[] = [];
 		const notReached: Role[] = [];
 
-		allRanks.forEach((r) => {
-			const role = guild.roles.get(r.roleId);
-			if (role) {
-				if (r.numInvites <= totalInvites) {
-					reached.push(role);
-					if (!highest || highest.position < role.position) {
-						highest = role;
-					}
-				} else {
-					notReached.push(role);
-					// Rank requires more invites
-					if (!nextRank || r.numInvites < nextRank.numInvites) {
-						// Next rank is the one with lowest invites needed
-						nextRank = r;
-						nextRankName = role.name;
-					}
+		for (const rank of allRanks) {
+			let role = guild.roles.get(rank.roleId);
+
+			if (!role) {
+				if (!allRoles.length) {
+					allRoles = await guild.getRESTRoles();
+				}
+				role = allRoles.find((r) => r.id === rank.roleId);
+			}
+
+			if (!role) {
+				console.log(`ROLE ${rank.roleId} FOR RANK DOES NOT EXIST IN GUILD ${rank.guildId}`);
+				continue;
+			}
+
+			if (rank.numInvites <= totalInvites) {
+				reached.push(role);
+				if (!highest || highest.position < role.position) {
+					highest = role;
 				}
 			} else {
-				console.log('ROLE DOES NOT EXIST');
+				notReached.push(role);
+				// Rank requires more invites
+				if (!nextRank || rank.numInvites < nextRank.numInvites) {
+					// Next rank is the one with lowest invites needed
+					nextRank = rank;
+					nextRankName = role.name;
+				}
 			}
-		});
+		}
 
 		let myRole: Role;
 		me.roles.forEach((r) => {
