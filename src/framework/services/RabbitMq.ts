@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/node';
 import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
+import chalk from 'chalk';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
@@ -122,8 +123,8 @@ export class RabbitMqService extends IMService {
 
 	public async waitForStartupTicket() {
 		if (!this.conn) {
-			console.log('No connection available, this is ok for single installations or in dev mode.');
-			console.log('Skipping start ticket...');
+			console.log(chalk.yellow('No connection available, this is ok for single installations or in dev mode.'));
+			console.log(chalk.yellow('Skipping start ticket...'));
 			return;
 		}
 
@@ -165,7 +166,7 @@ export class RabbitMqService extends IMService {
 			this.channelStartup.consume(
 				this.qNameStartup,
 				(msg) => {
-					console.log(`\x1b[32mAquired start ticket!\x1b[0m`);
+					console.log(chalk.green(`Aquired start ticket!`));
 
 					this.waitingForTicket = false;
 
@@ -223,10 +224,6 @@ export class RabbitMqService extends IMService {
 
 	public async sendStatusToManager(err?: Error) {
 		const req = (this.client as any).requestHandler;
-		const queued = Object.keys(req.ratelimits).reduce(
-			(acc, endpoint) => acc + (req.ratelimits[endpoint]._queue.length as number),
-			0
-		);
 
 		await this.sendToManager({
 			id: 'status',
@@ -238,7 +235,7 @@ export class RabbitMqService extends IMService {
 				: !!this.startTicket
 				? 'starting'
 				: 'running',
-			startedAt: this.client.startedAt.toISOString(),
+			startedAt: this.client.startedAt?.toISOString(),
 			gateway: this.client.gatewayConnected,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
@@ -257,7 +254,10 @@ export class RabbitMqService extends IMService {
 				cmdProcessed: this.client.stats.cmdProcessed,
 				cmdErrors: this.client.stats.cmdErrors,
 				cmdHttpErrors: [...this.client.stats.cmdHttpErrors.entries()].map(([code, count]) => ({ code, count })),
-				httpRequestsQueued: queued
+				httpRequestsQueued: Object.keys(req.ratelimits).reduce(
+					(acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length as number }]),
+					[]
+				)
 			}
 		});
 	}
