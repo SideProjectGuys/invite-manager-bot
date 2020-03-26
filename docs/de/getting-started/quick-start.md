@@ -1,6 +1,6 @@
-# Quick Start
+# Start
 
-## Setup
+## Einrichtung
 
 start.quick.setup.description
 

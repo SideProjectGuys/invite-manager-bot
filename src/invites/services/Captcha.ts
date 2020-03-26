@@ -1,10 +1,9 @@
+import { Canvas } from 'canvas';
 import { Guild, Member, Message } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
 import { IMService } from '../../framework/services/Service';
-
-const canvasClass = require('canvas');
 
 export enum FileMode {
 	FILE = 'file',
@@ -122,7 +121,7 @@ export class CaptchaService extends IMService {
 		config.nofLines = config.nofLines || 2;
 
 		const fontSize = Math.round(config.height * 0.5 + (15 - config.complexity * 3));
-		const canvas = new canvasClass(config.width, config.canvasHeight);
+		const canvas = new Canvas(config.width, config.canvasHeight);
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = config.background;
 		ctx.fillRect(0, 0, config.width, config.canvasHeight);
@@ -169,7 +168,7 @@ export class CaptchaService extends IMService {
 
 				const filename = `${new Date().getTime()}-${Math.floor(Math.random() * 1000)}.png`;
 				const out = fs.createWriteStream(config.saveDir + '/' + filename);
-				const stream = canvas.pngStream();
+				const stream = canvas.createPNGStream();
 
 				stream.on('data', function (chunk: Buffer) {
 					out.write(chunk);
@@ -183,7 +182,7 @@ export class CaptchaService extends IMService {
 					resolve([config.text, buf]);
 				});
 			} else {
-				canvas.toDataURL('image/png', function (err: Error, data: Buffer) {
+				canvas.toDataURL('image/png', (err: Error, data: string) => {
 					resolve([config.text, data]);
 				});
 			}

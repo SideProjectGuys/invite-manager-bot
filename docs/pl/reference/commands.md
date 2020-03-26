@@ -131,7 +131,7 @@ This argument expects a duration. The following duration types are supported:
 | [credits](#credits) | Pokaż deweloperów i kontrybutorów bota.                                           | !credits        |
 | [getBot](#getBot)   | Uzyskaj link zaproszenia dla bota.                                                | !getBot         |
 | [help](#help)       | Pokaż pomoc                                                                       | !help [command] |
-| [members](#members) | Show member count of current server.                                              | !members        |
+| [members](#members) | Pokaż liczbę członków bieżącego serwera.                                          | !members        |
 | [ping](#ping)       | Ping the bot                                                                      | !ping           |
 | [prefix](#prefix)   | Shows the current prefix of the bot.                                              | !prefix         |
 | [setup](#setup)     | Help with setting up the bot and checking for problems (e.g. missing permissions) | !setup          |
@@ -1231,7 +1231,7 @@ Pokaż i zmień konfigurację członków serwera.
 
 ## !members
 
-Show member count of current server.
+Pokaż liczbę członków bieżącego serwera.
 
 ### Usage
 

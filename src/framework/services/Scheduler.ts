@@ -1,4 +1,5 @@
 import { captureException, withScope } from '@sentry/node';
+import chalk from 'chalk';
 import { Guild } from 'eris';
 import moment from 'moment';
 
@@ -85,7 +86,7 @@ export class SchedulerService extends IMService {
 	private async scheduleScheduledActions() {
 		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map((g) => g.id));
 		actions = actions.filter((a) => a.date !== null);
-		console.log(`Scheduling ${actions.length} actions from db`);
+		console.log(`Scheduling ${chalk.blue(actions.length)} actions from db`);
 		actions.forEach((action) => this.createTimer(action));
 	}
 

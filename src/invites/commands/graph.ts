@@ -5,7 +5,7 @@ import { IMClient } from '../../client';
 import { Command, Context } from '../../framework/commands/Command';
 import { DateResolver, EnumResolver } from '../../framework/resolvers';
 import { ChartType, CommandGroup, InvitesCommand } from '../../types';
-import { Chart } from '../models/Chart';
+import { renderChart } from '../models/Chart';
 
 const DEFAULT_DAYS = 30;
 const COLORS = ['blue', 'red', 'black'];
@@ -143,24 +143,16 @@ export default class extends Command {
 			datasets
 		};
 
-		const chart = new Chart();
-		chart.getChart('line', config).then((buffer: Buffer) => {
-			const embed = this.createEmbed({
-				title,
-				description,
-				image: {
-					url: 'attachment://chart.png'
-				}
-			});
+		const buffer = await renderChart('line', config);
 
-			message.channel
-				.createMessage({ embed }, { file: buffer, name: 'chart.png' })
-				.then(() => {
-					chart.destroy();
-				})
-				.catch(() => {
-					chart.destroy();
-				});
+		const embed = this.createEmbed({
+			title,
+			description,
+			image: {
+				url: 'attachment://chart.png'
+			}
 		});
+
+		await message.channel.createMessage({ embed }, { file: buffer, name: 'chart.png' });
 	}
 }

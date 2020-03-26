@@ -1,44 +1,44 @@
-- Getting Started
+- Başlangıç
 
-  - [Quick Start](/tr/getting-started/quick-start.md)
+  - [Hızlı başlangıç](/tr/getting-started/quick-start.md)
   - [FAQs](/tr/getting-started/faq.md)
   - [Alpha Bot](/tr/getting-started/alpha.md)
-  - [Pro Bot](/tr/getting-started/pro.md)
+  - [Profesyonel Bot](/tr/getting-started/pro.md)
 
-- Reference
+- Referans
 
-  - [Commands](/tr/reference/commands.md)
+  - [Komutlar](/tr/reference/commands.md)
   - [Configs / Settings](/tr/reference/settings.md)
 
 - Premium
 
-  - [Features](/tr/premium/features.md)
-  - [Tiers](/tr/premium/tiers.md)
-  - [Setup](/tr/premium/setup.md)
+  - [Özellikleri](/tr/premium/features.md)
+  - [Aşamalar](/tr/premium/tiers.md)
+  - [Kurma](/tr/premium/setup.md)
 
-- Modules
+- Modüller
 
-  - Invite Management
+  - Davet Yönetimi
 
-    - [Overview](/tr/modules/invites/overview.md)
-    - [Custom message](/tr/modules/invites/custom-messages.md)
-      - [Examples](/tr/modules/invites/examples.md)
+    - [Genel Bakış](/tr/modules/invites/overview.md)
+    - [Özel mesaj](/tr/modules/invites/custom-messages.md)
+      - [Örnekler](/tr/modules/invites/examples.md)
 
-  - Moderation
+  - Moderasyon
 
-    - [Strikes](/tr/modules/moderation/strikes.md)
-    - [Punishments](/tr/modules/moderation/punishments.md)
+    - [Grevler](/tr/modules/moderation/strikes.md)
+    - [Cezalar](/tr/modules/moderation/punishments.md)
 
-  - Music
+  - Müzik
 
-    - [Overview](/tr/modules/music/overview.md)
+    - [Genel Bakış](/tr/modules/music/overview.md)
 
-- Other
+- Diğer
 
-  - [Webpanel](/tr/other/webpanel.md)
-  - [Translations](/tr/other/translations.md)
-  - [Donating](/tr/other/donating.md)
-  - [Support](/tr/other/support.md)
-  - [Changelog](/tr/other/changelog.md)
-  - [Roadmap](/tr/other/roadmap.md)
-  - [Open Source](/tr/other/open-source.md)
+  - [Site Paneli](/tr/other/webpanel.md)
+  - [Çeviriler](/tr/other/translations.md)
+  - [Oy verme](/tr/other/donating.md)
+  - [Destek](/tr/other/support.md)
+  - [Değişiklikler](/tr/other/changelog.md)
+  - [Harita yolu](/tr/other/roadmap.md)
+  - [Açık kaynak](/tr/other/open-source.md)

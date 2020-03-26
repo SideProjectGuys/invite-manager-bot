@@ -116,8 +116,8 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
-| [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
+| [botConfig](#botConfig)                 | Arata si schimba configul botului                         | !botConfig [key][value]                     |
+| [config](#config)                       | Vizualizeaza si schimba configul serverului               | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Show and change the config of members of the server.      | !memberConfig [key][user] [value]           |
@@ -127,7 +127,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Get general information about the bot.                                            | !botInfo        |
+| [botInfo](#botInfo) | Obtine informatii generale despre bot.                                            | !botInfo        |
 | [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
@@ -141,7 +141,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                   | Description                                                               | Usage             |
 | ------------------------- | ------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Export data of InviteManager to a csv sheet.                              | !export \<type\>  |
+| [export](#export)         | Exporteaza datele InviteManager-ului in csv sheet                         | !export \<type\>  |
 | [premium](#premium)       | Info about premium version of InviteManager.                              | !premium [action] |
 | [tryPremium](#tryPremium) | Try the premium version of InviteManager for free for a limited duration. | !tryPremium       |
 
@@ -150,7 +150,7 @@ This argument expects a duration. The following duration types are supported:
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | Interzice un membru de pe acest server.                                                                                                       | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseDelete](#caseDelete)             | Sterge un anumit caz                                                                                                                          | !caseDelete \<caseNumber\> [reason]                              |
 | [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
 | [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
 | [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
@@ -304,7 +304,7 @@ Interzice un membru de pe acest server.
 
 ## !botConfig
 
-Show and change the config of the bot.
+Arata si schimba configul botului
 
 ### Usage
 
@@ -323,7 +323,7 @@ Show and change the config of the bot.
 | Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
 | -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| value    | [Value](#Value) | No       | Noua valuare a setarii                                |                                                                                                                                             |
 
 ### Examples
 
@@ -337,7 +337,7 @@ Show and change the config of the bot.
 
 ## !botInfo
 
-Get general information about the bot.
+Obtine informatii generale despre bot.
 
 ### Usage
 
@@ -361,7 +361,7 @@ Get general information about the bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Sterge un anumit caz
 
 ### Usage
 
@@ -377,10 +377,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description                      | Details |
+| ---------- | ----------------- | -------- | -------------------------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | Numarul cazului                  |         |
+| reason     | [Text](#Text)     | No       | Motivul pentru stergerea cazului |         |
 
 ### Examples
 
@@ -590,7 +590,7 @@ Clear invites of the server/a user.
 
 ## !config
 
-Show and change the config of the server.
+Vizualizeaza si schimba configul serverului
 
 ### Usage
 
@@ -696,7 +696,7 @@ Disconnect the bot from the current voice channel.
 
 ## !export
 
-Export data of InviteManager to a csv sheet.
+Exporteaza datele InviteManager-ului in csv sheet
 
 ### Usage
 

@@ -56,10 +56,10 @@ Cet argument attend un salon Discord. Vous pouvez utiliser une de ces méthodes 
 
 ### Commande
 
-This argument expects a command of this bot. You can use any of the following methods to provide a command:
+Cet argument attend une commande de ce bot. Vous pouvez utiliser une de ces méthodes pour donner une commande :
 
-- Use the command name: `invites`
-- Use an alias of the command: `p`
+- Utiliser le nom de la commande : `invites`
+- Utiliser un alias de la commande : `p`
 
 ### Texte
 
@@ -69,19 +69,19 @@ Cet argument attend du texte. Vous pouvez utiliser des guillemets (`"Texte avec 
 
 ### Date
 
-This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`
+Cet argument attend une date. Vous pouvez utiliser différents formats, mais nous recommandons : `YYYY-MM-DD`
 
 ### Durée
 
-This argument expects a duration. The following duration types are supported:
+Cet argument attend une durée. Les durées suivantes sont supportées :
 
-- Seconds: `s` (`5s` = 5 seconds)
-- Minutes: `min` (`3min` = 3 minutes)
-- Hours: `h` (`4h` = 4 hours)
-- Days: `d` (`2d` = 2 days)
-- Weeks: `w` (`1w` = 1 week)
-- Months: `mo` (`6mo` = 6 months)
-- Years: `y` (`10y` = 10 years)
+- Secondes : `s` (`5s` = 5 secondes)
+- Minutes : `min` (`3min` = 3 minutes)
+- Heures : `h` (`4h` = 4 heures)
+- Jours : `d` (`2d` = 2 jours)
+- Semaines : `w` (`1w` = 1 semaine)
+- Mois : `mo` (`6mo` = 6 mois)
+- Années : `y` (`10y` = 10 ans)
 
 ## Overview
 
@@ -97,19 +97,19 @@ This argument expects a duration. The following duration types are supported:
 | [inviteDetails](#inviteDetails)   | Affiche des détails sur l'origine de vos invitations.                                      | !inviteDetails [user]                                            |
 | [invites](#invites)               | Afficher les invitations personnelles.                                                     | !invites [user]                                                  |
 | [leaderboard](#leaderboard)       | Afficher les membres avec le plus d'invitations.                                           | !leaderboard [page]                                              |
-| [removeInvites](#removeInvites)   | Removes a specified amount of invites from a user.                                         | !removeInvites \<user\> \<amount\> [reason]                      |
+| [removeInvites](#removeInvites)   | Enlève un certain nombre d'invitations à un utilisateur.                                   | !removeInvites \<user\> \<amount\> [reason]                      |
 | [restoreInvites](#restoreInvites) | Restaurez toutes les invitations précédemment effacées.                                    | !restoreInvites [user]                                           |
 | [subtractFakes](#subtractFakes)   | Supprimez les fausses invitations de tous les utilisateurs.                                | !subtractFakes                                                   |
 | [subtractLeaves](#subtractLeaves) | Supprimer le nombre des invitations des personne qui ont quitter de tous les utilisateurs. | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                                   | Usage                                |
-| ------------------------- | --------------------------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Ajouter un nouveau Ranks.                     | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | Deletes any ranks where the role was deleted. | !fixRanks                            |
-| [ranks](#ranks)           | Montrer tous les rangs.                       | !ranks [page]                        |
-| [removeRank](#removeRank) | Supprimer un rang.                            | !removeRank \<rank\>                 |
+| Command                   | Description                                              | Usage                                |
+| ------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | Ajouter un nouveau Ranks.                                | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | Supprime les rangs configurés si le rôle a été supprimé. | !fixRanks                            |
+| [ranks](#ranks)           | Montrer tous les rangs.                                  | !ranks [page]                        |
+| [removeRank](#removeRank) | Supprimer un rang.                                       | !removeRank \<rank\>                 |
 
 ### Config
 
@@ -156,7 +156,7 @@ This argument expects a duration. The following duration types are supported:
 | [cleanShort](#cleanShort)             | Effacer les messages courts.                                                                                             | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Supprimer les messages contenant certains mots clefs.                                                                    | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Expulser un membre du serveur.                                                                                           | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Bloque un salon spécifique (empêche tout le monde sans rôle spécial d'envoyer des messages)                              | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Rendre muet un utilisateur                                                                                               | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configurez les punitions lorsque vous atteignez un certain nombre d'avertissements.                                      | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purger les messages dans un canal.                                                                                       | !purge \<quantity\> [user]                                       |
@@ -721,7 +721,7 @@ Exportez les données d'InviteManager vers une feuille de calculs CSV.
 
 ## !fixRanks
 
-Deletes any ranks where the role was deleted.
+Supprime les rangs configurés si le rôle a été supprimé.
 
 ### Usage
 
@@ -789,8 +789,8 @@ Affiche des graphiques sur différentes statistiques sur ce serveur.
 | Argument | Type                        | Required | Description                      | Details                                                                  |
 | -------- | --------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------------ |
 | type     | [Énumération](#Énumération) | Yes      | Le type de graphique à afficher. | Utilisez une des valeurs suivantes : `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date)               | No       | Start date of the chart          |                                                                          |
-| to       | [Date](#Date)               | No       | End date of the chart            |                                                                          |
+| from     | [Date](#Date)               | No       | Date de début du graphique       |                                                                          |
+| to       | [Date](#Date)               | No       | Date de fin du graphique         |                                                                          |
 
 ### Examples
 
@@ -1116,7 +1116,7 @@ Afficher les membres avec le plus d'invitations.
 
 ## !lockdown
 
-Lockdown a specific channel (Prevents anyone without special roles from sending messages)
+Bloque un salon spécifique (empêche tout le monde sans rôle spécial d'envoyer des messages)
 
 ### Usage
 
@@ -1126,15 +1126,15 @@ Lockdown a specific channel (Prevents anyone without special roles from sending 
 
 ### Arguments
 
-| Argument | Type            | Required | Description                             | Details |
-| -------- | --------------- | -------- | --------------------------------------- | ------- |
-| channel  | [Salon](#Salon) | No       | The channel that you want to lock down. |         |
+| Argument | Type            | Required | Description                       | Details |
+| -------- | --------------- | -------- | --------------------------------- | ------- |
+| channel  | [Salon](#Salon) | No       | Le salon que vous voulez bloquer. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type            | Description                                                                                                  |
-| ----------------------- | --------- | --------------- | ------------------------------------------------------------------------------------------------------------ |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Durée](#Durée) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
+| Flag                    | Short     | Type            | Description                                                                                                                                |
+| ----------------------- | --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Durée](#Durée) | La durée après laquelle le blocage se finit automatiquement. Utilisez la commande une nouvelle fois pour terminer le blocage manuellement. |
 
 ### Examples
 
@@ -1272,9 +1272,9 @@ Rendre muet un utilisateur
 
 ### Flags
 
-| Flag                     | Short     | Type            | Description                       |
-| ------------------------ | --------- | --------------- | --------------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Durée](#Durée) | The duration to mute the user for |
+| Flag                     | Short     | Type            | Description                                    |
+| ------------------------ | --------- | --------------- | ---------------------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Durée](#Durée) | Le temps pendant lequel l'utilisateur est muet |
 
 ### Examples
 
@@ -1609,9 +1609,9 @@ Montrer tous les rangs.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                         | Details |
-| -------- | ----------------- | -------- | ----------------------------------- | ------- |
-| page     | [Nombre](#Nombre) | No       | The page of the ranks list to show. |         |
+| Argument | Type              | Required | Description                              | Details |
+| -------- | ----------------- | -------- | ---------------------------------------- | ------- |
+| page     | [Nombre](#Nombre) | No       | La page de la liste des rangs à montrer. |         |
 
 ### Examples
 
@@ -1625,7 +1625,7 @@ Montrer tous les rangs.
 
 ## !removeInvites
 
-Removes a specified amount of invites from a user.
+Enlève un certain nombre d'invitations à un utilisateur.
 
 ### Usage
 
@@ -1639,11 +1639,11 @@ Removes a specified amount of invites from a user.
 
 ### Arguments
 
-| Argument | Type                        | Required | Description                          | Details |
-| -------- | --------------------------- | -------- | ------------------------------------ | ------- |
-| user     | [Utilisateur](#Utilisateur) | Yes      | The user to remove the invites from. |         |
-| amount   | [Nombre](#Nombre)           | Yes      | The amount of invites to remove.     |         |
-| reason   | [Texte](#Texte)             | No       | The reason for removing the invites. |         |
+| Argument | Type                        | Required | Description                                  | Details |
+| -------- | --------------------------- | -------- | -------------------------------------------- | ------- |
+| user     | [Utilisateur](#Utilisateur) | Yes      | L'utilisateur à qui enlever des invitations. |         |
+| amount   | [Nombre](#Nombre)           | Yes      | Le nombre d'invitations à enlever.           |         |
+| reason   | [Texte](#Texte)             | No       | La raison de l'enlèvement d'invitations.     |         |
 
 ### Examples
 
@@ -1943,9 +1943,9 @@ Bannir puis automatiquement dé-bannir un membre du serveur.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                        |
-| --------------------------------- | --------- | ----------------- | -------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Nombre](#Nombre) | Delete messages from the user this many days back. |
+| Flag                              | Short     | Type              | Description                                                               |
+| --------------------------------- | --------- | ----------------- | ------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Nombre](#Nombre) | Supprime les messages d'un utilisateur depuis un certain nombre de jours. |
 
 ### Examples
 

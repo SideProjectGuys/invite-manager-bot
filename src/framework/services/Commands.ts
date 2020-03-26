@@ -1,8 +1,9 @@
 import { captureException, withScope } from '@sentry/node';
+import chalk from 'chalk';
 import { GuildChannel, Member, Message, PrivateChannel } from 'eris';
-import { promises, statSync } from 'fs';
+import { readdir, statSync } from 'fs';
 import i18n from 'i18n';
-import { basename, resolve } from 'path';
+import { relative, resolve } from 'path';
 
 import { guildDefaultSettings } from '../../settings';
 import { GuildPermission } from '../../types';
@@ -22,6 +23,18 @@ const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
 const COOLDOWN = 5; // in seconds
 
+const readDir = async (dir: string) => {
+	return new Promise<string[]>((res, reject) => {
+		readdir(dir, (err, files) => {
+			if (err) {
+				reject(err);
+			} else {
+				res(files);
+			}
+		});
+	});
+};
+
 export class CommandsService extends IMService {
 	public commands: Command[] = [];
 	private cmdMap: Map<string, Command> = new Map();
@@ -32,17 +45,17 @@ export class CommandsService extends IMService {
 
 		// Load all commands
 		const loadRecursive = async (dir: string) => {
-			const fileNames = await promises.readdir(dir);
+			const fileNames = await readDir(dir);
 			for (const fileName of fileNames) {
 				const file = dir + '/' + fileName;
 
 				if (statSync(file).isDirectory()) {
 					await loadRecursive(file);
-					return;
+					continue;
 				}
 
 				if (!fileName.endsWith('.js')) {
-					return;
+					continue;
 				}
 
 				const clazz = require(file);
@@ -50,7 +63,7 @@ export class CommandsService extends IMService {
 					const constr = clazz.default;
 					const parent = Object.getPrototypeOf(constr);
 					if (!parent || parent.name !== 'Command') {
-						return;
+						continue;
 					}
 
 					const inst: Command = new constr(this.client);
@@ -72,13 +85,13 @@ export class CommandsService extends IMService {
 						this.cmdMap.set(a.toLowerCase(), inst);
 					});
 
-					console.log(`Loaded \x1b[34m${inst.name}\x1b[0m from ` + `\x1b[2m${basename(file)}\x1b[0m`);
+					console.log(`Loaded ${chalk.blue(inst.name)} from ${chalk.gray(relative(process.cwd(), file))}`);
 				}
 			}
 		};
 		await Promise.all(CMD_DIRS.map((dir) => loadRecursive(dir)));
 
-		console.log(`Loaded \x1b[32m${this.commands.length}\x1b[0m commands!`);
+		console.log(`Loaded ${chalk.blue(this.commands.length)} commands!`);
 	}
 
 	public async onClientReady() {

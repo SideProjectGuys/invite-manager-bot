@@ -12,10 +12,10 @@
 		"website": {
 			"title": "Bot Webseite"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "Mein aktueller Prefix ist `{{{ prefix }}}`\n\nVerwende `{{{ prefix }}}help` für weitere Hilfe."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captcha war nicht korrekt, bitte versuche es erneut."
 	},
 	"cmd": {
 		"addInvites": {
@@ -32,8 +32,8 @@
 				"description": "Entfernt/Fügt Einladungen von/zu einem Mitglied hinzu."
 			},
 			"zero": "Keine Einladungen hinzuzufügen macht nicht wirklich Sinn...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Die von dir angegebene Zahl ist zu groß.",
+			"numberTooSmall": "Die von dir angegebene Zahl ist zu klein."
 		},
 		"addRank": {
 			"created": "Added rank {{{ role }}} which needs {{ invites }} invites and has the following description: {{ description }}",

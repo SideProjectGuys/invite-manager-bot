@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/node';
 import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
+import chalk from 'chalk';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
@@ -122,8 +123,8 @@ export class RabbitMqService extends IMService {
 
 	public async waitForStartupTicket() {
 		if (!this.conn) {
-			console.log('No connection available, this is ok for single installations or in dev mode.');
-			console.log('Skipping start ticket...');
+			console.log(chalk.yellow('No connection available, this is ok for single installations or in dev mode.'));
+			console.log(chalk.yellow('Skipping start ticket...'));
 			return;
 		}
 
@@ -153,7 +154,7 @@ export class RabbitMqService extends IMService {
 		});
 
 		await this.channelStartup.prefetch(1);
-		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false });
+		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false, maxPriority: 10 });
 
 		// Reset the ticket
 		this.startTicket = null;
@@ -165,7 +166,7 @@ export class RabbitMqService extends IMService {
 			this.channelStartup.consume(
 				this.qNameStartup,
 				(msg) => {
-					console.log(`\x1b[32mAquired start ticket!\x1b[0m`);
+					console.log(chalk.green(`Aquired start ticket!`));
 
 					this.waitingForTicket = false;
 
@@ -173,7 +174,7 @@ export class RabbitMqService extends IMService {
 					this.startTicket = msg;
 					resolve();
 				},
-				{ noAck: false }
+				{ noAck: false, priority: this.client.hasStarted ? 1 : 0 }
 			);
 		});
 	}
@@ -222,37 +223,24 @@ export class RabbitMqService extends IMService {
 	}
 
 	public async sendStatusToManager(err?: Error) {
-		const req = (this.client as any).requestHandler;
-		const queued = Object.keys(req.ratelimits).reduce(
-			(acc, endpoint) => acc + (req.ratelimits[endpoint]._queue.length as number),
-			0
-		);
-
 		await this.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
-			connected: this.client.gatewayConnected,
+			state: this.waitingForTicket
+				? 'waiting'
+				: !this.client.hasStarted
+				? 'init'
+				: !!this.startTicket
+				? 'starting'
+				: 'running',
+			startedAt: this.client.startedAt?.toISOString(),
+			gateway: this.client.gatewayConnected,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
-			starting: !!this.startTicket,
-			waitingToStart: this.waitingForTicket,
-			tracking: {
-				pendingGuilds: this.client.tracking.pendingGuilds.size,
-				initialPendingGuilds: this.client.tracking.initialPendingGuilds
-			},
-			music: {
-				connections: this.client.music.getMusicConnectionGuildIds()
-			},
+			tracking: this.getTrackingStatus(),
+			music: this.getMusicStatus(),
 			cache: this.getCacheSizes(),
-			stats: {
-				wsEvents: this.client.stats.wsEvents,
-				wsWarnings: this.client.stats.wsWarnings,
-				wsErrors: this.client.stats.wsErrors,
-				cmdProcessed: this.client.stats.cmdProcessed,
-				cmdErrors: this.client.stats.cmdErrors,
-				cmdHttpErrors: [...this.client.stats.cmdHttpErrors.entries()].map(([code, count]) => ({ code, count })),
-				httpRequestsQueued: queued
-			}
+			metrics: this.getMetrics()
 		});
 	}
 
@@ -474,6 +462,17 @@ export class RabbitMqService extends IMService {
 		}
 	}
 
+	private getTrackingStatus() {
+		return {
+			pendingGuilds: this.client.tracking.pendingGuilds.size,
+			initialPendingGuilds: this.client.tracking.initialPendingGuilds
+		};
+	}
+	private getMusicStatus() {
+		return {
+			connections: this.client.music.getMusicConnectionGuildIds()
+		};
+	}
 	private getCacheSizes() {
 		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
 		let roleCount = 0;
@@ -497,6 +496,21 @@ export class RabbitMqService extends IMService {
 			inviteCodes: this.client.cache.inviteCodes.getSize(),
 			members: this.client.cache.members.getSize(),
 			messages: this.client.mod.getMessageCacheSize()
+		};
+	}
+	private getMetrics() {
+		const req = (this.client as any).requestHandler;
+
+		return {
+			wsEvents: this.client.stats.wsEvents,
+			wsWarnings: this.client.stats.wsWarnings,
+			wsErrors: this.client.stats.wsErrors,
+			cmdProcessed: this.client.stats.cmdProcessed,
+			cmdErrors: this.client.stats.cmdErrors,
+			cmdHttpErrors: [...this.client.stats.cmdHttpErrors.entries()].map(([code, count]) => ({ code, count })),
+			httpRequestsQueued: Object.keys(req.ratelimits)
+				.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
+				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
 		};
 	}
 }

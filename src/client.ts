@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
@@ -162,7 +163,6 @@ export class IMClient extends Client {
 			guildCreateTimeout: 60000
 		});
 
-		this.startedAt = moment();
 		this.stats = {
 			wsEvents: 0,
 			wsWarnings: 0,
@@ -247,7 +247,7 @@ export class IMClient extends Client {
 	public async waitForStartupTicket() {
 		const start = process.uptime();
 		const interval = setInterval(
-			() => console.log(`Waiting for ticket since ${Math.floor(process.uptime() - start)} seconds...`),
+			() => console.log(`Waiting for ticket since ${chalk.blue(Math.floor(process.uptime() - start))} seconds...`),
 			10000
 		);
 		await this.service.rabbitmq.waitForStartupTicket();
@@ -264,12 +264,12 @@ export class IMClient extends Client {
 		await Promise.all(Object.values(this.service).map((s) => s.onClientReady()));
 
 		this.hasStarted = true;
+		this.startedAt = moment();
 
 		const set = await this.db.getBotSettings(this.user.id);
 		this.settings = set ? set.value : { ...botDefaultSettings };
 
-		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
-		console.log(`This is the ${this.type} version of the bot.`);
+		console.log(chalk.green(`Client ready! Serving ${chalk.blue(this.guilds.size)} guilds.`));
 
 		// Init all caches
 		await Promise.all(Object.values(this.cache).map((c) => c.init()));
@@ -367,7 +367,7 @@ export class IMClient extends Client {
 	public serviceStartupDone(service: IMService) {
 		this.startingServices = this.startingServices.filter((s) => s !== service);
 		if (this.startingServices.length === 0) {
-			console.log(`All services ready, returning start ticket`);
+			console.log(chalk.green(`All services ready`));
 			this.rabbitmq.endStartup().catch((err) => console.error(err));
 		}
 	}

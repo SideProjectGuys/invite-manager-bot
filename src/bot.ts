@@ -1,4 +1,5 @@
 import { configureScope, init } from '@sentry/node';
+import chalk from 'chalk';
 
 import { IMClient } from './client';
 
@@ -39,9 +40,13 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 });
 
 const main = async () => {
-	console.log('-------------------------------------');
-	console.log(`This is shard ${shardId}/${shardCount} of ${type} instance ${instance}`);
-	console.log('-------------------------------------');
+	console.log(chalk.green('-------------------------------------'));
+	console.log(
+		chalk.green(
+			`This is shard ${chalk.blue(`${shardId}/${shardCount}`)} of ${chalk.blue(type)} instance ${chalk.blue(instance)}`
+		)
+	);
+	console.log(chalk.green('-------------------------------------'));
 
 	const client = new IMClient({
 		version: pkg.version,
@@ -54,21 +59,21 @@ const main = async () => {
 		config
 	});
 
-	console.log('-------------------------------------');
-	console.log('Starting bot...');
-	console.log('-------------------------------------');
+	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.green('Starting bot...'));
+	console.log(chalk.green('-------------------------------------'));
 
 	await client.init();
 
-	console.log('-------------------------------------');
-	console.log('Waiting for start ticket...');
-	console.log('-------------------------------------');
+	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.green('Waiting for start ticket...'));
+	console.log(chalk.green('-------------------------------------'));
 
 	await client.waitForStartupTicket();
 
-	console.log('-------------------------------------');
-	console.log('Connecting to discord...');
-	console.log('-------------------------------------');
+	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.green('Connecting to discord...'));
+	console.log(chalk.green('-------------------------------------'));
 	await client.connect();
 };
 
