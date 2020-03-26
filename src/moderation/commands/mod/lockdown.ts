@@ -111,7 +111,7 @@ export default class extends Command {
 				wasAllowed: !!(lowestOverride.allow & SEND_MESSAGES)
 			},
 			timeout ? moment().add(timeout).toDate() : null,
-			'Unlock from timed `!lockdown` command'
+			'Unlock from `!lockdown` command'
 		);
 
 		await this.client.editChannelPermission(channel.id, me.id, SEND_MESSAGES, 0, 'member', 'Channel lockdown');
