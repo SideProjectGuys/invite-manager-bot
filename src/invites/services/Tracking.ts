@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -81,17 +82,17 @@ export class TrackingService extends IMService {
 						console.error(err);
 					}
 
-					console.log('Updated invite count for ' + guild.name);
+					console.log(`Updated invite count for ${chalk.blue(guild.name)}`);
 				}
 
 				this.pendingGuilds.delete(guild.id);
 				if (this.pendingGuilds.size % 50 === 0) {
-					console.log(`Pending: ${this.pendingGuilds.size}/${this.initialPendingGuilds}`);
+					console.log(`Pending: ${chalk.blue(`${this.pendingGuilds.size}/${this.initialPendingGuilds}`)}`);
 					await this.client.rabbitmq.sendStatusToManager();
 				}
 
 				if (this.pendingGuilds.size === 0) {
-					console.log(`\x1b[32mLoaded all pending guilds!\x1b[0m`);
+					console.log(chalk.green(`Loaded all pending guilds!`));
 					this.startupDone();
 				}
 
