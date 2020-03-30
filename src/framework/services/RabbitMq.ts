@@ -135,7 +135,8 @@ export class RabbitMqService extends IMService {
 			return;
 		}
 
-		const startupSuffix = this.client.shardCount > BOT_SHARDING ? `-${this.client.shardId % BOT_SHARDING}` : '';
+		// const startupSuffix = this.client.shardCount > BOT_SHARDING ? `-${this.client.shardId % BOT_SHARDING}` : '';
+		const startupSuffix = '';
 		this.qNameStartup = `shard-${this.client.instance}-start${startupSuffix}`;
 
 		this.channelStartup = await this.conn.createChannel();
