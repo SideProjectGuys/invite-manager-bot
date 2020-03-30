@@ -36,11 +36,11 @@ export class IMRequestHandler extends RequestHandler {
 		return super
 			.request(method, url, auth, body, file, _route, short)
 			.then((res: any) => {
-				info.succeeded++;
+				this.requestStats.get(statKey).succeeded++;
 				return res;
 			})
 			.catch((err: any) => {
-				info.errors++;
+				this.requestStats.get(statKey).errors++;
 				throw err;
 			});
 	}

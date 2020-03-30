@@ -148,7 +148,9 @@ export class IMClient extends Client {
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
 			allowedMentions: {
-				everyone: false
+				everyone: false,
+				roles: true,
+				users: true
 			},
 			firstShardID: shardId - 1,
 			lastShardID: shardId - 1,
