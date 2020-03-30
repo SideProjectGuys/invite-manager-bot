@@ -5,7 +5,7 @@ import { Cache } from './Cache';
 
 export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>> {
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
