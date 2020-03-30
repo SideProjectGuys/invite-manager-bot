@@ -293,9 +293,9 @@ This argument expects a duration. The following duration types are supported:
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                                              |
-| --------------------------------- | --------- | ------------- | -------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | BAN したユーザーのメッセージを指定した日数分を削除します |
+| Flag                              | Short     | Type          | Description                                            |
+| --------------------------------- | --------- | ------------- | ------------------------------------------------------ |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | BAN するユーザーのメッセージを指定した日数分削除します |
 
 ### Examples
 

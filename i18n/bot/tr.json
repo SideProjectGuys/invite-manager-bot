@@ -416,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Eklemek için bir değer veya değer listesi girin.",
 			"change": "**Mevcut değer**\n{{{ current }}}\n\n**Olası değerler**\n{{{ possible }}}",
 			"current": {
@@ -731,7 +732,8 @@
 				"noGuild": "Bu komutu bir sunucunun içinde çalıştırmalısınız.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
 				"title": "Bu sunucuda premium'u etkinleştir",
-				"permissions": "Bu komutu bu sunucuda kullanmak için `Sunucuyu Yönet` izinine ihtiyacınız vardır."
+				"permissions": "Bu komutu bu sunucuda kullanmak için `Sunucuyu Yönet` izinine ihtiyacınız vardır.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Prim ödemeniz reddedildi, lütfen Patreon'unuzu kontrol edin.",
@@ -1163,7 +1165,8 @@
 				"args": {
 					"channel": "The channel that you want to lock down."
 				}
-			}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Linkli katılma / ayrılma mesajınız olarak kullanmak premium bir özelliktir. Premium, bu sunucuda etkin görünmüyor. Premium satın alma hakkında daha fazla bilgi edinmek için lütfen bizimle iletişime geçin.",

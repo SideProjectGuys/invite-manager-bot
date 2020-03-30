@@ -31,6 +31,7 @@ import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
 import { MusicCache } from './music/cache/MusicCache';
 import { MusicService } from './music/services/MusicService';
+import { IMRequestHandler } from './RequestHandler';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
@@ -108,6 +109,7 @@ export class IMClient extends Client {
 	public shardId: number;
 	public shardCount: number;
 
+	public requestHandler: IMRequestHandler;
 	public service: ClientServiceObject;
 	private startingServices: IMService[];
 	public cache: ClientCacheObject;
@@ -137,7 +139,6 @@ export class IMClient extends Client {
 		wsErrors: number;
 		cmdProcessed: number;
 		cmdErrors: number;
-		cmdHttpErrors: Map<number, number>;
 	};
 
 	public disabledGuilds: Set<string> = new Set();
@@ -168,10 +169,10 @@ export class IMClient extends Client {
 			wsWarnings: 0,
 			wsErrors: 0,
 			cmdProcessed: 0,
-			cmdErrors: 0,
-			cmdHttpErrors: new Map()
+			cmdErrors: 0
 		};
 
+		this.requestHandler = new IMRequestHandler(this);
 		this.version = version;
 		this.type = type;
 		this.instance = instance;

@@ -480,11 +480,6 @@ export class CommandsService extends IMService {
 
 		if (error) {
 			this.client.stats.cmdErrors++;
-			if (error.code) {
-				const num = this.client.stats.cmdHttpErrors.get(error.code) || 0;
-				this.client.stats.cmdHttpErrors.set(error.code, num + 1);
-			}
-
 			console.error(error);
 
 			withScope((scope) => {
