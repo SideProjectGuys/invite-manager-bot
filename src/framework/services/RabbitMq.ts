@@ -9,6 +9,8 @@ import { FakeChannel } from '../../util';
 
 import { IMService } from './Service';
 
+const BOT_SHARDING = 16;
+
 interface ShardMessage {
 	id: string;
 	cmd: ShardCommand;
@@ -133,7 +135,8 @@ export class RabbitMqService extends IMService {
 			return;
 		}
 
-		this.qNameStartup = `shard-${this.client.instance}-start`;
+		const startupSuffix = this.client.shardCount > BOT_SHARDING ? `-${this.client.shardId % BOT_SHARDING}` : '';
+		this.qNameStartup = `shard-${this.client.instance}-start${startupSuffix}`;
 
 		this.channelStartup = await this.conn.createChannel();
 		this.channelStartup.on('close', async (err) => {

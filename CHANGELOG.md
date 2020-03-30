@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [9.6.1](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.0...v9.6.1) (2020-03-30)
+
+### Bug Fixes
+
+- **client:** Fix pinging roles and users ([5475e2b](https://github.com/SideProjectGuys/invite-manager-bot/commit/5475e2be4bbc846867df68d25e7b3b67feb4594d))
+- **requests:** Group user requests properly ([0942390](https://github.com/SideProjectGuys/invite-manager-bot/commit/09423903d02626a96f109a60be52fb02447b1ec5))
+- **startup:** Respect large bot sharding ([07d3418](https://github.com/SideProjectGuys/invite-manager-bot/commit/07d34189bf613fc84e8c37e4fb66f8661d6c8c5f))
+
 ## [9.6.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.5.0...v9.6.0) (2020-03-30)
 
 ### Features

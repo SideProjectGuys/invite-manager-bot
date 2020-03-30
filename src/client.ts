@@ -10,6 +10,7 @@ import { PermissionsCache } from './framework/cache/PermissionsCache';
 import { PremiumCache } from './framework/cache/PremiumCache';
 import { GuildSettingsKey } from './framework/models/GuildSetting';
 import { LogAction } from './framework/models/Log';
+import { IMRequestHandler } from './framework/RequestHandler';
 import { CommandsService } from './framework/services/Commands';
 import { DatabaseService } from './framework/services/DatabaseService';
 import { MessagingService } from './framework/services/Messaging';
@@ -32,7 +33,6 @@ import { StrikesCache } from './moderation/cache/StrikesCache';
 import { ModerationService } from './moderation/services/Moderation';
 import { MusicCache } from './music/cache/MusicCache';
 import { MusicService } from './music/services/MusicService';
-import { IMRequestHandler } from './RequestHandler';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
@@ -148,7 +148,9 @@ export class IMClient extends Client {
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
 			allowedMentions: {
-				everyone: false
+				everyone: false,
+				roles: true,
+				users: true
 			},
 			firstShardID: shardId - 1,
 			lastShardID: shardId - 1,
