@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [9.6.2](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.1...v9.6.2) (2020-03-30)
+
+### Bug Fixes
+
+- **startup:** Revert large sharding ([43f5ad9](https://github.com/SideProjectGuys/invite-manager-bot/commit/43f5ad9eddc44f4ba6052b999c27b0a630531846))
+
 ### [9.6.1](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.0...v9.6.1) (2020-03-30)
 
 ### Bug Fixes
