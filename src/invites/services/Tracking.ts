@@ -319,17 +319,10 @@ export class TrackingService extends IMService {
 
 		let isVanity = false;
 		if (inviteCodesUsed.length === 0) {
-			const vanityInv =
-				guild.vanityURL ||
-				(await guild
-					.getVanity()
-					.then((r) => {
-						return r.code;
-					})
-					.catch(() => undefined));
+			const vanityInv = await this.client.cache.vanity.get(guild.id);
 			if (vanityInv) {
 				isVanity = true;
-				inviteCodesUsed.push(vanityInv as string);
+				inviteCodesUsed.push(vanityInv);
 				invs.push({
 					code: vanityInv,
 					channel: null,
@@ -763,14 +756,7 @@ export class TrackingService extends IMService {
 		// Collect concurrent promises
 		const promises: any[] = [];
 
-		const vanityInv =
-			guild.vanityURL ||
-			(await guild
-				.getVanity()
-				.then((r) => {
-					return r.code;
-				})
-				.catch(() => undefined));
+		const vanityInv = await this.client.cache.vanity.get(guild.id);
 		if (vanityInv) {
 			newInviteCodes.push({
 				code: vanityInv,
