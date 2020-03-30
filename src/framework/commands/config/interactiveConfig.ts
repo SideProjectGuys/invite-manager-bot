@@ -2,7 +2,7 @@ import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../../settings';
-import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
 import { GuildSettingsKey } from '../../models/GuildSetting';
 import { SettingsValueResolver } from '../../resolvers';
 import { Command, Context } from '../Command';
@@ -40,6 +40,15 @@ export default class extends Command {
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
+
+		// Ask users to use the webpanel on the regular bot
+		if (this.client.type === BotType.regular) {
+			embed.description = context.t('cmd.interactiveConfig.useWeb', {
+				configCmd: `\`${context.settings.prefix}config\``,
+				link: `https://app.invitemanager.gg/guild/${context.guild.id}/settings`
+			});
+			return this.sendReply(message, embed);
+		}
 
 		if (
 			message.channel instanceof GuildChannel &&
