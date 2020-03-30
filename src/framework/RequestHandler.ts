@@ -1,4 +1,4 @@
-import { IMClient } from './client';
+import { IMClient } from '../client';
 
 // tslint:disable-next-line: variable-name
 const RequestHandler = require('eris/lib/rest/RequestHandler');
@@ -20,7 +20,7 @@ export class IMRequestHandler extends RequestHandler {
 		// This is similar to https://github.com/abalabahaha/eris/blob/master/lib/rest/RequestHandler.js#L46
 		// but we don't actually care about rate limits, so no exceptions in grouping
 		const route = url
-			.replace(/\/(?:[0-9]{17,19})/g, `/:id`)
+			.replace(/\/(?:[0-9]+)/g, `/:id`)
 			.replace(/\/reactions\/[^/]+/g, '/reactions/:id')
 			.replace(/^\/webhooks\/(\d+)\/[A-Za-z0-9-_]{64,}/, '/webhooks/$1/:token');
 
