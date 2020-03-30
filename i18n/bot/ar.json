@@ -416,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "قم بوضع نوع الاعدادات او اظهر لائحة الاعدادات للاضافة.",
 			"change": "**الاعدادات الحالية**\n{{{ current }}}\n\n**الاعدادات الممكنة**\n{{{ possible }}}\n ",
 			"current": {
@@ -731,7 +732,8 @@
 				"noGuild": "أنت مجبر على تشغيل هذا الأمر داخل الخادم",
 				"noSubscription": "ليس لديك اشتراك نشطبرpremium .\n\nاستخدم {{{cmd}}} لمزيد من المعلومات.",
 				"title": "متفعيل premium على هذا الخادم",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "تم رفض دفعتك للقسط ، يرجى التحقق من Patreon الخاص بك.",
@@ -1163,7 +1165,8 @@
 				"args": {
 					"channel": "The channel that you want to lock down."
 				}
-			}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
