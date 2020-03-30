@@ -4,7 +4,7 @@ import { Cache } from './Cache';
 
 export class PremiumCache extends Cache<boolean> {
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	// This is public on purpose, so we can use it in the IMClient class

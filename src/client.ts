@@ -21,6 +21,7 @@ import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache
 import { InvitesCache } from './invites/cache/InvitesCache';
 import { LeaderboardCache } from './invites/cache/LeaderboardCache';
 import { RanksCache } from './invites/cache/RanksCache';
+import { VanityUrlCache } from './invites/cache/VanityUrlCache';
 import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
@@ -68,6 +69,7 @@ export interface ClientCacheObject {
 
 	inviteCodes: InviteCodeSettingsCache;
 	invites: InvitesCache;
+	vanity: VanityUrlCache;
 	leaderboard: LeaderboardCache;
 	ranks: RanksCache;
 	members: MemberSettingsCache;
@@ -201,6 +203,7 @@ export class IMClient extends Client {
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
+			vanity: new VanityUrlCache(this),
 			leaderboard: new LeaderboardCache(this),
 			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),

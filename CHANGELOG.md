@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.6.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.5.0...v9.6.0) (2020-03-30)
+
+### Features
+
+- **vanity:** Cache urls to reduce requests ([55d0560](https://github.com/SideProjectGuys/invite-manager-bot/commit/55d05607632f523534e4eff9cafafcbb3f83acdb))
+
+### Bug Fixes
+
+- **metrics:** Fix remove user reaction requets ([88b99fa](https://github.com/SideProjectGuys/invite-manager-bot/commit/88b99faea2779c4911f77f1cefedd02b363f85ad))
+- **ranks:** Fix fetching roles too often ([736b31b](https://github.com/SideProjectGuys/invite-manager-bot/commit/736b31bcc3081513c24e2e20b7ba96592bd0e256))
+
 ## [9.5.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.4.1...v9.5.0) (2020-03-30)
 
 ### Features

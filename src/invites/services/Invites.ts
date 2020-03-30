@@ -231,7 +231,6 @@ export class InvitesService extends IMService {
 		const style = settings.rankAssignmentStyle;
 
 		const allRanks = await this.client.cache.ranks.get(guild.id);
-		let allRoles: Role[] = [];
 
 		// Return early if we don't have any ranks so we do not
 		// get any permission issues for MANAGE_ROLES
@@ -246,14 +245,7 @@ export class InvitesService extends IMService {
 		const notReached: Role[] = [];
 
 		for (const rank of allRanks) {
-			let role = guild.roles.get(rank.roleId);
-
-			if (!role) {
-				if (!allRoles.length) {
-					allRoles = await guild.getRESTRoles();
-				}
-				role = allRoles.find((r) => r.id === rank.roleId);
-			}
+			const role = guild.roles.get(rank.roleId);
 
 			if (!role) {
 				console.log(`ROLE ${rank.roleId} FOR RANK DOES NOT EXIST IN GUILD ${rank.guildId}`);
