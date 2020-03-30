@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.5.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.4.1...v9.5.0) (2020-03-30)
+
+### Features
+
+- **ic:** Redirect interactiveConfig to webpanel ([7576830](https://github.com/SideProjectGuys/invite-manager-bot/commit/7576830f1c91f8f8b5411df21691fc4b97ad7ba0))
+- **requests:** Add custom request handler ([eb3adc7](https://github.com/SideProjectGuys/invite-manager-bot/commit/eb3adc7aeeb27b00beae6813a0ddd3a8161a1d8a))
+
+### Bug Fixes
+
+- **lockdown:** Fix scheduled action description ([6c29944](https://github.com/SideProjectGuys/invite-manager-bot/commit/6c29944681f0b69c9ace46b51e1eda8bd6310e2f))
+
 ### [9.4.1](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.4.0...v9.4.1) (2020-03-26)
 
 ### Bug Fixes
