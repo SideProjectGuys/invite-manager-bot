@@ -416,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Enter a value or list of values to add.",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"current": {

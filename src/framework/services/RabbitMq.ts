@@ -195,7 +195,7 @@ export class RabbitMqService extends IMService {
 
 	public async sendToManager(message: { id: string; [x: string]: any }, isResend: boolean = false) {
 		if (!this.conn) {
-			console.log('Send message to RabbitMQ', message);
+			console.log('Send message to RabbitMQ', JSON.stringify(message, null, 2));
 			return;
 		}
 
@@ -499,7 +499,7 @@ export class RabbitMqService extends IMService {
 		};
 	}
 	private getMetrics() {
-		const req = (this.client as any).requestHandler;
+		const req = this.client.requestHandler;
 
 		return {
 			wsEvents: this.client.stats.wsEvents,
@@ -507,7 +507,7 @@ export class RabbitMqService extends IMService {
 			wsErrors: this.client.stats.wsErrors,
 			cmdProcessed: this.client.stats.cmdProcessed,
 			cmdErrors: this.client.stats.cmdErrors,
-			cmdHttpErrors: [...this.client.stats.cmdHttpErrors.entries()].map(([code, count]) => ({ code, count })),
+			httpRequests: [...req.requestStats.entries()].map(([url, stats]) => ({ url, stats })),
 			httpRequestsQueued: Object.keys(req.ratelimits)
 				.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
 				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
