@@ -8,9 +8,17 @@ import { Command, Context } from '../Command';
 const developers: string[] = ['Andy#1801', 'Valandur#3581', 'santjum#0450', 'legendarylol#8215'];
 
 // Staff
-const moderators: string[] = ['GTA Tetris#4587', '愛 | fαkєr유蘇#1553', 'SemiMute#2018', 'Mennoplays#5943'];
+const moderators: string[] = [
+	'GTA Tetris#4587',
+	'𝕸σσɳ유#2296',
+	'SemiMute#2018',
+	'Mennoplays#0001',
+	'Simplee.#2222',
+	'Alan Wen#3344',
+	'malok#8571'
+];
 
-const staff: string[] = ['OmeGa#9999', 'Alan Wen#3344', 'Braydon#6223', 'Simplee ♪ Li .#2222', 'Dedsec#0001'];
+const staff: string[] = ['Audio#0265','Chris.#0006','Gugu72#0016'];
 
 const translators: string[] = [
 	'legendarylol#8215',
