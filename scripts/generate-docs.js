@@ -132,7 +132,7 @@ child.on('close', () => {
 		directory: path.resolve('./i18n/bot/'),
 		objectNotation: true,
 		register: i18nBot,
-		updateFiles: false
+		updateFiles: true
 	});
 
 	locales.forEach(locale => {

@@ -1,10 +1,15 @@
+import { captureException } from '@sentry/node';
 import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
+import chalk from 'chalk';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { ClientCacheObject, IMClient } from '../../client';
-import { ShardCommand } from '../../types';
+import { BotType, ShardCommand } from '../../types';
 import { FakeChannel } from '../../util';
+
+import { IMService } from './Service';
+
+const BOT_SHARDING = 16;
 
 interface ShardMessage {
 	id: string;
@@ -13,53 +18,59 @@ interface ShardMessage {
 	[x: string]: any;
 }
 
-export class RabbitMqService {
-	private client: IMClient;
+export class RabbitMqService extends IMService {
 	private conn: Connection;
 	private connRetry: number = 0;
+
+	private qNameStartup: string;
+	private channelStartup: Channel;
+	private startTicket: MQMessage;
+	private waitingForTicket: boolean;
 
 	private qName: string;
 	private channel: Channel;
 	private channelRetry: number = 0;
-	private msgQueue: any[];
+	private msgQueue: any[] = [];
 
-	public constructor(client: IMClient) {
-		this.client = client;
-		this.msgQueue = [];
-	}
-
-	public init() {
+	public async init() {
 		if (this.client.flags.includes('--no-rabbitmq')) {
 			return;
 		}
 
-		connect(this.client.config.rabbitmq)
-			.then(async conn => {
-				this.conn = conn;
-				this.conn.on('close', async err => {
+		await this.initConnection();
+		await this.initChannel();
+	}
+	private async initConnection() {
+		try {
+			const conn = await connect(this.client.config.rabbitmq);
+			this.conn = conn;
+			this.conn.on('close', async (err) => {
+				if (err) {
 					console.error(err);
-					this.conn = null;
+				}
+				await this.shutdownConnection();
 
-					setTimeout(() => this.init(), this.connRetry * 30);
-					this.connRetry++;
-				});
-				this.conn.on('error', async err => {
-					console.error(err);
-					this.conn = null;
-
-					setTimeout(() => this.init(), this.connRetry * 30);
-					this.connRetry++;
-				});
-
-				await this.initChannel();
-			})
-			.catch(err => {
-				console.error(err);
-				this.conn = null;
-
-				setTimeout(() => this.init(), this.connRetry * 30);
+				setTimeout(() => this.initConnection(), this.connRetry * 30);
 				this.connRetry++;
 			});
+		} catch (err) {
+			console.error(err);
+
+			await this.shutdownConnection();
+			await this.initConnection();
+		}
+	}
+	private async shutdownConnection() {
+		await this.shutdownChannel();
+
+		if (this.conn) {
+			try {
+				await this.conn.close();
+			} catch {
+				// NO-OP
+			}
+			this.conn = null;
+		}
 	}
 
 	private async initChannel() {
@@ -72,16 +83,11 @@ export class RabbitMqService {
 
 		try {
 			this.channel = await this.conn.createChannel();
-			this.channel.on('error', async err => {
-				console.error(err);
-				this.channel = null;
-
-				setTimeout(() => this.initChannel(), this.channelRetry * 30);
-				this.channelRetry++;
-			});
-			this.channel.on('close', async err => {
-				console.error(err);
-				this.channel = null;
+			this.channel.on('close', async (err) => {
+				if (err) {
+					console.error(err);
+				}
+				await this.shutdownChannel();
 
 				setTimeout(() => this.initChannel(), this.channelRetry * 30);
 				this.channelRetry++;
@@ -91,35 +97,109 @@ export class RabbitMqService {
 				await this.sendToManager(this.msgQueue.pop(), true);
 			}
 
-			await this.channel.assertQueue(this.qName, {
-				durable: false,
-				autoDelete: true
-			});
-
-			await this.channel.assertExchange('shards', 'fanout', {
-				durable: true
-			});
-
-			await this.channel.bindQueue(this.qName, 'shards', '');
-
 			await this.channel.prefetch(5);
-			this.channel.consume(this.qName, msg => this.onShardCommand(msg), {
-				noAck: false
-			});
+			await this.channel.assertQueue(this.qName, { durable: false, autoDelete: true });
+			await this.channel.assertExchange('shards', 'fanout', { durable: true });
+			await this.channel.bindQueue(this.qName, 'shards', '');
+			this.channel.consume(this.qName, (msg) => this.onShardCommand(msg), { noAck: false });
 
 			this.channelRetry = 0;
 		} catch (err) {
 			console.error(err);
-			this.channel = null;
 
-			setTimeout(() => this.initChannel(), this.channelRetry * 30);
-			this.channelRetry++;
+			await this.shutdownChannel();
+			await this.initChannel();
 		}
+	}
+	private async shutdownChannel() {
+		if (this.channel) {
+			try {
+				await this.channel.close();
+			} catch {
+				// NO-OP
+			}
+
+			this.channel = null;
+		}
+	}
+
+	public async waitForStartupTicket() {
+		if (!this.conn) {
+			console.log(chalk.yellow('No connection available, this is ok for single installations or in dev mode.'));
+			console.log(chalk.yellow('Skipping start ticket...'));
+			return;
+		}
+
+		// Don't do this for custom bots
+		if (this.client.type === BotType.custom) {
+			return;
+		}
+
+		// const startupSuffix = this.client.shardCount > BOT_SHARDING ? `-${this.client.shardId % BOT_SHARDING}` : '';
+		const startupSuffix = '';
+		this.qNameStartup = `shard-${this.client.instance}-start${startupSuffix}`;
+
+		this.channelStartup = await this.conn.createChannel();
+		this.channelStartup.on('close', async (err) => {
+			this.waitingForTicket = false;
+
+			// If we have a ticket we are probably closing the channel after startup is complete
+			if (this.startTicket) {
+				return;
+			}
+
+			if (err) {
+				captureException(err);
+				console.error(err);
+			}
+
+			console.error('Could not aquire startup ticket');
+			process.exit(1);
+		});
+
+		await this.channelStartup.prefetch(1);
+		await this.channelStartup.assertQueue(this.qNameStartup, { durable: true, autoDelete: false, maxPriority: 10 });
+
+		// Reset the ticket
+		this.startTicket = null;
+		this.waitingForTicket = true;
+
+		// Return a promise that resolves when we aquire a start ticket (a rabbitmq message)
+		return new Promise((resolve) => {
+			// Start listening on the queue for one message (our start ticket)
+			this.channelStartup.consume(
+				this.qNameStartup,
+				(msg) => {
+					console.log(chalk.green(`Aquired start ticket!`));
+
+					this.waitingForTicket = false;
+
+					// Save the ticket so we can return it to the queue when our startup is done
+					this.startTicket = msg;
+					resolve();
+				},
+				{ noAck: false, priority: this.client.hasStarted ? 1 : 0 }
+			);
+		});
+	}
+	public async endStartup() {
+		if (!this.channelStartup) {
+			return;
+		}
+
+		// Nack the message, so that it gets returned to the queue for the next process to use
+		this.channelStartup.nack(this.startTicket, false, true);
+
+		// Close the channel because we don't want another ticket
+		await this.channelStartup.close();
+		this.channelStartup = null;
+
+		this.startTicket = null;
 	}
 
 	public async sendToManager(message: { id: string; [x: string]: any }, isResend: boolean = false) {
 		if (!this.conn) {
-			console.log('Send message to RabbitMQ', message);
+			console.log('Send message to RabbitMQ', JSON.stringify(message, null, 2));
 			return;
 		}
 
@@ -150,18 +230,21 @@ export class RabbitMqService {
 		await this.sendToManager({
 			id: 'status',
 			cmd: ShardCommand.STATUS,
-			connected: this.client.gatewayConnected,
-			gateway: this.client.gatewayInfo,
+			state: this.waitingForTicket
+				? 'waiting'
+				: !this.client.hasStarted
+				? 'init'
+				: !!this.startTicket
+				? 'starting'
+				: 'running',
+			startedAt: this.client.startedAt?.toISOString(),
+			gateway: this.client.gatewayConnected,
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
-			tracking: {
-				pendingGuilds: [...this.client.tracking.pendingGuilds.values()],
-				initialPendingGuilds: this.client.tracking.initialPendingGuilds
-			},
-			music: {
-				connections: this.client.music.getMusicConnectionGuildIds()
-			},
-			cache: this.getCacheSizes()
+			tracking: this.getTrackingStatus(),
+			music: this.getMusicStatus(),
+			cache: this.getCacheSizes(),
+			metrics: this.getMetrics()
 		});
 	}
 
@@ -193,7 +276,7 @@ export class RabbitMqService {
 
 				await sendResponse({
 					self,
-					guilds: this.client.guilds.map(g => ({
+					guilds: this.client.guilds.map((g) => ({
 						id: g.id,
 						name: g.name,
 						icon: g.iconURL,
@@ -272,10 +355,10 @@ export class RabbitMqService {
 
 			case ShardCommand.FLUSH_CACHE:
 				const errors: string[] = [];
-				const cacheNames = content.caches as (keyof ClientCacheObject)[];
+				const cacheNames = content.caches as string[];
 
 				if (!content.caches) {
-					Object.values(this.client.cache).forEach(c => c.flush(guildId));
+					Object.values(this.client.cache).forEach((c) => c.flush(guildId));
 				} else {
 					for (const cacheName of cacheNames) {
 						const cache = this.client.cache[cacheName];
@@ -316,7 +399,7 @@ export class RabbitMqService {
 				this.client.channelGuildMap[channel.id] = guild.id;
 				guild.channels.add(channel);
 
-				channel.listener = async data => {
+				channel.listener = async (data) => {
 					console.log(data);
 					delete this.client.channelGuildMap[channel.id];
 					guild.channels.remove(channel);
@@ -383,11 +466,22 @@ export class RabbitMqService {
 		}
 	}
 
+	private getTrackingStatus() {
+		return {
+			pendingGuilds: this.client.tracking.pendingGuilds.size,
+			initialPendingGuilds: this.client.tracking.initialPendingGuilds
+		};
+	}
+	private getMusicStatus() {
+		return {
+			connections: this.client.music.getMusicConnectionGuildIds()
+		};
+	}
 	private getCacheSizes() {
 		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
 		let roleCount = 0;
 
-		this.client.guilds.forEach(g => {
+		this.client.guilds.forEach((g) => {
 			channelCount += g.channels.size;
 			roleCount += g.roles.size;
 		});
@@ -406,6 +500,21 @@ export class RabbitMqService {
 			inviteCodes: this.client.cache.inviteCodes.getSize(),
 			members: this.client.cache.members.getSize(),
 			messages: this.client.mod.getMessageCacheSize()
+		};
+	}
+	private getMetrics() {
+		const req = this.client.requestHandler;
+
+		return {
+			wsEvents: this.client.stats.wsEvents,
+			wsWarnings: this.client.stats.wsWarnings,
+			wsErrors: this.client.stats.wsErrors,
+			cmdProcessed: this.client.stats.cmdProcessed,
+			cmdErrors: this.client.stats.cmdErrors,
+			httpRequests: [...req.requestStats.entries()].map(([url, stats]) => ({ url, stats })),
+			httpRequestsQueued: Object.keys(req.ratelimits)
+				.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
+				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
 		};
 	}
 }

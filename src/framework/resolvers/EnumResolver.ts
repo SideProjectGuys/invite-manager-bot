@@ -10,7 +10,7 @@ export class EnumResolver extends Resolver {
 		super(client);
 
 		this.values = new Map();
-		values.forEach(v => this.values.set(v.toLowerCase(), v));
+		values.forEach((v) => this.values.set(v.toLowerCase(), v));
 	}
 
 	public async resolve(value: string, { t }: Context): Promise<string> {
@@ -29,7 +29,7 @@ export class EnumResolver extends Resolver {
 		return t(`resolvers.${this.getType()}.validValues`, {
 			values: [...this.values.values()]
 				.sort((a, b) => a.localeCompare(b))
-				.map(v => '`' + v + '`')
+				.map((v) => '`' + v + '`')
 				.join(', ')
 		});
 	}

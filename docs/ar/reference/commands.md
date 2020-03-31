@@ -157,7 +157,7 @@ This argument expects a duration. The following duration types are supported:
 | [cleanShort](#cleanShort)             | قم بمسح الرسائل القصيرة                                                                                                                       | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | حذف الرسائل التي تحتوي على كلمات رئيسية معينة.                                                                                                | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | طرد عضو من سيرفر                                                                                                                              | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | اسكت المستخدم                                                                                                                                 | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
@@ -787,11 +787,11 @@ Deletes any ranks where the role was deleted.
 
 ### Arguments
 
-| Argument | Type            | Required | Description              | Details                                                              |
-| -------- | --------------- | -------- | ------------------------ | -------------------------------------------------------------------- |
-| type     | [Enum](#Enum)   | Yes      | نوع المخطط لعرضه.        | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.from |                                                                      |
-| to       | [تاريخ](#تاريخ) | No       | cmd.graph.self.args.to   |                                                                      |
+| Argument | Type            | Required | Description             | Details                                                              |
+| -------- | --------------- | -------- | ----------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum)   | Yes      | نوع المخطط لعرضه.       | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [تاريخ](#تاريخ) | No       | Start date of the chart |                                                                      |
+| to       | [تاريخ](#تاريخ) | No       | End date of the chart   |                                                                      |
 
 ### Examples
 
@@ -1117,7 +1117,7 @@ Deletes any ranks where the role was deleted.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1127,15 +1127,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type              | Required | Description                    | Details |
-| -------- | ----------------- | -------- | ------------------------------ | ------- |
-| channel  | [القناة](#القناة) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type              | Required | Description                             | Details |
+| -------- | ----------------- | -------- | --------------------------------------- | ------- |
+| channel  | [القناة](#القناة) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                           | Description                     |
-| ----------------------- | --------- | ------------------------------ | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [المدة الزمنية](#المدةالزمنية) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type                           | Description                                                                                                  |
+| ----------------------- | --------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [المدة الزمنية](#المدةالزمنية) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1273,9 +1273,9 @@ Create a mashup of 2 songs.
 
 ### Flags
 
-| Flag                     | Short     | Type                           | Description                  |
-| ------------------------ | --------- | ------------------------------ | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [المدة الزمنية](#المدةالزمنية) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type                           | Description                       |
+| ------------------------ | --------- | ------------------------------ | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [المدة الزمنية](#المدةالزمنية) | The duration to mute the user for |
 
 ### Examples
 

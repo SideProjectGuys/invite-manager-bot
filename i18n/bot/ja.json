@@ -61,10 +61,10 @@
 				},
 				"description": "サーバーからメンバーをBANします。",
 				"flags": {
-					"deleteMessageDays": "BANしたユーザーのメッセージを指定した日数分を削除します"
+					"deleteMessageDays": "BANするユーザーのメッセージを指定した日数分削除します"
 				}
 			},
-			"canNotSoftBan": "私は できない ソフトバン この ユーザー."
+			"canNotSoftBan": "私はこのユーザーをソフトBANできません"
 		},
 		"botConfig": {
 			"canNotClear": "構成設定** {{key}} **はクリアできません。 デフォルト値にリセットするために `{{prefix}} botConfig {{key}} default`を使うことができます。",
@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "このチャートはあなたのサーバーに参加しているユーザーの数を示しています。",
-				"title": "Users joining"
+				"title": "参加したユーザ"
 			},
 			"leaves": {
 				"text": "このチャートはサーバーから抜けたユーザーの数を示しています。",
@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "チャートの期間。",
-					"type": "表示するチャートの種類。"
+					"type": "表示するチャートの種類。",
+					"from": "Start date of the chart",
+					"to": "End date of the chart"
 				},
 				"description": "このサーバー上のさまざまな統計グラフを表示します。"
 			},
@@ -414,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "追加する値または値のリストを入力してください。",
 			"change": "**現在の値**\n{{{current}}}\n\n**可能な値**\n{{{possible}}}",
 			"current": {
@@ -577,7 +580,7 @@
 				"total": "T"
 			},
 			"comparedTo": "{{{to}}}と比較した変更",
-			"entry": "**{{ pos }}** ポジション **{{{ name }}}** 名 **{{ total }}** 誘う (**{{ regular }}** レギュラー, **{{ custom }}** ボーナス, **{{ fake }}** 偽, **{{ leave }}** 枝葉)",
+			"entry": "**{{ pos }}** - **{{{ name }}}** 招待数: **{{ total }}** ( 全体の招待数: **{{ regular }}**, ボーナス: **{{ custom }}**, 招待の重複: **{{ fake }}**, 退出した数: **{{ leave }}**)",
 			"from": "{{{from}}}からの招待",
 			"invalidDate": "無効な日付：{{date}}",
 			"legend": "`T` = 合計\n`R` = 全体の招待数\r\n`B` = ボーナス招待数\r\n`F` = 偽の招待数\r\n`L` = 退出数",
@@ -690,7 +693,10 @@
 					"reason": "このユーザーがミュートされている理由",
 					"user": "ミュートする必要があるユーザー。"
 				},
-				"description": "ユーザーをミュートする"
+				"description": "ユーザーをミュートする",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +732,8 @@
 				"noGuild": "このコマンドはサーバー内で実行する必要があります。",
 				"noSubscription": "あなたはアクティブなプレミアム購読をしていません。\n\n詳細については{{{cmd}}}を使用してください。",
 				"title": "このサーバーでプレミアムを有効にする",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "使用料の支払いが拒否されました。Patreonを確認してください。",
@@ -1149,7 +1156,17 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
@@ -1462,7 +1479,10 @@
 					"description": "関連設定をランク付けします。",
 					"title": "ランク"
 				},
-				"title": "招待"
+				"title": "招待",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1664,74 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

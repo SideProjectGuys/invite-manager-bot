@@ -1,43 +1,43 @@
 # FAQs}
 
-## How do I change the prefix of the bot?
+## Botun ön ekini nasıl değiştirebilirim?
 
-You can do `!config prefix -` to change the prefix.
+Öneki değiştirmek için `!config prefix -` yapabilirsiniz.
 
-If you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix.
+Geçerli önekinizi bilmiyorsanız, öneki görmek için`@InviteManager config prefix` komtunu kullanabilirsiniz.
 
-## How do I set join and leave messages?
+## Katılma ve ayrılma mesajlarını nasıl ayarlarım?
 
-Set the channel by doing
+Yaparak kanalı ayarlayın
 
-`!config joinMessageChannel #channel`
+`!config joinMessageChannel #kanal`
 
-or
+ya da
 
-`!config leaveMessageChannel #channel`.
+`!config leaveMessageChannel #kanal`.
 
-After doing that, new joins and leaves will be posted to that channel.
+Bunu yaptıktan sonra yeni katılmalar ve ayrılmalar o kanala gönderilecek.
 
 ## Can I customize the join and leave messages?
 
-Absolutely! You can change the message by doing for example
+Kesinlikle! Mesajı yaparak örneğin değiştirebilirsiniz
 
-`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`
+`! config joinMessage {memberMention} ** katıldı **; ** {inviterName} ** tarafından davet edildi (** {numInvites} ** davet yaptı)`
 
-or
+ya da
 
-`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.
+`! config leaveMessage {memberName} ** ayrıldı **; ** {inviterName} **`tarafından davet edilmişti.
 
-There are many placeholders available. You can see the full list on the '[Custom Messages](/tr/modules/invites/custom-messages.md)' page.
+Kullanılabilecek çok sayıda yer tutucu var. Listenin tamamını '[Custom Messages](/tr/modules/invites/custom-messages.md)' sayfasında görebilirsiniz.
 
 ## What are 'Ranks' and how can I use them?
 
-Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!
+Rütbe, belirli bir sayıda davete ulaştıklarında insanlara rol atamak için kullanılır. Örneğin. `@Başlangıçcı` adında bir rolünüz varsa ve 5 veya daha fazla daveti olan kişilerin bu role eklenmesini istiyorsanız şu şekilde bir sıralama oluşturmanız gerekir:`! add-rank @Başlangıçcı 5 (ve burada bir açıklama istersiniz)`. Birisi 5 davet alır almaz, otomatik olarak bu role eklenir!
 
-## How can I disable the bot in all but one/some channels?
+## Bir / bazı kanallar dışındaki tüm botları nasıl devre dışı bırakabilirim?
 
-Take away the read message permissions in the channels where you don't want the bot to reply.
+Botun yanıt vermesini istemediğiniz kanallarda okunan mesaj izinlerini kaldırın.
 
 ## Limitation: No advanced tracking before the bot joins
 
-Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot.
+Gelişmiş izleme (kim kimi davet ettiğinde) yalnızca botu davet ettikten sonra çalışır. Bot, herkesin davet ettikten sonra sayımı davet ettiğini bilecek, endişelenmeyin. Yalnızca ek bilgiler eksiktir ve yalnızca botu davet ettikten sonra katılan üyeler için toplanabilir.

@@ -157,7 +157,7 @@ This argument expects a duration. The following duration types are supported:
 | [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
@@ -790,8 +790,8 @@ Shows graphs about various stats on this server.
 | Argument | Type          | Required | Description                   | Details                                                              |
 | -------- | ------------- | -------- | ----------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | The type of chart to display. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from      |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to        |                                                                      |
+| from     | [Date](#Date) | No       | Start date of the chart       |                                                                      |
+| to       | [Date](#Date) | No       | End date of the chart         |                                                                      |
 
 ### Examples
 
@@ -1117,7 +1117,7 @@ Show members with most invites.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1127,15 +1127,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type                | Required | Description                    | Details |
-| -------- | ------------------- | -------- | ------------------------------ | ------- |
-| channel  | [Channel](#Channel) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type                | Required | Description                             | Details |
+| -------- | ------------------- | -------- | --------------------------------------- | ------- |
+| channel  | [Channel](#Channel) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                     |
-| ----------------------- | --------- | --------------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type                  | Description                                                                                                  |
+| ----------------------- | --------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1273,9 +1273,9 @@ Mute a user
 
 ### Flags
 
-| Flag                     | Short     | Type                  | Description                  |
-| ------------------------ | --------- | --------------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type                  | Description                       |
+| ------------------------ | --------- | --------------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | The duration to mute the user for |
 
 ### Examples
 

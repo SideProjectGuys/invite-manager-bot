@@ -23,6 +23,7 @@ export enum GuildPermission {
 	MANAGE_MESSAGES = 'manageMessages',
 	EMBED_LINKS = 'embedLinks',
 	MANAGE_GUILD = 'manageGuild',
+	MANAGE_CHANNELS = 'manageChannels',
 	VIEW_AUDIT_LOGS = 'viewAuditLogs',
 	MANAGE_ROLES = 'manageRoles',
 	CREATE_INSTANT_INVITE = 'createInstantInvite',
@@ -238,6 +239,7 @@ export interface LavaPlayer extends VoiceConnection {
 	on(event: 'speakingStop', listener: (userID: string) => void): this;
 	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
 	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
+	on(event: 'userDisconnect', listener: (userID: string) => void): this;
 }
 
 export interface LavaEndEvent {

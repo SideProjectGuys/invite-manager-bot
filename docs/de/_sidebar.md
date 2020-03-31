@@ -1,43 +1,43 @@
-- Getting Started
+- Erste Schritte
 
-  - [Quick Start](/de/getting-started/quick-start.md)
-  - [FAQs](/de/getting-started/faq.md)
+  - [Start](/de/getting-started/quick-start.md)
+  - [FAQ](/de/getting-started/faq.md)
   - [Alpha Bot](/de/getting-started/alpha.md)
   - [Pro Bot](/de/getting-started/pro.md)
 
-- Reference
+- Verweise
 
-  - [Commands](/de/reference/commands.md)
-  - [Configs / Settings](/de/reference/settings.md)
+  - [Befehle](/de/reference/commands.md)
+  - [Konfigurationen / Einstellungen](/de/reference/settings.md)
 
 - Premium
 
   - [Features](/de/premium/features.md)
-  - [Tiers](/de/premium/tiers.md)
-  - [Setup](/de/premium/setup.md)
+  - [Stufen](/de/premium/tiers.md)
+  - [Einrichtung](/de/premium/setup.md)
 
-- Modules
+- Module
 
-  - Invite Management
+  - Einladungsmanagement
 
-    - [Overview](/de/modules/invites/overview.md)
-    - [Custom message](/de/modules/invites/custom-messages.md)
-      - [Examples](/de/modules/invites/examples.md)
+    - [Übersicht](/de/modules/invites/overview.md)
+    - [Individuelle Nachricht](/de/modules/invites/custom-messages.md)
+      - [Beispiele](/de/modules/invites/examples.md)
 
   - Moderation
 
     - [Strikes](/de/modules/moderation/strikes.md)
-    - [Punishments](/de/modules/moderation/punishments.md)
+    - [Bestrafungen](/de/modules/moderation/punishments.md)
 
-  - Music
+  - Musik
 
-    - [Overview](/de/modules/music/overview.md)
+    - [Übersicht](/de/modules/music/overview.md)
 
-- Other
+- Sonstiges
 
   - [Webpanel](/de/other/webpanel.md)
-  - [Translations](/de/other/translations.md)
-  - [Donating](/de/other/donating.md)
+  - [Übersetzungen](/de/other/translations.md)
+  - [Spenden](/de/other/donating.md)
   - [Support](/de/other/support.md)
   - [Changelog](/de/other/changelog.md)
   - [Roadmap](/de/other/roadmap.md)

@@ -54,11 +54,14 @@ export default class extends Command {
 		}
 
 		if (!live) {
-			await this.sendReply(message, lyrics.map(l => `${this.client.music.formatTime(l.start)}: ${l.text}`).join('\n'));
+			await this.sendReply(
+				message,
+				lyrics.map((l) => `${this.client.music.formatTime(l.start)}: ${l.text}`).join('\n')
+			);
 			return;
 		}
 
-		const index = Math.max(0, lyrics.findIndex(l => l.start >= conn.getPlayTime()) - 1);
+		const index = Math.max(0, lyrics.findIndex((l) => l.start >= conn.getPlayTime()) - 1);
 		const msg = await this.sendReply(message, 'Loading...');
 
 		await this.scheduleNext(msg, conn, lyrics, index);

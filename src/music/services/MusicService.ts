@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
-import { IMClient } from '../../client';
 import { AnnouncementVoice } from '../../framework/models/GuildSetting';
+import { IMService } from '../../framework/services/Service';
 import { LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
@@ -33,34 +33,30 @@ interface MusicNode {
 	password: string;
 }
 
-export class MusicService {
-	public client: IMClient;
+export class MusicService extends IMService {
 	public cache: MusicCache;
 	private nodes: MusicNode[] = [];
 
 	public platforms: MusicPlatformService;
-	private musicConnections: Map<string, MusicConnection>;
-
+	private musicConnections: Map<string, MusicConnection> = new Map();
 	public getMusicConnectionGuildIds() {
 		return [...this.musicConnections.keys()];
 	}
 
-	public constructor(client: IMClient) {
-		this.client = client;
-		this.cache = client.cache.music;
+	public async init() {
+		this.cache = this.client.cache.music;
 
-		this.platforms = new MusicPlatformService(client);
-		this.musicConnections = new Map();
-
-		this.client.on('ready', this.onClientReady.bind(this));
+		this.platforms = new MusicPlatformService(this.client);
+		await this.platforms.init();
 	}
 
-	private async onClientReady() {
-		if (this.client.hasStarted) {
-			return;
+	public async onClientReady() {
+		if (!this.client.hasStarted) {
+			await this.loadMusicNodes();
+			await this.platforms.onClientReady();
 		}
 
-		await this.loadMusicNodes();
+		await super.onClientReady();
 	}
 
 	public async loadMusicNodes() {
@@ -128,7 +124,7 @@ export class MusicService {
 	}
 
 	private decodeHTMLEntities(str: string) {
-		return str.replace(/&#?[0-9a-zA-Z]+;?/g, s => {
+		return str.replace(/&#?[0-9a-zA-Z]+;?/g, (s) => {
 			if (s.charAt(1) === '#') {
 				const code = s.charAt(2).toLowerCase() === 'x' ? parseInt(s.substr(3), 16) : parseInt(s.substr(2), 10);
 
@@ -181,5 +177,9 @@ export class MusicService {
 			}
 		);
 		return data.tracks;
+	}
+
+	public async getGuildSettings(guildId: string) {
+		return this.client.cache.guilds.get(guildId);
 	}
 }

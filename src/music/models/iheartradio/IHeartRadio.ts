@@ -28,7 +28,7 @@ export class IHeartRadio extends MusicPlatform {
 	}
 
 	public getByLink(link: string): Promise<IHeartMusicItem> {
-		return this.search(link, 1).then(res => res[0]);
+		return this.search(link, 1).then((res) => res[0]);
 	}
 
 	public async search(searchTerm: string, maxResults: number = 10): Promise<IHeartMusicItem[]> {

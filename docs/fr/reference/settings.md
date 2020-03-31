@@ -17,11 +17,11 @@ There are many config options that can be set. You don't have to set all of them
 
 ### Invitations
 
-#### settings.groups.invites.general.title
+#### Général
 
-| Setting                                | Description                    |
-| -------------------------------------- | ------------------------------ |
-| [settings.joinRoles.title](#joinroles) | settings.joinRoles.description |
+| Setting                        | Description                                                  |
+| ------------------------------ | ------------------------------------------------------------ |
+| [Rôles d'arrivées](#joinroles) | Rôles assignés à tous les utilisateurs quand ils rejoignent. |
 
 #### Arrivées
 
@@ -82,7 +82,7 @@ There are many config options that can be set. You don't have to set all of them
 | [Rôles modérés](#automodmoderatedroles)                                  | The list of roles that are moderated (this acts as a whitelist, leave empty to moderate all roles, or use `autoModIgnoredRoles` to ignore certain roles).    |
 | [Salons ignorés](#automodignoredchannels)                                | Salons ignorés lors de la modération automatique.                                                                                                            |
 | [Rôles ignorés](#automodignoredroles)                                    | N'importe quel membre avec ce rôle ne sera pas automatiquement modéré.                                                                                       |
-| [Rôle muet](#mutedrole)                                                  | The role that is given to people who are muted. Make sure this role is denied the "Send Message" permission.                                                 |
+| [Rôle muet](#mutedrole)                                                  | Le rôle donné aux utilisateurs quand ils sont rendus muets. Vérifiez que ce rôle n'a pas la permission "Envoyer des messages"                                |
 | [Désactivé pour les anciens membres](#automoddisabledforoldmembers)      | Désactive la modération automatique pour les membres qui sont dans votre serveur depuis longtemps.                                                           |
 | [Seuil pour les anciens membres](#automoddisabledforoldmembersthreshold) | L'ancienneté d'un membre requise dans votre serveur pour être considéré comme "ancien".                                                                      |
 
@@ -139,11 +139,11 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Spam
 
-| Setting                                                     | Description                                                                           |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [Activé](#automodquickmessagesenabled)                      | Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.  |
-| [Nombre de messages](#automodquickmessagesnumberofmessages) | The number of messages that have to be sent within the timeframe to trigger the rule. |
-| [Timeframe](#automodquickmessagestimeframeinseconds)        | The timeframe within which a user is allowed to send a maximum amount of messages.    |
+| Setting                                                     | Description                                                                                              |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [Activé](#automodquickmessagesenabled)                      | Modère automatiquement les utilisateurs qui envoient beucoup de messages rapidement.                     |
+| [Nombre de messages](#automodquickmessagesnumberofmessages) | Le nombre de messages qui doivent être envoyés pendant une certaine durée pour que celui-ci soit modéré. |
+| [Timeframe](#automodquickmessagestimeframeinseconds)        | La durée pendant laquelle l'utilisateur peut envoyer un nombre maximum de messages.                      |
 
 #### Mentions
 
@@ -170,26 +170,26 @@ There are many config options that can be set. You don't have to set all of them
 | ------------------------------------ | ------------------------------------------------------------------------- |
 | [Volume de la musique](#musicvolume) | Le volume par défaut qui est défini lorsque le bot rejoin le salon vocal. |
 
-#### Announcement
+#### Annonce
 
 | Setting                                          | Description                                                          |
 | ------------------------------------------------ | -------------------------------------------------------------------- |
 | [Annonce la musique suivante](#announcenextsong) | Si oui ou non la chanson suivante sera annoncée dans le salon vocal. |
 | [Voix d'annonce](#announcementvoice)             | La voix utilisée pour annoncer la musique suivante.                  |
 
-#### Fade Music
+#### Baisse le volume de la musique
 
 | Setting                                                    | Description                                                                               |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [Baisse le volume lors d'une discussion](#fademusicontalk) | Si activé, la musique baissera de volume si des personnes sont en train de parler.        |
 | [Fin du délai de baisse du volume](#fademusicenddelay)     | Le temps pendant lequel personne ne doit parler pour que le volume retourne à la normale. |
 
-#### Platform
+#### Plateforme
 
-| Setting                                             | Description                                                                               |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [Default Music Platform](#defaultmusicplatform)     | The platform that is used to search / play music when no platform is selected explicitly. |
-| [Disabled Music Platforms](#disabledmusicplatforms) | Music platforms that are disabled and cannot be used to play music.                       |
+| Setting                                                      | Description                                                                                              |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| [Plateforme de musique par défault](#defaultmusicplatform)   | La plateforme utilisée pour rechercher / jouer de la musique quand aucune plateforme n'est sélectionnée. |
+| [Plateformes musicales désactivées](#disabledmusicplatforms) | Les plateformes de musique désactivées et qui ne peuvent pas être utilisées pour jouer de la musique.    |
 
 <a name=prefix></a>
 
@@ -309,9 +309,9 @@ Reset to default:
 
 ---
 
-## settings.joinRoles.title
+## Rôles d'arrivées
 
-settings.joinRoles.description
+Rôles assignés à tous les utilisateurs quand ils rejoignent.
 
 Type: `Role[]`
 
@@ -809,7 +809,7 @@ Examples:
 
 ## Rôle muet
 
-The role that is given to people who are muted. Make sure this role is denied the "Send Message" permission.
+Le rôle donné aux utilisateurs quand ils sont rendus muets. Vérifiez que ce rôle n'a pas la permission "Envoyer des messages"
 
 Type: `Role`
 
@@ -1362,7 +1362,7 @@ Disable:
 
 ## Nombre de messages
 
-The number of messages that have to be sent within the timeframe to trigger the rule.
+Le nombre de messages qui doivent être envoyés pendant une certaine durée pour que celui-ci soit modéré.
 
 Type: `Number`
 
@@ -1383,7 +1383,7 @@ Examples:
 
 ## Timeframe
 
-The timeframe within which a user is allowed to send a maximum amount of messages.
+La durée pendant laquelle l'utilisateur peut envoyer un nombre maximum de messages.
 
 Type: `Number`
 
@@ -1654,9 +1654,9 @@ Reset to default:
 
 ---
 
-## Default Music Platform
+## Plateforme de musique par défault
 
-The platform that is used to search / play music when no platform is selected explicitly.
+La plateforme utilisée pour rechercher / jouer de la musique quand aucune plateforme n'est sélectionnée.
 
 Type: `Enum<MusicPlatformTypes>`
 
@@ -1669,9 +1669,9 @@ Reset to default:
 
 ---
 
-## Disabled Music Platforms
+## Plateformes musicales désactivées
 
-Music platforms that are disabled and cannot be used to play music.
+Les plateformes de musique désactivées et qui ne peuvent pas être utilisées pour jouer de la musique.
 
 Type: `Enum<MusicPlatformTypes>[]`
 

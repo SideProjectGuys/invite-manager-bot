@@ -41,9 +41,9 @@ export default class extends Command {
 
 		if (typeof violationType === typeof undefined) {
 			const allViolations: ViolationType[] = Object.values(ViolationType);
-			const unusedViolations = allViolations.filter(v => strikeConfigList.map(scl => scl.type).indexOf(v) < 0);
+			const unusedViolations = allViolations.filter((v) => strikeConfigList.map((scl) => scl.type).indexOf(v) < 0);
 			embed.description = strikeConfigList
-				.map(scl =>
+				.map((scl) =>
 					t('cmd.strikeConfig.text', {
 						violation: `**${scl.type}**`,
 						strikes: `**${scl.amount}**`
@@ -52,10 +52,10 @@ export default class extends Command {
 				.join('\n');
 			embed.fields.push({
 				name: t('cmd.strikeConfig.unusedViolations'),
-				value: `\n${unusedViolations.map(v => `\`${v}\``).join(', ')}`
+				value: `\n${unusedViolations.map((v) => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const strike = strikeConfigList.find(c => c.type === violationType);
+			const strike = strikeConfigList.find((c) => c.type === violationType);
 			embed.description = t('cmd.strikeConfig.text', {
 				violation: `**${strike ? strike.type : violationType}**`,
 				strikes: `**${strike ? strike.amount : 0}**`

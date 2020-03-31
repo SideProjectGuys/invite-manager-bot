@@ -116,8 +116,8 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
-| [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
+| [botConfig](#botConfig)                 | Arata si schimba configul botului                         | !botConfig [key][value]                     |
+| [config](#config)                       | Vizualizeaza si schimba configul serverului               | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
 | [memberConfig](#memberConfig)           | Show and change the config of members of the server.      | !memberConfig [key][user] [value]           |
@@ -127,7 +127,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Get general information about the bot.                                            | !botInfo        |
+| [botInfo](#botInfo) | Obtine informatii generale despre bot.                                            | !botInfo        |
 | [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
@@ -141,7 +141,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                   | Description                                                               | Usage             |
 | ------------------------- | ------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Export data of InviteManager to a csv sheet.                              | !export \<type\>  |
+| [export](#export)         | Exporteaza datele InviteManager-ului in csv sheet                         | !export \<type\>  |
 | [premium](#premium)       | Info about premium version of InviteManager.                              | !premium [action] |
 | [tryPremium](#tryPremium) | Try the premium version of InviteManager for free for a limited duration. | !tryPremium       |
 
@@ -150,14 +150,14 @@ This argument expects a duration. The following duration types are supported:
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | Interzice un membru de pe acest server.                                                                                                       | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseDelete](#caseDelete)             | Sterge un anumit caz                                                                                                                          | !caseDelete \<caseNumber\> [reason]                              |
 | [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
 | [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
 | [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
 | [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
@@ -304,7 +304,7 @@ Interzice un membru de pe acest server.
 
 ## !botConfig
 
-Show and change the config of the bot.
+Arata si schimba configul botului
 
 ### Usage
 
@@ -323,7 +323,7 @@ Show and change the config of the bot.
 | Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
 | -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| value    | [Value](#Value) | No       | Noua valuare a setarii                                |                                                                                                                                             |
 
 ### Examples
 
@@ -337,7 +337,7 @@ Show and change the config of the bot.
 
 ## !botInfo
 
-Get general information about the bot.
+Obtine informatii generale despre bot.
 
 ### Usage
 
@@ -361,7 +361,7 @@ Get general information about the bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Sterge un anumit caz
 
 ### Usage
 
@@ -377,10 +377,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description                      | Details |
+| ---------- | ----------------- | -------- | -------------------------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | Numarul cazului                  |         |
+| reason     | [Text](#Text)     | No       | Motivul pentru stergerea cazului |         |
 
 ### Examples
 
@@ -590,7 +590,7 @@ Clear invites of the server/a user.
 
 ## !config
 
-Show and change the config of the server.
+Vizualizeaza si schimba configul serverului
 
 ### Usage
 
@@ -696,7 +696,7 @@ Disconnect the bot from the current voice channel.
 
 ## !export
 
-Export data of InviteManager to a csv sheet.
+Exporteaza datele InviteManager-ului in csv sheet
 
 ### Usage
 
@@ -790,8 +790,8 @@ Shows graphs about various stats on this server.
 | Argument | Type          | Required | Description                   | Details                                                              |
 | -------- | ------------- | -------- | ----------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | The type of chart to display. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from      |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to        |                                                                      |
+| from     | [Date](#Date) | No       | Start date of the chart       |                                                                      |
+| to       | [Date](#Date) | No       | End date of the chart         |                                                                      |
 
 ### Examples
 
@@ -1117,7 +1117,7 @@ Show members with most invites.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1127,15 +1127,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type                | Required | Description                    | Details |
-| -------- | ------------------- | -------- | ------------------------------ | ------- |
-| channel  | [Channel](#Channel) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type                | Required | Description                             | Details |
+| -------- | ------------------- | -------- | --------------------------------------- | ------- |
+| channel  | [Channel](#Channel) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                     |
-| ----------------------- | --------- | --------------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type                  | Description                                                                                                  |
+| ----------------------- | --------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1273,9 +1273,9 @@ Mute a user
 
 ### Flags
 
-| Flag                     | Short     | Type                  | Description                  |
-| ------------------------ | --------- | --------------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type                  | Description                       |
+| ------------------------ | --------- | --------------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | The duration to mute the user for |
 
 ### Examples
 

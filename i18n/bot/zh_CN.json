@@ -20,7 +20,7 @@
 	"cmd": {
 		"addInvites": {
 			"amount": {
-				"negative": "Removed **{{ amount }}** invites from {{{ member }}}, now at: **{{ totalInvites }}** invites.",
+				"negative": "iuhd",
 				"positive": "Added **{{ amount }}** invites for {{{ member }}}, now at: **{{ totalInvites }}** invites."
 			},
 			"self": {
@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "The type of chart to display.",
+					"from": "Start date of the chart",
+					"to": "End date of the chart"
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
@@ -414,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Enter a value or list of values to add.",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"current": {
@@ -690,7 +693,10 @@
 					"reason": "The reason why this user is muted.",
 					"user": "The user that should be muted."
 				},
-				"description": "Mute a user"
+				"description": "Mute a user",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +732,8 @@
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
 				"title": "Activate premium on this server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -1149,7 +1156,17 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1462,7 +1479,10 @@
 					"description": "Rank related settings.",
 					"title": "Ranks"
 				},
-				"title": "Invites"
+				"title": "Invites",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1664,74 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

@@ -312,7 +312,7 @@
 		"graph": {
 			"joins": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server gejoind zijn.",
-				"title": "Users joining"
+				"title": "Gejoinde gebruikers"
 			},
 			"leaves": {
 				"text": "Deze grafiek laat zien hoeveel mensen je server geleaved zijn.",
@@ -321,15 +321,17 @@
 			"self": {
 				"args": {
 					"duration": "De tijdsduur voor de grafiek",
-					"type": "De type grafiek om te zien."
+					"type": "De type grafiek om te zien.",
+					"from": "Startdatum van de chart",
+					"to": "Einddatum van de chart"
 				},
 				"description": "Laat verschillende soorten grafieken zien van je server statistieken."
 			},
-			"minDays": "You have to select at least {{{ days }}} days",
-			"maxDays": "You may select at most {{{ days }}} days",
+			"minDays": "Je moet minimaal {{{ days }}} dagen selecteren",
+			"maxDays": "Je mag maximaal {{{ days }}} selecteren",
 			"joinsAndLeaves": {
-				"title": "Users joining and leaving",
-				"text": "This chart shows the number of users joining and leaving your server."
+				"title": "Gebruikers die joinen en leaven",
+				"text": "Deze grafiek laat het aantal gebruikers dat gejoind en geleaved is zien."
 			}
 		},
 		"help": {
@@ -414,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Vul een waarde of lijst van waardes in om toe te voegen.",
 			"change": "**Huidige waarde**\n{{{ current }}}\n\n**Mogelijke waardes**\n{{{ possible }}}",
 			"current": {
@@ -594,7 +597,7 @@
 				}
 			},
 			"title": "Leaderboard",
-			"lastUpdate": "Last updated {{{ lastUpdate }}}, next update {{{ nextUpdate }}}"
+			"lastUpdate": "Laatst geüpdate: {{{ lastUpdate }}}, volgende update {{{ nextUpdate }}}"
 		},
 		"legacyInvites": {
 			"self": {
@@ -690,7 +693,10 @@
 					"reason": "De reden waarom de gebruiker is gemute.",
 					"user": "De gebruiker die gemute zou moeten worden."
 				},
-				"description": "Mute een gebruiker"
+				"description": "Mute een gebruiker",
+				"flags": {
+					"duration": "De tijdsduur om een gebruiker te muten"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +732,8 @@
 				"noGuild": "Je moet deze commando gebruiken binnen een server.",
 				"noSubscription": "Je hebt geen betaalde abonnement.\n\nGebruik {{{ cmd }}} voor meer informatie.",
 				"title": "Activeer premium op deze server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "Je hebt de `Server Beheren` permissies nodig om dit commando te gebruiken.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
@@ -740,7 +747,7 @@
 				"noGuild": "Je moet deze commando gebruiken binnen een server.",
 				"noSubscription": "Je hebt een geen betaalde abonnement\n\nGebruik {{{ cmd }}} voor meer informatie.",
 				"title": "Deactiveer premium op deze server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "Je hebt de `Server Beheren` permissies nodig om dit commando te gebruiken."
 			},
 			"feature": {
 				"embeds": {
@@ -767,7 +774,7 @@
 			"premium": {
 				"activate": "Gebruik {{{ cmd }}} om het te activeren op deze server",
 				"deactivate": "Gebruik {{{ cmd }}} om het te deactiveren op deze server",
-				"text": "Your premium subscription is valid for {{ date }}.\n\nYou have activated premium on {{{ limit }}} servers.\n{{{ guildList }}}\n\n[What can I do with premium?]({{{ link }}})",
+				"text": "Je premium abonnement is geldig voor {{ date }}.\n\nJe hebt premium geactiveerd op {{{ limit }}} servers.\n{{{ guildList }}}\n\n[Wat kan ik doen met premium?]({{{ link }}})",
 				"title": "InviteManager Premium"
 			},
 			"self": {
@@ -817,7 +824,7 @@
 			},
 			"text": "{{ amount }} berichten zijn verwijdert.\nDit bericht wordt verwijdert in 5 seconden.",
 			"title": "Verwijder Berichten",
-			"inProgress": "Purging..."
+			"inProgress": "Verwijderen..."
 		},
 		"ranks": {
 			"entry": "<@&{{ role }}>: **{{ numInvites }} invites**{{ description ?}}",
@@ -825,7 +832,7 @@
 			"self": {
 				"description": "Zie alle ranks.",
 				"args": {
-					"page": "The page of the ranks list to show."
+					"page": "De pagina van de ranklijst om te zien."
 				}
 			},
 			"title": "Ranken"
@@ -833,11 +840,11 @@
 		"removeInvites": {
 			"self": {
 				"args": {
-					"amount": "The amount of invites to remove.",
-					"reason": "The reason for removing the invites.",
-					"user": "The user to remove the invites from."
+					"amount": "het aantal invites om te verwijderen.",
+					"reason": "De reden om de invites te verwijderen.",
+					"user": "De gebruiker om de invites van te verwijderen."
 				},
-				"description": "Removes a specified amount of invites from a user."
+				"description": "Verwijder een specifieke aantal invites van een gebruiker."
 			}
 		},
 		"removeRank": {
@@ -861,7 +868,7 @@
 		},
 		"setup": {
 			"faq": {
-				"text": "A complete guide on setting up the bot can be found here: https://docs.invitemanager.co/",
+				"text": "Een complete uitleg om de bot op te zetten kan hier worden gevonden: https://docs.invitemanager.co/",
 				"title": "Vraag en antwoorden en meer"
 			},
 			"help": {
@@ -911,7 +918,7 @@
 				},
 				"description": "Ban en dan unban een gebruiker automatisch van de server.",
 				"flags": {
-					"deleteMessageDays": "Delete messages from the user this many days back."
+					"deleteMessageDays": "Verwijder berichten van de gebruiker van dagen geleden."
 				}
 			},
 			"unBanError": "De gebruiker is verbannen maar kan niet worden geunbanned...\n{{ error }}"
@@ -1111,64 +1118,74 @@
 		},
 		"skip": {
 			"self": {
-				"description": "Skip the current song and play the next song in the queue.",
+				"description": "Skip the huidige muziek en speel de volgende muziek af in de wachtrij.",
 				"args": {
-					"amount": "How many songs will be skipped."
+					"amount": "Hoeveel liedjes er worden geskipped."
 				}
 			}
 		},
 		"volume": {
 			"self": {
-				"description": "Set the volume if an argument is passed, or show the current volume.",
+				"description": "Zet de volume als er een argument is opgegeven, of laat de huidige volume zien.",
 				"args": {
-					"volume": "The value the volume will be set to."
+					"volume": "De waarde waar de volume naartoe wordt gezet."
 				}
 			}
 		},
 		"fixRanks": {
-			"done": "Done fixing ranks.",
+			"done": "Verwijderde rollen zijn nu verwijderd van de ranklijst.",
 			"self": {
-				"description": "Deletes any ranks where the role was deleted."
+				"description": "Verwijder alle ranken waarvan de rollen verwijderd zijn."
 			}
 		},
 		"placeholder": {
 			"self": {
 				"flags": {
-					"edit": "The message id of the placeholder to edit."
+					"edit": "De bericht id van de placeholder om te veranderen."
 				},
 				"args": {
-					"message": "The message of the placeholder."
+					"message": "De bericht van de placeholder."
 				},
-				"description": "Creates a new or edits an existing placeholder message."
+				"description": "Maak een nieuwe of verander een bestaande placeholder bericht."
 			},
-			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
+			"noMessageFoundInDatabase": "De placeholder bericht met de opgegeven id kan niet worden gevonden."
 		},
 		"reactionRole": {
-			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
-			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+			"noMessageFoundInDatabase": "De placeholder bericht met de opgegeven id kan niet worden gevonden.",
+			"unknownEmoji": "Onbekende emoji. De bot moet in de guild zijn waar de emoji vandaan komt!"
 		},
 		"lockdown": {
-			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelUnlocked": "Lockdown voor {{{ channel }}} is geïndigd.",
+			"channelLockedDown": "{{{ channel }}} is nu in lockdown",
+			"self": {
+				"description": "Lockdown een specifiek kanaal (Zorg ervoor dat mensen zonder een speciale role geen berichten kunnen versturen)",
+				"flags": {
+					"timeout": "De timeout dat de lockdown automatisch eindigd. Voer het commando opnieuw uit om de lockdown manual te stoppen."
+				},
+				"args": {
+					"channel": "Het kanaal dat in lockdown wilt."
+				}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
+	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Het gebruik van embeds in join/leave berichten is een premium toevoeging. Premium is niet geactiveerd in deze server. Contacteer ons alsjeblieft om meer te weten te komen hoe je premium koopt.",
 	"messages": {
-		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
-		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
-		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown",
-		"joinServerWidget": "The user joined using a server widget."
+		"joinUnknownInviter": "Ik kan niet vinden hoe <@{{ id }}> de server gejoind is.",
+		"joinVanityUrl": "<@{{ id }}> is de server gejoint via een vanity invite.",
+		"leaveUnknownInviter": "{{ tag }} heeft de server verlaten, maar ik kan niet uitvinden wie hem geïnvite heeft.",
+		"unknownInviter": "Onbekend",
+		"joinServerWidget": "De gebruiker is gejoined via een server widget."
 	},
 	"moderation": {
 		"punishments": {
 			"dm": {
-				"ban": "You have been **banned** from **{{ guild }}**",
-				"kick": "You have been **kicked** from **{{ guild }}**",
-				"mute": "You have been **muted** in **{{ guild }}**",
-				"warn": "You have been **warned** in **{{ guild }}**",
-				"reason": "Reason: {{ reason }}",
-				"amount": "Amount: {{ amount }}"
+				"ban": "Je bent **verbannen** van **{{ guild }}**",
+				"kick": "Je bent **gekickt** uit **{{ guild }}**",
+				"mute": "Je bent **gemute** in **{{ guild }}**",
+				"warn": "Je bent **gewarned** in **{{ guild }}**",
+				"reason": "Reden: {{ reason }}",
+				"amount": "Aantal: {{ amount }}"
 			}
 		},
 		"strikes": {
@@ -1176,124 +1193,124 @@
 		}
 	},
 	"permissions": {
-		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
-		"createInviteCode": "Create Instant Invite",
-		"manageGuild": "Manage Server",
-		"manageRoles": "Manage Roles",
-		"premiumOnly": "This command is only available for premium subscribers!",
-		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
-		"role": "You do not have permission to use this command.\nYou need one of the following roles: {{{ roles }}}",
-		"viewAuditLogs": "View Audit Logs",
-		"manageMessages": "Manage Messages",
-		"readMessageHistory": "Read Message History",
-		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
-		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
+		"adminOnly": "je hebt de permissies niet om dit commando te gebruiken.\nAlleen **Administrators** mogen dit commando gebruiken.",
+		"createInviteCode": "Maak een instant invite",
+		"manageGuild": "Beheer Server",
+		"manageRoles": "Beheer Rollen",
+		"premiumOnly": "Dit commando is alleen beschikbaar voor premium gebruikers!",
+		"rateLimit": "Rustig aan! Wacht {{ cooldown }} seconden en probeer het opnieuw.",
+		"role": "Je hebt niet de permissies om dit commando te gebruiken.\nJe hebt 1 van de volgende rollen nodig: {{{ roles }}}",
+		"viewAuditLogs": "Zie Audit Logs",
+		"manageMessages": "Berichten Beheren",
+		"readMessageHistory": "Lees Bericht Geschiedenis",
+		"missing": "InviteManager mist de permissies {{{ permissions }}} in {{{ channel }}}",
+		"banMembers": "Verban Gebruikers",
+		"kickMembers": "KIck Gebruikers"
 	},
 	"prompt": {
-		"canceled": "Canceled"
+		"canceled": "Geannuleerd"
 	},
 	"resolvers": {
 		"boolean": {
-			"invalid": "Not a valid yes/no value.",
+			"invalid": "Geen geldige yes/no waarde.",
 			"type": "Boolean",
-			"typeInfo": "This arguments expects `true` or `false`. You can also use `yes` and `no`."
+			"typeInfo": "Deze argument hoord `true` of `false` te zijn. Je kan ook `yes` en `no` gebruiken."
 		},
 		"channel": {
-			"multiple": "Multiple matching channels found. {{{ channels }}}",
-			"notFound": "Channel not found.",
-			"type": "Channel",
-			"typeInfo": "This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:\n\n- Mention the channel: `#general`\n- Use the ID: `409846838129197057`\n- Use the name: `general`\n- Use quotes if the name has a space: `\"general with a space\"`"
+			"multiple": "Meerdere overeenkomende kanalen gevonden. {{{ channels }}}",
+			"notFound": "Kanaal niet gevonden.",
+			"type": "Kanaal",
+			"typeInfo": "DIt argument hoord een Discord Kanaal te zijn. Je kan een van volgende methodes gebruiken om een kanaal te krijgen:\n\n- Mention het kanaal: `#general`\n- Gebruik het kanaalID: `409846838129197057`\n- Gebruik de naam: `general`\n- Gebruik quotes als de naam een spatie heeft: `\"general met een spatie\"`"
 		},
 		"command": {
-			"multiple": "Multiple matching commands found. {{{ commands }}}",
-			"notFound": "Command not found.",
+			"multiple": "Meerdere overeenkomende commando's gevonden. {{{ commands }}}",
+			"notFound": "Kanaal niet gevonden.",
 			"type": "Command",
-			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
+			"validValues": "Gebruik 1 van de volgende waardes: {{{ values }}}",
+			"typeInfo": "Dit argument zou een commando moeten zijn van de bot. Je kan 1 van de volgende methodes gebruiken:\n\n- Gebruik het commando naam: `invites`\n- Gebruik een bijnaam van de commando: `p`"
 		},
 		"enum": {
-			"invalid": "Not a valid value.",
-			"validValues": "Use one of the following values: {{{ values }}}",
+			"invalid": "Geen geldige waarde.",
+			"validValues": "Gebruik 1 van de volgende waardes: {{{ values }}}",
 			"type": "Enum",
-			"typeInfo": "This arguments expects a value from a specific set of valid values.  \n\n> Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum."
+			"typeInfo": "Deze argumenten horen een waarde te zijn van een specifiek gezette of geldige waarde.\n\n> Gebaseerd op het commando kan de geldige waarde variëren. Gebruik `!help <command>` (Bijv. `!help addRank`) om meer informatie te krijgen over een commando's en de geldige waardes."
 		},
-		"invalid": "Invalid value for `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
+		"invalid": "Ongeldige waarde voor `{{ arg }}`: {{{ error }}}\n{{{ usage }}}\n{{{ help }}}",
 		"member": {
-			"multiple": "Multiple matching members found. {{{ members }}}",
-			"notFound": "Member was not found.",
-			"type": "Member"
+			"multiple": "Verschillende overeenkomende gebruikers gevonden. {{{ members }}}",
+			"notFound": "Gebruiker is niet gevonden",
+			"type": "Gebruiker"
 		},
-		"missingRequired": "Missing required parameter `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
+		"missingRequired": "Vereiste parameter ontbreekt `{{ name }}`.\n{{{ usage }}}\n{{{ help }}}",
 		"number": {
-			"invalid": "Not a valid number.",
-			"type": "Number",
-			"typeInfo": "This arguments expects a number"
+			"invalid": "Geen geldige nummer.",
+			"type": "Nummer",
+			"typeInfo": "De argument zou een nummer moeten zijn"
 		},
 		"role": {
-			"multiple": "Multiple matching roles found. {{{ roles }}}",
-			"notFound": "Role was not found.",
+			"multiple": "Verschillende overeenkomende rollen gevonden. {{{ roles }}}",
+			"notFound": "Role is niet gevonden.",
 			"type": "Role",
-			"typeInfo": "This arguments expects a Discord Role. You can use any of the following methods to provide a role:\n\n- Mention the role: `@Admin`\n- Use the ID: `102785693046026240`\n- Use the name: `Admin`\n- Use quotes if the name has a space: `\"Admin with a space\"`"
+			"typeInfo": "Dit argument zou een Discord Role moeten zijn. Je kan 1 van de volgende methodes gebruiken:\n\n- Mention de role `@Admin`\n- Gebruik de ID: `102785693046026240`\n- Gebruik de naam: `Admin`\n- Gebruik quotes als de naam een space heeft: `\"Admin met een spatie\"`"
 		},
 		"user": {
-			"multiple": "Multiple matching users found. {{{ users }}}",
-			"notFound": "User was not found.",
-			"type": "User",
-			"typeInfo": "This arguments expects a Discord User. You can use any of the following methods to provide a user:\n\n- Mention the user: `@Valandur`\n- Use their ID: `102785693046026240`\n- Use their name: `Valandur`\n- Use their name and discriminator: `Valandur#3581`\n- Use quotes if their name has a space: `\"Valandur with a space\"`"
+			"multiple": "Verschillende overeenkomende gebruikers gevonden. {{{ users }}}",
+			"notFound": "Gebruiker niet gevonden",
+			"type": "Gebruiker",
+			"typeInfo": "DIt argument hoord een Discord Gebruikerte zijn. Je kan een van volgende methodes gebruiken om een gebruiker te krijgen:\n\n- Mention de gebruiker: `@Valunder`\n- Gebruik zijn ID: `102785693046026240`\n- Gebruik zijn naam: `Valunder`\n- Gebruik quotes als zijn naam een spatie heeft: `\"Valunder met een spatie\"`"
 		},
 		"string": {
-			"type": "Text",
-			"typeInfo": "This arguments expects any text. You can use quotes (`\"Text with quotes\"`) for text that has spaces.  \n\n> If the text is the last argument you don't have to use quotes."
+			"type": "Tekst",
+			"typeInfo": "Deze argument zou een tekst moeten zijn. Je kan quotes (\"Tekst met quotes\") gebruiken voor tekst met spaties.\n\n> Als de tekst de laatste argument is hoef je geen quotes te gebruiken."
 		},
 		"settingsvalue": {
-			"type": "Value"
+			"type": "Waarde"
 		},
 		"date": {
-			"type": "Date",
-			"typeInfo": "This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`"
+			"type": "Datum",
+			"typeInfo": "Deze argument zou een datum moeten zijn. Je kan verschillende formaten gebruiken, maar we raden de volgende formaat aan: `JJJJ-MM-DD`"
 		},
 		"duration": {
-			"type": "Duration",
-			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
+			"type": "Tijdsduur",
+			"typeInfo": "Deze argument zou een tijdsduur moeten zijn. De volgende tijdsduren zijn ondersteunt:\n\n- Seconden: `s` (5s` = 5 seconden)\n- Minuten: `min` (3min` = 3 minuten)\n- Uren: `h` (4h` = 4 uren)\n- Dagen: `d` (2d` = 2 dagen)\n- Weken: `w` (1w` = 1 week)\n- Maanden: `mo` (6mo` = 6 maanden)\n- Jaren: `y` (10y` = 10 jaren)"
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "Deze argument zou een Discord Invite Code moeten zijn\n\n> Je kan alleen de invite code achter `https://discord.gg/` plaatsen om te voorkomen dat Discord een preview maakt."
 		}
 	},
 	"settings": {
 		"autoModAllCapsEnabled": {
-			"title": "Enabled",
-			"description": "Automatically moderate messages with A LOT OF CAPS."
+			"title": "Ingeschakeld",
+			"description": "Berichten met HEEL VEEL CAPS worden automatisch gemoderate."
 		},
 		"autoModAllCapsMinCharacters": {
-			"title": "Min. Characters",
-			"description": "The minimum amount of characters in a message to be considered for moderating (setting to '3' would ignore 'OK')."
+			"title": "Min. Tekens",
+			"description": "De minimale aantal tekens voordat het wordt gemoderate (Als je het naar `3` verzet worden woorden zoals `OK` genegeerd)"
 		},
 		"autoModAllCapsPercentageCaps": {
 			"title": "Percentage CAPs",
-			"description": "The percentage of characters of the message that have to be CAPs for the rule to trigger."
+			"description": "De percentage van het aantal tekens van een bericht voordat er automatisch actie wordt ondernomen."
 		},
 		"autoModDeleteBotMessage": {
-			"title": "Delete Bot Messages",
-			"description": "Automatically delete the bots own messages (keeps your chat clean)."
+			"title": "Verwijder Bot Berichten",
+			"description": "Verwijderd automatisch de bots eigen berichten (Zorgt ervoor dat je chat netjes blijft)."
 		},
 		"autoModDeleteBotMessageTimeoutInSeconds": {
-			"title": "Delete Bot Message Timeout",
-			"description": "The timeout after which bot messages are deleted."
+			"title": "Verwijder Bot Berichten Duur",
+			"description": "De duur voordat de bot berichten verwijderd zijn"
 		},
 		"autoModDisabledForOldMembers": {
-			"title": "Disabled for Old Members",
-			"description": "Disabled auto moderation for members that have been in your server for a long time."
+			"title": "Schakel uit voor oude leden",
+			"description": "Schakelt auto moderatie uit voor leden die die een lange tijd in je server zitten"
 		},
 		"autoModDisabledForOldMembersThreshold": {
 			"title": "Old Members Threshold",
-			"description": "The amount of time a member has to be in your server to be considered 'old'."
+			"description": "De tijd dat een gebruiker in je server moet zijn voordat de gebruiker wordt gezien als 'oud'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"title": "Enabled",
-			"description": "Automatically moderate duplicate messages (copy-paste spam)."
+			"title": "Ingeschakeld",
+			"description": "Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
 			"title": "Timeframe in Seconds",
@@ -1462,7 +1479,10 @@
 					"description": "Rank related settings.",
 					"title": "Ranks"
 				},
-				"title": "Invites"
+				"title": "Invites",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1664,74 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

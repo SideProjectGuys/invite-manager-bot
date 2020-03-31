@@ -40,5 +40,5 @@
   - [Faire un don](/fr/other/donating.md)
   - [Support](/fr/other/support.md)
   - [Notes de mises à jour](/fr/other/changelog.md)
-  - [Roadmap](/fr/other/roadmap.md)
+  - [Feuille de route](/fr/other/roadmap.md)
   - [Open Source](/fr/other/open-source.md)

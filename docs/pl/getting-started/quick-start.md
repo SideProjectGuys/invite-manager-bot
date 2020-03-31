@@ -2,12 +2,12 @@
 
 ## Konfiguracja
 
-start.quick.setup.description
+start.szybki.konfiguracja.opis
 
-### 1. start.quick.setup.first.title
+### 1. start.szybki.konfiguracja.pierwszy.tytuł
 
-start.quick.setup.first.description
+start.szybki.konfiguracja.pierwszy.opis
 
-### 2. start.quick.setup.second.title
+### 2. start.szybki.konfiguracja.drugi.tytuł
 
-start.quick.setup.second.description
+start.szybki.konfiguracja.drugi.opis

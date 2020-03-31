@@ -47,9 +47,9 @@ export default class extends Command {
 
 		if (typeof punishmentType === typeof undefined) {
 			const allPunishments: PunishmentType[] = Object.values(PunishmentType);
-			const unusedPunishment = allPunishments.filter(p => punishmentConfigList.map(pcl => pcl.type).indexOf(p) < 0);
+			const unusedPunishment = allPunishments.filter((p) => punishmentConfigList.map((pcl) => pcl.type).indexOf(p) < 0);
 			embed.description = punishmentConfigList
-				.map(pcl =>
+				.map((pcl) =>
 					t('cmd.punishmentConfig.text', {
 						punishment: `**${pcl.type}**`,
 						strikes: `**${pcl.amount}**`
@@ -58,10 +58,10 @@ export default class extends Command {
 				.join('\n');
 			embed.fields.push({
 				name: t('cmd.punishmentConfig.unusedPunishment'),
-				value: `\n${unusedPunishment.map(v => `\`${v}\``).join(', ')}`
+				value: `\n${unusedPunishment.map((v) => `\`${v}\``).join(', ')}`
 			});
 		} else if (typeof strikes === typeof undefined) {
-			const pc = punishmentConfigList.find(c => c.type === punishmentType);
+			const pc = punishmentConfigList.find((c) => c.type === punishmentType);
 			embed.description = t('cmd.punishmentConfig.text', {
 				punishment: `**${pc ? pc.type : punishmentType}**`,
 				strikes: `**${pc ? pc.amount : 0}**`

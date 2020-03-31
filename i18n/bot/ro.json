@@ -72,68 +72,68 @@
 				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
+				"clear": "Foloseste `{{ prefix }}botConfig {{ key }} none` pentru a sterge",
 				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
 				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"title": "Valoarea curenta"
 			},
 			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord suporta doar URL-uri de la twitch.tv pentru streaming"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Noua valoare"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Nimic",
+			"notSet": "Aceste setari nu sunt setate",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Vizualizare"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Valoarea anterioara"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Acest config este deja setat la aceasta valuare",
 			"self": {
 				"args": {
 					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"value": "Noua valuare a setarii"
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Arata si schimba configul botului"
 			},
 			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"title": "Config custom al botului"
 		},
 		"botInfo": {
 			"guilds": "Servere",
 			"members": "Membrii",
 			"premium": {
-				"active": "This server has an **active premium** subscription.",
-				"custom": "You are using a custom version of the bot!",
-				"none": "This server currently **does not** have premium.",
+				"active": "Acest server detine un **abonament premium** al botului.",
+				"custom": "Folosesti o versiune custom al botului",
+				"none": "Acest server momentan **nu are** abonament premium",
 				"title": "Premium"
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Obtine informatii generale despre bot."
 			},
 			"shards": {
-				"current": "Current Shard",
-				"total": "Total Shards"
+				"current": "Shardul curent",
+				"total": "Sharduri totale"
 			},
 			"uptime": "Uptime",
 			"version": "Versiune"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Caz sters",
+			"notFound": "Cazul nu a fost gasit",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Numarul cazului",
+					"reason": "Motivul pentru stergerea cazului"
 				},
-				"description": "Delete a specific case."
+				"description": "Sterge un anumit caz"
 			},
-			"title": "Case #{{ id }}"
+			"title": "Cazul #{{ id }}"
 		},
 		"caseView": {
 			"notFound": "Case not found",
@@ -250,7 +250,7 @@
 					"key": "The config setting which you want to show/change.",
 					"value": "The new value of the setting."
 				},
-				"description": "Show and change the config of the server."
+				"description": "Vizualizeaza si schimba configul serverului"
 			},
 			"text": "Below are all the config settings of your server.\nUse `{{ prefix }}config <key>` to view a single setting\nUse `{{ prefix }}config <key> <value>` to set the config <key> to <value>",
 			"title": "Your config settings"
@@ -266,22 +266,22 @@
 			}
 		},
 		"credits": {
-			"developers": "Developers",
-			"moderators": "Moderators",
+			"developers": "Developeri",
+			"moderators": "Moderatori",
 			"self": {
 				"description": "Show developers and contributors of the bot."
 			},
-			"staff": "Staff",
-			"translators": "Translators"
+			"staff": "Personalul",
+			"translators": "Traducatori"
 		},
 		"error": "There was an error executing the command. Please report this to a developer:\n{{{ error }}}",
 		"export": {
-			"preparing": "Please wait while we prepare the file...",
+			"preparing": "Te rog asteapta pana pregatim fisierul",
 			"self": {
 				"args": {
 					"type": "The type of export you want."
 				},
-				"description": "Export data of InviteManager to a csv sheet."
+				"description": "Exporteaza datele InviteManager-ului in csv sheet"
 			},
 			"title": "InviteManager - Export"
 		},
@@ -290,7 +290,7 @@
 				"entry": {
 					"multi": "**{{ name }}** (**{{ times }}** times)",
 					"single": "**{{ name }}**",
-					"text": "**{{ name }}** joined **{{ times }} times**, invited by:"
+					"text": "**{{ name }}** a intrat de **{{ times }} ori**, Invitat de catre:"
 				}
 			},
 			"none": "Nicio invitatie falsa detactata pana acum.",
@@ -307,21 +307,23 @@
 			"self": {
 				"description": "Get an invite link for the bot."
 			},
-			"title": "Add InviteManager to your server"
+			"title": "Adauga-l pe InviteManager pe serverul tau!"
 		},
 		"graph": {
 			"joins": {
 				"text": "This chart shows the number of users joining your server.",
-				"title": "Users joining"
+				"title": "Utilizatori care intra"
 			},
 			"leaves": {
 				"text": "This chart shows the number of users leaving your server.",
-				"title": "Users leaving"
+				"title": "Utilizatori care pleaca"
 			},
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "The type of chart to display.",
+					"from": "Start date of the chart",
+					"to": "End date of the chart"
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
@@ -414,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Enter a value or list of values to add.",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"current": {
@@ -690,7 +693,10 @@
 					"reason": "The reason why this user is muted.",
 					"user": "The user that should be muted."
 				},
-				"description": "Mute a user"
+				"description": "Mute a user",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +732,8 @@
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
 				"title": "Activate premium on this server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -1149,7 +1156,17 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1462,7 +1479,10 @@
 					"description": "Rank related settings.",
 					"title": "Ranks"
 				},
-				"title": "Invites"
+				"title": "Invites",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1664,74 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

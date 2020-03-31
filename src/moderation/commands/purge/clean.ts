@@ -37,11 +37,7 @@ export default class extends Command {
 				}
 			],
 			group: CommandGroup.Moderation,
-			botPermissions: [
-				GuildPermission.READ_MESSAGE_HISTORY,
-				GuildPermission.MANAGE_MESSAGES,
-				GuildPermission.MANAGE_EMOJIS
-			],
+			botPermissions: [GuildPermission.READ_MESSAGE_HISTORY, GuildPermission.MANAGE_MESSAGES],
 			defaultAdminOnly: true,
 			guildOnly: true
 		});
@@ -91,7 +87,10 @@ export default class extends Command {
 			messagesToBeDeleted.push(message);
 
 			try {
-				await this.client.deleteMessages(message.channel.id, messagesToBeDeleted.map(m => m.id));
+				await this.client.deleteMessages(
+					message.channel.id,
+					messagesToBeDeleted.map((m) => m.id)
+				);
 
 				embed.title = t('cmd.clean.title');
 				embed.description = t('cmd.clean.text', {
@@ -111,44 +110,44 @@ export default class extends Command {
 	}
 
 	private images(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			return message.attachments.length > 0;
 		});
 	}
 
 	private links(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			const matches = this.client.mod.getLinks(message);
 			return matches && matches.length > 0;
 		});
 	}
 
 	private mentions(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			return message.mentionEveryone || message.mentions.length > 0 || message.roleMentions.length > 0;
 		});
 	}
 
 	private bots(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			return message.author.bot;
 		});
 	}
 
 	private embeds(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			return message.embeds.length > 0;
 		});
 	}
 
 	private emojis(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			return this.client.mod.countEmojis(message) > 0;
 		});
 	}
 
 	private reacted(messages: Message[]): Message[] {
-		return messages.filter(message => {
+		return messages.filter((message) => {
 			const reactionsKeys = Object.keys(message.reactions);
 			return reactionsKeys.length > 0;
 		});

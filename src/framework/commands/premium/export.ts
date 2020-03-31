@@ -52,7 +52,7 @@ export default class extends Command {
 					let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
 					const invs = await this.client.invs.generateLeaderboard(guild.id);
-					invs.forEach(inv => {
+					invs.forEach((inv) => {
 						csv +=
 							`${inv.id},` +
 							`"${inv.name.replace(/"/g, '\\"')}",` +

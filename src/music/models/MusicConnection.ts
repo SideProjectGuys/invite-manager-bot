@@ -140,14 +140,14 @@ export class MusicConnection {
 		if (this.player) {
 			this.switchChannel(channel);
 		} else {
-			this.settings = await this.service.client.cache.guilds.get(this.guild.id);
+			this.settings = await this.service.getGuildSettings(this.guild.id);
 			this.volume = this.settings.musicVolume;
 
 			this.voiceChannel = channel;
 			this.player = (await channel.join({})) as LavaPlayer;
 			this.player.setVolume(this.volume);
-			this.player.on('warn', error => console.error(error));
-			this.player.on('error', error => console.error(error));
+			this.player.on('warn', (error) => console.error(error));
+			this.player.on('error', (error) => console.error(error));
 			this.player.on('speakingStart', this.onSpeakingStart);
 			this.player.on('speakingStop', this.onSpeakingEnd);
 			this.player.on('stateUpdate', this.onStateUpdate);
@@ -224,7 +224,7 @@ export class MusicConnection {
 
 		this.doPlayNext = false;
 
-		return new Promise<void>(async resolve => {
+		return new Promise<void>(async (resolve) => {
 			this.doneCallback = async () => {
 				this.doPlayNext = true;
 				resolve();
@@ -252,7 +252,7 @@ export class MusicConnection {
 		if (next) {
 			if (this.settings.announceNextSong) {
 				let sanitizedTitle = next.title || '';
-				IGNORED_ANNOUNCEMENT_WORDS.forEach(word => (sanitizedTitle = sanitizedTitle.replace(word, '')));
+				IGNORED_ANNOUNCEMENT_WORDS.forEach((word) => (sanitizedTitle = sanitizedTitle.replace(word, '')));
 				if (sanitizedTitle) {
 					await this.playAnnouncement(this.settings.announcementVoice, 'Playing: ' + sanitizedTitle).catch(
 						() => undefined
