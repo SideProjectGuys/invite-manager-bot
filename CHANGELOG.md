@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.7.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.2...v9.7.0) (2020-03-31)
+
+### Features
+
+- **tracking:** Change startup to match cpus ([5420487](https://github.com/SideProjectGuys/invite-manager-bot/commit/54204870e20c2538aa279a4dd892a47e51bf34ca))
+- **vanity:** Only request vanity url when needed ([b5a7dff](https://github.com/SideProjectGuys/invite-manager-bot/commit/b5a7dff60362d3722a133c70316c5e8c95308a90))
+
 ### [9.6.2](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.1...v9.6.2) (2020-03-30)
 
 ### Bug Fixes

@@ -18,7 +18,7 @@ const moderators: string[] = [
 	'malok#8571'
 ];
 
-const staff: string[] = ['Audio#0265','Chris.#0006','Gugu72#0016'];
+const staff: string[] = ['Audio#0265', 'Chris.#0006', 'Gugu72#0016'];
 
 const translators: string[] = [
 	'legendarylol#8215',
