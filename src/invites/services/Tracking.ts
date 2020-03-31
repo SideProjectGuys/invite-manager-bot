@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
+import os from 'os';
 
 import { GuildSettingsKey } from '../../framework/models/GuildSetting';
 import { JoinInvalidatedReason } from '../../framework/models/Join';
@@ -9,7 +10,7 @@ import { IMService } from '../../framework/services/Service';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
 
-const GUILDS_IN_PARALLEL = 10;
+const GUILDS_IN_PARALLEL = os.cpus().length;
 const INVITE_CREATE = 40;
 
 export class TrackingService extends IMService {
@@ -30,6 +31,8 @@ export class TrackingService extends IMService {
 		this.client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
+
+		console.log(`Requesting ${chalk.blue(GUILDS_IN_PARALLEL)} guilds in parallel during startup`);
 	}
 
 	public async onClientReady() {
