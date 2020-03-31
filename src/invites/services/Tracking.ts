@@ -31,8 +31,6 @@ export class TrackingService extends IMService {
 		this.client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
-
-		console.log(`Requesting ${chalk.blue(GUILDS_IN_PARALLEL)} guilds in parallel during startup`);
 	}
 
 	public async onClientReady() {
@@ -40,6 +38,8 @@ export class TrackingService extends IMService {
 			this.startupDone();
 			return;
 		}
+
+		console.log(`Requesting ${chalk.blue(GUILDS_IN_PARALLEL)} guilds in parallel during startup`);
 
 		// Save all guilds, sort descending by member count
 		// (Guilds with more members are more likely to get a join)
