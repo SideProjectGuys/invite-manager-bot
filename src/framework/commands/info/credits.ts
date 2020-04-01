@@ -9,13 +9,12 @@ const developers: string[] = ['Andy#1801', 'Valandur#3581', 'santjum#0450', 'leg
 
 // Staff
 const moderators: string[] = [
+	'malok#8571',
+	'Alan Wen#3344',
 	'GTA Tetris#4587',
 	'𝕸σσɳ유#2296',
 	'SemiMute#2018',
-	'Mennoplays#0001',
-	'Simplee.#2222',
-	'Alan Wen#3344',
-	'malok#8571'
+	'Mennoplays#0001'
 ];
 
 const staff: string[] = ['Audio#0265', 'Chris.#0006', 'Gugu72#0016'];
@@ -33,7 +32,8 @@ const translators: string[] = [
 	'Izmoqwy#0423',
 	'Qbiczeq#3641',
 	'qq1zz (REAL) (New Account)2374#1204',
-	'《Ն·Բ》ĂĆRΣANØ#1391'
+	'《Ն·Բ》ĂĆRΣANØ#1391',
+	'• xFalcon#1581'
 ];
 
 export default class extends Command {
