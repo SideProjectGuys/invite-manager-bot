@@ -54,7 +54,7 @@
 			"description": "We always welcome translators to translate the Docs of InviteManager. If you are interested in translating the Docs to your own language, you might want to join our [Transifex]({{{ linkTransifex }}}) team!",
 			"help": {
 				"title": "GitHub",
-				"description": "Translations can also be made using our GitHub repository. Feel free to translate the Docs files to your own language and open up a pull request."
+				"description": "Translations can also be made using our GitHub [Repository]({{{ linkRepository }}}). Feel free to translate the Docs files to your own language and open up a pull request."
 			}
 		},
 		"webpanel": {
