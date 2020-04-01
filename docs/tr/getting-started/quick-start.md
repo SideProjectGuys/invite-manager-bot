@@ -1,6 +1,6 @@
-# Quick Start
+# Hızlı başlangıç
 
-## Setup
+## Kurma
 
 start.quick.setup.description
 

@@ -116,7 +116,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
+| [botConfig](#botConfig)                 | Mostra e modifica la configurazione del bot.              | !botConfig [key][value]                     |
 | [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
@@ -150,14 +150,14 @@ This argument expects a duration. The following duration types are supported:
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [ban](#ban)                           | Bandisci un membro dal server.                                                                                                                | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
+| [caseDelete](#caseDelete)             | Elimina un caso specifico.                                                                                                                    | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Visualizza informazioni su un caso specifico.                                                                                                 | !caseView \<caseNumber\>                                         |
 | [check](#check)                       | Controlla la cronologia delle violazioni e delle punizioni di un utente.                                                                      | !check \<user\>                                                  |
 | [clean](#clean)                       | Pulisci un canale da certi tipi di messaggi.                                                                                                  | !clean \<type\> [numberOfMessages]                               |
 | [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Mute a user                                                                                                                                   | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
@@ -292,9 +292,9 @@ Bandisci un membro dal server.
 
 ### Flags
 
-| Flag                              | Short     | Type              | Description                                                                  |
-| --------------------------------- | --------- | ----------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type              | Description                                                                         |
+| --------------------------------- | --------- | ----------------- | ----------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Number](#Number) | Se specificato verranno eliminati i messaggi dei membri bannati di molti giorni fa. |
 
 ### Examples
 
@@ -304,7 +304,7 @@ Bandisci un membro dal server.
 
 ## !botConfig
 
-Show and change the config of the bot.
+Mostra e modifica la configurazione del bot.
 
 ### Usage
 
@@ -320,10 +320,10 @@ Show and change the config of the bot.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| Argument | Type            | Required | Description                                                                     | Details                                                                                                                                     |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | L'impostazione di configurazione del bot che si desidera mostrare / modificare. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [Value](#Value) | No       | Il nuovo valore dell'impostazione.                                              |                                                                                                                                             |
 
 ### Examples
 
@@ -361,7 +361,7 @@ Ottieni informazioni generali circa il bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Elimina un caso specifico.
 
 ### Usage
 
@@ -377,10 +377,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description                                | Details |
+| ---------- | ----------------- | -------- | ------------------------------------------ | ------- |
+| caseNumber | [Number](#Number) | Yes      | Numero caso                                |         |
+| reason     | [Text](#Text)     | No       | Il motivo per cui è stato rimosso il caso. |         |
 
 ### Examples
 
@@ -394,7 +394,7 @@ Delete a specific case.
 
 ## !caseView
 
-View info about a specific case.
+Visualizza informazioni su un caso specifico.
 
 ### Usage
 
@@ -412,7 +412,7 @@ View info about a specific case.
 
 | Argument   | Type              | Required | Description | Details |
 | ---------- | ----------------- | -------- | ----------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number |         |
+| caseNumber | [Number](#Number) | Yes      | Numero caso |         |
 
 ### Examples
 
@@ -790,8 +790,8 @@ Shows graphs about various stats on this server.
 | Argument | Type          | Required | Description                   | Details                                                              |
 | -------- | ------------- | -------- | ----------------------------- | -------------------------------------------------------------------- |
 | type     | [Enum](#Enum) | Yes      | The type of chart to display. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from      |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to        |                                                                      |
+| from     | [Date](#Date) | No       | Start date of the chart       |                                                                      |
+| to       | [Date](#Date) | No       | End date of the chart         |                                                                      |
 
 ### Examples
 
@@ -1117,7 +1117,7 @@ Show members with most invites.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1127,15 +1127,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type                | Required | Description                    | Details |
-| -------- | ------------------- | -------- | ------------------------------ | ------- |
-| channel  | [Channel](#Channel) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type                | Required | Description                             | Details |
+| -------- | ------------------- | -------- | --------------------------------------- | ------- |
+| channel  | [Channel](#Channel) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                     |
-| ----------------------- | --------- | --------------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type                  | Description                                                                                                  |
+| ----------------------- | --------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1273,9 +1273,9 @@ Mute a user
 
 ### Flags
 
-| Flag                     | Short     | Type                  | Description                  |
-| ------------------------ | --------- | --------------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type                  | Description                       |
+| ------------------------ | --------- | --------------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | The duration to mute the user for |
 
 ### Examples
 

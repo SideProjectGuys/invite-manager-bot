@@ -78,18 +78,15 @@ export default class extends Command {
 				embed.title = t('cmd.premium.premium.title');
 
 				const maxDate = subs.reduce((acc, sub) => Math.max(acc, moment(sub.validUntil).unix()), 0);
-				const date = moment
-					.unix(maxDate)
-					.locale(lang)
-					.fromNow(true);
+				const date = moment.unix(maxDate).locale(lang).fromNow(true);
 
 				let guildList = '';
-				guildSubs.forEach(guildSub => {
+				guildSubs.forEach((guildSub) => {
 					const guildName = guildSub.guildName;
 					guildList += `- **${guildName}**` + (guildSub.guildId === guildId ? ' *(This server)*' : '') + '\n';
 				});
 				if (guildId) {
-					if (guildSubs.some(s => s.guildId === guildId)) {
+					if (guildSubs.some((s) => s.guildId === guildId)) {
 						guildList +=
 							'\n' +
 							t('cmd.premium.premium.deactivate', {

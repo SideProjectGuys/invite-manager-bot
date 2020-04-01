@@ -1,55 +1,55 @@
 {
 	"lang": "Türkçe",
 	"modules": {
-		"title": "Modules",
+		"title": "Modüller",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "Davet Yönetimi",
+			"description": "Botumuz sunucunuzdayken, sunucunuzda gerçekleşen her daveti izleriz. Discord sadece size kimin davet ettiğini gösterir. Botumuz ayrıca kimin kimi davet ettiğini analiz eder. Bu botumuzun sahte davetiyeleri tespit etmesini ve davet sistemini kandırmaya çalıştığını görmesini sağlar.",
 			"examples": {
-				"title": "Examples"
+				"title": "Örnekler"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "Genel Bakış"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "Özel mesaj"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "Moderasyon",
+			"description": "Yeni moderasyon sistemimiz birçok şeyi otomatik olarak yönetmenizi sağlar. Daha fazla bilgi için lütfen [strikes] ({{{ linkStrikes }}}) ve [punishments] ({{{ linkPunishments }}}) sayfalarımızı kontrol edin. Kısacası, botumuz yanlış davranan insanlara 'grev' verir ve belirli bir grevden sonra kullanıcı bir ceza alır. Tüm bunlar kullanıcı tarafından yapılandırılabilir.",
 			"punishments": {
-				"title": "Punishments"
+				"title": "Cezalar"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "Grevler"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "Müzik",
 			"overview": {
-				"title": "Overview"
+				"title": "Genel Bakış"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "Diğer",
 		"donating": {
-			"title": "Donating",
+			"title": "Oy verme",
 			"description": "other.donating.description",
 			"crypto": {
-				"title": "Crypto",
+				"title": "Kripto",
 				"description": "other.donating.crypto.description"
 			}
 		},
 		"roadmap": {
-			"title": "Roadmap"
+			"title": "Harita yolu"
 		},
 		"support": {
-			"title": "Support"
+			"title": "Destek"
 		},
 		"translations": {
-			"title": "Translations",
+			"title": "Çeviriler",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -57,17 +57,17 @@
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
+			"title": "Site Paneli",
 			"description": "other.webpanel.description"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "Değişiklikler"
 		},
 		"openSource": {
-			"title": "Open Source",
+			"title": "Açık kaynak",
 			"description": "other.openSource.description",
 			"bot": {
-				"title": "Main Bot",
+				"title": "Ana bot",
 				"description": "other.openSource.bot.description"
 			}
 		}
@@ -76,58 +76,58 @@
 		"title": "Premium",
 		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
 		"features": {
-			"title": "Features"
+			"title": "Özellikleri"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "Aşamalar"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "Kurma"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "Başlangıç",
+		"description": "Başlamak için sunucunuzda `!setup` komutunu çalıştırmanız yeterlidir. ",
 		"alpha": {
 			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
+			"intro": "`InviteManager Alpha` bot, yeni özellikleri test etmek için kullandığımız bottur. Alpha bot'taki yeni özellikler her zaman istikrarlı olmayacak, ancak bu botu kullanırsanız, onları ilk gören siz olacaksınız ve ana bota dahil edilmeden önce onları nasıl daha iyi hale getirebileceğimiz konusunda bize geri bildirimde bulunabilirsiniz. .",
 			"linkDescription": "Invite the InviteManager Alpha here"
 		},
 		"faq": {
 			"title": "FAQs",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "Botun ön ekini nasıl değiştirebilirim?",
+				"description": "Öneki değiştirmek için `!config prefix -` yapabilirsiniz.\n\nGeçerli önekinizi bilmiyorsanız, öneki görmek için`@InviteManager config prefix`  komtunu kullanabilirsiniz."
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "Katılma ve ayrılma mesajlarını nasıl ayarlarım?",
+				"description": "Yaparak kanalı ayarlayın\n\n`!config joinMessageChannel #kanal`\n\nya da\n\n`!config leaveMessageChannel #kanal`.\n\nBunu yaptıktan sonra yeni katılmalar ve ayrılmalar o kanala gönderilecek."
 			},
 			"joinLeaveMessage": {
 				"title": "Can I customize the join and leave messages?",
-				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+				"description": "Kesinlikle! Mesajı yaparak örneğin değiştirebilirsiniz\n\n`! config joinMessage {memberMention} ** katıldı **; ** {inviterName} ** tarafından davet edildi (** {numInvites} ** davet yaptı) `\n\nya da\n\n`! config leaveMessage {memberName} ** ayrıldı **; ** {inviterName} ** `tarafından davet edilmişti.\n\nKullanılabilecek çok sayıda yer tutucu var. Listenin tamamını '[Custom Messages]({{{ link }}})' sayfasında görebilirsiniz."
 			},
 			"ranks": {
 				"title": "What are 'Ranks' and how can I use them?",
-				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+				"description": "Rütbe, belirli bir sayıda davete ulaştıklarında insanlara rol atamak için kullanılır. Örneğin. `@Başlangıçcı` adında bir rolünüz varsa ve 5 veya daha fazla daveti olan kişilerin bu role eklenmesini istiyorsanız şu şekilde bir sıralama oluşturmanız gerekir:`! add-rank @Başlangıçcı 5 (ve burada bir açıklama istersiniz) `. Birisi 5 davet alır almaz, otomatik olarak bu role eklenir!"
 			},
 			"channel": {
-				"title": "How can I disable the bot in all but one/some channels?",
-				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+				"title": "Bir / bazı kanallar dışındaki tüm botları nasıl devre dışı bırakabilirim?",
+				"description": "Botun yanıt vermesini istemediğiniz kanallarda okunan mesaj izinlerini kaldırın."
 			},
 			"limitations": {
 				"title": "Limitation: No advanced tracking before the bot joins",
-				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+				"description": "Gelişmiş izleme (kim kimi davet ettiğinde) yalnızca botu davet ettikten sonra çalışır. Bot, herkesin davet ettikten sonra sayımı davet ettiğini bilecek, endişelenmeyin. Yalnızca ek bilgiler eksiktir ve yalnızca botu davet ettikten sonra katılan üyeler için toplanabilir."
 			}
 		},
 		"pro": {
-			"title": "Pro Bot",
+			"title": "Profesyonel Bot",
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"title": "Quick Start",
+			"title": "Hızlı başlangıç",
 			"setup": {
-				"title": "Setup",
+				"title": "Kurma",
 				"description": "start.quick.setup.description",
 				"first": {
 					"title": "start.quick.setup.first.title",
@@ -141,9 +141,9 @@
 		}
 	},
 	"reference": {
-		"title": "Reference",
+		"title": "Referans",
 		"commands": {
-			"title": "Commands"
+			"title": "Komutlar"
 		},
 		"settings": {
 			"title": "Configs / Settings"

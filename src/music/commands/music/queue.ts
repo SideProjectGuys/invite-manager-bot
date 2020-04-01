@@ -34,7 +34,7 @@ export default class extends Command {
 			description: nowPlaying.toQueueEntry().value,
 			thumbnail: { url: nowPlaying.imageUrl },
 			title: nowPlaying.title,
-			fields: queue.map(item => item.toQueueEntry())
+			fields: queue.map((item) => item.toQueueEntry())
 		});
 	}
 }

@@ -21,13 +21,13 @@ This arguments expects a value from a specific set of valid values.
 
 > Depending on the command the valid values can vary. Use `!help <command>` (eg. `!help addRank`) to get more information about the command and the valid values for the enum.
 
-### Invite Code
+### Davet Kodu
 
 This arguments expects a Discord Invite Code.
 
 > You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.
 
-### User
+### Kullanıcı
 
 This arguments expects a Discord User. You can use any of the following methods to provide a user:
 
@@ -48,12 +48,12 @@ This arguments expects a Discord Role. You can use any of the following methods 
 
 ### Kanal
 
-This arguments expects a Discord Channel. You can use any of the following methods to provide a channel:
+Bu argümanlar bir Discord Kanalı bekler. Kanal sağlamak için aşağıdaki yöntemlerden herhangi birini kullanabilirsiniz:
 
-- Mention the channel: `#general`
-- Use the ID: `409846838129197057`
-- Use the name: `general`
-- Use quotes if the name has a space: `"general with a space"`
+- Kanaldan bahsedin: `#general`
+- Kanal ID kullanın: `409846838129197057`
+- Kanal adını kullanın: `genel`
+- Adda bir boşluk varsa tırnak işareti kullanın: `"boşluklu genel"`
 
 ### Komut
 
@@ -62,15 +62,15 @@ This argument expects a command of this bot. You can use any of the following me
 - Use the command name: `invites`
 - Use an alias of the command: `p`
 
-### Text
+### Metin
 
 This arguments expects any text. You can use quotes (`"Text with quotes"`) for text that has spaces.
 
 > If the text is the last argument you don't have to use quotes.
 
-### Date
+### Tarih
 
-This argument expects a date. You can use various formats, but we recommend: `YYYY-MM-DD`
+Bu argüman bir tarih bekliyor. Çeşitli formatlar kullanabilirsiniz, ancak şunları öneririz: `YYYY-AA-GG`
 
 ### Duration
 
@@ -88,54 +88,54 @@ This argument expects a duration. The following duration types are supported:
 
 ### Invites
 
-| Command                           | Description                                        | Usage                                                            |
-| --------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | Kullanıcıya davet puanı ekler/siler.               | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Sunucudaki/kullanıcıdaki davetleri temizler.       | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | Özel davet kodları oluştur.                        | !createInvite \<name\> [channel]                                 |
-| [info](#info)                     | Belirli bir üye hakkında bilgi göster.             | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | Get a list of all your invite codes                | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | Shows details about where your invites are from.   | !inviteDetails [user]                                            |
-| [invites](#invites)               | Kişi Davetlerini Göster                            | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Show members with most invites.                    | !leaderboard [page]                                              |
-| [removeInvites](#removeInvites)   | Removes a specified amount of invites from a user. | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | Restore all previously cleared invites.            | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | Tüm kullanıcılardan sahte davetliler temizlendi.   | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | Tüm Kullanıcılardan Sunucudan Ayrılanları Sil.     | !subtractLeaves                                                  |
+| Command                           | Description                                                       | Usage                                                            |
+| --------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)         | Kullanıcıya davet puanı ekler/siler.                              | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)     | Sunucudaki/kullanıcıdaki davetleri temizler.                      | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)     | Özel davet kodları oluştur.                                       | !createInvite \<name\> [channel]                                 |
+| [info](#info)                     | Belirli bir üye hakkında bilgi göster.                            | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)       | Tüm davet kodlarınızın bir listesini alın                         | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)   | Davetiyelerinizin nereden geldiğiyle ilgili ayrıntıları gösterir. | !inviteDetails [user]                                            |
+| [invites](#invites)               | Kişi Davetlerini Göster                                           | !invites [user]                                                  |
+| [leaderboard](#leaderboard)       | En çok davet edilen üyeleri göster.                               | !leaderboard [page]                                              |
+| [removeInvites](#removeInvites)   | Bir kullanıcıdan belirtilen miktarda daveti kaldırır.             | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites) | Önceden temizlenmiş tüm davetiyeleri geri yükleyin.               | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)   | Tüm kullanıcılardan sahte davetliler temizlendi.                  | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves) | Tüm Kullanıcılardan Sunucudan Ayrılanları Sil.                    | !subtractLeaves                                                  |
 
 ### Ranks
 
-| Command                   | Description                                   | Usage                                |
-| ------------------------- | --------------------------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Yeni bir rütbe ekle.                          | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | Deletes any ranks where the role was deleted. | !fixRanks                            |
-| [ranks](#ranks)           | Show all ranks.                               | !ranks [page]                        |
-| [removeRank](#removeRank) | Remove a rank.                                | !removeRank \<rank\>                 |
+| Command                   | Description                          | Usage                                |
+| ------------------------- | ------------------------------------ | ------------------------------------ |
+| [addRank](#addRank)       | Yeni bir rütbe ekle.                 | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | Rolün silindiği tüm rütbeleri siler. | !fixRanks                            |
+| [ranks](#ranks)           | Tüm rütbeleri göster.                | !ranks [page]                        |
+| [removeRank](#removeRank) | Bir rank'ı kaldırın.                 | !removeRank \<rank\>                 |
 
 ### Config
 
-| Command                                 | Description                                               | Usage                                       |
-| --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Botun yapılandırmasını göster ve değiştir.                | !botConfig [key][value]                     |
-| [config](#config)                       | Sunucunun yapılandırmasını göster ve değiştir.            | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | Show and change the config of members of the server.      | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | Komutları kullanmak için izinleri yapılandırın.           | !permissions [cmd][role]                    |
+| Command                                 | Description                                                         | Usage                                       |
+| --------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------- |
+| [botConfig](#botConfig)                 | Botun yapılandırmasını göster ve değiştir.                          | !botConfig [key][value]                     |
+| [config](#config)                       | Sunucunun yapılandırmasını göster ve değiştir.                      | !config [key][value]                        |
+| [interactiveConfig](#interactiveConfig) | Etkileşimli Yapılandırma                                            | !interactiveConfig                          |
+| [inviteCodeConfig](#inviteCodeConfig)   | Sunucunun davet kodlarının yapılandırmasını gösterin ve değiştirin. | !inviteCodeConfig [key][invitecode] [value] |
+| [memberConfig](#memberConfig)           | Sunucunun üyelerinin yapılandırmasını gösterin ve değiştirin.       | !memberConfig [key][user] [value]           |
+| [permissions](#permissions)             | Komutları kullanmak için izinleri yapılandırın.                     | !permissions [cmd][role]                    |
 
 ### Info
 
-| Command             | Description                                                                       | Usage           |
-| ------------------- | --------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Bot hakkında genel bilgi al.                                                      | !botInfo        |
-| [credits](#credits) | Bot geliştiricileri ve katkıda bulunanları göster.                                | !credits        |
-| [getBot](#getBot)   | Bot için bir davet linki al.                                                      | !getBot         |
-| [help](#help)       | Yardımı gösterir.                                                                 | !help [command] |
-| [members](#members) | Show member count of current server.                                              | !members        |
-| [ping](#ping)       | botun pingi                                                                       | !ping           |
-| [prefix](#prefix)   | Botun geçerli ön-ekini gösterir.                                                  | !prefix         |
-| [setup](#setup)     | Help with setting up the bot and checking for problems (e.g. missing permissions) | !setup          |
-| [support](#support) | Destek sunucumuza katılmak için davet bağlantısı alın.                            | !support        |
+| Command             | Description                                                                   | Usage           |
+| ------------------- | ----------------------------------------------------------------------------- | --------------- |
+| [botInfo](#botInfo) | Bot hakkında genel bilgi al.                                                  | !botInfo        |
+| [credits](#credits) | Bot geliştiricileri ve katkıda bulunanları göster.                            | !credits        |
+| [getBot](#getBot)   | Bot için bir davet linki al.                                                  | !getBot         |
+| [help](#help)       | Yardımı gösterir.                                                             | !help [command] |
+| [members](#members) | Geçerli sunucunun üye sayısını göster.                                        | !members        |
+| [ping](#ping)       | botun pingi                                                                   | !ping           |
+| [prefix](#prefix)   | Botun geçerli ön-ekini gösterir.                                              | !prefix         |
+| [setup](#setup)     | Botu ayarlama ve sorunları kontrol etme konusunda yardım (örn. Eksik izinler) | !setup          |
+| [support](#support) | Destek sunucumuza katılmak için davet bağlantısı alın.                        | !support        |
 
 ### Premium
 
@@ -147,47 +147,47 @@ This argument expects a duration. The following duration types are supported:
 
 ### Moderation
 
-| Command                               | Description                                                                                                                                   | Usage                                                            |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Kullanıcıyı sunucudan banlamak için.                                                                                                          | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Belirli bir durumu silin.                                                                                                                     | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | Belirli bir kasa hakkındaki bilgileri görüntüleyin.                                                                                           | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Bir kullanıcının ihlal ve ceza geçmişini kontrol edin.                                                                                        | !check \<user\>                                                  |
-| [clean](#clean)                       | Belirli mesaj türlerinden bir kanalı temizleyin.                                                                                              | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
-| [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
-| [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
-| [mute](#mute)                         | Bir kullanıcı sustur                                                                                                                          | !mute [-d value\|--duration=value] \<user\> [reason]             |
-| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                              | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | Purge messages in a channel.                                                                                                                  | !purge \<quantity\> [user]                                       |
-| [purgeUntil](#purgeUntil)             | Purge messages in a channel up until a specified message.                                                                                     | !purgeUntil \<messageID\>                                        |
-| [softBan](#softBan)                   | Ban and then automatically unban a member from the server.                                                                                    | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | Add strikes to a user                                                                                                                         | !strike \<member\> \<type\> \<amount\>                           |
-| [strikeConfig](#strikeConfig)         | Configure strikes received for various violations.                                                                                            | !strikeConfig [violation][strikes]                               |
-| [unban](#unban)                       | Bir kullanıcının yasağını kaldır.                                                                                                             | !unban \<user\> [reason]                                         |
-| [unhoist](#unhoist)                   | Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list. | !unhoist                                                         |
-| [unmute](#unmute)                     | Unmute a user                                                                                                                                 | !unmute \<user\>                                                 |
-| [warn](#warn)                         | Kullanıcı Uyar                                                                                                                                | !warn \<member\> [reason]                                        |
+| Command                               | Description                                                                                                                               | Usage                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [ban](#ban)                           | Kullanıcıyı sunucudan banlamak için.                                                                                                      | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | Belirli bir durumu silin.                                                                                                                 | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Belirli bir kasa hakkındaki bilgileri görüntüleyin.                                                                                       | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | Bir kullanıcının ihlal ve ceza geçmişini kontrol edin.                                                                                    | !check \<user\>                                                  |
+| [clean](#clean)                       | Belirli mesaj türlerinden bir kanalı temizleyin.                                                                                          | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | Kısa mesajları temizle                                                                                                                    | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [cleanText](#cleanText)               | Belirli anahtar kelimeleri içeren iletileri sil                                                                                           | !cleanText \<text\> [numberOfMessages]                           |
+| [kick](#kick)                         | Sunucudan bir üyeyi atar.                                                                                                                 | !kick \<member\> [reason]                                        |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
+| [mute](#mute)                         | Bir kullanıcı sustur                                                                                                                      | !mute [-d value\|--duration=value] \<user\> [reason]             |
+| [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                          | !punishmentConfig [punishment][strikes] [args]                   |
+| [purge](#purge)                       | Purge messages in a channel.                                                                                                              | !purge \<quantity\> [user]                                       |
+| [purgeUntil](#purgeUntil)             | Bir kanaldaki mesajları belirtilen mesaja kadar temizleyin.                                                                               | !purgeUntil \<messageID\>                                        |
+| [softBan](#softBan)                   | Ban and then automatically unban a member from the server.                                                                                | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
+| [strike](#strike)                     | Add strikes to a user                                                                                                                     | !strike \<member\> \<type\> \<amount\>                           |
+| [strikeConfig](#strikeConfig)         | Configure strikes received for various violations.                                                                                        | !strikeConfig [violation][strikes]                               |
+| [unban](#unban)                       | Bir kullanıcının yasağını kaldır.                                                                                                         | !unban \<user\> [reason]                                         |
+| [unhoist](#unhoist)                   | Tüm üyelerin önüne, adlarının önünde özel bir karakter olacak şekilde bir karakter ekleyin, böylece üye listesinin sonunda gösterilirler. | !unhoist                                                         |
+| [unmute](#unmute)                     | Unmute a user                                                                                                                             | !unmute \<user\>                                                 |
+| [warn](#warn)                         | Kullanıcı Uyar                                                                                                                            | !warn \<member\> [reason]                                        |
 
 ### Music
 
-| Command                   | Description                                                                                  | Usage                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [disconnect](#disconnect) | Botu geçerli ses kanalından çıkarın.                                                         | !disconnect                                             |
-| [lyrics](#lyrics)         | Show lyrics of the currently playing song.                                                   | !lyrics [-l\|--live]                                    |
-| [mashup](#mashup)         | Create a mashup of 2 songs.                                                                  | !mashup \<videos\>                                      |
-| [nowPlaying](#nowPlaying) | Shows information about the currently playing song                                           | !nowPlaying [-p\|--pin]                                 |
-| [pause](#pause)           | Pause the current song.                                                                      | !pause                                                  |
-| [play](#play)             | Play the song if the queue is empty, otherwise it will add the song to the end of the queue. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
-| [queue](#queue)           | Display the songs in the queue.                                                              | !queue                                                  |
-| [repeat](#repeat)         | Tekrar çalınacak şarkıyı ayarlayın.                                                          | !repeat                                                 |
-| [resume](#resume)         | Çalınan Şarkıyı Sürdür.                                                                      | !resume                                                 |
-| [rewind](#rewind)         | Şarkıyı geri sar ve en baştan başla.                                                         | !rewind                                                 |
-| [search](#search)         | Search for the search term and let you chose one of the results.                             | !search [-p value\|--platform=value] \<search\>         |
-| [seek](#seek)             | Şarkının belirli bir bölümüne atla.                                                          | !seek [duration]                                        |
-| [skip](#skip)             | Skip the current song and play the next song in the queue.                                   | !skip [amount]                                          |
-| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.                         | !volume [volume]                                        |
+| Command                   | Description                                                           | Usage                                                   |
+| ------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------- |
+| [disconnect](#disconnect) | Botu geçerli ses kanalından çıkarın.                                  | !disconnect                                             |
+| [lyrics](#lyrics)         | Şu anda çalan şarkının sözlerini göster.                              | !lyrics [-l\|--live]                                    |
+| [mashup](#mashup)         | Create a mashup of 2 songs.                                           | !mashup \<videos\>                                      |
+| [nowPlaying](#nowPlaying) | Çalmakta olan şarkı hakkında bilgi gösterir                           | !nowPlaying [-p\|--pin]                                 |
+| [pause](#pause)           | Çalan şarkıyı durdur.                                                 | !pause                                                  |
+| [play](#play)             | Sıra boşsa şarkıyı açın, aksi takdirde şarkıyı kuyruğun sonuna ekler. | !play [-p value\|--platform=value][-n\|--next] \<link\> |
+| [queue](#queue)           | Şarkıları kuyrukta göster                                             | !queue                                                  |
+| [repeat](#repeat)         | Tekrar çalınacak şarkıyı ayarlayın.                                   | !repeat                                                 |
+| [resume](#resume)         | Çalınan Şarkıyı Sürdür.                                               | !resume                                                 |
+| [rewind](#rewind)         | Şarkıyı geri sar ve en baştan başla.                                  | !rewind                                                 |
+| [search](#search)         | Search for the search term and let you chose one of the results.      | !search [-p value\|--platform=value] \<search\>         |
+| [seek](#seek)             | Şarkının belirli bir bölümüne atla.                                   | !seek [duration]                                        |
+| [skip](#skip)             | Skip the current song and play the next song in the queue.            | !skip [amount]                                          |
+| [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.  | !volume [volume]                                        |
 
 ### Other
 
@@ -215,11 +215,11 @@ Kullanıcıya davet puanı ekler/siler.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                  | Details |
-| -------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------ | ------- |
-| user     | [User](#User) | Yes      | Bonus alacak / kaybedecek kullanıcı davet eder.                                                              |         |
-| amount   | [Sayı](#Sayı) | Yes      | Kullanıcının alacağı / kaybedeceği davet miktarı. Davetiyeleri kaldırmak için negatif (-) bir sayı kullanın. |         |
-| reason   | [Text](#Text) | No       | Kullanıcıya davet puanı ekleme/silme sebebi.                                                                 |         |
+| Argument | Type                    | Required | Description                                                                                                  | Details |
+| -------- | ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------ | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Bonus alacak / kaybedecek kullanıcı davet eder.                                                              |         |
+| amount   | [Sayı](#Sayı)           | Yes      | Kullanıcının alacağı / kaybedeceği davet miktarı. Davetiyeleri kaldırmak için negatif (-) bir sayı kullanın. |         |
+| reason   | [Metin](#Metin)         | No       | Kullanıcıya davet puanı ekleme/silme sebebi.                                                                 |         |
 
 ### Examples
 
@@ -253,11 +253,11 @@ Yeni bir rütbe ekle.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                        | Details |
-| -------- | ------------- | -------- | -------------------------------------------------------------------------------------------------- | ------- |
-| role     | [Rol](#Rol)   | Yes      | Bu rütbeye geldiğinde kullanıcının alacağı rol.                                                    |         |
-| invites  | [Sayı](#Sayı) | Yes      | Rütbeye ulaşmak için gereken davet miktarı.                                                        |         |
-| info     | [Text](#Text) | No       | Kullanıcıların göreceği bir açıklama, böylece bu rütbe hakkında daha fazla bilgi sahibi olacaklar. |         |
+| Argument | Type            | Required | Description                                                                                        | Details |
+| -------- | --------------- | -------- | -------------------------------------------------------------------------------------------------- | ------- |
+| role     | [Rol](#Rol)     | Yes      | Bu rütbeye geldiğinde kullanıcının alacağı rol.                                                    |         |
+| invites  | [Sayı](#Sayı)   | Yes      | Rütbeye ulaşmak için gereken davet miktarı.                                                        |         |
+| info     | [Metin](#Metin) | No       | Kullanıcıların göreceği bir açıklama, böylece bu rütbe hakkında daha fazla bilgi sahibi olacaklar. |         |
 
 ### Examples
 
@@ -285,16 +285,16 @@ Kullanıcıyı sunucudan banlamak için.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                  | Details |
-| -------- | ------------- | -------- | ---------------------------- | ------- |
-| user     | [User](#User) | Yes      | Kullanıcıyı yasaklamak için. |         |
-| reason   | [Text](#Text) | No       | Kullanıcı neden yasaklandı?  |         |
+| Argument | Type                    | Required | Description                  | Details |
+| -------- | ----------------------- | -------- | ---------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Kullanıcıyı yasaklamak için. |         |
+| reason   | [Metin](#Metin)         | No       | Kullanıcı neden yasaklandı?  |         |
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                                                                  |
-| --------------------------------- | --------- | ------------- | ---------------------------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | If specified will delete messages by the banned members this many days back. |
+| Flag                              | Short     | Type          | Description                                                         |
+| --------------------------------- | --------- | ------------- | ------------------------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | Belirtilirse, yasaklanan üyelerin mesajlarını bu günler önce siler. |
 
 ### Examples
 
@@ -320,10 +320,10 @@ Botun yapılandırmasını göster ve değiştir.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | Ayarın yeni değeri.                                   |                                                                                                                                             |
+| Argument | Type            | Required | Description                                                 | Details                                                                                                                                     |
+| -------- | --------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | Göstermek / değiştirmek istediğiniz bot yapılandırma ayarı. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [Değer](#Değer) | No       | Ayarın yeni değeri.                                         |                                                                                                                                             |
 
 ### Examples
 
@@ -377,10 +377,10 @@ Belirli bir durumu silin.
 
 ### Arguments
 
-| Argument   | Type          | Required | Description            | Details |
-| ---------- | ------------- | -------- | ---------------------- | ------- |
-| caseNumber | [Sayı](#Sayı) | Yes      | Durum numarası         |         |
-| reason     | [Text](#Text) | No       | Durumu silmenin sebebi |         |
+| Argument   | Type            | Required | Description            | Details |
+| ---------- | --------------- | -------- | ---------------------- | ------- |
+| caseNumber | [Sayı](#Sayı)   | Yes      | Durum numarası         |         |
+| reason     | [Metin](#Metin) | No       | Durumu silmenin sebebi |         |
 
 ### Examples
 
@@ -440,9 +440,9 @@ Bir kullanıcının ihlal ve ceza geçmişini kontrol edin.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                 | Details |
-| -------- | ------------- | -------- | --------------------------- | ------- |
-| user     | [User](#User) | Yes      | Kontrol edilecek kullanıcı. |         |
+| Argument | Type                    | Required | Description                 | Details |
+| -------- | ----------------------- | -------- | --------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Kontrol edilecek kullanıcı. |         |
 
 ### Examples
 
@@ -487,7 +487,7 @@ Belirli mesaj türlerinden bir kanalı temizleyin.
 
 ## !cleanShort
 
-Clear short messages
+Kısa mesajları temizle
 
 ### Usage
 
@@ -503,10 +503,10 @@ Clear short messages
 
 ### Arguments
 
-| Argument         | Type          | Required | Description                                     | Details |
-| ---------------- | ------------- | -------- | ----------------------------------------------- | ------- |
-| maxTextLength    | [Sayı](#Sayı) | Yes      | All messages shorter than this will be deleted. |         |
-| numberOfMessages | [Sayı](#Sayı) | No       | Number of messages that will be searched.       |         |
+| Argument         | Type          | Required | Description                                 | Details |
+| ---------------- | ------------- | -------- | ------------------------------------------- | ------- |
+| maxTextLength    | [Sayı](#Sayı) | Yes      | Bundan kısa olan tüm mesajlar silinecektir. |         |
+| numberOfMessages | [Sayı](#Sayı) | No       | Aranacak mesaj sayısı.                      |         |
 
 ### Examples
 
@@ -516,7 +516,7 @@ Clear short messages
 
 ## !cleanText
 
-Delete messages containing certain keywords.
+Belirli anahtar kelimeleri içeren iletileri sil
 
 ### Usage
 
@@ -532,10 +532,10 @@ Delete messages containing certain keywords.
 
 ### Arguments
 
-| Argument         | Type          | Required | Description                                        | Details |
-| ---------------- | ------------- | -------- | -------------------------------------------------- | ------- |
-| text             | [Text](#Text) | Yes      | All messages containing this word will be deleted. |         |
-| numberOfMessages | [Sayı](#Sayı) | No       | Number of messages that will be searched.          |         |
+| Argument         | Type            | Required | Description                                | Details |
+| ---------------- | --------------- | -------- | ------------------------------------------ | ------- |
+| text             | [Metin](#Metin) | Yes      | Bu kelimeyi içeren tüm mesajlar silinecek. |         |
+| numberOfMessages | [Sayı](#Sayı)   | No       | Aranacak mesaj sayısı.                     |         |
 
 ### Examples
 
@@ -559,16 +559,16 @@ Sunucudaki/kullanıcıdaki davetleri temizler.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                      | Details |
-| -------- | ------------- | -------- | ---------------------------------------------------------------- | ------- |
-| user     | [User](#User) | No       | The user to clear all invites from. If omitted clears all users. |         |
+| Argument | Type                    | Required | Description                                                                       | Details |
+| -------- | ----------------------- | -------- | --------------------------------------------------------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Kullanıcıdan tüm davetiyeleri temizleyecek. Atlanırsa tüm kullanıcıları temizler. |         |
 
 ### Flags
 
-| Flag                       | Short      | Type                | Description                                                                              |
-| -------------------------- | ---------- | ------------------- | ---------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;date       | &#x2011;d  | [Date](#Date)       | The date start at which invites should be counted. Default is today.                     |
-| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | Add this flag to clear bonus invites aswell. Otherwise bonus invites are left untouched. |
+| Flag                       | Short      | Type                | Description                                                                                          |
+| -------------------------- | ---------- | ------------------- | ---------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;date       | &#x2011;d  | [Tarih](#Tarih)     | Davetiyelerin sayıldığı tarih başlangıcı. Varsayılan bugün.                                          |
+| &#x2011;&#x2011;clearBonus | &#x2011;cb | [Boolean](#Boolean) | Bonus davetlerini de temizlemek için bu bayrağı ekleyin. Aksi takdirde bonus davetlerine dokunulmaz. |
 
 ### Examples
 
@@ -607,7 +607,7 @@ Sunucunun yapılandırmasını göster ve değiştir.
 | Argument | Type            | Required | Description                                           | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | -------- | --------------- | -------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | key      | [Enum](#Enum)   | No       | Göstermek/değiştirmek istediğiniz yapılandırma ayarı. | Use one of the following values: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `defaultMusicPlatform`, `disabledMusicPlatforms`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `joinRoles`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Value](#Value) | No       | Ayarın yeni değeri.                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| value    | [Değer](#Değer) | No       | Ayarın yeni değeri.                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 ### Examples
 
@@ -635,10 +635,10 @@ Sunucunun yapılandırmasını göster ve değiştir.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                                            | Details |
-| -------- | --------------- | -------- | -------------------------------------------------------------------------------------- | ------- |
-| name     | [Text](#Text)   | Yes      | Davet kodunun adı.                                                                     |         |
-| channel  | [Kanal](#Kanal) | No       | The channel for which the invite code is created. Uses the current channel by default. |         |
+| Argument | Type            | Required | Description                                                                   | Details |
+| -------- | --------------- | -------- | ----------------------------------------------------------------------------- | ------- |
+| name     | [Metin](#Metin) | Yes      | Davet kodunun adı.                                                            |         |
+| channel  | [Kanal](#Kanal) | No       | Davet kodunun oluşturulduğu kanal. Geçerli kanalı varsayılan olarak kullanır. |         |
 
 ### Examples
 
@@ -722,7 +722,7 @@ InviteManager verilerini bir csv sayfasına aktarın.
 
 ## !fixRanks
 
-Deletes any ranks where the role was deleted.
+Rolün silindiği tüm rütbeleri siler.
 
 ### Usage
 
@@ -787,11 +787,11 @@ Bu sunucudaki çeşitli istatistikler hakkındaki grafikleri gösterir.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                 | Details                                                              |
-| -------- | ------------- | -------- | --------------------------- | -------------------------------------------------------------------- |
-| type     | [Enum](#Enum) | Yes      | Gösterilecek tablonun türü. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
-| from     | [Date](#Date) | No       | cmd.graph.self.args.from    |                                                                      |
-| to       | [Date](#Date) | No       | cmd.graph.self.args.to      |                                                                      |
+| Argument | Type            | Required | Description                 | Details                                                              |
+| -------- | --------------- | -------- | --------------------------- | -------------------------------------------------------------------- |
+| type     | [Enum](#Enum)   | Yes      | Gösterilecek tablonun türü. | Use one of the following values: `joins`, `joinsAndLeaves`, `leaves` |
+| from     | [Tarih](#Tarih) | No       | Grafiğin başlangıç tarihi   |                                                                      |
+| to       | [Tarih](#Tarih) | No       | Grafiğin bitiş tarihi       |                                                                      |
 
 ### Examples
 
@@ -823,9 +823,9 @@ Yardımı gösterir.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                  | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| -------- | --------------- | -------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Komut](#Komut) | No       | The command to get detailed information for. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type            | Required | Description                           | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------- | --------------- | -------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [Komut](#Komut) | No       | Hakkında ayrıntılı bilgi alma komutu. | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -857,11 +857,11 @@ Belirli bir üye hakkında bilgi göster.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                   | Details                                             |
-| -------- | ------------- | -------- | ----------------------------------------------------------------------------- | --------------------------------------------------- |
-| user     | [User](#User) | Yes      | The user for whom you want to see additional info.                            |                                                     |
-| details  | [Enum](#Enum) | No       | Bir üye hakkında sadece belirli detayları isteyin.                            | Use one of the following values: `bonus`, `members` |
-| page     | [Sayı](#Sayı) | No       | What page of the details to show. You can also use the reactions to navigate. |                                                     |
+| Argument | Type                    | Required | Description                                                                                     | Details                                             |
+| -------- | ----------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Ek bilgi görmek istediğiniz kullanıcı.                                                          |                                                     |
+| details  | [Enum](#Enum)           | No       | Bir üye hakkında sadece belirli detayları isteyin.                                              | Use one of the following values: `bonus`, `members` |
+| page     | [Sayı](#Sayı)           | No       | Ayrıntıların hangi sayfasında gösterileceği. Reaksiyonlarda gezinmek için de kullanabilirsiniz. |                                                     |
 
 ### Examples
 
@@ -891,7 +891,7 @@ Belirli bir üye hakkında bilgi göster.
 
 ## !interactiveConfig
 
-Interactive Config
+Etkileşimli Yapılandırma
 
 ### Usage
 
@@ -915,7 +915,7 @@ Interactive Config
 
 ## !inviteCodeConfig
 
-Show and change the config of invite codes of the server.
+Sunucunun davet kodlarının yapılandırmasını gösterin ve değiştirin.
 
 ### Usage
 
@@ -930,11 +930,11 @@ Show and change the config of invite codes of the server.
 
 ### Arguments
 
-| Argument   | Type                       | Required | Description                                                | Details                                          |
-| ---------- | -------------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------ |
-| key        | [Enum](#Enum)              | No       | The config setting which you want to show/change.          | Use one of the following values: `name`, `roles` |
-| inviteCode | [Invite Code](#InviteCode) | No       | The invite code for which you want to change the settings. |                                                  |
-| value      | [Value](#Value)            | No       | The new value of the setting.                              |                                                  |
+| Argument   | Type                     | Required | Description                                             | Details                                          |
+| ---------- | ------------------------ | -------- | ------------------------------------------------------- | ------------------------------------------------ |
+| key        | [Enum](#Enum)            | No       | Göstermek / değiştirmek istediğiniz yapılandırma ayarı. | Use one of the following values: `name`, `roles` |
+| inviteCode | [Davet Kodu](#DavetKodu) | No       | Ayarlarını değiştirmek istediğiniz davet kodu.          |                                                  |
+| value      | [Değer](#Değer)          | No       | Ayarın yeni değeri                                      |                                                  |
 
 ### Examples
 
@@ -948,7 +948,7 @@ Show and change the config of invite codes of the server.
 
 ## !inviteCodes
 
-Get a list of all your invite codes
+Tüm davet kodlarınızın bir listesini alın
 
 ### Usage
 
@@ -979,7 +979,7 @@ Get a list of all your invite codes
 
 ## !inviteDetails
 
-Shows details about where your invites are from.
+Davetiyelerinizin nereden geldiğiyle ilgili ayrıntıları gösterir.
 
 ### Usage
 
@@ -993,9 +993,9 @@ Shows details about where your invites are from.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                          | Details |
-| -------- | ------------- | -------- | ---------------------------------------------------- | ------- |
-| user     | [User](#User) | No       | The user for whom you want to show detailed invites. |         |
+| Argument | Type                    | Required | Description                                         | Details |
+| -------- | ----------------------- | -------- | --------------------------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Ayrıntılı davetler göstermek istediğiniz kullanıcı. |         |
 
 ### Examples
 
@@ -1032,9 +1032,9 @@ Kişi Davetlerini Göster
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                 | Details |
-| -------- | ------------- | -------- | ------------------------------------------- | ------- |
-| user     | [User](#User) | No       | The user for whom you want to show invites. |         |
+| Argument | Type                    | Required | Description                                             | Details |
+| -------- | ----------------------- | -------- | ------------------------------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Kendisini göstermek istediğiniz kullanıcı davet ediyor. |         |
 
 ### Examples
 
@@ -1056,7 +1056,7 @@ Kişi Davetlerini Göster
 
 ## !kick
 
-Kick a member from the server.
+Sunucudan bir üyeyi atar.
 
 ### Usage
 
@@ -1066,10 +1066,10 @@ Kick a member from the server.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                | Details |
-| -------- | ------------- | -------- | -------------------------- | ------- |
-| member   | [Üye](#Üye)   | Yes      | Kullanıcı Atıldı.          |         |
-| reason   | [Text](#Text) | No       | Kullanıcının Atılma Sebebi |         |
+| Argument | Type            | Required | Description                | Details |
+| -------- | --------------- | -------- | -------------------------- | ------- |
+| member   | [Üye](#Üye)     | Yes      | Kullanıcı Atıldı.          |         |
+| reason   | [Metin](#Metin) | No       | Kullanıcının Atılma Sebebi |         |
 
 ### Examples
 
@@ -1079,7 +1079,7 @@ Kick a member from the server.
 
 ## !leaderboard
 
-Show members with most invites.
+En çok davet edilen üyeleri göster.
 
 ### Usage
 
@@ -1093,9 +1093,9 @@ Show members with most invites.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                           | Details |
-| -------- | ------------- | -------- | ------------------------------------- | ------- |
-| page     | [Sayı](#Sayı) | No       | Which page of the leaderboard to get. |         |
+| Argument | Type          | Required | Description                  | Details |
+| -------- | ------------- | -------- | ---------------------------- | ------- |
+| page     | [Sayı](#Sayı) | No       | Afiş almak için hangi sayfa. |         |
 
 ### Examples
 
@@ -1117,7 +1117,7 @@ Show members with most invites.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1127,15 +1127,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type            | Required | Description                    | Details |
-| -------- | --------------- | -------- | ------------------------------ | ------- |
-| channel  | [Kanal](#Kanal) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type            | Required | Description                             | Details |
+| -------- | --------------- | -------- | --------------------------------------- | ------- |
+| channel  | [Kanal](#Kanal) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                     |
-| ----------------------- | --------- | --------------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type                  | Description                                                                                                                   |
+| ----------------------- | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | Kilitlemenin otomatik olarak sona erdiği zaman aşımı süresi. Kilidi manuel olarak sonlandırmak için komutu tekrar çalıştırın. |
 
 ### Examples
 
@@ -1149,7 +1149,7 @@ cmd.lockdown.self.description
 
 ## !lyrics
 
-Show lyrics of the currently playing song.
+Şu anda çalan şarkının sözlerini göster.
 
 ### Usage
 
@@ -1159,9 +1159,9 @@ Show lyrics of the currently playing song.
 
 ### Flags
 
-| Flag                 | Short     | Type                | Description                                                          |
-| -------------------- | --------- | ------------------- | -------------------------------------------------------------------- |
-| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | If set, then the lyrics will sync with the current time of the song. |
+| Flag                 | Short     | Type                | Description                                                       |
+| -------------------- | --------- | ------------------- | ----------------------------------------------------------------- |
+| &#x2011;&#x2011;live | &#x2011;l | [Boolean](#Boolean) | Ayarlanırsa, sözler şarkının geçerli saati ile senkronize edilir. |
 
 ### Examples
 
@@ -1185,9 +1185,9 @@ Create a mashup of 2 songs.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                | Details |
-| -------- | ------------- | -------- | ------------------------------------------ | ------- |
-| videos   | [Text](#Text) | Yes      | The videos that should be mashed together. |         |
+| Argument | Type            | Required | Description                                | Details |
+| -------- | --------------- | -------- | ------------------------------------------ | ------- |
+| videos   | [Metin](#Metin) | Yes      | The videos that should be mashed together. |         |
 
 ### Examples
 
@@ -1197,7 +1197,7 @@ Create a mashup of 2 songs.
 
 ## !memberConfig
 
-Show and change the config of members of the server.
+Sunucunun üyelerinin yapılandırmasını gösterin ve değiştirin.
 
 ### Usage
 
@@ -1213,11 +1213,11 @@ Show and change the config of members of the server.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                              | Details                                                |
-| -------- | --------------- | -------- | -------------------------------------------------------- | ------------------------------------------------------ |
-| key      | [Enum](#Enum)   | No       | The member config setting which you want to show/change. | Use one of the following values: `hideFromLeaderboard` |
-| user     | [User](#User)   | No       | The member that the setting is shown/changed for.        |                                                        |
-| value    | [Value](#Value) | No       | The new value of the setting.                            |                                                        |
+| Argument | Type                    | Required | Description                                                 | Details                                                |
+| -------- | ----------------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| key      | [Enum](#Enum)           | No       | Göstermek / değiştirmek istediğiniz üye yapılandırma ayarı. | Use one of the following values: `hideFromLeaderboard` |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Ayarın gösterildiği / değiştirildiği üye.                   |                                                        |
+| value    | [Değer](#Değer)         | No       | Ayarın yeni değeri.                                         |                                                        |
 
 ### Examples
 
@@ -1231,7 +1231,7 @@ Show and change the config of members of the server.
 
 ## !members
 
-Show member count of current server.
+Geçerli sunucunun üye sayısını göster.
 
 ### Usage
 
@@ -1266,16 +1266,16 @@ Bir kullanıcı sustur
 
 ### Arguments
 
-| Argument | Type          | Required | Description                        | Details |
-| -------- | ------------- | -------- | ---------------------------------- | ------- |
-| user     | [Üye](#Üye)   | Yes      | The user that should be muted.     |         |
-| reason   | [Text](#Text) | No       | The reason why this user is muted. |         |
+| Argument | Type            | Required | Description                                   | Details |
+| -------- | --------------- | -------- | --------------------------------------------- | ------- |
+| user     | [Üye](#Üye)     | Yes      | Susturulması gereken kullanıcı.               |         |
+| reason   | [Metin](#Metin) | No       | Bu kullanıcının susturulmuş olmasının nedeni. |         |
 
 ### Flags
 
-| Flag                     | Short     | Type                  | Description                  |
-| ------------------------ | --------- | --------------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type                  | Description                       |
+| ------------------------ | --------- | --------------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | The duration to mute the user for |
 
 ### Examples
 
@@ -1285,7 +1285,7 @@ Bir kullanıcı sustur
 
 ## !nowPlaying
 
-Shows information about the currently playing song
+Çalmakta olan şarkı hakkında bilgi gösterir
 
 ### Usage
 
@@ -1300,9 +1300,9 @@ Shows information about the currently playing song
 
 ### Flags
 
-| Flag                | Short     | Type                | Description                                                                        |
-| ------------------- | --------- | ------------------- | ---------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Pin the now playing message and update it automatically whenever a new song plays. |
+| Flag                | Short     | Type                | Description                                                                               |
+| ------------------- | --------- | ------------------- | ----------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;pin | &#x2011;p | [Boolean](#Boolean) | Şimdi çalınan mesajı sabitleyin ve yeni bir şarkı çaldığında otomatik olarak güncelleyin. |
 
 ### Examples
 
@@ -1316,7 +1316,7 @@ Shows information about the currently playing song
 
 ## !pause
 
-Pause the current song.
+Çalan şarkıyı durdur.
 
 ### Usage
 
@@ -1354,10 +1354,10 @@ Komutları kullanmak için izinleri yapılandırın.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                                       | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| -------- | --------------- | -------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Komut](#Komut) | No       | The command to configure permissions for.                         | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Rol](#Rol)     | No       | The role which should be granted or denied access to the command. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Argument | Type            | Required | Description                                                 | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------- | --------------- | -------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Komut](#Komut) | No       | Komut, izinleri yapılandırma için                           | Use one of the following values: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Rol](#Rol)     | No       | Komuta erişim izni verilmesi veya reddedilmesi gereken rol. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ### Examples
 
@@ -1391,7 +1391,7 @@ botun pingi
 
 ## !play
 
-Play the song if the queue is empty, otherwise it will add the song to the end of the queue.
+Sıra boşsa şarkıyı açın, aksi takdirde şarkıyı kuyruğun sonuna ekler.
 
 ### Usage
 
@@ -1405,16 +1405,16 @@ Play the song if the queue is empty, otherwise it will add the song to the end o
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                   | Details |
-| -------- | ------------- | -------- | --------------------------------------------- | ------- |
-| link     | [Text](#Text) | Yes      | The link to a specific song or a search term. |         |
+| Argument | Type            | Required | Description                                       | Details |
+| -------- | --------------- | -------- | ------------------------------------------------- | ------- |
+| link     | [Metin](#Metin) | Yes      | Belirli bir şarkıya veya arama terimine bağlantı. |         |
 
 ### Flags
 
 | Flag                     | Short     | Type                | Description                                                                       |
 | ------------------------ | --------- | ------------------- | --------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Select the platform where you want the song to be played.                         |
-| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | If set, it will play this song next instead of adding it to the end of the queue. |
+| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Şarkının çalınmasını istediğiniz platformu seçin.                                 |
+| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | Ayarlanmışsa, sıranın sonuna eklemek yerine bu şarkıyı bir sonraki şarkıya ekler. |
 
 ### Examples
 
@@ -1459,9 +1459,9 @@ InviteManager'ın premium versiyonu hakkında bilgi edinmek.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                                                                         | Details                                                            |
-| -------- | ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| action   | [Enum](#Enum) | No       | The action to perform. None for premium info. `check` to check your premium status. `activate` to use your premium for this server. | Use one of the following values: `Activate`, `Check`, `Deactivate` |
+| Argument | Type          | Required | Description                                                                                                                                           | Details                                                            |
+| -------- | ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| action   | [Enum](#Enum) | No       | Gerçekleştirilecek eylem. Premium bilgi için yok. Premium durumunuzu kontrol etmek için `check`. bu sunucu için priminizi kullanmak için `activate` . | Use one of the following values: `Activate`, `Check`, `Deactivate` |
 
 ### Examples
 
@@ -1501,11 +1501,11 @@ Configure punishments when reaching a certain amount of strikes.
 
 ### Arguments
 
-| Argument   | Type          | Required | Description                                       | Details                                                                   |
-| ---------- | ------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
-| punishment | [Enum](#Enum) | No       | Type of punishment to use.                        | Use one of the following values: `ban`, `kick`, `mute`, `softban`, `warn` |
-| strikes    | [Sayı](#Sayı) | No       | Number of strikes for this punishment to be used. |                                                                           |
-| args       | [Text](#Text) | No       | Arguments passed to the punishment.               |                                                                           |
+| Argument   | Type            | Required | Description                                       | Details                                                                   |
+| ---------- | --------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
+| punishment | [Enum](#Enum)   | No       | Type of punishment to use.                        | Use one of the following values: `ban`, `kick`, `mute`, `softban`, `warn` |
+| strikes    | [Sayı](#Sayı)   | No       | Number of strikes for this punishment to be used. |                                                                           |
+| args       | [Metin](#Metin) | No       | Arguments passed to the punishment.               |                                                                           |
 
 ### Examples
 
@@ -1533,10 +1533,10 @@ Purge messages in a channel.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                          | Details |
-| -------- | ------------- | -------- | ------------------------------------ | ------- |
-| quantity | [Sayı](#Sayı) | Yes      | How many messages should be deleted. |         |
-| user     | [User](#User) | No       | User whose messages are deleted.     |         |
+| Argument | Type                    | Required | Description                        | Details |
+| -------- | ----------------------- | -------- | ---------------------------------- | ------- |
+| quantity | [Sayı](#Sayı)           | Yes      | Kaç mesaj silinmelidir.            |         |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Mesajları silinmiş olan kullanıcı. |         |
 
 ### Examples
 
@@ -1546,7 +1546,7 @@ Purge messages in a channel.
 
 ## !purgeUntil
 
-Purge messages in a channel up until a specified message.
+Bir kanaldaki mesajları belirtilen mesaja kadar temizleyin.
 
 ### Usage
 
@@ -1563,9 +1563,9 @@ Purge messages in a channel up until a specified message.
 
 ### Arguments
 
-| Argument  | Type          | Required | Description                    | Details |
-| --------- | ------------- | -------- | ------------------------------ | ------- |
-| messageID | [Text](#Text) | Yes      | Last message ID to be deleted. |         |
+| Argument  | Type            | Required | Description               | Details |
+| --------- | --------------- | -------- | ------------------------- | ------- |
+| messageID | [Metin](#Metin) | Yes      | Silinecek son mesaj ID'si |         |
 
 ### Examples
 
@@ -1575,7 +1575,7 @@ Purge messages in a channel up until a specified message.
 
 ## !queue
 
-Display the songs in the queue.
+Şarkıları kuyrukta göster
 
 ### Usage
 
@@ -1595,7 +1595,7 @@ Display the songs in the queue.
 
 ## !ranks
 
-Show all ranks.
+Tüm rütbeleri göster.
 
 ### Usage
 
@@ -1610,9 +1610,9 @@ Show all ranks.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                         | Details |
-| -------- | ------------- | -------- | ----------------------------------- | ------- |
-| page     | [Sayı](#Sayı) | No       | The page of the ranks list to show. |         |
+| Argument | Type          | Required | Description                              | Details |
+| -------- | ------------- | -------- | ---------------------------------------- | ------- |
+| page     | [Sayı](#Sayı) | No       | Gösterilecek sıralama listesinin sayfası |         |
 
 ### Examples
 
@@ -1626,7 +1626,7 @@ Show all ranks.
 
 ## !removeInvites
 
-Removes a specified amount of invites from a user.
+Bir kullanıcıdan belirtilen miktarda daveti kaldırır.
 
 ### Usage
 
@@ -1640,11 +1640,11 @@ Removes a specified amount of invites from a user.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                          | Details |
-| -------- | ------------- | -------- | ------------------------------------ | ------- |
-| user     | [User](#User) | Yes      | The user to remove the invites from. |         |
-| amount   | [Sayı](#Sayı) | Yes      | The amount of invites to remove.     |         |
-| reason   | [Text](#Text) | No       | The reason for removing the invites. |         |
+| Argument | Type                    | Required | Description                         | Details |
+| -------- | ----------------------- | -------- | ----------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Davetlerin kaldırılacağı kullanıcı. |         |
+| amount   | [Sayı](#Sayı)           | Yes      | Kaldırılacak davetlerin sayısı.     |         |
+| reason   | [Metin](#Metin)         | No       | Davetlerin kaldırılmasının nedeni.  |         |
 
 ### Examples
 
@@ -1666,7 +1666,7 @@ Removes a specified amount of invites from a user.
 
 ## !removeRank
 
-Remove a rank.
+Bir rank'ı kaldırın.
 
 ### Usage
 
@@ -1680,9 +1680,9 @@ Remove a rank.
 
 ### Arguments
 
-| Argument | Type        | Required | Description                                | Details |
-| -------- | ----------- | -------- | ------------------------------------------ | ------- |
-| rank     | [Rol](#Rol) | Yes      | The for which you want to remove the rank. |         |
+| Argument | Type        | Required | Description                     | Details |
+| -------- | ----------- | -------- | ------------------------------- | ------- |
+| rank     | [Rol](#Rol) | Yes      | Sırasını kaldırmak istediğiniz. |         |
 
 ### Examples
 
@@ -1724,7 +1724,7 @@ Tekrar çalınacak şarkıyı ayarlayın.
 
 ## !restoreInvites
 
-Restore all previously cleared invites.
+Önceden temizlenmiş tüm davetiyeleri geri yükleyin.
 
 ### Usage
 
@@ -1740,9 +1740,9 @@ Restore all previously cleared invites.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                                                                    | Details |
-| -------- | ------------- | -------- | ------------------------------------------------------------------------------ | ------- |
-| user     | [User](#User) | No       | The user to restore all invites to. If omitted restores invites for all users. |         |
+| Argument | Type                    | Required | Description                                                                                     | Details |
+| -------- | ----------------------- | -------- | ----------------------------------------------------------------------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | No       | Tüm davetleri geri yükleyecek kullanıcı. Atlanırsa tüm kullanıcılar için davetleri geri yükler. |         |
 
 ### Examples
 
@@ -1822,9 +1822,9 @@ Search for the search term and let you chose one of the results.
 
 ### Arguments
 
-| Argument | Type          | Required | Description  | Details |
-| -------- | ------------- | -------- | ------------ | ------- |
-| search   | [Text](#Text) | Yes      | Arama terimi |         |
+| Argument | Type            | Required | Description  | Details |
+| -------- | --------------- | -------- | ------------ | ------- |
+| search   | [Metin](#Metin) | Yes      | Arama terimi |         |
 
 ### Flags
 
@@ -1866,7 +1866,7 @@ Search for the search term and let you chose one of the results.
 
 ## !setup
 
-Help with setting up the bot and checking for problems (e.g. missing permissions)
+Botu ayarlama ve sorunları kontrol etme konusunda yardım (örn. Eksik izinler)
 
 ### Usage
 
@@ -1937,16 +1937,16 @@ Ban and then automatically unban a member from the server.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                  | Details |
-| -------- | ------------- | -------- | ---------------------------- | ------- |
-| user     | [Üye](#Üye)   | Yes      | Kullanıcı Yasaklamak.        |         |
-| reason   | [Text](#Text) | No       | Kullanıcı neden yasaklandı ? |         |
+| Argument | Type            | Required | Description                  | Details |
+| -------- | --------------- | -------- | ---------------------------- | ------- |
+| user     | [Üye](#Üye)     | Yes      | Kullanıcı Yasaklamak.        |         |
+| reason   | [Metin](#Metin) | No       | Kullanıcı neden yasaklandı ? |         |
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                                        |
-| --------------------------------- | --------- | ------------- | -------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | Delete messages from the user this many days back. |
+| Flag                              | Short     | Type          | Description                                         |
+| --------------------------------- | --------- | ------------- | --------------------------------------------------- |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [Sayı](#Sayı) | Kullanıcının bu kadar gün önceki mesajlarını silin. |
 
 ### Examples
 
@@ -1968,7 +1968,7 @@ Add strikes to a user
 
 | Argument | Type          | Required | Description                       | Details                                                                                                                                                      |
 | -------- | ------------- | -------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| member   | [Üye](#Üye)   | Yes      | The member receiving the strikes  |                                                                                                                                                              |
+| member   | [Üye](#Üye)   | Yes      | Vuruşları alan üye                |                                                                                                                                                              |
 | type     | [Enum](#Enum) | Yes      | The type of the violation         | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
 | amount   | [Sayı](#Sayı) | Yes      | The amount of strikes to be added |                                                                                                                                                              |
 
@@ -2118,10 +2118,10 @@ Bir kullanıcının yasağını kaldır.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                             | Details |
-| -------- | ------------- | -------- | --------------------------------------- | ------- |
-| user     | [User](#User) | Yes      | The user that should be unbanned.       |         |
-| reason   | [Text](#Text) | No       | Bu kullanıcının yasaklanmasının nedeni. |         |
+| Argument | Type                    | Required | Description                              | Details |
+| -------- | ----------------------- | -------- | ---------------------------------------- | ------- |
+| user     | [Kullanıcı](#Kullanıcı) | Yes      | Yasağının kaldırılması gereken kullanıcı |         |
+| reason   | [Metin](#Metin)         | No       | Bu kullanıcının yasaklanmasının nedeni.  |         |
 
 ### Examples
 
@@ -2131,7 +2131,7 @@ Bir kullanıcının yasağını kaldır.
 
 ## !unhoist
 
-Add a character in front of all members with a special character in front of their name, so they will be shown at the end of the member list.
+Tüm üyelerin önüne, adlarının önünde özel bir karakter olacak şekilde bir karakter ekleyin, böylece üye listesinin sonunda gösterilirler.
 
 ### Usage
 
@@ -2213,9 +2213,9 @@ Kullanıcı Uyar
 
 ### Arguments
 
-| Argument | Type          | Required | Description          | Details |
-| -------- | ------------- | -------- | -------------------- | ------- |
-| member   | [Üye](#Üye)   | Yes      | Member to warn.      |         |
-| reason   | [Text](#Text) | No       | Üye neden uyarıldı ? |         |
+| Argument | Type            | Required | Description          | Details |
+| -------- | --------------- | -------- | -------------------- | ------- |
+| member   | [Üye](#Üye)     | Yes      | Member to warn.      |         |
+| reason   | [Metin](#Metin) | No       | Üye neden uyarıldı ? |         |
 
 ### Examples

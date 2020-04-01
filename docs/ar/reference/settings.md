@@ -17,11 +17,11 @@ There are many config options that can be set. You don't have to set all of them
 
 ### دعوات
 
-#### settings.groups.invites.general.title
+#### General
 
-| Setting                                | Description                    |
-| -------------------------------------- | ------------------------------ |
-| [settings.joinRoles.title](#joinroles) | settings.joinRoles.description |
+| Setting                  | Description                                          |
+| ------------------------ | ---------------------------------------------------- |
+| [Join Roles](#joinroles) | Roles that are assigned to all members when joining. |
 
 #### الانضمامات
 
@@ -309,9 +309,9 @@ Reset to default:
 
 ---
 
-## settings.joinRoles.title
+## Join Roles
 
-settings.joinRoles.description
+Roles that are assigned to all members when joining.
 
 Type: `Role[]`
 

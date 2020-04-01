@@ -51,7 +51,11 @@ export default class extends Command {
 		messages.push(message);
 
 		try {
-			await this.client.deleteMessages(message.channel.id, messages.map(m => m.id), 'purge command');
+			await this.client.deleteMessages(
+				message.channel.id,
+				messages.map((m) => m.id),
+				'purge command'
+			);
 
 			embed.title = t('cmd.purge.title');
 			embed.description = t('cmd.purge.text', {

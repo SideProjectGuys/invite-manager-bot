@@ -12,10 +12,10 @@
 		"website": {
 			"title": "Sito web del bot"
 		},
-		"mentionHelp": "My current prefix is `{{{ prefix }}}`\n\nUse `{{{ prefix }}}help` for more help."
+		"mentionHelp": "Il mio attuale prefisso è `{{{ prefix }}}`\n\nUsa `{{{ prefix }}}help` per ulteriore aiuto."
 	},
 	"captcha": {
-		"invalid": "Captcha didn't match, please try again."
+		"invalid": "Captcha non corrisponde, per favore riprova."
 	},
 	"cmd": {
 		"addInvites": {
@@ -32,8 +32,8 @@
 				"description": "Aggiunge/Rimuove inviti a/da un membro."
 			},
 			"zero": "Aggiungere zero inviti non ha molto senso...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Il numero che hai fornito è troppo grande.",
+			"numberTooSmall": "Il numero che hai fornito è troppo piccolo."
 		},
 		"addRank": {
 			"created": "Aggiunto grado {{{ role }}} che ha bisogno di {{ invites }} inviti e ha la seguente descrizione: {{ description }}",
@@ -61,55 +61,55 @@
 				},
 				"description": "Bandisci un membro dal server.",
 				"flags": {
-					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
+					"deleteMessageDays": "Se specificato verranno eliminati i messaggi dei membri bannati di molti giorni fa."
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "Non posso softban questo utente."
 		},
 		"botConfig": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "Il settaggio config **{{ key }}** non può essere cancellato. Puoi usare `{{prefix}} botConfig {{key}} default` per ripristinare il valore predefinito.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+				"text": "Questa configurazione è stata modificata.\nUsa `{{ prefix }}botConfig {{ key }} 1` per cambiarlo ancora.\nUsa `{{ prefix }}botConfig {{ key }} default` per ripristinarlo come predefinito."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"clear": "Usa `{{ prefix }}botConfig {{ key }} none` per cancellarlo.",
+				"notSet": "Usa `{{ prefix }}config {{ key }} 1` per impostarlo.",
+				"text": "Questa configurazione è attualmente impostata.\nUsa `{{ prefix }}botConfig {{ key }} 1` per cambiarla.\nUsa `{{ prefix }}botConfig {{ key }} default` per ripristinarlo come predefinito.",
+				"title": "Valore corrente"
 			},
-			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
+			"customOnly": "** Questo comando è disponibile solo per i bot personalizzati. **\nSe stai cercando la configurazione del server, usa il comando `{{prefix}} config`.\n\nVisita la nostra pagina patreon per ulteriori informazioni su come ottenere il tuo bot personalizzato: {{{patreon}}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord supporta solo URL twitch.tv per i streaming."
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Nuovo valore"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Nessuna",
+			"notSet": "Queste impostazioni non sono impostate",
 			"preview": {
 				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"title": "Anteprima"
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Precedente valore"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Questa configurazione è già impostata su quel valore.",
 			"self": {
 				"args": {
-					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "L'impostazione di configurazione del bot che si desidera mostrare / modificare.",
+					"value": "Il nuovo valore dell'impostazione."
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Mostra e modifica la configurazione del bot."
 			},
-			"text": "Below are all the config settings of your bot.\nUse `{{ prefix }}botConfig <key>` to view a single setting\nUse `{{ prefix }}botConfig <key> <value>` to set the config <key> to <value>",
-			"title": "Custom Bot Config"
+			"text": "Di seguito sono riportate tutte le configurazioni impostate nel tuo bot.\nUsa `{{ prefix }}botConfig <key>` per visualizzare una singola impostazione\nUsa `{{ prefix }}botConfig <key> <value>` per impostare la configurazione <key>su<value>",
+			"title": "Configurazione bot personalizzata"
 		},
 		"botInfo": {
 			"guilds": "Server",
 			"members": "Membri",
 			"premium": {
 				"active": "Questo server ha una sottoscrizione **premium attiva**.",
-				"custom": "You are using a custom version of the bot!",
+				"custom": "Stai utilizzando una versione personalizzata del bot!",
 				"none": "Questo server **non** ha una sottoscrizione premium attiva.",
 				"title": "Premium"
 			},
@@ -124,27 +124,27 @@
 			"version": "Versione"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Caso cancellato",
+			"notFound": "Caso non trovato",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "Numero caso",
+					"reason": "Il motivo per cui è stato rimosso il caso."
 				},
-				"description": "Delete a specific case."
+				"description": "Elimina un caso specifico."
 			},
-			"title": "Case #{{ id }}"
+			"title": "Caso #{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "Caso non trovato",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Numero caso"
 				},
-				"description": "View info about a specific case."
+				"description": "Visualizza informazioni su un caso specifico."
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
-			"title": "Case #{{ id }}"
+			"strike": "{{{ member }}} ha ricevuto {{{ amount }}} avvertimenti per aver violato {{{ violation }}} regola {{{ date }}}.",
+			"title": "Caso #{{ id }}"
 		},
 		"check": {
 			"noHistory": "L'utente non ha nessuna cronologia",
@@ -152,7 +152,7 @@
 				"entry": "{{ punishment }} perché ha avuto {{ amount }} schedazioni {{ date }}",
 				"title": "Punizioni",
 				"total": "Punizioni totali",
-				"totalText": "{{{ amount }}} punishments."
+				"totalText": "{{{ amount }}} punizioni."
 			},
 			"self": {
 				"args": {
@@ -321,7 +321,9 @@
 			"self": {
 				"args": {
 					"duration": "The duration period for the chart.",
-					"type": "The type of chart to display."
+					"type": "The type of chart to display.",
+					"from": "Start date of the chart",
+					"to": "End date of the chart"
 				},
 				"description": "Shows graphs about various stats on this server."
 			},
@@ -414,6 +416,7 @@
 			}
 		},
 		"interactiveConfig": {
+			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
 			"add": "Enter a value or list of values to add.",
 			"change": "**Current value**\n{{{ current }}}\n\n**Possible values**\n{{{ possible }}}",
 			"current": {
@@ -690,7 +693,10 @@
 					"reason": "The reason why this user is muted.",
 					"user": "The user that should be muted."
 				},
-				"description": "Mute a user"
+				"description": "Mute a user",
+				"flags": {
+					"duration": "The duration to mute the user for"
+				}
 			}
 		},
 		"permissions": {
@@ -726,7 +732,8 @@
 				"noGuild": "You must run this command inside a server.",
 				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
 				"title": "Activate premium on this server",
-				"permissions": "You need the `Manage Server` permissions to use this command in this server."
+				"permissions": "You need the `Manage Server` permissions to use this command in this server.",
+				"maxGuilds": "You have activated premium on the maximum number of guilds."
 			},
 			"check": {
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
@@ -1149,7 +1156,17 @@
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
-			"channelLockedDown": "The {{{ channel }}} channel is now locked down."
+			"channelLockedDown": "The {{{ channel }}} channel is now locked down.",
+			"self": {
+				"description": "Lockdown a specific channel (Prevents anyone without special roles from sending messages)",
+				"flags": {
+					"timeout": "The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually."
+				},
+				"args": {
+					"channel": "The channel that you want to lock down."
+				}
+			},
+			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1462,7 +1479,10 @@
 					"description": "Rank related settings.",
 					"title": "Ranks"
 				},
-				"title": "Invites"
+				"title": "Invites",
+				"general": {
+					"title": "General"
+				}
 			},
 			"moderation": {
 				"bannedWords": {
@@ -1644,6 +1664,74 @@
 		"disabledMusicPlatforms": {
 			"title": "Disabled Music Platforms",
 			"description": "Music platforms that are disabled and cannot be used to play music."
+		},
+		"joinRoles": {
+			"title": "Join Roles",
+			"description": "Roles that are assigned to all members when joining."
+		}
+	},
+	"strikeConfig": {
+		"invites": {
+			"title": "Invite Links",
+			"description": "A member posts an invite link to a Discord server."
+		},
+		"links": {
+			"title": "Links",
+			"description": "Someone posts a link to a website."
+		},
+		"words": {
+			"title": "Banned words",
+			"description": "A member uses a explicitly banned word."
+		},
+		"allCaps": {
+			"title": "CAPS",
+			"description": "Messages containing an excessive amount of CAPS."
+		},
+		"duplicateText": {
+			"title": "Duplicate Text",
+			"description": "Someone keeps posting the same message (copy-pasta)."
+		},
+		"quickMessages": {
+			"title": "Spamming",
+			"description": "Members send a lot of mesages in a short amount of time."
+		},
+		"mentionUsers": {
+			"title": "Mention Users",
+			"description": "Someone posts a message mentioning a lot of other people."
+		},
+		"mentionRoles": {
+			"title": "Mention Roles",
+			"description": "Someone posts a message mentioning a lot of roles."
+		},
+		"emojis": {
+			"title": "Emojis",
+			"description": "Messages made up of mostly emojis."
+		},
+		"hoist": {
+			"title": "Hoisting",
+			"description": "Someone adds special characters to their name to be listed at the top."
+		}
+	},
+	"punishmentConfig": {
+		"ban": {
+			"title": "Ban",
+			"description": "Ban the member from the server."
+		},
+		"kick": {
+			"title": "Kick",
+			"description": "Kick the member from the server."
+		},
+		"softban": {
+			"title": "Softban",
+			"description": "Ban and then immediately unban a member."
+		},
+		"warn": {
+			"title": "Warn",
+			"description": "Send a warning message to the member"
+		},
+		"mute": {
+			"title": "Mute",
+			"description": "Mute the member."
 		}
 	},
 	"music": {

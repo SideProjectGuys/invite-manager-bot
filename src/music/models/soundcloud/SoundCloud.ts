@@ -7,7 +7,7 @@ import { MusicPlatform } from '../MusicPlatform';
 import { SoundcloudMusicItem } from './SoundCloudMusicItem';
 import { SoundcloudResponse } from './types';
 
-const SOUNDCLOUD_CLIENT_ID = 'z7npDMrLmgiW4wc8pPCQkkUUtRQkWZOF';
+const SOUNDCLOUD_CLIENT_ID = 'Vu5tlmvC9eCLFZkxXG32N1yQMfDSAPAA';
 
 export class Soundcloud extends MusicPlatform {
 	public supportsRewind: boolean = true;

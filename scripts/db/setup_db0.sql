@@ -31,7 +31,7 @@ CREATE TABLE `botSettings` (
 --
 
 CREATE TABLE `dbStats` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` double DEFAULT NULL,
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -76,13 +76,13 @@ CREATE TABLE `premiumSubscriptionGuilds` (
 
 CREATE TABLE `premiumSubscriptions` (
   `id` int(11) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `amount` decimal(10,2) DEFAULT NULL,
   `maxGuilds` int(11) NOT NULL DEFAULT '5',
   `isFreeTier` tinyint(1) NOT NULL DEFAULT '0',
   `isPatreon` tinyint(1) NOT NULL DEFAULT '0',
   `validUntil` datetime DEFAULT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `memberId` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -122,6 +122,22 @@ ALTER TABLE `premiumSubscriptionGuilds`
 ALTER TABLE `premiumSubscriptions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `memberId` (`memberId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `musicNodes`
+--
+ALTER TABLE `musicNodes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `premiumSubscriptions`
+--
+ALTER TABLE `premiumSubscriptions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

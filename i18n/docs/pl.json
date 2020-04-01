@@ -3,21 +3,21 @@
 	"modules": {
 		"title": "Moduły",
 		"invites": {
-			"title": "Invite Management",
-			"description": "Gdy nasz bot jest na twoim serwerze, śledzimy każde zaproszenie, które wydarzy się na twoim serwerze. Discord pokazuje tylko, kto ma ile zaproszeń. Nasz bot analizuje również, kto został przez kogo zaproszony. Pozwala to naszemu botowi wykryć fałszywe zaproszenia i zobaczyć, kto próbuje oszukać system zaproszeń.",
+			"title": "Zarządzanie zaproszeniami",
+			"description": "Gdy nasz bot jest na twoim serwerze, śledzimy każde zaproszenie, które wydarzy się na twoim serwerze. Discord pokazuje tylko, kto ma ile zaproszeń. Nasz bot analizuje również, kto został przez kogo zaproszony. Pozwala to wykryć fałszywe zaproszenia i zobaczyć, kto próbuje oszukać system zaproszeń.",
 			"examples": {
 				"title": "Przykłady"
 			},
 			"overview": {
-				"title": "Podgląd"
+				"title": "Przegląd"
 			},
 			"customMessages": {
-				"title": "Własne wiadomości"
+				"title": "Niestandardowe wiadomości"
 			}
 		},
 		"moderation": {
 			"title": "Moderacyjne",
-			"description": "Nasz nowy system moderacji pozwala na automatyczną moderację wielu rzeczy. Sprawdź nasze [ostrzeżenia]({{{ linkStrikes }}}) oraz [kary]({{{ linkPunishments }}}) strony, aby uzyskać więcej informacji. Krótko mówiąc, nasz bot wydaje „ostrzeżenia” ludziom, którzy źle się zachowują, a po pewnej liczbie ostrzeżeń użytkownik otrzymuje karę. Wszystko to jest konfigurowalne przez użytkownika.",
+			"description": "Nasz nowy system moderacji pozwala na automatyczną moderację wielu rzeczy. Sprawdź nasze [ostrzeżenia]({{{ linkStrikes }}}) oraz [kary]({{{ linkPunishments }}}), aby uzyskać więcej informacji. Krótko mówiąc, nasz bot wydaje „ostrzeżenia” ludziom, którzy źle się zachowują, a po pewnej liczbie ostrzeżeń użytkownik otrzymuje karę. Wszystko to jest konfigurowalne przez użytkownika.",
 			"punishments": {
 				"title": "Kary"
 			},
@@ -28,7 +28,7 @@
 		"music": {
 			"title": "Muzyka",
 			"overview": {
-				"title": "Podgląd"
+				"title": "Przegląd"
 			}
 		}
 	},
@@ -36,39 +36,39 @@
 		"title": "Inne",
 		"donating": {
 			"title": "Dotacje",
-			"description": "other.donating.description",
+			"description": "inne.dotacje.opis",
 			"crypto": {
 				"title": "Kryptowaluty",
-				"description": "other.donating.crypto.description"
+				"description": "inne.dotacje.kryptowaluty.opis"
 			}
 		},
 		"roadmap": {
-			"title": "Roadmap"
+			"title": "Mapa"
 		},
 		"support": {
 			"title": "Wsparcie"
 		},
 		"translations": {
 			"title": "Tłumaczenia",
-			"description": "other.translations.description",
+			"description": "inne.tłumaczenia.opisy",
 			"help": {
-				"title": "other.translations.help.title",
-				"description": "other.translations.help.description"
+				"title": "inne.tłumaczenia.pomoc.tytuł",
+				"description": "inne.tłumaczenia.pomoc.opis"
 			}
 		},
 		"webpanel": {
 			"title": "Panel internetowy",
-			"description": "other.webpanel.description"
+			"description": "inne.panel.opis"
 		},
 		"changelog": {
 			"title": "Dziennik zmian"
 		},
 		"openSource": {
 			"title": "Otwarte źródło",
-			"description": "other.openSource.description",
+			"description": "inne.openSource.opis",
 			"bot": {
 				"title": "Główny Bot",
-				"description": "other.openSource.bot.description"
+				"description": "inne.openSource.bot.opis"
 			}
 		}
 	},
@@ -94,7 +94,7 @@
 			"linkDescription": "Dodaj InviteManager Alpha tutaj."
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "FAQ",
 			"prefix": {
 				"title": "Jak zmienić prefiks bota?",
 				"description": "Możesz napisać `!config prefix -` żeby zmienić prefix.\n\nJeśli nie znasz swojego aktualnego prefixu użyj `@InviteManager config prefix` aby go zobaczyć"
@@ -122,20 +122,20 @@
 		},
 		"pro": {
 			"title": "Pro Bot",
-			"description": "start.pro.description"
+			"description": "start.pro.opis"
 		},
 		"quick": {
 			"title": "Szybki Start",
 			"setup": {
 				"title": "Konfiguracja",
-				"description": "start.quick.setup.description",
+				"description": "start.szybki.konfiguracja.opis",
 				"first": {
-					"title": "start.quick.setup.first.title",
-					"description": "start.quick.setup.first.description"
+					"title": "start.szybki.konfiguracja.pierwszy.tytuł",
+					"description": "start.szybki.konfiguracja.pierwszy.opis"
 				},
 				"second": {
-					"title": "start.quick.setup.second.title",
-					"description": "start.quick.setup.second.description"
+					"title": "start.szybki.konfiguracja.drugi.tytuł",
+					"description": "start.szybki.konfiguracja.drugi.opis"
 				}
 			}
 		}

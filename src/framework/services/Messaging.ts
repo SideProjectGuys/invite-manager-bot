@@ -1,22 +1,23 @@
 import { captureException, withScope } from '@sentry/node';
-import { Embed, EmbedBase, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChannel, User } from 'eris';
+import { Embed, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { IMClient } from '../../client';
 import { GuildPermission, PromptResult } from '../../types';
+
+import { IMService } from './Service';
 
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const truthy = new Set(['true', 'on', 'y', 'yes', 'enable']);
 
-function convertEmbedToPlain(embed: EmbedBase) {
+function convertEmbedToPlain(embed: EmbedOptions) {
 	const url = embed.url ? `(${embed.url})` : '';
 	const authorUrl = embed.author && embed.author.url ? `(${embed.author.url})` : '';
 
 	let fields = '';
 	if (embed.fields && embed.fields.length) {
-		fields = '\n\n' + embed.fields.map(f => `**${f.name}**\n${f.value}`).join('\n\n') + '\n\n';
+		fields = '\n\n' + embed.fields.map((f) => `**${f.name}**\n${f.value}`).join('\n\n') + '\n\n';
 	}
 
 	return (
@@ -44,13 +45,7 @@ export type ShowPaginatedFunc = (
 	render: (page: number, maxPage: number) => Embed
 ) => Promise<void>;
 
-export class MessagingService {
-	private client: IMClient;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-	}
-
+export class MessagingService extends IMService {
 	public createEmbed(options: EmbedOptions = {}, overrideFooter: boolean = true): Embed {
 		let color = options.color ? (options.color as number | string) : parseInt('00AE86', 16);
 		// Parse colors in hashtag/hex format
@@ -86,12 +81,12 @@ export class MessagingService {
 	public sendEmbed(target: TextableChannel, embed: EmbedOptions | string, fallbackUser?: User) {
 		const e = typeof embed === 'string' ? this.createEmbed({ description: embed }) : embed;
 
-		e.fields = e.fields.filter(field => field && field.value);
+		e.fields = e.fields.filter((field) => field && field.value);
 
 		const content = convertEmbedToPlain(e);
 
 		const handleException = (err: Error, reportIndicent = true) => {
-			withScope(scope => {
+			withScope((scope) => {
 				if (target instanceof GuildChannel) {
 					scope.setUser({ id: target.guild.id });
 					scope.setExtra('permissions', target.permissionsOf(this.client.user.id).json);
@@ -200,11 +195,11 @@ export class MessagingService {
 		let msg = template;
 
 		if (strings) {
-			Object.keys(strings).forEach(k => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k])));
+			Object.keys(strings).forEach((k) => (msg = msg.replace(new RegExp(`{${k}}`, 'g'), strings[k])));
 		}
 
 		if (dates) {
-			Object.keys(dates).forEach(k => (msg = this.fillDatePlaceholder(msg, k, dates[k])));
+			Object.keys(dates).forEach((k) => (msg = this.fillDatePlaceholder(msg, k, dates[k])));
 		}
 
 		try {
@@ -249,7 +244,7 @@ export class MessagingService {
 			return [PromptResult.FAILURE, confirmation];
 		};
 
-		return new Promise<[PromptResult, Message]>(resolve => {
+		return new Promise<[PromptResult, Message]>((resolve) => {
 			const func = async (msg: Message) => {
 				if (msg.author.id === message.author.id) {
 					confirmation = msg;
@@ -328,7 +323,7 @@ export class MessagingService {
 			await prevMsg.addReaction(upSymbol);
 		} else {
 			const users = await prevMsg.getReaction(upSymbol, 10).catch(() => [] as User[]);
-			if (users.find(u => u.id === author.id)) {
+			if (users.find((u) => u.id === author.id)) {
 				await prevMsg.removeReaction(upSymbol, this.client.user.id);
 			}
 		}
@@ -337,7 +332,7 @@ export class MessagingService {
 			await prevMsg.addReaction(downSymbol);
 		} else {
 			const users = await prevMsg.getReaction(downSymbol, 10).catch(() => [] as User[]);
-			if (users.find(u => u.id === author.id)) {
+			if (users.find((u) => u.id === author.id)) {
 				await prevMsg.removeReaction(downSymbol, this.client.user.id);
 			}
 		}

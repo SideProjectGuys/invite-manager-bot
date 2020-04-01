@@ -33,13 +33,13 @@ export default class extends Command {
 		let codes = await this.client.db.getInviteCodesForMember(guild.id, message.author.id);
 
 		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
-			.filter(code => code.inviter && code.inviter.id === message.author.id)
-			.map(code => code);
+			.filter((code) => code.inviter && code.inviter.id === message.author.id)
+			.map((code) => code);
 
-		const newCodes = activeCodes.filter(code => !codes.find(c => c.code === code.code));
+		const newCodes = activeCodes.filter((code) => !codes.find((c) => c.code === code.code));
 
 		if (newCodes.length > 0) {
-			const newDbCodes: InviteCode[] = newCodes.map(code => ({
+			const newDbCodes: InviteCode[] = newCodes.map((code) => ({
 				code: code.code,
 				createdAt: new Date(code.createdAt),
 				channelId: code.channel ? code.channel.id : null,
@@ -54,10 +54,10 @@ export default class extends Command {
 				isWidget: !code.inviter
 			}));
 
-			const vanityInv = await guild.getVanity().catch(() => undefined);
-			if (vanityInv && vanityInv.code) {
+			const vanityInv = await this.client.cache.vanity.get(guild.id);
+			if (vanityInv) {
 				newDbCodes.push({
-					code: vanityInv.code,
+					code: vanityInv,
 					createdAt: new Date(),
 					channelId: null,
 					guildId: guild.id,
@@ -75,7 +75,7 @@ export default class extends Command {
 			// Insert any new codes that haven't been used yet
 			if (newCodes.length > 0) {
 				await this.client.db.saveChannels(
-					newCodes.map(c => ({
+					newCodes.map((c) => ({
 						id: c.channel.id,
 						guildId: c.guild.id,
 						name: c.channel.name
@@ -89,14 +89,10 @@ export default class extends Command {
 		}
 
 		const validCodes = codes.filter(
-			c =>
-				c.maxAge === 0 ||
-				moment(c.createdAt)
-					.add(c.maxAge, 'second')
-					.isAfter(moment())
+			(c) => c.maxAge === 0 || moment(c.createdAt).add(c.maxAge, 'second').isAfter(moment())
 		);
-		const temporaryInvites = validCodes.filter(i => i.maxAge > 0);
-		const permanentInvites = validCodes.filter(i => i.maxAge === 0);
+		const temporaryInvites = validCodes.filter((i) => i.maxAge > 0);
+		const permanentInvites = validCodes.filter((i) => i.maxAge === 0);
 		const recommendedCode = permanentInvites.reduce(
 			(max, val) => (val.uses > max.uses ? val : max),
 			permanentInvites[0]
@@ -127,7 +123,7 @@ export default class extends Command {
 				name: t('cmd.inviteCodes.permanent.title'),
 				value: t('cmd.inviteCodes.permanent.text')
 			});
-			permanentInvites.forEach(i => {
+			permanentInvites.forEach((i) => {
 				embed.fields.push({
 					name: `${i.code}`,
 					value: t('cmd.inviteCodes.permanent.entry', {
@@ -146,15 +142,9 @@ export default class extends Command {
 				name: t('cmd.inviteCodes.temporary.title'),
 				value: t('cmd.inviteCodes.temporary.text')
 			});
-			temporaryInvites.forEach(i => {
-				const maxAge = moment
-					.duration(i.maxAge, 's')
-					.locale(lang)
-					.humanize();
-				const expires = moment(i.createdAt)
-					.add(i.maxAge, 's')
-					.locale(lang)
-					.fromNow();
+			temporaryInvites.forEach((i) => {
+				const maxAge = moment.duration(i.maxAge, 's').locale(lang).humanize();
+				const expires = moment(i.createdAt).add(i.maxAge, 's').locale(lang).fromNow();
 				embed.fields.push({
 					name: `${i.code}`,
 					value: t('cmd.inviteCodes.temporary.entry', {

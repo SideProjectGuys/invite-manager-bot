@@ -32,18 +32,16 @@ export default class extends Command {
 		let invs = await this.client.cache.leaderboard.get(guild.id);
 		const meta = this.client.cache.leaderboard.getCacheMeta(guild.id);
 		if (settings.hideLeftMembersFromLeaderboard) {
-			invs = invs.filter(e => guild.members.has(e.id));
+			invs = invs.filter((e) => guild.members.has(e.id));
 		}
 
 		// Get the member settings everytime because it's not that much work
 		// and because we want the 'hideFromLeaderboard' setting to work immediatly
 		const memSets = await this.client.cache.members.get(guild.id);
-		invs = invs.filter(e => !memSets.has(e.id) || !memSets.get(e.id).hideFromLeaderboard);
+		invs = invs.filter((e) => !memSets.has(e.id) || !memSets.get(e.id).hideFromLeaderboard);
 
 		const fromText = t('cmd.leaderboard.from', {
-			from: `**${moment(guild.createdAt)
-				.locale(settings.lang)
-				.fromNow()}**`
+			from: `**${moment(guild.createdAt).locale(settings.lang).fromNow()}**`
 		});
 		const lastUpdateText = t('cmd.leaderboard.lastUpdate', {
 			lastUpdate: `**${meta.cachedAt.locale(settings.lang).fromNow()}**`,
@@ -64,7 +62,7 @@ export default class extends Command {
 		const style: LeaderboardStyle = settings.leaderboardStyle;
 
 		// Show the leaderboard as a paginated list
-		await this.showPaginated(message, p, maxPage, page => {
+		await this.showPaginated(message, p, maxPage, (page) => {
 			let str = `${fromText}\n(${lastUpdateText})\n\n`;
 
 			// Collect texts first to possibly make a table
@@ -81,7 +79,7 @@ export default class extends Command {
 					t('cmd.leaderboard.col.fake'),
 					t('cmd.leaderboard.col.leave')
 				]);
-				lines.push(lines[0].map(h => '―'.repeat(h.length + 1)));
+				lines.push(lines[0].map((h) => '―'.repeat(h.length + 1)));
 			}
 
 			invs.slice(page * usersPerPage, (page + 1) * usersPerPage).forEach((inv, i) => {
@@ -106,7 +104,7 @@ export default class extends Command {
 			if (style === LeaderboardStyle.table) {
 				str += '```diff\n';
 			}
-			lines.forEach(line => {
+			lines.forEach((line) => {
 				if (style === LeaderboardStyle.table) {
 					line.forEach((part, partIndex) => {
 						str += part + ' '.repeat(lengths[partIndex] - part.length + 2);

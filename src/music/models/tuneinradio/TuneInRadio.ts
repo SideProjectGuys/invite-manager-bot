@@ -49,7 +49,7 @@ export class TuneInRadio extends MusicPlatform {
 				description: station.Subtitle
 			});
 		} else {
-			return this.search(link, 1).then(res => res[0]);
+			return this.search(link, 1).then((res) => res[0]);
 		}
 	}
 

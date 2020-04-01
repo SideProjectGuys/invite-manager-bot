@@ -8,7 +8,7 @@ type PermissionsObject = { [key in AnyCommand]?: string[] };
 
 export class PermissionsCache extends Cache<PermissionsObject> {
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {

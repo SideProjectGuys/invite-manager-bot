@@ -158,7 +158,7 @@ This argument expects a duration. The following duration types are supported:
 | [cleanShort](#cleanShort)             | 短いメッセージを消去する                                                                                           | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | 指定のキーワードを含むメッセージを削除します。                                                                     | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | サーバーからメンバーを蹴ります。                                                                                   | !kick \<member\> [reason]                                        |
-| [lockdown](#lockdown)                 | cmd.lockdown.self.description                                                                                      | !lockdown [-t value\|--timeout=value][channel]                   |
+| [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                          | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | ユーザーをミュートする                                                                                             | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | 一定量の警告に達したときに罰を設定します。                                                                         | !punishmentConfig [punishment][strikes] [args]                   |
 | [purge](#purge)                       | チャネル内のメッセージを削除します。                                                                               | !purge \<quantity\> [user]                                       |
@@ -293,9 +293,9 @@ This argument expects a duration. The following duration types are supported:
 
 ### Flags
 
-| Flag                              | Short     | Type          | Description                                              |
-| --------------------------------- | --------- | ------------- | -------------------------------------------------------- |
-| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | BAN したユーザーのメッセージを指定した日数分を削除します |
+| Flag                              | Short     | Type          | Description                                            |
+| --------------------------------- | --------- | ------------- | ------------------------------------------------------ |
+| &#x2011;&#x2011;deleteMessageDays | &#x2011;d | [番号](#番号) | BAN するユーザーのメッセージを指定した日数分削除します |
 
 ### Examples
 
@@ -791,8 +791,8 @@ Deletes any ranks where the role was deleted.
 | Argument | Type              | Required | Description              | Details                                                      |
 | -------- | ----------------- | -------- | ------------------------ | ------------------------------------------------------------ |
 | type     | [列挙型](#列挙型) | Yes      | 表示するチャートの種類。 | 以下のいずれかの値を使用:`joins`, `joinsAndLeaves`, `leaves` |
-| from     | [日付](#日付)     | No       | cmd.graph.self.args.from |                                                              |
-| to       | [日付](#日付)     | No       | cmd.graph.self.args.to   |                                                              |
+| from     | [日付](#日付)     | No       | Start date of the chart  |                                                              |
+| to       | [日付](#日付)     | No       | End date of the chart    |                                                              |
 
 ### Examples
 
@@ -1118,7 +1118,7 @@ Show personal invites.
 
 ## !lockdown
 
-cmd.lockdown.self.description
+Lockdown a specific channel (Prevents anyone without special roles from sending messages)
 
 ### Usage
 
@@ -1128,15 +1128,15 @@ cmd.lockdown.self.description
 
 ### Arguments
 
-| Argument | Type                      | Required | Description                    | Details |
-| -------- | ------------------------- | -------- | ------------------------------ | ------- |
-| channel  | [チャンネル](#チャンネル) | No       | cmd.lockdown.self.args.channel |         |
+| Argument | Type                      | Required | Description                             | Details |
+| -------- | ------------------------- | -------- | --------------------------------------- | ------- |
+| channel  | [チャンネル](#チャンネル) | No       | The channel that you want to lock down. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type          | Description                     |
-| ----------------------- | --------- | ------------- | ------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [期間](#期間) | cmd.lockdown.self.flags.timeout |
+| Flag                    | Short     | Type          | Description                                                                                                  |
+| ----------------------- | --------- | ------------- | ------------------------------------------------------------------------------------------------------------ |
+| &#x2011;&#x2011;timeout | &#x2011;t | [期間](#期間) | The timeout after which the lockdown automatically ends. Run the command again to end the lockdown manually. |
 
 ### Examples
 
@@ -1274,9 +1274,9 @@ cmd.lockdown.self.description
 
 ### Flags
 
-| Flag                     | Short     | Type          | Description                  |
-| ------------------------ | --------- | ------------- | ---------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [期間](#期間) | cmd.mute.self.flags.duration |
+| Flag                     | Short     | Type          | Description                       |
+| ------------------------ | --------- | ------------- | --------------------------------- |
+| &#x2011;&#x2011;duration | &#x2011;d | [期間](#期間) | The duration to mute the user for |
 
 ### Examples
 

@@ -2,7 +2,7 @@ import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../../settings';
-import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
 import { GuildSettingsKey } from '../../models/GuildSetting';
 import { SettingsValueResolver } from '../../resolvers';
 import { Command, Context } from '../Command';
@@ -40,6 +40,15 @@ export default class extends Command {
 			title: 'InviteManager',
 			description: 'Loading...'
 		});
+
+		// Ask users to use the webpanel on the regular bot
+		if (this.client.type === BotType.regular) {
+			embed.description = context.t('cmd.interactiveConfig.useWeb', {
+				configCmd: `\`${context.settings.prefix}config\``,
+				link: `https://app.invitemanager.gg/guild/${context.guild.id}/settings`
+			});
+			return this.sendReply(message, embed);
+		}
 
 		if (
 			message.channel instanceof GuildChannel &&
@@ -93,7 +102,7 @@ export default class extends Command {
 	private async showConfigMenu(context: Context, authorId: string, msg: Message, path: SettingsGroup[]) {
 		const t = context.t;
 		const menu = this.buildConfigMenu(path);
-		const basePath = path.map(p => `${p}.`).join('');
+		const basePath = path.map((p) => `${p}.`).join('');
 		let page = 0;
 
 		do {
@@ -104,14 +113,14 @@ export default class extends Command {
 
 			// Compute these every time so that possible value changes are shown
 			const allChoices = menu.subMenus
-				.map(sub => ({
+				.map((sub) => ({
 					type: 'menu',
 					value: sub as string,
 					title: t(`settings.groups.${basePath}${sub}.title`),
 					description: t(`settings.groups.${basePath}${sub}.description`)
 				}))
 				.concat(
-					menu.items.map(item => ({
+					menu.items.map((item) => ({
 						type: 'key',
 						value: item[0],
 						title: t(`settings.${item[0]}.title`),
@@ -183,7 +192,7 @@ export default class extends Command {
 
 		const title = key;
 		const possible = info.possibleValues
-			? info.possibleValues.map(v => '`' + v + '`').join(', ')
+			? info.possibleValues.map((v) => '`' + v + '`').join(', ')
 			: context.t(`cmd.interactiveConfig.values.${info.type.toLowerCase()}`);
 
 		let error: string = null;
@@ -276,7 +285,7 @@ export default class extends Command {
 					try {
 						const rawNewVal = await this.parseInput(context, authorId, msg, key);
 						if (typeof rawNewVal !== 'undefined') {
-							newVal = (val as string[]).filter(v => rawNewVal.indexOf(v) === -1);
+							newVal = (val as string[]).filter((v) => rawNewVal.indexOf(v) === -1);
 						}
 					} catch (err) {
 						error = err.message;
@@ -358,8 +367,8 @@ export default class extends Command {
 					await userMsg.delete().catch(() => undefined);
 					new SettingsValueResolver(this.client, guildSettingsInfo)
 						.resolve(userMsg.content, context, [key])
-						.then(v => resolve(v))
-						.catch(err => reject(err));
+						.then((v) => resolve(v))
+						.catch((err) => reject(err));
 				}
 			};
 
@@ -435,7 +444,7 @@ export default class extends Command {
 	}
 
 	private async awaitChoice(authorId: string, msg: Message) {
-		return new Promise<'prev' | 'next' | 'up' | number>(async resolve => {
+		return new Promise<'prev' | 'next' | 'up' | number>(async (resolve) => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message, emoji: Emoji, userId: string) => {
 				if (resp.id !== msg.id || authorId !== userId) {

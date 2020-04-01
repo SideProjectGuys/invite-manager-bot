@@ -62,7 +62,7 @@ export class RaveDJ extends MusicPlatform {
 			}
 		};
 
-		const res = await axios.get<RaveDjResponse>(url, opts).catch(async err => {
+		const res = await axios.get<RaveDjResponse>(url, opts).catch(async (err) => {
 			if (err.code === 401) {
 				await this.getIdToken();
 			}
@@ -120,7 +120,7 @@ export class RaveDJ extends MusicPlatform {
 			}
 		};
 
-		const { data } = await axios(options).catch(async err => {
+		const { data } = await axios(options).catch(async (err) => {
 			if (err.code === 401) {
 				await this.getIdToken();
 			}

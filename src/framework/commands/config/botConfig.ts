@@ -67,7 +67,7 @@ export default class extends Command {
 				configs[inf.grouping[0]].push('`' + k + '`');
 			});
 
-			Object.keys(configs).forEach(group => {
+			Object.keys(configs).forEach((group) => {
 				embed.description += `**${group}**\n` + configs[group].join(', ') + '\n\n';
 			});
 

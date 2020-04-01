@@ -23,6 +23,7 @@ export enum GuildPermission {
 	MANAGE_MESSAGES = 'manageMessages',
 	EMBED_LINKS = 'embedLinks',
 	MANAGE_GUILD = 'manageGuild',
+	MANAGE_CHANNELS = 'manageChannels',
 	VIEW_AUDIT_LOGS = 'viewAuditLogs',
 	MANAGE_ROLES = 'manageRoles',
 	CREATE_INSTANT_INVITE = 'createInstantInvite',
@@ -31,6 +32,22 @@ export enum GuildPermission {
 	ADD_REACTIONS = 'addReactions',
 	MANAGE_EMOJIS = 'manageEmojis',
 	READ_MESSAGE_HISTORY = 'readMessageHistory'
+}
+
+export enum GuildFeature {
+	INVITE_SPLASH = 'INVITE_SPLASH',
+	VIP_REGIONS = 'VIP_REGIONS',
+	VANITY_URL = 'VANITY_URL',
+	VERIFIED = 'VERIFIED',
+	PARTNERED = 'PARTNERED',
+	PUBLIC = 'PUBLIC',
+	COMMERCE = 'COMMERCE',
+	NEWS = 'NEWS',
+	DISCOVERABLE = 'DISCOVERABLE',
+	FEATURABLE = 'FEATURABLE',
+	ANIMATED_ICON = 'ANIMATED_ICON',
+	BANNER = 'BANNER',
+	PUBLIC_DISABLED = 'PUBLIC_DISABLED'
 }
 
 export enum PromptResult {
@@ -238,6 +255,7 @@ export interface LavaPlayer extends VoiceConnection {
 	on(event: 'speakingStop', listener: (userID: string) => void): this;
 	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
 	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
+	on(event: 'userDisconnect', listener: (userID: string) => void): this;
 }
 
 export interface LavaEndEvent {

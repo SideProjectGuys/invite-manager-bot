@@ -1,7 +1,7 @@
-# Open Source
+# Açık kaynak
 
 other.openSource.description
 
-## Main Bot
+## Ana bot
 
 other.openSource.bot.description

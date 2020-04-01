@@ -26,21 +26,12 @@ export default class extends Command {
 
 		const msg = await this.sendReply(message, 'Checking all members...');
 
-		let lastId: string;
-		const steps = Math.ceil(guild.memberCount / 1000);
-		for (let i = 0; i < steps; i++) {
-			const mems = await guild.getRESTMembers(1000, lastId);
-			if (mems.length > 0) {
-				lastId = mems[mems.length - 1].id;
-			}
-		}
-
-		const botCount = guild.members.filter(m => m.user.bot).length;
+		const botCount = guild.members.filter((m) => m.user.bot).length;
 		const humanCount = guild.memberCount - botCount;
-		const offlineCount = guild.members.filter(m => m.status === 'offline').length;
-		const joinedToday = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_DAY).length;
-		const joinedThisWeek = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_WEEK).length;
-		const joinedThisMonth = guild.members.filter(m => todayTimestamp - m.joinedAt < ONE_MONTH).length;
+		const offlineCount = guild.members.filter((m) => m.status === 'offline').length;
+		const joinedToday = guild.members.filter((m) => todayTimestamp - m.joinedAt < ONE_DAY).length;
+		const joinedThisWeek = guild.members.filter((m) => todayTimestamp - m.joinedAt < ONE_WEEK).length;
+		const joinedThisMonth = guild.members.filter((m) => todayTimestamp - m.joinedAt < ONE_MONTH).length;
 
 		const embed = this.createEmbed();
 		embed.fields.push({

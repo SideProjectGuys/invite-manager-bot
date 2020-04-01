@@ -108,7 +108,7 @@ export default class extends Command {
 	private choices: string[] = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
 
 	private async awaitChoice(authorId: string, msg: Message) {
-		return new Promise<number>(async resolve => {
+		return new Promise<number>(async (resolve) => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message, emoji: Emoji, userId: string) => {
 				if (resp.id !== msg.id || authorId !== userId) {

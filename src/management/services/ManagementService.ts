@@ -1,22 +1,18 @@
 import { Emoji, PossiblyUncachedMessage, TextChannel } from 'eris';
 
-import { IMClient } from '../../client';
+import { IMService } from '../../framework/services/Service';
 
-export class ManagementService {
-	private client: IMClient;
-
-	public constructor(client: IMClient) {
-		this.client = client;
-
-		client.on('messageReactionAdd', this.onMessageReactionAdd.bind(this));
-		client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
+export class ManagementService extends IMService {
+	public async init() {
+		this.client.on('messageReactionAdd', this.onMessageReactionAdd.bind(this));
+		this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
 	}
 
 	public async onMessageReactionAdd(message: PossiblyUncachedMessage, emoji: Emoji, userId: string) {
 		if (message.channel instanceof TextChannel) {
 			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
 
-			const reactionRole = reactionRoles.find(role => {
+			const reactionRole = reactionRoles.find((role) => {
 				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
 					return false;
 				}
@@ -36,7 +32,7 @@ export class ManagementService {
 	public async onMessageReactionRemove(message: PossiblyUncachedMessage, emoji: Emoji, userId: string) {
 		if (message.channel instanceof TextChannel) {
 			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
-			const reactionRole = reactionRoles.find(role => {
+			const reactionRole = reactionRoles.find((role) => {
 				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
 					return false;
 				}

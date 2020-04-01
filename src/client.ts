@@ -1,23 +1,28 @@
+import chalk from 'chalk';
 import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
+import { Cache } from './framework/cache/Cache';
 import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
 import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
 import { PermissionsCache } from './framework/cache/PermissionsCache';
 import { PremiumCache } from './framework/cache/PremiumCache';
 import { GuildSettingsKey } from './framework/models/GuildSetting';
 import { LogAction } from './framework/models/Log';
+import { IMRequestHandler } from './framework/RequestHandler';
 import { CommandsService } from './framework/services/Commands';
 import { DatabaseService } from './framework/services/DatabaseService';
 import { MessagingService } from './framework/services/Messaging';
 import { PremiumService } from './framework/services/PremiumService';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { SchedulerService } from './framework/services/Scheduler';
+import { IMService } from './framework/services/Service';
 import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache';
 import { InvitesCache } from './invites/cache/InvitesCache';
 import { LeaderboardCache } from './invites/cache/LeaderboardCache';
 import { RanksCache } from './invites/cache/RanksCache';
+import { VanityUrlCache } from './invites/cache/VanityUrlCache';
 import { CaptchaService } from './invites/services/Captcha';
 import { InvitesService } from './invites/services/Invites';
 import { TrackingService } from './invites/services/Tracking';
@@ -29,7 +34,7 @@ import { ModerationService } from './moderation/services/Moderation';
 import { MusicCache } from './music/cache/MusicCache';
 import { MusicService } from './music/services/MusicService';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
-import { BotType, ChannelType, GatewayInfo, LavaPlayerManager } from './types';
+import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 i18n.configure({
 	locales: ['cs', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'pt_BR', 'ro', 'ru', 'tr'],
@@ -37,13 +42,13 @@ i18n.configure({
 	// syncFiles: true,
 	directory: __dirname + '/../i18n/bot',
 	objectNotation: true,
-	logDebugFn: function(msg: string) {
+	logDebugFn: function (msg: string) {
 		console.log('debug', msg);
 	},
-	logWarnFn: function(msg: string) {
+	logWarnFn: function (msg: string) {
 		console.error('warn', msg);
 	},
-	logErrorFn: function(msg: string) {
+	logErrorFn: function (msg: string) {
 		console.error('error', msg);
 	}
 });
@@ -60,8 +65,11 @@ export interface ClientOptions {
 }
 
 export interface ClientCacheObject {
+	[key: string]: Cache<any>;
+
 	inviteCodes: InviteCodeSettingsCache;
 	invites: InvitesCache;
+	vanity: VanityUrlCache;
 	leaderboard: LeaderboardCache;
 	ranks: RanksCache;
 	members: MemberSettingsCache;
@@ -74,6 +82,23 @@ export interface ClientCacheObject {
 	reactionRoles: ReactionRoleCache;
 }
 
+export interface ClientServiceObject {
+	[key: string]: IMService;
+
+	database: DatabaseService;
+	rabbitmq: RabbitMqService;
+	message: MessagingService;
+	moderation: ModerationService;
+	scheduler: SchedulerService;
+	commands: CommandsService;
+	captcha: CaptchaService;
+	invites: InvitesService;
+	music: MusicService;
+	tracking: TrackingService;
+	premium: PremiumService;
+	management: ManagementService;
+}
+
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
@@ -83,13 +108,17 @@ export class IMClient extends Client {
 	public settings: BotSettingsObject;
 	public hasStarted: boolean = false;
 
-	public db: DatabaseService;
-	public cache: ClientCacheObject;
-
-	public rabbitmq: RabbitMqService;
 	public shardId: number;
 	public shardCount: number;
 
+	public requestHandler: IMRequestHandler;
+	public service: ClientServiceObject;
+	private startingServices: IMService[];
+	public cache: ClientCacheObject;
+
+	// Service shortcuts
+	public db: DatabaseService;
+	public rabbitmq: RabbitMqService;
 	public msg: MessagingService;
 	public mod: ModerationService;
 	public scheduler: SchedulerService;
@@ -100,31 +129,37 @@ export class IMClient extends Client {
 	public tracking: TrackingService;
 	public premium: PremiumService;
 	public management: ManagementService;
+	// End service shortcuts
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
-	public gatewayInfo: GatewayInfo;
-	public gatewayInfoCachedAt: Moment;
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
-
-	private counts: {
-		cachedAt: Moment;
-		guilds: number;
-		members: number;
+	public stats: {
+		wsEvents: number;
+		wsWarnings: number;
+		wsErrors: number;
+		cmdProcessed: number;
+		cmdErrors: number;
 	};
+
 	public disabledGuilds: Set<string> = new Set();
 
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
-			disableEveryone: true,
+			allowedMentions: {
+				everyone: false,
+				roles: true,
+				users: true
+			},
 			firstShardID: shardId - 1,
 			lastShardID: shardId - 1,
 			maxShards: shardCount,
 			disableEvents: {
 				TYPING_START: true,
-				USER_UPDATE: true,
-				PRESENCE_UPDATE: true
+				PRESENCE_UPDATE: true,
+				VOICE_STATE_UPDATE: true,
+				USER_UPDATE: true
 			},
 			restMode: true,
 			messageLimit: 2,
@@ -133,13 +168,15 @@ export class IMClient extends Client {
 			guildCreateTimeout: 60000
 		});
 
-		this.startedAt = moment();
-		this.counts = {
-			cachedAt: moment.unix(0),
-			guilds: 0,
-			members: 0
+		this.stats = {
+			wsEvents: 0,
+			wsWarnings: 0,
+			wsErrors: 0,
+			cmdProcessed: 0,
+			cmdErrors: 0
 		};
 
+		this.requestHandler = new IMRequestHandler(this);
 		this.version = version;
 		this.type = type;
 		this.instance = instance;
@@ -150,10 +187,25 @@ export class IMClient extends Client {
 		this.shardId = shardId;
 		this.shardCount = shardCount;
 
-		this.db = new DatabaseService(this);
+		this.service = {
+			database: new DatabaseService(this),
+			rabbitmq: new RabbitMqService(this),
+			message: new MessagingService(this),
+			moderation: new ModerationService(this),
+			scheduler: new SchedulerService(this),
+			commands: new CommandsService(this),
+			captcha: new CaptchaService(this),
+			invites: new InvitesService(this),
+			tracking: new TrackingService(this),
+			music: new MusicService(this),
+			premium: new PremiumService(this),
+			management: new ManagementService(this)
+		};
+		this.startingServices = Object.values(this.service);
 		this.cache = {
 			inviteCodes: new InviteCodeSettingsCache(this),
 			invites: new InvitesCache(this),
+			vanity: new VanityUrlCache(this),
 			leaderboard: new LeaderboardCache(this),
 			ranks: new RanksCache(this),
 			members: new MemberSettingsCache(this),
@@ -165,21 +217,20 @@ export class IMClient extends Client {
 			music: new MusicCache(this),
 			reactionRoles: new ReactionRoleCache(this)
 		};
-		this.rabbitmq = new RabbitMqService(this);
-		this.msg = new MessagingService(this);
-		this.mod = new ModerationService(this);
-		this.scheduler = new SchedulerService(this);
-		this.cmds = new CommandsService(this);
-		this.captcha = new CaptchaService(this);
-		this.invs = new InvitesService(this);
-		this.tracking = new TrackingService(this);
-		this.music = new MusicService(this);
-		this.premium = new PremiumService(this);
-		this.management = new ManagementService(this);
 
-		// Services
-		this.cmds.init();
-		this.rabbitmq.init();
+		// Setup service shortcuts
+		this.db = this.service.database;
+		this.rabbitmq = this.service.rabbitmq;
+		this.msg = this.service.message;
+		this.mod = this.service.moderation;
+		this.scheduler = this.service.scheduler;
+		this.cmds = this.service.commands;
+		this.captcha = this.service.captcha;
+		this.invs = this.service.invites;
+		this.music = this.service.music;
+		this.tracking = this.service.tracking;
+		this.premium = this.service.premium;
+		this.management = this.service.management;
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
@@ -191,6 +242,22 @@ export class IMClient extends Client {
 		this.on('shardDisconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
+		this.on('rawWS', this.onRawWS);
+	}
+
+	public async init() {
+		// Services
+		await Promise.all(Object.values(this.service).map((s) => s.init()));
+	}
+
+	public async waitForStartupTicket() {
+		const start = process.uptime();
+		const interval = setInterval(
+			() => console.log(`Waiting for ticket since ${chalk.blue(Math.floor(process.uptime() - start))} seconds...`),
+			10000
+		);
+		await this.service.rabbitmq.waitForStartupTicket();
+		clearInterval(interval);
 	}
 
 	private async onClientReady(): Promise<void> {
@@ -199,23 +266,23 @@ export class IMClient extends Client {
 			return;
 		}
 
-		// Setup services that require all guilds
-		await this.scheduler.init();
+		// This is for convenience, the services could also subscribe to 'ready' event on client
+		await Promise.all(Object.values(this.service).map((s) => s.onClientReady()));
 
 		this.hasStarted = true;
+		this.startedAt = moment();
 
 		const set = await this.db.getBotSettings(this.user.id);
 		this.settings = set ? set.value : { ...botDefaultSettings };
 
-		console.log(`Client ready! Serving ${this.guilds.size} guilds.`);
-		console.log(`This is the ${this.type} version of the bot.`);
+		console.log(chalk.green(`Client ready! Serving ${chalk.blue(this.guilds.size)} guilds.`));
 
 		// Init all caches
-		await Promise.all(Object.values(this.cache).map(c => c.init()));
+		await Promise.all(Object.values(this.cache).map((c) => c.init()));
 
 		// Insert guilds into db
 		await this.db.saveGuilds(
-			this.guilds.map(g => ({
+			this.guilds.map((g) => ({
 				id: g.id,
 				name: g.name,
 				icon: g.iconURL,
@@ -225,11 +292,11 @@ export class IMClient extends Client {
 			}))
 		);
 
-		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map(g => g.id));
+		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map((g) => g.id));
 
 		// Do some checks for all guilds
-		this.guilds.forEach(async guild => {
-			const bannedGuild = bannedGuilds.find(g => g.id === guild.id);
+		this.guilds.forEach(async (guild) => {
+			const bannedGuild = bannedGuilds.find((g) => g.id === guild.id);
 
 			// Check if the guild was banned
 			if (bannedGuild) {
@@ -301,6 +368,14 @@ export class IMClient extends Client {
 
 		await this.setActivity();
 		this.activityInterval = setInterval(() => this.setActivity(), 1 * 60 * 1000);
+	}
+
+	public serviceStartupDone(service: IMService) {
+		this.startingServices = this.startingServices.filter((s) => s !== service);
+		if (this.startingServices.length === 0) {
+			console.log(chalk.green(`All services ready`));
+			this.rabbitmq.endStartup().catch((err) => console.error(err));
+		}
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
@@ -454,14 +529,14 @@ export class IMClient extends Client {
 		}
 
 		// Check for a "general" channel, which is often default chat
-		const gen = guild.channels.find(c => c.name === 'general');
+		const gen = guild.channels.find((c) => c.name === 'general');
 		if (gen) {
 			return gen;
 		}
 
 		// First channel in order where the bot can speak
 		return guild.channels
-			.filter(c => c.type === ChannelType.GUILD_TEXT /*&&
+			.filter((c) => c.type === ChannelType.GUILD_TEXT /*&&
 					c.permissionsOf(guild.self).has('SEND_MESSAGES')*/)
 			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
@@ -529,49 +604,13 @@ export class IMClient extends Client {
 		});
 	}
 
-	public async getCounts() {
-		// If cached data is older than 12 hours, update it
-		if (
-			moment()
-				.subtract(4, 'hours')
-				.isAfter(this.counts.cachedAt)
-		) {
-			console.log('Fetching data counts from DB...');
-			const stats = await this.db.getDbStats();
-			this.counts = {
-				cachedAt: moment(),
-				guilds: stats.guilds,
-				members: stats.members
-			};
-		}
-
-		return this.counts;
-	}
-
-	private async updateGatewayInfo() {
-		if (
-			!this.gatewayInfoCachedAt ||
-			moment()
-				.subtract(4, 'hours')
-				.isAfter(this.gatewayInfoCachedAt)
-		) {
-			console.log('Fetching gateway info...');
-			this.gatewayInfo = (await this.getBotGateway()) as GatewayInfo;
-			this.gatewayInfoCachedAt = moment();
-		}
-	}
-
 	public async setActivity() {
-		await this.updateGatewayInfo();
-
 		const status = this.settings.activityStatus;
 
 		if (!this.settings.activityEnabled) {
 			this.editStatus(status);
 			return;
 		}
-
-		const counts = await this.getCounts();
 
 		const type =
 			this.settings.activityType === 'playing'
@@ -584,11 +623,7 @@ export class IMClient extends Client {
 				? 3
 				: 0;
 
-		let name = `invitemanager.co - ${counts.guilds} servers!`;
-		if (this.settings.activityMessage) {
-			name = this.settings.activityMessage.replace(/{serverCount}/gi, counts.guilds.toString());
-		}
-
+		const name = this.settings.activityMessage || `docs.invitemanager.co!`;
 		const url = this.settings.activityUrl;
 
 		this.editStatus(status, { name, type, url });
@@ -616,9 +651,15 @@ export class IMClient extends Client {
 
 	private async onWarn(warn: string) {
 		console.error('DISCORD WARNING:', warn);
+		this.stats.wsWarnings++;
 	}
 
 	private async onError(error: Error) {
 		console.error('DISCORD ERROR:', error);
+		this.stats.wsErrors++;
+	}
+
+	private async onRawWS() {
+		this.stats.wsEvents++;
 	}
 }

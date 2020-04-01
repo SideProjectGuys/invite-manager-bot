@@ -5,7 +5,7 @@ import { IMClient } from '../../client';
 import { Command, Context } from '../../framework/commands/Command';
 import { DateResolver, EnumResolver } from '../../framework/resolvers';
 import { ChartType, CommandGroup, InvitesCommand } from '../../types';
-import { Chart } from '../models/Chart';
+import { renderChart } from '../models/Chart';
 
 const DEFAULT_DAYS = 30;
 const COLORS = ['blue', 'red', 'black'];
@@ -67,13 +67,13 @@ export default class extends Command {
 
 		const dates: Moment[] = [];
 		const vs: Map<string, number>[] = [];
-		for (const curr = from.clone(); to.diff(curr, 'days') >= 0; curr.add(1, 'days')) {
+		for (const curr = from.clone(); to.isSameOrAfter(curr, 'days'); curr.add(1, 'days')) {
 			dates.push(curr.clone());
 		}
 
 		const addDataset = () => {
 			const map: Map<string, number> = new Map();
-			dates.forEach(date => map.set(date.format('YYYY-MM-DD'), 0));
+			dates.forEach((date) => map.set(date.format('YYYY-MM-DD'), 0));
 			vs.push(map);
 			return map;
 		};
@@ -84,31 +84,42 @@ export default class extends Command {
 
 			const joinsMap = addDataset();
 			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			fs.forEach(join => joinsMap.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
+			fs.forEach((join) =>
+				joinsMap.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
+			);
 
 			const leavesMap = addDataset();
 			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			lvs.forEach(leave => leavesMap.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
+			lvs.forEach((leave) =>
+				leavesMap.set(
+					`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`,
+					Number(leave.total)
+				)
+			);
 		} else if (type === ChartType.joins) {
 			title = t('cmd.graph.joins.title');
 			description = t('cmd.graph.joins.text');
 
 			const map = addDataset();
 			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
-			joins.forEach(join => map.set(`${join.year}-${join.month}-${join.day}`, Number(join.total)));
+			joins.forEach((join) =>
+				map.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
+			);
 		} else if (type === ChartType.leaves) {
 			title = t('cmd.graph.leaves.title');
 			description = t('cmd.graph.leaves.text');
 
 			const map = addDataset();
 			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
-			leaves.forEach(leave => map.set(`${leave.year}-${leave.month}-${leave.day}`, Number(leave.total)));
+			leaves.forEach((leave) =>
+				map.set(`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`, leave.total)
+			);
 		}
 
 		const datasets: any[] = [];
 		for (const v of vs) {
 			const color = COLORS[datasets.length];
-			const data = [...v.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(e => e[1]);
+			const data = [...v.entries()].sort((a, b) => a[0].localeCompare(b[0])).map((e) => e[1]);
 
 			datasets.push({
 				label: 'Data',
@@ -128,28 +139,20 @@ export default class extends Command {
 		}
 
 		const config = {
-			labels: dates.map(d => d.format('DD.MM.YYYY')),
+			labels: dates.map((d) => d.format('DD.MM.YYYY')),
 			datasets
 		};
 
-		const chart = new Chart();
-		chart.getChart('line', config).then((buffer: Buffer) => {
-			const embed = this.createEmbed({
-				title,
-				description,
-				image: {
-					url: 'attachment://chart.png'
-				}
-			});
+		const buffer = await renderChart('line', config);
 
-			message.channel
-				.createMessage({ embed }, { file: buffer, name: 'chart.png' })
-				.then(() => {
-					chart.destroy();
-				})
-				.catch(() => {
-					chart.destroy();
-				});
+		const embed = this.createEmbed({
+			title,
+			description,
+			image: {
+				url: 'attachment://chart.png'
+			}
 		});
+
+		await message.channel.createMessage({ embed }, { file: buffer, name: 'chart.png' });
 	}
 }

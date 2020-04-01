@@ -1,41 +1,41 @@
 {
 	"lang": "Deutsch",
 	"modules": {
-		"title": "Modules",
+		"title": "Module",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "Einladungsmanagement",
+			"description": "Während unser Bot auf deinem Server ist, verfolgen wir jede Einladung, die auf deinem Server stattfindet. Discord zeigt dir nur, wer wie viele Einladungen hat. Unser Bot analysiert auch, wer von wem eingeladen wurde. Dies ermöglicht unserem Bot gefälschte Einladungen zu erkennen und zu sehen, wer versucht das Einladungssystem zu betrügen.",
 			"examples": {
-				"title": "Examples"
+				"title": "Beispiele"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "Übersicht"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "Individuelle Nachricht"
 			}
 		},
 		"moderation": {
 			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"description": "Unser brandneues Moderationssystem ermöglicht es dir viele Dinge automatisch zu moderieren. Bitte schaue dir für weiteren Informationen unsere [Strikes]({{{ linkStrikes }}}) und [Bestraftungen]({{{ linkPunishments }}}) Seiten an. Kurz gesagt vergibt unser Bot 'Strikes' an Leute, die sich schlecht benehmen, und nach einer bestimmten Anzahl von Strikes erhält der User eine Bestrafung. All das ist durch den Benutzer konfigurierbar.",
 			"punishments": {
-				"title": "Punishments"
+				"title": "Bestrafungen"
 			},
 			"strikes": {
 				"title": "Strikes"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "Musik",
 			"overview": {
-				"title": "Overview"
+				"title": "Übersicht"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "Sonstiges",
 		"donating": {
-			"title": "Donating",
+			"title": "Spenden",
 			"description": "other.donating.description",
 			"crypto": {
 				"title": "Crypto",
@@ -49,7 +49,7 @@
 			"title": "Support"
 		},
 		"translations": {
-			"title": "Translations",
+			"title": "Übersetzungen",
 			"description": "other.translations.description",
 			"help": {
 				"title": "other.translations.help.title",
@@ -74,50 +74,50 @@
 	},
 	"premium": {
 		"title": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"description": "Um unsere Server Rechnungen zu bezahlen, bieten wir eine Premium-Version des Bots an. Um alle Premium Features zu sehen, besuche unsere  [Premium Seite]({{{ link }}}).",
 		"features": {
 			"title": "Features"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "Stufen"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "Einrichtung"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "Erste Schritte",
+		"description": "Um zu beginnen, führe einfach den Befehl `!setup` auf deinem Server aus.",
 		"alpha": {
 			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here"
+			"intro": "Der `InviteManager Alpha` Bot ist der Bot, den wir zum Testen neuer Funktionen verwenden. Die neuen Funktionen auf dem Alpha Bot werden nicht immer stabil sein, aber wenn du diesen Bot benutzt, wirst du der erste sein, der diese sieht und kannst uns Feedback geben, wie wir diese verbessern können, bevor sie in den Main Bot aufgenommen werden.",
+			"linkDescription": "Lade den InviteManager Alpha hier auf deinem Server ein"
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "FAQ",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "Wie ändere ich den Prefix des Bots?",
+				"description": "Du kannst `!config prefix -` ausführen, um den Prefix zu ändern.\n\nWenn du deinen aktuellen Prefix nicht kennst, kannst du `@InviteManager config prefix` ausführen, um den Prefix zu sehen."
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "Wie stelle ich Join und Leave Nachrichten ein?",
+				"description": "Stelle den Channel mit folgendem Command\n\n`!config joinMessageChannel #channel`\n\noder\n\n`!config leaveMessageChannel #channel` ein.\n\nDanach werden neue Join und Leave Nachrichten in diesem Channel gepostet."
 			},
 			"joinLeaveMessage": {
-				"title": "Can I customize the join and leave messages?",
-				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+				"title": "Kann ich die Join und Leave Nachrichten verändern?",
+				"description": "Allerdings! Du kannst die Nachricht ändern folgendermaßen individualisieren:\n\n`!config joinMessage {memberMention} *ist beigetreten**; Eingeladen von **{inviterName}** (**{numInvites}** invites)`\n\noder\n\n`!config leaveMessage {memberName} **hat den Server verlassen**; Eingeladen von **{inviterName}**`.\n\nEs sind viele Platzhalter verfügbar. Du kannst die vollständige Liste auf der Seite '[Individuelle Nachrichten]({{{ link }}})' sehen."
 			},
 			"ranks": {
-				"title": "What are 'Ranks' and how can I use them?",
-				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+				"title": "Was sind 'Ränge' und wie kann ich sie benutzen?",
+				"description": "Ränge werden verwendet, um Personen Rollen zuzuweisen, wenn sie eine bestimmte Anzahl von Einladungen erreicht haben. Wenn du zum Beispiel eine Rolle namens `@Anfänger` hast und du möchtest, dass Leute, die 5 oder mehr Einladungen haben, zu dieser Rolle hinzugefügt werden, musst du dafür so einen Rang erstellen: `!add-rank @Anfänger 5 (und wenn du willst hier eine Beschreibung)`. Sobald jemand 5 Einladungen hat, wird er automatisch dieser Rolle hinzugefügt!"
 			},
 			"channel": {
-				"title": "How can I disable the bot in all but one/some channels?",
-				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+				"title": "Wie kann ich den Bot in allen bis auf einen oder einige Channel deaktivieren?",
+				"description": "Nimm dem Bot die Rechte zum Lesen von Nachrichten in den Channeln, in denen der Bot nicht antworten soll, weg."
 			},
 			"limitations": {
-				"title": "Limitation: No advanced tracking before the bot joins",
-				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+				"title": "Einschränkung: Kein Tracking bevor der Bot beigetreten ist",
+				"description": "Das Tracking (wer wen eingeladen hat) funktioniert nur, nachdem du den Bot eingeladen hast. Der Bot weiß auch nach der Einladung noch von jedem die Anzahl der Einladungen, keine Sorge. Nur die zusätzlichen Informationen fehlen und können nur für die Mitglieder gesammelt werden, die erst nach der Einladung des Bots beitreten."
 			}
 		},
 		"pro": {
@@ -125,9 +125,9 @@
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"title": "Quick Start",
+			"title": "Start",
 			"setup": {
-				"title": "Setup",
+				"title": "Einrichtung",
 				"description": "start.quick.setup.description",
 				"first": {
 					"title": "start.quick.setup.first.title",
@@ -141,12 +141,12 @@
 		}
 	},
 	"reference": {
-		"title": "Reference",
+		"title": "Verweise",
 		"commands": {
-			"title": "Commands"
+			"title": "Befehle"
 		},
 		"settings": {
-			"title": "Configs / Settings"
+			"title": "Konfigurationen / Einstellungen"
 		}
 	}
 }

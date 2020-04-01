@@ -1,4 +1,4 @@
-# Translations
+# Çeviriler
 
 other.translations.description
 

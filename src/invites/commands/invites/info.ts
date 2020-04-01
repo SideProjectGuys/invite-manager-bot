@@ -62,10 +62,15 @@ export default class extends Command {
 		const replyMessage = await this.sendReply(message, embed);
 		embed.description = null;
 
+		// If we couldn't send the initial message we're probably missing some permissions, so just exit
+		if (!replyMessage) {
+			return;
+		}
+
 		const invitedMembers = await this.client.db.getInvitedMembers(guild.id, user.id);
 		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
 		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-		const bonusInvs = customInvs.filter(ci => !ci.cleared);
+		const bonusInvs = customInvs.filter((ci) => !ci.cleared);
 
 		if (details === InfoDetails.bonus) {
 			await replyMessage.delete();
@@ -82,20 +87,15 @@ export default class extends Command {
 			const maxPage = Math.ceil(bonusInvs.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-			return this.showPaginated(message, p, maxPage, page => {
+			return this.showPaginated(message, p, maxPage, (page) => {
 				let customInvText = '';
 
-				bonusInvs.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(inv => {
+				bonusInvs.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((inv) => {
 					customInvText +=
 						t('cmd.info.bonusInvites.entry', {
 							amount: `**${inv.amount}**`,
 							creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
-							date:
-								'**' +
-								moment(inv.createdAt)
-									.locale(lang)
-									.fromNow() +
-								'**',
+							date: '**' + moment(inv.createdAt).locale(lang).fromNow() + '**',
 							reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
 						}) + '\n';
 				});
@@ -119,12 +119,10 @@ export default class extends Command {
 			const maxPage = Math.ceil(invitedMembers.length / ENTRIES_PER_PAGE);
 			const p = Math.max(Math.min(_page ? _page - 1 : 0, maxPage - 1), 0);
 
-			return this.showPaginated(message, p, maxPage, page => {
+			return this.showPaginated(message, p, maxPage, (page) => {
 				let inviteText = '';
-				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach(join => {
-					const time = moment(join.createdAt)
-						.locale(lang)
-						.fromNow();
+				invitedMembers.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE).forEach((join) => {
+					const time = moment(join.createdAt).locale(lang).fromNow();
 					inviteText += `<@${join.memberId}> - ${time}\n`;
 				});
 
@@ -142,7 +140,7 @@ export default class extends Command {
 
 		let fake = 0;
 		let leave = 0;
-		invalidJoins.forEach(j => {
+		invalidJoins.forEach((j) => {
 			if (j.invalidatedReason === JoinInvalidatedReason.fake) {
 				fake -= Number(j.total);
 			} else if (j.invalidatedReason === JoinInvalidatedReason.leave) {
@@ -152,14 +150,14 @@ export default class extends Command {
 
 		let regular = 0;
 		let clearRegular = 0;
-		invCodes.forEach(ic => {
+		invCodes.forEach((ic) => {
 			clearRegular += ic.clearedAmount;
 			regular += ic.uses - ic.clearedAmount;
 		});
 
 		let custom = 0;
 		let clearCustom = 0;
-		customInvs.forEach(ci => {
+		customInvs.forEach((ci) => {
 			if (ci.cleared) {
 				clearCustom += Number(ci.amount);
 			} else {
@@ -177,9 +175,7 @@ export default class extends Command {
 		}
 
 		if (member) {
-			const joinedAgo = moment(member.joinedAt)
-				.locale(lang)
-				.fromNow();
+			const joinedAgo = moment(member.joinedAt).locale(lang).fromNow();
 
 			embed.fields.push({
 				name: t('cmd.info.lastJoined.title'),
@@ -206,9 +202,7 @@ export default class extends Command {
 
 		embed.fields.push({
 			name: t('cmd.info.created.title'),
-			value: moment(user.createdAt)
-				.locale(lang)
-				.fromNow(),
+			value: moment(user.createdAt).locale(lang).fromNow(),
 			inline: true
 		});
 
@@ -239,10 +233,8 @@ export default class extends Command {
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
 
-			ownJoins.forEach(join => {
-				const text = moment(join.createdAt)
-					.locale(lang)
-					.fromNow();
+			ownJoins.forEach((join) => {
+				const text = moment(join.createdAt).locale(lang).fromNow();
 				if (!joinTimes[text]) {
 					joinTimes[text] = {};
 				}
@@ -257,7 +249,7 @@ export default class extends Command {
 
 			let joinText = '';
 			const joinTimesKeys = Object.keys(joinTimes);
-			joinTimesKeys.slice(0, 10).forEach(time => {
+			joinTimesKeys.slice(0, 10).forEach((time) => {
 				const joinTime = joinTimes[time];
 
 				const total = Object.keys(joinTime).reduce((acc, id) => acc + joinTime[id], 0);
@@ -268,7 +260,7 @@ export default class extends Command {
 				});
 
 				const invText = Object.keys(joinTime)
-					.map(id =>
+					.map((id) =>
 						t('cmd.info.joins.entry.invite', {
 							member: `<@!${id}>`,
 							times: joinTime[id]
@@ -311,12 +303,7 @@ export default class extends Command {
 					t('cmd.info.regularInvites.entry', {
 						uses: `**${inv.uses}**`,
 						code: name,
-						createdAt:
-							'**' +
-							moment(inv.createdAt)
-								.locale(lang)
-								.fromNow() +
-							'**'
+						createdAt: '**' + moment(inv.createdAt).locale(lang).fromNow() + '**'
 					}) + '\n';
 			}
 
@@ -343,17 +330,12 @@ export default class extends Command {
 		if (bonusInvs.length > 0) {
 			let customInvText = '';
 
-			bonusInvs.slice(0, 10).forEach(inv => {
+			bonusInvs.slice(0, 10).forEach((inv) => {
 				customInvText +=
 					t('cmd.info.bonusInvites.entry', {
 						amount: `**${inv.amount}**`,
 						creator: `<@!${inv.creatorId ? inv.creatorId : me.id}>`,
-						date:
-							'**' +
-							moment(inv.createdAt)
-								.locale(lang)
-								.fromNow() +
-							'**',
+						date: '**' + moment(inv.createdAt).locale(lang).fromNow() + '**',
 						reason: inv.reason ? `**${inv.reason}**` : '**' + t('cmd.info.bonusInvites.noReason') + '**'
 					}) + '\n';
 			});
@@ -395,9 +377,7 @@ export default class extends Command {
 		if (invitedMembers.length > 0) {
 			let inviteText = '';
 			invitedMembers.slice(0, 10).forEach((join: any) => {
-				const time = moment(join.createdAt)
-					.locale(lang)
-					.fromNow();
+				const time = moment(join.createdAt).locale(lang).fromNow();
 				inviteText += `<@${join.memberId}> - ${time}\n`;
 			});
 

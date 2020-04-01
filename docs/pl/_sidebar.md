@@ -1,7 +1,7 @@
 - Pierwsze kroki
 
   - [Szybki Start](/pl/getting-started/quick-start.md)
-  - [FAQs](/pl/getting-started/faq.md)
+  - [FAQ](/pl/getting-started/faq.md)
   - [Bot w wersji Alfa](/pl/getting-started/alpha.md)
   - [Pro Bot](/pl/getting-started/pro.md)
 
@@ -18,10 +18,10 @@
 
 - Moduły
 
-  - Invite Management
+  - Zarządzanie zaproszeniami
 
-    - [Podgląd](/pl/modules/invites/overview.md)
-    - [Własne wiadomości](/pl/modules/invites/custom-messages.md)
+    - [Przegląd](/pl/modules/invites/overview.md)
+    - [Niestandardowe wiadomości](/pl/modules/invites/custom-messages.md)
       - [Przykłady](/pl/modules/invites/examples.md)
 
   - Moderacyjne
@@ -31,7 +31,7 @@
 
   - Muzyka
 
-    - [Podgląd](/pl/modules/music/overview.md)
+    - [Przegląd](/pl/modules/music/overview.md)
 
 - Inne
 
@@ -40,5 +40,5 @@
   - [Dotacje](/pl/other/donating.md)
   - [Wsparcie](/pl/other/support.md)
   - [Dziennik zmian](/pl/other/changelog.md)
-  - [Roadmap](/pl/other/roadmap.md)
+  - [Mapa](/pl/other/roadmap.md)
   - [Otwarte źródło](/pl/other/open-source.md)
