@@ -822,7 +822,11 @@ export class DatabaseService extends IMService {
 		]);
 	}
 	public async getScheduledActionsForGuilds(guildIds: string[]) {
-		return this.findManyOnSpecificShards<ScheduledAction>(TABLE.scheduledActions, '`guildId` IN (?)', guildIds);
+		return this.findManyOnSpecificShards<ScheduledAction>(
+			TABLE.scheduledActions,
+			'`guildId` IN (?) AND date IS NOT NULL',
+			guildIds
+		);
 	}
 	public async saveScheduledAction(action: Partial<ScheduledAction>) {
 		const res = await this.insertOrUpdate(
