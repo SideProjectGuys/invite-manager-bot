@@ -3,9 +3,13 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup, PromptResult } from '../../../types';
-import { Command, Context } from '../Command';
+import { PremiumCache } from '../../cache/Premium';
+import { Cache } from '../../decorators/Cache';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private premiumCache: PremiumCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.tryPremium,
@@ -20,7 +24,7 @@ export default class extends Command {
 		message: Message,
 		args: any[],
 		flags: {},
-		{ guild, settings, t, isPremium }: Context
+		{ guild, settings, t, isPremium }: CommandContext
 	): Promise<any> {
 		const prefix = settings.prefix;
 
@@ -45,7 +49,7 @@ export default class extends Command {
 
 			await this.sendReply(message, promptEmbed);
 
-			const [keyResult] = await this.client.msg.prompt(message, t('cmd.tryPremium.prompt'));
+			const [keyResult] = await this.msg.prompt(message, t('cmd.tryPremium.prompt'));
 			if (keyResult === PromptResult.TIMEOUT) {
 				return this.sendReply(message, t('prompt.timedOut'));
 			}
@@ -53,7 +57,7 @@ export default class extends Command {
 				return this.sendReply(message, t('prompt.canceled'));
 			}
 
-			await this.client.db.savePremiumSubscription({
+			await this.db.savePremiumSubscription({
 				amount: 0,
 				maxGuilds: 1,
 				isFreeTier: true,
@@ -63,12 +67,12 @@ export default class extends Command {
 				memberId: message.author.id,
 				reason: ''
 			});
-			await this.client.db.savePremiumSubscriptionGuild({
+			await this.db.savePremiumSubscriptionGuild({
 				memberId: message.author.id,
 				guildId: guild.id
 			});
 
-			this.client.cache.premium.flush(guild.id);
+			this.premiumCache.flush(guild.id);
 
 			embed.description = t('cmd.tryPremium.started', {
 				prefix
@@ -79,7 +83,7 @@ export default class extends Command {
 	}
 
 	private async memberHadTrial(memberId: string): Promise<boolean> {
-		const sub = await this.client.db.getPremiumSubscriptionsForMember(memberId, false, true);
+		const sub = await this.db.getPremiumSubscriptionsForMember(memberId, false, true);
 		return sub && sub.length > 0;
 	}
 }

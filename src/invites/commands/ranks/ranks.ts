@@ -1,13 +1,17 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
 import { CommandGroup, InvitesCommand } from '../../../types';
+import { RanksCache } from '../../cache/RanksCache';
 
 const RANKS_PER_PAGE = 10;
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private ranksCache: RanksCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.ranks,
@@ -24,8 +28,8 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: Context): Promise<any> {
-		const ranks = await this.client.cache.ranks.get(guild.id);
+	public async action(message: Message, [_page]: [number], flags: {}, { guild, t }: CommandContext): Promise<any> {
+		const ranks = await this.ranksCache.get(guild.id);
 
 		if (ranks.length === 0) {
 			return this.sendReply(message, t('cmd.ranks.none'));

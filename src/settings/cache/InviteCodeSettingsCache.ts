@@ -1,14 +1,14 @@
-import { Cache } from '../../framework/cache/Cache';
-import { InviteCodeSettingsKey } from '../../framework/models/InviteCodeSetting';
+import { IMCache } from '../../framework/cache/Cache';
 import { inviteCodeDefaultSettings, inviteCodeSettingsInfo, InviteCodeSettingsObject, toDbValue } from '../../settings';
+import { InviteCodeSettingsKey } from '../models/InviteCodeSetting';
 
-export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSettingsObject>> {
+export class InviteCodeSettingsCache extends IMCache<Map<string, InviteCodeSettingsObject>> {
 	public async init() {
 		// TODO
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
-		const sets = await this.client.db.getInviteCodeSettingsForGuild(guildId);
+		const sets = await this.db.getInviteCodeSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach((set) => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
@@ -40,7 +40,7 @@ export class InviteCodeSettingsCache extends Cache<Map<string, InviteCodeSetting
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.client.db.saveInviteCodeSettings({ inviteCode, guildId, value: set });
+			await this.db.saveInviteCodeSettings({ inviteCode, guildId, value: set });
 		}
 
 		return dbVal;

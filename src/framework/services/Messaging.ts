@@ -3,8 +3,13 @@ import { Embed, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChann
 import i18n from 'i18n';
 import moment from 'moment';
 
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { GuildPermission, PromptResult } from '../../types';
+import { PremiumCache } from '../cache/Premium';
+import { Cache } from '../decorators/Cache';
+import { Service } from '../decorators/Service';
 
+import { DatabaseService } from './Database';
 import { IMService } from './Service';
 
 const upSymbol = '🔺';
@@ -46,6 +51,10 @@ export type ShowPaginatedFunc = (
 ) => Promise<void>;
 
 export class MessagingService extends IMService {
+	@Service() private db: DatabaseService;
+	@Cache() private premiumCache: PremiumCache;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+
 	public createEmbed(options: EmbedOptions = {}, overrideFooter: boolean = true): Embed {
 		let color = options.color ? (options.color as number | string) : parseInt('00AE86', 16);
 		// Parse colors in hashtag/hex format
@@ -100,7 +109,7 @@ export class MessagingService extends IMService {
 				captureException(err);
 			});
 			if (reportIndicent && target instanceof GuildChannel) {
-				this.client.db.saveIncident(target.guild, {
+				this.db.saveIncident(target.guild, {
 					id: null,
 					guildId: target.guild.id,
 					error: err.message,
@@ -204,10 +213,10 @@ export class MessagingService extends IMService {
 
 		try {
 			const temp = JSON.parse(msg);
-			if (await this.client.cache.premium.get(guild.id)) {
+			if (await this.premiumCache.get(guild.id)) {
 				return this.createEmbed(temp, false);
 			} else {
-				const lang = (await this.client.cache.guilds.get(guild.id)).lang;
+				const lang = (await this.guildSettingsCache.get(guild.id)).lang;
 				msg += '\n\n' + i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
 			}
 		} catch (e) {

@@ -1,12 +1,19 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { InvitesCache } from '../../cache/InvitesCache';
+import { InvitesService } from '../../services/Invites';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private invs: InvitesService;
+	@Cache() private invitesCache: InvitesCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.addInvites,
@@ -39,16 +46,16 @@ export default class extends Command {
 		message: Message,
 		[user, amount, reason]: [BasicUser, number, string],
 		flags: {},
-		{ guild, t, me }: Context
+		{ guild, t, me }: CommandContext
 	): Promise<any> {
 		if (amount === 0) {
 			return this.sendReply(message, t('cmd.addInvites.zero'));
 		}
 
-		const invites = await this.client.cache.invites.getOne(guild.id, user.id);
+		const invites = await this.invitesCache.getOne(guild.id, user.id);
 		const totalInvites = invites.total + amount;
 
-		await this.client.db.saveMembers([
+		await this.db.saveMembers([
 			{
 				id: user.id,
 				name: user.username,
@@ -57,7 +64,7 @@ export default class extends Command {
 			}
 		]);
 
-		const customInviteId = await this.client.db.saveCustomInvite({
+		const customInviteId = await this.db.saveCustomInvite({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,
@@ -102,7 +109,7 @@ export default class extends Command {
 		// Promote the member if it's not a bot
 		// and if the member is still in the guild
 		if (member && !member.user.bot) {
-			const promoteInfo = await this.client.invs.promoteIfQualified(guild, member, me, totalInvites);
+			const promoteInfo = await this.invs.promoteIfQualified(guild, member, me, totalInvites);
 
 			if (promoteInfo) {
 				const { shouldHave, shouldNotHave, dangerous } = promoteInfo;

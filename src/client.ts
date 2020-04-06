@@ -3,37 +3,27 @@ import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
-import { Cache } from './framework/cache/Cache';
-import { GuildSettingsCache } from './framework/cache/GuildSettingsCache';
-import { MemberSettingsCache } from './framework/cache/MemberSettingsCache';
-import { PermissionsCache } from './framework/cache/PermissionsCache';
-import { PremiumCache } from './framework/cache/PremiumCache';
-import { GuildSettingsKey } from './framework/models/GuildSetting';
+import { IMCache } from './framework/cache/Cache';
+import { PremiumCache } from './framework/cache/Premium';
+import { Cache, cacheInjections } from './framework/decorators/Cache';
+import { Service, serviceInjections } from './framework/decorators/Service';
+import { FrameworkModule } from './framework/FrameworkModule';
 import { LogAction } from './framework/models/Log';
+import { IMModule } from './framework/Module';
 import { IMRequestHandler } from './framework/RequestHandler';
-import { CommandsService } from './framework/services/Commands';
-import { DatabaseService } from './framework/services/DatabaseService';
+import { DatabaseService } from './framework/services/Database';
 import { MessagingService } from './framework/services/Messaging';
-import { PremiumService } from './framework/services/PremiumService';
+import { PremiumService } from './framework/services/Premium';
 import { RabbitMqService } from './framework/services/RabbitMq';
-import { SchedulerService } from './framework/services/Scheduler';
 import { IMService } from './framework/services/Service';
-import { InviteCodeSettingsCache } from './invites/cache/InviteCodeSettingsCache';
-import { InvitesCache } from './invites/cache/InvitesCache';
-import { LeaderboardCache } from './invites/cache/LeaderboardCache';
-import { RanksCache } from './invites/cache/RanksCache';
-import { VanityUrlCache } from './invites/cache/VanityUrlCache';
-import { CaptchaService } from './invites/services/Captcha';
-import { InvitesService } from './invites/services/Invites';
-import { TrackingService } from './invites/services/Tracking';
-import { ReactionRoleCache } from './management/cache/ReactionRoleCache';
-import { ManagementService } from './management/services/ManagementService';
-import { PunishmentCache } from './moderation/cache/PunishmentsCache';
-import { StrikesCache } from './moderation/cache/StrikesCache';
-import { ModerationService } from './moderation/services/Moderation';
-import { MusicCache } from './music/cache/MusicCache';
-import { MusicService } from './music/services/MusicService';
+import { InviteModule } from './invites/InvitesModule';
+import { ManagementModule } from './management/ManagementModule';
+import { ModerationModule } from './moderation/ModerationModule';
+import { MusicModule } from './music/MusicModule';
 import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
+import { GuildSettingsCache } from './settings/cache/GuildSettings';
+import { GuildSettingsKey } from './settings/models/GuildSetting';
+import { SettingsModule } from './settings/SettingsModule';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 i18n.configure({
@@ -64,41 +54,6 @@ export interface ClientOptions {
 	config: any;
 }
 
-export interface ClientCacheObject {
-	[key: string]: Cache<any>;
-
-	inviteCodes: InviteCodeSettingsCache;
-	invites: InvitesCache;
-	vanity: VanityUrlCache;
-	leaderboard: LeaderboardCache;
-	ranks: RanksCache;
-	members: MemberSettingsCache;
-	permissions: PermissionsCache;
-	premium: PremiumCache;
-	punishments: PunishmentCache;
-	guilds: GuildSettingsCache;
-	strikes: StrikesCache;
-	music: MusicCache;
-	reactionRoles: ReactionRoleCache;
-}
-
-export interface ClientServiceObject {
-	[key: string]: IMService;
-
-	database: DatabaseService;
-	rabbitmq: RabbitMqService;
-	message: MessagingService;
-	moderation: ModerationService;
-	scheduler: SchedulerService;
-	commands: CommandsService;
-	captcha: CaptchaService;
-	invites: InvitesService;
-	music: MusicService;
-	tracking: TrackingService;
-	premium: PremiumService;
-	management: ManagementService;
-}
-
 export class IMClient extends Client {
 	public version: string;
 	public config: any;
@@ -112,24 +67,10 @@ export class IMClient extends Client {
 	public shardCount: number;
 
 	public requestHandler: IMRequestHandler;
-	public service: ClientServiceObject;
-	private startingServices: IMService[];
-	public cache: ClientCacheObject;
 
-	// Service shortcuts
-	public db: DatabaseService;
-	public rabbitmq: RabbitMqService;
-	public msg: MessagingService;
-	public mod: ModerationService;
-	public scheduler: SchedulerService;
-	public cmds: CommandsService;
-	public captcha: CaptchaService;
-	public invs: InvitesService;
-	public music: MusicService;
-	public tracking: TrackingService;
-	public premium: PremiumService;
-	public management: ManagementService;
-	// End service shortcuts
+	private modules: Map<new (client: IMClient) => IMModule, IMModule>;
+	private services: Map<new (client: IMClient) => IMService, IMService>;
+	private caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
 
 	public startedAt: Moment;
 	public gatewayConnected: boolean;
@@ -144,6 +85,14 @@ export class IMClient extends Client {
 	};
 
 	public disabledGuilds: Set<string> = new Set();
+
+	private startingServices: IMService[];
+	@Service() private dbService: DatabaseService;
+	@Service() private rabbitMqService: RabbitMqService;
+	@Service() private messageService: MessagingService;
+	@Service() private premiumService: PremiumService;
+	@Cache() private premiumCache: PremiumCache;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
 
 	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
 		super(token, {
@@ -176,7 +125,14 @@ export class IMClient extends Client {
 			cmdErrors: 0
 		};
 
+		// Override eris request handler so we can track some stats
 		this.requestHandler = new IMRequestHandler(this);
+
+		this.modules = new Map();
+		this.services = new Map();
+		this.caches = new Map();
+		this.startingServices = [];
+
 		this.version = version;
 		this.type = type;
 		this.instance = instance;
@@ -186,51 +142,27 @@ export class IMClient extends Client {
 		this.config = config;
 		this.shardId = shardId;
 		this.shardCount = shardCount;
+	}
 
-		this.service = {
-			database: new DatabaseService(this),
-			rabbitmq: new RabbitMqService(this),
-			message: new MessagingService(this),
-			moderation: new ModerationService(this),
-			scheduler: new SchedulerService(this),
-			commands: new CommandsService(this),
-			captcha: new CaptchaService(this),
-			invites: new InvitesService(this),
-			tracking: new TrackingService(this),
-			music: new MusicService(this),
-			premium: new PremiumService(this),
-			management: new ManagementService(this)
-		};
-		this.startingServices = Object.values(this.service);
-		this.cache = {
-			inviteCodes: new InviteCodeSettingsCache(this),
-			invites: new InvitesCache(this),
-			vanity: new VanityUrlCache(this),
-			leaderboard: new LeaderboardCache(this),
-			ranks: new RanksCache(this),
-			members: new MemberSettingsCache(this),
-			permissions: new PermissionsCache(this),
-			premium: new PremiumCache(this),
-			punishments: new PunishmentCache(this),
-			guilds: new GuildSettingsCache(this),
-			strikes: new StrikesCache(this),
-			music: new MusicCache(this),
-			reactionRoles: new ReactionRoleCache(this)
-		};
+	public async init() {
+		this.registerModule(FrameworkModule);
+		this.registerModule(SettingsModule);
+		this.registerModule(InviteModule);
+		this.registerModule(ManagementModule);
+		this.registerModule(ModerationModule);
+		this.registerModule(MusicModule);
 
-		// Setup service shortcuts
-		this.db = this.service.database;
-		this.rabbitmq = this.service.rabbitmq;
-		this.msg = this.service.message;
-		this.mod = this.service.moderation;
-		this.scheduler = this.service.scheduler;
-		this.cmds = this.service.commands;
-		this.captcha = this.service.captcha;
-		this.invs = this.service.invites;
-		this.music = this.service.music;
-		this.tracking = this.service.tracking;
-		this.premium = this.service.premium;
-		this.management = this.service.management;
+		this.setupInjections(this);
+
+		// Inject services and caches
+		this.services.forEach((srv) => this.setupInjections(srv));
+		this.caches.forEach((cache) => this.setupInjections(cache));
+
+		// Init services
+		await Promise.all([...this.services.values()].map((s) => s.init()));
+
+		// Mark all services as starting
+		[...this.services.values()].forEach((srv) => this.startingServices.push(srv));
 
 		this.on('ready', this.onClientReady);
 		this.on('guildCreate', this.onGuildCreate);
@@ -245,18 +177,13 @@ export class IMClient extends Client {
 		this.on('rawWS', this.onRawWS);
 	}
 
-	public async init() {
-		// Services
-		await Promise.all(Object.values(this.service).map((s) => s.init()));
-	}
-
 	public async waitForStartupTicket() {
 		const start = process.uptime();
 		const interval = setInterval(
 			() => console.log(`Waiting for ticket since ${chalk.blue(Math.floor(process.uptime() - start))} seconds...`),
 			10000
 		);
-		await this.service.rabbitmq.waitForStartupTicket();
+		await this.rabbitMqService.waitForStartupTicket();
 		clearInterval(interval);
 	}
 
@@ -267,21 +194,21 @@ export class IMClient extends Client {
 		}
 
 		// This is for convenience, the services could also subscribe to 'ready' event on client
-		await Promise.all(Object.values(this.service).map((s) => s.onClientReady()));
+		await Promise.all([...this.services.values()].map((s) => s.onClientReady()));
 
 		this.hasStarted = true;
 		this.startedAt = moment();
 
-		const set = await this.db.getBotSettings(this.user.id);
+		const set = await this.dbService.getBotSettings(this.user.id);
 		this.settings = set ? set.value : { ...botDefaultSettings };
 
 		console.log(chalk.green(`Client ready! Serving ${chalk.blue(this.guilds.size)} guilds.`));
 
 		// Init all caches
-		await Promise.all(Object.values(this.cache).map((c) => c.init()));
+		await Promise.all([...this.caches.values()].map((c) => c.init()));
 
 		// Insert guilds into db
-		await this.db.saveGuilds(
+		await this.dbService.saveGuilds(
 			this.guilds.map((g) => ({
 				id: g.id,
 				name: g.name,
@@ -292,7 +219,7 @@ export class IMClient extends Client {
 			}))
 		);
 
-		const bannedGuilds = await this.db.getBannedGuilds(this.guilds.map((g) => g.id));
+		const bannedGuilds = await this.dbService.getBannedGuilds(this.guilds.map((g) => g.id));
 
 		// Do some checks for all guilds
 		this.guilds.forEach(async (guild) => {
@@ -324,15 +251,15 @@ export class IMClient extends Client {
 
 				case BotType.pro:
 					// If this is the pro bot then leave any guilds that aren't pro
-					let premium = await this.cache.premium._get(guild.id);
+					let premium = await this.premiumCache._get(guild.id);
 
 					if (!premium) {
 						// Let's try and see if this guild had pro before, and if maybe
 						// the member renewed it, but it didn't update.
-						const oldPremium = await this.db.getPremiumSubscriptionGuildForGuild(guild.id, false);
+						const oldPremium = await this.dbService.getPremiumSubscriptionGuildForGuild(guild.id, false);
 						if (oldPremium) {
-							await this.premium.checkPatreon(oldPremium.memberId);
-							premium = await this.cache.premium._get(guild.id);
+							await this.premiumService.checkPatreon(oldPremium.memberId);
+							premium = await this.premiumCache._get(guild.id);
 						}
 
 						if (!premium) {
@@ -350,7 +277,7 @@ export class IMClient extends Client {
 								.catch(() => undefined);
 							const onTimeout = async () => {
 								// Check one last time before leaving
-								if (await this.cache.premium._get(guild.id)) {
+								if (await this.premiumCache._get(guild.id)) {
 									return;
 								}
 
@@ -374,16 +301,16 @@ export class IMClient extends Client {
 		this.startingServices = this.startingServices.filter((s) => s !== service);
 		if (this.startingServices.length === 0) {
 			console.log(chalk.green(`All services ready`));
-			this.rabbitmq.endStartup().catch((err) => console.error(err));
+			this.rabbitMqService.endStartup().catch((err) => console.error(err));
 		}
 	}
 
 	private async onGuildCreate(guild: Guild): Promise<void> {
 		const channel = await this.getDMChannel(guild.ownerID);
-		const dbGuild = await this.db.getGuild(guild.id);
+		const dbGuild = await this.dbService.getGuild(guild.id);
 
 		if (!dbGuild) {
-			await this.db.saveGuilds([
+			await this.dbService.saveGuilds([
 				{
 					id: guild.id,
 					name: guild.name,
@@ -401,7 +328,7 @@ export class IMClient extends Client {
 				[GuildSettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
 			};
 
-			await this.db.saveGuildSettings({
+			await this.dbService.saveGuildSettings({
 				guildId: guild.id,
 				value: newSettings
 			});
@@ -423,13 +350,13 @@ export class IMClient extends Client {
 		// We have to do this before checking premium or it will fail
 		if (dbGuild && dbGuild.deletedAt) {
 			dbGuild.deletedAt = null;
-			await this.db.saveGuilds([dbGuild]);
+			await this.dbService.saveGuilds([dbGuild]);
 		}
 
 		// Check pro bot
 		if (this.type === BotType.pro) {
 			// We use a DB query instead of getting the value from the cache
-			const premium = await this.cache.premium._get(guild.id);
+			const premium = await this.premiumCache._get(guild.id);
 
 			if (!premium) {
 				await channel
@@ -443,7 +370,7 @@ export class IMClient extends Client {
 					)
 					.catch(() => undefined);
 				const onTimeout = async () => {
-					if (await this.cache.premium._get(guild.id)) {
+					if (await this.premiumCache._get(guild.id)) {
 						return;
 					}
 
@@ -453,9 +380,6 @@ export class IMClient extends Client {
 				return;
 			}
 		}
-
-		// Insert tracking data
-		await this.tracking.insertGuildData(guild);
 
 		// Send welcome message to owner with setup instructions
 		channel
@@ -485,7 +409,7 @@ export class IMClient extends Client {
 		}
 
 		// Remove the guild (only sets the 'deletedAt' timestamp)
-		await this.db.saveGuilds([
+		await this.dbService.saveGuilds([
 			{
 				id: guild.id,
 				name: guild.name,
@@ -541,19 +465,51 @@ export class IMClient extends Client {
 			.sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0];
 	}
 
+	public flushCaches(guildId: string, caches?: string[]) {
+		[...this.caches.entries()].forEach(
+			([key, cache]) =>
+				(!caches ||
+					!caches.length ||
+					caches.some((c) => c.toLowerCase() === key.name.toLowerCase().replace('cache', ''))) &&
+				cache.flush(guildId)
+		);
+	}
+	public getCacheSizes() {
+		let channelCount = this.groupChannels.size + this.privateChannels.size;
+		let roleCount = 0;
+
+		this.guilds.forEach((g) => {
+			channelCount += g.channels.size;
+			roleCount += g.roles.size;
+		});
+
+		const res: any = {
+			guilds: this.guilds.size,
+			users: this.users.size,
+			channels: channelCount,
+			roles: roleCount
+		};
+
+		[...this.caches.entries()].forEach(
+			([key, cache]) => (res[key.name.toLowerCase().replace('cache', '')] = cache.getSize())
+		);
+
+		return res;
+	}
+
 	public async logModAction(guild: Guild, embed: Embed) {
-		const modLogChannelId = (await this.cache.guilds.get(guild.id)).modLogChannel;
+		const modLogChannelId = (await this.guildSettingsCache.get(guild.id)).modLogChannel;
 
 		if (modLogChannelId) {
 			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
 			if (logChannel) {
-				await this.msg.sendEmbed(logChannel, embed);
+				await this.messageService.sendEmbed(logChannel, embed);
 			}
 		}
 	}
 
 	public async logAction(guild: Guild, message: Message, action: LogAction, data: any) {
-		const logChannelId = (await this.cache.guilds.get(guild.id)).logChannel;
+		const logChannelId = (await this.guildSettingsCache.get(guild.id)).logChannel;
 
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;
@@ -565,7 +521,7 @@ export class IMClient extends Client {
 					json = json.substr(0, 1000) + '...';
 				}
 
-				const embed = this.msg.createEmbed({
+				const embed = this.messageService.createEmbed({
 					title: 'Log Action',
 					fields: [
 						{
@@ -588,11 +544,11 @@ export class IMClient extends Client {
 						}
 					]
 				});
-				await this.msg.sendEmbed(logChannel, embed);
+				await this.messageService.sendEmbed(logChannel, embed);
 			}
 		}
 
-		this.db.saveLog(guild, message.author, {
+		this.dbService.saveLog(guild, message.author, {
 			id: null,
 			guildId: guild.id,
 			memberId: message.author.id,
@@ -632,13 +588,13 @@ export class IMClient extends Client {
 	private async onConnect() {
 		console.error('DISCORD CONNECT');
 		this.gatewayConnected = true;
-		await this.rabbitmq.sendStatusToManager();
+		await this.rabbitMqService.sendStatusToManager();
 	}
 
 	private async onDisconnect(err: Error) {
 		console.error('DISCORD DISCONNECT');
 		this.gatewayConnected = false;
-		await this.rabbitmq.sendStatusToManager(err);
+		await this.rabbitMqService.sendStatusToManager(err);
 
 		if (err) {
 			console.error(err);
@@ -661,5 +617,59 @@ export class IMClient extends Client {
 
 	private async onRawWS() {
 		this.stats.wsEvents++;
+	}
+
+	public registerModule<T extends IMModule>(module: new (client: IMClient) => T) {
+		if (this.modules.has(module)) {
+			throw new Error(`Module ${module.name} registered multiple times`);
+		}
+		this.modules.set(module, new module(this));
+	}
+	public registerService<T extends IMService>(service: new (client: IMClient) => T) {
+		if (this.services.has(service)) {
+			throw new Error(`Service ${service.name} registered multiple times`);
+		}
+		this.services.set(service, new service(this));
+	}
+	public registerCache<P extends any, T extends IMCache<P>>(cache: new (client: IMClient) => T) {
+		if (this.caches.has(cache)) {
+			throw new Error(`Cache ${cache.name} registered multiple times`);
+		}
+		this.caches.set(cache, new cache(this));
+	}
+	public setupInjections(obj: any) {
+		const objName = chalk.blue(obj.constructor.name);
+
+		let srvObj = obj.constructor;
+		while (srvObj) {
+			const serviceInjs = serviceInjections.get(srvObj) || new Map();
+			for (const [key, getInjType] of serviceInjs) {
+				const injConstr = getInjType();
+				const injService = this.services.get(injConstr);
+				if (!injService) {
+					throw new Error(`Could not inject ${chalk.blue(injConstr.name)} into ${objName}:${chalk.blue(key)}`);
+				}
+
+				obj[key] = injService;
+				console.debug(chalk.green(`Injected ${chalk.blue(injConstr.name)} into ${objName}:${chalk.blue(key)}`));
+			}
+			srvObj = Object.getPrototypeOf(srvObj);
+		}
+
+		let cacheObj = obj.constructor;
+		while (cacheObj) {
+			const cacheInjs = cacheInjections.get(cacheObj) || new Map();
+			for (const [key, getInjType] of cacheInjs) {
+				const injConstr = getInjType();
+				const injCache = this.caches.get(injConstr);
+				if (!injCache) {
+					throw new Error(`Could not inject ${chalk.blue(injConstr.name)} into ${objName}:${chalk.blue(key)}`);
+				}
+
+				obj[key] = injCache;
+				console.debug(chalk.green(`Injected ${chalk.blue(injConstr.name)} into ${objName}:${chalk.blue(key)}`));
+			}
+			cacheObj = Object.getPrototypeOf(cacheObj);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { IMClient } from '../../../client';
 import { MusicPlatformType } from '../../../types';
+import { MusicService } from '../../services/Music';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -18,8 +18,9 @@ export class RaveDJ extends MusicPlatform {
 
 	private idToken: string;
 
-	public constructor(client: IMClient) {
-		super(client);
+	public constructor(service: MusicService) {
+		super(service);
+
 		// TODO: Deactivate service if not available
 		this.getIdToken().catch(() => undefined);
 	}

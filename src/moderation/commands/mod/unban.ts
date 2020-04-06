@@ -1,11 +1,15 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { ModerationService } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.unban,
@@ -33,14 +37,14 @@ export default class extends Command {
 		message: Message,
 		[targetUser, reason]: [BasicUser, string],
 		flags: {},
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
-		const embed = this.client.mod.createBasicEmbed(targetUser);
+		const embed = this.mod.createBasicEmbed(targetUser);
 
 		try {
 			await guild.unbanMember(targetUser.id, encodeURIComponent(reason));
 
-			const logEmbed = this.client.mod.createBasicEmbed(message.author);
+			const logEmbed = this.mod.createBasicEmbed(message.author);
 
 			const usr = `${targetUser.username}#${targetUser.discriminator} ` + `(${targetUser.id})`;
 			logEmbed.description += `**User**: ${usr}\n`;

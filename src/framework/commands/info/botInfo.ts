@@ -3,9 +3,9 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { BotCommand, BotType, CommandGroup } from '../../../types';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.botInfo,
@@ -20,7 +20,7 @@ export default class extends Command {
 		message: Message,
 		args: any[],
 		flags: {},
-		{ t, guild, settings, isPremium }: Context
+		{ t, guild, settings, isPremium }: CommandContext
 	): Promise<any> {
 		const lang = settings.lang;
 
@@ -43,7 +43,7 @@ export default class extends Command {
 		// Shard info
 		embed.fields.push({
 			name: t('cmd.botInfo.shards.current'),
-			value: `${this.client.shardId} (${this.client.db.getDbShardForGuild(guild.id)})`,
+			value: `${this.client.shardId} (${this.db.getDbShardForGuild(guild.id)})`,
 			inline: true
 		});
 

@@ -2,14 +2,20 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { LeaderboardStyle } from '../../../framework/models/GuildSetting';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
+import { MemberSettingsCache } from '../../../settings/cache/MemberSettings';
+import { LeaderboardStyle } from '../../../settings/models/GuildSetting';
 import { CommandGroup, InvitesCommand } from '../../../types';
+import { LeaderboardCache } from '../../cache/LeaderboardCache';
 
 const usersPerPage = 10;
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private leaderboardCache: LeaderboardCache;
+	@Cache() private memberSettingsCache: MemberSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.leaderboard,
@@ -28,16 +34,21 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [_page]: [number], flags: {}, { guild, t, settings }: Context): Promise<any> {
-		let invs = await this.client.cache.leaderboard.get(guild.id);
-		const meta = this.client.cache.leaderboard.getCacheMeta(guild.id);
+	public async action(
+		message: Message,
+		[_page]: [number],
+		flags: {},
+		{ guild, t, settings }: CommandContext
+	): Promise<any> {
+		let invs = await this.leaderboardCache.get(guild.id);
+		const meta = this.leaderboardCache.getCacheMeta(guild.id);
 		if (settings.hideLeftMembersFromLeaderboard) {
 			invs = invs.filter((e) => guild.members.has(e.id));
 		}
 
 		// Get the member settings everytime because it's not that much work
 		// and because we want the 'hideFromLeaderboard' setting to work immediatly
-		const memSets = await this.client.cache.members.get(guild.id);
+		const memSets = await this.memberSettingsCache.get(guild.id);
 		invs = invs.filter((e) => !memSets.has(e.id) || !memSets.get(e.id).hideFromLeaderboard);
 
 		const fromText = t('cmd.leaderboard.from', {

@@ -1,12 +1,12 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { BooleanResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../types';
 import { MusicConnection } from '../../models/MusicConnection';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: MusicCommand.lyrics,
@@ -26,8 +26,13 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: [], { live }: { live: boolean }, { t, guild }: Context): Promise<any> {
-		const conn = await this.client.music.getMusicConnection(guild);
+	public async action(
+		message: Message,
+		args: [],
+		{ live }: { live: boolean },
+		{ t, guild }: CommandContext
+	): Promise<any> {
+		const conn = await this.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
 			await this.sendReply(message, t('music.notPlaying'));
 			return;
@@ -47,17 +52,14 @@ export default class extends Command {
 
 		const item = conn.getNowPlaying();
 
-		const lyrics = await this.client.music.getLyrics(item);
+		const lyrics = await this.music.getLyrics(item);
 		if (lyrics.length === 0) {
 			await this.sendReply(message, t('cmd.lyrics.notFound'));
 			return;
 		}
 
 		if (!live) {
-			await this.sendReply(
-				message,
-				lyrics.map((l) => `${this.client.music.formatTime(l.start)}: ${l.text}`).join('\n')
-			);
+			await this.sendReply(message, lyrics.map((l) => `${this.music.formatTime(l.start)}: ${l.text}`).join('\n'));
 			return;
 		}
 

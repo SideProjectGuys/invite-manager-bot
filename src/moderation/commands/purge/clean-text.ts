@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.cleanText,
@@ -32,7 +32,7 @@ export default class extends Command {
 		message: Message,
 		[text, numberOfMessages]: [string, number],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed();
 

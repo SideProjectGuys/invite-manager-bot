@@ -1,15 +1,19 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, InvitesCommand } from '../../../types';
+import { RanksCache } from '../../cache/RanksCache';
 
 const MIN = -2147483648;
 const MAX = 2147483647;
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private ranksCache: RanksCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.addRank,
@@ -42,9 +46,9 @@ export default class extends Command {
 		message: Message,
 		[role, invites, description]: [Role, number, string],
 		flags: {},
-		{ guild, t, me }: Context
+		{ guild, t, me }: CommandContext
 	): Promise<any> {
-		await this.client.db.saveRoles([
+		await this.db.saveRoles([
 			{
 				id: role.id,
 				name: role.name,
@@ -73,7 +77,7 @@ export default class extends Command {
 			);
 		}
 
-		const ranks = await this.client.cache.ranks.get(guild.id);
+		const ranks = await this.ranksCache.get(guild.id);
 		const rank = ranks.find((r) => r.roleId === role.id);
 		const descr = description ? description : '';
 
@@ -81,9 +85,9 @@ export default class extends Command {
 		if (rank) {
 			rank.numInvites = invites;
 			rank.description = descr;
-			await this.client.db.saveRank(rank);
+			await this.db.saveRank(rank);
 		} else {
-			await this.client.db.saveRank({
+			await this.db.saveRank({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,
@@ -98,7 +102,7 @@ export default class extends Command {
 			description
 		});
 
-		this.client.cache.ranks.flush(guild.id);
+		this.ranksCache.flush(guild.id);
 
 		if (!isNew) {
 			return this.sendReply(

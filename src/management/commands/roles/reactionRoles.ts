@@ -1,14 +1,18 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { BooleanResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
+import { ReactionRoleCache } from '../../cache/ReactionRoleCache';
 
 const THUMBS_UP = '👍';
 const CUSTOM_EMOJI_REGEX = /<(?:.*)?:(\w+):(\d+)>/;
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private reactionRolesCache: ReactionRoleCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ManagementCommand.reactionRole,
@@ -48,9 +52,9 @@ export default class extends Command {
 		message: Message,
 		[messageId, emoji, role]: [string, string, Role],
 		{ remove }: { remove: boolean },
-		{ t, guild }: Context
+		{ t, guild }: CommandContext
 	): Promise<any> {
-		const dbMessage = await this.client.db.getMessageById(guild.id, messageId);
+		const dbMessage = await this.db.getMessageById(guild.id, messageId);
 
 		if (!dbMessage) {
 			return this.sendReply(message, t('cmd.reactionRole.noMessageFoundInDatabase'));
@@ -60,7 +64,7 @@ export default class extends Command {
 		const emojiId = matches ? `${matches[1]}:${matches[2]}` : emoji;
 
 		if (remove) {
-			await this.client.db.removeReactionRole(dbMessage.guildId, dbMessage.channelId, dbMessage.id, emojiId);
+			await this.db.removeReactionRole(dbMessage.guildId, dbMessage.channelId, dbMessage.id, emojiId);
 			await this.client.removeMessageReaction(dbMessage.channelId, dbMessage.id, emojiId);
 		} else {
 			const reactionRole = {
@@ -73,7 +77,7 @@ export default class extends Command {
 
 			try {
 				await this.client.addMessageReaction(dbMessage.channelId, dbMessage.id, emojiId);
-				await this.client.db.saveReactionRole(reactionRole);
+				await this.db.saveReactionRole(reactionRole);
 			} catch (error) {
 				if (error.code === 10014) {
 					await this.sendReply(message, t('cmd.reactionRole.unknownEmoji'));
@@ -83,7 +87,7 @@ export default class extends Command {
 			}
 		}
 
-		this.client.cache.reactionRoles.flush(guild.id);
+		this.reactionRolesCache.flush(guild.id);
 
 		await this.client.addMessageReaction(message.channel.id, message.id, THUMBS_UP);
 	}

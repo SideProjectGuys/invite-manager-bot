@@ -1,14 +1,18 @@
 import { Embed, Invite, Message } from 'eris';
 
-import { IMClient } from '../../../client';
-import { beautify, inviteCodeSettingsInfo } from '../../../settings';
-import { BotCommand, CommandGroup } from '../../../types';
-import { InviteCodeSettingsKey } from '../../models/InviteCodeSetting';
-import { LogAction } from '../../models/Log';
-import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../client';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { Cache } from '../../framework/decorators/Cache';
+import { LogAction } from '../../framework/models/Log';
+import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../framework/resolvers';
+import { beautify, inviteCodeSettingsInfo } from '../../settings';
+import { BotCommand, CommandGroup } from '../../types';
+import { InviteCodeSettingsCache } from '../cache/InviteCodeSettingsCache';
+import { InviteCodeSettingsKey } from '../models/InviteCodeSetting';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.inviteCodeConfig,
@@ -38,7 +42,7 @@ export default class extends Command {
 		message: Message,
 		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
 		flags: {},
-		context: Context
+		context: CommandContext
 	): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
@@ -60,7 +64,7 @@ export default class extends Command {
 		const info = inviteCodeSettingsInfo[key];
 
 		if (!inv) {
-			const allSets = await this.client.cache.inviteCodes.get(guild.id);
+			const allSets = await this.inviteCodeSettingsCache.get(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, invCode) =>
 					embed.fields.push({
@@ -79,7 +83,7 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.inviteCodeConfig.codeForOtherGuild'));
 		}
 
-		const codeSettings = await this.client.cache.inviteCodes.getOne(guild.id, inv.code);
+		const codeSettings = await this.inviteCodeSettingsCache.getOne(guild.id, inv.code);
 		const oldVal = codeSettings[key];
 		embed.title = `${inv.code} - ${key}`;
 
@@ -129,7 +133,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.inviteCodes.setOne(guild.id, inv.code, key, value);
+		value = await this.inviteCodeSettingsCache.setOne(guild.id, inv.code, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
@@ -172,7 +176,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: InviteCodeSettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: InviteCodeSettingsKey, value: any, { t, me }: CommandContext): string | null {
 		return null;
 	}
 
@@ -182,7 +186,7 @@ export default class extends Command {
 		embed: Embed,
 		key: InviteCodeSettingsKey,
 		value: any,
-		context: Context
+		context: CommandContext
 	): Promise<Function> {
 		return null;
 	}

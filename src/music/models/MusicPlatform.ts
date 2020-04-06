@@ -1,6 +1,6 @@
 import { IMClient } from '../../client';
 import { MusicPlatformType } from '../../types';
-import { MusicService } from '../services/MusicService';
+import { MusicService } from '../services/Music';
 
 import { MusicItem } from './MusicItem';
 
@@ -10,13 +10,10 @@ export abstract class MusicPlatform {
 	public abstract supportsLyrics: boolean;
 	public abstract supportsSearch: boolean;
 
-	protected client: IMClient;
-	public get service(): MusicService {
-		return this.client.music;
-	}
+	public readonly service: MusicService;
 
-	public constructor(client: IMClient) {
-		this.client = client;
+	public constructor(service: MusicService) {
+		this.service = service;
 	}
 
 	public abstract isPlatformUrl(url: string): boolean;

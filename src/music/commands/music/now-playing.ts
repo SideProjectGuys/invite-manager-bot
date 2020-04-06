@@ -1,14 +1,14 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { BooleanResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../types';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 const PIN_UPDATE_INTERVAL = 5000;
 const PREMIUM_PIN_UPDATE_INTERVAL = 2000;
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	private timerMap: Map<string, NodeJS.Timer> = new Map();
 
 	public constructor(client: IMClient) {
@@ -33,12 +33,12 @@ export default class extends Command {
 		message: Message,
 		args: any[],
 		{ pin }: { pin: boolean },
-		{ guild, t, isPremium }: Context
+		{ guild, t, isPremium }: CommandContext
 	): Promise<any> {
-		const conn = await this.client.music.getMusicConnection(guild);
+		const conn = await this.music.getMusicConnection(guild);
 
 		let item = conn.getNowPlaying();
-		const embed = this.client.music.createPlayingEmbed(item);
+		const embed = this.music.createPlayingEmbed(item);
 		if (!pin && item) {
 			embed.fields.push({
 				name: t('cmd.nowPlaying.playTime'),
@@ -61,7 +61,7 @@ export default class extends Command {
 				const newId = item ? item.id : null;
 
 				if (oldId !== newId) {
-					await msg.edit({ embed: this.client.music.createPlayingEmbed(item) });
+					await msg.edit({ embed: this.music.createPlayingEmbed(item) });
 				}
 
 				if (item) {

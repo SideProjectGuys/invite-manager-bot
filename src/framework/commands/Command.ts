@@ -11,9 +11,17 @@ import {
 	ModerationCommand,
 	MusicCommand
 } from '../../types';
+import { Service } from '../decorators/Service';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
-import { CreateEmbedFunc, SendEmbedFunc, SendReplyFunc, ShowPaginatedFunc } from '../services/Messaging';
+import { DatabaseService } from '../services/Database';
+import {
+	CreateEmbedFunc,
+	MessagingService,
+	SendEmbedFunc,
+	SendReplyFunc,
+	ShowPaginatedFunc
+} from '../services/Messaging';
 
 export interface Arg {
 	name: string;
@@ -59,7 +67,7 @@ export interface CommandOptions {
 
 export type TranslateFunc = (key: string, replacements?: { [key: string]: any }) => string;
 
-export type Context = {
+export type CommandContext = {
 	guild: Guild;
 	me: Member;
 	t: TranslateFunc;
@@ -67,7 +75,7 @@ export type Context = {
 	isPremium: boolean;
 };
 
-export abstract class Command {
+export abstract class IMCommand {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
@@ -88,6 +96,8 @@ export abstract class Command {
 
 	public extraExamples: string[] = [];
 
+	@Service() protected db: DatabaseService;
+	@Service() protected msg: MessagingService;
 	protected createEmbed: CreateEmbedFunc;
 	protected sendReply: SendReplyFunc;
 	protected sendEmbed: SendEmbedFunc;
@@ -132,14 +142,16 @@ export abstract class Command {
 
 			this.usage += arg.required ? `<${arg.name}> ` : `[${arg.name}] `;
 		});
-
-		this.createEmbed = client.msg.createEmbed.bind(client.msg);
-		this.sendReply = client.msg.sendReply.bind(client.msg);
-		this.sendEmbed = client.msg.sendEmbed.bind(client.msg);
-		this.showPaginated = client.msg.showPaginated.bind(client.msg);
 	}
 
-	public getInfo(context: Context) {
+	public async init() {
+		this.createEmbed = this.msg.createEmbed.bind(this.msg);
+		this.sendReply = this.msg.sendReply.bind(this.msg);
+		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
+		this.showPaginated = this.msg.showPaginated.bind(this.msg);
+	}
+
+	public getInfo(context: CommandContext) {
 		let info = '';
 		for (let i = 0; i < this.flags.length; i++) {
 			const flag = this.flags[i];
@@ -156,7 +168,7 @@ export abstract class Command {
 		return info;
 	}
 
-	public getInfo2(context: Context) {
+	public getInfo2(context: CommandContext) {
 		const ret: { args: ArgInfo[]; flags: FlagInfo[] } = { args: [], flags: [] };
 
 		for (let i = 0; i < this.flags.length; i++) {
@@ -186,5 +198,5 @@ export abstract class Command {
 		return ret;
 	}
 
-	public abstract action(message: Message, args: any[], flags: { [x: string]: any }, context: Context): any;
+	public abstract action(message: Message, args: any[], flags: { [x: string]: any }, context: CommandContext): any;
 }

@@ -1,14 +1,14 @@
 import { Embed, Message } from 'eris';
 
-import { IMClient } from '../../../client';
-import { beautify, botSettingsInfo } from '../../../settings';
-import { BotCommand, CommandGroup } from '../../../types';
-import { BotSettingsKey } from '../../models/BotSetting';
-import { LogAction } from '../../models/Log';
-import { EnumResolver, SettingsValueResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../client';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { LogAction } from '../../framework/models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../framework/resolvers';
+import { beautify, botSettingsInfo } from '../../settings';
+import { BotCommand, CommandGroup } from '../../types';
+import { BotSettingsKey } from '../models/BotSetting';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.botConfig,
@@ -34,7 +34,7 @@ export default class extends Command {
 		message: Message,
 		[key, value]: [BotSettingsKey, any],
 		flags: {},
-		context: Context
+		context: CommandContext
 	): Promise<any> {
 		const { guild, t } = context;
 
@@ -125,7 +125,7 @@ export default class extends Command {
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
 		(this.client.settings[key] as any) = value;
-		await this.client.db.saveBotSettings({
+		await this.db.saveBotSettings({
 			id: this.client.user.id,
 			value: this.client.settings
 		});
@@ -172,7 +172,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: BotSettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: BotSettingsKey, value: any, { t, me }: CommandContext): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
@@ -193,7 +193,7 @@ export default class extends Command {
 		embed: Embed,
 		key: BotSettingsKey,
 		value: any,
-		context: Context
+		context: CommandContext
 	): Promise<Function> {
 		return;
 	}

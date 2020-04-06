@@ -1,5 +1,5 @@
 import { IMClient } from '../../client';
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver, ResolverConstructor } from './Resolver';
 
@@ -16,7 +16,7 @@ export class ArrayResolver extends Resolver {
 		}
 	}
 
-	public async resolve(value: string, context: Context, previous: any[]): Promise<any[]> {
+	public async resolve(value: string, context: CommandContext, previous: any[]): Promise<any[]> {
 		if (!value) {
 			return;
 		}

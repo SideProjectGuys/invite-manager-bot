@@ -1,10 +1,16 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { GuildSettingsKey, RankAssignmentStyle } from '../../framework/models/GuildSetting';
-import { JoinInvalidatedReason } from '../../framework/models/Join';
+import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { DatabaseService } from '../../framework/services/Database';
+import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
+import { GuildSettingsKey, RankAssignmentStyle } from '../../settings/models/GuildSetting';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
+import { RanksCache } from '../cache/RanksCache';
+import { JoinInvalidatedReason } from '../models/Join';
 import { Rank } from '../models/Rank';
 
 export interface LeaderboardEntry {
@@ -32,10 +38,15 @@ export interface InviteCounts {
 }
 
 export class InvitesService extends IMService {
+	@Service() private db: DatabaseService;
+	@Service() private msg: MessagingService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+	@Cache() private ranksCache: RanksCache;
+
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
-		const inviteCodePromise = this.client.db.getInviteCodeTotalForMember(guildId, memberId);
-		const joinsPromise = this.client.db.getInvalidatedJoinsForMember(guildId, memberId);
-		const customInvitesPromise = this.client.db.getCustomInviteTotalForMember(guildId, memberId);
+		const inviteCodePromise = this.db.getInviteCodeTotalForMember(guildId, memberId);
+		const joinsPromise = this.db.getInvalidatedJoinsForMember(guildId, memberId);
+		const customInvitesPromise = this.db.getCustomInviteTotalForMember(guildId, memberId);
 
 		const [regular, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
@@ -59,9 +70,9 @@ export class InvitesService extends IMService {
 	}
 
 	public async generateLeaderboard(guildId: string) {
-		const inviteCodePromise = this.client.db.getInviteCodesForGuild(guildId);
-		const joinsPromise = this.client.db.getJoinsForGuild(guildId);
-		const customInvitesPromise = this.client.db.getCustomInvitesForGuild(guildId);
+		const inviteCodePromise = this.db.getInviteCodesForGuild(guildId);
+		const joinsPromise = this.db.getJoinsForGuild(guildId);
+		const customInvitesPromise = this.db.getCustomInvitesForGuild(guildId);
 
 		// TODO: This is typed as "any" because of a typescript bug https://github.com/microsoft/TypeScript/issues/34925
 		const [invCodes, js, customInvs]: [any[], any[], any[]] = await Promise.all([
@@ -156,12 +167,12 @@ export class InvitesService extends IMService {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await this.client.db.getTotalJoinsForMember(guild.id, member.id);
+			numJoins = await this.db.getTotalJoinsForMember(guild.id, member.id);
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await this.client.db.getFirstJoinForMember(guild.id, member.id);
+			const temp = await this.db.getFirstJoinForMember(guild.id, member.id);
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
 			}
@@ -169,7 +180,7 @@ export class InvitesService extends IMService {
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await this.client.db.getPreviousJoinForMember(guild.id, member.id);
+			const temp = await this.db.getPreviousJoinForMember(guild.id, member.id);
 			if (temp) {
 				prevJoin = moment(temp.createdAt);
 			}
@@ -189,7 +200,7 @@ export class InvitesService extends IMService {
 		const joinedAt = moment(member.joinedAt);
 		const createdAt = moment(member.user.createdAt);
 
-		return this.client.msg.fillTemplate(
+		return this.msg.fillTemplate(
 			guild,
 			template,
 			{
@@ -227,10 +238,10 @@ export class InvitesService extends IMService {
 		let nextRankName = '';
 		let nextRank: Rank = null;
 
-		const settings = await this.client.cache.guilds.get(guild.id);
+		const settings = await this.guildSettingsCache.get(guild.id);
 		const style = settings.rankAssignmentStyle;
 
-		const allRanks = await this.client.cache.ranks.get(guild.id);
+		const allRanks = await this.ranksCache.get(guild.id);
 
 		// Return early if we don't have any ranks so we do not
 		// get any permission issues for MANAGE_ROLES
@@ -290,7 +301,7 @@ export class InvitesService extends IMService {
 				if (rankChannel) {
 					const rankMessageFormat = settings.rankAnnouncementMessage;
 					if (rankMessageFormat) {
-						const msg = await this.client.msg.fillTemplate(guild, rankMessageFormat, {
+						const msg = await this.msg.fillTemplate(guild, rankMessageFormat, {
 							memberId: member.id,
 							memberName: member.user.username,
 							memberFullName: member.user.username + '#' + member.user.discriminator,
@@ -307,7 +318,7 @@ export class InvitesService extends IMService {
 					}
 				} else {
 					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
-					await this.client.cache.guilds.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
+					await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
 				}
 			}
 		}

@@ -1,13 +1,13 @@
 import { Channel } from 'eris';
 
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
 const channelRegex = /^(?:<#)?(\d+)>?$/;
 
 export class ChannelResolver extends Resolver {
-	public async resolve(value: string, { guild, t }: Context): Promise<Channel> {
+	public async resolve(value: string, { guild, t }: CommandContext): Promise<Channel> {
 		if (!guild || !value) {
 			return;
 		}

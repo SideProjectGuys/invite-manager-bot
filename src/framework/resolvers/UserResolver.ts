@@ -1,12 +1,16 @@
 import { BasicUser } from '../../types';
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
+import { Service } from '../decorators/Service';
+import { DatabaseService } from '../services/Database';
 
 import { Resolver } from './Resolver';
 
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class UserResolver extends Resolver {
-	public async resolve(value: string, { guild, t }: Context): Promise<BasicUser> {
+	@Service() private db: DatabaseService;
+
+	public async resolve(value: string, { guild, t }: CommandContext): Promise<BasicUser> {
 		if (!value) {
 			return;
 		}
@@ -23,7 +27,7 @@ export class UserResolver extends Resolver {
 			}
 			// Then try our database
 			if (!user) {
-				user = await this.client.db.getMember(guild.id, id).then((u) => ({
+				user = await this.db.getMember(guild.id, id).then((u) => ({
 					...u,
 					username: u.name,
 					createdAt: u.createdAt.getTime(),
@@ -62,7 +66,7 @@ export class UserResolver extends Resolver {
 
 			// Try to find exact match in DB
 			if (users.length === 0) {
-				users = await this.client.db.getMembersByName(guild.id, username, discriminator).then((us) =>
+				users = await this.db.getMembersByName(guild.id, username, discriminator).then((us) =>
 					us.map((u) => ({
 						...u,
 						username: u.name,
@@ -74,7 +78,7 @@ export class UserResolver extends Resolver {
 
 			// Try to find partial match in DB
 			if (users.length === 0) {
-				users = await this.client.db.getMembersByName(guild.id, username, discriminator).then((us) =>
+				users = await this.db.getMembersByName(guild.id, username, discriminator).then((us) =>
 					us.map((u) => ({
 						...u,
 						username: u.name,

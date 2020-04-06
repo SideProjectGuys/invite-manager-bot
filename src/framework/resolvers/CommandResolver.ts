@@ -1,17 +1,19 @@
-import { Command, Context } from '../commands/Command';
+import { CommandContext, IMCommand } from '../commands/Command';
+import { Service } from '../decorators/Service';
+import { CommandsService } from '../services/Commands';
 
 import { Resolver } from './Resolver';
 
 export class CommandResolver extends Resolver {
-	public async resolve(value: string, { guild, t }: Context): Promise<Command> {
+	@Service(() => CommandsService) private cmds: CommandsService;
+
+	public async resolve(value: string, { guild, t }: CommandContext): Promise<IMCommand> {
 		if (!guild || !value) {
 			return;
 		}
 
 		const name = value.toLowerCase();
-		const cmds = this.client.cmds.commands.filter(
-			(c) => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0
-		);
+		const cmds = this.cmds.commands.filter((c) => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0);
 
 		if (cmds.length === 0) {
 			throw Error(t(`resolvers.${this.getType()}.notFound`));
@@ -33,9 +35,9 @@ export class CommandResolver extends Resolver {
 		}
 	}
 
-	public getHelp({ t }: Context) {
+	public getHelp({ t }: CommandContext) {
 		return t(`resolvers.${this.getType()}.validValues`, {
-			values: this.client.cmds.commands.map((c) => '`' + c.name + '`').join(', ')
+			values: this.cmds.commands.map((c) => '`' + c.name + '`').join(', ')
 		});
 	}
 }

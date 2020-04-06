@@ -2,9 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup } from '../../../types';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.members,
@@ -15,7 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { guild, t }: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t }: CommandContext): Promise<any> {
 		const ONE_SECOND = 1000;
 		const ONE_MINUTE = 60 * ONE_SECOND;
 		const ONE_HOUR = 60 * ONE_MINUTE;

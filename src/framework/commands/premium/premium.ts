@@ -3,8 +3,12 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
+import { PremiumCache } from '../../cache/Premium';
+import { Cache } from '../../decorators/Cache';
+import { Service } from '../../decorators/Service';
 import { EnumResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { PremiumService } from '../../services/Premium';
+import { CommandContext, IMCommand } from '../Command';
 
 enum Action {
 	Check = 'Check',
@@ -12,7 +16,10 @@ enum Action {
 	Deactivate = 'Deactivate'
 }
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private premium: PremiumService;
+	@Cache() private premiumCache: PremiumCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.premium,
@@ -34,7 +41,7 @@ export default class extends Command {
 		message: Message,
 		[action]: [Action],
 		flags: {},
-		{ guild, t, settings, isPremium }: Context
+		{ guild, t, settings, isPremium }: CommandContext
 	): Promise<any> {
 		// TODO: Create list of premium features (also useful for FAQ)
 		const lang = settings.lang;
@@ -43,8 +50,8 @@ export default class extends Command {
 
 		const embed = this.createEmbed();
 
-		const subs = await this.client.db.getPremiumSubscriptionsForMember(memberId, true);
-		const guildSubs = subs ? await this.client.db.getPremiumSubscriptionGuildsForMember(memberId) : [];
+		const subs = await this.db.getPremiumSubscriptionsForMember(memberId, true);
+		const guildSubs = subs ? await this.db.getPremiumSubscriptionGuildsForMember(memberId) : [];
 
 		if (!action) {
 			if (!subs || subs.length === 0) {
@@ -132,12 +139,12 @@ export default class extends Command {
 					if (guildSubs.length >= maxGuilds) {
 						embed.description = t('cmd.premium.activate.maxGuilds');
 					} else {
-						await this.client.db.savePremiumSubscriptionGuild({
+						await this.db.savePremiumSubscriptionGuild({
 							memberId,
 							guildId
 						});
 
-						this.client.cache.premium.flush(guildId);
+						this.premiumCache.flush(guildId);
 
 						embed.description = t('cmd.premium.activate.done');
 					}
@@ -154,16 +161,16 @@ export default class extends Command {
 				} else if (!isPremium) {
 					embed.description = t('cmd.premium.deactivate.noSubscription');
 				} else {
-					await this.client.db.removePremiumSubscriptionGuild(memberId, guildId);
+					await this.db.removePremiumSubscriptionGuild(memberId, guildId);
 
-					this.client.cache.premium.flush(guildId);
+					this.premiumCache.flush(guildId);
 
 					embed.description = t('cmd.premium.deactivate.done');
 				}
 			} else if (action === Action.Check) {
 				embed.title = t('cmd.premium.check.title');
 
-				const res = await this.client.premium.checkPatreon(memberId);
+				const res = await this.premium.checkPatreon(memberId);
 
 				if (res === 'not_found') {
 					embed.description = t('cmd.premium.check.notFound');

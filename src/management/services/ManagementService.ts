@@ -1,8 +1,12 @@
 import { Emoji, PossiblyUncachedMessage, TextChannel } from 'eris';
 
+import { Cache } from '../../framework/decorators/Cache';
 import { IMService } from '../../framework/services/Service';
+import { ReactionRoleCache } from '../cache/ReactionRoleCache';
 
 export class ManagementService extends IMService {
+	@Cache() private reactionRolesCache: ReactionRoleCache;
+
 	public async init() {
 		this.client.on('messageReactionAdd', this.onMessageReactionAdd.bind(this));
 		this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
@@ -10,7 +14,7 @@ export class ManagementService extends IMService {
 
 	public async onMessageReactionAdd(message: PossiblyUncachedMessage, emoji: Emoji, userId: string) {
 		if (message.channel instanceof TextChannel) {
-			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
+			const reactionRoles = await this.reactionRolesCache.get(message.channel.guild.id);
 
 			const reactionRole = reactionRoles.find((role) => {
 				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
@@ -31,7 +35,7 @@ export class ManagementService extends IMService {
 
 	public async onMessageReactionRemove(message: PossiblyUncachedMessage, emoji: Emoji, userId: string) {
 		if (message.channel instanceof TextChannel) {
-			const reactionRoles = await this.client.cache.reactionRoles.get(message.channel.guild.id);
+			const reactionRoles = await this.reactionRolesCache.get(message.channel.guild.id);
 			const reactionRole = reactionRoles.find((role) => {
 				if (role.channelId !== message.channel.id || role.messageId !== message.id) {
 					return false;

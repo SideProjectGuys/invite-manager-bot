@@ -1,13 +1,13 @@
 import { Member } from 'eris';
 
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
 const idRegex = /^(?:<@!?)?(\d+)>?$/;
 
 export class MemberResolver extends Resolver {
-	public async resolve(value: string, { guild, t }: Context): Promise<Member> {
+	public async resolve(value: string, { guild, t }: CommandContext): Promise<Member> {
 		if (!value || !guild) {
 			return;
 		}

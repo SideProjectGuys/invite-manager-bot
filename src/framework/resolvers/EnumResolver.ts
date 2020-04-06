@@ -1,5 +1,5 @@
 import { IMClient } from '../../client';
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
@@ -13,7 +13,7 @@ export class EnumResolver extends Resolver {
 		values.forEach((v) => this.values.set(v.toLowerCase(), v));
 	}
 
-	public async resolve(value: string, { t }: Context): Promise<string> {
+	public async resolve(value: string, { t }: CommandContext): Promise<string> {
 		if (!value) {
 			return;
 		}
@@ -25,7 +25,7 @@ export class EnumResolver extends Resolver {
 		throw Error(t(`resolvers.${this.getType()}.invalid`));
 	}
 
-	public getHelp({ t }: Context) {
+	public getHelp({ t }: CommandContext) {
 		return t(`resolvers.${this.getType()}.validValues`, {
 			values: [...this.values.values()]
 				.sort((a, b) => a.localeCompare(b))

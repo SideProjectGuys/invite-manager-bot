@@ -6,10 +6,17 @@ import i18n from 'i18n';
 import { relative, resolve } from 'path';
 
 import { guildDefaultSettings } from '../../settings';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { GuildPermission } from '../../types';
-import { Command, Context } from '../commands/Command';
+import { PermissionsCache } from '../cache/Permissions';
+import { PremiumCache } from '../cache/Premium';
+import { CommandContext, IMCommand } from '../commands/Command';
+import { Cache } from '../decorators/Cache';
+import { Service } from '../decorators/Service';
 import { BooleanResolver } from '../resolvers';
 
+import { DatabaseService } from './Database';
+import { MessagingService } from './Messaging';
 import { IMService } from './Service';
 
 const CMD_DIRS = [
@@ -17,7 +24,8 @@ const CMD_DIRS = [
 	resolve(__dirname, '../../invites/commands'),
 	resolve(__dirname, '../../moderation/commands'),
 	resolve(__dirname, '../../music/commands'),
-	resolve(__dirname, '../../management/commands')
+	resolve(__dirname, '../../management/commands'),
+	resolve(__dirname, '../../settings/commands')
 ];
 const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
@@ -36,8 +44,14 @@ const readDir = async (dir: string) => {
 };
 
 export class CommandsService extends IMService {
-	public commands: Command[] = [];
-	private cmdMap: Map<string, Command> = new Map();
+	@Service() private db: DatabaseService;
+	@Service() private msg: MessagingService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+	@Cache() private permissionsCache: PermissionsCache;
+	@Cache() private premiumCache: PremiumCache;
+
+	public commands: IMCommand[] = [];
+	private cmdMap: Map<string, IMCommand> = new Map();
 	private commandCalls: Map<string, { last: number; warned: boolean }> = new Map();
 
 	public async init() {
@@ -62,11 +76,14 @@ export class CommandsService extends IMService {
 				if (clazz.default) {
 					const constr = clazz.default;
 					const parent = Object.getPrototypeOf(constr);
-					if (!parent || parent.name !== 'Command') {
+					if (!parent || parent.name !== IMCommand.name) {
 						continue;
 					}
 
-					const inst: Command = new constr(this.client);
+					const inst: IMCommand = new constr(this.client);
+					this.client.setupInjections(inst);
+					inst.resolvers.forEach((res) => this.client.setupInjections(res));
+					await inst.init();
 					this.commands.push(inst);
 
 					// Register main commnad name
@@ -125,7 +142,7 @@ export class CommandsService extends IMService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild ? await this.client.cache.guilds.get(guild.id) : { ...guildDefaultSettings };
+		const sets = guild ? await this.guildSettingsCache.get(guild.id) : { ...guildDefaultSettings };
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>
@@ -158,7 +175,7 @@ export class CommandsService extends IMService {
 			if (content === '') {
 				// If the content is an empty string then the user just mentioned the
 				// bot, so we'll print the prefix to help them out.
-				await this.client.msg.sendReply(
+				await this.msg.sendReply(
 					message,
 					t('bot.mentionHelp', {
 						prefix: sets.prefix
@@ -190,10 +207,8 @@ export class CommandsService extends IMService {
 						`To invite me to your own server, just click here: https://invitemanager.co/add-bot?origin=initial-dm \n\n` +
 						`If you need help, you can either write me here (try "help") or join our discord support server: ` +
 						`https://discord.gg/Z7rtDpe.\n\nHave a good day!`;
-					const embed = this.client.msg.createEmbed({
-						description: initialMessage
-					});
-					await this.client.msg.sendEmbed(await user.getDMChannel(), embed);
+					const embed = this.msg.createEmbed({ description: initialMessage });
+					await this.msg.sendEmbed(await user.getDMChannel(), embed);
 				}
 
 				/* TODO: Send DMs
@@ -232,7 +247,7 @@ export class CommandsService extends IMService {
 				if (!lastCall.warned) {
 					lastCall.warned = true;
 					lastCall.last = now + COOLDOWN * 1000;
-					await this.client.msg.sendReply(
+					await this.msg.sendReply(
 						message,
 						t('permissions.rateLimit', {
 							cooldown: COOLDOWN.toString()
@@ -249,10 +264,10 @@ export class CommandsService extends IMService {
 			lastCall.last = now;
 		}
 
-		const isPremium = guild ? await this.client.cache.premium.get(guild.id) : false;
+		const isPremium = guild ? await this.premiumCache.get(guild.id) : false;
 
 		if (!isPremium && cmd.premiumOnly) {
-			await this.client.msg.sendReply(message, t('permissions.premiumOnly'));
+			await this.msg.sendReply(message, t('permissions.premiumOnly'));
 			return;
 		}
 
@@ -270,18 +285,18 @@ export class CommandsService extends IMService {
 			}
 			if (!member) {
 				console.error(`Could not get member ${message.author.id} for ${guild.id}`);
-				await this.client.msg.sendReply(message, t('permissions.memberError'));
+				await this.msg.sendReply(message, t('permissions.memberError'));
 				return;
 			}
 
 			// Always allow admins
 			if (!member.permission.has(GuildPermission.ADMINISTRATOR) && guild.ownerID !== member.id) {
-				const perms = (await this.client.cache.permissions.get(guild.id))[cmd.name];
+				const perms = (await this.permissionsCache.get(guild.id))[cmd.name];
 
 				if (perms && perms.length > 0) {
 					// Check that we have at least one of the required roles
 					if (!perms.some((p) => member.roles.indexOf(p) >= 0)) {
-						await this.client.msg.sendReply(
+						await this.msg.sendReply(
 							message,
 							t('permissions.role', {
 								roles: perms.map((p) => `<@&${p}>`).join(', ')
@@ -291,7 +306,7 @@ export class CommandsService extends IMService {
 					}
 				} else if (cmd.strict) {
 					// Allow commands that require no roles, if strict is not true
-					await this.client.msg.sendReply(message, t('permissions.adminOnly'));
+					await this.msg.sendReply(message, t('permissions.adminOnly'));
 					return;
 				}
 			}
@@ -307,7 +322,7 @@ export class CommandsService extends IMService {
 				(p) => !(channel as GuildChannel).permissionsOf(this.client.user.id).has(p)
 			);
 			if (missingPerms.length > 0) {
-				await this.client.msg.sendReply(
+				await this.msg.sendReply(
 					message,
 					t(`permissions.missing`, {
 						channel: `<#${channel.id}>`,
@@ -318,7 +333,7 @@ export class CommandsService extends IMService {
 			}
 		}
 
-		const context: Context = {
+		const context: CommandContext = {
 			guild,
 			me,
 			t,
@@ -388,7 +403,7 @@ export class CommandsService extends IMService {
 			let val: any = true;
 			if (!skipVal) {
 				if (!hasVal) {
-					await this.client.msg.sendReply(
+					await this.msg.sendReply(
 						message,
 						`Missing required value for flag \`${flag.name}\`.\n` +
 							`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
@@ -399,7 +414,7 @@ export class CommandsService extends IMService {
 					try {
 						val = await resolver.resolve(rawVal, context, []);
 					} catch (e) {
-						await this.client.msg.sendReply(
+						await this.msg.sendReply(
 							message,
 							`Invalid value for \`${flag.name}\`: ${e.message}\n` +
 								`\`${cmd.usage.replace('{prefix}', sets.prefix)}\`\n` +
@@ -436,7 +451,7 @@ export class CommandsService extends IMService {
 				const val = await resolver.resolve(rawVal, context, args);
 
 				if (typeof val === typeof undefined && arg.required) {
-					await this.client.msg.sendReply(
+					await this.msg.sendReply(
 						message,
 						t('resolvers.missingRequired', {
 							name: arg.name,
@@ -449,7 +464,7 @@ export class CommandsService extends IMService {
 
 				args.push(val);
 			} catch (e) {
-				await this.client.msg.sendReply(
+				await this.msg.sendReply(
 					message,
 					t('resolvers.invalid', {
 						name: arg.name,
@@ -493,7 +508,7 @@ export class CommandsService extends IMService {
 			});
 
 			if (guild) {
-				this.client.db.saveIncident(guild, {
+				this.db.saveIncident(guild, {
 					id: null,
 					guildId: guild.id,
 					error: error.message,
@@ -505,7 +520,7 @@ export class CommandsService extends IMService {
 				});
 			}
 
-			await this.client.msg.sendReply(
+			await this.msg.sendReply(
 				message,
 				t('cmd.error', {
 					error: error.message
@@ -516,7 +531,7 @@ export class CommandsService extends IMService {
 		// Ignore messages that are not in guild chat or from disabled guilds
 		if (guild && !this.client.disabledGuilds.has(guild.id)) {
 			// We have to add the guild and members too, in case our DB does not have them yet
-			this.client.db.saveCommandUsage(guild, message.author, {
+			this.db.saveCommandUsage(guild, message.author, {
 				id: null,
 				guildId: guild.id,
 				memberId: message.author.id,

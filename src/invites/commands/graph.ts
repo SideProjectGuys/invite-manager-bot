@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment, { Moment } from 'moment';
 
 import { IMClient } from '../../client';
-import { Command, Context } from '../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
 import { DateResolver, EnumResolver } from '../../framework/resolvers';
 import { ChartType, CommandGroup, InvitesCommand } from '../../types';
 import { renderChart } from '../models/Chart';
@@ -10,7 +10,7 @@ import { renderChart } from '../models/Chart';
 const DEFAULT_DAYS = 30;
 const COLORS = ['blue', 'red', 'black'];
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.graph,
@@ -41,7 +41,7 @@ export default class extends Command {
 		message: Message,
 		[type, from, to]: [ChartType, Moment, Moment],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		if (!to) {
 			to = moment();
@@ -83,13 +83,13 @@ export default class extends Command {
 			description = t('cmd.graph.joinsAndLeaves.text');
 
 			const joinsMap = addDataset();
-			const fs = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
+			const fs = await this.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
 			fs.forEach((join) =>
 				joinsMap.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
 
 			const leavesMap = addDataset();
-			const lvs = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
+			const lvs = await this.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
 			lvs.forEach((leave) =>
 				leavesMap.set(
 					`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`,
@@ -101,7 +101,7 @@ export default class extends Command {
 			description = t('cmd.graph.joins.text');
 
 			const map = addDataset();
-			const joins = await this.client.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
+			const joins = await this.db.getJoinsPerDay(guild.id, from.toDate(), to.toDate());
 			joins.forEach((join) =>
 				map.set(`${join.year}-${`${join.month}`.padStart(2, '0')}-${`${join.day}`.padStart(2, '0')}`, join.total)
 			);
@@ -110,7 +110,7 @@ export default class extends Command {
 			description = t('cmd.graph.leaves.text');
 
 			const map = addDataset();
-			const leaves = await this.client.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
+			const leaves = await this.db.getLeavesPerDay(guild.id, from.toDate(), to.toDate());
 			leaves.forEach((leave) =>
 				map.set(`${leave.year}-${`${leave.month}`.padStart(2, '0')}-${`${leave.day}`.padStart(2, '0')}`, leave.total)
 			);

@@ -1,11 +1,15 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { MemberResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { ModerationService } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.unmute,
@@ -27,19 +31,19 @@ export default class extends Command {
 		message: Message,
 		[targetMember]: [Member],
 		flags: {},
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
-		const embed = this.client.mod.createBasicEmbed(targetMember);
+		const embed = this.mod.createBasicEmbed(targetMember);
 
 		const mutedRole = settings.mutedRole;
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.unmute.missingRole');
-		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
+		} else if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
 			try {
 				await targetMember.removeRole(mutedRole);
 
-				const logEmbed = this.client.mod.createBasicEmbed(targetMember);
+				const logEmbed = this.mod.createBasicEmbed(targetMember);
 
 				const usr = `${targetMember.username}#${targetMember.discriminator} ` + `(ID: ${targetMember.id})`;
 				logEmbed.description += `**User**: ${usr}\n`;

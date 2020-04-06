@@ -1,15 +1,15 @@
 import { Channel, Role } from 'eris';
 
-import { ActivityStatus, ActivityType, BotSettingsKey } from './framework/models/BotSetting';
+import { ActivityStatus, ActivityType, BotSettingsKey } from './settings/models/BotSetting';
 import {
 	AnnouncementVoice,
 	GuildSettingsKey,
 	Lang,
 	LeaderboardStyle,
 	RankAssignmentStyle
-} from './framework/models/GuildSetting';
-import { InviteCodeSettingsKey } from './framework/models/InviteCodeSetting';
-import { MemberSettingsKey } from './framework/models/MemberSetting';
+} from './settings/models/GuildSetting';
+import { InviteCodeSettingsKey } from './settings/models/InviteCodeSetting';
+import { MemberSettingsKey } from './settings/models/MemberSetting';
 import { MusicPlatformType } from './types';
 
 export type InternalSettingsTypes =

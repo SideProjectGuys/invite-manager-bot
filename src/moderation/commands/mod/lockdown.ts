@@ -2,16 +2,20 @@ import { Channel, Message, PermissionOverwrite, Role, TextChannel } from 'eris';
 import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { ChannelResolver, DurationResolver } from '../../../framework/resolvers';
+import { SchedulerService } from '../../../framework/services/Scheduler';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
 
 // tslint:disable: no-bitwise
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private scheduler: SchedulerService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.lockdown,
@@ -41,7 +45,7 @@ export default class extends Command {
 		message: Message,
 		[channel]: [Channel],
 		{ timeout }: { timeout: Duration },
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
 		channel = channel || message.channel;
 
@@ -50,10 +54,7 @@ export default class extends Command {
 			return;
 		}
 
-		const scheduledUnlockActions = await this.client.scheduler.getScheduledActionsOfType(
-			guild.id,
-			ScheduledActionType.unlock
-		);
+		const scheduledUnlockActions = await this.scheduler.getScheduledActionsOfType(guild.id, ScheduledActionType.unlock);
 		const scheduledUnlockAction = scheduledUnlockActions.find((action) => action.args.channelId === channel.id);
 
 		if (scheduledUnlockAction) {
@@ -67,7 +68,7 @@ export default class extends Command {
 				'role',
 				'Channel lockdown'
 			);
-			await this.client.scheduler.removeScheduledAction(guild.id, scheduledUnlockAction.id);
+			await this.scheduler.removeScheduledAction(guild.id, scheduledUnlockAction.id);
 
 			await this.sendReply(message, t('cmd.lockdown.channelUnlocked', { channel: `<#${channel.id}>` }));
 
@@ -102,7 +103,7 @@ export default class extends Command {
 
 		// We always add a scheduled actions so that we know what to restore on unlock
 		// But if the user didn't specify a timeout then we set it to null so they must do it manually
-		await this.client.scheduler.addScheduledAction(
+		await this.scheduler.addScheduledAction(
 			guild.id,
 			ScheduledActionType.unlock,
 			{

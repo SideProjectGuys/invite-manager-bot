@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { NumberResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.purge,
@@ -32,7 +32,7 @@ export default class extends Command {
 		message: Message,
 		[quantity, user]: [number, BasicUser],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed();
 

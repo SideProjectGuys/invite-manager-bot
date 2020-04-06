@@ -1,9 +1,11 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { ModerationService } from '../../services/Moderation';
 
 enum CleanType {
 	images = 'images',
@@ -16,7 +18,9 @@ enum CleanType {
 	reactions = 'reactions'
 }
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+
 	public cleanFunctions: {
 		[k in CleanType]: (messages: Message[]) => Message[];
 	};
@@ -58,7 +62,7 @@ export default class extends Command {
 		message: Message,
 		[type, numberOfMessages]: [CleanType, number],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed();
 
@@ -117,7 +121,7 @@ export default class extends Command {
 
 	private links(messages: Message[]): Message[] {
 		return messages.filter((message) => {
-			const matches = this.client.mod.getLinks(message);
+			const matches = this.mod.getLinks(message);
 			return matches && matches.length > 0;
 		});
 	}
@@ -142,7 +146,7 @@ export default class extends Command {
 
 	private emojis(messages: Message[]): Message[] {
 		return messages.filter((message) => {
-			return this.client.mod.countEmojis(message) > 0;
+			return this.mod.countEmojis(message) > 0;
 		});
 	}
 

@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.unhoist,
@@ -17,7 +17,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: [], flags: {}, { guild, t, settings }: Context): Promise<any> {
+	public async action(message: Message, args: [], flags: {}, { guild, t, settings }: CommandContext): Promise<any> {
 		const total = guild.memberCount;
 		const batches = Math.ceil(total / 1000);
 

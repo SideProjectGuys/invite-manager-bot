@@ -1,11 +1,18 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { InvitesCache } from '../../cache/InvitesCache';
+import { InvitesService } from '../../services/Invites';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private invs: InvitesService;
+	@Cache() private invitesCache: InvitesCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.invites,
@@ -23,9 +30,14 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, me }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[user]: [BasicUser],
+		flags: {},
+		{ guild, t, me }: CommandContext
+	): Promise<any> {
 		const target = user ? user : message.author;
-		const invites = await this.client.cache.invites.getOne(guild.id, target.id);
+		const invites = await this.invitesCache.getOne(guild.id, target.id);
 
 		let textMessage = '';
 		if (target.id === message.author.id) {
@@ -54,7 +66,7 @@ export default class extends Command {
 		}
 		// Only process if the user is still in the guild
 		if (targetMember && !targetMember.user.bot) {
-			const promoteInfo = await this.client.invs.promoteIfQualified(guild, targetMember, me, invites.total);
+			const promoteInfo = await this.invs.promoteIfQualified(guild, targetMember, me, invites.total);
 
 			if (promoteInfo) {
 				const { nextRank, nextRankName, numRanks, shouldHave, shouldNotHave, dangerous } = promoteInfo;

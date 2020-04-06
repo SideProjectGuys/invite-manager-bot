@@ -1,4 +1,3 @@
-import { IMClient } from '../../../client';
 import { MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -11,10 +10,6 @@ export class IHeartRadio extends MusicPlatform {
 	public supportsSeek: boolean = false;
 	public supportsLyrics: boolean = false;
 	public supportsSearch: boolean = true;
-
-	public constructor(client: IMClient) {
-		super(client);
-	}
 
 	public isPlatformUrl(url: string): boolean {
 		if (!url) {

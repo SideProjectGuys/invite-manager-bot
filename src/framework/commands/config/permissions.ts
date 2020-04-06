@@ -2,10 +2,17 @@ import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup, InvitesCommand } from '../../../types';
+import { PermissionsCache } from '../../cache/Permissions';
+import { Cache } from '../../decorators/Cache';
+import { Service } from '../../decorators/Service';
 import { CommandResolver, RoleResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { CommandsService } from '../../services/Commands';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private cmds: CommandsService;
+	@Cache() private premissionsCache: PermissionsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.permissions,
@@ -26,9 +33,14 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [cmd, role]: [Command, Role], flags: {}, { guild, t }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[cmd, role]: [IMCommand, Role],
+		flags: {},
+		{ guild, t }: CommandContext
+	): Promise<any> {
 		if (!cmd) {
-			const perms = await this.client.db.getRolePermissionsForGuild(guild.id);
+			const perms = await this.db.getRolePermissionsForGuild(guild.id);
 
 			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
@@ -39,7 +51,7 @@ export default class extends Command {
 				Administrators: []
 			};
 
-			this.client.cmds.commands.forEach((command) => {
+			this.cmds.commands.forEach((command) => {
 				const ps = perms.filter((p) => p.command === command.name);
 				if (!ps.length) {
 					if (command.strict) {
@@ -108,7 +120,7 @@ export default class extends Command {
 		*/
 
 		if (!role) {
-			const perms = await this.client.db.getRolePermissionsForGuild(guild.id, cmd.name);
+			const perms = await this.db.getRolePermissionsForGuild(guild.id, cmd.name);
 
 			const embed = this.createEmbed({
 				description: t('cmd.permissions.adminsCanUseAll')
@@ -154,9 +166,9 @@ export default class extends Command {
 			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}
 
-		const oldPerms = await this.client.db.getRolePermissions(guild.id, role.id, cmd.name);
+		const oldPerms = await this.db.getRolePermissions(guild.id, role.id, cmd.name);
 		if (oldPerms) {
-			await this.client.db.removeRolePermissions(guild.id, oldPerms.roleId, oldPerms.command);
+			await this.db.removeRolePermissions(guild.id, oldPerms.roleId, oldPerms.command);
 
 			await this.sendReply(
 				message,
@@ -166,7 +178,7 @@ export default class extends Command {
 				})
 			);
 		} else {
-			await this.client.db.saveRoles([
+			await this.db.saveRoles([
 				{
 					id: role.id,
 					name: role.name,
@@ -176,7 +188,7 @@ export default class extends Command {
 				}
 			]);
 
-			await this.client.db.saveRolePermissions(guild.id, [
+			await this.db.saveRolePermissions(guild.id, [
 				{
 					command: cmd.name,
 					roleId: role.id
@@ -192,6 +204,6 @@ export default class extends Command {
 			);
 		}
 
-		this.client.cache.permissions.flush(guild.id);
+		this.premissionsCache.flush(guild.id);
 	}
 }

@@ -4,12 +4,18 @@ import chalk from 'chalk';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
+import { TrackingService } from '../../invites/services/Tracking';
+import { MusicService } from '../../music/services/Music';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BotType, ShardCommand } from '../../types';
 import { FakeChannel } from '../../util';
+import { PremiumCache } from '../cache/Premium';
+import { Cache } from '../decorators/Cache';
+import { Service } from '../decorators/Service';
 
+import { CommandsService } from './Commands';
+import { MessagingService } from './Messaging';
 import { IMService } from './Service';
-
-const BOT_SHARDING = 16;
 
 interface ShardMessage {
 	id: string;
@@ -31,6 +37,13 @@ export class RabbitMqService extends IMService {
 	private channel: Channel;
 	private channelRetry: number = 0;
 	private msgQueue: any[] = [];
+
+	@Service() private cmds: CommandsService;
+	@Service() private msgs: MessagingService;
+	@Service() private tracking: TrackingService;
+	@Service() private music: MusicService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+	@Cache() private premiumCache: PremiumCache;
 
 	public async init() {
 		if (this.client.flags.includes('--no-rabbitmq')) {
@@ -243,7 +256,7 @@ export class RabbitMqService extends IMService {
 			error: err ? err.message : null,
 			tracking: this.getTrackingStatus(),
 			music: this.getMusicStatus(),
-			cache: this.getCacheSizes(),
+			cache: this.client.getCacheSizes(),
 			metrics: this.getMetrics()
 		});
 	}
@@ -286,7 +299,7 @@ export class RabbitMqService extends IMService {
 				break;
 
 			case ShardCommand.CACHE:
-				await sendResponse(this.getCacheSizes());
+				await sendResponse(this.client.getCacheSizes());
 				break;
 
 			case ShardCommand.DIAGNOSE:
@@ -296,7 +309,7 @@ export class RabbitMqService extends IMService {
 					});
 				}
 
-				const sets = await this.client.cache.guilds.get(guildId);
+				const sets = await this.guildSettingsCache.get(guildId);
 				const perms = guild.members.get(this.client.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};
@@ -337,7 +350,7 @@ export class RabbitMqService extends IMService {
 
 				const owner = await this.client.getRESTUser(guild.ownerID).catch(() => undefined);
 
-				const premium = await this.client.cache.premium.get(guildId);
+				const premium = await this.premiumCache.get(guildId);
 
 				const disabled = this.client.disabledGuilds.has(guildId);
 
@@ -355,25 +368,14 @@ export class RabbitMqService extends IMService {
 
 			case ShardCommand.FLUSH_CACHE:
 				const errors: string[] = [];
-				const cacheNames = content.caches as string[];
 
-				if (!content.caches) {
-					Object.values(this.client.cache).forEach((c) => c.flush(guildId));
-				} else {
-					for (const cacheName of cacheNames) {
-						const cache = this.client.cache[cacheName];
-						if (cache) {
-							cache.flush(guildId);
-						} else {
-							errors.push('Invalid cache name ' + cacheName);
-						}
-					}
-				}
+				this.client.flushCaches(guildId, content.caches);
+
 				await sendResponse({ error: errors.join('\n') });
 				break;
 
 			case ShardCommand.RELOAD_MUSIC_NODES:
-				await this.client.music.loadMusicNodes();
+				await this.music.loadMusicNodes();
 				await sendResponse({});
 				break;
 
@@ -420,7 +422,7 @@ export class RabbitMqService extends IMService {
 					this.client
 				);
 				(fakeMsg as any).__sudo = true;
-				await this.client.cmds.onMessage(fakeMsg);
+				await this.cmds.onMessage(fakeMsg);
 				break;
 
 			case ShardCommand.OWNER_DM:
@@ -438,7 +440,7 @@ export class RabbitMqService extends IMService {
 				const dmChannel = guild.channels.get(content.channelId) as TextChannel;
 				const sender = content.user;
 
-				const embed = this.client.msg.createEmbed({
+				const embed = this.msgs.createEmbed({
 					author: {
 						name: `${sender.username}#${sender.discriminator}`,
 						url: sender.avatarURL
@@ -468,38 +470,13 @@ export class RabbitMqService extends IMService {
 
 	private getTrackingStatus() {
 		return {
-			pendingGuilds: this.client.tracking.pendingGuilds.size,
-			initialPendingGuilds: this.client.tracking.initialPendingGuilds
+			pendingGuilds: this.tracking.pendingGuilds.size,
+			initialPendingGuilds: this.tracking.initialPendingGuilds
 		};
 	}
 	private getMusicStatus() {
 		return {
-			connections: this.client.music.getMusicConnectionGuildIds()
-		};
-	}
-	private getCacheSizes() {
-		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
-		let roleCount = 0;
-
-		this.client.guilds.forEach((g) => {
-			channelCount += g.channels.size;
-			roleCount += g.roles.size;
-		});
-
-		return {
-			guilds: this.client.guilds.size,
-			users: this.client.users.size,
-			channels: channelCount,
-			roles: roleCount,
-			ranks: this.client.cache.ranks.getSize(),
-			settings: this.client.cache.guilds.getSize(),
-			premium: this.client.cache.premium.getSize(),
-			permissions: this.client.cache.permissions.getSize(),
-			strikes: this.client.cache.strikes.getSize(),
-			punishments: this.client.cache.punishments.getSize(),
-			inviteCodes: this.client.cache.inviteCodes.getSize(),
-			members: this.client.cache.members.getSize(),
-			messages: this.client.mod.getMessageCacheSize()
+			connections: this.music.getMusicConnectionGuildIds()
 		};
 	}
 	private getMetrics() {

@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup } from '../../../types';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
 // Developers
 const developers: string[] = ['Andy#1801', 'Valandur#3581', 'santjum#0450', 'legendarylol#8215'];
@@ -36,7 +36,7 @@ const translators: string[] = [
 	'• xFalcon#1581'
 ];
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.credits,
@@ -47,7 +47,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { t }: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t }: CommandContext): Promise<any> {
 		const embed = this.createEmbed();
 
 		embed.fields.push({

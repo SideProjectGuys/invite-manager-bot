@@ -2,11 +2,15 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { UserResolver } from '../../../framework/resolvers';
+import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.inviteDetails,
@@ -24,10 +28,15 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t, settings }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[user]: [BasicUser],
+		flags: {},
+		{ guild, t, settings }: CommandContext
+	): Promise<any> {
 		const target = user ? user : message.author;
 
-		const invs = await this.client.db.getInviteCodesForMember(guild.id, target.id);
+		const invs = await this.db.getInviteCodesForMember(guild.id, target.id);
 
 		if (invs.length === 0) {
 			await this.sendReply(message, t('cmd.inviteDetails.noInviteCodes'));
@@ -35,7 +44,7 @@ export default class extends Command {
 		}
 
 		const lang = settings.lang;
-		const allSets = await this.client.cache.inviteCodes.get(guild.id);
+		const allSets = await this.inviteCodeSettingsCache.get(guild.id);
 
 		let invText = '';
 		for (const inv of invs.slice(0, 25)) {

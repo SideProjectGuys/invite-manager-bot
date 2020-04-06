@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.purgeUntil,
@@ -24,7 +24,12 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [untilMessageID]: [string], flags: {}, { guild, t }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[untilMessageID]: [string],
+		flags: {},
+		{ guild, t }: CommandContext
+	): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.purgeUntil.title'),
 			description: t('cmd.purgeUntil.inProgress')

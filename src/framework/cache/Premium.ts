@@ -1,8 +1,8 @@
 import { BotType } from '../../types';
 
-import { Cache } from './Cache';
+import { IMCache } from './Cache';
 
-export class PremiumCache extends Cache<boolean> {
+export class PremiumCache extends IMCache<boolean> {
 	public async init() {
 		// NO-OP
 	}
@@ -14,7 +14,7 @@ export class PremiumCache extends Cache<boolean> {
 			return true;
 		}
 
-		const sub = await this.client.db.getPremiumSubscriptionGuildForGuild(guildId);
+		const sub = await this.db.getPremiumSubscriptionGuildForGuild(guildId);
 		return !!sub;
 	}
 }

@@ -1,14 +1,18 @@
 import moment, { Duration, Moment } from 'moment';
 
 import { IMClient } from '../../client';
+import { Service } from '../decorators/Service';
+import { DatabaseService } from '../services/Database';
 
 interface CacheMeta {
 	cachedAt: Moment;
 	validUntil: Moment;
 }
 
-export abstract class Cache<CachedObject> {
+export abstract class IMCache<CachedObject> {
 	protected client: IMClient;
+
+	@Service() protected db: DatabaseService;
 
 	protected maxCacheDuration: Duration = moment.duration(6, 'h');
 	protected cache: Map<string, CachedObject> = new Map();

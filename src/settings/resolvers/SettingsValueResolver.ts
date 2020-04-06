@@ -1,10 +1,5 @@
 import { IMClient } from '../../client';
-import { InternalSettingsTypes, SettingsInfo } from '../../settings';
-import { MusicPlatformType } from '../../types';
-import { Context } from '../commands/Command';
-import { ActivityStatus, ActivityType } from '../models/BotSetting';
-import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../models/GuildSetting';
-
+import { CommandContext } from '../../framework/commands/Command';
 import {
 	ArrayResolver,
 	BooleanResolver,
@@ -15,7 +10,11 @@ import {
 	Resolver,
 	RoleResolver,
 	StringResolver
-} from '.';
+} from '../../framework/resolvers';
+import { InternalSettingsTypes, SettingsInfo } from '../../settings';
+import { ActivityStatus, ActivityType } from '../../settings/models/BotSetting';
+import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../../settings/models/GuildSetting';
+import { MusicPlatformType } from '../../types';
 
 export class SettingsValueResolver extends Resolver {
 	private infos: { [key: string]: SettingsInfo<any> };
@@ -49,7 +48,7 @@ export class SettingsValueResolver extends Resolver {
 		};
 	}
 
-	public resolve(value: any, context: Context, [key]: [string]): Promise<any> {
+	public resolve(value: any, context: CommandContext, [key]: [string]): Promise<any> {
 		if (typeof value === typeof undefined || value.length === 0) {
 			return;
 		}
@@ -64,7 +63,7 @@ export class SettingsValueResolver extends Resolver {
 		return resolver.resolve(value, context, [key]);
 	}
 
-	public getHelp(context: Context, args?: [string]): string {
+	public getHelp(context: CommandContext, args?: [string]): string {
 		if (args && args.length > 0) {
 			const key = args[0];
 			return this.resolvers[this.infos[key].type].getHelp(context, [key]);

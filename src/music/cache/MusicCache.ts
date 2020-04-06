@@ -1,7 +1,7 @@
-import { Cache } from '../../framework/cache/Cache';
+import { IMCache } from '../../framework/cache/Cache';
 import { MusicQueue } from '../../types';
 
-export class MusicCache extends Cache<MusicQueue> {
+export class MusicCache extends IMCache<MusicQueue> {
 	public async init() {
 		this.client.guilds.forEach((g) =>
 			this.cache.set(

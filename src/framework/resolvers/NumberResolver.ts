@@ -1,5 +1,5 @@
 import { IMClient } from '../../client';
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
@@ -17,7 +17,7 @@ export class NumberResolver extends Resolver {
 		this.max = max;
 	}
 
-	public async resolve(value: string, { t }: Context): Promise<number> {
+	public async resolve(value: string, { t }: CommandContext): Promise<number> {
 		if (typeof value === typeof undefined || value.length === 0) {
 			return;
 		}

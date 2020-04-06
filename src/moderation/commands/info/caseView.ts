@@ -2,11 +2,11 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { NumberResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.caseView,
@@ -29,13 +29,13 @@ export default class extends Command {
 		message: Message,
 		[caseNumber]: [number],
 		flags: {},
-		{ guild, settings, t }: Context
+		{ guild, settings, t }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
-		const strike = await this.client.db.getStrike(guild.id, caseNumber);
+		const strike = await this.db.getStrike(guild.id, caseNumber);
 
 		if (strike) {
 			let user: BasicUser = await guild

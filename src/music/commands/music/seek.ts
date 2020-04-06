@@ -1,12 +1,12 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { NumberResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand } from '../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: MusicCommand.seek,
@@ -25,8 +25,8 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [duration]: [number], flags: {}, { t, guild }: Context): Promise<any> {
-		const conn = await this.client.music.getMusicConnection(guild);
+	public async action(message: Message, [duration]: [number], flags: {}, { t, guild }: CommandContext): Promise<any> {
+		const conn = await this.music.getMusicConnection(guild);
 		if (!conn.isPlaying()) {
 			await this.sendReply(message, t('music.notPlaying'));
 			return;

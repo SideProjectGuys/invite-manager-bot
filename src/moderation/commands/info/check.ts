@@ -2,11 +2,11 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.check,
@@ -25,12 +25,17 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, settings, t }: Context): Promise<any> {
+	public async action(
+		message: Message,
+		[user]: [BasicUser],
+		flags: {},
+		{ guild, settings, t }: CommandContext
+	): Promise<any> {
 		const embed = this.createEmbed({
 			title: user.username
 		});
 
-		const strikeList = await this.client.db.getStrikesForMember(guild.id, user.id);
+		const strikeList = await this.db.getStrikesForMember(guild.id, user.id);
 		const strikeTotal = strikeList.reduce((acc, s) => acc + s.amount, 0);
 
 		embed.fields.push({
@@ -42,7 +47,7 @@ export default class extends Command {
 			inline: false
 		});
 
-		const punishmentList = await this.client.db.getPunishmentsForMember(guild.id, user.id);
+		const punishmentList = await this.db.getPunishmentsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.check.punishments.total'),

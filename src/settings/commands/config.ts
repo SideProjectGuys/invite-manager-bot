@@ -1,15 +1,26 @@
 import { Embed, Message, TextChannel, VoiceChannel } from 'eris';
 
-import { IMClient } from '../../../client';
-import { beautify, guildSettingsInfo } from '../../../settings';
-import { BotCommand, CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
-import { GuildSettingsKey } from '../../models/GuildSetting';
-import { JoinInvalidatedReason } from '../../models/Join';
-import { LogAction } from '../../models/Log';
-import { EnumResolver, SettingsValueResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../client';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { LogAction } from '../../framework/models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../framework/resolvers';
+import { CommandsService } from '../../framework/services/Commands';
+import { JoinInvalidatedReason } from '../../invites/models/Join';
+import { InvitesService } from '../../invites/services/Invites';
+import { MusicService } from '../../music/services/Music';
+import { beautify, guildSettingsInfo } from '../../settings';
+import { BotCommand, CommandGroup, GuildPermission, InvitesCommand } from '../../types';
+import { GuildSettingsCache } from '../cache/GuildSettings';
+import { GuildSettingsKey } from '../models/GuildSetting';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private cmds: CommandsService;
+	@Service() private invs: InvitesService;
+	@Service() private music: MusicService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.config,
@@ -41,14 +52,14 @@ export default class extends Command {
 		message: Message,
 		[key, value]: [GuildSettingsKey, any],
 		flags: {},
-		context: Context
+		context: CommandContext
 	): Promise<any> {
 		const { guild, settings, t } = context;
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
 
 		if (!key) {
-			const cmd = this.client.cmds.commands.find((c) => c.name === BotCommand.interactiveConfig);
+			const cmd = this.cmds.commands.find((c) => c.name === BotCommand.interactiveConfig);
 			return cmd.action(message, [], {}, context);
 		}
 
@@ -102,7 +113,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.guilds.setOne(guild.id, key, value);
+		value = await this.guildSettingsCache.setOne(guild.id, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.config.sameValue');
@@ -145,7 +156,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: GuildSettingsKey, value: any, { t, isPremium, me }: Context): string | null {
+	private validate(key: GuildSettingsKey, value: any, { t, isPremium, me }: CommandContext): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}
@@ -187,13 +198,13 @@ export default class extends Command {
 		embed: Embed,
 		key: GuildSettingsKey,
 		value: any,
-		context: Context
+		context: CommandContext
 	): Promise<Function> {
 		const { guild, t, me } = context;
 		const member = message.member;
 
 		if (value && (key === GuildSettingsKey.joinMessage || key === GuildSettingsKey.leaveMessage)) {
-			const preview = await this.client.invs.fillJoinLeaveTemplate(
+			const preview = await this.invs.fillJoinLeaveTemplate(
 				value,
 				guild,
 				member,
@@ -228,7 +239,7 @@ export default class extends Command {
 		}
 
 		if (value && key === GuildSettingsKey.rankAnnouncementMessage) {
-			const preview = await this.client.msg.fillTemplate(guild, value, {
+			const preview = await this.msg.fillTemplate(guild, value, {
 				memberId: member.id,
 				memberName: member.user.username,
 				memberFullName: member.user.username + '#' + member.user.discriminator,
@@ -255,11 +266,11 @@ export default class extends Command {
 		if (key === GuildSettingsKey.autoSubtractFakes) {
 			if (value) {
 				// Subtract fake invites from all members
-				const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractFakes);
+				const cmd = this.cmds.commands.find((c) => c.name === InvitesCommand.subtractFakes);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all fake invalidations
-				await this.client.db.updateJoinInvalidatedReason(null, guild.id, {
+				await this.db.updateJoinInvalidatedReason(null, guild.id, {
 					invalidatedReason: JoinInvalidatedReason.fake
 				});
 			}
@@ -268,11 +279,11 @@ export default class extends Command {
 		if (key === GuildSettingsKey.autoSubtractLeaves) {
 			if (value) {
 				// Subtract leaves from all members
-				const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
+				const cmd = this.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
 				return async () => await cmd.action(message, [], {}, context);
 			} else {
 				// Delete all leave invalidations
-				await this.client.db.updateJoinInvalidatedReason(null, guild.id, {
+				await this.db.updateJoinInvalidatedReason(null, guild.id, {
 					invalidatedReason: JoinInvalidatedReason.leave
 				});
 			}
@@ -280,7 +291,7 @@ export default class extends Command {
 
 		if (key === GuildSettingsKey.autoSubtractLeaveThreshold) {
 			// Subtract leaves from all members to recompute threshold time
-			const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
+			const cmd = this.cmds.commands.find((c) => c.name === InvitesCommand.subtractLeaves);
 			return async () => await cmd.action(message, [], {}, context);
 		}
 
@@ -288,7 +299,7 @@ export default class extends Command {
 			// Play sample announcement message
 			if (member.voiceState && member.voiceState.channelID) {
 				const channel = guild.channels.get(member.voiceState.channelID) as VoiceChannel;
-				const conn = await this.client.music.getMusicConnection(guild);
+				const conn = await this.music.getMusicConnection(guild);
 				await conn.playAnnouncement(value, `Hi, my name is ${value}`, channel);
 			}
 		}

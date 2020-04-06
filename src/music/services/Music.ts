@@ -2,14 +2,19 @@ import axios from 'axios';
 import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
-import { AnnouncementVoice } from '../../framework/models/GuildSetting';
+import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { DatabaseService } from '../../framework/services/Database';
+import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
+import { AnnouncementVoice } from '../../settings/models/GuildSetting';
 import { LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
 
-import { MusicPlatformService } from './MusicPlatformService';
+import { MusicPlatformService } from './MusicPlatform';
 
 const { PlayerManager } = require('eris-lavalink');
 
@@ -34,6 +39,11 @@ interface MusicNode {
 }
 
 export class MusicService extends IMService {
+	@Service() private db: DatabaseService;
+	@Service() private msg: MessagingService;
+	@Cache() private musicCache: MusicCache;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+
 	public cache: MusicCache;
 	private nodes: MusicNode[] = [];
 
@@ -44,7 +54,7 @@ export class MusicService extends IMService {
 	}
 
 	public async init() {
-		this.cache = this.client.cache.music;
+		this.cache = this.musicCache;
 
 		this.platforms = new MusicPlatformService(this.client);
 		await this.platforms.init();
@@ -61,7 +71,7 @@ export class MusicService extends IMService {
 
 	public async loadMusicNodes() {
 		// Load nodes from database
-		this.nodes = await this.client.db.getMusicNodes();
+		this.nodes = await this.db.getMusicNodes();
 
 		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
@@ -87,14 +97,14 @@ export class MusicService extends IMService {
 
 	public createPlayingEmbed(item: MusicItem) {
 		if (!item) {
-			return this.client.msg.createEmbed({
+			return this.msg.createEmbed({
 				author: null,
 				title: 'Not playing',
 				fields: []
 			});
 		}
 
-		const embed = this.client.msg.createEmbed(item.toEmbed());
+		const embed = this.msg.createEmbed(item.toEmbed());
 		embed.author = {
 			name: `${item.author.username}#${item.author.discriminator}`,
 			icon_url: item.author.avatarURL
@@ -180,6 +190,6 @@ export class MusicService extends IMService {
 	}
 
 	public async getGuildSettings(guildId: string) {
-		return this.client.cache.guilds.get(guildId);
+		return this.guildSettingsCache.get(guildId);
 	}
 }

@@ -1,13 +1,13 @@
 import { Role } from 'eris';
 
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
 const idRegex = /^(?:<@&)?(\d+)>?$/;
 
 export class RoleResolver extends Resolver {
-	public async resolve(value: string, { guild, t }: Context): Promise<Role> {
+	public async resolve(value: string, { guild, t }: CommandContext): Promise<Role> {
 		if (!guild || !value) {
 			return;
 		}

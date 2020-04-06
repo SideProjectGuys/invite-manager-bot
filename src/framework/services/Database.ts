@@ -3,6 +3,8 @@ import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
 import { CustomInvite } from '../../invites/models/CustomInvite';
+import { Join, JoinInvalidatedReason } from '../../invites/models/Join';
+import { Leave } from '../../invites/models/Leave';
 import { Rank } from '../../invites/models/Rank';
 import { Message } from '../../management/models/Message';
 import { ReactionRole } from '../../management/models/ReactionRole';
@@ -11,21 +13,19 @@ import { PunishmentConfig, PunishmentType } from '../../moderation/models/Punish
 import { Strike } from '../../moderation/models/Strike';
 import { StrikeConfig, ViolationType } from '../../moderation/models/StrikeConfig';
 import { MusicNode } from '../../music/models/MusicNode';
+import { BotSetting } from '../../settings/models/BotSetting';
+import { GuildSetting } from '../../settings/models/GuildSetting';
+import { InviteCodeSetting } from '../../settings/models/InviteCodeSetting';
+import { MemberSetting } from '../../settings/models/MemberSetting';
 import { BasicUser, BotType } from '../../types';
 import { getShardIdForGuild } from '../../util';
-import { BotSetting } from '../models/BotSetting';
 import { Channel } from '../models/Channel';
 import { CommandUsage } from '../models/CommandUsage';
 import { Guild } from '../models/Guild';
-import { GuildSetting } from '../models/GuildSetting';
 import { Incident } from '../models/Incident';
 import { InviteCode } from '../models/InviteCode';
-import { InviteCodeSetting } from '../models/InviteCodeSetting';
-import { Join, JoinInvalidatedReason } from '../models/Join';
-import { Leave } from '../models/Leave';
 import { Log } from '../models/Log';
 import { Member } from '../models/Member';
-import { MemberSetting } from '../models/MemberSetting';
 import { PremiumSubscription } from '../models/PremiumSubscription';
 import { PremiumSubscriptionGuild } from '../models/PremiumSubscriptionGuild';
 import { Role } from '../models/Role';
@@ -1068,7 +1068,7 @@ export class DatabaseService extends IMService {
 		const newGuilds = [...this.guilds.values()];
 		this.guilds.clear();
 		if (newGuilds.length > 0) {
-			await this.client.db.saveGuilds(
+			await this.saveGuilds(
 				newGuilds.map((guild) => ({
 					id: guild.id,
 					name: guild.name,
@@ -1082,7 +1082,7 @@ export class DatabaseService extends IMService {
 		const newUsers = [...this.users.values()];
 		this.users.clear();
 		if (newUsers.length > 0) {
-			await this.client.db.saveMembers(
+			await this.saveMembers(
 				newUsers.map((user) => ({
 					id: user.id,
 					name: user.username,

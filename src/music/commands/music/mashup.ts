@@ -1,12 +1,12 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
 import { RaveDJ } from '../../models/ravedj/RaveDJ';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: MusicCommand.mashup,
@@ -26,7 +26,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [videos]: [string], flags: {}, { t, guild }: Context): Promise<any> {
+	public async action(message: Message, [videos]: [string], flags: {}, { t, guild }: CommandContext): Promise<any> {
 		// TODO
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
@@ -39,10 +39,10 @@ export default class extends Command {
 			await this.sendReply(message, t('cmd.mashup.missingSecondVideo'));
 			return;
 		}
-		const platform1 = this.client.music.platforms.getForLink(link1);
-		const platform2 = this.client.music.platforms.getForLink(link2);
+		const platform1 = this.music.platforms.getForLink(link1);
+		const platform2 = this.music.platforms.getForLink(link2);
 
-		const musicPlatform = this.client.music.platforms.get(MusicPlatformType.RaveDJ) as RaveDJ;
+		const musicPlatform = this.music.platforms.get(MusicPlatformType.RaveDJ) as RaveDJ;
 
 		let mashupId;
 
@@ -58,7 +58,7 @@ export default class extends Command {
 		} else {
 			const [search1, search2] = videos.split(',');
 
-			const youtubePlatform = this.client.music.platforms.get(MusicPlatformType.YouTube);
+			const youtubePlatform = this.music.platforms.get(MusicPlatformType.YouTube);
 			const [result1] = await youtubePlatform.search(search1, 1);
 			const [result2] = await youtubePlatform.search(search2, 1);
 

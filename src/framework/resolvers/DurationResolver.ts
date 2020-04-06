@@ -1,13 +1,13 @@
 import moment, { Duration } from 'moment';
 
-import { Context } from '../commands/Command';
+import { CommandContext } from '../commands/Command';
 
 import { Resolver } from './Resolver';
 
 const SECONDS_PER_DAY = 86400;
 
 export class DurationResolver extends Resolver {
-	public async resolve(value: string, { t }: Context): Promise<Duration> {
+	public async resolve(value: string, { t }: CommandContext): Promise<Duration> {
 		if (typeof value === typeof undefined || value.length === 0) {
 			return;
 		}

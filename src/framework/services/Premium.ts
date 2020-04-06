@@ -2,10 +2,17 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { BotType } from '../../types';
+import { PremiumCache } from '../cache/Premium';
+import { Cache } from '../decorators/Cache';
+import { Service } from '../decorators/Service';
 
+import { DatabaseService } from './Database';
 import { IMService } from './Service';
 
 export class PremiumService extends IMService {
+	@Service() private db: DatabaseService;
+	@Cache() private premiumCache: PremiumCache;
+
 	public async onClientReady() {
 		if (this.client.type === BotType.pro) {
 			setInterval(() => this.checkGuilds(), 1 * 60 * 60 * 1000);
@@ -21,15 +28,15 @@ export class PremiumService extends IMService {
 
 		console.log('Checking all guilds for premium...');
 		for (const guild of this.client.guilds.values()) {
-			let premium = await this.client.cache.premium._get(guild.id);
+			let premium = await this.premiumCache._get(guild.id);
 
 			if (!premium) {
 				// Let's try and see if this guild had pro before, and if maybe
 				// the member renewed it, but it didn't update.
-				const oldPremium = await this.client.db.getPremiumSubscriptionGuildForGuild(guild.id, false);
+				const oldPremium = await this.db.getPremiumSubscriptionGuildForGuild(guild.id, false);
 				if (oldPremium) {
 					await this.checkPatreon(oldPremium.memberId);
-					premium = await this.client.cache.premium._get(guild.id);
+					premium = await this.premiumCache._get(guild.id);
 				}
 
 				if (!premium) {
@@ -47,7 +54,7 @@ export class PremiumService extends IMService {
 						.catch(() => undefined);
 					const onTimeout = async () => {
 						// Check one last time before leaving
-						if (await this.client.cache.premium._get(guild.id)) {
+						if (await this.premiumCache._get(guild.id)) {
 							return;
 						}
 
@@ -78,14 +85,14 @@ export class PremiumService extends IMService {
 			const amount = res.data.currently_entitled_amount_cents / 100;
 			const maxGuilds = 5;
 
-			const subs = await this.client.db.getPremiumSubscriptionsForMember(userId, false);
+			const subs = await this.db.getPremiumSubscriptionsForMember(userId, false);
 			const sub = subs.find((s) => s.amount === amount && s.maxGuilds === maxGuilds && s.isPatreon === true);
 
 			if (sub) {
 				sub.validUntil = validUntil.toDate();
-				await this.client.db.savePremiumSubscription(sub);
+				await this.db.savePremiumSubscription(sub);
 			} else {
-				await this.client.db.savePremiumSubscription({
+				await this.db.savePremiumSubscription({
 					memberId: userId,
 					validUntil: validUntil.toDate(),
 					amount,

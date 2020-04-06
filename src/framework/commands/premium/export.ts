@@ -1,15 +1,19 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
+import { InvitesService } from '../../../invites/services/Invites';
 import { BotCommand, CommandGroup } from '../../../types';
+import { Service } from '../../decorators/Service';
 import { EnumResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
 enum ExportType {
 	leaderboard = 'leaderboard'
 }
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private invs: InvitesService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.export,
@@ -33,7 +37,7 @@ export default class extends Command {
 		message: Message,
 		[type]: [ExportType],
 		flags: {},
-		{ guild, t, isPremium }: Context
+		{ guild, t, isPremium }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.export.title')
@@ -51,7 +55,7 @@ export default class extends Command {
 				if (type === 'leaderboard') {
 					let csv = 'Id,Name,Total Invites,Regular,Custom,Fake,Leaves\n';
 
-					const invs = await this.client.invs.generateLeaderboard(guild.id);
+					const invs = await this.invs.generateLeaderboard(guild.id);
 					invs.forEach((inv) => {
 						csv +=
 							`${inv.id},` +

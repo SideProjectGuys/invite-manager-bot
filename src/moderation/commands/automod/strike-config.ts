@@ -1,12 +1,16 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { StrikesCache } from '../../cache/StrikesCache';
 import { ViolationType } from '../../models/StrikeConfig';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private strikesCache: StrikesCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.strikeConfig,
@@ -31,13 +35,13 @@ export default class extends Command {
 		message: Message,
 		[violationType, strikes]: [ViolationType, number],
 		flags: {},
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.strikeConfig.title')
 		});
 
-		const strikeConfigList = await this.client.cache.strikes.get(guild.id);
+		const strikeConfigList = await this.strikesCache.get(guild.id);
 
 		if (typeof violationType === typeof undefined) {
 			const allViolations: ViolationType[] = Object.values(ViolationType);
@@ -61,12 +65,12 @@ export default class extends Command {
 				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await this.client.db.removeStrikeConfig(guild.id, violationType);
+			await this.db.removeStrikeConfig(guild.id, violationType);
 			embed.description = t('cmd.strikeConfig.deletedText', {
 				violation: `**${violationType}**`
 			});
 		} else {
-			await this.client.db.saveStrikeConfig({
+			await this.db.saveStrikeConfig({
 				guildId: guild.id,
 				type: violationType,
 				amount: strikes
@@ -78,7 +82,7 @@ export default class extends Command {
 			// TODO: expiration
 		}
 
-		this.client.cache.strikes.flush(guild.id);
+		this.strikesCache.flush(guild.id);
 		await this.sendReply(message, embed);
 	}
 }

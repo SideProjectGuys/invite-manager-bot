@@ -1,14 +1,18 @@
 import { Embed, Message } from 'eris';
 
-import { IMClient } from '../../../client';
-import { beautify, memberSettingsInfo } from '../../../settings';
-import { BasicUser, BotCommand, CommandGroup } from '../../../types';
-import { LogAction } from '../../models/Log';
-import { MemberSettingsKey } from '../../models/MemberSetting';
-import { EnumResolver, SettingsValueResolver, UserResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../client';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { Cache } from '../../framework/decorators/Cache';
+import { LogAction } from '../../framework/models/Log';
+import { EnumResolver, SettingsValueResolver, UserResolver } from '../../framework/resolvers';
+import { beautify, memberSettingsInfo } from '../../settings';
+import { BasicUser, BotCommand, CommandGroup } from '../../types';
+import { MemberSettingsCache } from '../cache/MemberSettings';
+import { MemberSettingsKey } from '../models/MemberSetting';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private memberSettingsCache: MemberSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.memberConfig,
@@ -38,7 +42,7 @@ export default class extends Command {
 		message: Message,
 		[key, user, value]: [MemberSettingsKey, BasicUser, any],
 		flags: {},
-		context: Context
+		context: CommandContext
 	): Promise<any> {
 		const { guild, t, settings } = context;
 		const prefix = settings.prefix;
@@ -60,7 +64,7 @@ export default class extends Command {
 		const info = memberSettingsInfo[key];
 
 		if (!user) {
-			const allSets = await this.client.cache.members.get(guild.id);
+			const allSets = await this.memberSettingsCache.get(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, memberId) =>
 					embed.fields.push({
@@ -74,7 +78,7 @@ export default class extends Command {
 			return this.sendReply(message, embed);
 		}
 
-		const memSettings = await this.client.cache.members.getOne(guild.id, user.id);
+		const memSettings = await this.memberSettingsCache.getOne(guild.id, user.id);
 		const oldVal = memSettings[key];
 		embed.title = `${user.username}#${user.discriminator} - ${key}`;
 
@@ -123,7 +127,7 @@ export default class extends Command {
 
 		// Set new value (we override the local value, because the formatting probably changed)
 		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
-		value = await this.client.cache.members.setOne(guild.id, user.id, key, value);
+		value = await this.memberSettingsCache.setOne(guild.id, user.id, key, value);
 
 		if (value === oldVal) {
 			embed.description = t('cmd.memberConfig.sameValue');
@@ -166,7 +170,7 @@ export default class extends Command {
 	}
 
 	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: MemberSettingsKey, value: any, { t, me }: Context): string | null {
+	private validate(key: MemberSettingsKey, value: any, { t, me }: CommandContext): string | null {
 		return null;
 	}
 
@@ -176,7 +180,7 @@ export default class extends Command {
 		embed: Embed,
 		key: MemberSettingsKey,
 		value: any,
-		context: Context
+		context: CommandContext
 	): Promise<Function> {
 		return null;
 	}

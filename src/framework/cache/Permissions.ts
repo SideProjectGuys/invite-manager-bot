@@ -1,18 +1,18 @@
 import { BotCommand, InvitesCommand, ManagementCommand, ModerationCommand, MusicCommand } from '../../types';
 
-import { Cache } from './Cache';
+import { IMCache } from './Cache';
 
 type AnyCommand = BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
 
 type PermissionsObject = { [key in AnyCommand]?: string[] };
 
-export class PermissionsCache extends Cache<PermissionsObject> {
+export class PermissionsCache extends IMCache<PermissionsObject> {
 	public async init() {
 		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<PermissionsObject> {
-		const perms = await this.client.db.getRolePermissionsForGuild(guildId);
+		const perms = await this.db.getRolePermissionsForGuild(guildId);
 
 		const obj: PermissionsObject = {};
 

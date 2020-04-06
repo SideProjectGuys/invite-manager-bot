@@ -2,9 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.setup,
@@ -15,7 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { t, me }: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { t, me }: CommandContext): Promise<any> {
 		const embed = this.createEmbed({
 			title: t('cmd.setup.title'),
 			description: t('cmd.setup.text')

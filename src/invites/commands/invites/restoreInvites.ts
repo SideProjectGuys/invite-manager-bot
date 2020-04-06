@@ -1,12 +1,16 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { LogAction } from '../../../framework/models/Log';
 import { UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { InvitesCache } from '../../cache/InvitesCache';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private invitesCache: InvitesCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.restoreInvites,
@@ -24,25 +28,25 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t }: Context): Promise<any> {
+	public async action(message: Message, [user]: [BasicUser], flags: {}, { guild, t }: CommandContext): Promise<any> {
 		const memberId = user ? user.id : null;
 
-		await this.client.db.updateInviteCodeClearedAmount(0, guild.id, memberId);
+		await this.db.updateInviteCodeClearedAmount(0, guild.id, memberId);
 
-		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
+		const codes = memberId ? await this.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.client.db.updateJoinClearedStatus(
+		await this.db.updateJoinClearedStatus(
 			false,
 			guild.id,
 			codes.map((ic) => ic.code)
 		);
 
-		await this.client.db.clearCustomInvites(false, guild.id, memberId);
+		await this.db.clearCustomInvites(false, guild.id, memberId);
 
 		if (memberId) {
-			this.client.cache.invites.flushOne(guild.id, memberId);
+			this.invitesCache.flushOne(guild.id, memberId);
 		} else {
-			this.client.cache.invites.flush(guild.id);
+			this.invitesCache.flush(guild.id);
 		}
 
 		await this.client.logAction(guild, message, LogAction.restoreInvites, {

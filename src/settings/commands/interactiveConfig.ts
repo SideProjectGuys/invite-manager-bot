@@ -1,18 +1,22 @@
 import { Emoji, GuildChannel, Message, TextChannel } from 'eris';
 
-import { IMClient } from '../../../client';
-import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../../settings';
-import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
-import { GuildSettingsKey } from '../../models/GuildSetting';
-import { SettingsValueResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { IMClient } from '../../client';
+import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { Cache } from '../../framework/decorators/Cache';
+import { SettingsValueResolver } from '../../framework/resolvers';
+import { beautify, guildSettingsInfo, SettingsGroup, SettingsInfo, toDbValue } from '../../settings';
+import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../types';
+import { GuildSettingsCache } from '../cache/GuildSettings';
+import { GuildSettingsKey } from '../models/GuildSetting';
 
 interface ConfigMenu {
 	items: [GuildSettingsKey, SettingsInfo<any>][];
 	subMenus: SettingsGroup[];
 }
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.interactiveConfig,
@@ -35,7 +39,7 @@ export default class extends Command {
 	private cancel: string = '❌';
 	private choices: string[] = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
 
-	public async action(message: Message, args: any[], flags: {}, context: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, context: CommandContext): Promise<any> {
 		const embed = this.createEmbed({
 			title: 'InviteManager',
 			description: 'Loading...'
@@ -99,7 +103,7 @@ export default class extends Command {
 		return menu;
 	}
 
-	private async showConfigMenu(context: Context, authorId: string, msg: Message, path: SettingsGroup[]) {
+	private async showConfigMenu(context: CommandContext, authorId: string, msg: Message, path: SettingsGroup[]) {
 		const t = context.t;
 		const menu = this.buildConfigMenu(path);
 		const basePath = path.map((p) => `${p}.`).join('');
@@ -168,7 +172,7 @@ export default class extends Command {
 				const key = sel.value as GuildSettingsKey;
 
 				if (guildSettingsInfo[key].type === 'Boolean') {
-					await this.client.cache.guilds.setOne(context.guild.id, key, context.settings[key] ? false : true);
+					await this.guildSettingsCache.setOne(context.guild.id, key, context.settings[key] ? false : true);
 				} else {
 					const subChoice = await this.changeConfigSetting(context, authorId, msg, key);
 					if (subChoice === undefined) {
@@ -186,7 +190,7 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async changeConfigSetting(context: Context, authorId: string, msg: Message, key: GuildSettingsKey) {
+	private async changeConfigSetting(context: CommandContext, authorId: string, msg: Message, key: GuildSettingsKey) {
 		const info = guildSettingsInfo[key];
 		const isList = info.type.endsWith('[]');
 
@@ -318,7 +322,7 @@ export default class extends Command {
 				}
 
 				if (typeof newVal !== 'undefined') {
-					await this.client.cache.guilds.setOne(context.guild.id, key, newVal);
+					await this.guildSettingsCache.setOne(context.guild.id, key, newVal);
 				}
 			} else {
 				// Change a non-list setting
@@ -342,7 +346,7 @@ export default class extends Command {
 
 					const newValue = toDbValue(info, rawNewVal);
 
-					await this.client.cache.guilds.setOne(context.guild.id, key, newValue);
+					await this.guildSettingsCache.setOne(context.guild.id, key, newValue);
 					return 'up';
 				} catch (err) {
 					error = err.message;
@@ -351,7 +355,7 @@ export default class extends Command {
 		} while (true);
 	}
 
-	private async parseInput(context: Context, authorId: string, msg: Message, key: GuildSettingsKey) {
+	private async parseInput(context: CommandContext, authorId: string, msg: Message, key: GuildSettingsKey) {
 		return new Promise<any>(async (resolve, reject) => {
 			let timeOut: NodeJS.Timer;
 
@@ -387,7 +391,7 @@ export default class extends Command {
 	}
 
 	private async showMenu(
-		context: Context,
+		context: CommandContext,
 		msg: Message,
 		authorId: string,
 		title: string,
@@ -490,7 +494,7 @@ export default class extends Command {
 		});
 	}
 
-	private validate(key: GuildSettingsKey, value: any, { t, isPremium, me }: Context): string | null {
+	private validate(key: GuildSettingsKey, value: any, { t, isPremium, me }: CommandContext): string | null {
 		if (value === null || value === undefined) {
 			return null;
 		}

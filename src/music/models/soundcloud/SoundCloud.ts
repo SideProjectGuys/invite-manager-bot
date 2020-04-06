@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { IMClient } from '../../../client';
 import { MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -14,10 +13,6 @@ export class Soundcloud extends MusicPlatform {
 	public supportsSeek: boolean = true;
 	public supportsLyrics: boolean = false;
 	public supportsSearch: boolean = true;
-
-	public constructor(client: IMClient) {
-		super(client);
-	}
 
 	public isPlatformUrl(url: string): boolean {
 		if (!url) {

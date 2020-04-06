@@ -1,12 +1,16 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { LogAction } from '../../../framework/models/Log';
 import { RoleResolver } from '../../../framework/resolvers';
 import { CommandGroup, InvitesCommand } from '../../../types';
+import { RanksCache } from '../../cache/RanksCache';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private ranksCache: RanksCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.removeRank,
@@ -25,18 +29,18 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [role]: [Role], flags: {}, { guild, t }: Context): Promise<any> {
-		const ranks = await this.client.cache.ranks.get(guild.id);
+	public async action(message: Message, [role]: [Role], flags: {}, { guild, t }: CommandContext): Promise<any> {
+		const ranks = await this.ranksCache.get(guild.id);
 		const rank = ranks.find((r) => r.roleId === role.id);
 
 		if (rank) {
-			await this.client.db.removeRank(guild.id, rank.roleId);
+			await this.db.removeRank(guild.id, rank.roleId);
 
 			await this.client.logAction(guild, message, LogAction.removeRank, {
 				roleId: role.id
 			});
 
-			this.client.cache.ranks.flush(guild.id);
+			this.ranksCache.flush(guild.id);
 
 			return this.sendReply(message, t('cmd.removeRank.done', { role: `<@&${role.id}>` }));
 		} else {

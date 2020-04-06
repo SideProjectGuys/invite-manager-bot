@@ -1,13 +1,13 @@
 import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { BooleanResolver, EnumResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
 import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: MusicCommand.play,
@@ -43,7 +43,7 @@ export default class extends Command {
 		message: Message,
 		[link]: [string],
 		{ platform, next }: { platform: MusicPlatformType; next: boolean },
-		{ t, guild, settings }: Context
+		{ t, guild, settings }: CommandContext
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
@@ -51,7 +51,7 @@ export default class extends Command {
 			return;
 		}
 
-		const conn = await this.client.music.getMusicConnection(guild);
+		const conn = await this.music.getMusicConnection(guild);
 
 		if (!link) {
 			if (conn.isPaused()) {
@@ -62,16 +62,16 @@ export default class extends Command {
 
 		let musicPlatform: MusicPlatform;
 		if (platform) {
-			musicPlatform = this.client.music.platforms.get(platform);
+			musicPlatform = this.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.platforms.getForLink(link);
+			musicPlatform = this.music.platforms.getForLink(link);
 		}
 
 		let item: MusicItem;
 		if (musicPlatform) {
 			item = await musicPlatform.getByLink(link);
 		} else {
-			musicPlatform = this.client.music.platforms.get(settings.defaultMusicPlatform);
+			musicPlatform = this.music.platforms.get(settings.defaultMusicPlatform);
 			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
 				item = items[0];
@@ -84,7 +84,7 @@ export default class extends Command {
 
 			await conn.play(item, voiceChannel, next);
 
-			await this.sendEmbed(message.channel, this.client.music.createPlayingEmbed(item));
+			await this.sendEmbed(message.channel, this.music.createPlayingEmbed(item));
 		}
 	}
 }

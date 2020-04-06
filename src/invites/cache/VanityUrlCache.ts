@@ -1,7 +1,7 @@
-import { Cache } from '../../framework/cache/Cache';
+import { IMCache } from '../../framework/cache/Cache';
 import { GuildFeature } from '../../types';
 
-export class VanityUrlCache extends Cache<string> {
+export class VanityUrlCache extends IMCache<string> {
 	public async init() {
 		// NO-OP
 	}

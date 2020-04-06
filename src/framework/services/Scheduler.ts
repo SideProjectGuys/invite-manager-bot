@@ -3,14 +3,18 @@ import chalk from 'chalk';
 import { Guild } from 'eris';
 import moment from 'moment';
 
+import { Service } from '../decorators/Service';
 import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
 
+import { DatabaseService } from './Database';
 import { IMService } from './Service';
 
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
 
 export class SchedulerService extends IMService {
+	@Service() private db: DatabaseService;
+
 	private scheduledActionTimers: Map<number, NodeJS.Timer> = new Map();
 	private scheduledActionFunctions: {
 		[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
@@ -32,21 +36,21 @@ export class SchedulerService extends IMService {
 		date: Date,
 		reason: string
 	) {
-		const newId = await this.client.db.saveScheduledAction({
+		const newId = await this.db.saveScheduledAction({
 			guildId: guildId,
 			actionType: actionType,
 			args: args,
 			date: date,
 			reason: reason
 		});
-		const action = await this.client.db.getScheduledAction(guildId, newId);
+		const action = await this.db.getScheduledAction(guildId, newId);
 		if (action.date !== null) {
 			this.createTimer(action);
 		}
 	}
 
 	public async getScheduledActionsOfType(guildId: string, type: ScheduledActionType) {
-		return this.client.db.getScheduledActionsForGuildByType(guildId, type);
+		return this.db.getScheduledActionsForGuildByType(guildId, type);
 	}
 
 	private createTimer(action: ScheduledAction) {
@@ -63,7 +67,7 @@ export class SchedulerService extends IMService {
 				if (scheduledFunc) {
 					await scheduledFunc(guild, action.args);
 				}
-				await this.client.db.removeScheduledAction(action.guildId, action.id);
+				await this.db.removeScheduledAction(action.guildId, action.id);
 			} catch (error) {
 				withScope((scope) => {
 					scope.setExtra('action', JSON.stringify(action));
@@ -83,11 +87,11 @@ export class SchedulerService extends IMService {
 			this.scheduledActionTimers.delete(actionId);
 		}
 
-		await this.client.db.removeScheduledAction(guildId, actionId);
+		await this.db.removeScheduledAction(guildId, actionId);
 	}
 
 	private async scheduleScheduledActions() {
-		let actions = await this.client.db.getScheduledActionsForGuilds(this.client.guilds.map((g) => g.id));
+		let actions = await this.db.getScheduledActionsForGuilds(this.client.guilds.map((g) => g.id));
 		actions = actions.filter((a) => a.date !== null);
 		console.log(`Scheduling ${chalk.blue(actions.length)} actions from DB`);
 		actions.forEach((action) => this.createTimer(action));

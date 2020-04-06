@@ -2,9 +2,9 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup } from '../../../types';
-import { Command, Context } from '../Command';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.ping,
@@ -15,7 +15,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, context: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, context: CommandContext): Promise<any> {
 		const msg = await message.channel.createMessage('Pong!').catch(() => undefined);
 		if (msg) {
 			msg.edit(`Pong! (${(msg.createdAt - message.createdAt).toFixed(0)}ms)`);

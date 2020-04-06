@@ -2,10 +2,12 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { JoinInvalidatedReason } from '../../../framework/models/Join';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
+import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { JoinInvalidatedReason } from '../../models/Join';
 
 const ENTRIES_PER_PAGE = 20;
 
@@ -14,7 +16,9 @@ enum InfoDetails {
 	members = 'members'
 }
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.info,
@@ -51,7 +55,7 @@ export default class extends Command {
 		message: Message,
 		[user, details, _page]: [BasicUser, InfoDetails, number],
 		flags: {},
-		{ guild, t, settings, me }: Context
+		{ guild, t, settings, me }: CommandContext
 	): Promise<any> {
 		const lang = settings.lang;
 
@@ -67,8 +71,8 @@ export default class extends Command {
 			return;
 		}
 
-		const invitedMembers = await this.client.db.getInvitedMembers(guild.id, user.id);
-		const customInvs = await this.client.db.getCustomInvitesForMember(guild.id, user.id);
+		const invitedMembers = await this.db.getInvitedMembers(guild.id, user.id);
+		const customInvs = await this.db.getCustomInvitesForMember(guild.id, user.id);
 		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 		const bonusInvs = customInvs.filter((ci) => !ci.cleared);
 
@@ -135,8 +139,8 @@ export default class extends Command {
 		// TODO: Show current rank
 		// let ranks = await settings.get('ranks');
 
-		const invCodes = await this.client.db.getInviteCodesForMember(guild.id, user.id);
-		const invalidJoins = await this.client.db.getInvalidatedJoinsForMember(guild.id, user.id);
+		const invCodes = await this.db.getInviteCodesForMember(guild.id, user.id);
+		const invalidJoins = await this.db.getInvalidatedJoinsForMember(guild.id, user.id);
 
 		let fake = 0;
 		let leave = 0;
@@ -190,7 +194,7 @@ export default class extends Command {
 			});
 		}
 
-		const joinCount = await this.client.db.getTotalJoinsForMember(guild.id, user.id);
+		const joinCount = await this.db.getTotalJoinsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.info.joined.title'),
@@ -228,7 +232,7 @@ export default class extends Command {
 			inline: true
 		});
 
-		const ownJoins = await this.client.db.getJoinsForMember(guild.id, user.id);
+		const ownJoins = await this.db.getJoinsForMember(guild.id, user.id);
 
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
@@ -293,7 +297,7 @@ export default class extends Command {
 
 		if (invCodes.length > 0) {
 			let invText = '';
-			const allSets = await this.client.cache.inviteCodes.get(guild.id);
+			const allSets = await this.inviteCodeSettingsCache.get(guild.id);
 
 			for (const inv of invCodes.slice(0, 10)) {
 				const sets = allSets.get(inv.code);

@@ -2,13 +2,19 @@ import { Member, Message } from 'eris';
 import moment, { Duration } from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { DurationResolver, MemberResolver, StringResolver } from '../../../framework/resolvers';
+import { SchedulerService } from '../../../framework/services/Scheduler';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
+import { ModerationService } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+	@Service() private scheduler: SchedulerService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.mute,
@@ -42,22 +48,22 @@ export default class extends Command {
 		message: Message,
 		[targetMember, reason]: [Member, string],
 		{ duration }: { duration: Duration },
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
-		const embed = this.client.mod.createBasicEmbed(targetMember);
+		const embed = this.mod.createBasicEmbed(targetMember);
 
 		const mutedRole = settings.mutedRole;
 
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
-		} else if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
+		} else if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
+			await this.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
 
 			try {
 				await targetMember.addRole(mutedRole, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
-				await this.client.db.saveMembers([
+				await this.db.saveMembers([
 					{
 						id: targetMember.user.id,
 						name: targetMember.user.username,
@@ -66,7 +72,7 @@ export default class extends Command {
 					}
 				]);
 
-				await this.client.db.savePunishment({
+				await this.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetMember.id,
 					type: PunishmentType.mute,
@@ -76,7 +82,7 @@ export default class extends Command {
 					creatorId: message.author.id
 				});
 
-				await this.client.mod.logPunishmentModAction(
+				await this.mod.logPunishmentModAction(
 					guild,
 					targetMember.user,
 					PunishmentType.mute,
@@ -90,7 +96,7 @@ export default class extends Command {
 						name: t('cmd.mute.unmute.title'),
 						value: t('cmd.mute.unmute.desecription', { duration: duration.humanize() })
 					});
-					await this.client.scheduler.addScheduledAction(
+					await this.scheduler.addScheduledAction(
 						guild.id,
 						ScheduledActionType.unmute,
 						{ memberId: targetMember.id, roleId: mutedRole },

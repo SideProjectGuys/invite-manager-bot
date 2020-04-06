@@ -1,12 +1,16 @@
 import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
-import { InviteCodeSettingsKey } from '../../../framework/models/InviteCodeSetting';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
+import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
+import { InviteCodeSettingsKey } from '../../../settings/models/InviteCodeSetting';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.createInvite,
@@ -34,7 +38,7 @@ export default class extends Command {
 		message: Message,
 		[name, _channel]: [string, TextChannel],
 		flags: {},
-		{ guild, t, me }: Context
+		{ guild, t, me }: CommandContext
 	): Promise<any> {
 		const channel = _channel ? _channel : (message.channel as TextChannel);
 
@@ -53,7 +57,7 @@ export default class extends Command {
 			name ? encodeURIComponent(name) : undefined
 		);
 
-		await this.client.db.saveChannels([
+		await this.db.saveChannels([
 			{
 				id: inv.channel.id,
 				name: inv.channel.name,
@@ -61,7 +65,7 @@ export default class extends Command {
 			}
 		]);
 
-		await this.client.db.saveInviteCodes([
+		await this.db.saveInviteCodes([
 			{
 				code: inv.code,
 				maxAge: 0,
@@ -78,7 +82,7 @@ export default class extends Command {
 			}
 		]);
 
-		await this.client.cache.inviteCodes.setOne(guild.id, inv.code, InviteCodeSettingsKey.name, name);
+		await this.inviteCodeSettingsCache.setOne(guild.id, inv.code, InviteCodeSettingsKey.name, name);
 
 		return this.sendReply(
 			message,

@@ -1,11 +1,15 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
+import { CommandsService } from '../../../framework/services/Commands';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private cmds: CommandsService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.removeInvites,
@@ -42,9 +46,9 @@ export default class extends Command {
 		message: Message,
 		[user, amount, reason]: [BasicUser, number, string],
 		flags: {},
-		context: Context
+		context: CommandContext
 	): Promise<any> {
-		const cmd = this.client.cmds.commands.find((c) => c.name === InvitesCommand.addInvites);
+		const cmd = this.cmds.commands.find((c) => c.name === InvitesCommand.addInvites);
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

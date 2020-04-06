@@ -2,9 +2,16 @@ import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
+import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { DatabaseService } from '../../framework/services/Database';
+import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsObject } from '../../settings';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
+import { PunishmentCache } from '../cache/PunishmentsCache';
+import { StrikesCache } from '../cache/StrikesCache';
 import { PunishmentType } from '../models/PunishmentConfig';
 import { ViolationType } from '../models/StrikeConfig';
 
@@ -37,6 +44,12 @@ export const NAME_DEHOIST_PREFIX = '▼';
 export const NAME_HOIST_REGEX = /^[-.:,;|\/\\~!+*%$£€&()[\]{}°§<>?'"`^´¦@#¬]+/;
 
 export class ModerationService extends IMService {
+	@Service() private db: DatabaseService;
+	@Service() private msg: MessagingService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+	@Cache() private strikesCache: StrikesCache;
+	@Cache() private punishmentsCache: PunishmentCache;
+
 	private messageCache: Map<string, MiniMessage[]> = new Map();
 	public getMessageCacheSize() {
 		return this.messageCache.size;
@@ -105,7 +118,7 @@ export class ModerationService extends IMService {
 			return;
 		}
 
-		const settings = await this.client.cache.guilds.get(guild.id);
+		const settings = await this.guildSettingsCache.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -165,7 +178,7 @@ export class ModerationService extends IMService {
 			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
 
-		const strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strikesCache = await this.strikesCache.get(guild.id);
 		let allViolations: ViolationType[] = Object.values(ViolationType);
 
 		for (const strike of strikesCache) {
@@ -233,7 +246,7 @@ export class ModerationService extends IMService {
 		const author = user
 			? { name: `${user.username} (${user.id})`, icon_url: user.avatarURL }
 			: { name: 'AutoModerator', icon_url: this.client.user.avatarURL };
-		const embed = this.client.msg.createEmbed({
+		const embed = this.msg.createEmbed({
 			author,
 			description: ''
 		});
@@ -304,12 +317,12 @@ export class ModerationService extends IMService {
 	public async addStrikesAndPunish(member: Member, type: ViolationType, amount: number, args: Arguments) {
 		await this.informAboutStrike(member, type, amount, args.settings);
 
-		let strikesBefore = await this.client.db.getStrikeAmount(args.guild.id, member.id);
+		let strikesBefore = await this.db.getStrikeAmount(args.guild.id, member.id);
 		if (isNaN(strikesBefore) || !isFinite(strikesBefore)) {
 			strikesBefore = 0;
 		}
 
-		await this.client.db.saveStrike({
+		await this.db.saveStrike({
 			guildId: args.guild.id,
 			memberId: member.id,
 			amount,
@@ -318,7 +331,7 @@ export class ModerationService extends IMService {
 
 		const strikesAfter = strikesBefore + amount;
 
-		const punishmentConfigs = await this.client.cache.punishments.get(args.guild.id);
+		const punishmentConfigs = await this.punishmentsCache.get(args.guild.id);
 		const punishmentConfig = punishmentConfigs.find((c) => c.amount > strikesBefore && c.amount <= strikesAfter);
 
 		if (punishmentConfig) {
@@ -335,7 +348,7 @@ export class ModerationService extends IMService {
 				return;
 			}
 
-			await this.client.db.savePunishment({
+			await this.db.savePunishment({
 				guildId: args.guild.id,
 				memberId: member.id,
 				type: punishmentConfig.type,
@@ -550,7 +563,7 @@ export class ModerationService extends IMService {
 			return;
 		}
 
-		const settings = await this.client.cache.guilds.get(guild.id);
+		const settings = await this.guildSettingsCache.get(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -581,7 +594,7 @@ export class ModerationService extends IMService {
 		}
 
 		const type = ViolationType.hoist;
-		const strikesCache = await this.client.cache.strikes.get(guild.id);
+		const strikesCache = await this.strikesCache.get(guild.id);
 		const strike = strikesCache.find((s) => s.type === type);
 		const amount = strike ? strike.amount : 0;
 
@@ -653,7 +666,7 @@ export class ModerationService extends IMService {
 		if (settings.autoModDeleteBotMessage && settings.autoModDeleteBotMessageTimeoutInSeconds === 0) {
 			return;
 		}
-		const reply = await this.client.msg.sendReply(message, embed);
+		const reply = await this.msg.sendReply(message, embed);
 		if (reply && settings.autoModDeleteBotMessage) {
 			setTimeout(() => reply.delete().catch(() => undefined), settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
 		}
@@ -675,7 +688,7 @@ export class ModerationService extends IMService {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.msg.createEmbed({
+					const embed = this.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{
@@ -720,7 +733,7 @@ export class ModerationService extends IMService {
 			if (settings.modLogChannel) {
 				const channel = member.guild.channels.get(settings.modLogChannel);
 				if (channel && channel instanceof TextChannel) {
-					const embed = this.client.msg.createEmbed({
+					const embed = this.msg.createEmbed({
 						title: `Couldn't send DM to user`,
 						fields: [
 							{

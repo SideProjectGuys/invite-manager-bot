@@ -3,7 +3,11 @@ import { Guild, Member, Message } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
+import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 
 export enum FileMode {
 	FILE = 'file',
@@ -40,6 +44,9 @@ const captchaOptions: CaptchaConfig = {
 };
 
 export class CaptchaService extends IMService {
+	@Service() private msg: MessagingService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
+
 	public async init() {
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 	}
@@ -50,14 +57,14 @@ export class CaptchaService extends IMService {
 			return;
 		}
 
-		const sets = await this.client.cache.guilds.get(guild.id);
+		const sets = await this.guildSettingsCache.get(guild.id);
 		if (!sets.captchaVerificationOnJoin) {
 			return;
 		}
 
 		const [text, buffer] = await this.createCaptcha(captchaOptions);
 
-		const embed = this.client.msg.createEmbed({
+		const embed = this.msg.createEmbed({
 			title: 'Captcha',
 			description: sets.captchaVerificationWelcomeMessage.replace(/\{serverName\}/g, member.guild.name),
 			image: {

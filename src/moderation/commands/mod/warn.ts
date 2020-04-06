@@ -1,12 +1,16 @@
 import { Member, Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { MemberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
+import { ModerationService } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.warn,
@@ -33,15 +37,15 @@ export default class extends Command {
 		message: Message,
 		[targetMember, reason]: [Member, string],
 		flags: {},
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
-		const embed = this.client.mod.createBasicEmbed(targetMember);
+		const embed = this.mod.createBasicEmbed(targetMember);
 
-		if (this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.client.mod.informAboutPunishment(targetMember, PunishmentType.warn, settings, { reason });
+		if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
+			await this.mod.informAboutPunishment(targetMember, PunishmentType.warn, settings, { reason });
 
 			// Make sure member exists in DB
-			await this.client.db.saveMembers([
+			await this.db.saveMembers([
 				{
 					id: targetMember.user.id,
 					name: targetMember.user.username,
@@ -50,7 +54,7 @@ export default class extends Command {
 				}
 			]);
 
-			await this.client.db.savePunishment({
+			await this.db.savePunishment({
 				id: null,
 				guildId: guild.id,
 				memberId: targetMember.id,
@@ -61,7 +65,7 @@ export default class extends Command {
 				creatorId: message.author.id
 			});
 
-			await this.client.mod.logPunishmentModAction(guild, targetMember.user, PunishmentType.warn, 0, [
+			await this.mod.logPunishmentModAction(guild, targetMember.user, PunishmentType.warn, 0, [
 				{ name: 'Mod', value: `<@${message.author.id}>` },
 				{ name: 'Reason', value: reason }
 			]);

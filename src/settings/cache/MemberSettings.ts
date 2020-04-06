@@ -1,15 +1,14 @@
+import { IMCache } from '../../framework/cache/Cache';
 import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
 import { MemberSettingsKey } from '../models/MemberSetting';
 
-import { Cache } from './Cache';
-
-export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>> {
+export class MemberSettingsCache extends IMCache<Map<string, MemberSettingsObject>> {
 	public async init() {
 		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
-		const sets = await this.client.db.getMemberSettingsForGuild(guildId);
+		const sets = await this.db.getMemberSettingsForGuild(guildId);
 
 		const map = new Map();
 		sets.forEach((set) => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
@@ -41,7 +40,7 @@ export class MemberSettingsCache extends Cache<Map<string, MemberSettingsObject>
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.client.db.saveMemberSettings({ memberId: userId, guildId, value: set });
+			await this.db.saveMemberSettings({ memberId: userId, guildId, value: set });
 		}
 
 		return dbVal;

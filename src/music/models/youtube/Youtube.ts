@@ -1,6 +1,5 @@
 import ytdl from 'ytdl-core';
 
-import { IMClient } from '../../../client';
 import { MusicPlatformType } from '../../../types';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
@@ -12,10 +11,6 @@ export class Youtube extends MusicPlatform {
 	public supportsSeek: boolean = true;
 	public supportsLyrics: boolean = true;
 	public supportsSearch: boolean = true;
-
-	public constructor(client: IMClient) {
-		super(client);
-	}
 
 	public isPlatformUrl(url: string): boolean {
 		if (!url) {

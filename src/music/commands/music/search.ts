@@ -1,12 +1,12 @@
 import { Emoji, Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
 import { EnumResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
+import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
-export default class extends Command {
+export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: MusicCommand.search,
@@ -37,7 +37,7 @@ export default class extends Command {
 		message: Message,
 		[searchTerm]: [string],
 		{ platform }: { platform: MusicPlatformType },
-		{ t, guild, settings }: Context
+		{ t, guild, settings }: CommandContext
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
@@ -47,9 +47,9 @@ export default class extends Command {
 
 		let musicPlatform: MusicPlatform;
 		if (platform) {
-			musicPlatform = this.client.music.platforms.get(platform);
+			musicPlatform = this.music.platforms.get(platform);
 		} else {
-			musicPlatform = this.client.music.platforms.get(settings.defaultMusicPlatform);
+			musicPlatform = this.music.platforms.get(settings.defaultMusicPlatform);
 		}
 
 		if (!musicPlatform.supportsSearch) {
@@ -95,13 +95,13 @@ export default class extends Command {
 		const musicItem = items[choice];
 		musicItem.setAuthor(message.author);
 
-		const conn = await this.client.music.getMusicConnection(guild);
+		const conn = await this.music.getMusicConnection(guild);
 
 		const voiceChannel = guild.channels.get(voiceChannelId) as VoiceChannel;
 
 		await conn.play(musicItem, voiceChannel);
 
-		await this.sendEmbed(message.channel, this.client.music.createPlayingEmbed(musicItem));
+		await this.sendEmbed(message.channel, this.music.createPlayingEmbed(musicItem));
 	}
 
 	private cancel: string = '❌';

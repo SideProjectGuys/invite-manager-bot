@@ -2,10 +2,14 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { Service } from '../../decorators/Service';
 import { CommandResolver } from '../../resolvers';
-import { Command, Context } from '../Command';
+import { CommandsService } from '../../services/Commands';
+import { CommandContext, IMCommand } from '../Command';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private cmds: CommandsService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: BotCommand.help,
@@ -23,7 +27,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [command]: [Command], flags: {}, context: Context): Promise<any> {
+	public async action(message: Message, [command]: [IMCommand], flags: {}, context: CommandContext): Promise<any> {
 		const { guild, t, settings, me } = context;
 		const embed = this.createEmbed();
 
@@ -60,7 +64,7 @@ export default class extends Command {
 		} else {
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
-			const commands = this.client.cmds.commands
+			const commands = this.cmds.commands
 				.map((c) => ({
 					...c,
 					usage: c.usage.replace('{prefix}', prefix)

@@ -2,12 +2,16 @@ import { Message } from 'eris';
 import { Moment } from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { LogAction } from '../../../framework/models/Log';
 import { BooleanResolver, DateResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { InvitesCache } from '../../cache/InvitesCache';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private invitesCache: InvitesCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.clearInvites,
@@ -41,15 +45,15 @@ export default class extends Command {
 		message: Message,
 		[user]: [BasicUser],
 		{ date, clearBonus }: { date: Moment; clearBonus: boolean },
-		{ guild, t }: Context
+		{ guild, t }: CommandContext
 	): Promise<any> {
 		const memberId = user ? user.id : undefined;
 
-		await this.client.db.updateInviteCodeClearedAmount('uses', guild.id, memberId);
+		await this.db.updateInviteCodeClearedAmount('uses', guild.id, memberId);
 
-		const codes = memberId ? await this.client.db.getInviteCodesForMember(guild.id, memberId) : [];
+		const codes = memberId ? await this.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.client.db.updateJoinClearedStatus(
+		await this.db.updateJoinClearedStatus(
 			true,
 			guild.id,
 			codes.map((ic) => ic.code)
@@ -57,15 +61,15 @@ export default class extends Command {
 
 		if (clearBonus) {
 			// Clear invites
-			await this.client.db.clearCustomInvites(true, guild.id, memberId);
+			await this.db.clearCustomInvites(true, guild.id, memberId);
 		} else {
-			await this.client.db.clearCustomInvites(false, guild.id, memberId);
+			await this.db.clearCustomInvites(false, guild.id, memberId);
 		}
 
 		if (memberId) {
-			this.client.cache.invites.flushOne(guild.id, memberId);
+			this.invitesCache.flushOne(guild.id, memberId);
 		} else {
-			this.client.cache.invites.flush(guild.id);
+			this.invitesCache.flush(guild.id);
 		}
 
 		await this.client.logAction(guild, message, LogAction.clearInvites, {

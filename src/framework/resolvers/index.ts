@@ -11,5 +11,5 @@ export * from './NumberResolver';
 export * from './Resolver';
 export * from './RoleResolver';
 export * from './StringResolver';
-export * from './SettingsValueResolver';
 export * from './UserResolver';
+export * from '../../settings/resolvers/SettingsValueResolver';

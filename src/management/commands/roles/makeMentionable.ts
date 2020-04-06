@@ -1,11 +1,11 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { RoleResolver } from '../../../framework/resolvers';
 import { CommandGroup, ManagementCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ManagementCommand.makeMentionable,
@@ -24,7 +24,7 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, [role]: [Role], flags: {}, { t, me, guild }: Context): Promise<any> {
+	public async action(message: Message, [role]: [Role], flags: {}, { t, me, guild }: CommandContext): Promise<any> {
 		if (role.mentionable) {
 			return this.sendReply(message, t('cmd.makeMentionable.alreadyDone', { role: `<@&${role.id}>` }));
 		} else {

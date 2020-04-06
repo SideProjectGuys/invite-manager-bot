@@ -2,12 +2,16 @@ import { Message } from 'eris';
 import { Context } from 'vm';
 
 import { IMClient } from '../../../client';
-import { Command } from '../../../framework/commands/Command';
+import { IMCommand } from '../../../framework/commands/Command';
+import { Cache } from '../../../framework/decorators/Cache';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentCache } from '../../cache/PunishmentsCache';
 import { PunishmentType } from '../../models/PunishmentConfig';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Cache() private punishmentsCache: PunishmentCache;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.punishmentConfig,
@@ -43,7 +47,7 @@ export default class extends Command {
 			title: t('cmd.punishmentConfig.title')
 		});
 
-		const punishmentConfigList = await this.client.cache.punishments.get(guild.id);
+		const punishmentConfigList = await this.punishmentsCache.get(guild.id);
 
 		if (typeof punishmentType === typeof undefined) {
 			const allPunishments: PunishmentType[] = Object.values(PunishmentType);
@@ -67,12 +71,12 @@ export default class extends Command {
 				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await this.client.db.removePunishmentConfig(guild.id, punishmentType);
+			await this.db.removePunishmentConfig(guild.id, punishmentType);
 			embed.description = t('cmd.punishmentConfig.deletedText', {
 				punishment: `**${punishmentType}**`
 			});
 		} else {
-			await this.client.db.savePunishmentConfig({
+			await this.db.savePunishmentConfig({
 				guildId: guild.id,
 				type: punishmentType,
 				amount: strikes,
@@ -84,7 +88,7 @@ export default class extends Command {
 			});
 		}
 
-		this.client.cache.punishments.flush(guild.id);
+		this.punishmentsCache.flush(guild.id);
 		await this.sendReply(message, embed);
 	}
 }

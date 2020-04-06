@@ -2,11 +2,11 @@ import { Invite, Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { InviteCode } from '../../../framework/models/InviteCode';
 import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
 
-export default class extends Command {
+export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
 			name: InvitesCommand.inviteCodes,
@@ -27,10 +27,10 @@ export default class extends Command {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: Context): Promise<any> {
+	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: CommandContext): Promise<any> {
 		const lang = settings.lang;
 
-		let codes = await this.client.db.getInviteCodesForMember(guild.id, message.author.id);
+		let codes = await this.db.getInviteCodesForMember(guild.id, message.author.id);
 
 		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter((code) => code.inviter && code.inviter.id === message.author.id)
@@ -54,27 +54,9 @@ export default class extends Command {
 				isWidget: !code.inviter
 			}));
 
-			const vanityInv = await this.client.cache.vanity.get(guild.id);
-			if (vanityInv) {
-				newDbCodes.push({
-					code: vanityInv,
-					createdAt: new Date(),
-					channelId: null,
-					guildId: guild.id,
-					inviterId: null,
-					uses: 0,
-					maxUses: 0,
-					maxAge: 0,
-					temporary: false,
-					clearedAmount: 0,
-					isVanity: true,
-					isWidget: false
-				});
-			}
-
 			// Insert any new codes that haven't been used yet
 			if (newCodes.length > 0) {
-				await this.client.db.saveChannels(
+				await this.db.saveChannels(
 					newCodes.map((c) => ({
 						id: c.channel.id,
 						guildId: c.guild.id,
@@ -82,7 +64,7 @@ export default class extends Command {
 					}))
 				);
 
-				await this.client.db.saveInviteCodes(newDbCodes);
+				await this.db.saveInviteCodes(newDbCodes);
 			}
 
 			codes = codes.concat(newDbCodes);

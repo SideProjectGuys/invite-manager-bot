@@ -1,9 +1,12 @@
 import moment from 'moment';
 
-import { Cache } from '../../framework/cache/Cache';
-import { InviteCounts } from '../services/Invites';
+import { IMCache } from '../../framework/cache/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { InviteCounts, InvitesService } from '../services/Invites';
 
-export class InvitesCache extends Cache<Map<string, InviteCounts>> {
+export class InvitesCache extends IMCache<Map<string, InviteCounts>> {
+	@Service() protected invs: InvitesService;
+
 	public async init() {
 		this.maxCacheDuration = moment.duration(100, 'years');
 	}
@@ -17,7 +20,7 @@ export class InvitesCache extends Cache<Map<string, InviteCounts>> {
 		const guildInvites = await this.get(guildId);
 		let invites = guildInvites.get(memberId);
 		if (!invites) {
-			invites = await this.client.invs.getInviteCounts(guildId, memberId);
+			invites = await this.invs.getInviteCounts(guildId, memberId);
 			guildInvites.set(memberId, invites);
 		}
 		return invites;

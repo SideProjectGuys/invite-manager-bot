@@ -1,12 +1,16 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { Command, Context } from '../../../framework/commands/Command';
+import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
+import { ModerationService } from '../../services/Moderation';
 
-export default class extends Command {
+export default class extends IMCommand {
+	@Service() private mod: ModerationService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.ban,
@@ -41,18 +45,18 @@ export default class extends Command {
 		message: Message,
 		[targetUser, reason]: [BasicUser, string],
 		{ deleteMessageDays }: { deleteMessageDays: number },
-		{ guild, me, settings, t }: Context
+		{ guild, me, settings, t }: CommandContext
 	): Promise<any> {
 		let targetMember = guild.members.get(targetUser.id);
 		if (!targetMember) {
 			targetMember = await guild.getRESTMember(targetUser.id).catch(() => undefined);
 		}
 
-		const embed = this.client.mod.createBasicEmbed(targetUser);
+		const embed = this.mod.createBasicEmbed(targetUser);
 
-		if (!targetMember || this.client.mod.isPunishable(guild, targetMember, message.member, me)) {
+		if (!targetMember || this.mod.isPunishable(guild, targetMember, message.member, me)) {
 			if (targetMember) {
-				await this.client.mod.informAboutPunishment(targetMember, PunishmentType.ban, settings, { reason });
+				await this.mod.informAboutPunishment(targetMember, PunishmentType.ban, settings, { reason });
 			}
 
 			const days = deleteMessageDays ? deleteMessageDays : 0;
@@ -60,7 +64,7 @@ export default class extends Command {
 				await this.client.banGuildMember(guild.id, targetUser.id, days, encodeURIComponent(reason));
 
 				// Make sure member exists in DB
-				await this.client.db.saveMembers([
+				await this.db.saveMembers([
 					{
 						id: targetMember.user.id,
 						name: targetMember.user.username,
@@ -69,7 +73,7 @@ export default class extends Command {
 					}
 				]);
 
-				await this.client.db.savePunishment({
+				await this.db.savePunishment({
 					guildId: guild.id,
 					memberId: targetUser.id,
 					type: PunishmentType.ban,
@@ -79,7 +83,7 @@ export default class extends Command {
 					creatorId: message.author.id
 				});
 
-				await this.client.mod.logPunishmentModAction(
+				await this.mod.logPunishmentModAction(
 					guild,
 					targetUser,
 					PunishmentType.ban,
