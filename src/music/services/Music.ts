@@ -4,12 +4,12 @@ import xmldoc, { XmlElement } from 'xmldoc';
 
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
-import { DatabaseService } from '../../framework/services/Database';
+import { DatabaseService, GLOBAL_SHARD_ID } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { AnnouncementVoice } from '../../settings/models/GuildSetting';
-import { LavaTrack } from '../../types';
+import { BotType, LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
@@ -30,6 +30,10 @@ const ALPHA_INDEX: { [x: string]: string } = {
 	'&apos;': `'`,
 	'&amp;': '&'
 };
+
+enum TABLE {
+	musicNodes = '`musicNodes`'
+}
 
 interface MusicNode {
 	host: string;
@@ -69,9 +73,15 @@ export class MusicService extends IMService {
 		await super.onClientReady();
 	}
 
+	private async getMusicNodes() {
+		const typeFilter =
+			this.client.type === BotType.custom ? 'isCustom' : this.client.type === BotType.pro ? 'isPremium' : 'isRegular';
+		return this.db.findMany<MusicNode>(GLOBAL_SHARD_ID, TABLE.musicNodes, `${typeFilter} = 1`, []);
+	}
+
 	public async loadMusicNodes() {
 		// Load nodes from database
-		this.nodes = await this.db.getMusicNodes();
+		this.nodes = await this.getMusicNodes();
 
 		// Setup connections
 		this.client.voiceConnections = new PlayerManager(this.client, this.nodes, {
