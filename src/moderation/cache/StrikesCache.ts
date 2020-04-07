@@ -1,12 +1,16 @@
 import { IMCache } from '../../framework/cache/Cache';
+import { Service } from '../../framework/decorators/Service';
 import { StrikeConfig } from '../models/StrikeConfig';
+import { StrikeService } from '../services/StrikeService';
 
 export class StrikesCache extends IMCache<StrikeConfig[]> {
+	@Service() private strikes: StrikeService;
+
 	public async init() {
 		// TODO
 	}
 
 	protected async _get(guildId: string): Promise<StrikeConfig[]> {
-		return this.db.getStrikeConfigsForGuild(guildId);
+		return this.strikes.getStrikeConfigsForGuild(guildId);
 	}
 }

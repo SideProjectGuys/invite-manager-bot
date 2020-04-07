@@ -7,9 +7,11 @@ import { MemberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
+import { PunishmentService } from '../../services/PunishmentService';
 
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
+	@Service() private punishment: PunishmentService;
 
 	public constructor(client: IMClient) {
 		super(client, {
@@ -42,33 +44,7 @@ export default class extends IMCommand {
 		const embed = this.mod.createBasicEmbed(targetMember);
 
 		if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.mod.informAboutPunishment(targetMember, PunishmentType.warn, settings, { reason });
-
-			// Make sure member exists in DB
-			await this.db.saveMembers([
-				{
-					id: targetMember.user.id,
-					name: targetMember.user.username,
-					discriminator: targetMember.user.discriminator,
-					guildId: guild.id
-				}
-			]);
-
-			await this.db.savePunishment({
-				id: null,
-				guildId: guild.id,
-				memberId: targetMember.id,
-				type: PunishmentType.warn,
-				amount: 0,
-				args: '',
-				reason: reason,
-				creatorId: message.author.id
-			});
-
-			await this.mod.logPunishmentModAction(guild, targetMember.user, PunishmentType.warn, 0, [
-				{ name: 'Mod', value: `<@${message.author.id}>` },
-				{ name: 'Reason', value: reason }
-			]);
+			await this.punishment.punish(guild, targetMember.user, PunishmentType.warn, 0, { user: message.author, reason });
 
 			embed.description = t('cmd.warn.done');
 		} else {

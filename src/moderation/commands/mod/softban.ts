@@ -7,9 +7,11 @@ import { MemberResolver, NumberResolver, StringResolver } from '../../../framewo
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
+import { PunishmentService } from '../../services/PunishmentService';
 
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
+	@Service() private punishment: PunishmentService;
 
 	public constructor(client: IMClient) {
 		super(client, {
@@ -50,40 +52,18 @@ export default class extends IMCommand {
 		const embed = this.mod.createBasicEmbed(targetMember);
 
 		if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.mod.informAboutPunishment(targetMember, PunishmentType.softban, settings, { reason });
-
 			const days = deleteMessageDays ? deleteMessageDays : 0;
 			try {
-				await targetMember.ban(days, reason);
-				await targetMember.unban('softban');
-
-				// Make sure member exists in DB
-				await this.db.saveMembers([
-					{
-						id: targetMember.user.id,
-						name: targetMember.user.username,
-						discriminator: targetMember.user.discriminator,
-						guildId: guild.id
-					}
-				]);
-
-				await this.db.savePunishment({
-					guildId: guild.id,
-					memberId: targetMember.id,
-					type: PunishmentType.softban,
-					amount: 0,
-					args: '',
-					reason: reason,
-					creatorId: message.author.id
-				});
-
-				await this.mod.logPunishmentModAction(
+				await this.punishment.punish(
 					guild,
 					targetMember.user,
 					PunishmentType.softban,
 					0,
-					[{ name: 'Reason', value: reason }],
-					message.author
+					{
+						user: message.author,
+						reason
+					},
+					[days]
 				);
 
 				embed.description = t('cmd.softBan.done');

@@ -2,10 +2,14 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
+import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
+	@Service() private strikes: StrikeService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.caseDelete,
@@ -36,10 +40,10 @@ export default class extends IMCommand {
 			})
 		});
 
-		const strike = await this.db.getStrike(guild.id, caseNumber);
+		const strike = await this.strikes.getStrike(guild.id, caseNumber);
 
 		if (strike) {
-			await this.db.removeStrike(strike.guildId, strike.id);
+			await this.strikes.removeStrike(strike.guildId, strike.id);
 			embed.description = t('cmd.caseDelete.done', {
 				id: `${strike.id}`
 			});

@@ -10,10 +10,12 @@ import { SchedulerService } from '../../../framework/services/Scheduler';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
+import { PunishmentService } from '../../services/PunishmentService';
 
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
 	@Service() private scheduler: SchedulerService;
+	@Service() private punishment: PunishmentService;
 
 	public constructor(client: IMClient) {
 		super(client, {
@@ -57,39 +59,11 @@ export default class extends IMCommand {
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			embed.description = t('cmd.mute.missingRole');
 		} else if (this.mod.isPunishable(guild, targetMember, message.member, me)) {
-			await this.mod.informAboutPunishment(targetMember, PunishmentType.mute, settings, { reason });
-
 			try {
-				await targetMember.addRole(mutedRole, encodeURIComponent(reason));
-
-				// Make sure member exists in DB
-				await this.db.saveMembers([
-					{
-						id: targetMember.user.id,
-						name: targetMember.user.username,
-						discriminator: targetMember.user.discriminator,
-						guildId: guild.id
-					}
-				]);
-
-				await this.db.savePunishment({
-					guildId: guild.id,
-					memberId: targetMember.id,
-					type: PunishmentType.mute,
-					amount: 0,
-					args: '',
-					reason: reason,
-					creatorId: message.author.id
+				await this.punishment.punish(guild, targetMember.user, PunishmentType.mute, 0, {
+					user: message.author,
+					reason
 				});
-
-				await this.mod.logPunishmentModAction(
-					guild,
-					targetMember.user,
-					PunishmentType.mute,
-					0,
-					[{ name: 'Reason', value: reason }],
-					message.author
-				);
 
 				if (duration) {
 					embed.fields.push({

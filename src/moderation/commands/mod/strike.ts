@@ -3,7 +3,7 @@ import { Member, Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
-import { EnumResolver, MemberResolver, NumberResolver } from '../../../framework/resolvers';
+import { EnumResolver, MemberResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { ViolationType } from '../../models/StrikeConfig';
 import { ModerationService } from '../../services/Moderation';
@@ -30,6 +30,12 @@ export default class extends IMCommand {
 					name: 'amount',
 					resolver: NumberResolver,
 					required: true
+				},
+				{
+					name: 'reason',
+					resolver: StringResolver,
+					required: false,
+					rest: true
 				}
 			],
 			group: CommandGroup.Moderation,
@@ -40,16 +46,10 @@ export default class extends IMCommand {
 
 	public async action(
 		message: Message,
-		[member, type, amount]: [Member, ViolationType, number],
+		[member, type, amount, reason]: [Member, ViolationType, number, string],
 		flags: {},
-		{ guild, settings }: CommandContext
+		{ guild }: CommandContext
 	): Promise<any> {
-		const source = `${message.author.username}#${message.author.discriminator} ` + `(ID: ${message.author.id})`;
-		await this.mod.logViolationModAction(guild, member.user, type, amount, [{ name: 'Issued by', value: source }]);
-
-		await this.mod.addStrikesAndPunish(member, type, amount, {
-			guild,
-			settings
-		});
+		await this.mod.addStrikesAndPunish(guild, member.user, type, amount, { user: message.author, reason });
 	}
 }

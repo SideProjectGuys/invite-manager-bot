@@ -3,10 +3,16 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
+import { PunishmentService } from '../../services/PunishmentService';
+import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
+	@Service() private strikes: StrikeService;
+	@Service() private punishments: PunishmentService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.check,
@@ -35,7 +41,7 @@ export default class extends IMCommand {
 			title: user.username
 		});
 
-		const strikeList = await this.db.getStrikesForMember(guild.id, user.id);
+		const strikeList = await this.strikes.getStrikesForMember(guild.id, user.id);
 		const strikeTotal = strikeList.reduce((acc, s) => acc + s.amount, 0);
 
 		embed.fields.push({
@@ -47,7 +53,7 @@ export default class extends IMCommand {
 			inline: false
 		});
 
-		const punishmentList = await this.db.getPunishmentsForMember(guild.id, user.id);
+		const punishmentList = await this.punishments.getPunishmentsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.check.punishments.total'),

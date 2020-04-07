@@ -3,10 +3,14 @@ import moment from 'moment';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver } from '../../../framework/resolvers';
 import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
+import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
+	@Service() private strikes: StrikeService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ModerationCommand.caseView,
@@ -35,7 +39,7 @@ export default class extends IMCommand {
 			title: t('cmd.caseView.title', { id: caseNumber })
 		});
 
-		const strike = await this.db.getStrike(guild.id, caseNumber);
+		const strike = await this.strikes.getStrike(guild.id, caseNumber);
 
 		if (strike) {
 			let user: BasicUser = await guild

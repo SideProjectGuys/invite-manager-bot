@@ -3,7 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { CommandGroup, ModerationCommand } from '../../../types';
-import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/Moderation';
+import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/AutoModeration';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {

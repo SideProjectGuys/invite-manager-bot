@@ -3,12 +3,15 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { StrikesCache } from '../../cache/StrikesCache';
 import { ViolationType } from '../../models/StrikeConfig';
+import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
+	@Service() private strikes: StrikeService;
 	@Cache() private strikesCache: StrikesCache;
 
 	public constructor(client: IMClient) {
@@ -65,12 +68,12 @@ export default class extends IMCommand {
 				strikes: `**${strike ? strike.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await this.db.removeStrikeConfig(guild.id, violationType);
+			await this.strikes.removeStrikeConfig(guild.id, violationType);
 			embed.description = t('cmd.strikeConfig.deletedText', {
 				violation: `**${violationType}**`
 			});
 		} else {
-			await this.db.saveStrikeConfig({
+			await this.strikes.saveStrikeConfig({
 				guildId: guild.id,
 				type: violationType,
 				amount: strikes

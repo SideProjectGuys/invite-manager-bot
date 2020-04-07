@@ -4,12 +4,15 @@ import { Context } from 'vm';
 import { IMClient } from '../../../client';
 import { IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, ModerationCommand } from '../../../types';
 import { PunishmentCache } from '../../cache/PunishmentsCache';
 import { PunishmentType } from '../../models/PunishmentConfig';
+import { PunishmentService } from '../../services/PunishmentService';
 
 export default class extends IMCommand {
+	@Service() private punishments: PunishmentService;
 	@Cache() private punishmentsCache: PunishmentCache;
 
 	public constructor(client: IMClient) {
@@ -71,12 +74,12 @@ export default class extends IMCommand {
 				strikes: `**${pc ? pc.amount : 0}**`
 			});
 		} else if (strikes === 0) {
-			await this.db.removePunishmentConfig(guild.id, punishmentType);
+			await this.punishments.removePunishmentConfig(guild.id, punishmentType);
 			embed.description = t('cmd.punishmentConfig.deletedText', {
 				punishment: `**${punishmentType}**`
 			});
 		} else {
-			await this.db.savePunishmentConfig({
+			await this.punishments.savePunishmentConfig({
 				guildId: guild.id,
 				type: punishmentType,
 				amount: strikes,

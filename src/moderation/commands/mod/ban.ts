@@ -7,9 +7,11 @@ import { NumberResolver, StringResolver, UserResolver } from '../../../framework
 import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
+import { PunishmentService } from '../../services/PunishmentService';
 
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
+	@Service() private punishment: PunishmentService;
 
 	public constructor(client: IMClient) {
 		super(client, {
@@ -55,42 +57,11 @@ export default class extends IMCommand {
 		const embed = this.mod.createBasicEmbed(targetUser);
 
 		if (!targetMember || this.mod.isPunishable(guild, targetMember, message.member, me)) {
-			if (targetMember) {
-				await this.mod.informAboutPunishment(targetMember, PunishmentType.ban, settings, { reason });
-			}
-
 			const days = deleteMessageDays ? deleteMessageDays : 0;
 			try {
-				await this.client.banGuildMember(guild.id, targetUser.id, days, encodeURIComponent(reason));
-
-				// Make sure member exists in DB
-				await this.db.saveMembers([
-					{
-						id: targetMember.user.id,
-						name: targetMember.user.username,
-						discriminator: targetMember.user.discriminator,
-						guildId: guild.id
-					}
+				await this.punishment.punish(guild, targetUser, PunishmentType.ban, 0, { user: message.author, reason }, [
+					days
 				]);
-
-				await this.db.savePunishment({
-					guildId: guild.id,
-					memberId: targetUser.id,
-					type: PunishmentType.ban,
-					amount: 0,
-					args: '',
-					reason: reason,
-					creatorId: message.author.id
-				});
-
-				await this.mod.logPunishmentModAction(
-					guild,
-					targetUser,
-					PunishmentType.ban,
-					0,
-					[{ name: 'Reason', value: reason }],
-					message.author
-				);
 
 				embed.description = t('cmd.ban.done');
 			} catch (error) {
