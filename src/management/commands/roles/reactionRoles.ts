@@ -3,14 +3,17 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { BooleanResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
 import { ReactionRoleCache } from '../../cache/ReactionRoleCache';
+import { ManagementService } from '../../services/ManagementService';
 
 const THUMBS_UP = '👍';
 const CUSTOM_EMOJI_REGEX = /<(?:.*)?:(\w+):(\d+)>/;
 
 export default class extends IMCommand {
+	@Service() private mgmt: ManagementService;
 	@Cache() private reactionRolesCache: ReactionRoleCache;
 
 	public constructor(client: IMClient) {
@@ -54,7 +57,7 @@ export default class extends IMCommand {
 		{ remove }: { remove: boolean },
 		{ t, guild }: CommandContext
 	): Promise<any> {
-		const dbMessage = await this.db.getMessageById(guild.id, messageId);
+		const dbMessage = await this.mgmt.getMessageById(guild.id, messageId);
 
 		if (!dbMessage) {
 			return this.sendReply(message, t('cmd.reactionRole.noMessageFoundInDatabase'));
@@ -64,7 +67,7 @@ export default class extends IMCommand {
 		const emojiId = matches ? `${matches[1]}:${matches[2]}` : emoji;
 
 		if (remove) {
-			await this.db.removeReactionRole(dbMessage.guildId, dbMessage.channelId, dbMessage.id, emojiId);
+			await this.mgmt.removeReactionRole(dbMessage.guildId, dbMessage.channelId, dbMessage.id, emojiId);
 			await this.client.removeMessageReaction(dbMessage.channelId, dbMessage.id, emojiId);
 		} else {
 			const reactionRole = {
@@ -77,7 +80,7 @@ export default class extends IMCommand {
 
 			try {
 				await this.client.addMessageReaction(dbMessage.channelId, dbMessage.id, emojiId);
-				await this.db.saveReactionRole(reactionRole);
+				await this.mgmt.saveReactionRole(reactionRole);
 			} catch (error) {
 				if (error.code === 10014) {
 					await this.sendReply(message, t('cmd.reactionRole.unknownEmoji'));

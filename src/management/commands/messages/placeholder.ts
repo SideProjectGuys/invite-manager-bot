@@ -2,12 +2,16 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { Service } from '../../../framework/decorators/Service';
 import { StringResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
+import { ManagementService } from '../../services/ManagementService';
 
 const THUMBS_UP = '👍';
 
 export default class extends IMCommand {
+	@Service() private mgmt: ManagementService;
+
 	public constructor(client: IMClient) {
 		super(client, {
 			name: ManagementCommand.placeholder,
@@ -47,7 +51,7 @@ export default class extends IMCommand {
 
 			// TODO: Premium can post embed messages
 			const newMessage = await this.sendReply(message, placeholder);
-			await this.db.saveMessage({
+			await this.mgmt.saveMessage({
 				guildId: guild.id,
 				channelId: newMessage.channel.id,
 				id: newMessage.id,
@@ -60,7 +64,7 @@ export default class extends IMCommand {
 			return;
 		}
 
-		const dbMessage = await this.db.getMessageById(guild.id, messageId);
+		const dbMessage = await this.mgmt.getMessageById(guild.id, messageId);
 
 		if (!dbMessage) {
 			return this.sendReply(message, t('cmd.placeholder.noMessageFoundInDatabase'));
@@ -76,7 +80,7 @@ export default class extends IMCommand {
 		// Edit message
 		const embed = this.createEmbed({ description: placeholder });
 		const editMessage = await this.client.editMessage(dbMessage.channelId, dbMessage.id, { embed });
-		await this.db.saveMessage({
+		await this.mgmt.saveMessage({
 			guildId: guild.id,
 			channelId: editMessage.channel.id,
 			id: editMessage.id,
