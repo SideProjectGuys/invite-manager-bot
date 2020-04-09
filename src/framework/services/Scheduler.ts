@@ -12,13 +12,15 @@ import { IMService } from './Service';
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
 
+type ScheduledActionFunctions = {
+	[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
+};
+
 export class SchedulerService extends IMService {
 	@Service() private db: DatabaseService;
 
 	private scheduledActionTimers: Map<number, NodeJS.Timer> = new Map();
-	private scheduledActionFunctions: {
-		[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
-	} = {
+	private scheduledActionFunctions: ScheduledActionFunctions = {
 		[ScheduledActionType.unmute]: (g, a) => this.unmute(g, a),
 		[ScheduledActionType.unlock]: (g, a) => this.unlock(g, a)
 	};
@@ -65,7 +67,7 @@ export class SchedulerService extends IMService {
 			try {
 				const scheduledFunc = this.scheduledActionFunctions[action.actionType];
 				if (scheduledFunc) {
-					await scheduledFunc(guild, action.args);
+					await scheduledFunc(guild, JSON.parse(action.args));
 				}
 				await this.db.removeScheduledAction(action.guildId, action.id);
 			} catch (error) {
@@ -75,7 +77,7 @@ export class SchedulerService extends IMService {
 				});
 			}
 		};
-		console.log(`Scheduling timer in ${chalk.blue(millisUntilAction)} for action ${chalk.blue(action.id)}`);
+		console.log(`Scheduling timer in ${chalk.blue(millisUntilAction)}ms for action ${chalk.blue(action.id)}`);
 		const timer = setTimeout(func, millisUntilAction);
 		this.scheduledActionTimers.set(action.id, timer);
 	}

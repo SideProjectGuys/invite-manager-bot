@@ -38,7 +38,7 @@
 		"chart.js": "2.9.3",
 		"chartjs-node-canvas": "3.0.6",
 		"chartjs-plugin-datalabels": "0.7.0",
-		"eris": "github:abalabahaha/eris#fce520513053eb1f4466130d8075126cf21024fc",
+		"eris": "github:abalabahaha/eris#39399c392751f4c0ae2c11d437900198bbfb017c",
 		"eris-lavalink": "github:SideProjectGuys/eris-lavalink#8e3156a968033c1f037b5424dd46aacb8af76436",
 		"erlpack": "github:discordapp/erlpack",
 		"eventemitter3": "4.0.0",
