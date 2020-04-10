@@ -3,20 +3,23 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, InvitesCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
+import { RanksService } from '../../services/Ranks';
 
 const MIN = -2147483648;
 const MAX = 2147483647;
 
 export default class extends IMCommand {
+	@Service() private ranks: RanksService;
 	@Cache() private ranksCache: RanksCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.addRank,
+			name: 'addRank',
 			aliases: ['add-rank', 'set-rank', 'setRank'],
 			args: [
 				{
@@ -85,9 +88,9 @@ export default class extends IMCommand {
 		if (rank) {
 			rank.numInvites = invites;
 			rank.description = descr;
-			await this.db.saveRank(rank);
+			await this.ranks.saveRank(rank);
 		} else {
-			await this.db.saveRank({
+			await this.ranks.saveRank({
 				guildId: role.guild.id,
 				roleId: role.id,
 				numInvites: invites,

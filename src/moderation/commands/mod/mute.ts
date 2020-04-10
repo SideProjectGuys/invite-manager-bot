@@ -7,7 +7,8 @@ import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { DurationResolver, MemberResolver, StringResolver } from '../../../framework/resolvers';
 import { SchedulerService } from '../../../framework/services/Scheduler';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
+import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
 import { PunishmentService } from '../../services/PunishmentService';
@@ -19,7 +20,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.mute,
+			name: 'mute',
 			aliases: [],
 			args: [
 				{
@@ -50,7 +51,7 @@ export default class extends IMCommand {
 		message: Message,
 		[targetMember, reason]: [Member, string],
 		{ duration }: { duration: Duration },
-		{ guild, me, settings, t }: CommandContext
+		{ guild, me, settings, t }: CommandContext<ModerationGuildSettings>
 	): Promise<any> {
 		const embed = this.mod.createBasicEmbed(targetMember);
 

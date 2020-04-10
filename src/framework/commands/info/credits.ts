@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BotCommand, CommandGroup } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { CommandContext, IMCommand } from '../Command';
 
 // Developers
@@ -39,7 +39,7 @@ const translators: string[] = [
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.credits,
+			name: 'credits',
 			aliases: [],
 			group: CommandGroup.Info,
 			defaultAdminOnly: false,

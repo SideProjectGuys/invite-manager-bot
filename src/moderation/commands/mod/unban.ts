@@ -1,10 +1,11 @@
-import { Message } from 'eris';
+import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { StringResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup, GuildPermission } from '../../../types';
+import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { ModerationService } from '../../services/Moderation';
 
 export default class extends IMCommand {
@@ -12,7 +13,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.unban,
+			name: 'unban',
 			aliases: [],
 			args: [
 				{
@@ -37,7 +38,7 @@ export default class extends IMCommand {
 		message: Message,
 		[targetUser, reason]: [BasicUser, string],
 		flags: {},
-		{ guild, me, settings, t }: CommandContext
+		{ guild, me, settings, t }: CommandContext<ModerationGuildSettings>
 	): Promise<any> {
 		const embed = this.mod.createBasicEmbed(targetUser);
 
@@ -54,7 +55,14 @@ export default class extends IMCommand {
 				name: 'Reason',
 				value: reason
 			});
-			await this.client.logModAction(guild, logEmbed);
+
+			const modLogChannelId = settings.modLogChannel;
+			if (modLogChannelId) {
+				const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
+				if (logChannel) {
+					await this.msg.sendEmbed(logChannel, embed);
+				}
+			}
 
 			embed.description = t('cmd.unban.done');
 		} catch (error) {

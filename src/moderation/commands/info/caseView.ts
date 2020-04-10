@@ -5,7 +5,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
@@ -13,7 +13,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.caseView,
+			name: 'caseView',
 			aliases: ['case-view', 'viewCase', 'view-case'],
 			args: [
 				{

@@ -8,9 +8,9 @@ import { DatabaseService, GLOBAL_SHARD_ID } from '../../framework/services/Datab
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
-import { AnnouncementVoice } from '../../settings/models/GuildSetting';
 import { BotType, LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
+import { AnnouncementVoice, MusicGuildSettings } from '../models/GuildSettings';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
 
@@ -200,6 +200,6 @@ export class MusicService extends IMService {
 	}
 
 	public async getGuildSettings(guildId: string) {
-		return this.guildSettingsCache.get(guildId);
+		return this.guildSettingsCache.get<MusicGuildSettings>(guildId);
 	}
 }

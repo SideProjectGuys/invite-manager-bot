@@ -6,7 +6,7 @@ import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
 import { InvitesService } from '../../services/Invites';
 
@@ -16,7 +16,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.addInvites,
+			name: 'addInvites',
 			aliases: ['add-invites'],
 			args: [
 				{
@@ -64,7 +64,7 @@ export default class extends IMCommand {
 			}
 		]);
 
-		const customInviteId = await this.db.saveCustomInvite({
+		const customInviteId = await this.invs.saveCustomInvite({
 			guildId: guild.id,
 			memberId: user.id,
 			creatorId: message.author.id,

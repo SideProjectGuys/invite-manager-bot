@@ -12,21 +12,24 @@ import { RabbitMqService } from '../../framework/services/RabbitMq';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { InviteCodeSettingsCache } from '../../settings/cache/InviteCodeSettingsCache';
-import { GuildSettingsKey } from '../../settings/models/GuildSetting';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
 import { InvitesCache } from '../cache/InvitesCache';
 import { RanksCache } from '../cache/RanksCache';
 import { VanityUrlCache } from '../cache/VanityUrlCache';
+import { InvitesGuildSettings } from '../models/GuildSettings';
+import { InvitesInviteCodeSettings } from '../models/InviteCodeSettings';
 import { JoinInvalidatedReason } from '../models/Join';
 
 import { InvitesService } from './Invites';
+import { RanksService } from './Ranks';
 
 const GUILDS_IN_PARALLEL = os.cpus().length;
 const INVITE_CREATE = 40;
 
 export class TrackingService extends IMService {
 	@Service() private db: DatabaseService;
+	@Service() private ranks: RanksService;
 	@Service() private invs: InvitesService;
 	@Service(() => RabbitMqService) private rabbitmq: RabbitMqService;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
@@ -132,7 +135,7 @@ export class TrackingService extends IMService {
 	}
 
 	private async onInviteCreate(guild: Guild, invite: Invite) {
-		await this.client.db.saveInviteCodes([
+		await this.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
 				code: invite.code,
@@ -151,7 +154,7 @@ export class TrackingService extends IMService {
 	}
 
 	private async onDeleteInvite(guild: Guild, invite: Invite) {
-		await this.client.db.saveInviteCodes([
+		await this.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
 				code: invite.code,
@@ -224,7 +227,7 @@ export class TrackingService extends IMService {
 		if (settings.channels && settings.channels.some((c) => c === channel.id)) {
 			await this.guildSettingsCache.setOne(
 				channel.guild.id,
-				GuildSettingsKey.channels,
+				'channels',
 				settings.channels.filter((c) => c !== channel.id)
 			);
 		}
@@ -292,10 +295,10 @@ export class TrackingService extends IMService {
 			const allRanks = await this.ranksCache.get(guild.id);
 			const oldRoleIds = allRanks.filter((rank) => !allRoles.some((r) => r.id === rank.roleId)).map((r) => r.roleId);
 			for (const roleId of oldRoleIds) {
-				await this.db.removeRank(guild.id, roleId);
+				await this.ranks.removeRank(guild.id, roleId);
 			}
 		} else {
-			await this.db.removeRank(guild.id, role.id);
+			await this.ranks.removeRank(guild.id, role.id);
 		}
 	}
 
@@ -325,7 +328,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Join roles
-		const sets = await this.guildSettingsCache.get(guild.id);
+		const sets = await this.guildSettingsCache.get<InvitesGuildSettings>(guild.id);
 		if (sets.joinRoles && sets.joinRoles.length > 0) {
 			if (!guild.members.get(this.client.user.id).permission.has(GuildPermission.MANAGE_ROLES)) {
 				console.log(`TRYING TO SET JOIN ROLES IN ${guild.id} WITHOUT MANAGE_ROLES PERMISSION`);
@@ -490,7 +493,7 @@ export class TrackingService extends IMService {
 		// Insert the join
 		let joinId: number = null;
 		if (exactMatchCode) {
-			joinId = await this.db.saveJoin({
+			joinId = await this.invs.saveJoin({
 				exactMatchCode: exactMatchCode,
 				memberId: member.id,
 				guildId: guild.id,
@@ -511,13 +514,13 @@ export class TrackingService extends IMService {
 				console.error(`Guild ${guild.id} has invalid join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 			} else if (!(joinChannel instanceof TextChannel)) {
 				// Someone set a non-text channel as join channel
 				console.error(`Guild ${guild.id} has non-text join message channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 
 				joinChannel = undefined;
 			} else if (!joinChannel.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)) {
@@ -525,7 +528,7 @@ export class TrackingService extends IMService {
 				console.error(`Guild ${guild.id} can't send messages in join channel ${joinChannelId}`);
 
 				// Reset the channel
-				await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+				await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 
 				joinChannel = undefined;
 			}
@@ -534,7 +537,7 @@ export class TrackingService extends IMService {
 		// Auto remove leaves if enabled
 		let removedLeaves = 0;
 		if (sets.autoSubtractLeaves) {
-			const affected = await this.db.updateJoinInvalidatedReason(null, guild.id, {
+			const affected = await this.invs.updateJoinInvalidatedReason(null, guild.id, {
 				invalidatedReason: JoinInvalidatedReason.leave,
 				memberId: member.id
 			});
@@ -552,7 +555,7 @@ export class TrackingService extends IMService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 						}
 					});
 			}
@@ -565,7 +568,7 @@ export class TrackingService extends IMService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 						}
 					});
 			}
@@ -575,7 +578,7 @@ export class TrackingService extends IMService {
 		// Auto remove fakes if enabled
 		let newFakes = 0;
 		if (sets.autoSubtractFakes) {
-			const affected = await this.db.updateJoinInvalidatedReason(JoinInvalidatedReason.fake, guild.id, {
+			const affected = await this.invs.updateJoinInvalidatedReason(JoinInvalidatedReason.fake, guild.id, {
 				invalidatedReason: null,
 				memberId: member.id,
 				ignoredJoinId: joinId
@@ -592,7 +595,7 @@ export class TrackingService extends IMService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 						}
 					});
 			}
@@ -612,7 +615,10 @@ export class TrackingService extends IMService {
 
 		// Add any roles for this invite code
 		if (exactMatchCode) {
-			const invCodeSettings = await this.inviteCodeSettingsCache.getOne(guild.id, exactMatchCode);
+			const invCodeSettings = await this.inviteCodeSettingsCache.getOne<InvitesInviteCodeSettings>(
+				guild.id,
+				exactMatchCode
+			);
 			if (invCodeSettings && invCodeSettings.roles) {
 				invCodeSettings.roles.forEach((r) => member.addRole(r));
 			}
@@ -646,7 +652,7 @@ export class TrackingService extends IMService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+					await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 				}
 			});
 		}
@@ -671,7 +677,7 @@ export class TrackingService extends IMService {
 			return;
 		}
 
-		const join = await this.db.getNewestJoinForMember(guild.id, member.id);
+		const join = await this.invs.getNewestJoinForMember(guild.id, member.id);
 
 		if (join) {
 			// We need the member in the DB for the leave
@@ -684,7 +690,7 @@ export class TrackingService extends IMService {
 				}
 			]);
 
-			await this.db.saveLeave({
+			await this.invs.saveLeave({
 				memberId: member.id,
 				guildId: guild.id,
 				joinId: join.id
@@ -692,7 +698,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Get settings
-		const sets = await this.guildSettingsCache.get(guild.id);
+		const sets = await this.guildSettingsCache.get<InvitesGuildSettings>(guild.id);
 		const lang = sets.lang;
 		const leaveChannelId = sets.leaveMessageChannel;
 
@@ -701,7 +707,7 @@ export class TrackingService extends IMService {
 		if (leaveChannelId && !leaveChannel) {
 			console.error(`Guild ${guild.id} has invalid leave message channel ${leaveChannelId}`);
 			// Reset the channel
-			await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.leaveMessageChannel, null);
+			await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'leaveMessageChannel', null);
 		}
 
 		// Exit if we can't find the join
@@ -721,7 +727,7 @@ export class TrackingService extends IMService {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 							// Reset the channel
-							await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 						}
 					});
 			}
@@ -758,7 +764,7 @@ export class TrackingService extends IMService {
 			const timeDiff = moment().diff(moment(join.createdAt), 's');
 
 			if (timeDiff < threshold) {
-				const affected = await this.db.updateJoinInvalidatedReason(JoinInvalidatedReason.leave, guild.id, {
+				const affected = await this.invs.updateJoinInvalidatedReason(JoinInvalidatedReason.leave, guild.id, {
 					invalidatedReason: null,
 					joinId: join.id
 				});
@@ -800,7 +806,7 @@ export class TrackingService extends IMService {
 				// Missing permissions
 				if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 					// Reset the channel
-					await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.joinMessageChannel, null);
+					await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 				}
 			});
 		}

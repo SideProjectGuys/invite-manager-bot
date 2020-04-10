@@ -1,19 +1,12 @@
 import { VoiceConnection, VoiceConnectionManager } from 'eris';
 
+import { CommandContext } from './framework/commands/Command';
 import { MusicItem } from './music/models/MusicItem';
 
 export enum BotType {
 	regular = 'regular',
 	pro = 'pro',
 	custom = 'custom'
-}
-
-export interface BasicUser {
-	id: string;
-	createdAt: number;
-	username: string;
-	avatarURL: string;
-	discriminator: string;
 }
 
 export enum GuildPermission {
@@ -87,105 +80,6 @@ export enum ChartType {
 	joinsAndLeaves = 'joinsAndLeaves'
 }
 
-export enum BotCommand {
-	config = 'config',
-	botConfig = 'botConfig',
-	inviteCodeConfig = 'inviteCodeConfig',
-	memberConfig = 'memberConfig',
-	permissions = 'permissions',
-	interactiveConfig = 'interactiveConfig',
-
-	botInfo = 'botInfo',
-	credits = 'credits',
-	getBot = 'getBot',
-	help = 'help',
-	members = 'members',
-	ping = 'ping',
-	prefix = 'prefix',
-	setup = 'setup',
-	support = 'support',
-
-	export = 'export',
-	premium = 'premium',
-	tryPremium = 'tryPremium'
-
-	/*report = 'report',*/
-}
-
-export enum InvitesCommand {
-	createInvite = 'createInvite',
-	addInvites = 'addInvites',
-	clearInvites = 'clearInvites',
-	info = 'info',
-	inviteCodes = 'inviteCodes',
-	inviteDetails = 'inviteDetails',
-	invites = 'invites',
-	leaderboard = 'leaderboard',
-	removeInvites = 'removeInvites',
-	restoreInvites = 'restoreInvites',
-	subtractFakes = 'subtractFakes',
-	subtractLeaves = 'subtractLeaves',
-
-	addRank = 'addRank',
-	fixRanks = 'fixRanks',
-	ranks = 'ranks',
-	removeRank = 'removeRank',
-
-	graph = 'graph'
-}
-
-export enum ModerationCommand {
-	punishmentConfig = 'punishmentConfig',
-	strikeConfig = 'strikeConfig',
-
-	check = 'check',
-	caseDelete = 'caseDelete',
-	caseView = 'caseView',
-	caseEdit = 'caseEdit',
-
-	ban = 'ban',
-	mute = 'mute',
-	kick = 'kick',
-	softBan = 'softBan',
-	strike = 'strike',
-	unban = 'unban',
-	unhoist = 'unhoist',
-	unmute = 'unmute',
-	warn = 'warn',
-	lockdown = 'lockdown',
-
-	clean = 'clean',
-	cleanText = 'cleanText',
-	cleanShort = 'cleanShort',
-	purgeSafe = 'purgeSafe',
-	purgeUntil = 'purgeUntil',
-	purge = 'purge'
-}
-
-export enum ManagementCommand {
-	placeholder = 'placeholder',
-	reactionRole = 'reactionRole',
-	makeMentionable = 'makeMentionable',
-	mentionRole = 'mentionRole'
-}
-
-export enum MusicCommand {
-	play = 'play',
-	pause = 'pause',
-	resume = 'resume',
-	skip = 'skip',
-	seek = 'seek',
-	queue = 'queue',
-	rewind = 'rewind',
-	nowPlaying = 'nowPlaying',
-	disconnect = 'disconnect',
-	search = 'search',
-	volume = 'volume',
-	repeat = 'repeat',
-	mashup = 'mashup',
-	lyrics = 'lyrics'
-}
-
 export enum ChannelType {
 	GUILD_TEXT = 0,
 	DM = 1,
@@ -194,17 +88,50 @@ export enum ChannelType {
 	GUILD_CATEGORY = 4
 }
 
-export interface MusicQueue {
-	current: MusicItem;
-	queue: MusicItem[];
-}
-
 export enum MusicPlatformType {
 	YouTube = 'youtube',
 	SoundCloud = 'soundcloud',
 	RaveDJ = 'ravedj',
 	iHeartRADIO = 'iheartradio',
 	TuneIn = 'tuneIn'
+}
+
+export type InternalSettingsTypes =
+	| 'Boolean'
+	| 'Number'
+	| 'Date'
+	| 'String'
+	| 'String[]'
+	| 'Channel'
+	| 'Channel[]'
+	| 'Role'
+	| 'Role[]'
+	| 'Enum'
+	| 'Enum[]';
+
+export interface SettingsInfo<T> {
+	type: InternalSettingsTypes;
+	enumValues?: string[];
+	grouping: string[];
+	defaultValue: T;
+	exampleValues?: string[];
+	possibleValues?: string[];
+	hasPremiumInfo?: boolean;
+	clearable?: boolean;
+	validate?: (key: string, value: any, ctx: CommandContext) => string | null;
+}
+
+export interface MusicQueue {
+	current: MusicItem;
+	queue: MusicItem[];
+}
+
+export interface BasicUser {
+	id: string;
+	createdAt: number;
+	username: string;
+	avatarURL: string;
+	discriminator: string;
 }
 
 export interface BasicInvite {

@@ -7,7 +7,7 @@ import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { ChannelResolver, DurationResolver } from '../../../framework/resolvers';
 import { SchedulerService } from '../../../framework/services/Scheduler';
-import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
@@ -18,7 +18,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.lockdown,
+			name: 'lockdown',
 			aliases: [],
 			args: [
 				{

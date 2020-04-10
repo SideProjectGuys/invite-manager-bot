@@ -6,9 +6,10 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
 import { MemberSettingsCache } from '../../../settings/cache/MemberSettings';
-import { LeaderboardStyle } from '../../../settings/models/GuildSetting';
-import { CommandGroup, InvitesCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { LeaderboardCache } from '../../cache/LeaderboardCache';
+import { InvitesGuildSettings, LeaderboardStyle } from '../../models/GuildSettings';
+import { InvitesMemberSettings } from '../../models/MemberSettings';
 
 const usersPerPage = 10;
 
@@ -18,7 +19,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.leaderboard,
+			name: 'leaderboard',
 			aliases: ['top'],
 			args: [
 				{
@@ -38,7 +39,7 @@ export default class extends IMCommand {
 		message: Message,
 		[_page]: [number],
 		flags: {},
-		{ guild, t, settings }: CommandContext
+		{ guild, t, settings }: CommandContext<InvitesGuildSettings>
 	): Promise<any> {
 		let invs = await this.leaderboardCache.get(guild.id);
 		const meta = this.leaderboardCache.getCacheMeta(guild.id);
@@ -48,7 +49,7 @@ export default class extends IMCommand {
 
 		// Get the member settings everytime because it's not that much work
 		// and because we want the 'hideFromLeaderboard' setting to work immediatly
-		const memSets = await this.memberSettingsCache.get(guild.id);
+		const memSets = await this.memberSettingsCache.get<InvitesMemberSettings>(guild.id);
 		invs = invs.filter((e) => !memSets.has(e.id) || !memSets.get(e.id).hideFromLeaderboard);
 
 		const fromText = t('cmd.leaderboard.from', {

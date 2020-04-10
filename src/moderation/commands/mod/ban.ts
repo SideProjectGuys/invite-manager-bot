@@ -4,7 +4,8 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup, GuildPermission } from '../../../types';
+import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
 import { PunishmentService } from '../../services/PunishmentService';
@@ -15,7 +16,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.ban,
+			name: 'ban',
 			aliases: [],
 			args: [
 				{
@@ -47,7 +48,7 @@ export default class extends IMCommand {
 		message: Message,
 		[targetUser, reason]: [BasicUser, string],
 		{ deleteMessageDays }: { deleteMessageDays: number },
-		{ guild, me, settings, t }: CommandContext
+		{ guild, me, settings, t }: CommandContext<ModerationGuildSettings>
 	): Promise<any> {
 		let targetMember = guild.members.get(targetUser.id);
 		if (!targetMember) {

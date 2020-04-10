@@ -1,13 +1,13 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup, MusicCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: MusicCommand.disconnect,
+			name: 'disconnect',
 			aliases: [],
 			group: CommandGroup.Music,
 			guildOnly: true,

@@ -1,5 +1,7 @@
 import { IMClient } from '../../client';
 import { CommandContext } from '../../framework/commands/Command';
+import { Service } from '../../framework/decorators/Service';
+import { SettingsBaseTypeConstructor } from '../../framework/decorators/Setting';
 import {
 	ArrayResolver,
 	BooleanResolver,
@@ -11,41 +13,40 @@ import {
 	RoleResolver,
 	StringResolver
 } from '../../framework/resolvers';
-import { InternalSettingsTypes, SettingsInfo } from '../../settings';
-import { ActivityStatus, ActivityType } from '../../settings/models/BotSetting';
-import { AnnouncementVoice, Lang, LeaderboardStyle, RankAssignmentStyle } from '../../settings/models/GuildSetting';
-import { MusicPlatformType } from '../../types';
+import { SettingsInfo } from '../../types';
+import { SettingsService } from '../services/Settings';
 
 export class SettingsValueResolver extends Resolver {
-	private infos: { [key: string]: SettingsInfo<any> };
-	private resolvers: { [key in InternalSettingsTypes]: Resolver };
+	@Service() private settings: SettingsService;
 
-	public constructor(client: IMClient, infos: { [x: string]: SettingsInfo<any> }) {
+	private baseType: SettingsBaseTypeConstructor;
+	private infos: Map<string, SettingsInfo<any>>;
+	private resolvers: Map<string, Resolver>;
+
+	public constructor(client: IMClient, baseClass: SettingsBaseTypeConstructor) {
 		super(client);
 
-		this.infos = infos;
-		this.resolvers = {
-			Channel: new ChannelResolver(client),
-			'Channel[]': new ArrayResolver(client, ChannelResolver),
-			Boolean: new BooleanResolver(client),
-			Number: new NumberResolver(client),
-			Date: new DateResolver(client),
-			Role: new RoleResolver(client),
-			'Role[]': new ArrayResolver(client, RoleResolver),
-			String: new StringResolver(client),
-			'String[]': new ArrayResolver(client, StringResolver),
-			'Enum<Lang>': new EnumResolver(client, Object.values(Lang)),
-			'Enum<LeaderboardStyle>': new EnumResolver(client, Object.values(LeaderboardStyle)),
-			'Enum<RankAssignmentStyle>': new EnumResolver(client, Object.values(RankAssignmentStyle)),
-			'Enum<AnnouncementVoice>': new EnumResolver(client, Object.values(AnnouncementVoice)),
-			'Enum<ActivityType>': new EnumResolver(client, Object.values(ActivityType)),
-			'Enum<ActivityStatus>': new EnumResolver(client, Object.values(ActivityStatus)),
-			'Enum<MusicPlatformTypes>': new EnumResolver(client, Object.values(MusicPlatformType)),
-			'Enum<MusicPlatformTypes>[]': new ArrayResolver(
-				client,
-				new EnumResolver(client, Object.values(MusicPlatformType))
-			)
-		};
+		this.resolvers = new Map();
+		this.baseType = baseClass;
+
+		this.resolvers.set('Boolean', new BooleanResolver(client));
+		this.resolvers.set('Number', new NumberResolver(client));
+		this.resolvers.set('Date', new DateResolver(client));
+		this.resolvers.set('String', new StringResolver(client));
+		this.resolvers.set('String[]', new ArrayResolver(client, StringResolver));
+
+		this.resolvers.set('Channel', new ChannelResolver(client));
+		this.resolvers.set('Channel[]', new ArrayResolver(client, ChannelResolver));
+		this.resolvers.set('Role', new ChannelResolver(client));
+		this.resolvers.set('Role[]', new ArrayResolver(client, RoleResolver));
+	}
+
+	private getInfo(key: string) {
+		if (!this.infos) {
+			this.infos = this.settings.getSettingsInfos(this.baseType);
+		}
+
+		return this.infos.get(key);
 	}
 
 	public resolve(value: any, context: CommandContext, [key]: [string]): Promise<any> {
@@ -55,19 +56,37 @@ export class SettingsValueResolver extends Resolver {
 		if (value === 'none' || value === 'empty' || value === 'null') {
 			return null;
 		}
+
+		const info = this.getInfo(key);
 		if (value === 'default') {
-			return this.infos[key].defaultValue;
+			return info.defaultValue;
 		}
 
-		const resolver = this.resolvers[this.infos[key].type];
+		const resolver = this.getResolver(key, info);
 		return resolver.resolve(value, context, [key]);
 	}
 
 	public getHelp(context: CommandContext, args?: [string]): string {
 		if (args && args.length > 0) {
 			const key = args[0];
-			return this.resolvers[this.infos[key].type].getHelp(context, [key]);
+			return this.getResolver(key, this.getInfo(key)).getHelp(context, [key]);
 		}
 		return super.getHelp(context);
+	}
+
+	private getResolver(key: string, info: SettingsInfo<any>) {
+		let type: string = info.type;
+		if (type === 'Enum') {
+			type = `Enum<${key}>`;
+		} else if (type === 'Enum[]') {
+			type = `Enum<${key}>[]`;
+		}
+
+		let resolver = this.resolvers.get(type);
+		if (!resolver) {
+			resolver = new EnumResolver(this.client, info.enumValues);
+			this.resolvers.set(type, resolver);
+		}
+		return resolver;
 	}
 }

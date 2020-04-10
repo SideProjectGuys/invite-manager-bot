@@ -2,13 +2,14 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
+import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/AutoModeration';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.unhoist,
+			name: 'unhoist',
 			aliases: ['dehoist'],
 			args: [],
 			group: CommandGroup.Moderation,
@@ -17,7 +18,12 @@ export default class extends IMCommand {
 		});
 	}
 
-	public async action(message: Message, args: [], flags: {}, { guild, t, settings }: CommandContext): Promise<any> {
+	public async action(
+		message: Message,
+		args: [],
+		flags: {},
+		{ guild, t, settings }: CommandContext<ModerationGuildSettings>
+	): Promise<any> {
 		const total = guild.memberCount;
 		const batches = Math.ceil(total / 1000);
 

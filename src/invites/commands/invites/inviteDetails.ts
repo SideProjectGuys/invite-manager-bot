@@ -6,14 +6,15 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { UserResolver } from '../../../framework/resolvers';
 import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
+import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 
 export default class extends IMCommand {
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.inviteDetails,
+			name: 'inviteDetails',
 			aliases: ['invite-details'],
 			args: [
 				{
@@ -44,7 +45,7 @@ export default class extends IMCommand {
 		}
 
 		const lang = settings.lang;
-		const allSets = await this.inviteCodeSettingsCache.get(guild.id);
+		const allSets = await this.inviteCodeSettingsCache.get<InvitesInviteCodeSettings>(guild.id);
 
 		let invText = '';
 		for (const inv of invs.slice(0, 25)) {

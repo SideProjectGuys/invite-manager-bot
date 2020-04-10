@@ -8,6 +8,7 @@ import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
+import { ModerationGuildSettings } from '../models/GuildSettings';
 import { Punishment } from '../models/Punishment';
 import { PunishmentConfig, PunishmentType } from '../models/PunishmentConfig';
 
@@ -127,7 +128,7 @@ export class PunishmentService extends IMService {
 		modAndReason?: { user: User; reason: string }
 	) {
 		const dmChannel = await this.client.getDMChannel(user.id);
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 
 		let message =
 			i18n.__({ locale: settings.lang, phrase: `moderation.punishments.dm.${type}` }, { type, guild: guild.name }) +
@@ -194,7 +195,14 @@ export class PunishmentService extends IMService {
 				.filter((e) => !!e.value)
 				.forEach((e) => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1000) }));
 		}
-		await this.client.logModAction(guild, logEmbed);
+
+		const modLogChannelId = (await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id)).modLogChannel;
+		if (modLogChannelId) {
+			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
+			if (logChannel) {
+				await this.msg.sendEmbed(logChannel, logEmbed);
+			}
+		}
 	}
 
 	private async ban(guild: Guild, user: BasicUser, reason: string, args: any[]) {
@@ -232,7 +240,7 @@ export class PunishmentService extends IMService {
 	}
 
 	private async mute(guild: Guild, user: BasicUser, reason: string) {
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 		const mutedRole = settings.mutedRole;
 		if (!mutedRole || !guild.roles.has(mutedRole)) {
 			return false;

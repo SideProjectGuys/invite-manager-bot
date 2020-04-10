@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BotCommand, BotType, CommandGroup, GuildPermission } from '../../../types';
+import { BotType, CommandGroup, GuildPermission } from '../../../types';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
@@ -22,7 +22,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.premium,
+			name: 'premium',
 			aliases: ['patreon', 'donate'],
 			args: [
 				{

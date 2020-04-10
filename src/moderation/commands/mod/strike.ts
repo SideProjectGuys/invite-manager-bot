@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, MemberResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { ViolationType } from '../../models/StrikeConfig';
 import { ModerationService } from '../../services/Moderation';
 
@@ -13,7 +13,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.strike,
+			name: 'strike',
 			aliases: [],
 			args: [
 				{

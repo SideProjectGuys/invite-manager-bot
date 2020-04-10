@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup, InvitesCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
 
 const RANKS_PER_PAGE = 10;
@@ -14,7 +14,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.ranks,
+			name: 'ranks',
 			aliases: ['show-ranks', 'showRanks'],
 			args: [
 				{

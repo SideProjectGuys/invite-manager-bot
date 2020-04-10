@@ -2,14 +2,14 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
+import { CommandGroup, MusicPlatformType } from '../../../types';
 import { RaveDJ } from '../../models/ravedj/RaveDJ';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: MusicCommand.mashup,
+			name: 'mashup',
 			aliases: [],
 			args: [
 				{

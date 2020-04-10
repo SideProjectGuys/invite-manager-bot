@@ -2,14 +2,15 @@ import { Emoji, Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { EnumResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
+import { CommandGroup, MusicPlatformType } from '../../../types';
+import { MusicGuildSettings } from '../../models/GuildSettings';
 import { MusicPlatform } from '../../models/MusicPlatform';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: MusicCommand.search,
+			name: 'search',
 			aliases: [],
 			args: [
 				{
@@ -37,7 +38,7 @@ export default class extends IMMusicCommand {
 		message: Message,
 		[searchTerm]: [string],
 		{ platform }: { platform: MusicPlatformType },
-		{ t, guild, settings }: CommandContext
+		{ t, guild, settings }: CommandContext<MusicGuildSettings>
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {

@@ -4,10 +4,13 @@ import moment from 'moment';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
 import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
+import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 import { JoinInvalidatedReason } from '../../models/Join';
+import { InvitesService } from '../../services/Invites';
 
 const ENTRIES_PER_PAGE = 20;
 
@@ -17,11 +20,12 @@ enum InfoDetails {
 }
 
 export default class extends IMCommand {
+	@Service() private invs: InvitesService;
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.info,
+			name: 'info',
 			aliases: ['showinfo'],
 			args: [
 				{
@@ -71,8 +75,8 @@ export default class extends IMCommand {
 			return;
 		}
 
-		const invitedMembers = await this.db.getInvitedMembers(guild.id, user.id);
-		const customInvs = await this.db.getCustomInvitesForMember(guild.id, user.id);
+		const invitedMembers = await this.invs.getInvitedMembers(guild.id, user.id);
+		const customInvs = await this.invs.getCustomInvitesForMember(guild.id, user.id);
 		customInvs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 		const bonusInvs = customInvs.filter((ci) => !ci.cleared);
 
@@ -140,7 +144,7 @@ export default class extends IMCommand {
 		// let ranks = await settings.get('ranks');
 
 		const invCodes = await this.db.getInviteCodesForMember(guild.id, user.id);
-		const invalidJoins = await this.db.getInvalidatedJoinsForMember(guild.id, user.id);
+		const invalidJoins = await this.invs.getInvalidatedJoinsForMember(guild.id, user.id);
 
 		let fake = 0;
 		let leave = 0;
@@ -194,7 +198,7 @@ export default class extends IMCommand {
 			});
 		}
 
-		const joinCount = await this.db.getTotalJoinsForMember(guild.id, user.id);
+		const joinCount = await this.invs.getTotalJoinsForMember(guild.id, user.id);
 
 		embed.fields.push({
 			name: t('cmd.info.joined.title'),
@@ -232,7 +236,7 @@ export default class extends IMCommand {
 			inline: true
 		});
 
-		const ownJoins = await this.db.getJoinsForMember(guild.id, user.id);
+		const ownJoins = await this.invs.getJoinsForMember(guild.id, user.id);
 
 		if (ownJoins.length > 0) {
 			const joinTimes: { [x: string]: { [x: string]: number } } = {};
@@ -297,7 +301,7 @@ export default class extends IMCommand {
 
 		if (invCodes.length > 0) {
 			let invText = '';
-			const allSets = await this.inviteCodeSettingsCache.get(guild.id);
+			const allSets = await this.inviteCodeSettingsCache.get<InvitesInviteCodeSettings>(guild.id);
 
 			for (const inv of invCodes.slice(0, 10)) {
 				const sets = allSets.get(inv.code);

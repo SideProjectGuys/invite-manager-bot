@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
+import { InvitesGuildSettings } from '../../invites/models/GuildSettings';
 import { TrackingService } from '../../invites/services/Tracking';
 import { MusicService } from '../../music/services/Music';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
@@ -309,7 +310,7 @@ export class RabbitMqService extends IMService {
 					});
 				}
 
-				const sets = await this.guildSettingsCache.get(guildId);
+				const sets = await this.guildSettingsCache.get<InvitesGuildSettings>(guildId);
 				const perms = guild.members.get(this.client.user.id).permission.json;
 
 				let joinChannelPerms: { [key: string]: boolean } = {};

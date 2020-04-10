@@ -1,26 +1,31 @@
-import { Embed, Message } from 'eris';
+import { Client, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../../framework/commands/Command';
+import { Service } from '../../framework/decorators/Service';
+import { BaseBotSettings } from '../../framework/models/BotSettings';
 import { LogAction } from '../../framework/models/Log';
 import { EnumResolver, SettingsValueResolver } from '../../framework/resolvers';
-import { beautify, botSettingsInfo } from '../../settings';
-import { BotCommand, CommandGroup } from '../../types';
-import { BotSettingsKey } from '../models/BotSetting';
+import { CommandGroup, SettingsInfo } from '../../types';
+import { SettingsService } from '../services/Settings';
 
 export default class extends IMCommand {
+	@Service() private settings: SettingsService;
+
+	private settingsInfos: Map<string, SettingsInfo<any>>;
+
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.botConfig,
+			name: 'botConfig',
 			aliases: ['bot-config', 'botSetting', 'bot-setting'],
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(BotSettingsKey))
+					resolver: null // setup later
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, botSettingsInfo),
+					resolver: new SettingsValueResolver(client, Client),
 					rest: true
 				}
 			],
@@ -30,9 +35,16 @@ export default class extends IMCommand {
 		});
 	}
 
+	public async init() {
+		this.settingsInfos = this.settings.getSettingsInfos(Client);
+		this.args[0].resolver = new EnumResolver(this.client, [...this.settingsInfos.keys()]);
+
+		await super.init();
+	}
+
 	public async action(
 		message: Message,
-		[key, value]: [BotSettingsKey, any],
+		[key, value]: [keyof BaseBotSettings, any],
 		flags: {},
 		context: CommandContext
 	): Promise<any> {
@@ -59,13 +71,12 @@ export default class extends IMCommand {
 			embed.description = t('cmd.botConfig.text', { prefix }) + '\n\n';
 
 			const configs: { [x: string]: string[] } = {};
-			Object.keys(botSettingsInfo).forEach((k: BotSettingsKey) => {
-				const inf = botSettingsInfo[k];
+			for (const [k, inf] of this.settingsInfos) {
 				if (!configs[inf.grouping[0]]) {
 					configs[inf.grouping[0]] = [];
 				}
 				configs[inf.grouping[0]].push('`' + k + '`');
-			});
+			}
 
 			Object.keys(configs).forEach((group) => {
 				embed.description += `**${group}**\n` + configs[group].join(', ') + '\n\n';
@@ -74,7 +85,7 @@ export default class extends IMCommand {
 			return this.sendReply(message, embed);
 		}
 
-		const info = botSettingsInfo[key];
+		const info = this.settingsInfos.get(key);
 		const oldVal = settings[key];
 		embed.title = key;
 
@@ -98,7 +109,7 @@ export default class extends IMCommand {
 
 				embed.fields.push({
 					name: t('cmd.botConfig.current.title'),
-					value: beautify(info.type, oldVal)
+					value: this.settings.beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.botConfig.current.notSet', {
@@ -114,18 +125,18 @@ export default class extends IMCommand {
 			if (!info.clearable) {
 				return this.sendReply(message, t('cmd.botConfig.canNotClear', { prefix, key }));
 			}
-		} else {
+		} else if ((value !== null || value !== undefined) && info.validate) {
 			// Only validate the config setting if we're not resetting or clearing it
-			const error = this.validate(key, value, context);
+			const error = info.validate(key, value, context);
+
 			if (error) {
 				return this.sendReply(message, error);
 			}
 		}
 
-		// Set new value (we override the local value, because the formatting probably changed)
-		// If the value didn't change, then it will now be equal to oldVal (and also have the same formatting)
+		// Set new value
 		(this.client.settings[key] as any) = value;
-		await this.db.saveBotSettings({
+		await this.settings.saveBotSettings({
 			id: this.client.user.id,
 			value: this.client.settings
 		});
@@ -135,7 +146,7 @@ export default class extends IMCommand {
 			embed.description = t('cmd.botConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.botConfig.current.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -152,49 +163,15 @@ export default class extends IMCommand {
 		if (oldVal !== null && oldVal !== undefined) {
 			embed.fields.push({
 				name: t('cmd.botConfig.previous.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.botConfig.new.title'),
-			value: value !== null ? beautify(info.type, value) : t('cmd.botConfig.none')
+			value: value !== null ? this.settings.beautify(info.type, value) : t('cmd.botConfig.none')
 		});
 
-		// Do any post processing, such as example messages
-		const cb = await this.after(message, embed, key, value, context);
-
 		await this.sendReply(message, embed);
-
-		if (typeof cb === typeof Function) {
-			await cb();
-		}
-	}
-
-	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: BotSettingsKey, value: any, { t, me }: CommandContext): string | null {
-		if (value === null || value === undefined) {
-			return null;
-		}
-
-		if (key === BotSettingsKey.activityUrl) {
-			const url = value as string;
-			if (!url.startsWith('https://twitch.tv/')) {
-				return t('cmd.botConfig.invalid.twitchOnly');
-			}
-		}
-
-		return null;
-	}
-
-	// Attach additional information for a config value, such as examples
-	private async after(
-		message: Message,
-		embed: Embed,
-		key: BotSettingsKey,
-		value: any,
-		context: CommandContext
-	): Promise<Function> {
-		return;
 	}
 }

@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { InvitesService } from '../../../invites/services/Invites';
-import { BotCommand, CommandGroup } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { Service } from '../../decorators/Service';
 import { EnumResolver } from '../../resolvers';
 import { CommandContext, IMCommand } from '../Command';
@@ -16,7 +16,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.export,
+			name: 'export',
 			aliases: [],
 			args: [
 				{

@@ -3,15 +3,23 @@ import moment from 'moment';
 
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
-import { DatabaseService } from '../../framework/services/Database';
+import { DatabaseService, TABLE as BASE_TABLE } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
-import { GuildSettingsKey, RankAssignmentStyle } from '../../settings/models/GuildSetting';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
 import { RanksCache } from '../cache/RanksCache';
-import { JoinInvalidatedReason } from '../models/Join';
+import { CustomInvite } from '../models/CustomInvite';
+import { InvitesGuildSettings, RankAssignmentStyle } from '../models/GuildSettings';
+import { Join, JoinInvalidatedReason } from '../models/Join';
+import { Leave } from '../models/Leave';
 import { Rank } from '../models/Rank';
+
+enum TABLE {
+	customInvites = '`customInvites`',
+	joins = '`joins`',
+	leaves = '`leaves`'
+}
 
 export interface LeaderboardEntry {
 	id: string;
@@ -45,8 +53,8 @@ export class InvitesService extends IMService {
 
 	public async getInviteCounts(guildId: string, memberId: string): Promise<InviteCounts> {
 		const inviteCodePromise = this.db.getInviteCodeTotalForMember(guildId, memberId);
-		const joinsPromise = this.db.getInvalidatedJoinsForMember(guildId, memberId);
-		const customInvitesPromise = this.db.getCustomInviteTotalForMember(guildId, memberId);
+		const joinsPromise = this.getInvalidatedJoinsForMember(guildId, memberId);
+		const customInvitesPromise = this.getCustomInviteTotalForMember(guildId, memberId);
 
 		const [regular, js, custom] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
@@ -71,8 +79,8 @@ export class InvitesService extends IMService {
 
 	public async generateLeaderboard(guildId: string) {
 		const inviteCodePromise = this.db.getInviteCodesForGuild(guildId);
-		const joinsPromise = this.db.getJoinsForGuild(guildId);
-		const customInvitesPromise = this.db.getCustomInvitesForGuild(guildId);
+		const joinsPromise = this.getJoinsForGuild(guildId);
+		const customInvitesPromise = this.getCustomInvitesForGuild(guildId);
 
 		// TODO: This is typed as "any" because of a typescript bug https://github.com/microsoft/TypeScript/issues/34925
 		const [invCodes, js, customInvs]: [any[], any[], any[]] = await Promise.all([
@@ -167,12 +175,12 @@ export class InvitesService extends IMService {
 
 		let numJoins = 0;
 		if (template.indexOf('{numJoins}') >= 0) {
-			numJoins = await this.db.getTotalJoinsForMember(guild.id, member.id);
+			numJoins = await this.getTotalJoinsForMember(guild.id, member.id);
 		}
 
 		let firstJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{firstJoin:') >= 0) {
-			const temp = await this.db.getFirstJoinForMember(guild.id, member.id);
+			const temp = await this.getFirstJoinForMember(guild.id, member.id);
 			if (temp) {
 				firstJoin = moment(temp.createdAt);
 			}
@@ -180,7 +188,7 @@ export class InvitesService extends IMService {
 
 		let prevJoin: moment.Moment | string = 'never';
 		if (template.indexOf('{previousJoin:') >= 0) {
-			const temp = await this.db.getPreviousJoinForMember(guild.id, member.id);
+			const temp = await this.getPreviousJoinForMember(guild.id, member.id);
 			if (temp) {
 				prevJoin = moment(temp.createdAt);
 			}
@@ -238,7 +246,7 @@ export class InvitesService extends IMService {
 		let nextRankName = '';
 		let nextRank: Rank = null;
 
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<InvitesGuildSettings>(guild.id);
 		const style = settings.rankAssignmentStyle;
 
 		const allRanks = await this.ranksCache.get(guild.id);
@@ -318,7 +326,7 @@ export class InvitesService extends IMService {
 					}
 				} else {
 					console.error(`Guild ${guild.id} has invalid ` + `rank announcement channel ${rankChannelId}`);
-					await this.guildSettingsCache.setOne(guild.id, GuildSettingsKey.rankAnnouncementChannel, null);
+					await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'rankAnnouncementChannel', null);
 				}
 			}
 		}
@@ -392,5 +400,282 @@ export class InvitesService extends IMService {
 			shouldNotHave,
 			dangerous
 		};
+	}
+
+	public async getCustomInvitesForMember(guildId: string, memberId: string) {
+		return this.db.findMany<CustomInvite>(guildId, TABLE.customInvites, '`guildId` = ? AND `memberId` = ?', [
+			guildId,
+			memberId
+		]);
+	}
+	public async getCustomInvitesForGuild(guildId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT SUM(ci.`amount`) AS total, ci.`memberId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
+				`FROM ${db}.${TABLE.customInvites} ci ` +
+				`INNER JOIN ${db}.${BASE_TABLE.members} m ON m.\`id\` = ci.\`memberId\` ` +
+				'WHERE ci.`guildId` = ? AND ci.`cleared` = 0 ' +
+				'GROUP BY ci.`memberId`',
+			[guildId]
+		);
+		return rows as Array<{ total: string; id: string; name: string; discriminator: string }>;
+	}
+	public async getCustomInviteTotalForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			`SELECT SUM(\`amount\`) AS total FROM ${db}.${TABLE.customInvites} WHERE \`guildId\` = ? AND \`memberId\` = ? AND \`cleared\` = 0`,
+			[guildId, memberId]
+		);
+		if (rows.length > 0) {
+			const num = Number(rows[0].total);
+			return isFinite(num) ? num : 0;
+		}
+		return 0;
+	}
+	public async saveCustomInvite(customInvite: Partial<CustomInvite>) {
+		const res = await this.db.insertOrUpdate(
+			TABLE.customInvites,
+			['guildId', 'memberId', 'creatorId', 'amount', 'reason'],
+			[],
+			[customInvite],
+			(c) => c.guildId
+		);
+		return res[0].insertId;
+	}
+	public async clearCustomInvites(cleared: boolean, guildId: string, memberId?: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
+		await pool.query(`UPDATE ${db}.${TABLE.customInvites} SET \`cleared\` = ? WHERE \`guildId\` = ? ${memberQuery}`, [
+			cleared ? 1 : 0,
+			guildId,
+			memberId
+		]);
+	}
+
+	public async getJoinsForGuild(guildId: string) {
+		type AccumulatedJoin = {
+			total: string;
+			id: string;
+			name: string;
+			discriminator: string;
+			invalidatedReason: JoinInvalidatedReason;
+		};
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, ' +
+				'j.`invalidatedReason` AS invalidatedReason ' +
+				`FROM ${db}.${TABLE.joins} j ` +
+				`INNER JOIN ${db}.${BASE_TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
+				`INNER JOIN ${db}.${BASE_TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
+				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 ' +
+				'GROUP BY ic.`inviterId`, j.`invalidatedReason`',
+			[guildId]
+		);
+		return rows as AccumulatedJoin[];
+	}
+	public async getMaxJoinIdsForGuild(guildId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			`SELECT MAX(j.\`id\`) AS id FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? GROUP BY j.\`exactMatchCode\`, j.\`memberId\``,
+			[guildId]
+		);
+		return rows.map((r) => Number(r.id));
+	}
+	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason ' +
+				`FROM ${db}.${TABLE.joins} j ` +
+				`INNER JOIN ${db}.${BASE_TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
+				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 AND ic.`inviterId` = ? ' +
+				'GROUP BY j.`invalidatedReason`',
+			[guildId, memberId]
+		);
+		return rows as Array<{ total: string; invalidatedReason: JoinInvalidatedReason }>;
+	}
+	public async getJoinsPerDay(guildId: string, from: Date, to: Date) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
+				`FROM ${db}.${TABLE.joins} ` +
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
+		);
+		return rows as Array<{ year: number; month: number; day: number; total: number }>;
+	}
+	public async getFirstJoinForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` ASC LIMIT 1',
+			[guildId, memberId]
+		);
+		return rows[0] as Join;
+	}
+	public async getPreviousJoinForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` DESC LIMIT 1,1',
+			[guildId, memberId]
+		);
+		return rows[0] as Join;
+	}
+	public async getNewestJoinForMember(guildId: string, memberId: string) {
+		type ExtendedJoin = Join & {
+			inviterId: string;
+			inviterName: string;
+			inviterDiscriminator: string;
+			channelId: string;
+			channelName: string;
+		};
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT j.*, m.`id` AS inviterId, m.`name` AS inviterName, m.`discriminator` AS inviterDiscriminator, ' +
+				'c.`id` AS channelId, c.`name` AS channelName ' +
+				`FROM ${db}.${TABLE.joins} j ` +
+				`INNER JOIN ${db}.${BASE_TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
+				`LEFT JOIN ${db}.${BASE_TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
+				`LEFT JOIN ${db}.${BASE_TABLE.channels} c ON c.\`id\` = ic.\`channelId\` ` +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` DESC LIMIT 1',
+			[guildId, memberId]
+		);
+		return rows[0] as ExtendedJoin;
+	}
+	public async getJoinsForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT j.*, ic.`inviterId` AS inviterId ' +
+				`FROM ${db}.${TABLE.joins} j ` +
+				`INNER JOIN ${db}.${BASE_TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
+				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
+				'ORDER BY j.`createdAt` DESC LIMIT 100',
+			[guildId, memberId]
+		);
+		return rows as Array<Join & { inviterId: string }>;
+	}
+	public async getTotalJoinsForMember(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			`SELECT COUNT(j.\`id\`) AS total FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? AND j.\`memberId\` = ?`,
+			[guildId, memberId]
+		);
+		return Number(rows[0].total);
+	}
+	public async getInvitedMembers(guildId: string, memberId: string) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT j.`memberId` AS memberId, MAX(j.`createdAt`) AS createdAt ' +
+				`FROM ${db}.${TABLE.joins} j ` +
+				`INNER JOIN ${db}.${BASE_TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
+				'WHERE j.`guildId` = ? AND `invalidatedReason` IS NULL AND ic.`inviterId` = ? ' +
+				'GROUP BY j.`memberId` ' +
+				'ORDER BY MAX(j.`createdAt`) DESC ',
+			[guildId, memberId]
+		);
+		return rows as Array<{ memberId: string; createdAt: string }>;
+	}
+	public async updateJoinInvalidatedReason(
+		newInvalidatedReason: JoinInvalidatedReason | string,
+		guildId: string,
+		search?: {
+			invalidatedReason: JoinInvalidatedReason;
+			memberId?: string;
+			joinId?: number;
+			ignoredJoinId?: number;
+		}
+	) {
+		const vals: any[] = [guildId];
+		let reasonQuery = '';
+		if (search && typeof search.invalidatedReason !== 'undefined') {
+			if (search.invalidatedReason === null) {
+				reasonQuery = 'AND `invalidatedReason` IS NULL';
+			} else {
+				reasonQuery = 'AND `invalidatedReason` = ?';
+				vals.push(search.invalidatedReason);
+			}
+		}
+		let memberQuery = '';
+		if (search && typeof search.memberId !== 'undefined') {
+			memberQuery = 'AND `memberId` = ?';
+			vals.push(search.memberId);
+		}
+		let joinQuery = '';
+		if (search && typeof search.joinId !== 'undefined') {
+			joinQuery = 'AND `id` = ?';
+			vals.push(search.joinId);
+		}
+		let ignoredJoinQuery = '';
+		if (search && typeof search.ignoredJoinId !== 'undefined') {
+			ignoredJoinQuery = 'AND `id` != ?';
+			vals.push(search.ignoredJoinId);
+		}
+
+		if (Object.values(JoinInvalidatedReason).includes(newInvalidatedReason as any)) {
+			newInvalidatedReason = `'${newInvalidatedReason}'`;
+		}
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [ok] = await pool.query<any>(
+			`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
+				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
+			vals
+		);
+		return ok.affectedRows;
+	}
+	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const codeQuery = exactMatchCodes.length > 0 ? 'AND `exactMatchCode` IN(?)' : '';
+		await pool.query(`UPDATE ${db}.${TABLE.joins} SET \`cleared\` = ? WHERE \`guildId\` = ? ${codeQuery}`, [
+			newCleared,
+			guildId,
+			exactMatchCodes
+		]);
+	}
+	public async saveJoin(join: Partial<Join>) {
+		const res = await this.db.insertOrUpdate(
+			TABLE.joins,
+			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
+			['exactMatchCode'],
+			[join],
+			(j) => j.guildId
+		);
+		return res[0].insertId;
+	}
+
+	public async saveLeave(leave: Partial<Leave>) {
+		const res = await this.db.insertOrUpdate(
+			TABLE.leaves,
+			['guildId', 'memberId', 'joinId'],
+			['joinId'],
+			[leave],
+			(l) => l.guildId
+		);
+		return res[0].insertId;
+	}
+	public async getLeavesPerDay(guildId: string, from: Date, to: Date) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any[]>(
+			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
+				`FROM ${db}.${TABLE.leaves} ` +
+				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
+				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
+			[guildId, from, to]
+		);
+		return rows as Array<{ year: number; month: number; day: number; total: number }>;
+	}
+	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
+		const [db, pool] = this.db.getDbInfo(guildId);
+		const [rows] = await pool.query<any>(
+			`UPDATE ${db}.${TABLE.joins} j ` +
+				`LEFT JOIN ${db}.${TABLE.leaves} l ON l.\`joinId\` = j.\`id\` SET \`invalidatedReason\` = ` +
+				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
+				'WHERE j.`guildId` = ? AND (j.`invalidatedReason` IS NULL OR j.`invalidatedReason` = "leave")',
+			[autoSubtractLeaveThreshold, guildId]
+		);
+		return rows;
 	}
 }

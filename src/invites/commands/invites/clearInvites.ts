@@ -4,17 +4,20 @@ import { Moment } from 'moment';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { BooleanResolver, DateResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
+import { InvitesService } from '../../services/Invites';
 
 export default class extends IMCommand {
+	@Service() private invs: InvitesService;
 	@Cache() private invitesCache: InvitesCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.clearInvites,
+			name: 'clearInvites',
 			aliases: ['clear-invites'],
 			args: [
 				{
@@ -53,7 +56,7 @@ export default class extends IMCommand {
 
 		const codes = memberId ? await this.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.db.updateJoinClearedStatus(
+		await this.invs.updateJoinClearedStatus(
 			true,
 			guild.id,
 			codes.map((ic) => ic.code)
@@ -61,9 +64,9 @@ export default class extends IMCommand {
 
 		if (clearBonus) {
 			// Clear invites
-			await this.db.clearCustomInvites(true, guild.id, memberId);
+			await this.invs.clearCustomInvites(true, guild.id, memberId);
 		} else {
-			await this.db.clearCustomInvites(false, guild.id, memberId);
+			await this.invs.clearCustomInvites(false, guild.id, memberId);
 		}
 
 		if (memberId) {

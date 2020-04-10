@@ -1,38 +1,49 @@
 import { IMCache } from '../../framework/cache/Cache';
-import { memberDefaultSettings, memberSettingsInfo, MemberSettingsObject, toDbValue } from '../../settings';
-import { MemberSettingsKey } from '../models/MemberSetting';
+import { Service } from '../../framework/decorators/Service';
+import { Member } from '../../framework/models/Member';
+import { BaseMemberSettings } from '../../framework/models/MemberSettings';
+import { SettingsService } from '../services/Settings';
 
-export class MemberSettingsCache extends IMCache<Map<string, MemberSettingsObject>> {
+type MemberSettings<T> = BaseMemberSettings & T;
+type KeyOfSettings<T> = Extract<keyof MemberSettings<T>, string>;
+
+export class MemberSettingsCache extends IMCache<Map<string, BaseMemberSettings>> {
+	@Service() private settings: SettingsService;
+
 	public async init() {
 		// NO-OP
 	}
 
-	protected async _get(guildId: string): Promise<Map<string, MemberSettingsObject>> {
-		const sets = await this.db.getMemberSettingsForGuild(guildId);
+	public async get<T>(key: string): Promise<Map<string, MemberSettings<T>>> {
+		return super.get(key) as any;
+	}
+
+	protected async _get(guildId: string): Promise<Map<string, BaseMemberSettings>> {
+		const sets = await this.settings.getMemberSettingsForGuild(guildId);
 
 		const map = new Map();
-		sets.forEach((set) => map.set(set.memberId, { ...memberDefaultSettings, ...set.value }));
+		sets.forEach((set) => map.set(set.memberId, { ...this.settings.getMemberDefaultSettings(), ...set.value }));
 		return map;
 	}
 
-	public async getOne(guildId: string, memberId: string) {
-		const guildSets = await this.get(guildId);
+	public async getOne<T>(guildId: string, memberId: string): Promise<MemberSettings<T>> {
+		const guildSets = await this.get<T>(guildId);
 		const set = guildSets.get(memberId);
-		return { ...memberDefaultSettings, ...set };
+		return { ...this.settings.getMemberDefaultSettings(), ...set };
 	}
 
-	public async setOne<K extends MemberSettingsKey>(
+	public async setOne<T>(
 		guildId: string,
 		userId: string,
-		key: K,
-		value: MemberSettingsObject[K]
-	) {
-		const guildSet = await this.get(guildId);
-		const dbVal = toDbValue(memberSettingsInfo[key], value);
+		key: KeyOfSettings<T>,
+		value: MemberSettings<T>[KeyOfSettings<T>]
+	): Promise<MemberSettings<T>[KeyOfSettings<T>]> {
+		const guildSet = await this.get<T>(guildId);
+		const dbVal = this.settings.toDbValue(this.settings.getSettingsInfo(Member, key), value);
 
 		let set = guildSet.get(userId);
 		if (!set) {
-			set = { ...memberDefaultSettings };
+			set = this.settings.getMemberDefaultSettings();
 			guildSet.set(userId, set);
 		}
 
@@ -40,7 +51,7 @@ export class MemberSettingsCache extends IMCache<Map<string, MemberSettingsObjec
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.db.saveMemberSettings({ memberId: userId, guildId, value: set });
+			await this.settings.saveMemberSettings({ memberId: userId, guildId, value: set });
 		}
 
 		return dbVal;

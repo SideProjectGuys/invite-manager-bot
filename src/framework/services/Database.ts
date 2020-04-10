@@ -2,22 +2,7 @@ import { Guild as DiscordGuild } from 'eris';
 import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
 
 import { IMClient } from '../../client';
-import { CustomInvite } from '../../invites/models/CustomInvite';
-import { Join, JoinInvalidatedReason } from '../../invites/models/Join';
-import { Leave } from '../../invites/models/Leave';
-import { Rank } from '../../invites/models/Rank';
-import { Message } from '../../management/models/Message';
-import { ReactionRole } from '../../management/models/ReactionRole';
-import { Punishment } from '../../moderation/models/Punishment';
-import { PunishmentConfig, PunishmentType } from '../../moderation/models/PunishmentConfig';
-import { Strike } from '../../moderation/models/Strike';
-import { StrikeConfig, ViolationType } from '../../moderation/models/StrikeConfig';
-import { MusicNode } from '../../music/models/MusicNode';
-import { BotSetting } from '../../settings/models/BotSetting';
-import { GuildSetting } from '../../settings/models/GuildSetting';
-import { InviteCodeSetting } from '../../settings/models/InviteCodeSetting';
-import { MemberSetting } from '../../settings/models/MemberSetting';
-import { BasicUser, BotType } from '../../types';
+import { BasicUser } from '../../types';
 import { getShardIdForGuild } from '../../util';
 import { Channel } from '../models/Channel';
 import { CommandUsage } from '../models/CommandUsage';
@@ -34,37 +19,22 @@ import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction'
 
 import { IMService } from './Service';
 
-const GLOBAL_SHARD_ID = 0;
+export const GLOBAL_SHARD_ID = 0;
 
-enum TABLE {
-	botSettings = '`botSettings`',
+export enum TABLE {
 	channels = '`channels`',
 	commandUsages = '`commandUsages`',
-	customInvites = '`customInvites`',
 	dbStats = '`dbStats`',
 	guilds = '`guilds`',
-	guildSettings = '`guildSettings`',
 	incidents = '`incidents`',
 	inviteCodes = '`inviteCodes`',
-	inviteCodeSettings = '`inviteCodeSettings`',
-	joins = '`joins`',
-	leaves = '`leaves`',
 	logs = '`logs`',
 	members = '`members`',
-	memberSettings = '`memberSettings`',
-	messages = '`messages`',
-	musicNodes = '`musicNodes`',
 	premiumSubscriptionGuilds = '`premiumSubscriptionGuilds`',
 	premiumSubscriptions = '`premiumSubscriptions`',
-	punishmentConfigs = '`punishmentConfigs`',
-	punishments = '`punishments`',
-	ranks = '`ranks`',
-	reactionRoles = '`reactionRoles`',
 	rolePermissions = '`rolePermissions`',
 	roles = '`roles`',
-	scheduledActions = '`scheduledActions`',
-	strikeConfigs = '`strikeConfigs`',
-	strikes = '`strikes`'
+	scheduledActions = '`scheduledActions`'
 }
 
 export class DatabaseService extends IMService {
@@ -101,7 +71,7 @@ export class DatabaseService extends IMService {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
-	private getDbInfo(dbShardOrGuildId: number | string): [string, Pool] {
+	public getDbInfo(dbShardOrGuildId: number | string): [string, Pool] {
 		if (typeof dbShardOrGuildId === 'number') {
 			return [`\`im_${dbShardOrGuildId}\``, this.pools.get(dbShardOrGuildId)];
 		} else {
@@ -114,7 +84,9 @@ export class DatabaseService extends IMService {
 		return getShardIdForGuild(guildId, this.dbCount);
 	}
 
-	private async findOne<T>(shard: number | string, table: TABLE, where: string, values: any[]): Promise<T> {
+	// public getTableForClass<T>(clazz: new (...args: any[]) => T) {}
+
+	public async findOne<T>(shard: number | string, table: string, where: string, values: any[]): Promise<T> {
 		const [db, pool] = this.getDbInfo(shard);
 		const [rows] = await pool.query<RowDataPacket[]>(
 			`SELECT ${table}.* FROM ${db}.${table} WHERE ${where} LIMIT 1`,
@@ -122,13 +94,13 @@ export class DatabaseService extends IMService {
 		);
 		return rows[0] as T;
 	}
-	private async findMany<T>(shard: number | string, table: TABLE, where: string, values: any[]): Promise<T[]> {
+	public async findMany<T>(shard: number | string, table: string, where: string, values: any[]): Promise<T[]> {
 		const [db, pool] = this.getDbInfo(shard);
 		const [rows] = await pool.query<RowDataPacket[]>(`SELECT ${table}.* FROM ${db}.${table} WHERE ${where}`, values);
 		return rows as T[];
 	}
-	private async findManyOnSpecificShards<T, O = string>(
-		table: TABLE,
+	public async findManyOnSpecificShards<T, O = string>(
+		table: string,
 		where: string,
 		values: O[],
 		selector: (obj: O) => number | string = (o) => o as any,
@@ -166,8 +138,8 @@ export class DatabaseService extends IMService {
 		const rows = await Promise.all(promises);
 		return rows.reduce((acc, val) => acc.concat(val as T[]), [] as T[]);
 	}
-	private async insertOrUpdate<T>(
-		table: TABLE,
+	public async insertOrUpdate<T>(
+		table: string,
 		cols: (keyof T)[],
 		updateCols: (keyof T)[],
 		values: Partial<T>[],
@@ -211,7 +183,7 @@ export class DatabaseService extends IMService {
 
 		return oks;
 	}
-	private async delete(shard: number | string, table: TABLE, where: string, values: any[]) {
+	public async delete(shard: number | string, table: string, where: string, values: any[]) {
 		const [db, pool] = this.getDbInfo(shard);
 		const [ok] = await pool.query<OkPacket>(`DELETE FROM ${db}.${table} WHERE ${where}`, values);
 		return ok;
@@ -234,16 +206,6 @@ export class DatabaseService extends IMService {
 			guilds,
 			(g) => g.id
 		);
-	}
-
-	// ------------------
-	//   Guild settings
-	// ------------------
-	public async getGuildSettings(guildId: string) {
-		return this.findOne<GuildSetting>(guildId, TABLE.guildSettings, '`guildId` = ?', [guildId]);
-	}
-	public async saveGuildSettings(settings: Partial<GuildSetting>) {
-		await this.insertOrUpdate(TABLE.guildSettings, ['guildId', 'value'], ['value'], [settings], (s) => s.guildId);
 	}
 
 	// ------------
@@ -277,22 +239,6 @@ export class DatabaseService extends IMService {
 		);
 	}
 
-	// -------------------
-	//   Member settings
-	// -------------------
-	public async getMemberSettingsForGuild(guildId: string) {
-		return this.findMany<MemberSetting>(guildId, TABLE.memberSettings, '`guildId` = ?', [guildId]);
-	}
-	public async saveMemberSettings(settings: Partial<MemberSetting>) {
-		await this.insertOrUpdate(
-			TABLE.memberSettings,
-			['guildId', 'memberId', 'value'],
-			['value'],
-			[settings],
-			(s) => s.guildId
-		);
-	}
-
 	// ---------
 	//   Roles
 	// ---------
@@ -304,25 +250,6 @@ export class DatabaseService extends IMService {
 			roles,
 			(r) => r.guildId
 		);
-	}
-
-	// ---------
-	//   Ranks
-	// ---------
-	public async getRanksForGuild(guildId: string) {
-		return this.findMany<Rank>(guildId, TABLE.ranks, '`guildId` = ?', [guildId]);
-	}
-	public async saveRank(rank: Partial<Rank>) {
-		await this.insertOrUpdate(
-			TABLE.ranks,
-			['guildId', 'roleId', 'numInvites', 'description'],
-			['numInvites', 'description'],
-			[rank],
-			(r) => r.guildId
-		);
-	}
-	public async removeRank(guildId: string, roleId: string) {
-		await this.delete(guildId, TABLE.ranks, `\`roleId\` = ?`, [roleId]);
 	}
 
 	// --------------------
@@ -427,318 +354,6 @@ export class DatabaseService extends IMService {
 		);
 	}
 
-	// -----------------------
-	//   InviteCode settings
-	// -----------------------
-	public async getInviteCodeSettingsForGuild(guildId: string) {
-		return this.findMany<InviteCodeSetting>(guildId, TABLE.inviteCodeSettings, '`guildId` = ?', [guildId]);
-	}
-	public async saveInviteCodeSettings(settings: Partial<InviteCodeSetting>) {
-		await this.insertOrUpdate(
-			TABLE.inviteCodeSettings,
-			['guildId', 'inviteCode', 'value'],
-			['value'],
-			[settings],
-			(s) => s.guildId
-		);
-	}
-
-	// ----------------
-	//   CustomInvite
-	// ----------------
-	public async getCustomInvitesForMember(guildId: string, memberId: string) {
-		return this.findMany<CustomInvite>(guildId, TABLE.customInvites, '`guildId` = ? AND `memberId` = ?', [
-			guildId,
-			memberId
-		]);
-	}
-	public async getCustomInvitesForGuild(guildId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT SUM(ci.`amount`) AS total, ci.`memberId` AS id, m.`name` AS name, m.`discriminator` AS discriminator ' +
-				`FROM ${db}.${TABLE.customInvites} ci ` +
-				`INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = ci.\`memberId\` ` +
-				'WHERE ci.`guildId` = ? AND ci.`cleared` = 0 ' +
-				'GROUP BY ci.`memberId`',
-			[guildId]
-		);
-		return rows as Array<{ total: string; id: string; name: string; discriminator: string }>;
-	}
-	public async getCustomInviteTotalForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT SUM(\`amount\`) AS total FROM ${db}.${TABLE.customInvites} WHERE \`guildId\` = ? AND \`memberId\` = ? AND \`cleared\` = 0`,
-			[guildId, memberId]
-		);
-		if (rows.length > 0) {
-			const num = Number(rows[0].total);
-			return isFinite(num) ? num : 0;
-		}
-		return 0;
-	}
-	public async saveCustomInvite(customInvite: Partial<CustomInvite>) {
-		const res = await this.insertOrUpdate(
-			TABLE.customInvites,
-			['guildId', 'memberId', 'creatorId', 'amount', 'reason'],
-			[],
-			[customInvite],
-			(c) => c.guildId
-		);
-		return res[0].insertId;
-	}
-	public async clearCustomInvites(cleared: boolean, guildId: string, memberId?: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const memberQuery = memberId ? 'AND `memberId` = ?' : '';
-		await pool.query(`UPDATE ${db}.${TABLE.customInvites} SET \`cleared\` = ? WHERE \`guildId\` = ? ${memberQuery}`, [
-			cleared ? 1 : 0,
-			guildId,
-			memberId
-		]);
-	}
-
-	// --------
-	//   Join
-	// --------
-	public async getJoinsForGuild(guildId: string) {
-		type AccumulatedJoin = {
-			total: string;
-			id: string;
-			name: string;
-			discriminator: string;
-			invalidatedReason: JoinInvalidatedReason;
-		};
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT COUNT(j.`id`) AS total, ic.`inviterId` AS id, m.`name` AS name, m.`discriminator` AS discriminator, ' +
-				'j.`invalidatedReason` AS invalidatedReason ' +
-				`FROM ${db}.${TABLE.joins} j ` +
-				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				`INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
-				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 ' +
-				'GROUP BY ic.`inviterId`, j.`invalidatedReason`',
-			[guildId]
-		);
-		return rows as AccumulatedJoin[];
-	}
-	public async getMaxJoinIdsForGuild(guildId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT MAX(j.\`id\`) AS id FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? GROUP BY j.\`exactMatchCode\`, j.\`memberId\``,
-			[guildId]
-		);
-		return rows.map((r) => Number(r.id));
-	}
-	public async getInvalidatedJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT COUNT(j.`id`) AS total, j.`invalidatedReason` AS invalidatedReason ' +
-				`FROM ${db}.${TABLE.joins} j ` +
-				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				'WHERE j.`guildId` = ? AND j.`invalidatedReason` IS NOT NULL AND j.`cleared` = 0 AND ic.`inviterId` = ? ' +
-				'GROUP BY j.`invalidatedReason`',
-			[guildId, memberId]
-		);
-		return rows as Array<{ total: string; invalidatedReason: JoinInvalidatedReason }>;
-	}
-	public async getJoinsPerDay(guildId: string, from: Date, to: Date) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
-				`FROM ${db}.${TABLE.joins} ` +
-				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
-			[guildId, from, to]
-		);
-		return rows as Array<{ year: number; month: number; day: number; total: number }>;
-	}
-	public async getFirstJoinForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
-				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
-				'ORDER BY j.`createdAt` ASC LIMIT 1',
-			[guildId, memberId]
-		);
-		return rows[0] as Join;
-	}
-	public async getPreviousJoinForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT j.* FROM ${db}.${TABLE.joins} j ` +
-				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
-				'ORDER BY j.`createdAt` DESC LIMIT 1,1',
-			[guildId, memberId]
-		);
-		return rows[0] as Join;
-	}
-	public async getNewestJoinForMember(guildId: string, memberId: string) {
-		type ExtendedJoin = Join & {
-			inviterId: string;
-			inviterName: string;
-			inviterDiscriminator: string;
-			channelId: string;
-			channelName: string;
-		};
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT j.*, m.`id` AS inviterId, m.`name` AS inviterName, m.`discriminator` AS inviterDiscriminator, ' +
-				'c.`id` AS channelId, c.`name` AS channelName ' +
-				`FROM ${db}.${TABLE.joins} j ` +
-				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				`LEFT JOIN ${db}.${TABLE.members} m ON m.\`id\` = ic.\`inviterId\` ` +
-				`LEFT JOIN ${db}.${TABLE.channels} c ON c.\`id\` = ic.\`channelId\` ` +
-				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
-				'ORDER BY j.`createdAt` DESC LIMIT 1',
-			[guildId, memberId]
-		);
-		return rows[0] as ExtendedJoin;
-	}
-	public async getJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT j.*, ic.`inviterId` AS inviterId ' +
-				`FROM ${db}.${TABLE.joins} j ` +
-				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				'WHERE j.`guildId` = ? AND j.`memberId` = ? ' +
-				'ORDER BY j.`createdAt` DESC LIMIT 100',
-			[guildId, memberId]
-		);
-		return rows as Array<Join & { inviterId: string }>;
-	}
-	public async getTotalJoinsForMember(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT COUNT(j.\`id\`) AS total FROM ${db}.${TABLE.joins} j WHERE j.\`guildId\` = ? AND j.\`memberId\` = ?`,
-			[guildId, memberId]
-		);
-		return Number(rows[0].total);
-	}
-	public async getInvitedMembers(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT j.`memberId` AS memberId, MAX(j.`createdAt`) AS createdAt ' +
-				`FROM ${db}.${TABLE.joins} j ` +
-				`INNER JOIN ${db}.${TABLE.inviteCodes} ic ON ic.\`code\` = j.\`exactMatchCode\` ` +
-				'WHERE j.`guildId` = ? AND `invalidatedReason` IS NULL AND ic.`inviterId` = ? ' +
-				'GROUP BY j.`memberId` ' +
-				'ORDER BY MAX(j.`createdAt`) DESC ',
-			[guildId, memberId]
-		);
-		return rows as Array<{ memberId: string; createdAt: string }>;
-	}
-	public async updateJoinInvalidatedReason(
-		newInvalidatedReason: JoinInvalidatedReason | string,
-		guildId: string,
-		search?: {
-			invalidatedReason: JoinInvalidatedReason;
-			memberId?: string;
-			joinId?: number;
-			ignoredJoinId?: number;
-		}
-	) {
-		const vals: any[] = [guildId];
-		let reasonQuery = '';
-		if (search && typeof search.invalidatedReason !== 'undefined') {
-			if (search.invalidatedReason === null) {
-				reasonQuery = 'AND `invalidatedReason` IS NULL';
-			} else {
-				reasonQuery = 'AND `invalidatedReason` = ?';
-				vals.push(search.invalidatedReason);
-			}
-		}
-		let memberQuery = '';
-		if (search && typeof search.memberId !== 'undefined') {
-			memberQuery = 'AND `memberId` = ?';
-			vals.push(search.memberId);
-		}
-		let joinQuery = '';
-		if (search && typeof search.joinId !== 'undefined') {
-			joinQuery = 'AND `id` = ?';
-			vals.push(search.joinId);
-		}
-		let ignoredJoinQuery = '';
-		if (search && typeof search.ignoredJoinId !== 'undefined') {
-			ignoredJoinQuery = 'AND `id` != ?';
-			vals.push(search.ignoredJoinId);
-		}
-
-		if (Object.values(JoinInvalidatedReason).includes(newInvalidatedReason as any)) {
-			newInvalidatedReason = `'${newInvalidatedReason}'`;
-		}
-		const [db, pool] = this.getDbInfo(guildId);
-		const [ok] = await pool.query<OkPacket>(
-			`UPDATE ${db}.${TABLE.joins} SET \`invalidatedReason\` = ${newInvalidatedReason} WHERE \`guildId\` = ? ` +
-				`${reasonQuery} ${memberQuery} ${joinQuery} ${ignoredJoinQuery}`,
-			vals
-		);
-		return ok.affectedRows;
-	}
-	public async updateJoinClearedStatus(newCleared: boolean, guildId: string, exactMatchCodes: string[]) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const codeQuery = exactMatchCodes.length > 0 ? 'AND `exactMatchCode` IN(?)' : '';
-		await pool.query(`UPDATE ${db}.${TABLE.joins} SET \`cleared\` = ? WHERE \`guildId\` = ? ${codeQuery}`, [
-			newCleared,
-			guildId,
-			exactMatchCodes
-		]);
-	}
-	public async saveJoin(join: Partial<Join>) {
-		const res = await this.insertOrUpdate(
-			TABLE.joins,
-			['guildId', 'createdAt', 'memberId', 'exactMatchCode', 'invalidatedReason', 'cleared'],
-			['exactMatchCode'],
-			[join],
-			(j) => j.guildId
-		);
-		return res[0].insertId;
-	}
-
-	// ---------
-	//   Leave
-	// ---------
-	public async saveLeave(leave: Partial<Leave>) {
-		const res = await this.insertOrUpdate(
-			TABLE.leaves,
-			['guildId', 'memberId', 'joinId'],
-			['joinId'],
-			[leave],
-			(l) => l.guildId
-		);
-		return res[0].insertId;
-	}
-	public async getLeavesPerDay(guildId: string, from: Date, to: Date) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT YEAR(`createdAt`) AS year, MONTH(`createdAt`) AS month, DAY(`createdAt`) AS day, COUNT(`id`) AS total ' +
-				`FROM ${db}.${TABLE.leaves} ` +
-				'WHERE `guildId` = ? AND `createdAt` >= ? AND `createdAt` <= ? ' +
-				'GROUP BY YEAR(`createdAt`), MONTH(`createdAt`), DAY(`createdAt`)',
-			[guildId, from, to]
-		);
-		return rows as Array<{ year: number; month: number; day: number; total: number }>;
-	}
-	public async subtractLeaves(guildId: string, autoSubtractLeaveThreshold: number) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<OkPacket>(
-			`UPDATE ${db}.${TABLE.joins} j ` +
-				`LEFT JOIN ${db}.${TABLE.leaves} l ON l.\`joinId\` = j.\`id\` SET \`invalidatedReason\` = ` +
-				'CASE WHEN l.`id` IS NULL OR TIMESTAMPDIFF(SECOND, j.`createdAt`, l.`createdAt`) > ? THEN NULL ELSE "leave" END ' +
-				'WHERE j.`guildId` = ? AND (j.`invalidatedReason` IS NULL OR j.`invalidatedReason` = "leave")',
-			[autoSubtractLeaveThreshold, guildId]
-		);
-		return rows;
-	}
-
-	// ----------------
-	//   Bot settings
-	// ----------------
-	public async getBotSettings(botId: string) {
-		return this.findOne<BotSetting>(GLOBAL_SHARD_ID, TABLE.botSettings, '`id` = ?', [botId]);
-	}
-	public async saveBotSettings(settings: Partial<BotSetting>) {
-		await this.insertOrUpdate(TABLE.botSettings, ['id', 'value'], ['value'], [settings], () => GLOBAL_SHARD_ID);
-	}
-
 	// --------
 	//   Logs
 	// --------
@@ -798,15 +413,6 @@ export class DatabaseService extends IMService {
 	}
 	private async saveIncidents(indicents: Partial<Incident>[]) {
 		await this.insertOrUpdate(TABLE.incidents, ['guildId', 'error', 'details'], [], indicents, (i) => i.guildId);
-	}
-
-	// ---------------
-	//   Music nodes
-	// ---------------
-	public async getMusicNodes() {
-		const typeFilter =
-			this.client.type === BotType.custom ? 'isCustom' : this.client.type === BotType.pro ? 'isPremium' : 'isRegular';
-		return this.findMany<MusicNode>(GLOBAL_SHARD_ID, TABLE.musicNodes, `${typeFilter} = 1`, []);
 	}
 
 	// ---------------------
@@ -914,149 +520,6 @@ export class DatabaseService extends IMService {
 			guildId,
 			memberId
 		]);
-	}
-
-	// ----------
-	//   Strike
-	// ----------
-	public async getStrike(guildId: string, id: number) {
-		type ExtendedStrike = Strike & { memberName: string; memberDiscriminator: string; memberCreatedAt: string };
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			'SELECT s.*, m.`name` as memberName, m.`discriminator` as memberDiscriminator, m.`createdAt` as memberCreatedAt ' +
-				`FROM ${db}.${TABLE.strikes} s INNER JOIN ${db}.${TABLE.members} m ON m.\`id\` = s.\`memberId\` WHERE s.\`guildId\` = ? AND s.\`id\` = ?`,
-			[guildId, id]
-		);
-		return rows[0] as ExtendedStrike;
-	}
-	public async getStrikesForMember(guildId: string, memberId: string) {
-		return this.findMany<Strike>(guildId, TABLE.strikes, '`guildId` = ? AND `memberId` = ?', [guildId, memberId]);
-	}
-	public async getStrikeAmount(guildId: string, memberId: string) {
-		const [db, pool] = this.getDbInfo(guildId);
-		const [rows] = await pool.query<RowDataPacket[]>(
-			`SELECT SUM(amount) AS total FROM ${db}.${TABLE.strikes} WHERE \`guildId\` = ? AND \`memberId\` = ?`,
-			[guildId, memberId]
-		);
-		if (rows.length > 0) {
-			const num = Number(rows[0].total);
-			return isFinite(num) ? num : 0;
-		}
-		return 0;
-	}
-	public async saveStrike(strike: Partial<Strike>) {
-		await this.insertOrUpdate(TABLE.strikes, ['guildId', 'memberId', 'type', 'amount'], [], [strike], (s) => s.guildId);
-	}
-	public async removeStrike(guildId: string, id: number) {
-		await this.delete(guildId, TABLE.strikes, '`guildId` = ? AND `id` = ?', [guildId, id]);
-	}
-
-	// ------------------
-	//   Strike configs
-	// ------------------
-	public async getStrikeConfigsForGuild(guildId: string) {
-		return this.findMany<StrikeConfig>(guildId, TABLE.strikeConfigs, '`guildId` = ? ORDER BY `amount` DESC', [guildId]);
-	}
-	public async saveStrikeConfig(config: Partial<StrikeConfig>) {
-		await this.insertOrUpdate(
-			TABLE.strikeConfigs,
-			['guildId', 'type', 'amount'],
-			['amount'],
-			[config],
-			(c) => c.guildId
-		);
-	}
-	public async removeStrikeConfig(guildId: string, type: ViolationType) {
-		await this.delete(guildId, TABLE.strikeConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
-	}
-
-	// --------------
-	//   Punishment
-	// --------------
-	public async getPunishment(guildId: string, id: number) {
-		return this.findOne<Punishment>(guildId, TABLE.punishments, '`guildId` = ? AND id = ?', [guildId, id]);
-	}
-	public async savePunishment(punishment: Partial<Punishment>) {
-		await this.insertOrUpdate(
-			TABLE.punishments,
-			['guildId', 'type', 'amount', 'args', 'creatorId', 'memberId', 'reason'],
-			[],
-			[punishment],
-			(p) => p.guildId
-		);
-	}
-	public async removePunishment(guildId: string, id: number) {
-		await this.delete(guildId, TABLE.punishments, '`guildId` = ? AND `id` = ?', [guildId, id]);
-	}
-	public async getPunishmentsForMember(guildId: string, memberId: string) {
-		return this.findMany<Punishment>(guildId, TABLE.punishments, '`guildId` = ? AND `memberId` = ?', [
-			guildId,
-			memberId
-		]);
-	}
-
-	// ----------------------
-	//   Punishment configs
-	// ----------------------
-	public async getPunishmentConfigsForGuild(guildId: string) {
-		return this.findMany<PunishmentConfig>(guildId, TABLE.punishmentConfigs, '`guildId` = ? ORDER BY `amount` DESC', [
-			guildId
-		]);
-	}
-	public async savePunishmentConfig(config: Partial<PunishmentConfig>) {
-		await this.insertOrUpdate(
-			TABLE.punishmentConfigs,
-			['guildId', 'type', 'amount', 'args'],
-			['amount', 'args'],
-			[config],
-			(c) => c.guildId
-		);
-	}
-	public async removePunishmentConfig(guildId: string, type: PunishmentType) {
-		await this.delete(guildId, TABLE.punishmentConfigs, '`guildId` = ? AND `type` = ?', [guildId, type]);
-	}
-
-	// ------------
-	//   Messages
-	// ------------
-	public async getMessageById(guildId: string, messageId: string) {
-		return this.findOne<Message>(guildId, TABLE.messages, '`guildId` = ? AND `id` = ?', [guildId, messageId]);
-	}
-	public async getMessagesForGuild(guildId: string) {
-		return this.findMany<Message>(guildId, TABLE.messages, '`guildId` = ?', [guildId]);
-	}
-	public async saveMessage(message: Partial<Message>) {
-		return this.insertOrUpdate(
-			TABLE.messages,
-			['guildId', 'channelId', 'id', 'content', 'embeds'],
-			['content', 'embeds'],
-			[message],
-			(m) => m.guildId
-		);
-	}
-
-	// ------------------
-	//   Reaction roles
-	// ------------------
-	public async getReactionRolesForGuild(guildId: string) {
-		return this.findMany<ReactionRole>(guildId, TABLE.reactionRoles, '`guildId` = ?', [guildId]);
-	}
-	public async saveReactionRole(reactionRole: Partial<ReactionRole>) {
-		return this.insertOrUpdate(
-			TABLE.reactionRoles,
-			['guildId', 'channelId', 'messageId', 'emoji', 'roleId'],
-			['roleId'],
-			[reactionRole],
-			(r) => r.guildId
-		);
-	}
-	public async removeReactionRole(guildId: string, channelId: string, messageId: string, emoji: string) {
-		await this.delete(
-			guildId,
-			TABLE.reactionRoles,
-			'`guildId` = ? AND `channelId` = ? AND `messageId` = ? AND `emoji` = ?',
-			[guildId, channelId, messageId, emoji]
-		);
 	}
 
 	// ----------------------

@@ -2,7 +2,8 @@ import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BooleanResolver, EnumResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicCommand, MusicPlatformType } from '../../../types';
+import { CommandGroup, MusicPlatformType } from '../../../types';
+import { MusicGuildSettings } from '../../models/GuildSettings';
 import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
@@ -10,7 +11,7 @@ import { CommandContext, IMMusicCommand } from '../MusicCommand';
 export default class extends IMMusicCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: MusicCommand.play,
+			name: 'play',
 			aliases: ['p'],
 			args: [
 				{
@@ -43,7 +44,7 @@ export default class extends IMMusicCommand {
 		message: Message,
 		[link]: [string],
 		{ platform, next }: { platform: MusicPlatformType; next: boolean },
-		{ t, guild, settings }: CommandContext
+		{ t, guild, settings }: CommandContext<MusicGuildSettings>
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {

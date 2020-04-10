@@ -4,7 +4,8 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { MemberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
+import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
 import { PunishmentService } from '../../services/PunishmentService';
@@ -15,7 +16,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.kick,
+			name: 'kick',
 			aliases: [],
 			args: [
 				{
@@ -40,7 +41,7 @@ export default class extends IMCommand {
 		message: Message,
 		[targetMember, reason]: [Member, string],
 		flags: {},
-		{ guild, me, settings, t }: CommandContext
+		{ guild, me, settings, t }: CommandContext<ModerationGuildSettings>
 	): Promise<any> {
 		const embed = this.mod.createBasicEmbed(targetMember);
 

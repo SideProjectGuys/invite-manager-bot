@@ -3,7 +3,9 @@ import { IMModule } from '../framework/Module';
 
 import { PunishmentCache } from './cache/PunishmentsCache';
 import { StrikesCache } from './cache/StrikesCache';
+import './models/GuildSettings';
 import { AutoModerationService } from './services/AutoModeration';
+import { CaptchaService } from './services/Captcha';
 import { ModerationService } from './services/Moderation';
 import { PunishmentService } from './services/PunishmentService';
 import { StrikeService } from './services/StrikeService';
@@ -16,6 +18,7 @@ export class ModerationModule extends IMModule {
 		this.registerService(StrikeService);
 		this.registerService(PunishmentService);
 		this.registerService(AutoModerationService);
+		this.registerService(CaptchaService);
 
 		this.registerCache(PunishmentCache);
 		this.registerCache(StrikesCache);

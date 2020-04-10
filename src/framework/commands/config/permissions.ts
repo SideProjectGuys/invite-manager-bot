@@ -1,7 +1,7 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BotCommand, CommandGroup, InvitesCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { PermissionsCache } from '../../cache/Permissions';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
@@ -15,7 +15,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.permissions,
+			name: 'permissions',
 			aliases: ['perms'],
 			args: [
 				{
@@ -95,15 +95,15 @@ export default class extends IMCommand {
 		const cmds = [];
 		const cmd = rawCmd.toLowerCase();
 		if (cmd === 'mod') {
-			cmds.push(BotCommand.info);
-			cmds.push(BotCommand.addInvites);
-			cmds.push(BotCommand.clearInvites);
-			cmds.push(BotCommand.restoreInvites);
-			cmds.push(BotCommand.subtractFakes);
-			cmds.push(BotCommand.subtractLeaves);
-			cmds.push(BotCommand.export);
-			cmds.push(BotCommand.makeMentionable);
-			cmds.push(BotCommand.mentionRole);
+			cmds.push('info');
+			cmds.push('addInvites');
+			cmds.push('clearInvites');
+			cmds.push('restoreInvites');
+			cmds.push('subtractFakes');
+			cmds.push('subtractLeaves');
+			cmds.push('export');
+			cmds.push('makeMentionable');
+			cmds.push('mentionRole');
 		}
 
 		const cmBot = Object.values(BotCommand).find(v => v.toLowerCase() === cmd);
@@ -154,14 +154,14 @@ export default class extends IMCommand {
 		}
 
 		if (
-			cmd.name === BotCommand.config ||
-			cmd.name === BotCommand.botConfig ||
-			cmd.name === BotCommand.inviteCodeConfig ||
-			cmd.name === BotCommand.memberConfig ||
-			cmd.name === BotCommand.permissions ||
-			cmd.name === BotCommand.interactiveConfig ||
-			cmd.name === InvitesCommand.addRank ||
-			cmd.name === InvitesCommand.removeRank
+			cmd.name === 'config' ||
+			cmd.name === 'botConfig' ||
+			cmd.name === 'inviteCodeConfig' ||
+			cmd.name === 'memberConfig' ||
+			cmd.name === 'permissions' ||
+			cmd.name === 'interactiveConfig' ||
+			cmd.name === 'addRank' ||
+			cmd.name === 'removeRank'
 		) {
 			return this.sendReply(message, t('cmd.permissions.canNotChange'));
 		}

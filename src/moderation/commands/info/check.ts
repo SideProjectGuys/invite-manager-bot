@@ -5,7 +5,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, ModerationCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { PunishmentService } from '../../services/PunishmentService';
 import { StrikeService } from '../../services/StrikeService';
 
@@ -15,7 +15,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.check,
+			name: 'check',
 			aliases: ['history'],
 			args: [
 				{

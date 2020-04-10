@@ -5,14 +5,14 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { CommandsService } from '../../../framework/services/Commands';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 
 export default class extends IMCommand {
 	@Service() private cmds: CommandsService;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.removeInvites,
+			name: 'removeInvites',
 			aliases: ['remove-invites'],
 			args: [
 				{
@@ -48,7 +48,7 @@ export default class extends IMCommand {
 		flags: {},
 		context: CommandContext
 	): Promise<any> {
-		const cmd = this.cmds.commands.find((c) => c.name === InvitesCommand.addInvites);
+		const cmd = this.cmds.commands.find((c) => c.name === 'addInvites');
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

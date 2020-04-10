@@ -5,8 +5,8 @@ import { readdir, statSync } from 'fs';
 import i18n from 'i18n';
 import { relative, resolve } from 'path';
 
-import { guildDefaultSettings } from '../../settings';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
+import { SettingsService } from '../../settings/services/Settings';
 import { GuildPermission } from '../../types';
 import { PermissionsCache } from '../cache/Permissions';
 import { PremiumCache } from '../cache/Premium';
@@ -46,6 +46,7 @@ const readDir = async (dir: string) => {
 export class CommandsService extends IMService {
 	@Service() private db: DatabaseService;
 	@Service() private msg: MessagingService;
+	@Service() private settings: SettingsService;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
 	@Cache() private permissionsCache: PermissionsCache;
 	@Cache() private premiumCache: PremiumCache;
@@ -80,10 +81,19 @@ export class CommandsService extends IMService {
 						continue;
 					}
 
+					// First create an instance of the command class
 					const inst: IMCommand = new constr(this.client);
+
+					// Setup any injections the command class may need
 					this.client.setupInjections(inst);
-					inst.resolvers.forEach((res) => this.client.setupInjections(res));
+
+					// Finish loading the command class (since it might need one of the injections)
 					await inst.init();
+
+					// Then setup the injections for all the resolvers
+					inst.resolvers.forEach((res) => this.client.setupInjections(res));
+
+					// Add it to the commands
 					this.commands.push(inst);
 
 					// Register main commnad name
@@ -142,7 +152,7 @@ export class CommandsService extends IMService {
 
 		// Save some constant stuff
 		let content = message.content.trim();
-		const sets = guild ? await this.guildSettingsCache.get(guild.id) : { ...guildDefaultSettings };
+		const sets = guild ? await this.guildSettingsCache.get(guild.id) : this.settings.getGuildDefaultSettings();
 		const lang = sets.lang;
 
 		const t = (key: string, replacements?: { [key: string]: string }) =>

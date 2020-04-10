@@ -1,26 +1,31 @@
-import { Embed, Invite, Message } from 'eris';
+import { Invite, Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../../framework/commands/Command';
 import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
+import { InviteCode } from '../../framework/models/InviteCode';
 import { LogAction } from '../../framework/models/Log';
 import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../framework/resolvers';
-import { beautify, inviteCodeSettingsInfo } from '../../settings';
-import { BotCommand, CommandGroup } from '../../types';
+import { CommandGroup, SettingsInfo } from '../../types';
 import { InviteCodeSettingsCache } from '../cache/InviteCodeSettingsCache';
-import { InviteCodeSettingsKey } from '../models/InviteCodeSetting';
+import { SettingsService } from '../services/Settings';
 
 export default class extends IMCommand {
+	@Service() private settings: SettingsService;
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
+
+	private settingsInfos: Map<string, SettingsInfo<any>>;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.inviteCodeConfig,
+			name: 'inviteCodeConfig',
 			aliases: ['invite-code-config', 'icc'],
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(InviteCodeSettingsKey))
+					resolver: null, // setup later
+					required: true
 				},
 				{
 					name: 'inviteCode',
@@ -28,7 +33,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, inviteCodeSettingsInfo),
+					resolver: new SettingsValueResolver(client, InviteCode),
 					rest: true
 				}
 			],
@@ -38,9 +43,16 @@ export default class extends IMCommand {
 		});
 	}
 
+	public async init() {
+		this.settingsInfos = this.settings.getSettingsInfos(InviteCode);
+		this.args[0].resolver = new EnumResolver(this.client, [...this.settingsInfos.keys()]);
+
+		await super.init();
+	}
+
 	public async action(
 		message: Message,
-		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
+		[key, inv, value]: [string, Invite, any],
 		flags: {},
 		context: CommandContext
 	): Promise<any> {
@@ -48,28 +60,15 @@ export default class extends IMCommand {
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
 
-		if (!key) {
-			embed.title = t('cmd.inviteCodeConfig.title');
-			embed.description = t('cmd.inviteCodeConfig.text', { prefix });
-
-			const keys = Object.keys(InviteCodeSettingsKey);
-			embed.fields.push({
-				name: t('cmd.inviteCodeConfig.keys.title'),
-				value: keys.join('\n')
-			});
-
-			return this.sendReply(message, embed);
-		}
-
-		const info = inviteCodeSettingsInfo[key];
+		const info = this.settingsInfos.get(key);
 
 		if (!inv) {
-			const allSets = await this.inviteCodeSettingsCache.get(guild.id);
+			const allSets = await this.inviteCodeSettingsCache.get<any>(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, invCode) =>
 					embed.fields.push({
 						name: invCode,
-						value: beautify(info.type, set[key])
+						value: this.settings.beautify(info.type, set[key])
 					})
 				);
 			} else {
@@ -83,7 +82,7 @@ export default class extends IMCommand {
 			return this.sendReply(message, t('cmd.inviteCodeConfig.codeForOtherGuild'));
 		}
 
-		const codeSettings = await this.inviteCodeSettingsCache.getOne(guild.id, inv.code);
+		const codeSettings = await this.inviteCodeSettingsCache.getOne<any>(guild.id, inv.code);
 		const oldVal = codeSettings[key];
 		embed.title = `${inv.code} - ${key}`;
 
@@ -107,7 +106,7 @@ export default class extends IMCommand {
 
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: beautify(info.type, oldVal)
+					value: this.settings.beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.inviteCodeConfig.current.notSet', {
@@ -123,9 +122,10 @@ export default class extends IMCommand {
 			if (!info.clearable) {
 				return this.sendReply(message, t('cmd.inviteCodeConfig.canNotClear', { prefix, key }));
 			}
-		} else {
+		} else if ((value !== null || value !== undefined) && info.validate) {
 			// Only validate the config setting if we're not resetting or clearing it
-			const error = this.validate(key, value, context);
+			const error = info.validate(key, value, context);
+
 			if (error) {
 				return this.sendReply(message, error);
 			}
@@ -139,7 +139,7 @@ export default class extends IMCommand {
 			embed.description = t('cmd.inviteCodeConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.current.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -156,38 +156,15 @@ export default class extends IMCommand {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.inviteCodeConfig.previous.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.inviteCodeConfig.new.title'),
-			value: value !== null ? beautify(info.type, value) : t('cmd.inviteCodeConfig.none')
+			value: value !== null ? this.settings.beautify(info.type, value) : t('cmd.inviteCodeConfig.none')
 		});
 
-		// Do any post processing, such as example messages
-		const cb = await this.after(message, embed, key, value, context);
-
 		await this.sendReply(message, embed);
-
-		if (typeof cb === typeof Function) {
-			await cb();
-		}
-	}
-
-	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: InviteCodeSettingsKey, value: any, { t, me }: CommandContext): string | null {
-		return null;
-	}
-
-	// Attach additional information for a config value, such as examples
-	private async after(
-		message: Message,
-		embed: Embed,
-		key: InviteCodeSettingsKey,
-		value: any,
-		context: CommandContext
-	): Promise<Function> {
-		return null;
 	}
 }

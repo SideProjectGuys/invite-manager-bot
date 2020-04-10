@@ -8,6 +8,7 @@ import { PremiumCache } from './framework/cache/Premium';
 import { Cache, cacheInjections } from './framework/decorators/Cache';
 import { Service, serviceInjections } from './framework/decorators/Service';
 import { FrameworkModule } from './framework/FrameworkModule';
+import { BaseBotSettings } from './framework/models/BotSettings';
 import { LogAction } from './framework/models/Log';
 import { IMModule } from './framework/Module';
 import { IMRequestHandler } from './framework/RequestHandler';
@@ -17,12 +18,12 @@ import { PremiumService } from './framework/services/Premium';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { IMService } from './framework/services/Service';
 import { InviteModule } from './invites/InvitesModule';
+import { InvitesGuildSettings } from './invites/models/GuildSettings';
 import { ManagementModule } from './management/ManagementModule';
 import { ModerationModule } from './moderation/ModerationModule';
 import { MusicModule } from './music/MusicModule';
-import { botDefaultSettings, BotSettingsObject, guildDefaultSettings } from './settings';
 import { GuildSettingsCache } from './settings/cache/GuildSettings';
-import { GuildSettingsKey } from './settings/models/GuildSetting';
+import { SettingsService } from './settings/services/Settings';
 import { SettingsModule } from './settings/SettingsModule';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
@@ -60,7 +61,7 @@ export class IMClient extends Client {
 	public flags: string[];
 	public type: BotType;
 	public instance: string;
-	public settings: BotSettingsObject;
+	public settings: BaseBotSettings;
 	public hasStarted: boolean = false;
 
 	public shardId: number;
@@ -91,6 +92,7 @@ export class IMClient extends Client {
 	@Service() private rabbitMqService: RabbitMqService;
 	@Service() private messageService: MessagingService;
 	@Service() private premiumService: PremiumService;
+	@Service() private settingsService: SettingsService;
 	@Cache() private premiumCache: PremiumCache;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
 
@@ -199,8 +201,8 @@ export class IMClient extends Client {
 		this.hasStarted = true;
 		this.startedAt = moment();
 
-		const set = await this.dbService.getBotSettings(this.user.id);
-		this.settings = set ? set.value : { ...botDefaultSettings };
+		const set = await this.settingsService.getBotSettings(this.user.id);
+		this.settings = set ? set.value : this.settingsService.getBotDefaultSettings();
 
 		console.log(chalk.green(`Client ready! Serving ${chalk.blue(this.guilds.size)} guilds.`));
 
@@ -323,12 +325,12 @@ export class IMClient extends Client {
 			]);
 
 			const defChannel = await this.getDefaultChannel(guild);
-			const newSettings = {
-				...guildDefaultSettings,
-				[GuildSettingsKey.joinMessageChannel]: defChannel ? defChannel.id : null
-			};
+			const newSettings = this.settingsService.getGuildDefaultSettings<InvitesGuildSettings>();
+			if (defChannel) {
+				newSettings.joinMessageChannel = defChannel.id;
+			}
 
-			await this.dbService.saveGuildSettings({
+			await this.settingsService.saveGuildSettings({
 				guildId: guild.id,
 				value: newSettings
 			});
@@ -495,17 +497,6 @@ export class IMClient extends Client {
 		);
 
 		return res;
-	}
-
-	public async logModAction(guild: Guild, embed: Embed) {
-		const modLogChannelId = (await this.guildSettingsCache.get(guild.id)).modLogChannel;
-
-		if (modLogChannelId) {
-			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
-			if (logChannel) {
-				await this.messageService.sendEmbed(logChannel, embed);
-			}
-		}
 	}
 
 	public async logAction(guild: Guild, message: Message, action: LogAction, data: any) {

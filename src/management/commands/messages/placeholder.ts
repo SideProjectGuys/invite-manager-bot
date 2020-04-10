@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 import { ManagementService } from '../../services/ManagementService';
 
 const THUMBS_UP = '👍';
@@ -14,7 +14,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ManagementCommand.placeholder,
+			name: 'placeholder',
 			aliases: ['ph'],
 			args: [
 				{

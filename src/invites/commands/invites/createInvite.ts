@@ -5,15 +5,15 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
 import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
-import { InviteCodeSettingsKey } from '../../../settings/models/InviteCodeSetting';
-import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
+import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 
 export default class extends IMCommand {
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.createInvite,
+			name: 'createInvite',
 			aliases: ['create-invite'],
 			args: [
 				{
@@ -82,7 +82,7 @@ export default class extends IMCommand {
 			}
 		]);
 
-		await this.inviteCodeSettingsCache.setOne(guild.id, inv.code, InviteCodeSettingsKey.name, name);
+		await this.inviteCodeSettingsCache.setOne<InvitesInviteCodeSettings>(guild.id, inv.code, 'name', name);
 
 		return this.sendReply(
 			message,

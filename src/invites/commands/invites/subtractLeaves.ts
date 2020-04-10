@@ -3,15 +3,19 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
-import { CommandGroup, InvitesCommand } from '../../../types';
+import { Service } from '../../../framework/decorators/Service';
+import { CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
+import { InvitesGuildSettings } from '../../models/GuildSettings';
+import { InvitesService } from '../../services/Invites';
 
 export default class extends IMCommand {
+	@Service() private invs: InvitesService;
 	@Cache() private invitesCache: InvitesCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.subtractLeaves,
+			name: 'subtractLeaves',
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
 			group: CommandGroup.Invites,
 			guildOnly: true,
@@ -19,8 +23,13 @@ export default class extends IMCommand {
 		});
 	}
 
-	public async action(message: Message, args: any[], flags: {}, { guild, t, settings }: CommandContext): Promise<any> {
-		await this.db.subtractLeaves(guild.id, settings.autoSubtractLeaveThreshold);
+	public async action(
+		message: Message,
+		args: any[],
+		flags: {},
+		{ guild, t, settings }: CommandContext<InvitesGuildSettings>
+	): Promise<any> {
+		await this.invs.subtractLeaves(guild.id, settings.autoSubtractLeaveThreshold);
 
 		this.invitesCache.flush(guild.id);
 

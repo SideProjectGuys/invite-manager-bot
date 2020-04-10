@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BooleanResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 const PIN_UPDATE_INTERVAL = 5000;
@@ -13,7 +13,7 @@ export default class extends IMMusicCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: MusicCommand.nowPlaying,
+			name: 'nowPlaying',
 			aliases: ['np', 'now-playing'],
 			flags: [
 				{

@@ -8,6 +8,7 @@ import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
+import { ModerationGuildSettings } from '../models/GuildSettings';
 import { Strike } from '../models/Strike';
 import { StrikeConfig, ViolationType } from '../models/StrikeConfig';
 
@@ -112,7 +113,7 @@ export class StrikeService extends IMService {
 		modAndReason?: { user: User; reason: string }
 	) {
 		const dmChannel = await this.client.getDMChannel(user.id);
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 
 		let message = i18n.__(
 			{ locale: settings.lang, phrase: 'moderation.strikes.dm' },
@@ -174,6 +175,13 @@ export class StrikeService extends IMService {
 		if (extra) {
 			extra.filter((e) => !!e.value).forEach((e) => logEmbed.fields.push(e));
 		}
-		await this.client.logModAction(guild, logEmbed);
+
+		const modLogChannelId = (await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id)).modLogChannel;
+		if (modLogChannelId) {
+			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
+			if (logChannel) {
+				await this.msg.sendEmbed(logChannel, logEmbed);
+			}
+		}
 	}
 }

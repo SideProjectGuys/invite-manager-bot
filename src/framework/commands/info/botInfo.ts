@@ -2,13 +2,13 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BotCommand, BotType, CommandGroup } from '../../../types';
+import { BotType, CommandGroup } from '../../../types';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.botInfo,
+			name: 'botInfo',
 			aliases: ['bot-info'],
 			group: CommandGroup.Info,
 			defaultAdminOnly: false,

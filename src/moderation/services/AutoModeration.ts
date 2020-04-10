@@ -4,9 +4,9 @@ import moment from 'moment';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsObject } from '../../settings';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { StrikesCache } from '../cache/StrikesCache';
+import { ModerationGuildSettings } from '../models/GuildSettings';
 import { ViolationType } from '../models/StrikeConfig';
 
 import { ModerationService } from './Moderation';
@@ -20,7 +20,7 @@ interface MiniMessage {
 }
 
 type AutoModFunctions = {
-	[type in ViolationType]?: (guild: Guild, message: Message, settings: GuildSettingsObject) => Promise<boolean>;
+	[type in ViolationType]?: (guild: Guild, message: Message, settings: ModerationGuildSettings) => Promise<boolean>;
 };
 
 export const NAME_DEHOIST_PREFIX = '▼';
@@ -70,7 +70,7 @@ export class AutoModerationService extends IMService {
 			return;
 		}
 
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 		const res = await this.dehoist(member, settings);
 
 		if (res) {
@@ -91,7 +91,7 @@ export class AutoModerationService extends IMService {
 			return;
 		}
 
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 		const res = await this.dehoist(member, settings);
 
 		if (res) {
@@ -128,7 +128,7 @@ export class AutoModerationService extends IMService {
 			this.messageCache.set(cacheKey, [this.getMiniMessage(message)]);
 		}
 
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 		const strikesCache = await this.strikesCache.get(guild.id);
 		const strikeTypes: Set<ViolationType> = new Set(Object.values(ViolationType));
 
@@ -205,7 +205,7 @@ export class AutoModerationService extends IMService {
 			return;
 		}
 
-		const settings = await this.guildSettingsCache.get(guild.id);
+		const settings = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 
 		// Ignore if automod is disabled
 		if (!settings.autoModEnabled) {
@@ -249,7 +249,7 @@ export class AutoModerationService extends IMService {
 		}
 	}
 
-	private async invites(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async invites(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModInvitesEnabled) {
 			return false;
 		}
@@ -267,7 +267,7 @@ export class AutoModerationService extends IMService {
 		return hasInviteLink;
 	}
 
-	private async links(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async links(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModLinksEnabled) {
 			return false;
 		}
@@ -296,7 +296,7 @@ export class AutoModerationService extends IMService {
 		}
 	}
 
-	private async words(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async words(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModWordsEnabled) {
 			return false;
 		}
@@ -316,7 +316,7 @@ export class AutoModerationService extends IMService {
 		return hasBlacklistedWords;
 	}
 
-	private async allCaps(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async allCaps(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModAllCapsEnabled) {
 			return false;
 		}
@@ -339,7 +339,7 @@ export class AutoModerationService extends IMService {
 		return numUppercase / message.content.length > percentageCaps / 100;
 	}
 
-	private async duplicateText(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async duplicateText(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModDuplicateTextEnabled) {
 			return false;
 		}
@@ -360,7 +360,7 @@ export class AutoModerationService extends IMService {
 		}
 	}
 
-	private async quickMessages(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async quickMessages(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModQuickMessagesEnabled) {
 			return false;
 		}
@@ -377,7 +377,7 @@ export class AutoModerationService extends IMService {
 		}
 	}
 
-	private async mentionUsers(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async mentionUsers(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModMentionUsersEnabled) {
 			return false;
 		}
@@ -389,7 +389,7 @@ export class AutoModerationService extends IMService {
 		return message.mentions.length > maxMentions;
 	}
 
-	private async mentionRoles(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async mentionRoles(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModMentionRolesEnabled) {
 			return false;
 		}
@@ -401,7 +401,7 @@ export class AutoModerationService extends IMService {
 		return message.roleMentions.length > maxMentions;
 	}
 
-	private async emojis(guild: Guild, message: Message, settings: GuildSettingsObject): Promise<boolean> {
+	private async emojis(guild: Guild, message: Message, settings: ModerationGuildSettings): Promise<boolean> {
 		if (!settings.autoModEmojisEnabled) {
 			return false;
 		}
@@ -415,7 +415,7 @@ export class AutoModerationService extends IMService {
 
 	private async dehoist(
 		member: Member,
-		settings: GuildSettingsObject
+		settings: ModerationGuildSettings
 	): Promise<false | { name: string; newName: string }> {
 		if (!settings.autoModHoistEnabled) {
 			return false;

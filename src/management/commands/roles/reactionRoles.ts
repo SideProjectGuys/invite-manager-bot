@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { BooleanResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ManagementCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 import { ReactionRoleCache } from '../../cache/ReactionRoleCache';
 import { ManagementService } from '../../services/ManagementService';
 
@@ -18,7 +18,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ManagementCommand.reactionRole,
+			name: 'reactionRole',
 			aliases: ['rr'],
 			args: [
 				{

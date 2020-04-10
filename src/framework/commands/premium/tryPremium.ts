@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BotCommand, CommandGroup, PromptResult } from '../../../types';
+import { CommandGroup, PromptResult } from '../../../types';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
 import { CommandContext, IMCommand } from '../Command';
@@ -12,7 +12,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.tryPremium,
+			name: 'tryPremium',
 			aliases: ['try', 'try-premium'],
 			group: CommandGroup.Premium,
 			guildOnly: true,

@@ -3,12 +3,12 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.purgeUntil,
+			name: 'purgeUntil',
 			aliases: ['purge-until', 'prune-until', 'pruneu', 'purgeu'],
 			args: [
 				{

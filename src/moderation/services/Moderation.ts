@@ -1,12 +1,13 @@
-import { Embed, Guild, Member, Message, Role, User } from 'eris';
+import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsObject } from '../../settings';
+import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
 import { PunishmentCache } from '../cache/PunishmentsCache';
+import { ModerationGuildSettings } from '../models/GuildSettings';
 import { ViolationType } from '../models/StrikeConfig';
 
 import { PunishmentService } from './PunishmentService';
@@ -16,6 +17,7 @@ export class ModerationService extends IMService {
 	@Service() private strikes: StrikeService;
 	@Service(() => PunishmentService) private punishments: PunishmentService;
 	@Service() private msg: MessagingService;
+	@Cache() private guildSettingsCache: GuildSettingsCache;
 	@Cache(() => PunishmentCache) private punishmentsCache: PunishmentCache;
 
 	public createBasicEmbed(user?: BasicUser) {
@@ -48,13 +50,24 @@ export class ModerationService extends IMService {
 		}
 	}
 
-	public async sendReplyAndDelete(message: Message, embed: Embed, settings: GuildSettingsObject) {
+	public async sendReplyAndDelete(message: Message, embed: Embed, settings: ModerationGuildSettings) {
 		if (settings.autoModDeleteBotMessage && settings.autoModDeleteBotMessageTimeoutInSeconds === 0) {
 			return;
 		}
 		const reply = await this.msg.sendReply(message, embed);
 		if (reply && settings.autoModDeleteBotMessage) {
 			setTimeout(() => reply.delete().catch(() => undefined), settings.autoModDeleteBotMessageTimeoutInSeconds * 1000);
+		}
+	}
+
+	public async logModAction(guild: Guild, embed: Embed) {
+		const modLogChannelId = (await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id)).modLogChannel;
+
+		if (modLogChannelId) {
+			const logChannel = guild.channels.get(modLogChannelId) as TextChannel;
+			if (logChannel) {
+				await this.msg.sendEmbed(logChannel, embed);
+			}
 		}
 	}
 

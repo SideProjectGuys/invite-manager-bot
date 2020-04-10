@@ -3,6 +3,10 @@ import { IMModule } from '../framework/Module';
 
 import { PermissionsCache } from './cache/Permissions';
 import { PremiumCache } from './cache/Premium';
+import './models/BotSettings';
+import './models/GuildSettings';
+import './models/InviteCodeSettings';
+import './models/MemberSettings';
 import { CommandsService } from './services/Commands';
 import { DatabaseService } from './services/Database';
 import { MessagingService } from './services/Messaging';

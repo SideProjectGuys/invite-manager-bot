@@ -3,12 +3,12 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.cleanText,
+			name: 'cleanText',
 			aliases: ['clean-text', 'clearText', 'clear-text'],
 			args: [
 				{

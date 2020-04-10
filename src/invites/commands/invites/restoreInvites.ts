@@ -3,17 +3,20 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
+import { InvitesService } from '../../services/Invites';
 
 export default class extends IMCommand {
+	@Service() private invs: InvitesService;
 	@Cache() private invitesCache: InvitesCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.restoreInvites,
+			name: 'restoreInvites',
 			aliases: ['restore-invites', 'unclear-invites', 'unclearInvites'],
 			args: [
 				{
@@ -35,13 +38,13 @@ export default class extends IMCommand {
 
 		const codes = memberId ? await this.db.getInviteCodesForMember(guild.id, memberId) : [];
 
-		await this.db.updateJoinClearedStatus(
+		await this.invs.updateJoinClearedStatus(
 			false,
 			guild.id,
 			codes.map((ic) => ic.code)
 		);
 
-		await this.db.clearCustomInvites(false, guild.id, memberId);
+		await this.invs.clearCustomInvites(false, guild.id, memberId);
 
 		if (memberId) {
 			this.invitesCache.flushOne(guild.id, memberId);

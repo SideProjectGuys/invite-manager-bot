@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 import { ModerationService } from '../../services/Moderation';
 
 enum CleanType {
@@ -27,7 +27,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.clean,
+			name: 'clean',
 			aliases: ['clear'],
 			args: [
 				{

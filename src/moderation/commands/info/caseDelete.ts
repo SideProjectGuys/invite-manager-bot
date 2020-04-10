@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
@@ -12,7 +12,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.caseDelete,
+			name: 'caseDelete',
 			aliases: ['case-delete', 'deleteCase', 'delete-case'],
 			args: [
 				{

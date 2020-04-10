@@ -1,10 +1,10 @@
 import { Guild, VoiceChannel } from 'eris';
 
-import { AnnouncementVoice } from '../../settings/models/GuildSetting';
-import { GuildSettingsObject } from '../../settings';
+import { BaseGuildSettings } from '../../framework/models/GuildSettings';
 import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../types';
 import { MusicService } from '../services/Music';
 
+import { AnnouncementVoice, MusicGuildSettings } from './GuildSettings';
 import { MusicItem } from './MusicItem';
 
 const DEFAULT_DIM_VOLUME_FACTOR = 0.2;
@@ -20,7 +20,7 @@ const IGNORED_ANNOUNCEMENT_WORDS = [
 export class MusicConnection {
 	private service: MusicService;
 	private guild: Guild;
-	private settings: GuildSettingsObject;
+	private settings: BaseGuildSettings & MusicGuildSettings;
 	private musicQueueCache: MusicQueue;
 	private voiceChannel: VoiceChannel;
 	private player: LavaPlayer;

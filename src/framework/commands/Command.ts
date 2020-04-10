@@ -1,17 +1,9 @@
 import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { GuildSettingsObject } from '../../settings';
-import {
-	BotCommand,
-	CommandGroup,
-	GuildPermission,
-	InvitesCommand,
-	ManagementCommand,
-	ModerationCommand,
-	MusicCommand
-} from '../../types';
+import { CommandGroup, GuildPermission } from '../../types';
 import { Service } from '../decorators/Service';
+import { BaseGuildSettings } from '../models/GuildSettings';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 import { DatabaseService } from '../services/Database';
@@ -53,7 +45,7 @@ interface FlagInfo {
 }
 
 export interface CommandOptions {
-	name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
+	name: string;
 	aliases: string[];
 	args?: Arg[];
 	flags?: Flag[];
@@ -67,11 +59,11 @@ export interface CommandOptions {
 
 export type TranslateFunc = (key: string, replacements?: { [key: string]: any }) => string;
 
-export type CommandContext = {
+export type CommandContext<T = {}> = {
 	guild: Guild;
 	me: Member;
 	t: TranslateFunc;
-	settings: GuildSettingsObject;
+	settings: BaseGuildSettings & T;
 	isPremium: boolean;
 };
 
@@ -79,7 +71,7 @@ export abstract class IMCommand {
 	public client: IMClient;
 	public resolvers: Resolver[];
 
-	public name: BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
+	public name: string;
 
 	public aliases: string[];
 	public args: Arg[];
@@ -117,6 +109,13 @@ export abstract class IMCommand {
 		if (props.extraExamples) {
 			this.extraExamples = props.extraExamples;
 		}
+	}
+
+	public async init() {
+		this.createEmbed = this.msg.createEmbed.bind(this.msg);
+		this.sendReply = this.msg.sendReply.bind(this.msg);
+		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
+		this.showPaginated = this.msg.showPaginated.bind(this.msg);
 
 		this.usage = `{prefix}${this.name} `;
 
@@ -142,13 +141,6 @@ export abstract class IMCommand {
 
 			this.usage += arg.required ? `<${arg.name}> ` : `[${arg.name}] `;
 		});
-	}
-
-	public async init() {
-		this.createEmbed = this.msg.createEmbed.bind(this.msg);
-		this.sendReply = this.msg.sendReply.bind(this.msg);
-		this.sendEmbed = this.msg.sendEmbed.bind(this.msg);
-		this.showPaginated = this.msg.showPaginated.bind(this.msg);
 	}
 
 	public getInfo(context: CommandContext) {

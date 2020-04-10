@@ -2,6 +2,7 @@ import { IMClient } from '../client';
 import { IMModule } from '../framework/Module';
 
 import { MusicCache } from './cache/MusicCache';
+import './models/GuildSettings';
 import { MusicService } from './services/Music';
 import { MusicPlatformService } from './services/MusicPlatform';
 

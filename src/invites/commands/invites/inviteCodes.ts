@@ -4,12 +4,12 @@ import moment from 'moment';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { InviteCode } from '../../../framework/models/InviteCode';
-import { CommandGroup, GuildPermission, InvitesCommand } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.inviteCodes,
+			name: 'inviteCodes',
 			aliases: [
 				'inviteCode',
 				'invite-code',

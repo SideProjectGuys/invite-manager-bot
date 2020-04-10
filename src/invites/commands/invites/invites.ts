@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, InvitesCommand } from '../../../types';
+import { BasicUser, CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
 import { InvitesService } from '../../services/Invites';
 
@@ -15,7 +15,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.invites,
+			name: 'invites',
 			aliases: ['invite', 'rank'],
 			args: [
 				{

@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup, ModerationCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { StrikesCache } from '../../cache/StrikesCache';
 import { ViolationType } from '../../models/StrikeConfig';
 import { StrikeService } from '../../services/StrikeService';
@@ -16,7 +16,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: ModerationCommand.strikeConfig,
+			name: 'strikeConfig',
 			aliases: ['strike-config'],
 			args: [
 				{

@@ -3,17 +3,20 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { RoleResolver } from '../../../framework/resolvers';
-import { CommandGroup, InvitesCommand } from '../../../types';
+import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
+import { RanksService } from '../../services/Ranks';
 
 export default class extends IMCommand {
+	@Service() private ranks: RanksService;
 	@Cache() private ranksCache: RanksCache;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: InvitesCommand.removeRank,
+			name: 'removeRank',
 			aliases: ['remove-rank'],
 			args: [
 				{
@@ -34,7 +37,7 @@ export default class extends IMCommand {
 		const rank = ranks.find((r) => r.roleId === role.id);
 
 		if (rank) {
-			await this.db.removeRank(guild.id, rank.roleId);
+			await this.ranks.removeRank(guild.id, rank.roleId);
 
 			await this.client.logAction(guild, message, LogAction.removeRank, {
 				roleId: role.id

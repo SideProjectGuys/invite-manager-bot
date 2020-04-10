@@ -1,38 +1,49 @@
 import { IMCache } from '../../framework/cache/Cache';
-import { inviteCodeDefaultSettings, inviteCodeSettingsInfo, InviteCodeSettingsObject, toDbValue } from '../../settings';
-import { InviteCodeSettingsKey } from '../models/InviteCodeSetting';
+import { Service } from '../../framework/decorators/Service';
+import { InviteCode } from '../../framework/models/InviteCode';
+import { BaseInviteCodeSettings } from '../../framework/models/InviteCodeSettings';
+import { SettingsService } from '../services/Settings';
 
-export class InviteCodeSettingsCache extends IMCache<Map<string, InviteCodeSettingsObject>> {
+type InviteCodeSettings<T> = BaseInviteCodeSettings & T;
+type KeyOfSettings<T> = Extract<keyof InviteCodeSettings<T>, string>;
+
+export class InviteCodeSettingsCache extends IMCache<Map<string, BaseInviteCodeSettings>> {
+	@Service() private settings: SettingsService;
+
 	public async init() {
 		// TODO
 	}
 
-	protected async _get(guildId: string): Promise<Map<string, InviteCodeSettingsObject>> {
-		const sets = await this.db.getInviteCodeSettingsForGuild(guildId);
+	public async get<T>(key: string): Promise<Map<string, InviteCodeSettings<T>>> {
+		return super.get(key) as any;
+	}
+
+	protected async _get(guildId: string): Promise<Map<string, BaseInviteCodeSettings>> {
+		const sets = await this.settings.getInviteCodeSettingsForGuild(guildId);
 
 		const map = new Map();
-		sets.forEach((set) => map.set(set.inviteCode, { ...inviteCodeDefaultSettings, ...set.value }));
+		sets.forEach((set) => map.set(set.inviteCode, { ...this.settings.getInviteCodeDefaultSettings(), ...set.value }));
 		return map;
 	}
 
-	public async getOne(guildId: string, invCode: string) {
-		const guildSets = await this.get(guildId);
+	public async getOne<T>(guildId: string, invCode: string): Promise<InviteCodeSettings<T>> {
+		const guildSets = await this.get<T>(guildId);
 		const set = guildSets.get(invCode);
-		return { ...inviteCodeDefaultSettings, ...set };
+		return { ...this.settings.getInviteCodeDefaultSettings(), ...set };
 	}
 
-	public async setOne<K extends InviteCodeSettingsKey>(
+	public async setOne<T>(
 		guildId: string,
 		inviteCode: string,
-		key: K,
-		value: InviteCodeSettingsObject[K]
-	) {
-		const guildSet = await this.get(guildId);
-		const dbVal = toDbValue(inviteCodeSettingsInfo[key], value);
+		key: KeyOfSettings<T>,
+		value: InviteCodeSettings<T>[KeyOfSettings<T>]
+	): Promise<InviteCodeSettings<T>[KeyOfSettings<T>]> {
+		const guildSet = await this.get<T>(guildId);
+		const dbVal = this.settings.toDbValue(this.settings.getSettingsInfo(InviteCode, key), value);
 
 		let set = guildSet.get(inviteCode);
 		if (!set) {
-			set = { ...inviteCodeDefaultSettings };
+			set = this.settings.getInviteCodeDefaultSettings();
 			guildSet.set(inviteCode, set);
 		}
 
@@ -40,7 +51,7 @@ export class InviteCodeSettingsCache extends IMCache<Map<string, InviteCodeSetti
 		if (set[key] !== dbVal) {
 			set[key] = dbVal;
 
-			await this.db.saveInviteCodeSettings({ inviteCode, guildId, value: set });
+			await this.settings.saveInviteCodeSettings({ inviteCode, guildId, value: set });
 		}
 
 		return dbVal;

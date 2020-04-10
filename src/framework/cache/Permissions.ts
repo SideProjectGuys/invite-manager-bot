@@ -1,10 +1,6 @@
-import { BotCommand, InvitesCommand, ManagementCommand, ModerationCommand, MusicCommand } from '../../types';
-
 import { IMCache } from './Cache';
 
-type AnyCommand = BotCommand | InvitesCommand | ModerationCommand | MusicCommand | ManagementCommand;
-
-type PermissionsObject = { [key in AnyCommand]?: string[] };
+type PermissionsObject = { [cmd: string]: string[] };
 
 export class PermissionsCache extends IMCache<PermissionsObject> {
 	public async init() {
@@ -16,8 +12,8 @@ export class PermissionsCache extends IMCache<PermissionsObject> {
 
 		const obj: PermissionsObject = {};
 
-		perms.forEach((p: any) => {
-			const cmd = p.command as AnyCommand;
+		perms.forEach((p) => {
+			const cmd = p.command;
 			if (!obj[cmd]) {
 				obj[cmd] = [];
 			}

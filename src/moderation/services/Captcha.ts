@@ -8,6 +8,7 @@ import { Service } from '../../framework/decorators/Service';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
+import { ModerationGuildSettings } from '../models/GuildSettings';
 
 export enum FileMode {
 	FILE = 'file',
@@ -57,7 +58,7 @@ export class CaptchaService extends IMService {
 			return;
 		}
 
-		const sets = await this.guildSettingsCache.get(guild.id);
+		const sets = await this.guildSettingsCache.get<ModerationGuildSettings>(guild.id);
 		if (!sets.captchaVerificationOnJoin) {
 			return;
 		}

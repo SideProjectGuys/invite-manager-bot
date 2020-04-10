@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BotCommand, CommandGroup, GuildPermission } from '../../../types';
+import { CommandGroup, GuildPermission } from '../../../types';
 import { Service } from '../../decorators/Service';
 import { CommandResolver } from '../../resolvers';
 import { CommandsService } from '../../services/Commands';
@@ -12,7 +12,7 @@ export default class extends IMCommand {
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.help,
+			name: 'help',
 			aliases: [],
 			args: [
 				{

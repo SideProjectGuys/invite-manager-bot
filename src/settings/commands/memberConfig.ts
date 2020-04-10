@@ -1,26 +1,31 @@
-import { Embed, Message } from 'eris';
+import { Message } from 'eris';
 
 import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../../framework/commands/Command';
 import { Cache } from '../../framework/decorators/Cache';
+import { Service } from '../../framework/decorators/Service';
 import { LogAction } from '../../framework/models/Log';
+import { Member } from '../../framework/models/Member';
 import { EnumResolver, SettingsValueResolver, UserResolver } from '../../framework/resolvers';
-import { beautify, memberSettingsInfo } from '../../settings';
-import { BasicUser, BotCommand, CommandGroup } from '../../types';
+import { BasicUser, CommandGroup, SettingsInfo } from '../../types';
 import { MemberSettingsCache } from '../cache/MemberSettings';
-import { MemberSettingsKey } from '../models/MemberSetting';
+import { SettingsService } from '../services/Settings';
 
 export default class extends IMCommand {
+	@Service() private settings: SettingsService;
 	@Cache() private memberSettingsCache: MemberSettingsCache;
+
+	private settingsInfos: Map<string, SettingsInfo<any>>;
 
 	public constructor(client: IMClient) {
 		super(client, {
-			name: BotCommand.memberConfig,
+			name: 'memberConfig',
 			aliases: ['member-config', 'memconf', 'mc'],
 			args: [
 				{
 					name: 'key',
-					resolver: new EnumResolver(client, Object.values(MemberSettingsKey))
+					resolver: null, // setup later
+					required: true
 				},
 				{
 					name: 'user',
@@ -28,7 +33,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, memberSettingsInfo),
+					resolver: new SettingsValueResolver(client, Member),
 					rest: true
 				}
 			],
@@ -38,9 +43,16 @@ export default class extends IMCommand {
 		});
 	}
 
+	public async init() {
+		this.settingsInfos = this.settings.getSettingsInfos(Member);
+		this.args[0].resolver = new EnumResolver(this.client, [...this.settingsInfos.keys()]);
+
+		await super.init();
+	}
+
 	public async action(
 		message: Message,
-		[key, user, value]: [MemberSettingsKey, BasicUser, any],
+		[key, user, value]: [string, BasicUser, any],
 		flags: {},
 		context: CommandContext
 	): Promise<any> {
@@ -48,28 +60,15 @@ export default class extends IMCommand {
 		const prefix = settings.prefix;
 		const embed = this.createEmbed();
 
-		if (!key) {
-			embed.title = t('cmd.memberConfig.title');
-			embed.description = t('cmd.memberConfig.text', { prefix });
-
-			const keys = Object.keys(MemberSettingsKey);
-			embed.fields.push({
-				name: t('cmd.memberConfig.keys.title'),
-				value: keys.join('\n')
-			});
-
-			return this.sendReply(message, embed);
-		}
-
-		const info = memberSettingsInfo[key];
+		const info = this.settingsInfos.get(key);
 
 		if (!user) {
-			const allSets = await this.memberSettingsCache.get(guild.id);
+			const allSets = await this.memberSettingsCache.get<any>(guild.id);
 			if (allSets.size > 0) {
 				allSets.forEach((set, memberId) =>
 					embed.fields.push({
 						name: guild.members.get(memberId).username,
-						value: beautify(info.type, set[key])
+						value: this.settings.beautify(info.type, set[key])
 					})
 				);
 			} else {
@@ -78,7 +77,7 @@ export default class extends IMCommand {
 			return this.sendReply(message, embed);
 		}
 
-		const memSettings = await this.memberSettingsCache.getOne(guild.id, user.id);
+		const memSettings = await this.memberSettingsCache.getOne<any>(guild.id, user.id);
 		const oldVal = memSettings[key];
 		embed.title = `${user.username}#${user.discriminator} - ${key}`;
 
@@ -102,7 +101,7 @@ export default class extends IMCommand {
 
 				embed.fields.push({
 					name: t('cmd.inviteCodeConfig.current.title'),
-					value: beautify(info.type, oldVal)
+					value: this.settings.beautify(info.type, oldVal)
 				});
 			} else {
 				embed.description = t('cmd.memberConfig.current.notSet', {
@@ -117,9 +116,10 @@ export default class extends IMCommand {
 			if (!info.clearable) {
 				await this.sendReply(message, t('cmd.memberConfig.canNotClear', { prefix, key }));
 			}
-		} else {
+		} else if ((value !== null || value !== undefined) && info.validate) {
 			// Only validate the config setting if we're not resetting or clearing it
-			const error = this.validate(key, value, context);
+			const error = info.validate(key, value, context);
+
 			if (error) {
 				return this.sendReply(message, error);
 			}
@@ -133,7 +133,7 @@ export default class extends IMCommand {
 			embed.description = t('cmd.memberConfig.sameValue');
 			embed.fields.push({
 				name: t('cmd.memberConfig.current.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 			return this.sendReply(message, embed);
 		}
@@ -150,38 +150,15 @@ export default class extends IMCommand {
 		if (oldVal !== null) {
 			embed.fields.push({
 				name: t('cmd.memberConfig.previous.title'),
-				value: beautify(info.type, oldVal)
+				value: this.settings.beautify(info.type, oldVal)
 			});
 		}
 
 		embed.fields.push({
 			name: t('cmd.memberConfig.new.title'),
-			value: value !== null ? beautify(info.type, value) : t('cmd.memberConfig.none')
+			value: value !== null ? this.settings.beautify(info.type, value) : t('cmd.memberConfig.none')
 		});
 
-		// Do any post processing, such as example messages
-		const cb = await this.after(message, embed, key, value, context);
-
 		await this.sendReply(message, embed);
-
-		if (typeof cb === typeof Function) {
-			await cb();
-		}
-	}
-
-	// Validate a new config value to see if it's ok (no parsing, already done beforehand)
-	private validate(key: MemberSettingsKey, value: any, { t, me }: CommandContext): string | null {
-		return null;
-	}
-
-	// Attach additional information for a config value, such as examples
-	private async after(
-		message: Message,
-		embed: Embed,
-		key: MemberSettingsKey,
-		value: any,
-		context: CommandContext
-	): Promise<Function> {
-		return null;
 	}
 }
