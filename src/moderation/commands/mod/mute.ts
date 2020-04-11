@@ -7,7 +7,6 @@ import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { DurationResolver, MemberResolver, StringResolver } from '../../../framework/resolvers';
 import { SchedulerService } from '../../../framework/services/Scheduler';
-import { CommandGroup } from '../../../types';
 import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
@@ -41,7 +40,7 @@ export default class extends IMCommand {
 					short: 'd'
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true
 		});

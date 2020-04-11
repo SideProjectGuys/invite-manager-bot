@@ -7,7 +7,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 import { JoinInvalidatedReason } from '../../models/Join';
 import { InvitesService } from '../../services/Invites';
@@ -42,7 +42,7 @@ export default class extends IMCommand {
 					resolver: NumberResolver
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: [

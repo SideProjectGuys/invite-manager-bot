@@ -6,7 +6,7 @@ import { InviteCodeSettingsCache } from '../../../framework/cache/InviteCodeSett
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 
 export default class extends IMCommand {
@@ -22,7 +22,7 @@ export default class extends IMCommand {
 					resolver: UserResolver
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!inviteDetails @User', '!inviteDetails "User with space"']

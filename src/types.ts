@@ -43,43 +43,6 @@ export enum GuildFeature {
 	PUBLIC_DISABLED = 'PUBLIC_DISABLED'
 }
 
-export enum PromptResult {
-	SUCCESS,
-	FAILURE,
-	TIMEOUT
-}
-
-export enum CommandGroup {
-	Invites = 'Invites',
-	Ranks = 'Ranks',
-	Config = 'Config',
-	Info = 'Info',
-	Premium = 'Premium',
-	Moderation = 'Moderation',
-	Report = 'Report',
-	Music = 'Music',
-	Other = 'Other'
-}
-
-export enum ShardCommand {
-	CACHE = 'CACHE',
-	CUSTOM = 'CUSTOM',
-	DIAGNOSE = 'DIAGNOSE',
-	FLUSH_CACHE = 'FLUSH_CACHE',
-	SUDO = 'SUDO',
-	OWNER_DM = 'OWNER_DM',
-	USER_DM = 'USER_DM',
-	LEAVE_GUILD = 'LEAVE_GUILD',
-	STATUS = 'STATUS',
-	RELOAD_MUSIC_NODES = 'RELOAD_MUSIC_NODES'
-}
-
-export enum ChartType {
-	joins = 'joins',
-	leaves = 'leaves',
-	joinsAndLeaves = 'joinsAndLeaves'
-}
-
 export enum ChannelType {
 	GUILD_TEXT = 0,
 	DM = 1,
@@ -191,30 +154,4 @@ export interface LavaEndEvent {
 	type: string;
 	track: string;
 	guildId: string;
-}
-
-export interface LavaTrackInfo {
-	identifier: string;
-	isSeekable: boolean;
-	author: string;
-	length: number;
-	isStream: boolean;
-	position: number;
-	title: string;
-	uri: string;
-}
-
-export interface LavaTrack {
-	track: string;
-	info: LavaTrackInfo;
-}
-
-export interface GatewayInfo {
-	url: string;
-	shards: number;
-	session_start_limit: {
-		total: number;
-		remaining: number;
-		reset_after: number;
-	};
 }

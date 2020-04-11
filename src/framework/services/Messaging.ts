@@ -3,7 +3,7 @@ import { Embed, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChann
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { GuildPermission, PromptResult } from '../../types';
+import { GuildPermission } from '../../types';
 import { GuildSettingsCache } from '../cache/GuildSettings';
 import { PremiumCache } from '../cache/Premium';
 import { Cache } from '../decorators/Cache';
@@ -15,6 +15,12 @@ import { IMService } from './Service';
 const upSymbol = '🔺';
 const downSymbol = '🔻';
 const truthy = new Set(['true', 'on', 'y', 'yes', 'enable']);
+
+export enum PromptResult {
+	SUCCESS,
+	FAILURE,
+	TIMEOUT
+}
 
 function convertEmbedToPlain(embed: EmbedOptions) {
 	const url = embed.url ? `(${embed.url})` : '';

@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, GuildPermission } from '../../../types';
+import { BasicUser, GuildPermission } from '../../../types';
 import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { ModerationService } from '../../services/Moderation';
@@ -37,7 +37,7 @@ export default class extends IMCommand {
 					short: 'd'
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			botPermissions: [GuildPermission.BAN_MEMBERS],
 			defaultAdminOnly: true,
 			guildOnly: true

@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BotType, CommandGroup } from '../../../types';
+import { BotType } from '../../../types';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
@@ -10,7 +10,7 @@ export default class extends IMCommand {
 		super(client, {
 			name: 'botInfo',
 			aliases: ['bot-info'],
-			group: CommandGroup.Info,
+			group: 'Info',
 			defaultAdminOnly: false,
 			guildOnly: true
 		});

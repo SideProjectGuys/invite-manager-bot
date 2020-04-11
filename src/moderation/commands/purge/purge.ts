@@ -3,7 +3,7 @@ import { Message } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { NumberResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup, GuildPermission } from '../../../types';
+import { BasicUser, GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
@@ -21,7 +21,7 @@ export default class extends IMCommand {
 					resolver: UserResolver
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			botPermissions: [GuildPermission.READ_MESSAGE_HISTORY, GuildPermission.MANAGE_MESSAGES],
 			defaultAdminOnly: true,
 			guildOnly: true

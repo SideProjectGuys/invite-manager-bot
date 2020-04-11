@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { Client, Embed, Guild, Member, Message, TextChannel } from 'eris';
+import { Client, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 

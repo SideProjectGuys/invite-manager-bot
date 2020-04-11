@@ -4,7 +4,7 @@ import moment from 'moment';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { InviteCode } from '../../../framework/models/InviteCode';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
@@ -20,7 +20,7 @@ export default class extends IMCommand {
 				'showInviteCode',
 				'show-invite-code'
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			botPermissions: [GuildPermission.MANAGE_GUILD],
 			guildOnly: true,
 			defaultAdminOnly: false

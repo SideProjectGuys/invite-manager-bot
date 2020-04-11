@@ -7,7 +7,7 @@ import moment from 'moment';
 import { InvitesGuildSettings } from '../../invites/models/GuildSettings';
 import { TrackingService } from '../../invites/services/Tracking';
 import { MusicService } from '../../music/services/Music';
-import { BotType, ShardCommand } from '../../types';
+import { BotType } from '../../types';
 import { FakeChannel } from '../../util';
 import { GuildSettingsCache } from '../cache/GuildSettings';
 import { PremiumCache } from '../cache/Premium';
@@ -23,6 +23,19 @@ interface ShardMessage {
 	cmd: ShardCommand;
 
 	[x: string]: any;
+}
+
+enum ShardCommand {
+	CACHE = 'CACHE',
+	CUSTOM = 'CUSTOM',
+	DIAGNOSE = 'DIAGNOSE',
+	FLUSH_CACHE = 'FLUSH_CACHE',
+	SUDO = 'SUDO',
+	OWNER_DM = 'OWNER_DM',
+	USER_DM = 'USER_DM',
+	LEAVE_GUILD = 'LEAVE_GUILD',
+	STATUS = 'STATUS',
+	RELOAD_MUSIC_NODES = 'RELOAD_MUSIC_NODES'
 }
 
 export class RabbitMqService extends IMService {

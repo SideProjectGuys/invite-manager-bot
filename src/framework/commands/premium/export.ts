@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { InvitesService } from '../../../invites/services/Invites';
-import { CommandGroup } from '../../../types';
 import { Service } from '../../decorators/Service';
 import { EnumResolver } from '../../resolvers';
 import { CommandContext, IMCommand } from '../Command';
@@ -25,7 +24,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: CommandGroup.Premium,
+			group: 'Premium',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			premiumOnly: true,

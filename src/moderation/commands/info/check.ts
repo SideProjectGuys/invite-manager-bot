@@ -5,7 +5,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 import { PunishmentService } from '../../services/PunishmentService';
 import { StrikeService } from '../../services/StrikeService';
 
@@ -24,7 +24,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true,
 			extraExamples: ['!check @User', '!check "User with space"']

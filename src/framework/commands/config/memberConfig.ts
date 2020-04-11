@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BasicUser, CommandGroup, SettingsInfo } from '../../../types';
+import { BasicUser, SettingsInfo } from '../../../types';
 import { MemberSettingsCache } from '../../cache/MemberSettings';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
@@ -37,7 +37,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Config,
+			group: 'Config',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});

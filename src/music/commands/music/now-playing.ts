@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BooleanResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 const PIN_UPDATE_INTERVAL = 5000;
@@ -22,7 +21,7 @@ export default class extends IMMusicCommand {
 					resolver: BooleanResolver
 				}
 			],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

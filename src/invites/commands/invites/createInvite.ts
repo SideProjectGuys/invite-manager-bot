@@ -5,7 +5,7 @@ import { InviteCodeSettingsCache } from '../../../framework/cache/InviteCodeSett
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 
 export default class extends IMCommand {
@@ -26,7 +26,7 @@ export default class extends IMCommand {
 					resolver: ChannelResolver
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			botPermissions: [GuildPermission.CREATE_INSTANT_INVITE],
 			guildOnly: true,
 			defaultAdminOnly: true,

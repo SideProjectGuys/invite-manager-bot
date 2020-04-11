@@ -7,7 +7,7 @@ import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { ChannelResolver, DurationResolver } from '../../../framework/resolvers';
 import { SchedulerService } from '../../../framework/services/Scheduler';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 
 const SEND_MESSAGES = 0x00000800;
 const NOT_SEND_MESSAGES = 0x7ffff7ff;
@@ -34,7 +34,7 @@ export default class extends IMCommand {
 					short: 't'
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			botPermissions: [GuildPermission.MANAGE_ROLES, GuildPermission.MANAGE_CHANNELS],
 			defaultAdminOnly: true,
 			guildOnly: true

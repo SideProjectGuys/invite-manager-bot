@@ -6,7 +6,6 @@ import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { RoleResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
 import { RanksService } from '../../services/Ranks';
 
@@ -25,7 +24,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: CommandGroup.Ranks,
+			group: 'Ranks',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!removeRank @Role', '!removeRank "Role with space"']

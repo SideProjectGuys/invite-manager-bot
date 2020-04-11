@@ -4,7 +4,6 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
-import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
 import { RanksService } from '../../services/Ranks';
 
@@ -17,7 +16,7 @@ export default class extends IMCommand {
 			name: 'fixRanks',
 			aliases: ['fix-ranks'],
 			args: [],
-			group: CommandGroup.Ranks,
+			group: 'Ranks',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});

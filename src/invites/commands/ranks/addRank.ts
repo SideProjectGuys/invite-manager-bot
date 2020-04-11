@@ -6,7 +6,6 @@ import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
 import { RanksService } from '../../services/Ranks';
 
@@ -38,7 +37,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Ranks,
+			group: 'Ranks',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!addRank @Role 5', '!addRank "Role with space" 10 Wow, already 10 people!']

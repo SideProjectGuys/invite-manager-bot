@@ -4,7 +4,6 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
@@ -26,7 +25,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true,
 			extraExamples: ['!caseDelete 5434 User apologized']

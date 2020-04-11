@@ -1,7 +1,6 @@
 import { Message, Role } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup } from '../../../types';
 import { PermissionsCache } from '../../cache/Permissions';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
@@ -27,7 +26,7 @@ export default class extends IMCommand {
 					resolver: RoleResolver
 				}
 			],
-			group: CommandGroup.Config,
+			group: 'Config',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});

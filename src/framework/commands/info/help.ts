@@ -1,7 +1,7 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 import { Service } from '../../decorators/Service';
 import { CommandResolver } from '../../resolvers';
 import { CommandsService } from '../../services/Commands';
@@ -20,7 +20,7 @@ export default class extends IMCommand {
 					resolver: CommandResolver
 				}
 			],
-			group: CommandGroup.Info,
+			group: 'Info',
 			guildOnly: false,
 			defaultAdminOnly: false,
 			extraExamples: ['!help addRank']
@@ -71,11 +71,9 @@ export default class extends IMCommand {
 				}))
 				.sort((a, b) => a.name.localeCompare(b.name));
 
-			Object.keys(CommandGroup).forEach((group) => {
+			const groups = commands.map((cmd) => cmd.group).filter((cmd, i, arr) => arr.indexOf(cmd) === i);
+			groups.forEach((group) => {
 				const cmds = commands.filter((c) => c.group === group);
-				if (cmds.length === 0) {
-					return;
-				}
 
 				let descr = '';
 				descr += cmds.map((c) => '`' + c.name + '`').join(', ');

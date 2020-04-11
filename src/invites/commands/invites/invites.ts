@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
 import { InvitesService } from '../../services/Invites';
 
@@ -23,7 +23,7 @@ export default class extends IMCommand {
 					resolver: UserResolver
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			extraExamples: ['!invites @User', '!invites "User with space"']

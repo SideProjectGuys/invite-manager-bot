@@ -1,7 +1,7 @@
 import { Guild, Member, Message } from 'eris';
 
 import { IMClient } from '../../client';
-import { CommandGroup, GuildPermission } from '../../types';
+import { GuildPermission } from '../../types';
 import { Service } from '../decorators/Service';
 import { BaseGuildSettings } from '../models/GuildSettings';
 import { BooleanResolver } from '../resolvers';
@@ -50,7 +50,7 @@ export interface CommandOptions {
 	args?: Arg[];
 	flags?: Flag[];
 	guildOnly: boolean;
-	group: CommandGroup;
+	group: string;
 	defaultAdminOnly: boolean;
 	botPermissions?: GuildPermission[];
 	premiumOnly?: boolean;
@@ -80,7 +80,7 @@ export abstract class IMCommand {
 	public flagResolvers: Map<string, Resolver>;
 
 	public usage: string;
-	public group: CommandGroup;
+	public group: string;
 	public guildOnly: boolean;
 	public botPermissions: GuildPermission[];
 	public strict?: boolean;

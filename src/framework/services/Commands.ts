@@ -63,10 +63,6 @@ export class CommandsService extends IMService {
 				const clazz = require(file);
 				if (clazz.default) {
 					const constr = clazz.default;
-					const parent = Object.getPrototypeOf(constr);
-					if (!parent || parent.name !== IMCommand.name) {
-						continue;
-					}
 
 					// First create an instance of the command class
 					const inst: IMCommand = new constr(this.client);

@@ -8,7 +8,7 @@ import { Service } from '../../framework/decorators/Service';
 import { DatabaseService, GLOBAL_SHARD_ID } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { BotType, LavaTrack } from '../../types';
+import { BotType } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { AnnouncementVoice, MusicGuildSettings } from '../models/GuildSettings';
 import { MusicConnection } from '../models/MusicConnection';
@@ -33,6 +33,22 @@ const ALPHA_INDEX: { [x: string]: string } = {
 
 enum TABLE {
 	musicNodes = '`musicNodes`'
+}
+
+interface LavaTrackInfo {
+	identifier: string;
+	isSeekable: boolean;
+	author: string;
+	length: number;
+	isStream: boolean;
+	position: number;
+	title: string;
+	uri: string;
+}
+
+interface LavaTrack {
+	track: string;
+	info: LavaTrackInfo;
 }
 
 interface MusicNode {

@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 import { ManagementService } from '../../services/ManagementService';
 
 const THUMBS_UP = '👍';
@@ -31,7 +31,7 @@ export default class extends IMCommand {
 					short: 'e'
 				}
 			],
-			group: CommandGroup.Other,
+			group: 'Other',
 			botPermissions: [GuildPermission.MANAGE_MESSAGES],
 			guildOnly: true,
 			defaultAdminOnly: true

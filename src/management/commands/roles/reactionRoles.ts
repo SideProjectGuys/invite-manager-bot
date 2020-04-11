@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { BooleanResolver, RoleResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 import { ReactionRoleCache } from '../../cache/ReactionRoleCache';
 import { ManagementService } from '../../services/ManagementService';
 
@@ -44,7 +44,7 @@ export default class extends IMCommand {
 					short: 'r'
 				}
 			],
-			group: CommandGroup.Other,
+			group: 'Other',
 			botPermissions: [GuildPermission.MANAGE_MESSAGES],
 			guildOnly: true,
 			defaultAdminOnly: true

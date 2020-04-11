@@ -2,7 +2,7 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicPlatformType } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { RaveDJ } from '../../models/ravedj/RaveDJ';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
@@ -19,7 +19,7 @@ export default class extends IMMusicCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

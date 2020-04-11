@@ -3,7 +3,7 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { RoleResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
@@ -17,7 +17,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: CommandGroup.Other,
+			group: 'Other',
 			botPermissions: [GuildPermission.MANAGE_ROLES],
 			guildOnly: true,
 			defaultAdminOnly: true,

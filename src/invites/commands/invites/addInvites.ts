@@ -6,7 +6,7 @@ import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
 import { InvitesService } from '../../services/Invites';
 
@@ -35,7 +35,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!addInvites @User 5', '!addInvites "Name with space" -30 Removed for cheating']

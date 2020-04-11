@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
@@ -16,7 +15,7 @@ export default class extends IMMusicCommand {
 					resolver: new NumberResolver(client, 0, 1000)
 				}
 			],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
-import { CommandGroup } from '../../../types';
 import { ModerationGuildSettings } from '../../models/GuildSettings';
 import { NAME_DEHOIST_PREFIX, NAME_HOIST_REGEX } from '../../services/AutoModeration';
 
@@ -12,7 +11,7 @@ export default class extends IMCommand {
 			name: 'unhoist',
 			aliases: ['dehoist'],
 			args: [],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true
 		});

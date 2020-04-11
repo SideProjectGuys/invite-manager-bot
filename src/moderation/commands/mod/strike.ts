@@ -4,7 +4,6 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, MemberResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { ViolationType } from '../../models/StrikeConfig';
 import { ModerationService } from '../../services/Moderation';
 
@@ -38,7 +37,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true
 		});

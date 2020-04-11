@@ -4,7 +4,7 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup, GuildPermission } from '../../../types';
+import { GuildPermission } from '../../../types';
 import { ModerationService } from '../../services/Moderation';
 
 enum CleanType {
@@ -40,7 +40,7 @@ export default class extends IMCommand {
 					resolver: NumberResolver
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			botPermissions: [GuildPermission.READ_MESSAGE_HISTORY, GuildPermission.MANAGE_MESSAGES],
 			defaultAdminOnly: true,
 			guildOnly: true

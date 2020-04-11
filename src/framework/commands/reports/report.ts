@@ -2,7 +2,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../client';
-import {  CommandGroup } from '../../types';
 import { Command, Context } from '../Command';
 
 export default class extends Command {
@@ -10,7 +9,7 @@ export default class extends Command {
 		super(client, {
 			name: 'report',
 			aliases: [],
-			group: CommandGroup.Report,
+			group: 'Report',
 			guildOnly: false
 		});
 	}

@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup } from '../../../types';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
@@ -9,7 +8,7 @@ export default class extends IMMusicCommand {
 		super(client, {
 			name: 'pause',
 			aliases: ['stop'],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

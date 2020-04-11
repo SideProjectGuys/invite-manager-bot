@@ -3,7 +3,6 @@ import { Message, Role } from 'eris';
 import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { RoleResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 
 export default class extends IMCommand {
 	public constructor(client: IMClient) {
@@ -17,7 +16,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: CommandGroup.Other,
+			group: 'Other',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!makeMentionable @Role', '!makeMentionable "Role with space"']

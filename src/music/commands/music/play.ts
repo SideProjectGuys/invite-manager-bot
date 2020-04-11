@@ -2,7 +2,7 @@ import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
 import { BooleanResolver, EnumResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup, MusicPlatformType } from '../../../types';
+import { MusicPlatformType } from '../../../types';
 import { MusicGuildSettings } from '../../models/GuildSettings';
 import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
@@ -33,7 +33,7 @@ export default class extends IMMusicCommand {
 					resolver: BooleanResolver
 				}
 			],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

@@ -6,7 +6,6 @@ import { IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { PunishmentCache } from '../../cache/PunishmentsCache';
 import { PunishmentType } from '../../models/PunishmentConfig';
 import { PunishmentService } from '../../services/PunishmentService';
@@ -34,7 +33,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true
 		});

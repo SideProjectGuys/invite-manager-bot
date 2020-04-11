@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup } from '../../../types';
 import { CommandContext, IMCommand } from '../Command';
 
 // Developers
@@ -41,7 +40,7 @@ export default class extends IMCommand {
 		super(client, {
 			name: 'credits',
 			aliases: [],
-			group: CommandGroup.Info,
+			group: 'Info',
 			defaultAdminOnly: false,
 			guildOnly: true
 		});

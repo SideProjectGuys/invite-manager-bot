@@ -6,7 +6,6 @@ import { MemberSettingsCache } from '../../../framework/cache/MemberSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { LeaderboardCache } from '../../cache/LeaderboardCache';
 import { InvitesGuildSettings, LeaderboardStyle } from '../../models/GuildSettings';
 import { InvitesMemberSettings } from '../../models/MemberSettings';
@@ -28,7 +27,7 @@ export default class extends IMCommand {
 				}
 			],
 			flags: [],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			extraExamples: ['!leaderboard 1mo', '!leaderboard 30d 6']

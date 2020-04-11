@@ -5,7 +5,7 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { CommandsService } from '../../../framework/services/Commands';
-import { BasicUser, CommandGroup } from '../../../types';
+import { BasicUser } from '../../../types';
 
 export default class extends IMCommand {
 	@Service() private cmds: CommandsService;
@@ -31,7 +31,7 @@ export default class extends IMCommand {
 					rest: true
 				}
 			],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: [

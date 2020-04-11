@@ -5,7 +5,6 @@ import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { StrikesCache } from '../../cache/StrikesCache';
 import { ViolationType } from '../../models/StrikeConfig';
 import { StrikeService } from '../../services/StrikeService';
@@ -28,7 +27,7 @@ export default class extends IMCommand {
 					resolver: NumberResolver
 				}
 			],
-			group: CommandGroup.Moderation,
+			group: 'Moderation',
 			defaultAdminOnly: true,
 			guildOnly: true
 		});

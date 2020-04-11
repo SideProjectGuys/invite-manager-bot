@@ -2,7 +2,7 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { BotType, CommandGroup, GuildPermission } from '../../../types';
+import { BotType, GuildPermission } from '../../../types';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
@@ -30,7 +30,7 @@ export default class extends IMCommand {
 					resolver: new EnumResolver(client, Object.values(Action))
 				}
 			],
-			group: CommandGroup.Premium,
+			group: 'Premium',
 			guildOnly: false,
 			defaultAdminOnly: false,
 			extraExamples: ['!premium check', '!premium activate', '!premium deactivate']

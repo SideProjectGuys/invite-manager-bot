@@ -5,12 +5,17 @@ import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../../framework/commands/Command';
 import { Service } from '../../framework/decorators/Service';
 import { DateResolver, EnumResolver } from '../../framework/resolvers';
-import { ChartType, CommandGroup } from '../../types';
 import { renderChart } from '../models/Chart';
 import { InvitesService } from '../services/Invites';
 
 const DEFAULT_DAYS = 30;
 const COLORS = ['blue', 'red', 'black'];
+
+enum ChartType {
+	joins = 'joins',
+	leaves = 'leaves',
+	joinsAndLeaves = 'joinsAndLeaves'
+}
 
 export default class extends IMCommand {
 	@Service() private invs: InvitesService;
@@ -34,7 +39,7 @@ export default class extends IMCommand {
 					resolver: DateResolver
 				}
 			],
-			group: CommandGroup.Other,
+			group: 'Other',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			extraExamples: ['!graph joins', '!graph leaves', '!graph usage']

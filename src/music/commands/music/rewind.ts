@@ -1,7 +1,6 @@
 import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
-import { CommandGroup } from '../../../types';
 import { MusicPlatform } from '../../models/MusicPlatform';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
@@ -10,7 +9,7 @@ export default class extends IMMusicCommand {
 		super(client, {
 			name: 'rewind',
 			aliases: ['replay'],
-			group: CommandGroup.Music,
+			group: 'Music',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			premiumOnly: true

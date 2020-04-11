@@ -4,7 +4,6 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
-import { CommandGroup } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
 import { InvitesGuildSettings } from '../../models/GuildSettings';
 import { InvitesService } from '../../services/Invites';
@@ -17,7 +16,7 @@ export default class extends IMCommand {
 		super(client, {
 			name: 'subtractLeaves',
 			aliases: ['subtract-leaves', 'subleaves', 'sl'],
-			group: CommandGroup.Invites,
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});

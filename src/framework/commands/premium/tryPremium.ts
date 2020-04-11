@@ -2,9 +2,9 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
-import { CommandGroup, PromptResult } from '../../../types';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
+import { PromptResult } from '../../services/Messaging';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
@@ -14,7 +14,7 @@ export default class extends IMCommand {
 		super(client, {
 			name: 'tryPremium',
 			aliases: ['try', 'try-premium'],
-			group: CommandGroup.Premium,
+			group: 'Premium',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});

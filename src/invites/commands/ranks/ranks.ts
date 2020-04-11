@@ -4,7 +4,6 @@ import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
-import { CommandGroup } from '../../../types';
 import { RanksCache } from '../../cache/RanksCache';
 
 const RANKS_PER_PAGE = 10;
@@ -22,7 +21,7 @@ export default class extends IMCommand {
 					resolver: NumberResolver
 				}
 			],
-			group: CommandGroup.Ranks,
+			group: 'Ranks',
 			guildOnly: true,
 			defaultAdminOnly: false
 		});
