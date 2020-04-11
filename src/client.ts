@@ -4,6 +4,7 @@ import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
 import { IMCache } from './framework/cache/Cache';
+import { GuildSettingsCache } from './framework/cache/GuildSettings';
 import { PremiumCache } from './framework/cache/Premium';
 import { Cache, cacheInjections } from './framework/decorators/Cache';
 import { Service, serviceInjections } from './framework/decorators/Service';
@@ -17,14 +18,12 @@ import { MessagingService } from './framework/services/Messaging';
 import { PremiumService } from './framework/services/Premium';
 import { RabbitMqService } from './framework/services/RabbitMq';
 import { IMService } from './framework/services/Service';
+import { SettingsService } from './framework/services/Settings';
 import { InviteModule } from './invites/InvitesModule';
 import { InvitesGuildSettings } from './invites/models/GuildSettings';
 import { ManagementModule } from './management/ManagementModule';
 import { ModerationModule } from './moderation/ModerationModule';
 import { MusicModule } from './music/MusicModule';
-import { GuildSettingsCache } from './settings/cache/GuildSettings';
-import { SettingsService } from './settings/services/Settings';
-import { SettingsModule } from './settings/SettingsModule';
 import { BotType, ChannelType, LavaPlayerManager } from './types';
 
 i18n.configure({
@@ -148,7 +147,6 @@ export class IMClient extends Client {
 
 	public async init() {
 		this.registerModule(FrameworkModule);
-		this.registerModule(SettingsModule);
 		this.registerModule(InviteModule);
 		this.registerModule(ManagementModule);
 		this.registerModule(ModerationModule);
@@ -161,6 +159,7 @@ export class IMClient extends Client {
 		this.caches.forEach((cache) => this.setupInjections(cache));
 
 		// Init services
+		await Promise.all([...this.modules.values()].map((m) => m.init()));
 		await Promise.all([...this.services.values()].map((s) => s.init()));
 
 		// Mark all services as starting

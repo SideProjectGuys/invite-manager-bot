@@ -2,12 +2,12 @@ import axios from 'axios';
 import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { DatabaseService, GLOBAL_SHARD_ID } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BotType, LavaTrack } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
 import { AnnouncementVoice, MusicGuildSettings } from '../models/GuildSettings';

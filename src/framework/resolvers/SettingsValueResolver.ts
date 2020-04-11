@@ -1,7 +1,10 @@
 import { IMClient } from '../../client';
-import { CommandContext } from '../../framework/commands/Command';
-import { Service } from '../../framework/decorators/Service';
-import { SettingsBaseTypeConstructor } from '../../framework/decorators/Setting';
+import { SettingsInfo } from '../../types';
+import { CommandContext } from '../commands/Command';
+import { Service } from '../decorators/Service';
+import { SettingsBaseTypeConstructor } from '../decorators/Setting';
+import { SettingsService } from '../services/Settings';
+
 import {
 	ArrayResolver,
 	BooleanResolver,
@@ -12,9 +15,7 @@ import {
 	Resolver,
 	RoleResolver,
 	StringResolver
-} from '../../framework/resolvers';
-import { SettingsInfo } from '../../types';
-import { SettingsService } from '../services/Settings';
+} from '.';
 
 export class SettingsValueResolver extends Resolver {
 	@Service() private settings: SettingsService;

@@ -1,15 +1,15 @@
 import { Invite, Message } from 'eris';
 
-import { IMClient } from '../../client';
-import { CommandContext, IMCommand } from '../../framework/commands/Command';
-import { Cache } from '../../framework/decorators/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { InviteCode } from '../../framework/models/InviteCode';
-import { LogAction } from '../../framework/models/Log';
-import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../framework/resolvers';
-import { CommandGroup, SettingsInfo } from '../../types';
-import { InviteCodeSettingsCache } from '../cache/InviteCodeSettingsCache';
-import { SettingsService } from '../services/Settings';
+import { IMClient } from '../../../client';
+import { CommandGroup, SettingsInfo } from '../../../types';
+import { InviteCodeSettingsCache } from '../../cache/InviteCodeSettings';
+import { Cache } from '../../decorators/Cache';
+import { Service } from '../../decorators/Service';
+import { InviteCode } from '../../models/InviteCode';
+import { LogAction } from '../../models/Log';
+import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../resolvers';
+import { SettingsService } from '../../services/Settings';
+import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
 	@Service() private settings: SettingsService;

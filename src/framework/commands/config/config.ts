@@ -1,15 +1,15 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../client';
-import { CommandContext, IMCommand } from '../../framework/commands/Command';
-import { Cache } from '../../framework/decorators/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { Guild } from '../../framework/models/Guild';
-import { LogAction } from '../../framework/models/Log';
-import { EnumResolver, SettingsValueResolver } from '../../framework/resolvers';
-import { CommandGroup, SettingsInfo } from '../../types';
-import { GuildSettingsCache } from '../cache/GuildSettings';
-import { SettingsService } from '../services/Settings';
+import { IMClient } from '../../../client';
+import { CommandGroup, SettingsInfo } from '../../../types';
+import { GuildSettingsCache } from '../../cache/GuildSettings';
+import { Cache } from '../../decorators/Cache';
+import { Service } from '../../decorators/Service';
+import { Guild } from '../../models/Guild';
+import { LogAction } from '../../models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../resolvers';
+import { SettingsService } from '../../services/Settings';
+import { CommandContext, IMCommand } from '../Command';
 
 type AnySettings = { [key: string]: any };
 

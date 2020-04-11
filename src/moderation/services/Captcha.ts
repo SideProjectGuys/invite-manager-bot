@@ -3,11 +3,11 @@ import { Guild, Member, Message } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { ModerationGuildSettings } from '../models/GuildSettings';
 
 export enum FileMode {

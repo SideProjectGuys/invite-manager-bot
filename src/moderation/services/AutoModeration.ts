@@ -1,10 +1,10 @@
 import { Guild, Member, Message, TextChannel } from 'eris';
 import moment from 'moment';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { StrikesCache } from '../cache/StrikesCache';
 import { ModerationGuildSettings } from '../models/GuildSettings';
 import { ViolationType } from '../models/StrikeConfig';

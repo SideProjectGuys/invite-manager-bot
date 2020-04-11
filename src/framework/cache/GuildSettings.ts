@@ -1,8 +1,9 @@
-import { IMCache } from '../../framework/cache/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { Guild } from '../../framework/models/Guild';
-import { BaseGuildSettings } from '../../framework/models/GuildSettings';
+import { Service } from '../decorators/Service';
+import { Guild } from '../models/Guild';
+import { BaseGuildSettings } from '../models/GuildSettings';
 import { SettingsService } from '../services/Settings';
+
+import { IMCache } from './Cache';
 
 type GuildSettings<T> = BaseGuildSettings & T;
 type KeyOfSettings<T> = Extract<keyof GuildSettings<T>, string>;

@@ -1,12 +1,12 @@
 import { Embed, Guild, Member, Message, Role, TextChannel } from 'eris';
 import moment from 'moment';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { DatabaseService, TABLE as BASE_TABLE } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicInvite, BasicMember, GuildPermission } from '../../types';
 import { RanksCache } from '../cache/RanksCache';
 import { CustomInvite } from '../models/CustomInvite';

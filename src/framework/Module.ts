@@ -10,6 +10,10 @@ export abstract class IMModule {
 		this.client = client;
 	}
 
+	public async init() {
+		// NO-OP
+	}
+
 	protected registerService<T extends IMService>(service: new (client: IMClient) => T) {
 		return this.client.registerService(service);
 	}

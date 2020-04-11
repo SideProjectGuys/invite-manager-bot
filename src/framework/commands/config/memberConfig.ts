@@ -1,15 +1,15 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../client';
-import { CommandContext, IMCommand } from '../../framework/commands/Command';
-import { Cache } from '../../framework/decorators/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { LogAction } from '../../framework/models/Log';
-import { Member } from '../../framework/models/Member';
-import { EnumResolver, SettingsValueResolver, UserResolver } from '../../framework/resolvers';
-import { BasicUser, CommandGroup, SettingsInfo } from '../../types';
-import { MemberSettingsCache } from '../cache/MemberSettings';
-import { SettingsService } from '../services/Settings';
+import { IMClient } from '../../../client';
+import { BasicUser, CommandGroup, SettingsInfo } from '../../../types';
+import { MemberSettingsCache } from '../../cache/MemberSettings';
+import { Cache } from '../../decorators/Cache';
+import { Service } from '../../decorators/Service';
+import { LogAction } from '../../models/Log';
+import { Member } from '../../models/Member';
+import { EnumResolver, SettingsValueResolver, UserResolver } from '../../resolvers';
+import { SettingsService } from '../../services/Settings';
+import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
 	@Service() private settings: SettingsService;

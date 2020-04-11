@@ -88,3 +88,10 @@ export class BaseGuildSettings {
 	})
 	public ignoredChannels: string[];
 }
+
+export class GuildSetting {
+	public guildId: string;
+	public createdAt?: Date;
+	public updatedAt?: Date;
+	public value: BaseGuildSettings;
+}

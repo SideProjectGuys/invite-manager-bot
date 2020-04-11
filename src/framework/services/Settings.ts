@@ -1,25 +1,18 @@
 import { Channel, Client, Role } from 'eris';
 
-import { Service } from '../../framework/decorators/Service';
-import {
-	settingsBaseClasses,
-	SettingsBaseTypeConstructor,
-	settingsClassesProperties
-} from '../../framework/decorators/Setting';
-import { BaseBotSettings } from '../../framework/models/BotSettings';
-import { Guild } from '../../framework/models/Guild';
-import { BaseGuildSettings } from '../../framework/models/GuildSettings';
-import { InviteCode } from '../../framework/models/InviteCode';
-import { BaseInviteCodeSettings } from '../../framework/models/InviteCodeSettings';
-import { Member } from '../../framework/models/Member';
-import { BaseMemberSettings } from '../../framework/models/MemberSettings';
-import { DatabaseService, GLOBAL_SHARD_ID } from '../../framework/services/Database';
-import { IMService } from '../../framework/services/Service';
 import { InternalSettingsTypes, SettingsInfo } from '../../types';
-import { BotSetting } from '../models/BotSetting';
-import { GuildSetting } from '../models/GuildSetting';
-import { InviteCodeSetting } from '../models/InviteCodeSetting';
-import { MemberSetting } from '../models/MemberSetting';
+import { Service } from '../decorators/Service';
+import { settingsBaseClasses, SettingsBaseTypeConstructor, settingsClassesProperties } from '../decorators/Setting';
+import { BaseBotSettings, BotSetting } from '../models/BotSettings';
+import { Guild } from '../models/Guild';
+import { BaseGuildSettings, GuildSetting } from '../models/GuildSettings';
+import { InviteCode } from '../models/InviteCode';
+import { BaseInviteCodeSettings, InviteCodeSetting } from '../models/InviteCodeSettings';
+import { Member } from '../models/Member';
+import { BaseMemberSettings, MemberSetting } from '../models/MemberSettings';
+
+import { DatabaseService, GLOBAL_SHARD_ID } from './Database';
+import { IMService } from './Service';
 
 enum TABLE {
 	botSettings = '`botSettings`',

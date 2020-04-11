@@ -1,8 +1,9 @@
-import { IMCache } from '../../framework/cache/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { InviteCode } from '../../framework/models/InviteCode';
-import { BaseInviteCodeSettings } from '../../framework/models/InviteCodeSettings';
+import { Service } from '../decorators/Service';
+import { InviteCode } from '../models/InviteCode';
+import { BaseInviteCodeSettings } from '../models/InviteCodeSettings';
 import { SettingsService } from '../services/Settings';
+
+import { IMCache } from './Cache';
 
 type InviteCodeSettings<T> = BaseInviteCodeSettings & T;
 type KeyOfSettings<T> = Extract<keyof InviteCodeSettings<T>, string>;

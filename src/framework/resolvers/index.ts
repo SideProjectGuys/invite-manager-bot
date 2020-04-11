@@ -12,4 +12,4 @@ export * from './Resolver';
 export * from './RoleResolver';
 export * from './StringResolver';
 export * from './UserResolver';
-export * from '../../settings/resolvers/SettingsValueResolver';
+export * from './SettingsValueResolver';

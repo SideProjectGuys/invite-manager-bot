@@ -5,9 +5,8 @@ import { readdir, statSync } from 'fs';
 import i18n from 'i18n';
 import { relative, resolve } from 'path';
 
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
-import { SettingsService } from '../../settings/services/Settings';
 import { GuildPermission } from '../../types';
+import { GuildSettingsCache } from '../cache/GuildSettings';
 import { PermissionsCache } from '../cache/Permissions';
 import { PremiumCache } from '../cache/Premium';
 import { CommandContext, IMCommand } from '../commands/Command';
@@ -18,30 +17,18 @@ import { BooleanResolver } from '../resolvers';
 import { DatabaseService } from './Database';
 import { MessagingService } from './Messaging';
 import { IMService } from './Service';
+import { SettingsService } from './Settings';
 
 const CMD_DIRS = [
 	resolve(__dirname, '../commands'),
 	resolve(__dirname, '../../invites/commands'),
 	resolve(__dirname, '../../moderation/commands'),
 	resolve(__dirname, '../../music/commands'),
-	resolve(__dirname, '../../management/commands'),
-	resolve(__dirname, '../../settings/commands')
+	resolve(__dirname, '../../management/commands')
 ];
 const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
 const COOLDOWN = 5; // in seconds
-
-const readDir = async (dir: string) => {
-	return new Promise<string[]>((res, reject) => {
-		readdir(dir, (err, files) => {
-			if (err) {
-				reject(err);
-			} else {
-				res(files);
-			}
-		});
-	});
-};
 
 export class CommandsService extends IMService {
 	@Service() private db: DatabaseService;
@@ -60,7 +47,7 @@ export class CommandsService extends IMService {
 
 		// Load all commands
 		const loadRecursive = async (dir: string) => {
-			const fileNames = await readDir(dir);
+			const fileNames = await this.readDir(dir);
 			for (const fileName of fileNames) {
 				const file = dir + '/' + fileName;
 
@@ -551,5 +538,17 @@ export class CommandsService extends IMService {
 				time: execTime
 			});
 		}
+	}
+
+	private async readDir(dir: string) {
+		return new Promise<string[]>((res, reject) => {
+			readdir(dir, (err, files) => {
+				if (err) {
+					reject(err);
+				} else {
+					res(files);
+				}
+			});
+		});
 	}
 }

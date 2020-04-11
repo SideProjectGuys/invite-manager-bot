@@ -2,10 +2,10 @@ import { Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
+import { MemberSettingsCache } from '../../../framework/cache/MemberSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { NumberResolver } from '../../../framework/resolvers';
-import { MemberSettingsCache } from '../../../settings/cache/MemberSettings';
 import { CommandGroup } from '../../../types';
 import { LeaderboardCache } from '../../cache/LeaderboardCache';
 import { InvitesGuildSettings, LeaderboardStyle } from '../../models/GuildSettings';

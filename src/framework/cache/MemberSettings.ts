@@ -1,8 +1,9 @@
-import { IMCache } from '../../framework/cache/Cache';
-import { Service } from '../../framework/decorators/Service';
-import { Member } from '../../framework/models/Member';
-import { BaseMemberSettings } from '../../framework/models/MemberSettings';
+import { Service } from '../decorators/Service';
+import { Member } from '../models/Member';
+import { BaseMemberSettings } from '../models/MemberSettings';
 import { SettingsService } from '../services/Settings';
+
+import { IMCache } from './Cache';
 
 type MemberSettings<T> = BaseMemberSettings & T;
 type KeyOfSettings<T> = Extract<keyof MemberSettings<T>, string>;

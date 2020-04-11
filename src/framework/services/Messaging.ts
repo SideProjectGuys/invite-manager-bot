@@ -3,8 +3,8 @@ import { Embed, EmbedOptions, Emoji, Guild, GuildChannel, Message, TextableChann
 import i18n from 'i18n';
 import moment from 'moment';
 
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { GuildPermission, PromptResult } from '../../types';
+import { GuildSettingsCache } from '../cache/GuildSettings';
 import { PremiumCache } from '../cache/Premium';
 import { Cache } from '../decorators/Cache';
 import { Service } from '../decorators/Service';

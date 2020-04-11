@@ -4,14 +4,14 @@ import i18n from 'i18n';
 import moment from 'moment';
 import os from 'os';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
+import { InviteCodeSettingsCache } from '../../framework/cache/InviteCodeSettings';
 import { PremiumCache } from '../../framework/cache/Premium';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { DatabaseService } from '../../framework/services/Database';
 import { RabbitMqService } from '../../framework/services/RabbitMq';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
-import { InviteCodeSettingsCache } from '../../settings/cache/InviteCodeSettingsCache';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
 import { InvitesCache } from '../cache/InvitesCache';

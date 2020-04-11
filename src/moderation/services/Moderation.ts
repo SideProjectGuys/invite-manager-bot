@@ -1,10 +1,10 @@
 import { Embed, Guild, Member, Message, Role, TextChannel, User } from 'eris';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
 import { PunishmentCache } from '../cache/PunishmentsCache';
 import { ModerationGuildSettings } from '../models/GuildSettings';

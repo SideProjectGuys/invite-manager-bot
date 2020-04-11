@@ -1,13 +1,13 @@
 import { Client, Message } from 'eris';
 
-import { IMClient } from '../../client';
-import { CommandContext, IMCommand } from '../../framework/commands/Command';
-import { Service } from '../../framework/decorators/Service';
-import { BaseBotSettings } from '../../framework/models/BotSettings';
-import { LogAction } from '../../framework/models/Log';
-import { EnumResolver, SettingsValueResolver } from '../../framework/resolvers';
-import { CommandGroup, SettingsInfo } from '../../types';
-import { SettingsService } from '../services/Settings';
+import { IMClient } from '../../../client';
+import { CommandGroup, SettingsInfo } from '../../../types';
+import { Service } from '../../decorators/Service';
+import { BaseBotSettings } from '../../models/BotSettings';
+import { LogAction } from '../../models/Log';
+import { EnumResolver, SettingsValueResolver } from '../../resolvers';
+import { SettingsService } from '../../services/Settings';
+import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
 	@Service() private settings: SettingsService;

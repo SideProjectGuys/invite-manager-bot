@@ -1,10 +1,10 @@
 import { Message, TextChannel } from 'eris';
 
 import { IMClient } from '../../../client';
+import { InviteCodeSettingsCache } from '../../../framework/cache/InviteCodeSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
-import { InviteCodeSettingsCache } from '../../../settings/cache/InviteCodeSettingsCache';
 import { CommandGroup, GuildPermission } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 

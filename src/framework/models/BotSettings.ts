@@ -71,3 +71,10 @@ export class BaseBotSettings {
 	})
 	public embedDefaultColor: string;
 }
+
+export class BotSetting {
+	public id: string;
+	public createdAt?: Date;
+	public updatedAt?: Date;
+	public value: BaseBotSettings;
+}

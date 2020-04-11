@@ -1,12 +1,12 @@
 import { Guild, TextChannel, User } from 'eris';
 import i18n from 'i18n';
 
+import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
 import { DatabaseService } from '../../framework/services/Database';
 import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
-import { GuildSettingsCache } from '../../settings/cache/GuildSettings';
 import { BasicUser } from '../../types';
 import { ModerationGuildSettings } from '../models/GuildSettings';
 import { Punishment } from '../models/Punishment';
