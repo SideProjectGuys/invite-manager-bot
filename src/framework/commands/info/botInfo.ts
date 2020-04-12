@@ -43,7 +43,7 @@ export default class extends IMCommand {
 		// Shard info
 		embed.fields.push({
 			name: t('cmd.botInfo.shards.current'),
-			value: `${this.client.shardId} (${this.db.getDbShardForGuild(guild.id)})`,
+			value: `${this.client.guildShardMap[guild.id] + 1} (${this.db.getDbShardForGuild(guild.id)})`,
 			inline: true
 		});
 

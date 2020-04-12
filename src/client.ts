@@ -48,7 +48,8 @@ export interface ClientOptions {
 	token: string;
 	type: BotType;
 	instance: string;
-	shardId: number;
+	firstShard: number;
+	lastShard: number;
 	shardCount: number;
 	flags: string[];
 	config: any;
@@ -62,9 +63,6 @@ export class IMClient extends Client {
 	public instance: string;
 	public settings: BaseBotSettings;
 	public hasStarted: boolean = false;
-
-	public shardId: number;
-	public shardCount: number;
 
 	public requestHandler: IMRequestHandler;
 
@@ -95,15 +93,25 @@ export class IMClient extends Client {
 	@Cache() private premiumCache: PremiumCache;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
 
-	public constructor({ version, token, type, instance, shardId, shardCount, flags, config }: ClientOptions) {
+	public constructor({
+		version,
+		token,
+		type,
+		instance,
+		firstShard,
+		lastShard,
+		shardCount,
+		flags,
+		config
+	}: ClientOptions) {
 		super(token, {
 			allowedMentions: {
 				everyone: false,
 				roles: true,
 				users: true
 			},
-			firstShardID: shardId - 1,
-			lastShardID: shardId - 1,
+			firstShardID: firstShard - 1,
+			lastShardID: lastShard - 1,
 			maxShards: shardCount,
 			disableEvents: {
 				TYPING_START: true,
@@ -137,12 +145,8 @@ export class IMClient extends Client {
 		this.version = version;
 		this.type = type;
 		this.instance = instance;
-		this.shardId = shardId;
-		this.shardCount = shardCount;
 		this.flags = flags;
 		this.config = config;
-		this.shardId = shardId;
-		this.shardCount = shardCount;
 	}
 
 	public async init() {

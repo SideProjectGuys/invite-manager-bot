@@ -8,7 +8,7 @@ let child = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['run', 'bu
 
 const debug = process.argv[2] || false;
 
-child.on('error', error => console.log(error));
+child.on('error', (error) => console.log(error));
 
 child.on('close', () => {
 	if (debug) {
@@ -17,10 +17,10 @@ child.on('close', () => {
 
 	child = spawn(
 		'node',
-		[`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '1'],
+		[`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '4', '4'],
 		{
 			stdio: 'inherit'
 		}
 	);
-	child.on('error', error => console.log(error));
+	child.on('error', (error) => console.log(error));
 });

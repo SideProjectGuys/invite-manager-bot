@@ -106,7 +106,7 @@ export class RabbitMqService extends IMService {
 		}
 
 		this.connRetry = 0;
-		this.qName = `shard-${this.client.instance}-${this.client.shardId}`;
+		this.qName = `shard-${this.client.instance}-${this.client.options.firstShardID}`;
 
 		try {
 			this.channel = await this.conn.createChannel();
@@ -244,8 +244,9 @@ export class RabbitMqService extends IMService {
 					timestamp: moment().unix(),
 					type: this.client.type,
 					instance: this.client.instance,
-					shardId: this.client.shardId,
-					shardCount: this.client.shardCount,
+					firstShardId: this.client.options.firstShardID,
+					lastShardId: this.client.options.lastShardID,
+					shardCount: this.client.options.maxShards,
 					service: 'bot',
 					...message
 				})
