@@ -59,7 +59,9 @@ export class AutoModerationService extends IMService {
 			});
 		};
 		setInterval(scanMessageCache, 60 * 1000);
+	}
 
+	public async onClientReady() {
 		this.client.on('messageCreate', this.onMessage.bind(this));
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		this.client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
