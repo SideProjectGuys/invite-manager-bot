@@ -48,8 +48,10 @@ export class CaptchaService extends IMService {
 	@Service() private msg: MessagingService;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
 
-	public async init() {
+	public async onClientReady() {
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
+
+		await super.onClientReady();
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {

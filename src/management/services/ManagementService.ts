@@ -17,9 +17,11 @@ export class ManagementService extends IMService {
 	@Service() private db: DatabaseService;
 	@Cache(() => ReactionRoleCache) private reactionRolesCache: ReactionRoleCache;
 
-	public async init() {
+	public async onClientReady() {
 		this.client.on('messageReactionAdd', this.onMessageReactionAdd.bind(this));
 		this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
+
+		await super.onClientReady();
 	}
 
 	public async getMessageById(guildId: string, messageId: string) {

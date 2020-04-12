@@ -65,6 +65,8 @@ export class AutoModerationService extends IMService {
 		this.client.on('messageCreate', this.onMessage.bind(this));
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		this.client.on('guildMemberUpdate', this.onGuildMemberUpdate.bind(this));
+
+		await super.onClientReady();
 	}
 
 	private async onGuildMemberAdd(guild: Guild, member: Member) {

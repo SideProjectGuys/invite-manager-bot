@@ -47,7 +47,7 @@ export class TrackingService extends IMService {
 	} = {};
 	private inviteStoreUpdate: { [guildId: string]: number } = {};
 
-	public async init() {
+	public async onClientReady() {
 		this.client.on('inviteCreate', this.onInviteCreate.bind(this));
 		this.client.on('inviteDelete', this.onDeleteInvite.bind(this));
 		this.client.on('channelCreate', this.onChannelCreate.bind(this));
@@ -59,13 +59,6 @@ export class TrackingService extends IMService {
 		this.client.on('guildRoleDelete', this.onGuildRoleDelete.bind(this));
 		this.client.on('guildMemberAdd', this.onGuildMemberAdd.bind(this));
 		this.client.on('guildMemberRemove', this.onGuildMemberRemove.bind(this));
-	}
-
-	public async onClientReady() {
-		if (this.client.hasStarted) {
-			this.startupDone();
-			return;
-		}
 
 		console.log(`Requesting ${chalk.blue(GUILDS_IN_PARALLEL)} guilds in parallel during startup`);
 
