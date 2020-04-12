@@ -579,16 +579,16 @@ export class IMClient extends Client {
 		this.editStatus(status, { name, type, url });
 	}
 
-	private async onConnect(err: Error, shardId: number) {
-		console.log(chalk.green(`Shard ${chalk.blue(shardId)} is connected to the gateway`));
-		this.shardsConnected.add(shardId);
+	private async onConnect(shardId: number) {
+		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} is connected to the gateway`));
+		this.shardsConnected.add(shardId + 1);
 
 		await this.rabbitMqService.sendStatusToManager();
 	}
 
 	private async onDisconnect(err: Error, shardId: number) {
-		console.error(chalk.red(`Shard ${chalk.blue(shardId)} was disconnected: ${err}`));
-		this.shardsConnected.delete(shardId);
+		console.error(chalk.red(`Shard ${chalk.blue(shardId + 1)} was disconnected: ${err}`));
+		this.shardsConnected.delete(shardId + 1);
 
 		await this.rabbitMqService.sendStatusToManager(err);
 	}
