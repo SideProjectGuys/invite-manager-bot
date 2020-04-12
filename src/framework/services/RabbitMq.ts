@@ -266,7 +266,7 @@ export class RabbitMqService extends IMService {
 				? 'starting'
 				: 'running',
 			startedAt: this.client.startedAt?.toISOString(),
-			gateway: this.client.gatewayConnected,
+			gateway: [...this.client.shardsConnected],
 			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
 			tracking: this.getTrackingStatus(),

@@ -71,7 +71,7 @@ export class IMClient extends Client {
 	private caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
 
 	public startedAt: Moment;
-	public gatewayConnected: boolean;
+	public shardsConnected: Set<number> = new Set();
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 	public stats: {
@@ -579,20 +579,18 @@ export class IMClient extends Client {
 		this.editStatus(status, { name, type, url });
 	}
 
-	private async onConnect() {
-		console.error('DISCORD CONNECT');
-		this.gatewayConnected = true;
+	private async onConnect(err: Error, shardId: number) {
+		console.log(chalk.green(`Shard ${chalk.blue(shardId)} is connected to the gateway`));
+		this.shardsConnected.add(shardId);
+
 		await this.rabbitMqService.sendStatusToManager();
 	}
 
-	private async onDisconnect(err: Error) {
-		console.error('DISCORD DISCONNECT');
-		this.gatewayConnected = false;
-		await this.rabbitMqService.sendStatusToManager(err);
+	private async onDisconnect(err: Error, shardId: number) {
+		console.error(chalk.red(`Shard ${chalk.blue(shardId)} was disconnected: ${err}`));
+		this.shardsConnected.delete(shardId);
 
-		if (err) {
-			console.error(err);
-		}
+		await this.rabbitMqService.sendStatusToManager(err);
 	}
 
 	private async onGuildUnavailable(guild: Guild) {
