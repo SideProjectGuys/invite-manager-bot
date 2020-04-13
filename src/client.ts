@@ -64,6 +64,9 @@ export class IMClient extends Client {
 	public settings: BaseBotSettings;
 	public hasStarted: boolean = false;
 
+	public firstShardId: number;
+	public lastShardId: number;
+	public shardCount: number;
 	public requestHandler: IMRequestHandler;
 
 	private modules: Map<new (client: IMClient) => IMModule, IMModule>;
@@ -133,6 +136,10 @@ export class IMClient extends Client {
 			cmdProcessed: 0,
 			cmdErrors: 0
 		};
+
+		this.firstShardId = firstShard;
+		this.lastShardId = lastShard;
+		this.shardCount = shardCount;
 
 		// Override eris request handler so we can track some stats
 		this.requestHandler = new IMRequestHandler(this);
