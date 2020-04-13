@@ -1,4 +1,4 @@
-import { Guild, Member, Message, TextChannel } from 'eris';
+import { Guild, Member, Message, TextChannel, User } from 'eris';
 import moment from 'moment';
 
 import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
@@ -114,12 +114,8 @@ export class AutoModerationService extends IMService {
 	private async onMessage(message: Message) {
 		const channel = message.channel as TextChannel;
 		const guild = channel.guild;
-		let member = guild.members.get(message.author.id);
-		if (!member) {
-			member = await guild.getRESTMember(message.author.id);
-		}
 
-		if (!(await this.shouldProcess(guild, member, message))) {
+		if (!(await this.shouldProcess(guild, message.member || message.author, message))) {
 			return;
 		}
 
@@ -193,9 +189,9 @@ export class AutoModerationService extends IMService {
 		}
 	}
 
-	private async shouldProcess(guild: Guild, member: Member, message?: Message) {
+	private async shouldProcess(guild: Guild, userOrMember: User | Member, message?: Message) {
 		// Ignore bots
-		if (member.bot) {
+		if (userOrMember.bot) {
 			return false;
 		}
 
@@ -216,6 +212,26 @@ export class AutoModerationService extends IMService {
 			return;
 		}
 
+		// If we have a message then check the channel
+		if (message) {
+			// If moderated channels are set only moderate those channels
+			if (settings.autoModModeratedChannels && settings.autoModModeratedChannels.length > 0) {
+				if (!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)) {
+					return;
+				}
+			}
+
+			// Don't moderate ignored channels
+			if (settings.autoModIgnoredChannels && settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0) {
+				return;
+			}
+		}
+
+		let member = userOrMember instanceof Member ? userOrMember : guild.members.get(userOrMember.id);
+		if (!member) {
+			member = await guild.getRESTMember(userOrMember.id);
+		}
+
 		// If moderated roles are set then only moderate those roles
 		if (settings.autoModModeratedRoles && settings.autoModModeratedRoles.length > 0) {
 			if (!settings.autoModModeratedRoles.some((r) => member.roles.indexOf(r) >= 0)) {
@@ -233,21 +249,6 @@ export class AutoModerationService extends IMService {
 			const memberAge = moment().diff(member.joinedAt, 'second');
 			if (memberAge > settings.autoModDisabledForOldMembersThreshold) {
 				// This is an old member
-				return;
-			}
-		}
-
-		// If we have a message then check the channel
-		if (message) {
-			// If moderated channels are set only moderate those channels
-			if (settings.autoModModeratedChannels && settings.autoModModeratedChannels.length > 0) {
-				if (!(settings.autoModModeratedChannels.indexOf(message.channel.id) >= 0)) {
-					return;
-				}
-			}
-
-			// Don't moderate ignored channels
-			if (settings.autoModIgnoredChannels && settings.autoModIgnoredChannels.indexOf(message.channel.id) >= 0) {
 				return;
 			}
 		}
