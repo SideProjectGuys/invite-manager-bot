@@ -170,13 +170,15 @@ export class IMClient extends Client {
 		[...this.services.values()].forEach((srv) => this.startingServices.push(srv));
 
 		this.on('ready', this.onClientReady);
+		this.on('connect', this.onShardConnect);
+		this.on('shardReady', this.onShardReady);
+		this.on('shardResume', this.onShardResume);
+		this.on('shardDisconnect', this.onShardDisconnect);
 		this.on('guildCreate', this.onGuildCreate);
 		this.on('guildDelete', this.onGuildDelete);
 		this.on('guildUnavailable', this.onGuildUnavailable);
 		this.on('guildMemberAdd', this.onGuildMemberAdd);
 		this.on('guildMemberRemove', this.onGuildMemberRemove);
-		this.on('connect', this.onConnect);
-		this.on('shardDisconnect', this.onDisconnect);
 		this.on('warn', this.onWarn);
 		this.on('error', this.onError);
 		this.on('rawWS', this.onRawWS);
@@ -192,11 +194,17 @@ export class IMClient extends Client {
 		clearInterval(interval);
 	}
 
+	private async onShardReady(shardId: number) {
+		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} is ready`));
+	}
+
 	private async onClientReady(): Promise<void> {
 		if (this.hasStarted) {
 			console.error('BOT HAS ALREADY STARTED, IGNORING EXTRA READY EVENT');
 			return;
 		}
+
+		console.log(chalk.green(`Client is ready`));
 
 		// This is for convenience, the services could also subscribe to 'ready' event on client
 		await Promise.all([...this.services.values()].map((s) => s.onClientReady()));
@@ -579,14 +587,21 @@ export class IMClient extends Client {
 		this.editStatus(status, { name, type, url });
 	}
 
-	private async onConnect(shardId: number) {
+	private async onShardConnect(shardId: number) {
 		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} is connected to the gateway`));
 		this.shardsConnected.add(shardId + 1);
 
 		await this.rabbitMqService.sendStatusToManager();
 	}
 
-	private async onDisconnect(err: Error, shardId: number) {
+	private async onShardResume(shardId: number) {
+		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} has resumed`));
+		this.shardsConnected.add(shardId + 1);
+
+		await this.rabbitMqService.sendStatusToManager();
+	}
+
+	private async onShardDisconnect(err: Error, shardId: number) {
 		console.error(chalk.red(`Shard ${chalk.blue(shardId + 1)} was disconnected: ${err}`));
 		this.shardsConnected.delete(shardId + 1);
 
