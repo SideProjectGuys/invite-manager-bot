@@ -36,39 +36,40 @@
 		"title": "Other",
 		"donating": {
 			"title": "Donating",
-			"description": "other.donating.description",
+			"description": "Donating helps to keep our servers running, which ultimately lessens the downtime of the bot. A donation is always appreciated, be it a small amount. You can donate on our [Patreon]({{{ linkPatreon }}}).",
 			"crypto": {
 				"title": "Crypto",
-				"description": "other.donating.crypto.description"
+				"description": "Crypto donations coming soon!"
 			}
-		},
+		},	
 		"roadmap": {
 			"title": "Roadmap"
 		},
 		"support": {
-			"title": "Support"
+			"title": "Support",
+			"description": "If you have any issues running the bot or have found a bug, or just need some help, feel free to join our [Discord]({{{ linkDiscord }}}) and ask for help there."
 		},
 		"translations": {
 			"title": "Translations",
-			"description": "other.translations.description",
+			"description": "We always welcome translators to translate the Docs of InviteManager. If you are interested in translating the Docs to your own language, you might want to join our [Transifex]({{{ linkTransifex }}}) team!",
 			"help": {
-				"title": "other.translations.help.title",
-				"description": "other.translations.help.description"
+				"title": "GitHub",
+				"description": "Translations can also be made using our GitHub [Repository]({{{ linkRepository }}}). Feel free to translate the Docs files to your own language and open up a pull request."
 			}
 		},
 		"webpanel": {
 			"title": "Webpanel",
-			"description": "other.webpanel.description"
+			"description": "Our [Webpanel]({{{ linkWebpanel }}}) is up and running! You can configure the bot using the webpanel.\n`Webpanel link:` https://app.invitemanager.gg/"
 		},
 		"changelog": {
 			"title": "Changelog"
 		},
 		"openSource": {
-			"title": "Open Source",
-			"description": "other.openSource.description",
+			"title": "Open Source", 
+			"description": "InviteManager is Open Source! This means that you can access its code on GitHub and edit it and make a contribution. Feel free to contribute to the code and open a pull request! ",
 			"bot": {
 				"title": "Main Bot",
-				"description": "other.openSource.bot.description"
+				"description": "The code for the main bot can be found on the GitHub [Repository]({{{ linkRepository }}})."
 			}
 		}
 	},
@@ -122,20 +123,20 @@
 		},
 		"pro": {
 			"title": "Pro Bot",
-			"description": "start.pro.description"
+			"description": "The `InviteManager Pro` is the Premium version of InviteManager, which is only available for users who have purchased a subscription on our patreon. It has some exclusive features which aren't available in the main bot, and also has less downtimes. To know more about the Premium version's features, and its tiers, head to the `Premium` tab."
 		},
 		"quick": {
 			"title": "Quick Start",
 			"setup": {
-				"title": "Setup",
-				"description": "start.quick.setup.description",
+				"title": "Inviting the Bot",
+				"description": "First of all, you need to [Invite]({{{ linkInvite }}}) the bot to your server.",
 				"first": {
-					"title": "start.quick.setup.first.title",
-					"description": "start.quick.setup.first.description"
+					"title": "Setup",
+					"description": "To setup the bot, run the `!setup` command when the bot joins your server."
 				},
 				"second": {
-					"title": "start.quick.setup.second.title",
-					"description": "start.quick.setup.second.description"
+					"title": "Done!",
+					"description": "And its done! Now the bot will start tracking your invites! To configure the bot e.g change the join message or join message channel, head to the [Configs/Settings]({{{ linkConfigs/Settings }}}) category under the `Reference` tab for more information."
 				}
 			}
 		}
