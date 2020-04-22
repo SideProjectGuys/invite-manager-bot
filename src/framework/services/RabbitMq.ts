@@ -126,12 +126,12 @@ export class RabbitMqService extends IMService {
 
 			await this.channel.assertQueue(this.qName, { durable: false, autoDelete: true });
 
-			await this.channel.assertExchange('shards', 'fanout', { durable: true });
-			await this.channel.bindQueue(this.qName, 'shards', '');
+			await this.channel.assertExchange('shards_all', 'fanout', { durable: true });
+			await this.channel.bindQueue(this.qName, 'shards_all', '');
 
-			await this.channel.assertExchange('shards2', 'topic', { durable: true });
+			await this.channel.assertExchange('shards_one', 'topic', { durable: true });
 			for (let i = this.client.firstShardId; i <= this.client.lastShardId; i++) {
-				await this.channel.bindQueue(this.qName, 'shards2', `${this.client.instance}.${i}`);
+				await this.channel.bindQueue(this.qName, 'shards_one', `${this.client.instance}.${i}`);
 			}
 
 			await this.channel.prefetch(5);
