@@ -1,11 +1,11 @@
 import { Message, VoiceChannel } from 'eris';
 
 import { IMClient } from '../../../client';
-import { BooleanResolver, EnumResolver, StringResolver } from '../../../framework/resolvers';
-import { MusicPlatformType } from '../../../types';
+import { BooleanResolver, StringResolver } from '../../../framework/resolvers';
 import { MusicGuildSettings } from '../../models/GuildSettings';
 import { MusicItem } from '../../models/MusicItem';
 import { MusicPlatform } from '../../models/MusicPlatform';
+import { PlatformResolver } from '../../resolvers/PlatformResolver';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
@@ -25,7 +25,7 @@ export default class extends IMMusicCommand {
 				{
 					name: 'platform',
 					short: 'p',
-					resolver: new EnumResolver(client, Object.values(MusicPlatformType))
+					resolver: PlatformResolver
 				},
 				{
 					name: 'next',
@@ -43,7 +43,7 @@ export default class extends IMMusicCommand {
 	public async action(
 		message: Message,
 		[link]: [string],
-		{ platform, next }: { platform: MusicPlatformType; next: boolean },
+		{ platform, next }: { platform: MusicPlatform; next: boolean },
 		{ t, guild, settings }: CommandContext<MusicGuildSettings>
 	): Promise<any> {
 		const voiceChannelId = message.member.voiceState.channelID;
@@ -61,18 +61,13 @@ export default class extends IMMusicCommand {
 			return;
 		}
 
-		let musicPlatform: MusicPlatform;
-		if (platform) {
-			musicPlatform = this.music.platforms.get(platform);
-		} else {
-			musicPlatform = this.music.platforms.getForLink(link);
-		}
+		let musicPlatform = platform || this.music.getPlatformForLink(link);
 
 		let item: MusicItem;
 		if (musicPlatform) {
 			item = await musicPlatform.getByLink(link);
 		} else {
-			musicPlatform = this.music.platforms.get(settings.defaultMusicPlatform);
+			musicPlatform = this.music.getPlatformByName(settings.defaultMusicPlatform);
 			const items = await musicPlatform.search(link, 1);
 			if (items.length > 0) {
 				item = items[0];

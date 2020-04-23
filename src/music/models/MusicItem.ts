@@ -67,6 +67,6 @@ export abstract class MusicItem {
 	protected abstract doClone(): MusicItem;
 
 	public toString() {
-		return this.platform.getType() + ':' + this.id;
+		return this.platform.name + ':' + this.id;
 	}
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { MusicPlatformType } from '../../../types';
+import { Platform } from '../../decorators/Platform';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
@@ -10,6 +10,7 @@ import { TuneInRadioStation } from './types';
 const BASE_URL = 'https://api.tunein.com/';
 const LINK_REGEX = /-(s\d+)\/$/;
 
+@Platform('TuneIn')
 export class TuneInRadio extends MusicPlatform {
 	public supportsRewind: boolean = false;
 	public supportsSeek: boolean = false;
@@ -21,10 +22,6 @@ export class TuneInRadio extends MusicPlatform {
 			return false;
 		}
 		return url.startsWith('tunein');
-	}
-
-	public getType(): MusicPlatformType {
-		return MusicPlatformType.iHeartRADIO;
 	}
 
 	public async getByLink(link: string): Promise<MusicItem> {

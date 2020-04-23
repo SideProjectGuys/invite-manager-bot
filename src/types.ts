@@ -1,7 +1,4 @@
-import { VoiceConnection, VoiceConnectionManager } from 'eris';
-
 import { CommandContext } from './framework/commands/Command';
-import { MusicItem } from './music/models/MusicItem';
 
 export enum BotType {
 	regular = 'regular',
@@ -51,14 +48,6 @@ export enum ChannelType {
 	GUILD_CATEGORY = 4
 }
 
-export enum MusicPlatformType {
-	YouTube = 'youtube',
-	SoundCloud = 'soundcloud',
-	RaveDJ = 'ravedj',
-	iHeartRADIO = 'iheartradio',
-	TuneIn = 'tuneIn'
-}
-
 export type InternalSettingsTypes =
 	| 'Boolean'
 	| 'Number'
@@ -84,11 +73,6 @@ export interface SettingsInfo<T> {
 	validate?: (key: string, value: any, ctx: CommandContext) => string | null;
 }
 
-export interface MusicQueue {
-	current: MusicItem;
-	queue: MusicItem[];
-}
-
 export interface BasicUser {
 	id: string;
 	createdAt: number;
@@ -112,46 +96,4 @@ export interface BasicMember {
 		discriminator: string;
 		avatarURL: string;
 	};
-}
-
-export interface LavaPlayerManager extends VoiceConnectionManager<LavaPlayer> {}
-
-export interface MusicServiceInterface extends LavaPlayerManager {}
-
-export interface LavaPlayerState {
-	position: number;
-	time: number;
-}
-
-export interface LavaPlayer extends VoiceConnection {
-	node: string;
-	hostname: string;
-	manager: LavaPlayerManager | null;
-	track: string | null;
-	state: LavaPlayerState;
-
-	play: (track: string) => void;
-	stop: () => void;
-	pause: () => void;
-	resume: () => void;
-	seek: (position: number) => void;
-	setVolume: (volume: number) => void;
-
-	on(event: 'debug' | 'warn', listener: (message: string) => void): this;
-	on(event: 'error' | 'disconnect', listener: (err: Error) => void): this;
-	on(event: 'reconnect', listener: () => void): this;
-	on(event: 'pong', listener: (latency: number) => void): this;
-	on(event: 'speakingStart', listener: (userID: string) => void): this;
-	on(event: 'speakingStop', listener: (userID: string) => void): this;
-	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
-	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
-	on(event: 'userDisconnect', listener: (userID: string) => void): this;
-}
-
-export interface LavaEndEvent {
-	op: string;
-	reason: string;
-	type: string;
-	track: string;
-	guildId: string;
 }

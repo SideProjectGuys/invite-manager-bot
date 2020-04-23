@@ -2,7 +2,6 @@ import { Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { StringResolver } from '../../../framework/resolvers';
-import { MusicPlatformType } from '../../../types';
 import { RaveDJ } from '../../models/ravedj/RaveDJ';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
@@ -39,31 +38,16 @@ export default class extends IMMusicCommand {
 			await this.sendReply(message, t('cmd.mashup.missingSecondVideo'));
 			return;
 		}
-		const platform1 = this.music.platforms.getForLink(link1);
-		const platform2 = this.music.platforms.getForLink(link2);
+		const platform1 = this.music.getPlatformForLink(link1);
+		const platform2 = this.music.getPlatformForLink(link2);
 
-		const musicPlatform = this.music.platforms.get(MusicPlatformType.RaveDJ) as RaveDJ;
+		const musicPlatform = this.music.getPlatform(RaveDJ);
 
 		let mashupId;
 
-		if (
-			platform1 &&
-			platform1.getType() === MusicPlatformType.YouTube &&
-			platform2 &&
-			platform2.getType() === MusicPlatformType.YouTube
-		) {
-			const video1 = await platform1.getByLink(link1);
-			const video2 = await platform2.getByLink(link2);
-			mashupId = await musicPlatform.mix(video1.id, video2.id);
-		} else {
-			const [search1, search2] = videos.split(',');
-
-			const youtubePlatform = this.music.platforms.get(MusicPlatformType.YouTube);
-			const [result1] = await youtubePlatform.search(search1, 1);
-			const [result2] = await youtubePlatform.search(search2, 1);
-
-			mashupId = await musicPlatform.mix(result1.id, result2.id);
-		}
+		const video1 = await platform1.getByLink(link1);
+		const video2 = await platform2.getByLink(link2);
+		mashupId = await musicPlatform.mix(video1.id, video2.id);
 
 		await this.sendReply(message, `RaveDJ Link: https://rave.dj/${mashupId}`);
 	}

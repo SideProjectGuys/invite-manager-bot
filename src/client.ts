@@ -24,7 +24,7 @@ import { InvitesGuildSettings } from './invites/models/GuildSettings';
 import { ManagementModule } from './management/ManagementModule';
 import { ModerationModule } from './moderation/ModerationModule';
 import { MusicModule } from './music/MusicModule';
-import { BotType, ChannelType, LavaPlayerManager } from './types';
+import { BotType, ChannelType } from './types';
 
 i18n.configure({
 	locales: ['cs', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'pt_BR', 'ro', 'ru', 'tr'],
@@ -76,7 +76,6 @@ export class IMClient extends Client {
 	public startedAt: Moment;
 	public shardsConnected: Set<number> = new Set();
 	public activityInterval: NodeJS.Timer;
-	public voiceConnections: LavaPlayerManager;
 	public stats: {
 		shardConnects: number;
 		shardDisconnects: number;

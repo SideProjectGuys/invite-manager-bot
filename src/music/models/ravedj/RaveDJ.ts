@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { MusicPlatformType } from '../../../types';
+import { Platform } from '../../decorators/Platform';
 import { MusicService } from '../../services/Music';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
@@ -10,6 +10,7 @@ import { Data, IdTokenResponse, RaveDjResponse } from './types';
 
 const RAVE_DJ_GOOGLE_KEY = 'AIzaSyCB24TzTgYXl4sXwLyeY8y-XXgm0RX_eRQ';
 
+@Platform('RaveDJ')
 export class RaveDJ extends MusicPlatform {
 	public supportsRewind: boolean = true;
 	public supportsSeek: boolean = true;
@@ -30,10 +31,6 @@ export class RaveDJ extends MusicPlatform {
 			return false;
 		}
 		return url.startsWith('https://rave.dj');
-	}
-
-	public getType(): MusicPlatformType {
-		return MusicPlatformType.RaveDJ;
 	}
 
 	private async getIdToken() {

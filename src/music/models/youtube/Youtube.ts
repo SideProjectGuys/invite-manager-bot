@@ -1,11 +1,12 @@
 import ytdl from 'ytdl-core';
 
-import { MusicPlatformType } from '../../../types';
+import { Platform } from '../../decorators/Platform';
 import { MusicItem } from '../MusicItem';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { YoutubeMusicItem } from './YoutubeMusicItem';
 
+@Platform('YouTube')
 export class Youtube extends MusicPlatform {
 	public supportsRewind: boolean = true;
 	public supportsSeek: boolean = true;
@@ -17,10 +18,6 @@ export class Youtube extends MusicPlatform {
 			return false;
 		}
 		return url.startsWith('https://youtube.com/');
-	}
-
-	public getType(): MusicPlatformType {
-		return MusicPlatformType.YouTube;
 	}
 
 	public async getByLink(link: string): Promise<MusicItem> {

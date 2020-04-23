@@ -1,11 +1,51 @@
-import { Guild, VoiceChannel } from 'eris';
+import { Guild, VoiceChannel, VoiceConnection, VoiceConnectionManager } from 'eris';
 
 import { BaseGuildSettings } from '../../framework/models/GuildSettings';
-import { LavaPlayer, LavaPlayerState, MusicQueue } from '../../types';
 import { MusicService } from '../services/Music';
 
 import { AnnouncementVoice, MusicGuildSettings } from './GuildSettings';
 import { MusicItem } from './MusicItem';
+import { MusicQueue } from './MusicQueue';
+
+interface LavaPlayerManager extends VoiceConnectionManager<LavaPlayer> {}
+
+interface LavaPlayerState {
+	position: number;
+	time: number;
+}
+
+interface LavaPlayer extends VoiceConnection {
+	node: string;
+	hostname: string;
+	manager: LavaPlayerManager | null;
+	track: string | null;
+	state: LavaPlayerState;
+
+	play: (track: string) => void;
+	stop: () => void;
+	pause: () => void;
+	resume: () => void;
+	seek: (position: number) => void;
+	setVolume: (volume: number) => void;
+
+	on(event: 'debug' | 'warn', listener: (message: string) => void): this;
+	on(event: 'error' | 'disconnect', listener: (err: Error) => void): this;
+	on(event: 'reconnect', listener: () => void): this;
+	on(event: 'pong', listener: (latency: number) => void): this;
+	on(event: 'speakingStart', listener: (userID: string) => void): this;
+	on(event: 'speakingStop', listener: (userID: string) => void): this;
+	on(event: 'stateUpdate', listener: (state: LavaPlayerState) => void): this;
+	on(event: 'end', listener: (event: LavaEndEvent) => void): this;
+	on(event: 'userDisconnect', listener: (userID: string) => void): this;
+}
+
+interface LavaEndEvent {
+	op: string;
+	reason: string;
+	type: string;
+	track: string;
+	guildId: string;
+}
 
 const DEFAULT_DIM_VOLUME_FACTOR = 0.2;
 const IGNORED_ANNOUNCEMENT_WORDS = [

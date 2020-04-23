@@ -1,10 +1,11 @@
-import { MusicPlatformType } from '../../../types';
+import { Platform } from '../../decorators/Platform';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { IHeartMusicItem } from './IHeartMusicItem';
 
 const iheart = require('iheart');
 
+@Platform('iHeartRadio')
 export class IHeartRadio extends MusicPlatform {
 	public supportsRewind: boolean = false;
 	public supportsSeek: boolean = false;
@@ -18,12 +19,9 @@ export class IHeartRadio extends MusicPlatform {
 		return url.startsWith('iheart');
 	}
 
-	public getType(): MusicPlatformType {
-		return MusicPlatformType.iHeartRADIO;
-	}
-
-	public getByLink(link: string): Promise<IHeartMusicItem> {
-		return this.search(link, 1).then((res) => res[0]);
+	public async getByLink(link: string) {
+		const res = await this.search(link, 1);
+		return res[0];
 	}
 
 	public async search(searchTerm: string, maxResults: number = 10): Promise<IHeartMusicItem[]> {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { MusicPlatformType } from '../../../types';
+import { Platform } from '../../decorators/Platform';
 import { MusicPlatform } from '../MusicPlatform';
 
 import { SoundcloudMusicItem } from './SoundCloudMusicItem';
@@ -8,6 +8,7 @@ import { SoundcloudResponse } from './types';
 
 const SOUNDCLOUD_CLIENT_ID = 'Vu5tlmvC9eCLFZkxXG32N1yQMfDSAPAA';
 
+@Platform('SoundCloud')
 export class Soundcloud extends MusicPlatform {
 	public supportsRewind: boolean = true;
 	public supportsSeek: boolean = true;
@@ -19,10 +20,6 @@ export class Soundcloud extends MusicPlatform {
 			return false;
 		}
 		return url.startsWith('https://soundcloud.com');
-	}
-
-	public getType(): MusicPlatformType {
-		return MusicPlatformType.SoundCloud;
 	}
 
 	public async getByLink(link: string): Promise<SoundcloudMusicItem> {

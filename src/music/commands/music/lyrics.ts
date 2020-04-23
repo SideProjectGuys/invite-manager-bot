@@ -40,12 +40,7 @@ export default class extends IMMusicCommand {
 		const musicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsLyrics) {
-			await this.sendReply(
-				message,
-				t('cmd.lyrics.notSupported', {
-					platform: musicPlatform.getType()
-				})
-			);
+			await this.sendReply(message, t('cmd.lyrics.notSupported', { platform: musicPlatform.name }));
 			return;
 		}
 

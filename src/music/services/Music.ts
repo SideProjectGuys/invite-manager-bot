@@ -1,4 +1,5 @@
 import axios from 'axios';
+import chalk from 'chalk';
 import { Guild } from 'eris';
 import xmldoc, { XmlElement } from 'xmldoc';
 
@@ -10,11 +11,11 @@ import { MessagingService } from '../../framework/services/Messaging';
 import { IMService } from '../../framework/services/Service';
 import { BotType } from '../../types';
 import { MusicCache } from '../cache/MusicCache';
+import { platforms } from '../decorators/Platform';
 import { AnnouncementVoice, MusicGuildSettings } from '../models/GuildSettings';
 import { MusicConnection } from '../models/MusicConnection';
 import { MusicItem } from '../models/MusicItem';
-
-import { MusicPlatformService } from './MusicPlatform';
+import { MusicPlatform } from '../models/MusicPlatform';
 
 const { PlayerManager } = require('eris-lavalink');
 
@@ -67,20 +68,24 @@ export class MusicService extends IMService {
 	public cache: MusicCache;
 	private nodes: MusicNode[] = [];
 
-	public platforms: MusicPlatformService;
+	private platforms: Map<new (service: MusicService) => MusicPlatform, MusicPlatform> = new Map();
+	private platformNames: Map<string, MusicPlatform> = new Map();
 	private musicConnections: Map<string, MusicConnection> = new Map();
 
 	public async init() {
 		this.cache = this.musicCache;
 
-		this.platforms = new MusicPlatformService(this.client);
-		await this.platforms.init();
+		for (const [name, clazz] of platforms) {
+			const platform = new clazz(this);
+			this.platforms.set(clazz, platform);
+			this.platformNames.set(name.toLowerCase(), platform);
+			console.log(`Registered music platform ${chalk.blue(clazz.name)} as ${chalk.blue(name)}`);
+		}
 	}
 
 	public async onClientReady() {
 		if (!this.client.hasStarted) {
 			await this.loadMusicNodes();
-			await this.platforms.onClientReady();
 		}
 
 		await super.onClientReady();
@@ -103,6 +108,21 @@ export class MusicService extends IMService {
 			defaultRegion: 'eu',
 			failoverLimit: 2
 		});
+	}
+
+	public getPlatform<T extends MusicPlatform>(clazz: new (service: MusicService) => T): T {
+		return this.platforms.get(clazz) as any;
+	}
+	public getPlatformByName(name: string) {
+		return this.platformNames.get(name.toLowerCase());
+	}
+
+	public getPlatformForLink(link: string): MusicPlatform | undefined {
+		for (const v of this.platforms.values()) {
+			if (v.isPlatformUrl(link)) {
+				return v;
+			}
+		}
 	}
 
 	public async getMusicConnection(guild: Guild) {

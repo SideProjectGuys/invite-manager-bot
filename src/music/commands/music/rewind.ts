@@ -26,12 +26,7 @@ export default class extends IMMusicCommand {
 		const musicPlatform: MusicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsRewind) {
-			await this.sendReply(
-				message,
-				t('cmd.rewind.notSupported', {
-					platform: musicPlatform.getType()
-				})
-			);
+			await this.sendReply(message, t('cmd.rewind.notSupported', { platform: musicPlatform.name }));
 			return;
 		}
 

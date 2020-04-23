@@ -34,12 +34,7 @@ export default class extends IMMusicCommand {
 		const musicPlatform: MusicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsSeek) {
-			await this.sendReply(
-				message,
-				t('cmd.seek.notSupported', {
-					platform: musicPlatform.getType()
-				})
-			);
+			await this.sendReply(message, t('cmd.seek.notSupported', { platform: musicPlatform.name }));
 			return;
 		}
 
