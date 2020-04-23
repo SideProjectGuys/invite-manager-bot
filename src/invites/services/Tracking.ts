@@ -9,14 +9,15 @@ import { InviteCodeSettingsCache } from '../../framework/cache/InviteCodeSetting
 import { PremiumCache } from '../../framework/cache/Premium';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
+import { InviteCode } from '../../framework/models/InviteCode';
 import { DatabaseService } from '../../framework/services/Database';
 import { RabbitMqService } from '../../framework/services/RabbitMq';
 import { IMService } from '../../framework/services/Service';
-import { BasicMember, GuildPermission } from '../../types';
+import { BasicMember, GuildFeature, GuildPermission, VanityInvite } from '../../types';
 import { deconstruct } from '../../util';
 import { InvitesCache } from '../cache/InvitesCache';
 import { RanksCache } from '../cache/RanksCache';
-import { VanityUrlCache } from '../cache/VanityUrlCache';
+import { VanityCache } from '../cache/VanityCache';
 import { InvitesGuildSettings } from '../models/GuildSettings';
 import { InvitesInviteCodeSettings } from '../models/InviteCodeSettings';
 import { JoinInvalidatedReason } from '../models/Join';
@@ -27,6 +28,28 @@ import { RanksService } from './Ranks';
 const GUILDS_IN_PARALLEL = os.cpus().length;
 const INVITE_CREATE = 40;
 
+interface InviteStore {
+	uses: number;
+	maxUses: number;
+	inviterId: string | null;
+	channelId: string | null;
+}
+
+interface GuildInviteStore {
+	lastUpdate: number;
+	invites: Map<string, InviteStore>;
+}
+
+type NewInviteCode = InviteCode & { type: 'n' };
+type UpdatedInviteCode = {
+	type: 'u';
+	code: string;
+	uses: number;
+	inviterId: string | null;
+	channelId: string | null;
+	isVanity: boolean;
+};
+
 export class TrackingService extends IMService {
 	@Service() private db: DatabaseService;
 	@Service() private ranks: RanksService;
@@ -36,16 +59,13 @@ export class TrackingService extends IMService {
 	@Cache() private premiumCache: PremiumCache;
 	@Cache() private ranksCache: RanksCache;
 	@Cache() private invitesCache: InvitesCache;
-	@Cache() private vanityCache: VanityUrlCache;
+	@Cache() private vanityCache: VanityCache;
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
 	public pendingGuilds: Set<string> = new Set();
 	public initialPendingGuilds: number = 0;
 
-	private inviteStore: {
-		[guildId: string]: { [code: string]: { uses: number; maxUses: number } };
-	} = {};
-	private inviteStoreUpdate: { [guildId: string]: number } = {};
+	private inviteStore: Map<string, GuildInviteStore> = new Map();
 
 	public async onClientReady() {
 		this.client.on('inviteCreate', this.onInviteCreate.bind(this));
@@ -69,20 +89,20 @@ export class TrackingService extends IMService {
 		// Fetch all invites from DB
 		const allCodes = await this.db.getAllInviteCodesForGuilds(allGuilds.map((g) => g.id));
 
-		// Initialize our cache for each guild, so we
-		// don't need to do any if checks later
+		// Initialize our cache for each guild, so we don't need to do any if checks later
 		allGuilds.forEach((guild) => {
 			this.pendingGuilds.add(guild.id);
-			this.inviteStore[guild.id] = {};
+			this.inviteStore.set(guild.id, { lastUpdate: 0, invites: new Map() });
 		});
 
 		// Update our cache to match the DB
-		allCodes.forEach(
-			(inv) =>
-				(this.inviteStore[inv.guildId][inv.code] = {
-					uses: inv.uses,
-					maxUses: inv.maxUses
-				})
+		allCodes.forEach((inv) =>
+			this.inviteStore.get(inv.guildId).invites.set(inv.code, {
+				uses: inv.uses,
+				maxUses: inv.maxUses,
+				inviterId: inv.inviterId,
+				channelId: inv.channelId
+			})
 		);
 
 		this.initialPendingGuilds = allGuilds.length;
@@ -339,101 +359,168 @@ export class TrackingService extends IMService {
 			return;
 		}
 
-		let invs = await guild.getInvites().catch(() => [] as Invite[]);
-		const lastUpdate = this.inviteStoreUpdate[guild.id];
-		const newInvs = this.getInviteCounts(invs);
-		const oldInvs = this.inviteStore[guild.id];
+		const usedInviteCodes: (NewInviteCode | UpdatedInviteCode)[] = [];
+		const invStore = this.inviteStore.get(guild.id);
 
-		this.inviteStore[guild.id] = newInvs;
-		this.inviteStoreUpdate[guild.id] = Date.now();
-
-		if (!oldInvs) {
-			console.error('Invite cache for guild ' + guild.id + ' was undefined when adding member ' + member.id);
+		if (!invStore) {
+			console.error('Invite store for guild ' + guild.id + ' was undefined when adding member ' + member.id);
 			return;
 		}
 
-		let exactMatchCode: string = null;
-		let inviteCodesUsed = this.compareInvites(oldInvs, newInvs);
+		// Check vanity first if applicable
+		if (guild.features.includes(GuildFeature.VANITY_URL)) {
+			const newInv = (await guild.getVanity().catch(() => null)) as VanityInvite;
+			const oldInv = invStore.invites.get(newInv.code);
+
+			if (newInv && newInv.uses > (oldInv ? oldInv.uses : 0)) {
+				invStore.invites.set(newInv.code, { uses: newInv.uses, maxUses: 0, inviterId: null, channelId: null });
+
+				if (oldInv) {
+					usedInviteCodes.push({
+						type: 'u',
+						code: newInv.code,
+						uses: newInv.uses,
+						inviterId: null,
+						channelId: null,
+						isVanity: true
+					});
+				} else {
+					usedInviteCodes.push({
+						type: 'n',
+						createdAt: new Date(),
+						code: newInv.code,
+						guildId: guild.id,
+						channelId: null,
+						inviterId: null,
+						maxAge: 0,
+						maxUses: 0,
+						uses: newInv.uses,
+						temporary: false,
+						clearedAmount: 0,
+						isVanity: true,
+						isWidget: false
+					});
+				}
+			}
+		}
+
+		if (usedInviteCodes.length === 0) {
+			const newInvs = await guild.getInvites().catch(() => [] as Invite[]);
+
+			for (const newInv of newInvs) {
+				const oldInv = invStore.invites.get(newInv.code);
+				if (!oldInv || oldInv.uses < newInv.uses) {
+					// We always update any invite codes that changed
+					invStore.invites.set(newInv.code, {
+						uses: newInv.uses,
+						maxUses: newInv.maxUses,
+						inviterId: newInv.inviter ? newInv.inviter.id : null,
+						channelId: newInv.channel ? newInv.channel.id : null
+					});
+
+					if (oldInv) {
+						usedInviteCodes.push({
+							type: 'u',
+							code: newInv.code,
+							uses: newInv.uses,
+							inviterId: newInv.inviter ? newInv.inviter.id : null,
+							channelId: newInv.channel ? newInv.channel.id : null,
+							isVanity: false
+						});
+					} else {
+						usedInviteCodes.push({
+							type: 'n',
+							createdAt: newInv.createdAt ? new Date(newInv.createdAt) : new Date(),
+							code: newInv.code,
+							guildId: guild.id,
+							inviterId: newInv.inviter ? newInv.inviter.id : null,
+							channelId: newInv.channel ? newInv.channel.id : null,
+							maxAge: newInv.maxAge,
+							maxUses: newInv.maxUses,
+							uses: newInv.uses,
+							temporary: newInv.temporary,
+							clearedAmount: 0,
+							isVanity: false,
+							isWidget: false
+						});
+					}
+				}
+			}
+
+			// Save the fact that we updated all our codes (for the audit logs check)
+			invStore.lastUpdate = Date.now();
+
+			// If we can't find any code then look for an invite that wasn't returned in the new list
+			// and was one use before maxUses in the old list and assume that it is now gone
+			if (usedInviteCodes.length === 0) {
+				for (const [oldInvCode, oldInvStore] of invStore.invites.entries()) {
+					if (oldInvStore.uses === oldInvStore.maxUses - 1 && !newInvs.some((newInv) => newInv.code === oldInvCode)) {
+						invStore.invites.delete(oldInvCode);
+						usedInviteCodes.push({
+							type: 'u',
+							code: oldInvCode,
+							uses: oldInvStore.maxUses,
+							inviterId: oldInvStore.inviterId,
+							channelId: oldInvStore.channelId,
+							isVanity: false
+						});
+					}
+				}
+			}
+		}
 
 		if (
-			inviteCodesUsed.length === 0 &&
+			usedInviteCodes.length === 0 &&
 			guild.members.get(this.client.user.id).permission.has(GuildPermission.VIEW_AUDIT_LOGS)
 		) {
-			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
-
-			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null as GuildAuditLog);
+			const logs = (await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null)) as GuildAuditLog;
 			if (logs && logs.entries.length) {
-				const createdCodes = logs.entries
-					.filter((e) => deconstruct(e.id) > lastUpdate && newInvs[e.after.code] === undefined)
-					.map((e) => ({
-						code: e.after.code,
-						channel: {
-							id: e.after.channel_id,
-							name: (e.guild.channels.get(e.after.channel_id) || {}).name
-						},
-						guild: e.guild,
-						inviter: e.user,
-						uses: (e.after.uses as number) + 1,
-						maxUses: e.after.max_uses,
-						maxAge: e.after.max_age,
-						temporary: e.after.temporary,
-						createdAt: deconstruct(e.id)
-					}));
-				inviteCodesUsed = inviteCodesUsed.concat(createdCodes.map((c) => c.code));
-				invs = invs.concat(createdCodes as any);
-			}
-		}
+				const createdCode = logs.entries.find(
+					(e) => deconstruct(e.id) > invStore.lastUpdate && invStore.invites.get(e.after.code) === undefined
+				);
 
-		let isVanity = false;
-		if (inviteCodesUsed.length === 0) {
-			const vanityInv = await this.vanityCache.get(guild.id);
-			if (vanityInv) {
-				isVanity = true;
-				inviteCodesUsed.push(vanityInv);
-				invs.push({
-					code: vanityInv,
-					channel: null,
-					guild,
-					inviter: null,
-					uses: 0,
-					maxUses: 0,
-					maxAge: 0,
-					temporary: false,
-					vanity: true
-				} as any);
-			}
-		}
-
-		if (inviteCodesUsed.length === 0) {
-			console.error(
-				`NO USED INVITE CODE FOUND: g:${guild.id} | m: ${member.id} ` +
-					`| t:${member.joinedAt} | invs: ${JSON.stringify(newInvs)} ` +
-					`| oldInvs: ${JSON.stringify(oldInvs)}`
-			);
-		}
-
-		if (inviteCodesUsed.length === 1) {
-			exactMatchCode = inviteCodesUsed[0];
-		}
-
-		const updatedCodes: string[] = [];
-		// These are all used codes, and all new codes combined.
-		const newAndUsedCodes = inviteCodesUsed
-			.map((code) => {
-				const inv = invs.find((i) => i.code === code);
-				if (inv) {
-					return inv;
+				if (createdCode) {
+					invStore.invites.set(createdCode.after.code, {
+						uses: createdCode.after.uses,
+						maxUses: createdCode.after.max_uses,
+						inviterId: createdCode.user.id,
+						channelId: createdCode.after.channel_id
+					});
+					usedInviteCodes.push({
+						type: 'n',
+						createdAt: new Date(deconstruct(createdCode.id)),
+						code: createdCode.after.code,
+						guildId: createdCode.guild.id,
+						channelId: createdCode.after.channel_id,
+						inviterId: createdCode.user.id,
+						maxAge: createdCode.after.max_age,
+						maxUses: createdCode.after.max_uses,
+						uses: (createdCode.after.uses as number) + 1,
+						temporary: createdCode.after.temporary,
+						clearedAmount: 0,
+						isVanity: false,
+						isWidget: false
+					});
 				}
-				updatedCodes.push(code);
-				return null;
-			})
-			.filter((inv) => !!inv)
-			.concat(invs.filter((inv) => !oldInvs[inv.code]));
+			}
+		}
 
-		// We need the members and channels in the DB for the invite codes
-		const newMembers = newAndUsedCodes
-			.map((inv) => inv.inviter)
-			.filter((inv) => !!inv)
+		if (usedInviteCodes.length === 0) {
+			console.error(`NO USED INVITE CODE FOUND: g: ${guild.id} | m: ${member.id} | t: ${member.joinedAt}`);
+		}
+
+		let exactMatchCode: string = null;
+		if (usedInviteCodes.length === 1) {
+			exactMatchCode = usedInviteCodes[0].code;
+		}
+
+		const newCodes = usedInviteCodes.filter((c) => c.type === 'n') as NewInviteCode[];
+		const updatedCodes = usedInviteCodes.filter((c) => c.type === 'u') as UpdatedInviteCode[];
+
+		// Insert any new members
+		const newMembers = newCodes
+			.map((inv) => this.client.users.get(inv.inviterId))
+			.filter((user) => !!user)
 			.concat(member.user) // Add invitee
 			.map((m) => ({
 				id: m.id,
@@ -445,9 +532,9 @@ export class TrackingService extends IMService {
 			await this.db.saveMembers(newMembers);
 		}
 
-		const newChannels = newAndUsedCodes
-			.map((inv) => inv.channel)
-			.filter((c) => !!c)
+		const newChannels = newCodes
+			.map((inv) => guild.channels.get(inv.channelId))
+			.filter((channel) => !!channel)
 			.map((channel) => ({
 				id: channel.id,
 				guildId: guild.id,
@@ -457,30 +544,17 @@ export class TrackingService extends IMService {
 			await this.db.saveChannels(newChannels);
 		}
 
-		const codes = newAndUsedCodes.map((inv) => ({
-			createdAt: inv.createdAt ? new Date(inv.createdAt) : new Date(),
-			code: inv.code,
-			channelId: inv.channel ? inv.channel.id : null,
-			isNative: !inv.inviter || inv.inviter.id !== this.client.user.id,
-			maxAge: inv.maxAge,
-			maxUses: inv.maxUses,
-			uses: inv.uses,
-			temporary: inv.temporary,
-			guildId: guild.id,
-			inviterId: inv.inviter ? inv.inviter.id : null,
-			clearedAmount: 0,
-			isVanity: !!(inv as any).vanity,
-			isWidget: !inv.inviter && !(inv as any).vanity
-		}));
-
 		// Update old invite codes that were used
 		if (updatedCodes.length > 0) {
-			await this.db.incrementInviteCodesUse(guild.id, updatedCodes);
+			await this.db.incrementInviteCodesUse(
+				guild.id,
+				updatedCodes.map((c) => c.code)
+			);
 		}
 
-		// We need the invite codes in the DB for the join
-		if (codes.length > 0) {
-			await this.db.saveInviteCodes(codes);
+		// Insert new invite codes that we don't have yet
+		if (newCodes.length > 0) {
+			await this.db.saveInviteCodes(newCodes);
 		}
 
 		// Insert the join
@@ -537,13 +611,13 @@ export class TrackingService extends IMService {
 			removedLeaves = affected;
 		}
 
-		const invite = newAndUsedCodes.find((c) => c.code === exactMatchCode);
+		const invite = usedInviteCodes.find((c) => c.code === exactMatchCode);
 
 		// Exit if we can't find the invite code used
-		if (!invite) {
+		if (invite && invite.isVanity) {
 			if (joinChannel) {
 				joinChannel
-					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinUnknownInviter' }, { id: member.id }))
+					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinVanityUrl' }, { id: member.id }))
 					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
@@ -553,10 +627,10 @@ export class TrackingService extends IMService {
 					});
 			}
 			return;
-		} else if (isVanity) {
+		} else if (!invite || !invite.inviterId) {
 			if (joinChannel) {
 				joinChannel
-					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinVanityUrl' }, { id: member.id }))
+					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinUnknownInviter' }, { id: member.id }))
 					.catch(async (err) => {
 						// Missing permissions
 						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
@@ -579,25 +653,8 @@ export class TrackingService extends IMService {
 			newFakes = affected;
 		}
 
-		// Check if it's a server widget
-		if (!invite.inviter) {
-			if (joinChannel) {
-				joinChannel
-					.createMessage(i18n.__({ locale: lang, phrase: 'messages.joinServerWidget' }, { id: member.id }))
-					.catch(async (err) => {
-						// Missing permissions
-						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
-							// Reset the channel
-							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
-						}
-					});
-			}
-			return;
-		}
-
-		const invitesCached = this.invitesCache.hasOne(guild.id, invite.inviter.id);
-
-		const invites = await this.invitesCache.getOne(guild.id, invite.inviter.id);
+		const invitesCached = this.invitesCache.hasOne(guild.id, invite.inviterId);
+		const invites = await this.invitesCache.getOne(guild.id, invite.inviterId);
 
 		if (invitesCached) {
 			invites.regular++;
@@ -607,19 +664,14 @@ export class TrackingService extends IMService {
 		}
 
 		// Add any roles for this invite code
-		if (exactMatchCode) {
-			const invCodeSettings = await this.inviteCodeSettingsCache.getOne<InvitesInviteCodeSettings>(
-				guild.id,
-				exactMatchCode
-			);
-			if (invCodeSettings && invCodeSettings.roles) {
-				invCodeSettings.roles.forEach((r) => member.addRole(r));
-			}
+		const invCodeSettings = await this.inviteCodeSettingsCache.getOne<InvitesInviteCodeSettings>(guild.id, invite.code);
+		if (invCodeSettings && invCodeSettings.roles) {
+			invCodeSettings.roles.forEach((r) => member.addRole(r));
 		}
 
-		let inviter = guild.members.get(invite.inviter.id);
-		if (!inviter && invite.inviter) {
-			inviter = await guild.getRESTMember(invite.inviter.id).catch(() => undefined);
+		let inviter = guild.members.get(invite.inviterId);
+		if (!inviter && invite.inviterId) {
+			inviter = await guild.getRESTMember(invite.inviterId).catch(() => undefined);
 		}
 
 		if (inviter) {
@@ -636,9 +688,13 @@ export class TrackingService extends IMService {
 
 		const joinMessageFormat = sets.joinMessage;
 		if (joinChannel && joinMessageFormat) {
-			const msg = await this.invs.fillJoinLeaveTemplate(joinMessageFormat, guild, member, invites, {
-				invite,
-				inviter: inviter || { user: invite.inviter }
+			const channel = guild.channels.get(invite.channelId);
+			const msg = await this.invs.fillJoinLeaveTemplate(joinMessageFormat, {
+				guild,
+				member,
+				invites,
+				invite: { code: invite.code, channel },
+				inviter
 			});
 
 			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async (err) => {
@@ -784,7 +840,10 @@ export class TrackingService extends IMService {
 
 		const leaveMessageFormat = sets.leaveMessage;
 		if (leaveChannel && leaveMessageFormat) {
-			const msg = await this.invs.fillJoinLeaveTemplate(leaveMessageFormat, guild, member, invites, {
+			const msg = await this.invs.fillJoinLeaveTemplate(leaveMessageFormat, {
+				guild,
+				member,
+				invites,
 				invite: {
 					code: inviteCode,
 					channel: {
@@ -814,31 +873,45 @@ export class TrackingService extends IMService {
 		// Get the invites
 		const invs = await guild.getInvites().catch(() => [] as Invite[]);
 
-		// Filter out new invite codes
-		const newInviteCodes = invs.filter(
-			(inv) => this.inviteStore[inv.guild.id] === undefined || this.inviteStore[inv.guild.id][inv.code] === undefined
-		);
+		let invStore = this.inviteStore.get(guild.id);
+
+		// Filter out new invite codes. If we don't have an invite store yet this guild is probably new
+		const newInviteCodes = invs.filter((inv) => !invStore || !this.inviteStore.get(guild.id).invites.get(inv.code));
 
 		// Update our local cache
-		this.inviteStore[guild.id] = this.getInviteCounts(invs);
-		this.inviteStoreUpdate[guild.id] = Date.now();
+		if (!invStore) {
+			invStore = { lastUpdate: Date.now(), invites: new Map() };
+			this.inviteStore.set(guild.id, invStore);
+		}
+
+		for (const newInv of invs) {
+			invStore.invites.set(newInv.code, {
+				uses: newInv.uses,
+				maxUses: newInv.maxUses,
+				inviterId: newInv.inviter ? newInv.inviter.id : null,
+				channelId: newInv.channel ? newInv.channel.id : null
+			});
+		}
 
 		// Collect concurrent promises
 		const promises: any[] = [];
 
-		const vanityInv = await this.vanityCache.get(guild.id);
-		if (vanityInv) {
-			newInviteCodes.push({
-				code: vanityInv,
-				channel: null,
-				guild,
-				inviter: null,
-				uses: 0,
-				maxUses: 0,
-				maxAge: 0,
-				temporary: false,
-				vanity: true
-			} as any);
+		// Check the vanity invite if we have one
+		if (guild.features.includes(GuildFeature.VANITY_URL)) {
+			const vanityInv = (await guild.getVanity().catch(() => null)) as VanityInvite;
+			if (vanityInv) {
+				newInviteCodes.push({
+					code: vanityInv.code,
+					channel: null,
+					guild,
+					inviter: null,
+					uses: vanityInv.uses,
+					maxUses: 0,
+					maxAge: 0,
+					temporary: false,
+					vanity: true
+				} as any);
+			}
 		}
 
 		// Add all new inviters to db
@@ -891,40 +964,6 @@ export class TrackingService extends IMService {
 		if (codes.length > 0) {
 			await this.db.saveInviteCodes(codes);
 		}
-	}
-
-	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
-		const localInvites: {
-			[key: string]: { uses: number; maxUses: number };
-		} = {};
-		invites.forEach((value) => {
-			localInvites[value.code] = { uses: value.uses, maxUses: value.maxUses };
-		});
-		return localInvites;
-	}
-
-	private compareInvites(
-		oldObj: { [key: string]: { uses: number; maxUses: number } },
-		newObj: { [key: string]: { uses: number; maxUses: number } }
-	): string[] {
-		const inviteCodesUsed: string[] = [];
-		Object.keys(newObj).forEach((key) => {
-			if (
-				newObj[key].uses !== 0 /* ignore new empty invites */ &&
-				(!oldObj[key] || oldObj[key].uses < newObj[key].uses)
-			) {
-				inviteCodesUsed.push(key);
-			}
-		});
-		// Only check for max uses if we can't find any others
-		if (inviteCodesUsed.length === 0) {
-			Object.keys(oldObj).forEach((key) => {
-				if (!newObj[key] && oldObj[key].uses === oldObj[key].maxUses - 1) {
-					inviteCodesUsed.push(key);
-				}
-			});
-		}
-		return inviteCodesUsed;
 	}
 
 	public getStatus() {

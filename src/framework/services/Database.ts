@@ -282,7 +282,11 @@ export class DatabaseService extends IMService {
 	//   InviteCode
 	// --------------
 	public async getAllInviteCodesForGuilds(guildIds: string[]) {
-		return this.findManyOnSpecificShards<InviteCode>(TABLE.inviteCodes, '`guildId` IN(?)', guildIds);
+		return this.findManyOnSpecificShards<InviteCode>(
+			TABLE.inviteCodes,
+			'`guildId` IN(?) AND (maxUses = 0 OR uses < maxUses)',
+			guildIds
+		);
 	}
 	public async getInviteCodesForGuild(guildId: string) {
 		const [db, pool] = this.getDbInfo(guildId);

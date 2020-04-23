@@ -4,7 +4,7 @@ import { IMModule } from '../framework/Module';
 import { InvitesCache } from './cache/InvitesCache';
 import { LeaderboardCache } from './cache/LeaderboardCache';
 import { RanksCache } from './cache/RanksCache';
-import { VanityUrlCache } from './cache/VanityUrlCache';
+import { VanityCache } from './cache/VanityCache';
 import './models/GuildSettings';
 import './models/InviteCodeSettings';
 import './models/MemberSettings';
@@ -23,6 +23,6 @@ export class InviteModule extends IMModule {
 		this.registerCache(InvitesCache);
 		this.registerCache(LeaderboardCache);
 		this.registerCache(RanksCache);
-		this.registerCache(VanityUrlCache);
+		this.registerCache(VanityCache);
 	}
 }

@@ -33,6 +33,9 @@ export interface LeaderboardEntry {
 }
 
 export interface JoinLeaveTemplateData {
+	guild: Guild;
+	member: Member;
+	invites: InviteCounts;
 	invite: BasicInvite;
 	inviter: BasicMember;
 }
@@ -164,10 +167,7 @@ export class InvitesService extends IMService {
 
 	public async fillJoinLeaveTemplate(
 		template: string,
-		guild: Guild,
-		member: Member,
-		invites: InviteCounts,
-		{ invite, inviter }: JoinLeaveTemplateData
+		{ guild, member, invites, invite, inviter }: JoinLeaveTemplateData
 	): Promise<string | Embed> {
 		if (typeof template !== 'string') {
 			template = JSON.stringify(template);
@@ -230,8 +230,8 @@ export class InvitesService extends IMService {
 				numFakeInvites: `${invites.fake}`,
 				numLeaveInvites: `${invites.leave}`,
 				memberCount: `${guild.memberCount}`,
-				channelMention: `<#${invite.channel.id}>`,
-				channelName: invite.channel.name
+				channelMention: invite.channel ? `<#${invite.channel.id}>` : '',
+				channelName: invite.channel ? invite.channel.name : ''
 			},
 			{
 				memberCreated: createdAt,

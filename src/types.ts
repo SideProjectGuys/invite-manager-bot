@@ -81,6 +81,11 @@ export interface BasicUser {
 	discriminator: string;
 }
 
+export interface VanityInvite {
+	code: string;
+	uses: number;
+}
+
 export interface BasicInvite {
 	code: string;
 	channel: {
@@ -88,6 +93,7 @@ export interface BasicInvite {
 		name: string;
 	};
 }
+
 export interface BasicMember {
 	nick?: string;
 	user: {
