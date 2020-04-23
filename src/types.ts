@@ -96,10 +96,5 @@ export interface BasicInvite {
 
 export interface BasicMember {
 	nick?: string;
-	user: {
-		id: string;
-		username: string;
-		discriminator: string;
-		avatarURL: string;
-	};
+	user: BasicUser;
 }

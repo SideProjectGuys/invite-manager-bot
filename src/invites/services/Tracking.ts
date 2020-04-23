@@ -688,13 +688,26 @@ export class TrackingService extends IMService {
 
 		const joinMessageFormat = sets.joinMessage;
 		if (joinChannel && joinMessageFormat) {
+			const inviteMember =
+				inviter ||
+				(await this.db.getMember(guild.id, invite.inviterId).then((m) => ({
+					nick: null,
+					user: {
+						id: m.id,
+						createdAt: m.createdAt.getTime(),
+						username: m.name,
+						discriminator: m.discriminator,
+						avatarURL: null
+					}
+				})));
+
 			const channel = guild.channels.get(invite.channelId);
 			const msg = await this.invs.fillJoinLeaveTemplate(joinMessageFormat, {
 				guild,
 				member,
 				invites,
 				invite: { code: invite.code, channel },
-				inviter
+				inviter: inviteMember
 			});
 
 			await joinChannel.createMessage(typeof msg === 'string' ? msg : { embed: msg }).catch(async (err) => {
@@ -797,8 +810,10 @@ export class TrackingService extends IMService {
 		}
 		if (!inviter) {
 			inviter = {
+				nick: null,
 				user: {
 					id: inviterId,
+					createdAt: deconstruct(inviterId),
 					username: inviterName,
 					discriminator: inviterDiscriminator,
 					avatarURL: null
