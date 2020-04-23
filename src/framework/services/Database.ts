@@ -84,8 +84,6 @@ export class DatabaseService extends IMService {
 		return getShardIdForGuild(guildId, this.dbCount);
 	}
 
-	// public getTableForClass<T>(clazz: new (...args: any[]) => T) {}
-
 	public async findOne<T>(shard: number | string, table: string, where: string, values: any[]): Promise<T> {
 		const [db, pool] = this.getDbInfo(shard);
 		const [rows] = await pool.query<RowDataPacket[]>(

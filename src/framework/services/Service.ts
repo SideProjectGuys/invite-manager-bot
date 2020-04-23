@@ -1,3 +1,5 @@
+import { Guild } from 'eris';
+
 import { IMClient } from '../../client';
 
 export abstract class IMService {
@@ -15,5 +17,12 @@ export abstract class IMService {
 	}
 	protected startupDone() {
 		this.client.serviceStartupDone(this);
+	}
+
+	public async getDiagnose(guild: Guild): Promise<any> {
+		// NO-OP
+	}
+	public getStatus(): any {
+		// NO-OP
 	}
 }

@@ -926,4 +926,57 @@ export class TrackingService extends IMService {
 		}
 		return inviteCodesUsed;
 	}
+
+	public getStatus() {
+		return {
+			pendingGuilds: this.pendingGuilds.size,
+			initialPendingGuilds: this.initialPendingGuilds
+		};
+	}
+
+	public async getDiagnose(guild: Guild) {
+		const sets = await this.guildSettingsCache.get<InvitesGuildSettings>(guild.id);
+
+		let joinChannelPerms: { [key: string]: boolean } = {};
+		if (sets.joinMessageChannel) {
+			const joinChannel = guild.channels.get(sets.joinMessageChannel);
+			if (joinChannel) {
+				joinChannelPerms = joinChannel.permissionsOf(this.client.user.id).json;
+			} else {
+				joinChannelPerms = { 'Invalid channel': true };
+			}
+		} else {
+			joinChannelPerms = { 'Not set': true };
+		}
+
+		let leaveChannelPerms: { [key: string]: boolean } = {};
+		if (sets.leaveMessageChannel) {
+			const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
+			if (leaveChannel) {
+				leaveChannelPerms = leaveChannel.permissionsOf(this.client.user.id).json;
+			} else {
+				leaveChannelPerms = { 'Invalid channel': true };
+			}
+		} else {
+			leaveChannelPerms = { 'Not set': true };
+		}
+
+		let annChannelPerms: { [key: string]: boolean } = {};
+		if (sets.rankAnnouncementChannel) {
+			const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
+			if (annChannel) {
+				annChannelPerms = annChannel.permissionsOf(this.client.user.id).json;
+			} else {
+				annChannelPerms = { 'Invalid channel': true };
+			}
+		} else {
+			annChannelPerms = { 'Not set': true };
+		}
+
+		return {
+			joinChannelPerms,
+			leaveChannelPerms,
+			announceChannelPerms: annChannelPerms
+		};
+	}
 }

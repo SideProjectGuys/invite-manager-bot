@@ -1,21 +1,13 @@
 import { captureException } from '@sentry/node';
 import { Channel, connect, Connection, Message as MQMessage } from 'amqplib';
 import chalk from 'chalk';
-import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
-import { InvitesGuildSettings } from '../../invites/models/GuildSettings';
-import { TrackingService } from '../../invites/services/Tracking';
-import { MusicService } from '../../music/services/Music';
 import { BotType } from '../../types';
-import { FakeChannel } from '../../util';
 import { GuildSettingsCache } from '../cache/GuildSettings';
 import { PremiumCache } from '../cache/Premium';
 import { Cache } from '../decorators/Cache';
-import { Service } from '../decorators/Service';
 
-import { CommandsService } from './Commands';
-import { MessagingService } from './Messaging';
 import { IMService } from './Service';
 
 interface ShardMessage {
@@ -26,16 +18,11 @@ interface ShardMessage {
 }
 
 enum ShardCommand {
-	CACHE = 'CACHE',
 	CUSTOM = 'CUSTOM',
 	DIAGNOSE = 'DIAGNOSE',
 	FLUSH_CACHE = 'FLUSH_CACHE',
-	SUDO = 'SUDO',
-	OWNER_DM = 'OWNER_DM',
-	USER_DM = 'USER_DM',
 	LEAVE_GUILD = 'LEAVE_GUILD',
-	STATUS = 'STATUS',
-	RELOAD_MUSIC_NODES = 'RELOAD_MUSIC_NODES'
+	STATUS = 'STATUS'
 }
 
 export class RabbitMqService extends IMService {
@@ -52,10 +39,6 @@ export class RabbitMqService extends IMService {
 	private channelRetry: number = 0;
 	private msgQueue: any[] = [];
 
-	@Service() private cmds: CommandsService;
-	@Service() private msgs: MessagingService;
-	@Service() private tracking: TrackingService;
-	@Service() private music: MusicService;
 	@Cache() private guildSettingsCache: GuildSettingsCache;
 	@Cache() private premiumCache: PremiumCache;
 
@@ -262,7 +245,16 @@ export class RabbitMqService extends IMService {
 	}
 
 	public async sendStatusToManager(err?: Error) {
-		await this.sendToManager({
+		const req = this.client.requestHandler;
+		let channelCount = this.client.groupChannels.size + this.client.privateChannels.size;
+		let roleCount = 0;
+
+		this.client.guilds.forEach((g) => {
+			channelCount += g.channels.size;
+			roleCount += g.roles.size;
+		});
+
+		const data: any = {
 			id: 'status',
 			cmd: ShardCommand.STATUS,
 			state: this.waitingForTicket
@@ -274,13 +266,32 @@ export class RabbitMqService extends IMService {
 				: 'running',
 			startedAt: this.client.startedAt?.toISOString(),
 			gateway: [...this.client.shardsConnected],
-			guilds: this.client.guilds.size,
 			error: err ? err.message : null,
-			tracking: this.getTrackingStatus(),
-			music: this.getMusicStatus(),
-			cache: this.client.getCacheSizes(),
-			metrics: this.getMetrics()
-		});
+			metrics: {
+				...this.client.stats,
+				httpRequests: [...req.requestStats.entries()].map(([url, stats]) => ({ url, stats })),
+				httpRequestsQueued: Object.keys(req.ratelimits)
+					.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
+					.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
+			},
+			service: {},
+			cache: {
+				guilds: this.client.guilds.size,
+				users: this.client.users.size,
+				channels: channelCount,
+				roles: roleCount
+			}
+		};
+
+		for (const [clazz, service] of this.client.services) {
+			data.service[clazz.name.toLowerCase().replace('service', '')] = service.getStatus();
+		}
+
+		for (const [clazz, cache] of this.client.caches) {
+			data.cache[clazz.name.toLowerCase().replace('cache', '')] = cache.getSize();
+		}
+
+		await this.sendToManager(data);
 	}
 
 	private async onShardCommand(msg: MQMessage) {
@@ -320,10 +331,6 @@ export class RabbitMqService extends IMService {
 				});
 				break;
 
-			case ShardCommand.CACHE:
-				await sendResponse(this.client.getCacheSizes());
-				break;
-
 			case ShardCommand.DIAGNOSE:
 				if (!guild) {
 					return sendResponse({
@@ -331,61 +338,26 @@ export class RabbitMqService extends IMService {
 					});
 				}
 
-				const sets = await this.guildSettingsCache.get<InvitesGuildSettings>(guildId);
-				const perms = guild.members.get(this.client.user.id).permission.json;
-
-				let joinChannelPerms: { [key: string]: boolean } = {};
-				if (sets.joinMessageChannel) {
-					const joinChannel = guild.channels.get(sets.joinMessageChannel);
-					if (joinChannel) {
-						joinChannelPerms = joinChannel.permissionsOf(this.client.user.id).json;
-					} else {
-						joinChannelPerms = { 'Invalid channel': true };
-					}
-				} else {
-					joinChannelPerms = { 'Not set': true };
-				}
-
-				let leaveChannelPerms: { [key: string]: boolean } = {};
-				if (sets.leaveMessageChannel) {
-					const leaveChannel = guild.channels.get(sets.leaveMessageChannel);
-					if (leaveChannel) {
-						leaveChannelPerms = leaveChannel.permissionsOf(this.client.user.id).json;
-					} else {
-						leaveChannelPerms = { 'Invalid channel': true };
-					}
-				} else {
-					leaveChannelPerms = { 'Not set': true };
-				}
-
-				let annChannelPerms: { [key: string]: boolean } = {};
-				if (sets.rankAnnouncementChannel) {
-					const annChannel = guild.channels.get(sets.rankAnnouncementChannel);
-					if (annChannel) {
-						annChannelPerms = annChannel.permissionsOf(this.client.user.id).json;
-					} else {
-						annChannelPerms = { 'Invalid channel': true };
-					}
-				} else {
-					annChannelPerms = { 'Not set': true };
-				}
-
 				const owner = await this.client.getRESTUser(guild.ownerID).catch(() => undefined);
-
+				const settings = await this.guildSettingsCache.get(guild.id);
+				const perms = guild.members.get(this.client.user.id).permission.json;
 				const premium = await this.premiumCache.get(guildId);
-
 				const disabled = this.client.disabledGuilds.has(guildId);
 
-				await sendResponse({
+				const data: any = {
 					owner,
+					settings,
+					perms,
 					premium,
 					disabled,
-					settings: sets,
-					perms,
-					joinChannelPerms,
-					leaveChannelPerms,
-					announceChannelPerms: annChannelPerms
-				});
+					service: {}
+				};
+
+				for (const [clazz, service] of this.client.services) {
+					data.service[clazz.name.toLowerCase().replace('service', '')] = await service.getDiagnose(guild);
+				}
+
+				await sendResponse(data);
 				break;
 
 			case ShardCommand.FLUSH_CACHE:
@@ -394,11 +366,6 @@ export class RabbitMqService extends IMService {
 				this.client.flushCaches(guildId, content.caches);
 
 				await sendResponse({ error: errors.join('\n') });
-				break;
-
-			case ShardCommand.RELOAD_MUSIC_NODES:
-				await this.music.loadMusicNodes();
-				await sendResponse({});
 				break;
 
 			case ShardCommand.LEAVE_GUILD:
@@ -412,108 +379,8 @@ export class RabbitMqService extends IMService {
 				await sendResponse({});
 				break;
 
-			case ShardCommand.SUDO:
-				if (!guild) {
-					return sendResponse({
-						error: 'Guild not found'
-					});
-				}
-
-				const channel = new FakeChannel({ id: 'fake', name: 'fake' }, guild, 100);
-				this.client.channelGuildMap[channel.id] = guild.id;
-				guild.channels.add(channel);
-
-				channel.listener = async (data) => {
-					console.log(data);
-					delete this.client.channelGuildMap[channel.id];
-					guild.channels.remove(channel);
-					await sendResponse({ data });
-				};
-
-				const args = content.args ? content.args.join(' ') : '';
-				const fakeMsg = new Message(
-					{
-						id: content.id,
-						content: `<@!${this.client.user.id}>${content.sudoCmd} ${args}`,
-						channel_id: channel.id,
-						author: this.client.users.get(content.authorId),
-						embeds: [],
-						attachments: [],
-						mentions: []
-					},
-					this.client
-				);
-				(fakeMsg as any).__sudo = true;
-				await this.cmds.onMessage(fakeMsg);
-				break;
-
-			case ShardCommand.OWNER_DM:
-				try {
-					const user = await this.client.getRESTUser(content.userId);
-					const userChannel = await user.getDMChannel();
-					await userChannel.createMessage(content.message);
-					await sendResponse({ ok: true });
-				} catch (e) {
-					await sendResponse({ ok: false, error: e });
-				}
-				break;
-
-			case ShardCommand.USER_DM:
-				const dmChannel = guild.channels.get(content.channelId) as TextChannel;
-				const sender = content.user;
-
-				const embed = this.msgs.createEmbed({
-					author: {
-						name: `${sender.username}#${sender.discriminator}`,
-						url: sender.avatarURL
-					},
-					description: content.message
-				});
-				embed.fields.push({
-					name: 'User ID',
-					value: sender.id,
-					inline: true
-				});
-				embed.fields.push({
-					name: 'Initial message',
-					value: content.isInitial,
-					inline: true
-				});
-
-				await dmChannel.createMessage({
-					embed
-				});
-				break;
-
 			default:
 				console.error(`UNKNOWN COMMAND: ${cmd}`);
 		}
-	}
-
-	private getTrackingStatus() {
-		return {
-			pendingGuilds: this.tracking.pendingGuilds.size,
-			initialPendingGuilds: this.tracking.initialPendingGuilds
-		};
-	}
-	private getMusicStatus() {
-		return {
-			connections: this.music.getMusicConnectionGuildIds()
-		};
-	}
-	private getMetrics() {
-		const req = this.client.requestHandler;
-
-		return {
-			wsEvents: this.client.stats.wsEvents,
-			wsWarnings: this.client.stats.wsWarnings,
-			wsErrors: this.client.stats.wsErrors,
-			cmdProcessed: this.client.stats.cmdProcessed,
-			cmdErrors: this.client.stats.cmdErrors,
-			httpRequests: [...req.requestStats.entries()].map(([url, stats]) => ({ url, stats })),
-			httpRequestsQueued: Object.keys(req.ratelimits)
-				.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
-				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
-		};
 	}
 }

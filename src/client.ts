@@ -69,15 +69,18 @@ export class IMClient extends Client {
 	public shardCount: number;
 	public requestHandler: IMRequestHandler;
 
-	private modules: Map<new (client: IMClient) => IMModule, IMModule>;
-	private services: Map<new (client: IMClient) => IMService, IMService>;
-	private caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
+	public modules: Map<new (client: IMClient) => IMModule, IMModule>;
+	public services: Map<new (client: IMClient) => IMService, IMService>;
+	public caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
 
 	public startedAt: Moment;
 	public shardsConnected: Set<number> = new Set();
 	public activityInterval: NodeJS.Timer;
 	public voiceConnections: LavaPlayerManager;
 	public stats: {
+		shardConnects: number;
+		shardDisconnects: number;
+		shardResumes: number;
 		wsEvents: number;
 		wsWarnings: number;
 		wsErrors: number;
@@ -130,6 +133,9 @@ export class IMClient extends Client {
 		});
 
 		this.stats = {
+			shardConnects: 0,
+			shardDisconnects: 0,
+			shardResumes: 0,
 			wsEvents: 0,
 			wsWarnings: 0,
 			wsErrors: 0,
@@ -597,6 +603,7 @@ export class IMClient extends Client {
 	private async onShardConnect(shardId: number) {
 		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} is connected to the gateway`));
 		this.shardsConnected.add(shardId + 1);
+		this.stats.shardConnects++;
 
 		await this.rabbitMqService.sendStatusToManager();
 	}
@@ -604,6 +611,7 @@ export class IMClient extends Client {
 	private async onShardResume(shardId: number) {
 		console.log(chalk.green(`Shard ${chalk.blue(shardId + 1)} has resumed`));
 		this.shardsConnected.add(shardId + 1);
+		this.stats.shardResumes++;
 
 		await this.rabbitMqService.sendStatusToManager();
 	}
@@ -611,6 +619,7 @@ export class IMClient extends Client {
 	private async onShardDisconnect(err: Error, shardId: number) {
 		console.error(chalk.red(`Shard ${chalk.blue(shardId + 1)} was disconnected: ${err}`));
 		this.shardsConnected.delete(shardId + 1);
+		this.stats.shardDisconnects++;
 
 		await this.rabbitMqService.sendStatusToManager(err);
 	}

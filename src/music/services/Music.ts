@@ -69,9 +69,6 @@ export class MusicService extends IMService {
 
 	public platforms: MusicPlatformService;
 	private musicConnections: Map<string, MusicConnection> = new Map();
-	public getMusicConnectionGuildIds() {
-		return [...this.musicConnections.keys()];
-	}
 
 	public async init() {
 		this.cache = this.musicCache;
@@ -217,5 +214,11 @@ export class MusicService extends IMService {
 
 	public async getGuildSettings(guildId: string) {
 		return this.guildSettingsCache.get<MusicGuildSettings>(guildId);
+	}
+
+	public getStatus() {
+		return {
+			connections: [...this.musicConnections.keys()]
+		};
 	}
 }
