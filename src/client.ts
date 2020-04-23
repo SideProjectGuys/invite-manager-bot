@@ -20,7 +20,6 @@ import { RabbitMqService } from './framework/services/RabbitMq';
 import { IMService } from './framework/services/Service';
 import { SettingsService } from './framework/services/Settings';
 import { InviteModule } from './invites/InvitesModule';
-import { InvitesGuildSettings } from './invites/models/GuildSettings';
 import { ManagementModule } from './management/ManagementModule';
 import { ModerationModule } from './moderation/ModerationModule';
 import { MusicModule } from './music/MusicModule';
@@ -347,11 +346,14 @@ export class IMClient extends Client {
 				}
 			]);
 
+			const newSettings = this.settingsService.getGuildDefaultSettings<any>();
+
+			// TODO: This is not very nice, and probably belongs in the invites module
 			const defChannel = await this.getDefaultChannel(guild);
-			const newSettings = this.settingsService.getGuildDefaultSettings<InvitesGuildSettings>();
 			if (defChannel) {
 				newSettings.joinMessageChannel = defChannel.id;
 			}
+			// End hacky stuff
 
 			await this.settingsService.saveGuildSettings({
 				guildId: guild.id,
