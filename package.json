@@ -7,11 +7,10 @@
 		"start": "cross-env NODE_ENV=dev node scripts/dev-run.js",
 		"debug": "cross-env NODE_ENV=dev node scripts/dev-run.js debug",
 		"build": "tsc",
-		"lint": "tslint --project tsconfig.json --config tslint.json --format stylish",
 		"format": "prettier --write \"src/**/*.ts\" \"docs/**/*.md\" \"README.md\" \"CHANGELOG.md\"",
 		"release": "npm run build && npm run docs && npm run format && standard-version",
 		"nxv": "node ./scripts/npm-exact-versions.js",
-		"docs": "node scripts/generate-docs.js"
+		"docs": "node scripts/generate-docs.js && prettier --write \"docs/**/*.md\""
 	},
 	"husky": {
 		"hooks": {

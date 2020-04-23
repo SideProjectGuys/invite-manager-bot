@@ -17,7 +17,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: 'Other',
+			group: 'Management',
 			botPermissions: [GuildPermission.MANAGE_ROLES],
 			guildOnly: true,
 			defaultAdminOnly: true,

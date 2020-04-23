@@ -39,7 +39,7 @@ export default class extends IMCommand {
 					resolver: DateResolver
 				}
 			],
-			group: 'Other',
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: false,
 			extraExamples: ['!graph joins', '!graph leaves', '!graph usage']

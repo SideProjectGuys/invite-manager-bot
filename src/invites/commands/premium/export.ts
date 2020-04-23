@@ -12,7 +12,7 @@ export default class extends IMCommand {
 		super(client, {
 			name: 'exportLeaderboard',
 			aliases: [],
-			group: 'Premium',
+			group: 'Invites',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			premiumOnly: true

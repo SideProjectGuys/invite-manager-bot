@@ -15,7 +15,7 @@ export enum ActivityType {
 	watching = 'watching'
 }
 
-const BASE_GROUP = 'general';
+const BASE_GROUP = 'custom_bot';
 
 @Settings(Client)
 export class BaseBotSettings {

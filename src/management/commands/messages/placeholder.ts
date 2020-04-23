@@ -31,7 +31,7 @@ export default class extends IMCommand {
 					short: 'e'
 				}
 			],
-			group: 'Other',
+			group: 'Management',
 			botPermissions: [GuildPermission.MANAGE_MESSAGES],
 			guildOnly: true,
 			defaultAdminOnly: true

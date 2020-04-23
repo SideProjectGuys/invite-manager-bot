@@ -12,7 +12,7 @@ type AnyConstructor = new (...args: any[]) => any;
 export type SettingsBaseTypeConstructor = new (...args: any[]) => SettingsBaseClasses;
 
 export const settingsBaseClasses: Map<SettingsBaseTypeConstructor, AnyConstructor[]> = new Map();
-export const settingsClassesProperties: Map<any, Map<string, SettingsInfo<any>>> = new Map();
+export const settingsClassesProperties: Map<AnyConstructor, Map<string, SettingsInfo<any>>> = new Map();
 
 // tslint:disable-next-line: variable-name
 export const Setting = <T>(info: SettingsInfo<T>) => {

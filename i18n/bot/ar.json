@@ -928,7 +928,8 @@
 				"args": {
 					"amount": "The amount of strikes to be added",
 					"member": "The member receiving the strikes",
-					"type": "The type of the violation"
+					"type": "The type of the violation",
+					"reason": "cmd.strike.self.args.reason"
 				},
 				"description": "Add strikes to a user"
 			}
@@ -1152,7 +1153,18 @@
 		},
 		"reactionRole": {
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
-			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!",
+			"self": {
+				"description": "cmd.reactionRole.self.description",
+				"flags": {
+					"remove": "cmd.reactionRole.self.flags.remove"
+				},
+				"args": {
+					"messageId": "cmd.reactionRole.self.args.messageId",
+					"emoji": "cmd.reactionRole.self.args.emoji",
+					"role": "cmd.reactionRole.self.args.role"
+				}
+			}
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
@@ -1167,6 +1179,11 @@
 				}
 			},
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
+		},
+		"exportLeaderboard": {
+			"self": {
+				"description": "cmd.exportLeaderboard.self.description"
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1277,6 +1294,10 @@
 		"invitecode": {
 			"type": "رقم الدعوة",
 			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+		},
+		"platform": {
+			"type": "resolvers.platform.type",
+			"validValues": "resolvers.platform.validValues"
 		}
 	},
 	"settings": {
@@ -1551,6 +1572,12 @@
 					"title": "Platform",
 					"description": "The various platforms used to play music."
 				}
+			},
+			"custom_bot": {
+				"title": "settings.groups.custom_bot.title"
+			},
+			"": {
+				"title": "settings.groups..title"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1668,6 +1695,42 @@
 		"joinRoles": {
 			"title": "Join Roles",
 			"description": "Roles that are assigned to all members when joining."
+		},
+		"activityStatus": {
+			"title": "settings.activityStatus.title",
+			"description": "settings.activityStatus.description"
+		},
+		"activityEnabled": {
+			"title": "settings.activityEnabled.title",
+			"description": "settings.activityEnabled.description"
+		},
+		"activityType": {
+			"title": "settings.activityType.title",
+			"description": "settings.activityType.description"
+		},
+		"activityMessage": {
+			"title": "settings.activityMessage.title",
+			"description": "settings.activityMessage.description"
+		},
+		"activityUrl": {
+			"title": "settings.activityUrl.title",
+			"description": "settings.activityUrl.description"
+		},
+		"embedDefaultColor": {
+			"title": "settings.embedDefaultColor.title",
+			"description": "settings.embedDefaultColor.description"
+		},
+		"name": {
+			"title": "settings.name.title",
+			"description": "settings.name.description"
+		},
+		"roles": {
+			"title": "settings.roles.title",
+			"description": "settings.roles.description"
+		},
+		"hideFromLeaderboard": {
+			"title": "settings.hideFromLeaderboard.title",
+			"description": "settings.hideFromLeaderboard.description"
 		}
 	},
 	"strikeConfig": {

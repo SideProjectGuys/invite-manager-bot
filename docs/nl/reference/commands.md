@@ -85,42 +85,15 @@ Deze argument zou een tijdsduur moeten zijn. De volgende tijdsduren zijn onderst
 
 ## Overview
 
-### Invites
-
-| Command                           | Description                                                | Usage                                                            |
-| --------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
-| [addInvites](#addInvites)         | Voeg toe/verwijder invites van een gebruiker.              | !addInvites \<user\> \<amount\> [reason]                         |
-| [clearInvites](#clearInvites)     | Verwijder alle invites van de server/een gebruiker         | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
-| [createInvite](#createInvite)     | Maak unieke invite codes aan.                              | !createInvite \<name\> [channel]                                 |
-| [info](#info)                     | Zie informatie over een specifieke gebruiker.              | !info \<user\> [details][page]                                   |
-| [inviteCodes](#inviteCodes)       | Krijg een lijst van al jouw invite codes                   | !inviteCodes                                                     |
-| [inviteDetails](#inviteDetails)   | Zie details waar je je invites vandaan komen.              | !inviteDetails [user]                                            |
-| [invites](#invites)               | Zie persoonlijke invites.                                  | !invites [user]                                                  |
-| [leaderboard](#leaderboard)       | Laat de mensen zien met de meeste invites.                 | !leaderboard [page]                                              |
-| [removeInvites](#removeInvites)   | Verwijder een specifieke aantal invites van een gebruiker. | !removeInvites \<user\> \<amount\> [reason]                      |
-| [restoreInvites](#restoreInvites) | Zat alle vorige verwijderde invites terug.                 | !restoreInvites [user]                                           |
-| [subtractFakes](#subtractFakes)   | Verwijder fake invites van alle gebruikers.                | !subtractFakes                                                   |
-| [subtractLeaves](#subtractLeaves) | Verwijder leaves voor alle gebruikers.                     | !subtractLeaves                                                  |
-
-### Ranks
-
-| Command                   | Description                                              | Usage                                |
-| ------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Voeg een nieuwe rank toe.                                | !addRank \<role\> \<invites\> [info] |
-| [fixRanks](#fixRanks)     | Verwijder alle ranken waarvan de rollen verwijderd zijn. | !fixRanks                            |
-| [ranks](#ranks)           | Zie alle ranks.                                          | !ranks [page]                        |
-| [removeRank](#removeRank) | Verwijder een rank.                                      | !removeRank \<rank\>                 |
-
 ### Config
 
-| Command                                 | Description                                                        | Usage                                       |
-| --------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Zie en verander de configuratie van de bot.                        | !botConfig [key][value]                     |
-| [config](#config)                       | Zie en verander de configuratie van de server.                     | !config [key][value]                        |
-| [interactiveConfig](#interactiveConfig) | Interactieve Configuratie                                          | !interactiveConfig                          |
-| [inviteCodeConfig](#inviteCodeConfig)   | Zie en verander de configuratie van de invite codes van de server. | !inviteCodeConfig [key][invitecode] [value] |
-| [memberConfig](#memberConfig)           | Zie en verander de configuratie van de gebruikers van deze server. | !memberConfig [key][user] [value]           |
-| [permissions](#permissions)             | Configureer permissies om commando's te gebruiken.                 | !permissions [cmd][role]                    |
+| Command                               | Description                                                        | Usage                                         |
+| ------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| [botConfig](#botConfig)               | Zie en verander de configuratie van de bot.                        | !botConfig [key][value]                       |
+| [config](#config)                     | Zie en verander de configuratie van de server.                     | !config \<key\> [value]                       |
+| [inviteCodeConfig](#inviteCodeConfig) | Zie en verander de configuratie van de invite codes van de server. | !inviteCodeConfig \<key\> [inviteCode][value] |
+| [memberConfig](#memberConfig)         | Zie en verander de configuratie van de gebruikers van deze server. | !memberConfig \<key\> [user][value]           |
+| [permissions](#permissions)           | Configureer permissies om commando's te gebruiken.                 | !permissions [cmd][role]                      |
 
 ### Info
 
@@ -136,13 +109,33 @@ Deze argument zou een tijdsduur moeten zijn. De volgende tijdsduren zijn onderst
 | [setup](#setup)     | Help met het opzetten van de bot en het controleren van problemen (Bijvoorbeeld nodige permissies) | !setup          |
 | [support](#support) | Krijg een invite link naar onze hulp server.                                                       | !support        |
 
-### Premium
+### Invites
 
-| Command                   | Description                                                                 | Usage             |
-| ------------------------- | --------------------------------------------------------------------------- | ----------------- |
-| [export](#export)         | Exporteer data van InviteManager in een csv bestand.                        | !export \<type\>  |
-| [premium](#premium)       | Informatie over de betaalde versie van InviteManager.                       | !premium [action] |
-| [tryPremium](#tryPremium) | Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd. | !tryPremium       |
+| Command                                 | Description                                                           | Usage                                                            |
+| --------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [addInvites](#addInvites)               | Voeg toe/verwijder invites van een gebruiker.                         | !addInvites \<user\> \<amount\> [reason]                         |
+| [clearInvites](#clearInvites)           | Verwijder alle invites van de server/een gebruiker                    | !clearInvites [-d value\|--date=value][-cb\|--clearbonus] [user] |
+| [createInvite](#createInvite)           | Maak unieke invite codes aan.                                         | !createInvite \<name\> [channel]                                 |
+| [exportLeaderboard](#exportLeaderboard) | cmd.exportLeaderboard.self.description                                | !exportLeaderboard                                               |
+| [graph](#graph)                         | Laat verschillende soorten grafieken zien van je server statistieken. | !graph \<type\> [from][to]                                       |
+| [info](#info)                           | Zie informatie over een specifieke gebruiker.                         | !info \<user\> [details][page]                                   |
+| [inviteCodes](#inviteCodes)             | Krijg een lijst van al jouw invite codes                              | !inviteCodes                                                     |
+| [inviteDetails](#inviteDetails)         | Zie details waar je je invites vandaan komen.                         | !inviteDetails [user]                                            |
+| [invites](#invites)                     | Zie persoonlijke invites.                                             | !invites [user]                                                  |
+| [leaderboard](#leaderboard)             | Laat de mensen zien met de meeste invites.                            | !leaderboard [page]                                              |
+| [removeInvites](#removeInvites)         | Verwijder een specifieke aantal invites van een gebruiker.            | !removeInvites \<user\> \<amount\> [reason]                      |
+| [restoreInvites](#restoreInvites)       | Zat alle vorige verwijderde invites terug.                            | !restoreInvites [user]                                           |
+| [subtractFakes](#subtractFakes)         | Verwijder fake invites van alle gebruikers.                           | !subtractFakes                                                   |
+| [subtractLeaves](#subtractLeaves)       | Verwijder leaves voor alle gebruikers.                                | !subtractLeaves                                                  |
+
+### Management
+
+| Command                             | Description                                                                | Usage                                                       |
+| ----------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [makeMentionable](#makeMentionable) | Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt. | !makeMentionable \<role\>                                   |
+| [mentionRole](#mentionRole)         | Mention een niet mentionable role.                                         | !mentionRole \<role\>                                       |
+| [placeholder](#placeholder)         | Maak een nieuwe of verander een bestaande placeholder bericht.             | !placeholder [-e value\|--edit=value][message]              |
+| [reactionRole](#reactionRole)       | cmd.reactionRole.self.description                                          | !reactionRole [-r\|--remove] \<messageId\> \<emoji\> [role] |
 
 ### Moderation
 
@@ -162,7 +155,7 @@ Deze argument zou een tijdsduur moeten zijn. De volgende tijdsduren zijn onderst
 | [purge](#purge)                       | Verwijder berichten in een kanaal.                                                                                                                                | !purge \<quantity\> [user]                                       |
 | [purgeUntil](#purgeUntil)             | Verwijder berichten in een kanaal tot een specifiek aan berichten.                                                                                                | !purgeUntil \<messageID\>                                        |
 | [softBan](#softBan)                   | Ban en dan unban een gebruiker automatisch van de server.                                                                                                         | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
-| [strike](#strike)                     | Add strikes to a user                                                                                                                                             | !strike \<member\> \<type\> \<amount\>                           |
+| [strike](#strike)                     | Add strikes to a user                                                                                                                                             | !strike \<member\> \<type\> \<amount\> [reason]                  |
 | [strikeConfig](#strikeConfig)         | Configureer waarschuwingen die gegeven zijn door vorige straffen.                                                                                                 | !strikeConfig [violation][strikes]                               |
 | [unban](#unban)                       | Unban een gebruiker                                                                                                                                               | !unban \<user\> [reason]                                         |
 | [unhoist](#unhoist)                   | Voeg een character toe in het begin van alle gebruikers met een speciale character in het begin van hun naam, dan komen zij onderaan de gebruiker lijst te staan. | !unhoist                                                         |
@@ -188,11 +181,21 @@ Deze argument zou een tijdsduur moeten zijn. De volgende tijdsduren zijn onderst
 | [skip](#skip)             | Skip the huidige muziek en speel de volgende muziek af in de wachtrij.                                      | !skip [amount]                                          |
 | [volume](#volume)         | Zet de volume als er een argument is opgegeven, of laat de huidige volume zien.                             | !volume [volume]                                        |
 
-### Other
+### Premium
 
-| Command         | Description                                                           | Usage                      |
-| --------------- | --------------------------------------------------------------------- | -------------------------- |
-| [graph](#graph) | Laat verschillende soorten grafieken zien van je server statistieken. | !graph \<type\> [from][to] |
+| Command                   | Description                                                                 | Usage             |
+| ------------------------- | --------------------------------------------------------------------------- | ----------------- |
+| [premium](#premium)       | Informatie over de betaalde versie van InviteManager.                       | !premium [action] |
+| [tryPremium](#tryPremium) | Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd. | !tryPremium       |
+
+### Ranks
+
+| Command                   | Description                                              | Usage                                |
+| ------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| [addRank](#addRank)       | Voeg een nieuwe rank toe.                                | !addRank \<role\> \<invites\> [info] |
+| [fixRanks](#fixRanks)     | Verwijder alle ranken waarvan de rollen verwijderd zijn. | !fixRanks                            |
+| [ranks](#ranks)           | Zie alle ranks.                                          | !ranks [page]                        |
+| [removeRank](#removeRank) | Verwijder een rank.                                      | !removeRank \<rank\>                 |
 
 <a name='addInvites'></a>
 
@@ -594,7 +597,7 @@ Zie en verander de configuratie van de server.
 ### Usage
 
 ```text
-!config [key] [value]
+!config <key> [value]
 ```
 
 ### Aliases
@@ -603,16 +606,12 @@ Zie en verander de configuratie van de server.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                             | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| -------- | ----------------- | -------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)     | No       | De configuratie instelling die je wilt zien/veranderen. | Gebruik 1 van de volgende waardes: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `defaultMusicPlatform`, `disabledMusicPlatforms`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `getUpdates`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `joinRoles`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
-| value    | [Waarde](#Waarde) | No       | De nieuwe waarde van de instelling.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Argument | Type              | Required | Description                                             | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------- | ----------------- | -------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)     | Yes      | De configuratie instelling die je wilt zien/veranderen. | Gebruik 1 van de volgende waardes: `announcementVoice`, `announceNextSong`, `autoModAllCapsEnabled`, `autoModAllCapsMinCharacters`, `autoModAllCapsPercentageCaps`, `autoModDeleteBotMessage`, `autoModDeleteBotMessageTimeoutInSeconds`, `autoModDisabledForOldMembers`, `autoModDisabledForOldMembersThreshold`, `autoModDuplicateTextEnabled`, `autoModDuplicateTextTimeframeInSeconds`, `autoModEmojisEnabled`, `autoModEmojisMaxNumberOfEmojis`, `autoModEnabled`, `autoModHoistEnabled`, `autoModIgnoredChannels`, `autoModIgnoredRoles`, `autoModInvitesEnabled`, `autoModLinksBlacklist`, `autoModLinksEnabled`, `autoModLinksFollowRedirects`, `autoModLinksWhitelist`, `autoModLogEnabled`, `autoModMentionRolesEnabled`, `autoModMentionRolesMaxNumberOfMentions`, `autoModMentionUsersEnabled`, `autoModMentionUsersMaxNumberOfMentions`, `autoModModeratedChannels`, `autoModModeratedRoles`, `autoModQuickMessagesEnabled`, `autoModQuickMessagesNumberOfMessages`, `autoModQuickMessagesTimeframeInSeconds`, `autoModWordsBlacklist`, `autoModWordsEnabled`, `autoSubtractFakes`, `autoSubtractLeaves`, `autoSubtractLeaveThreshold`, `captchaVerificationFailedMessage`, `captchaVerificationLogEnabled`, `captchaVerificationOnJoin`, `captchaVerificationSuccessMessage`, `captchaVerificationTimeout`, `captchaVerificationWelcomeMessage`, `channels`, `defaultMusicPlatform`, `disabledMusicPlatforms`, `fadeMusicEndDelay`, `fadeMusicOnTalk`, `hideLeftMembersFromLeaderboard`, `ignoredChannels`, `joinMessage`, `joinMessageChannel`, `joinRoles`, `lang`, `leaderboardStyle`, `leaveMessage`, `leaveMessageChannel`, `logChannel`, `modLogChannel`, `modPunishmentBanDeleteMessage`, `modPunishmentKickDeleteMessage`, `modPunishmentMuteDeleteMessage`, `modPunishmentSoftbanDeleteMessage`, `modPunishmentWarnDeleteMessage`, `musicVolume`, `mutedRole`, `prefix`, `rankAnnouncementChannel`, `rankAnnouncementMessage`, `rankAssignmentStyle` |
+| value    | [Waarde](#Waarde) | No       | De nieuwe waarde van de instelling.                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ### Examples
-
-```text
-!config
-```
 
 <a name='createInvite'></a>
 
@@ -689,30 +688,24 @@ Laat de bot de huidige spraakkanaal verlaten.
 !disconnect
 ```
 
-<a name='export'></a>
+<a name='exportLeaderboard'></a>
 
 ---
 
-## !export
+## !exportLeaderboard
 
-Exporteer data van InviteManager in een csv bestand.
+cmd.exportLeaderboard.self.description
 
 ### Usage
 
 ```text
-!export <type>
+!exportLeaderboard
 ```
-
-### Arguments
-
-| Argument | Type          | Required | Description                 | Details                                          |
-| -------- | ------------- | -------- | --------------------------- | ------------------------------------------------ |
-| type     | [Enum](#Enum) | Yes      | De type export wat je wilt. | Gebruik 1 van de volgende waardes: `leaderboard` |
 
 ### Examples
 
 ```text
-!export leaderboard
+!exportLeaderboard
 ```
 
 <a name='fixRanks'></a>
@@ -822,9 +815,9 @@ Zie help.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------- | ------------------- | -------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command  | [Command](#Command) | No       | De commando om gedetailleerde informatie te krijgen. | Gebruik 1 van de volgende waardes: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| Argument | Type                | Required | Description                                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------- | ------------------- | -------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command  | [Command](#Command) | No       | De commando om gedetailleerde informatie te krijgen. | Gebruik 1 van de volgende waardes: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `exportLeaderboard`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `placeholder`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `reactionRole`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
 
 ### Examples
 
@@ -884,30 +877,6 @@ Zie informatie over een specifieke gebruiker.
 !info @User members 4
 ```
 
-<a name='interactiveConfig'></a>
-
----
-
-## !interactiveConfig
-
-Interactieve Configuratie
-
-### Usage
-
-```text
-!interactiveConfig
-```
-
-### Aliases
-
-- `!ic`
-
-### Examples
-
-```text
-!interactiveConfig
-```
-
 <a name='inviteCodeConfig'></a>
 
 ---
@@ -919,7 +888,7 @@ Zie en verander de configuratie van de invite codes van de server.
 ### Usage
 
 ```text
-!inviteCodeConfig [key] [inviteCode] [value]
+!inviteCodeConfig <key> [inviteCode] [value]
 ```
 
 ### Aliases
@@ -929,17 +898,13 @@ Zie en verander de configuratie van de invite codes van de server.
 
 ### Arguments
 
-| Argument   | Type                       | Required | Description                                                | Details                                            |
-| ---------- | -------------------------- | -------- | ---------------------------------------------------------- | -------------------------------------------------- |
-| key        | [Enum](#Enum)              | No       | De configuratie instelling die je wilt zien/veranderen.    | Gebruik 1 van de volgende waardes: `name`, `roles` |
-| inviteCode | [Invite Code](#InviteCode) | No       | De invite code waarvan je de instellingen wilt veranderen. |                                                    |
-| value      | [Waarde](#Waarde)          | No       | De nieuwe waarde van de instelling.                        |                                                    |
+| Argument   | Type                       | Required | Description                                                | Details                                                                   |
+| ---------- | -------------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------------------------------- |
+| key        | [Enum](#Enum)              | Yes      | De configuratie instelling die je wilt zien/veranderen.    | Gebruik 1 van de volgende waardes: `hideFromLeaderboard`, `name`, `roles` |
+| inviteCode | [Invite Code](#InviteCode) | No       | De invite code waarvan je de instellingen wilt veranderen. |                                                                           |
+| value      | [Waarde](#Waarde)          | No       | De nieuwe waarde van de instelling.                        |                                                                           |
 
 ### Examples
-
-```text
-!inviteCodeConfig
-```
 
 <a name='inviteCodes'></a>
 
@@ -1168,6 +1133,41 @@ Show lyrics of the currently playing song.
 !lyrics
 ```
 
+<a name='makeMentionable'></a>
+
+---
+
+## !makeMentionable
+
+Maak een role mentionable voor 60 seconden of tot hoelang het is gebruikt.
+
+### Usage
+
+```text
+!makeMentionable <role>
+```
+
+### Aliases
+
+- `!make-mentionable`
+- `!mm`
+
+### Arguments
+
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
+
+### Examples
+
+```text
+!makeMentionable @Role
+```
+
+```text
+!makeMentionable "Role with space"
+```
+
 <a name='mashup'></a>
 
 ---
@@ -1201,7 +1201,7 @@ Zie en verander de configuratie van de gebruikers van deze server.
 ### Usage
 
 ```text
-!memberConfig [key] [user] [value]
+!memberConfig <key> [user] [value]
 ```
 
 ### Aliases
@@ -1212,17 +1212,13 @@ Zie en verander de configuratie van de gebruikers van deze server.
 
 ### Arguments
 
-| Argument | Type                    | Required | Description                                                       | Details                                                  |
-| -------- | ----------------------- | -------- | ----------------------------------------------------------------- | -------------------------------------------------------- |
-| key      | [Enum](#Enum)           | No       | De gebruiker configuratie instelling die je wilt zien/veranderen. | Gebruik 1 van de volgende waardes: `hideFromLeaderboard` |
-| user     | [Gebruiker](#Gebruiker) | No       | De gebruiker waar de setting voor is.                             |                                                          |
-| value    | [Waarde](#Waarde)       | No       | De nieuwe waarde van de setting.                                  |                                                          |
+| Argument | Type                    | Required | Description                                                       | Details                            |
+| -------- | ----------------------- | -------- | ----------------------------------------------------------------- | ---------------------------------- |
+| key      | [Enum](#Enum)           | Yes      | De gebruiker configuratie instelling die je wilt zien/veranderen. | Gebruik 1 van de volgende waardes: |
+| user     | [Gebruiker](#Gebruiker) | No       | De gebruiker waar de setting voor is.                             |                                    |
+| value    | [Waarde](#Waarde)       | No       | De nieuwe waarde van de setting.                                  |                                    |
 
 ### Examples
-
-```text
-!memberConfig
-```
 
 <a name='members'></a>
 
@@ -1247,6 +1243,41 @@ Zie de gebruiker aantal van deze server.
 
 ```text
 !members
+```
+
+<a name='mentionRole'></a>
+
+---
+
+## !mentionRole
+
+Mention een niet mentionable role.
+
+### Usage
+
+```text
+!mentionRole <role>
+```
+
+### Aliases
+
+- `!mention-role`
+- `!mr`
+
+### Arguments
+
+| Argument | Type          | Required | Description                    | Details |
+| -------- | ------------- | -------- | ------------------------------ | ------- |
+| role     | [Role](#Role) | Yes      | De role die je wilt mentionen. |         |
+
+### Examples
+
+```text
+!mentionRole @Role
+```
+
+```text
+!mentionRole "Role with space"
 ```
 
 <a name='mute'></a>
@@ -1353,10 +1384,10 @@ Configureer permissies om commando's te gebruiken.
 
 ### Arguments
 
-| Argument | Type                | Required | Description                                                        | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------- | ------------------- | -------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| cmd      | [Command](#Command) | No       | De commando om de permissies te configureren.                      | Gebruik 1 van de volgende waardes: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `export`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `interactiveConfig`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `mashup`, `memberConfig`, `members`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
-| role     | [Role](#Role)       | No       | De role die toegang of geen toegang moet krijgen tot het commando. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Argument | Type                | Required | Description                                                        | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------- | ------------------- | -------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cmd      | [Command](#Command) | No       | De commando om de permissies te configureren.                      | Gebruik 1 van de volgende waardes: `addInvites`, `addRank`, `ban`, `botConfig`, `botInfo`, `caseDelete`, `caseView`, `check`, `clean`, `cleanShort`, `cleanText`, `clearInvites`, `config`, `createInvite`, `credits`, `disconnect`, `exportLeaderboard`, `fixRanks`, `getBot`, `graph`, `help`, `info`, `inviteCodeConfig`, `inviteCodes`, `inviteDetails`, `invites`, `kick`, `leaderboard`, `lockdown`, `lyrics`, `makeMentionable`, `mashup`, `memberConfig`, `members`, `mentionRole`, `mute`, `nowPlaying`, `pause`, `permissions`, `ping`, `placeholder`, `play`, `prefix`, `premium`, `punishmentConfig`, `purge`, `purgeUntil`, `queue`, `ranks`, `reactionRole`, `removeInvites`, `removeRank`, `repeat`, `restoreInvites`, `resume`, `rewind`, `search`, `seek`, `setup`, `skip`, `softBan`, `strike`, `strikeConfig`, `subtractFakes`, `subtractLeaves`, `support`, `tryPremium`, `unban`, `unhoist`, `unmute`, `volume`, `warn` |
+| role     | [Role](#Role)       | No       | De role die toegang of geen toegang moet krijgen tot het commando. |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 ### Examples
 
@@ -1382,6 +1413,42 @@ Mention de bot
 
 ```text
 !ping
+```
+
+<a name='placeholder'></a>
+
+---
+
+## !placeholder
+
+Maak een nieuwe of verander een bestaande placeholder bericht.
+
+### Usage
+
+```text
+!placeholder [-e value|--edit=value] [message]
+```
+
+### Aliases
+
+- `!ph`
+
+### Arguments
+
+| Argument | Type            | Required | Description                    | Details |
+| -------- | --------------- | -------- | ------------------------------ | ------- |
+| message  | [Tekst](#Tekst) | No       | De bericht van de placeholder. |         |
+
+### Flags
+
+| Flag                 | Short     | Type            | Description                                        |
+| -------------------- | --------- | --------------- | -------------------------------------------------- |
+| &#x2011;&#x2011;edit | &#x2011;e | [Tekst](#Tekst) | De bericht id van de placeholder om te veranderen. |
+
+### Examples
+
+```text
+!placeholder
 ```
 
 <a name='play'></a>
@@ -1410,10 +1477,10 @@ Speel het muziek als de wachtrij leeg is, anders wordt het muziek toegevoegd aan
 
 ### Flags
 
-| Flag                     | Short     | Type                | Description                                                                                                                  |
-| ------------------------ | --------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum)       | Selecteer de platform waar je wilt dat het muziek op wordt gespeeld.                                                         |
-| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean) | Als dit gezet is, wordt het volgende muziek afgespeeld in plaats van dat het wordt toegevoegd aan het einde van de wachtrij. |
+| Flag                     | Short     | Type                                                | Description                                                                                                                  |
+| ------------------------ | --------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.platform.type](#resolvers.platform.type) | Selecteer de platform waar je wilt dat het muziek op wordt gespeeld.                                                         |
+| &#x2011;&#x2011;next     | &#x2011;n | [Boolean](#Boolean)                                 | Als dit gezet is, wordt het volgende muziek afgespeeld in plaats van dat het wordt toegevoegd aan het einde van de wachtrij. |
 
 ### Examples
 
@@ -1618,6 +1685,40 @@ Zie alle ranks.
 ```text
 !ranks
 ```
+
+<a name='reactionRole'></a>
+
+---
+
+## !reactionRole
+
+cmd.reactionRole.self.description
+
+### Usage
+
+```text
+!reactionRole [-r|--remove] <messageId> <emoji> [role]
+```
+
+### Aliases
+
+- `!rr`
+
+### Arguments
+
+| Argument  | Type            | Required | Description                          | Details |
+| --------- | --------------- | -------- | ------------------------------------ | ------- |
+| messageId | [Tekst](#Tekst) | Yes      | cmd.reactionRole.self.args.messageId |         |
+| emoji     | [Tekst](#Tekst) | Yes      | cmd.reactionRole.self.args.emoji     |         |
+| role      | [Role](#Role)   | No       | cmd.reactionRole.self.args.role      |         |
+
+### Flags
+
+| Flag                   | Short     | Type                | Description                        |
+| ---------------------- | --------- | ------------------- | ---------------------------------- |
+| &#x2011;&#x2011;remove | &#x2011;r | [Boolean](#Boolean) | cmd.reactionRole.self.flags.remove |
+
+### Examples
 
 <a name='removeInvites'></a>
 
@@ -1827,9 +1928,9 @@ Zoek voor iets en laat je 1 van de resultaten kiezen.
 
 ### Flags
 
-| Flag                     | Short     | Type          | Description                                                         |
-| ------------------------ | --------- | ------------- | ------------------------------------------------------------------- |
-| &#x2011;&#x2011;platform | &#x2011;p | [Enum](#Enum) | Selecteer het platvorm waarop je het muziek wilt hebben afgespeeld. |
+| Flag                     | Short     | Type                                                | Description                                                         |
+| ------------------------ | --------- | --------------------------------------------------- | ------------------------------------------------------------------- |
+| &#x2011;&#x2011;platform | &#x2011;p | [resolvers.platform.type](#resolvers.platform.type) | Selecteer het platvorm waarop je het muziek wilt hebben afgespeeld. |
 
 ### Examples
 
@@ -1960,7 +2061,7 @@ Add strikes to a user
 ### Usage
 
 ```text
-!strike <member> <type> <amount>
+!strike <member> <type> <amount> [reason]
 ```
 
 ### Arguments
@@ -1970,6 +2071,7 @@ Add strikes to a user
 | member   | [Gebruiker](#Gebruiker) | Yes      | The member receiving the strikes  |                                                                                                                                                                |
 | type     | [Enum](#Enum)           | Yes      | De type overtreding               | Gebruik 1 van de volgende waardes: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
 | amount   | [Nummer](#Nummer)       | Yes      | The amount of strikes to be added |                                                                                                                                                                |
+| reason   | [Tekst](#Tekst)         | No       | cmd.strike.self.args.reason       |                                                                                                                                                                |
 
 ### Examples
 

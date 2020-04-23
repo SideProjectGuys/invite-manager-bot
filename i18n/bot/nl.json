@@ -928,7 +928,8 @@
 				"args": {
 					"amount": "The amount of strikes to be added",
 					"member": "The member receiving the strikes",
-					"type": "De type overtreding"
+					"type": "De type overtreding",
+					"reason": "cmd.strike.self.args.reason"
 				},
 				"description": "Add strikes to a user"
 			}
@@ -1152,7 +1153,18 @@
 		},
 		"reactionRole": {
 			"noMessageFoundInDatabase": "De placeholder bericht met de opgegeven id kan niet worden gevonden.",
-			"unknownEmoji": "Onbekende emoji. De bot moet in de guild zijn waar de emoji vandaan komt!"
+			"unknownEmoji": "Onbekende emoji. De bot moet in de guild zijn waar de emoji vandaan komt!",
+			"self": {
+				"description": "cmd.reactionRole.self.description",
+				"flags": {
+					"remove": "cmd.reactionRole.self.flags.remove"
+				},
+				"args": {
+					"messageId": "cmd.reactionRole.self.args.messageId",
+					"emoji": "cmd.reactionRole.self.args.emoji",
+					"role": "cmd.reactionRole.self.args.role"
+				}
+			}
 		},
 		"lockdown": {
 			"channelUnlocked": "Lockdown voor {{{ channel }}} is geïndigd.",
@@ -1167,6 +1179,11 @@
 				}
 			},
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
+		},
+		"exportLeaderboard": {
+			"self": {
+				"description": "cmd.exportLeaderboard.self.description"
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Het gebruik van embeds in join/leave berichten is een premium toevoeging. Premium is niet geactiveerd in deze server. Contacteer ons alsjeblieft om meer te weten te komen hoe je premium koopt.",
@@ -1277,6 +1294,10 @@
 		"invitecode": {
 			"type": "Invite Code",
 			"typeInfo": "Deze argument zou een Discord Invite Code moeten zijn\n\n> Je kan alleen de invite code achter `https://discord.gg/` plaatsen om te voorkomen dat Discord een preview maakt."
+		},
+		"platform": {
+			"type": "resolvers.platform.type",
+			"validValues": "resolvers.platform.validValues"
 		}
 	},
 	"settings": {
@@ -1551,6 +1572,12 @@
 					"title": "Platform",
 					"description": "The various platforms used to play music."
 				}
+			},
+			"custom_bot": {
+				"title": "settings.groups.custom_bot.title"
+			},
+			"": {
+				"title": "settings.groups..title"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1668,6 +1695,42 @@
 		"joinRoles": {
 			"title": "Join Roles",
 			"description": "Roles that are assigned to all members when joining."
+		},
+		"activityStatus": {
+			"title": "settings.activityStatus.title",
+			"description": "settings.activityStatus.description"
+		},
+		"activityEnabled": {
+			"title": "settings.activityEnabled.title",
+			"description": "settings.activityEnabled.description"
+		},
+		"activityType": {
+			"title": "settings.activityType.title",
+			"description": "settings.activityType.description"
+		},
+		"activityMessage": {
+			"title": "settings.activityMessage.title",
+			"description": "settings.activityMessage.description"
+		},
+		"activityUrl": {
+			"title": "settings.activityUrl.title",
+			"description": "settings.activityUrl.description"
+		},
+		"embedDefaultColor": {
+			"title": "settings.embedDefaultColor.title",
+			"description": "settings.embedDefaultColor.description"
+		},
+		"name": {
+			"title": "settings.name.title",
+			"description": "settings.name.description"
+		},
+		"roles": {
+			"title": "settings.roles.title",
+			"description": "settings.roles.description"
+		},
+		"hideFromLeaderboard": {
+			"title": "settings.hideFromLeaderboard.title",
+			"description": "settings.hideFromLeaderboard.description"
 		}
 	},
 	"strikeConfig": {

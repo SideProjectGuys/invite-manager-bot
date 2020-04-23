@@ -928,7 +928,8 @@
 				"args": {
 					"amount": "Le nombre d'avertissements à ajouter",
 					"member": "Le membre recevant les avertissements",
-					"type": "Le type d'infraction"
+					"type": "Le type d'infraction",
+					"reason": "cmd.strike.self.args.reason"
 				},
 				"description": "Ajouter des avertissements à un utilisateur"
 			}
@@ -1152,7 +1153,18 @@
 		},
 		"reactionRole": {
 			"noMessageFoundInDatabase": "Le placeholder avec cet ID n'a pas pu être trouvé.",
-			"unknownEmoji": "Emoji inconnu. Le bot doit être dans le serveur d'où vient l'emoji !"
+			"unknownEmoji": "Emoji inconnu. Le bot doit être dans le serveur d'où vient l'emoji !",
+			"self": {
+				"description": "cmd.reactionRole.self.description",
+				"flags": {
+					"remove": "cmd.reactionRole.self.flags.remove"
+				},
+				"args": {
+					"messageId": "cmd.reactionRole.self.args.messageId",
+					"emoji": "cmd.reactionRole.self.args.emoji",
+					"role": "cmd.reactionRole.self.args.role"
+				}
+			}
 		},
 		"lockdown": {
 			"channelUnlocked": "Le blocage de {{{ channel }}} est terminé.",
@@ -1167,6 +1179,11 @@
 				}
 			},
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
+		},
+		"exportLeaderboard": {
+			"self": {
+				"description": "cmd.exportLeaderboard.self.description"
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Les messages d'arrivées et de départs de type \"Embed\" est une fonction premium. Le premium n'a pas l'air d'être activé sur ce serveur. Merci de nous contacter pour en savoir plus sur comment acheter le premium.",
@@ -1277,6 +1294,10 @@
 		"invitecode": {
 			"type": "Code d'invitation",
 			"typeInfo": "Cet argument attend un code d'invitation Discord.\n\n> Vous pouvez donner uniquement le code après `https://discord.gg/` pour annuler l'aperçu créé par Discord."
+		},
+		"platform": {
+			"type": "resolvers.platform.type",
+			"validValues": "resolvers.platform.validValues"
 		}
 	},
 	"settings": {
@@ -1551,6 +1572,12 @@
 					"title": "Plateforme",
 					"description": "Les diférentes plateformes utilisées pour jouer de la musique."
 				}
+			},
+			"custom_bot": {
+				"title": "settings.groups.custom_bot.title"
+			},
+			"": {
+				"title": "settings.groups..title"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1668,6 +1695,42 @@
 		"joinRoles": {
 			"title": "Rôles d'arrivées",
 			"description": "Rôles assignés à tous les utilisateurs quand ils rejoignent."
+		},
+		"activityStatus": {
+			"title": "settings.activityStatus.title",
+			"description": "settings.activityStatus.description"
+		},
+		"activityEnabled": {
+			"title": "settings.activityEnabled.title",
+			"description": "settings.activityEnabled.description"
+		},
+		"activityType": {
+			"title": "settings.activityType.title",
+			"description": "settings.activityType.description"
+		},
+		"activityMessage": {
+			"title": "settings.activityMessage.title",
+			"description": "settings.activityMessage.description"
+		},
+		"activityUrl": {
+			"title": "settings.activityUrl.title",
+			"description": "settings.activityUrl.description"
+		},
+		"embedDefaultColor": {
+			"title": "settings.embedDefaultColor.title",
+			"description": "settings.embedDefaultColor.description"
+		},
+		"name": {
+			"title": "settings.name.title",
+			"description": "settings.name.description"
+		},
+		"roles": {
+			"title": "settings.roles.title",
+			"description": "settings.roles.description"
+		},
+		"hideFromLeaderboard": {
+			"title": "settings.hideFromLeaderboard.title",
+			"description": "settings.hideFromLeaderboard.description"
 		}
 	},
 	"strikeConfig": {

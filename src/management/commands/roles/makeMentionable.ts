@@ -16,7 +16,7 @@ export default class extends IMCommand {
 					required: true
 				}
 			],
-			group: 'Other',
+			group: 'Management',
 			guildOnly: true,
 			defaultAdminOnly: true,
 			extraExamples: ['!makeMentionable @Role', '!makeMentionable "Role with space"']

@@ -928,7 +928,8 @@
 				"args": {
 					"amount": "The amount of strikes to be added",
 					"member": "The member receiving the strikes",
-					"type": "The type of the violation"
+					"type": "The type of the violation",
+					"reason": "The reason for which the user received the strikes"
 				},
 				"description": "Add strikes to a user"
 			}
@@ -1152,7 +1153,18 @@
 		},
 		"reactionRole": {
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found.",
-			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!"
+			"unknownEmoji": "Unknown emoji. The bot must be in the guild where the emoji comes from!",
+			"self": {
+				"description": "cmd.reactionRole.self.description",
+				"flags": {
+					"remove": "cmd.reactionRole.self.flags.remove"
+				},
+				"args": {
+					"messageId": "cmd.reactionRole.self.args.messageId",
+					"emoji": "cmd.reactionRole.self.args.emoji",
+					"role": "cmd.reactionRole.self.args.role"
+				}
+			}
 		},
 		"lockdown": {
 			"channelUnlocked": "The lockdown for {{{ channel }}} has ended.",
@@ -1167,6 +1179,11 @@
 				}
 			},
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
+		},
+		"exportLeaderboard": {
+			"self": {
+				"description": "Export the current leaderboard to csv."
+			}
 		}
 	},
 	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
@@ -1277,6 +1294,10 @@
 		"invitecode": {
 			"type": "Invite Code",
 			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+		},
+		"platform": {
+			"type": "Platform",
+			"validValues": "Use one of the following values: {{{ values }}}"
 		}
 	},
 	"settings": {
@@ -1536,7 +1557,7 @@
 				"title": "Music",
 				"description": "Music Settings",
 				"general": {
-					"title": "Music",
+					"title": "General",
 					"description": "General Music Settings"
 				},
 				"announcement": {
@@ -1551,6 +1572,12 @@
 					"title": "Platform",
 					"description": "The various platforms used to play music."
 				}
+			},
+			"custom_bot": {
+				"title": "Custom Bot"
+			},
+			"": {
+				"title": "settings.groups..title"
 			}
 		},
 		"hideLeftMembersFromLeaderboard": {
@@ -1668,6 +1695,42 @@
 		"joinRoles": {
 			"title": "Join Roles",
 			"description": "Roles that are assigned to all members when joining."
+		},
+		"activityStatus": {
+			"title": "Status",
+			"description": "The activity status of the bot."
+		},
+		"activityEnabled": {
+			"title": "Enabled",
+			"description": "If enabled the bot will use the custom activity status."
+		},
+		"activityType": {
+			"title": "Type",
+			"description": "The activity type of the bot."
+		},
+		"activityMessage": {
+			"title": "Message",
+			"description": "The activity message of the bot."
+		},
+		"activityUrl": {
+			"title": "URL",
+			"description": "The twitch.tv activity link of the bot."
+		},
+		"embedDefaultColor": {
+			"title": "Embed Default Color",
+			"description": "The default color of bot messages."
+		},
+		"name": {
+			"title": "Name",
+			"description": "The name of the invite code"
+		},
+		"roles": {
+			"title": "Roles",
+			"description": "The roles that are assigned to people using this invite code to join the server."
+		},
+		"hideFromLeaderboard": {
+			"title": "Hide from Leaderboard",
+			"description": "If enabled the member is hidden from the leaderboard."
 		}
 	},
 	"strikeConfig": {
