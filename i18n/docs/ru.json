@@ -1,152 +1,152 @@
 {
 	"lang": "Pусский",
 	"modules": {
-		"title": "Modules",
+		"title": "Модули",
 		"invites": {
-			"title": "Invite Management",
-			"description": "While our bot is on your server, we track every invite that happens on your server. Discord only shows you who has how many invites. Our bot also analyses who was invited by whom. This allows our bot to detect fake invites and see who is trying to cheat the invite system.",
+			"title": "Управление приглашениями",
+			"description": "Бот позволяет считать количество пригалшений, и распознавать фейковые. Так-же можно узнать кто пригласил игрока.",
 			"examples": {
-				"title": "Examples"
+				"title": "Примеры"
 			},
 			"overview": {
-				"title": "Overview"
+				"title": "Обзор"
 			},
 			"customMessages": {
-				"title": "Custom message"
+				"title": "Настраевымае сообщения"
 			}
 		},
 		"moderation": {
-			"title": "Moderation",
-			"description": "Our brand new moderation system allows you to auto-moderate many things. Please check our [strikes]({{{ linkStrikes }}}) and [punishments]({{{ linkPunishments }}}) pages for more info. In short, our bot gives out 'strikes' to people who misbehave, and after a certain amount of strikes, the user receives a punishment. All of this is configurable by the user.",
+			"title": "Модерация",
+			"description": "Наша новая авто-модрируемая система поможет вам управлять сервером. Проверьте наши страници [страйки]({{{ linkStrikes }}}) и [наказания]({{{ linkPunishments }}}) для информации.",
 			"punishments": {
-				"title": "Punishments"
+				"title": "Наказания"
 			},
 			"strikes": {
-				"title": "Strikes"
+				"title": "Страйки"
 			}
 		},
 		"music": {
-			"title": "Music",
+			"title": "Музыка",
 			"overview": {
-				"title": "Overview"
+				"title": "Обзор"
 			}
 		}
 	},
 	"other": {
-		"title": "Other",
+		"title": "Другое",
 		"donating": {
-			"title": "Donating",
-			"description": "other.donating.description",
+			"title": "Пожертвования",
+			"description": "Поддержите авторов сайта денюжкой!",
 			"crypto": {
-				"title": "Crypto",
+				"title": "Крипта",
 				"description": "other.donating.crypto.description"
 			}
 		},
 		"roadmap": {
-			"title": "Roadmap"
+			"title": "Карта"
 		},
 		"support": {
-			"title": "Support"
+			"title": "Поддержка"
 		},
 		"translations": {
-			"title": "Translations",
-			"description": "other.translations.description",
+			"title": "перевод",
+			"description": "помочь в переводе бота можно здесь: https://www.transifex.com/sideprojectguys/invitemanager-bot/",
 			"help": {
-				"title": "other.translations.help.title",
+				"title": "Помощь",
 				"description": "other.translations.help.description"
 			}
 		},
 		"webpanel": {
-			"title": "Webpanel",
-			"description": "other.webpanel.description"
+			"title": "Веб панель",
+			"description": "настроить бот можно тут: https://app.invitemanager.gg"
 		},
 		"changelog": {
-			"title": "Changelog"
+			"title": "Лог"
 		},
 		"openSource": {
-			"title": "Open Source",
+			"title": "Опен сорс",
 			"description": "other.openSource.description",
 			"bot": {
-				"title": "Main Bot",
+				"title": "Главный бот",
 				"description": "other.openSource.bot.description"
 			}
 		}
 	},
 	"premium": {
-		"title": "Premium",
-		"description": "To pay our server bill, we offer a premium version of the bot. To see all the extra feature you get, please visit our [pricing page]({{{ link }}}).",
+		"title": "Премиум.",
+		"description": "Для того чтобы мы могли оплатить наши сервера, мы предоставляем премиум подписку. Для подробной информации перейдите сюда: [цены]({{{ link }}}).",
 		"features": {
-			"title": "Features"
+			"title": "Преимущества"
 		},
 		"tiers": {
-			"title": "Tiers"
+			"title": "ряд"
 		},
 		"setup": {
-			"title": "Setup"
+			"title": "Установка"
 		}
 	},
 	"start": {
-		"title": "Getting Started",
-		"description": "To get started, just run the `!setup` command on your server.",
+		"title": "Начало работы",
+		"description": "Просто напишите в чат сервера !setup",
 		"alpha": {
-			"title": "Alpha Bot",
-			"intro": "The `InviteManager Alpha` bot is the bot we use to test new features. The new features on the Alpha bot will not always be stable, but if you use this bot, you'll be the first to see them and you can give us feedback how we can make them better before they will be included in the main bot.",
-			"linkDescription": "Invite the InviteManager Alpha here"
+			"title": "Альфа версии",
+			"intro": "Эта версия позволит вам первым увидить нововведения, и оставить отзыв. Она работает менее стабильно чем основная версия.",
+			"linkDescription": "Альфа версия бота тут."
 		},
 		"faq": {
-			"title": "FAQs",
+			"title": "ЧАВО",
 			"prefix": {
-				"title": "How do I change the prefix of the bot?",
-				"description": "You can do `!config prefix -` to change the prefix.\n\nIf you don't know your current prefix, you can do `@InviteManager config prefix` to see the prefix."
+				"title": "Как изменить преффикс бота?",
+				"description": "напишите @invitemanager config prefix <преффикс который хотите поставить>"
 			},
 			"joinLeaveChannel": {
-				"title": "How do I set join and leave messages?",
-				"description": "Set the channel by doing\n\n`!config joinMessageChannel #channel`\n\nor\n\n`!config leaveMessageChannel #channel`.\n\nAfter doing that, new joins and leaves will be posted to that channel."
+				"title": "Как изменить место вывода сообщений входа/выхода?",
+				"description": "Напишите !config joinMessageChannel/leaveMessageChannel <#канал>"
 			},
 			"joinLeaveMessage": {
-				"title": "Can I customize the join and leave messages?",
-				"description": "Absolutely! You can change the message by doing for example\n\n`!config joinMessage {memberMention} **joined**; Invited by **{inviterName}** (**{numInvites}** invites)`\n\nor\n\n`!config leaveMessage {memberName} **left**; Invited by **{inviterName}**`.\n\nThere are many placeholders available. You can see the full list on the '[Custom Messages]({{{ link }}})' page."
+				"title": "Как изменить сообщения входа/выхода?",
+				"description": "Напишите !config joinMessage/leaveMessage <значение>. Подробная информация здесь "
 			},
 			"ranks": {
-				"title": "What are 'Ranks' and how can I use them?",
-				"description": "Ranks are used to assign roles to people when they reach a certain amount of invites. For example. if you have a role called `@Beginner` and you want people who have 5 or more invites to be added to that role, you would have to create a rank for that like so: `!add-rank @Beginner 5 (and if you want a description here)`. As soon as someone has 5 invites, he will automatically be added to that role!"
+				"title": "Что такое раниги и как их использовать?",
+				"description": "Ранги используются для выдачи роли в зависимости от приглашений."
 			},
 			"channel": {
-				"title": "How can I disable the bot in all but one/some channels?",
-				"description": "Take away the read message permissions in the channels where you don't want the bot to reply."
+				"title": "Как можно отключить бота в определённых каналах?",
+				"description": "уберите право бота читать сообщения в тех каналах, в которых вы не хотите чтобы он отвечал."
 			},
 			"limitations": {
-				"title": "Limitation: No advanced tracking before the bot joins",
-				"description": "Advanced tracking (who invited who) only works after you have invited the bot. The bot will still know everyones invite count after you invite it, don't worry. Just the additional information is missing and can only be collected for members who join after you invited the bot."
+				"title": "Отслеживание до появления бота не ведётся",
+				"description": "Мы не можем определить кто кого сколько раз пригласил если бота ранее небыло на сервере."
 			}
 		},
 		"pro": {
-			"title": "Pro Bot",
+			"title": "Про-бот",
 			"description": "start.pro.description"
 		},
 		"quick": {
-			"title": "Quick Start",
+			"title": "Быстрое начало",
 			"setup": {
-				"title": "Setup",
+				"title": "Установка",
 				"description": "start.quick.setup.description",
 				"first": {
-					"title": "start.quick.setup.first.title",
+					"title": "Первый",
 					"description": "start.quick.setup.first.description"
 				},
 				"second": {
-					"title": "start.quick.setup.second.title",
-					"description": "start.quick.setup.second.description"
+					"title": "Второй",
+					"description": "start.quick.setup.first.description"
 				}
 			}
 		}
 	},
 	"reference": {
-		"title": "Reference",
+		"title": "Отссылки",
 		"commands": {
-			"title": "Commands"
+			"title": "Команды"
 		},
 		"settings": {
-			"title": "Configs / Settings"
+			"title": "Параметры"
 		}
 	}
 }
