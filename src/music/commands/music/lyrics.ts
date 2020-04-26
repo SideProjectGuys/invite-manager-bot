@@ -1,13 +1,13 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
+import { IMModule } from '../../../framework/Module';
 import { BooleanResolver } from '../../../framework/resolvers';
 import { MusicConnection } from '../../models/MusicConnection';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'lyrics',
 			aliases: [],
 			args: [],

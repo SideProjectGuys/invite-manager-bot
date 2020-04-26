@@ -1,17 +1,15 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
-import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
-import { CommandsService } from '../../../framework/services/Commands';
 import { BasicUser } from '../../../types';
 
-export default class extends IMCommand {
-	@Service() private cmds: CommandsService;
+import addInvites from './add-invites';
 
-	public constructor(client: IMClient) {
-		super(client, {
+export default class extends IMCommand {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'removeInvites',
 			aliases: ['remove-invites'],
 			args: [
@@ -48,7 +46,7 @@ export default class extends IMCommand {
 		flags: {},
 		context: CommandContext
 	): Promise<any> {
-		const cmd = this.cmds.commands.find((c) => c.name === 'addInvites');
+		const cmd = this.client.commands.get(addInvites);
 		return cmd.action(message, [user, -amount, reason], flags, context);
 	}
 }

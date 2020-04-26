@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 import moment, { Moment } from 'moment';
 
-import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../../framework/commands/Command';
 import { Service } from '../../framework/decorators/Service';
+import { IMModule } from '../../framework/Module';
 import { DateResolver, EnumResolver } from '../../framework/resolvers';
 import { renderChart } from '../models/Chart';
 import { InvitesService } from '../services/Invites';
@@ -20,14 +20,14 @@ enum ChartType {
 export default class extends IMCommand {
 	@Service() private invs: InvitesService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'graph',
 			aliases: ['g', 'chart'],
 			args: [
 				{
 					name: 'type',
-					resolver: new EnumResolver(client, Object.values(ChartType)),
+					resolver: new EnumResolver(module.client, Object.values(ChartType)),
 					required: true
 				},
 				{

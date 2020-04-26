@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { BotType, GuildPermission } from '../../../types';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
+import { IMModule } from '../../Module';
 import { EnumResolver } from '../../resolvers';
 import { PremiumService } from '../../services/Premium';
 import { CommandContext, IMCommand } from '../Command';
@@ -20,14 +20,14 @@ export default class extends IMCommand {
 	@Service() private premium: PremiumService;
 	@Cache() private premiumCache: PremiumCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'premium',
 			aliases: ['patreon', 'donate'],
 			args: [
 				{
 					name: 'action',
-					resolver: new EnumResolver(client, Object.values(Action))
+					resolver: new EnumResolver(module.client, Object.values(Action))
 				}
 			],
 			group: 'Premium',

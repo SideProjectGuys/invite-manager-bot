@@ -1,6 +1,6 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
+import { IMModule } from '../../../framework/Module';
 import { BooleanResolver } from '../../../framework/resolvers';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
@@ -10,8 +10,8 @@ const PREMIUM_PIN_UPDATE_INTERVAL = 2000;
 export default class extends IMMusicCommand {
 	private timerMap: Map<string, NodeJS.Timer> = new Map();
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'nowPlaying',
 			aliases: ['np', 'now-playing'],
 			flags: [

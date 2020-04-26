@@ -1,12 +1,12 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { BasicUser, SettingsInfo } from '../../../types';
 import { MemberSettingsCache } from '../../cache/MemberSettings';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
 import { LogAction } from '../../models/Log';
 import { Member } from '../../models/Member';
+import { IMModule } from '../../Module';
 import { EnumResolver, SettingsValueResolver, UserResolver } from '../../resolvers';
 import { SettingsService } from '../../services/Settings';
 import { CommandContext, IMCommand } from '../Command';
@@ -17,8 +17,8 @@ export default class extends IMCommand {
 
 	private settingsInfos: Map<string, SettingsInfo<any>>;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'memberConfig',
 			aliases: ['member-config', 'memconf', 'mc'],
 			args: [
@@ -33,7 +33,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, Member),
+					resolver: new SettingsValueResolver(module.client, Member),
 					rest: true
 				}
 			],

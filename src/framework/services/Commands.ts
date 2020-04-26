@@ -1,9 +1,7 @@
 import { captureException, withScope } from '@sentry/node';
 import chalk from 'chalk';
 import { GuildChannel, Member, Message, PrivateChannel } from 'eris';
-import { readdir, statSync } from 'fs';
 import i18n from 'i18n';
-import { relative, resolve } from 'path';
 
 import { GuildPermission } from '../../types';
 import { GuildSettingsCache } from '../cache/GuildSettings';
@@ -19,13 +17,6 @@ import { MessagingService } from './Messaging';
 import { IMService } from './Service';
 import { SettingsService } from './Settings';
 
-const CMD_DIRS = [
-	resolve(__dirname, '../commands'),
-	resolve(__dirname, '../../invites/commands'),
-	resolve(__dirname, '../../moderation/commands'),
-	resolve(__dirname, '../../music/commands'),
-	resolve(__dirname, '../../management/commands')
-];
 const ID_REGEX: RegExp = /^(?:<@!?)?(\d+)>? ?(.*)$/;
 const RATE_LIMIT = 1; // max commands per second
 const COOLDOWN = 5; // in seconds
@@ -38,70 +29,33 @@ export class CommandsService extends IMService {
 	@Cache() private permissionsCache: PermissionsCache;
 	@Cache() private premiumCache: PremiumCache;
 
-	public commands: IMCommand[] = [];
 	private cmdMap: Map<string, IMCommand> = new Map();
 	private commandCalls: Map<string, { last: number; warned: boolean }> = new Map();
 
 	public async init() {
 		console.log(`Loading commands...`);
 
-		// Load all commands
-		const loadRecursive = async (dir: string) => {
-			const fileNames = await this.readDir(dir);
-			for (const fileName of fileNames) {
-				const file = dir + '/' + fileName;
-
-				if (statSync(file).isDirectory()) {
-					await loadRecursive(file);
-					continue;
-				}
-
-				if (!fileName.endsWith('.js')) {
-					continue;
-				}
-
-				const clazz = require(file);
-				if (clazz.default) {
-					const constr = clazz.default;
-
-					// First create an instance of the command class
-					const inst: IMCommand = new constr(this.client);
-
-					// Setup any injections the command class may need
-					this.client.setupInjections(inst);
-
-					// Finish loading the command class (since it might need one of the injections)
-					await inst.init();
-
-					// Then setup the injections for all the resolvers
-					inst.resolvers.forEach((res) => this.client.setupInjections(res));
-
-					// Add it to the commands
-					this.commands.push(inst);
-
-					// Register main commnad name
-					if (this.cmdMap.has(inst.name.toLowerCase())) {
-						console.error(`Duplicate command name ${inst.name}`);
-						process.exit(1);
-					}
-					this.cmdMap.set(inst.name.toLowerCase(), inst);
-
-					// Register aliases
-					inst.aliases.forEach((a) => {
-						if (this.cmdMap.has(a.toLowerCase())) {
-							console.error(`Duplicate command alias ${a}`);
-							process.exit(1);
-						}
-						this.cmdMap.set(a.toLowerCase(), inst);
-					});
-
-					console.log(`Loaded ${chalk.blue(inst.name)} from ${chalk.gray(relative(process.cwd(), file))}`);
-				}
+		for (const cmd of this.client.commands.values()) {
+			// Register main commnad name
+			if (this.cmdMap.has(cmd.name.toLowerCase())) {
+				console.error(`Duplicate command name ${cmd.name}`);
+				process.exit(1);
 			}
-		};
-		await Promise.all(CMD_DIRS.map((dir) => loadRecursive(dir)));
+			this.cmdMap.set(cmd.name.toLowerCase(), cmd);
 
-		console.log(`Loaded ${chalk.blue(this.commands.length)} commands!`);
+			// Register aliases
+			cmd.aliases.forEach((a) => {
+				if (this.cmdMap.has(a.toLowerCase())) {
+					console.error(`Duplicate command alias ${a}`);
+					process.exit(1);
+				}
+				this.cmdMap.set(a.toLowerCase(), cmd);
+			});
+
+			console.log(`Loaded ${chalk.blue(cmd.name)}`);
+		}
+
+		console.log(`Loaded ${chalk.blue(this.client.commands.size)} commands!`);
 	}
 
 	public async onClientReady() {
@@ -121,20 +75,20 @@ export class CommandsService extends IMService {
 
 		const channel = message.channel;
 		const guild = (channel as GuildChannel).guild;
+		let content = message.content.trim();
 
 		if (guild) {
 			// Check if this guild is disabled due to the pro bot
 			if (
 				this.client.disabledGuilds.has(guild.id) &&
-				!message.content.startsWith(`<@${this.client.user.id}>`) &&
-				!message.content.startsWith(`<@!${this.client.user.id}>`)
+				!content.startsWith(`<@${this.client.user.id}>`) &&
+				!content.startsWith(`<@!${this.client.user.id}>`)
 			) {
 				return;
 			}
 		}
 
 		// Save some constant stuff
-		let content = message.content.trim();
 		const sets = guild ? await this.guildSettingsCache.get(guild.id) : this.settings.getGuildDefaultSettings();
 		const lang = sets.lang;
 
@@ -534,17 +488,5 @@ export class CommandsService extends IMService {
 				time: execTime
 			});
 		}
-	}
-
-	private async readDir(dir: string) {
-		return new Promise<string[]>((res, reject) => {
-			readdir(dir, (err, files) => {
-				if (err) {
-					reject(err);
-				} else {
-					res(files);
-				}
-			});
-		});
 	}
 }

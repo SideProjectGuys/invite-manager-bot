@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { StrikesCache } from '../../cache/StrikesCache';
 import { ViolationType } from '../../models/StrikeConfig';
@@ -13,14 +13,14 @@ export default class extends IMCommand {
 	@Service() private strikes: StrikeService;
 	@Cache() private strikesCache: StrikesCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'strikeConfig',
 			aliases: ['strike-config'],
 			args: [
 				{
 					name: 'violation',
-					resolver: new EnumResolver(client, Object.values(ViolationType))
+					resolver: new EnumResolver(module.client, Object.values(ViolationType))
 				},
 				{
 					name: 'strikes',

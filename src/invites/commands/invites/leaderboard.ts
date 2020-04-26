@@ -1,10 +1,10 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { MemberSettingsCache } from '../../../framework/cache/MemberSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver } from '../../../framework/resolvers';
 import { LeaderboardCache } from '../../cache/LeaderboardCache';
 import { InvitesGuildSettings, LeaderboardStyle } from '../../models/GuildSettings';
@@ -16,8 +16,8 @@ export default class extends IMCommand {
 	@Cache() private leaderboardCache: LeaderboardCache;
 	@Cache() private memberSettingsCache: MemberSettingsCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'leaderboard',
 			aliases: ['top'],
 			args: [

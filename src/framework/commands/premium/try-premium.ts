@@ -1,17 +1,17 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { PremiumCache } from '../../cache/Premium';
 import { Cache } from '../../decorators/Cache';
+import { IMModule } from '../../Module';
 import { PromptResult } from '../../services/Messaging';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
 	@Cache() private premiumCache: PremiumCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'tryPremium',
 			aliases: ['try', 'try-premium'],
 			group: 'Premium',

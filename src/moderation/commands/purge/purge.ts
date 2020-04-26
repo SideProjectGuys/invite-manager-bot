@@ -1,13 +1,13 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'purge',
 			aliases: ['prune'],
 			args: [

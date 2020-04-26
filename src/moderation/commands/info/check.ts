@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { UserResolver } from '../../../framework/resolvers';
 import { BasicUser } from '../../../types';
 import { PunishmentService } from '../../services/PunishmentService';
@@ -13,8 +13,8 @@ export default class extends IMCommand {
 	@Service() private strikes: StrikeService;
 	@Service() private punishments: PunishmentService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'check',
 			aliases: ['history'],
 			args: [

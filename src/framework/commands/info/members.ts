@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
+import { IMModule } from '../../Module';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'members',
 			aliases: ['member', 'membersCount'],
 			group: 'Info',

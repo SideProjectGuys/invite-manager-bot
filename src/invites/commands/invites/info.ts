@@ -1,11 +1,11 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { InviteCodeSettingsCache } from '../../../framework/cache/InviteCodeSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { EnumResolver, NumberResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
@@ -23,8 +23,8 @@ export default class extends IMCommand {
 	@Service() private invs: InvitesService;
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'info',
 			aliases: ['showinfo'],
 			args: [
@@ -35,7 +35,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'details',
-					resolver: new EnumResolver(client, Object.values(InfoDetails))
+					resolver: new EnumResolver(module.client, Object.values(InfoDetails))
 				},
 				{
 					name: 'page',

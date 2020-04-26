@@ -1,10 +1,10 @@
 import { Member, Message } from 'eris';
 import moment, { Duration } from 'moment';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
 import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
+import { IMModule } from '../../../framework/Module';
 import { DurationResolver, MemberResolver, StringResolver } from '../../../framework/resolvers';
 import { SchedulerService } from '../../../framework/services/Scheduler';
 import { ModerationGuildSettings } from '../../models/GuildSettings';
@@ -17,8 +17,8 @@ export default class extends IMCommand {
 	@Service() private scheduler: SchedulerService;
 	@Service() private punishment: PunishmentService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'mute',
 			aliases: [],
 			args: [

@@ -1,19 +1,16 @@
 import { Message, Role } from 'eris';
 
-import { IMClient } from '../../../client';
 import { PermissionsCache } from '../../cache/Permissions';
 import { Cache } from '../../decorators/Cache';
-import { Service } from '../../decorators/Service';
+import { IMModule } from '../../Module';
 import { CommandResolver, RoleResolver } from '../../resolvers';
-import { CommandsService } from '../../services/Commands';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
-	@Service() private cmds: CommandsService;
 	@Cache() private premissionsCache: PermissionsCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'permissions',
 			aliases: ['perms'],
 			args: [
@@ -50,7 +47,7 @@ export default class extends IMCommand {
 				Administrators: []
 			};
 
-			this.cmds.commands.forEach((command) => {
+			this.client.commands.forEach((command) => {
 				const ps = perms.filter((p) => p.command === command.name);
 				if (!ps.length) {
 					if (command.strict) {

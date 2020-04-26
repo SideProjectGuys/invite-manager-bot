@@ -1,9 +1,9 @@
 import { Message, TextChannel } from 'eris';
 
-import { IMClient } from '../../../client';
 import { InviteCodeSettingsCache } from '../../../framework/cache/InviteCodeSettings';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { IMModule } from '../../../framework/Module';
 import { ChannelResolver, StringResolver } from '../../../framework/resolvers';
 import { GuildPermission } from '../../../types';
 import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
@@ -11,8 +11,8 @@ import { InvitesInviteCodeSettings } from '../../models/InviteCodeSettings';
 export default class extends IMCommand {
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'createInvite',
 			aliases: ['create-invite'],
 			args: [

@@ -1,10 +1,10 @@
 import { Client, Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { SettingsInfo } from '../../../types';
 import { Service } from '../../decorators/Service';
 import { BaseBotSettings } from '../../models/BotSettings';
 import { LogAction } from '../../models/Log';
+import { IMModule } from '../../Module';
 import { EnumResolver, SettingsValueResolver } from '../../resolvers';
 import { SettingsService } from '../../services/Settings';
 import { CommandContext, IMCommand } from '../Command';
@@ -14,8 +14,8 @@ export default class extends IMCommand {
 
 	private settingsInfos: Map<string, SettingsInfo<any>>;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'botConfig',
 			aliases: ['bot-config', 'botSetting', 'bot-setting'],
 			args: [
@@ -25,7 +25,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, Client),
+					resolver: new SettingsValueResolver(module.client, Client),
 					rest: true
 				}
 			],

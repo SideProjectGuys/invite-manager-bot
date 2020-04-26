@@ -1,10 +1,10 @@
 import { Message } from 'eris';
 import { Context } from 'vm';
 
-import { IMClient } from '../../../client';
 import { IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { EnumResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { PunishmentCache } from '../../cache/PunishmentsCache';
 import { PunishmentType } from '../../models/PunishmentConfig';
@@ -14,14 +14,14 @@ export default class extends IMCommand {
 	@Service() private punishments: PunishmentService;
 	@Cache() private punishmentsCache: PunishmentCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'punishmentConfig',
 			aliases: ['punishment-config'],
 			args: [
 				{
 					name: 'punishment',
-					resolver: new EnumResolver(client, Object.values(PunishmentType))
+					resolver: new EnumResolver(module.client, Object.values(PunishmentType))
 				},
 				{
 					name: 'strikes',

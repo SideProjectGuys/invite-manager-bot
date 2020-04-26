@@ -1,9 +1,9 @@
 import { Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver } from '../../../framework/resolvers';
 import { BasicUser } from '../../../types';
 import { StrikeService } from '../../services/StrikeService';
@@ -11,8 +11,8 @@ import { StrikeService } from '../../services/StrikeService';
 export default class extends IMCommand {
 	@Service() private strikes: StrikeService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'caseView',
 			aliases: ['case-view', 'viewCase', 'view-case'],
 			args: [

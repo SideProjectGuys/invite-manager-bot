@@ -1,8 +1,8 @@
 import { Message, TextChannel } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser, GuildPermission } from '../../../types';
 import { ModerationGuildSettings } from '../../models/GuildSettings';
@@ -11,8 +11,8 @@ import { ModerationService } from '../../services/Moderation';
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'unban',
 			aliases: [],
 			args: [

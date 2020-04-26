@@ -1,13 +1,13 @@
 import { Message, Role } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { IMModule } from '../../../framework/Module';
 import { RoleResolver } from '../../../framework/resolvers';
 import { GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'mentionRole',
 			aliases: ['mention-role', 'mr'],
 			args: [

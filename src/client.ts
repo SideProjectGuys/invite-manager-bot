@@ -6,6 +6,7 @@ import moment, { Moment } from 'moment';
 import { IMCache } from './framework/cache/Cache';
 import { GuildSettingsCache } from './framework/cache/GuildSettings';
 import { PremiumCache } from './framework/cache/Premium';
+import { IMCommand } from './framework/commands/Command';
 import { Cache, cacheInjections } from './framework/decorators/Cache';
 import { Service, serviceInjections } from './framework/decorators/Service';
 import { FrameworkModule } from './framework/FrameworkModule';
@@ -71,6 +72,7 @@ export class IMClient extends Client {
 	public modules: Map<new (client: IMClient) => IMModule, IMModule>;
 	public services: Map<new (client: IMClient) => IMService, IMService>;
 	public caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
+	public commands: Map<new (module: IMModule) => IMCommand, IMCommand>;
 
 	public startedAt: Moment;
 	public shardsConnected: Set<number> = new Set();
@@ -151,6 +153,7 @@ export class IMClient extends Client {
 		this.modules = new Map();
 		this.services = new Map();
 		this.caches = new Map();
+		this.commands = new Map();
 		this.startingServices = [];
 
 		this.version = version;
@@ -169,16 +172,21 @@ export class IMClient extends Client {
 
 		this.setupInjections(this);
 
-		// Inject services and caches
+		// Inject services, caches and commands
 		this.services.forEach((srv) => this.setupInjections(srv));
 		this.caches.forEach((cache) => this.setupInjections(cache));
-
-		// Init services
-		await Promise.all([...this.modules.values()].map((m) => m.init()));
-		await Promise.all([...this.services.values()].map((s) => s.init()));
+		this.commands.forEach((cmd) => this.setupInjections(cmd));
 
 		// Mark all services as starting
 		[...this.services.values()].forEach((srv) => this.startingServices.push(srv));
+
+		// Init services and commands
+		await Promise.all([...this.modules.values()].map((mod) => mod.init()));
+		await Promise.all([...this.services.values()].map((srv) => srv.init()));
+		await Promise.all([...this.commands.values()].map((cmd) => cmd.init()));
+
+		// Setup the injections for all command resolvers
+		this.commands.forEach((cmd) => cmd.resolvers.forEach((res) => this.setupInjections(res)));
 
 		this.on('ready', this.onClientReady);
 		this.on('connect', this.onShardConnect);
@@ -660,6 +668,12 @@ export class IMClient extends Client {
 			throw new Error(`Cache ${cache.name} registered multiple times`);
 		}
 		this.caches.set(cache, new cache(this));
+	}
+	public registerCommand<T extends IMCommand>(module: IMModule, command: new (module: IMModule) => T) {
+		if (this.commands.has(command)) {
+			throw new Error(`Command ${command.name} registered multiple times`);
+		}
+		this.commands.set(command, new command(module));
 	}
 	public setupInjections(obj: any) {
 		const objName = chalk.blue(obj.constructor.name);

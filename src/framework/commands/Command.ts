@@ -4,6 +4,7 @@ import { IMClient } from '../../client';
 import { GuildPermission } from '../../types';
 import { Service } from '../decorators/Service';
 import { BaseGuildSettings } from '../models/GuildSettings';
+import { IMModule } from '../Module';
 import { BooleanResolver } from '../resolvers';
 import { Resolver, ResolverConstructor } from '../resolvers/Resolver';
 import { DatabaseService } from '../services/Database';
@@ -69,6 +70,7 @@ export type CommandContext<T = {}> = {
 
 export abstract class IMCommand {
 	public client: IMClient;
+	public module: IMModule;
 	public resolvers: Resolver[];
 
 	public name: string;
@@ -95,8 +97,10 @@ export abstract class IMCommand {
 	protected sendEmbed: SendEmbedFunc;
 	protected showPaginated: ShowPaginatedFunc;
 
-	public constructor(client: IMClient, props: CommandOptions) {
-		this.client = client;
+	public constructor(module: IMModule, props: CommandOptions) {
+		this.module = module;
+		this.client = module.client;
+
 		this.name = props.name;
 		this.aliases = props.aliases.map((a) => a.toLowerCase());
 		this.args = props.args ? props.args : [];

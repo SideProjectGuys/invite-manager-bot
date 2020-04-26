@@ -1,19 +1,19 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver } from '../../../framework/resolvers';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'skip',
 			aliases: ['next'],
 			args: [
 				{
 					name: 'amount',
 					required: false,
-					resolver: new NumberResolver(client, 1)
+					resolver: new NumberResolver(module.client, 1)
 				}
 			],
 			group: 'Music',

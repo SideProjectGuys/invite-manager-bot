@@ -1,12 +1,12 @@
 import { Invite, Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { SettingsInfo } from '../../../types';
 import { InviteCodeSettingsCache } from '../../cache/InviteCodeSettings';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
 import { InviteCode } from '../../models/InviteCode';
 import { LogAction } from '../../models/Log';
+import { IMModule } from '../../Module';
 import { EnumResolver, InviteCodeResolver, SettingsValueResolver } from '../../resolvers';
 import { SettingsService } from '../../services/Settings';
 import { CommandContext, IMCommand } from '../Command';
@@ -17,8 +17,8 @@ export default class extends IMCommand {
 
 	private settingsInfos: Map<string, SettingsInfo<any>>;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'inviteCodeConfig',
 			aliases: ['invite-code-config', 'icc'],
 			args: [
@@ -33,7 +33,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'value',
-					resolver: new SettingsValueResolver(client, InviteCode),
+					resolver: new SettingsValueResolver(module.client, InviteCode),
 					rest: true
 				}
 			],

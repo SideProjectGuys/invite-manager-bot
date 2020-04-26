@@ -1,16 +1,16 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { StrikeService } from '../../services/StrikeService';
 
 export default class extends IMCommand {
 	@Service() private strikes: StrikeService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'caseDelete',
 			aliases: ['case-delete', 'deleteCase', 'delete-case'],
 			args: [

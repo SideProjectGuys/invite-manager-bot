@@ -4,10 +4,9 @@ import { SettingsInfo } from '../../../types';
 import { GuildSettingsCache } from '../../cache/GuildSettings';
 import { Cache } from '../../decorators/Cache';
 import { Service } from '../../decorators/Service';
-import { Guild } from '../../models/Guild';
 import { LogAction } from '../../models/Log';
 import { IMModule } from '../../Module';
-import { EnumResolver, SettingsValueResolver } from '../../resolvers';
+import { ModuleResolver } from '../../resolvers/ModuleResolver';
 import { SettingsService } from '../../services/Settings';
 import { CommandContext, IMCommand } from '../Command';
 
@@ -21,31 +20,19 @@ export default class extends IMCommand {
 
 	public constructor(module: IMModule) {
 		super(module, {
-			name: 'config',
-			aliases: ['c'],
+			name: 'modules',
+			aliases: [],
 			args: [
 				{
-					name: 'key',
-					resolver: null, // setup later
+					name: 'name',
+					resolver: ModuleResolver,
 					required: true
-				},
-				{
-					name: 'value',
-					resolver: new SettingsValueResolver(module.client, Guild),
-					rest: true
 				}
 			],
 			group: 'Config',
 			guildOnly: true,
 			defaultAdminOnly: true
 		});
-	}
-
-	public async init() {
-		this.settingsInfos = this.settings.getSettingsInfos(Guild);
-		this.args[0].resolver = new EnumResolver(this.client, [...this.settingsInfos.keys()]);
-
-		await super.init();
 	}
 
 	public async action(

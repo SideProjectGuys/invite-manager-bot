@@ -1,10 +1,10 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
 import { Service } from '../../../framework/decorators/Service';
 import { LogAction } from '../../../framework/models/Log';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver, StringResolver, UserResolver } from '../../../framework/resolvers';
 import { BasicUser } from '../../../types';
 import { InvitesCache } from '../../cache/InvitesCache';
@@ -14,8 +14,8 @@ export default class extends IMCommand {
 	@Service() private invs: InvitesService;
 	@Cache() private invitesCache: InvitesCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'addInvites',
 			aliases: ['add-invites'],
 			args: [

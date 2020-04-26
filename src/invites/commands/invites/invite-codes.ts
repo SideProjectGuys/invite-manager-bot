@@ -1,14 +1,14 @@
 import { Invite, Message } from 'eris';
 import moment from 'moment';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { InviteCode } from '../../../framework/models/InviteCode';
+import { IMModule } from '../../../framework/Module';
 import { GuildPermission } from '../../../types';
 
 export default class extends IMCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'inviteCodes',
 			aliases: [
 				'inviteCode',

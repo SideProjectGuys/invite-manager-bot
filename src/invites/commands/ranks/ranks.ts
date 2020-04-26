@@ -1,8 +1,8 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Cache } from '../../../framework/decorators/Cache';
+import { IMModule } from '../../../framework/Module';
 import { NumberResolver } from '../../../framework/resolvers';
 import { RanksCache } from '../../cache/RanksCache';
 
@@ -11,8 +11,8 @@ const RANKS_PER_PAGE = 10;
 export default class extends IMCommand {
 	@Cache() private ranksCache: RanksCache;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'ranks',
 			aliases: ['show-ranks', 'showRanks'],
 			args: [

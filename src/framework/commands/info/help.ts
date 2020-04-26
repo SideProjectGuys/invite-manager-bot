@@ -1,17 +1,13 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { GuildPermission } from '../../../types';
-import { Service } from '../../decorators/Service';
+import { IMModule } from '../../Module';
 import { CommandResolver } from '../../resolvers';
-import { CommandsService } from '../../services/Commands';
 import { CommandContext, IMCommand } from '../Command';
 
 export default class extends IMCommand {
-	@Service() private cmds: CommandsService;
-
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'help',
 			aliases: [],
 			args: [
@@ -64,7 +60,7 @@ export default class extends IMCommand {
 		} else {
 			embed.description = t('cmd.help.text', { prefix }) + '\n\n';
 
-			const commands = this.cmds.commands
+			const commands = [...this.client.commands.values()]
 				.map((c) => ({
 					...c,
 					usage: c.usage.replace('{prefix}', prefix)

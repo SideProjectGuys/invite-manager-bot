@@ -1,8 +1,8 @@
 import { Member, Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { EnumResolver, MemberResolver, NumberResolver, StringResolver } from '../../../framework/resolvers';
 import { ViolationType } from '../../models/StrikeConfig';
 import { ModerationService } from '../../services/Moderation';
@@ -10,8 +10,8 @@ import { ModerationService } from '../../services/Moderation';
 export default class extends IMCommand {
 	@Service() private mod: ModerationService;
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'strike',
 			aliases: [],
 			args: [
@@ -22,7 +22,7 @@ export default class extends IMCommand {
 				},
 				{
 					name: 'type',
-					resolver: new EnumResolver(client, Object.values(ViolationType)),
+					resolver: new EnumResolver(module.client, Object.values(ViolationType)),
 					required: true
 				},
 				{

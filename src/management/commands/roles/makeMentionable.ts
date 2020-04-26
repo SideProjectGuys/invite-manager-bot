@@ -1,12 +1,12 @@
 import { Message, Role } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
+import { IMModule } from '../../../framework/Module';
 import { RoleResolver } from '../../../framework/resolvers';
 
 export default class extends IMCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'makeMentionable',
 			aliases: ['make-mentionable', 'mm'],
 			args: [

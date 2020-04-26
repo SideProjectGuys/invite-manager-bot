@@ -1,11 +1,16 @@
+import { IMClient } from '../../client';
 import { CommandContext, IMCommand } from '../commands/Command';
-import { Service } from '../decorators/Service';
-import { CommandsService } from '../services/Commands';
 
 import { Resolver } from './Resolver';
 
 export class CommandResolver extends Resolver {
-	@Service(() => CommandsService) private cmds: CommandsService;
+	private cmds: IMCommand[] = [];
+
+	public constructor(client: IMClient) {
+		super(client);
+
+		this.cmds = [...this.client.commands.values()];
+	}
 
 	public async resolve(value: string, { guild, t }: CommandContext): Promise<IMCommand> {
 		if (!guild || !value) {
@@ -13,7 +18,7 @@ export class CommandResolver extends Resolver {
 		}
 
 		const name = value.toLowerCase();
-		const cmds = this.cmds.commands.filter((c) => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0);
+		const cmds = this.cmds.filter((c) => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0);
 
 		if (cmds.length === 0) {
 			throw Error(t(`resolvers.${this.getType()}.notFound`));
@@ -37,7 +42,7 @@ export class CommandResolver extends Resolver {
 
 	public getHelp({ t }: CommandContext) {
 		return t(`resolvers.${this.getType()}.validValues`, {
-			values: this.cmds.commands.map((c) => '`' + c.name + '`').join(', ')
+			values: this.cmds.map((c) => '`' + c.name + '`').join(', ')
 		});
 	}
 }

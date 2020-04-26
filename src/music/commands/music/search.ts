@@ -1,6 +1,6 @@
 import { Emoji, Message, VoiceChannel } from 'eris';
 
-import { IMClient } from '../../../client';
+import { IMModule } from '../../../framework/Module';
 import { StringResolver } from '../../../framework/resolvers';
 import { MusicGuildSettings } from '../../models/GuildSettings';
 import { MusicPlatform } from '../../models/MusicPlatform';
@@ -8,8 +8,8 @@ import { PlatformResolver } from '../../resolvers/PlatformResolver';
 import { CommandContext, IMMusicCommand } from '../MusicCommand';
 
 export default class extends IMMusicCommand {
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'search',
 			aliases: [],
 			args: [

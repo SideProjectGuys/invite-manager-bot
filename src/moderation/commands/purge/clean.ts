@@ -1,8 +1,8 @@
 import { Message } from 'eris';
 
-import { IMClient } from '../../../client';
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
 import { Service } from '../../../framework/decorators/Service';
+import { IMModule } from '../../../framework/Module';
 import { EnumResolver, NumberResolver } from '../../../framework/resolvers';
 import { GuildPermission } from '../../../types';
 import { ModerationService } from '../../services/Moderation';
@@ -25,14 +25,14 @@ export default class extends IMCommand {
 		[k in CleanType]: (messages: Message[]) => Message[];
 	};
 
-	public constructor(client: IMClient) {
-		super(client, {
+	public constructor(module: IMModule) {
+		super(module, {
 			name: 'clean',
 			aliases: ['clear'],
 			args: [
 				{
 					name: 'type',
-					resolver: new EnumResolver(client, Object.values(CleanType)),
+					resolver: new EnumResolver(module.client, Object.values(CleanType)),
 					required: true
 				},
 				{
