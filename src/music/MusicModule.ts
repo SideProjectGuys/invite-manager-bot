@@ -46,7 +46,6 @@ export class MusicModule extends IMModule {
 		this.registerCommand(queue);
 		this.registerCommand(repeat);
 		this.registerCommand(resume);
-		this.registerCommand(resume);
 		this.registerCommand(rewind);
 		this.registerCommand(search);
 		this.registerCommand(seek);

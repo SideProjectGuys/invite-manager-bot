@@ -671,7 +671,7 @@ export class IMClient extends Client {
 	}
 	public registerCommand<T extends IMCommand>(module: IMModule, command: new (module: IMModule) => T) {
 		if (this.commands.has(command)) {
-			throw new Error(`Command ${command.name} registered multiple times`);
+			throw new Error(`Command ${command.name} (${new command(module).name}) registered multiple times`);
 		}
 		this.commands.set(command, new command(module));
 	}
