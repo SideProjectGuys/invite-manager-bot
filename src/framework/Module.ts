@@ -16,11 +16,11 @@ export abstract class IMModule {
 		// NO-OP
 	}
 
-	protected registerService<T extends IMService>(service: new (client: IMClient) => T) {
-		return this.client.registerService(service);
+	protected registerService<T extends IMService>(service: new (module: IMModule) => T) {
+		return this.client.registerService(this, service);
 	}
-	protected registerCache<P extends any, T extends IMCache<P>>(cache: new (client: IMClient) => T) {
-		return this.client.registerCache(cache);
+	protected registerCache<P extends any, T extends IMCache<P>>(cache: new (module: IMModule) => T) {
+		return this.client.registerCache(this, cache);
 	}
 	protected registerCommand<T extends IMCommand>(command: new (module: IMModule) => T) {
 		return this.client.registerCommand(this, command);

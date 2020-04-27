@@ -2,6 +2,7 @@ import moment, { Duration, Moment } from 'moment';
 
 import { IMClient } from '../../client';
 import { Service } from '../decorators/Service';
+import { IMModule } from '../Module';
 import { DatabaseService } from '../services/Database';
 
 interface CacheMeta {
@@ -11,6 +12,7 @@ interface CacheMeta {
 
 export abstract class IMCache<CachedObject> {
 	protected client: IMClient;
+	protected module: IMModule;
 
 	@Service() protected db: DatabaseService;
 
@@ -21,8 +23,9 @@ export abstract class IMCache<CachedObject> {
 	private pending: Map<string, Promise<CachedObject>> = new Map();
 
 	// Constructor
-	public constructor(client: IMClient) {
-		this.client = client;
+	public constructor(module: IMModule) {
+		this.module = module;
+		this.client = module.client;
 	}
 
 	public abstract async init(): Promise<void>;

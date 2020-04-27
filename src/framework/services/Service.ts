@@ -1,12 +1,15 @@
 import { Guild } from 'eris';
 
 import { IMClient } from '../../client';
+import { IMModule } from '../Module';
 
 export abstract class IMService {
-	protected client: IMClient = null;
+	protected client: IMClient;
+	protected module: IMModule;
 
-	public constructor(client: IMClient) {
-		this.client = client;
+	public constructor(module: IMModule) {
+		this.module = module;
+		this.client = module.client;
 	}
 
 	public async init() {

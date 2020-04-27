@@ -1,7 +1,7 @@
+import chalk from 'chalk';
 import { Guild as DiscordGuild } from 'eris';
-import mysql, { OkPacket, Pool, RowDataPacket } from 'mysql2/promise';
+import mysql, { OkPacket, Pool, PoolOptions, RowDataPacket } from 'mysql2/promise';
 
-import { IMClient } from '../../client';
 import { BasicUser } from '../../types';
 import { getShardIdForGuild } from '../../util';
 import { Channel } from '../models/Channel';
@@ -16,6 +16,7 @@ import { PremiumSubscriptionGuild } from '../models/PremiumSubscriptionGuild';
 import { Role } from '../models/Role';
 import { RolePermission } from '../models/RolePermission';
 import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction';
+import { IMModule } from '../Module';
 
 import { IMService } from './Service';
 
@@ -37,6 +38,13 @@ export enum TABLE {
 	scheduledActions = '`scheduledActions`'
 }
 
+interface DBOption extends PoolOptions {
+	range: {
+		from: number;
+		to: number;
+	};
+}
+
 export class DatabaseService extends IMService {
 	private dbCount: number = 1;
 	private pools: Map<number, Pool> = new Map();
@@ -51,10 +59,11 @@ export class DatabaseService extends IMService {
 	private cmdUsages: Partial<CommandUsage>[] = [];
 	private incidents: Partial<Incident>[] = [];
 
-	public constructor(client: IMClient) {
-		super(client);
+	public constructor(module: IMModule) {
+		super(module);
 
-		for (const db of client.config.databases) {
+		const dbs = this.client.config.databases as DBOption[];
+		for (const db of dbs) {
 			const range = db.range;
 			delete db.range;
 
@@ -66,7 +75,7 @@ export class DatabaseService extends IMService {
 			this.dbCount = Math.max(this.dbCount, range.to);
 		}
 
-		console.log(`We're connected to ${this.dbCount} db shards on ${client.config.databases.length} different servers`);
+		console.log(chalk.green(`Connected to ${chalk.blue(this.dbCount)} DBs with ${chalk.blue(dbs.length)} connections`));
 
 		setInterval(() => this.syncDB(), 10000);
 	}

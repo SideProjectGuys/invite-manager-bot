@@ -13,7 +13,7 @@ import { FrameworkModule } from './framework/FrameworkModule';
 import { BaseBotSettings } from './framework/models/BotSettings';
 import { LogAction } from './framework/models/Log';
 import { IMModule } from './framework/Module';
-import { IMRequestHandler } from './framework/RequestHandler';
+import { IMRequestHandler } from './framework/other/RequestHandler';
 import { DatabaseService } from './framework/services/Database';
 import { MessagingService } from './framework/services/Messaging';
 import { PremiumService } from './framework/services/Premium';
@@ -70,8 +70,8 @@ export class IMClient extends Client {
 	public requestHandler: IMRequestHandler;
 
 	public modules: Map<new (client: IMClient) => IMModule, IMModule>;
-	public services: Map<new (client: IMClient) => IMService, IMService>;
-	public caches: Map<new (client: IMClient) => IMCache<any>, IMCache<any>>;
+	public services: Map<new (module: IMModule) => IMService, IMService>;
+	public caches: Map<new (module: IMModule) => IMCache<any>, IMCache<any>>;
 	public commands: Map<new (module: IMModule) => IMCommand, IMCommand>;
 
 	public startedAt: Moment;
@@ -657,17 +657,17 @@ export class IMClient extends Client {
 		}
 		this.modules.set(module, new module(this));
 	}
-	public registerService<T extends IMService>(service: new (client: IMClient) => T) {
+	public registerService<T extends IMService>(module: IMModule, service: new (module: IMModule) => T) {
 		if (this.services.has(service)) {
 			throw new Error(`Service ${service.name} registered multiple times`);
 		}
-		this.services.set(service, new service(this));
+		this.services.set(service, new service(module));
 	}
-	public registerCache<P extends any, T extends IMCache<P>>(cache: new (client: IMClient) => T) {
+	public registerCache<P extends any, T extends IMCache<P>>(module: IMModule, cache: new (module: IMModule) => T) {
 		if (this.caches.has(cache)) {
 			throw new Error(`Cache ${cache.name} registered multiple times`);
 		}
-		this.caches.set(cache, new cache(this));
+		this.caches.set(cache, new cache(module));
 	}
 	public registerCommand<T extends IMCommand>(module: IMModule, command: new (module: IMModule) => T) {
 		if (this.commands.has(command)) {
@@ -676,7 +676,7 @@ export class IMClient extends Client {
 		this.commands.set(command, new command(module));
 	}
 	public setupInjections(obj: any) {
-		const objName = chalk.blue(obj.constructor.name);
+		const objName = chalk.blue(obj.name || obj.constructor.name);
 
 		let srvObj = obj.constructor;
 		while (srvObj) {

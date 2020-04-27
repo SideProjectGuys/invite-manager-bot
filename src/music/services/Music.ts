@@ -79,7 +79,7 @@ export class MusicService extends IMService {
 			const platform = new clazz(this);
 			this.platforms.set(clazz, platform);
 			this.platformNames.set(name.toLowerCase(), platform);
-			console.log(`Registered music platform ${chalk.blue(clazz.name)} as ${chalk.blue(name)}`);
+			console.log(chalk.green(`Registered music platform ${chalk.blue(clazz.name)} as ${chalk.blue(name)}`));
 		}
 	}
 

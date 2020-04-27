@@ -33,12 +33,10 @@ export class CommandsService extends IMService {
 	private commandCalls: Map<string, { last: number; warned: boolean }> = new Map();
 
 	public async init() {
-		console.log(`Loading commands...`);
-
 		for (const cmd of this.client.commands.values()) {
 			// Register main commnad name
 			if (this.cmdMap.has(cmd.name.toLowerCase())) {
-				console.error(`Duplicate command name ${cmd.name}`);
+				console.error(chalk.red(`Duplicate command name ${chalk.blue(cmd.name)}`));
 				process.exit(1);
 			}
 			this.cmdMap.set(cmd.name.toLowerCase(), cmd);
@@ -46,16 +44,16 @@ export class CommandsService extends IMService {
 			// Register aliases
 			cmd.aliases.forEach((a) => {
 				if (this.cmdMap.has(a.toLowerCase())) {
-					console.error(`Duplicate command alias ${a}`);
+					console.error(chalk.red(`Duplicate command alias ${chalk.blue(a)}`));
 					process.exit(1);
 				}
 				this.cmdMap.set(a.toLowerCase(), cmd);
 			});
 
-			console.log(`Loaded ${chalk.blue(cmd.name)}`);
+			console.log(chalk.green(`Loaded ${chalk.blue(cmd.name)} from ${chalk.blue(cmd.module.name)}`));
 		}
 
-		console.log(`Loaded ${chalk.blue(this.client.commands.size)} commands!`);
+		console.log(chalk.green(`Loaded ${chalk.blue(this.client.commands.size)} commands!`));
 	}
 
 	public async onClientReady() {

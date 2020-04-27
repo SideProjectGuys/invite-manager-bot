@@ -1,4 +1,4 @@
-import { IMClient } from '../client';
+import { IMClient } from '../../client';
 
 // tslint:disable-next-line: variable-name
 const RequestHandler = require('eris/lib/rest/RequestHandler');

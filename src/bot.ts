@@ -8,9 +8,9 @@ const config = require('../config.json');
 
 // First two arguments are "node" and "<filename>"
 if (process.argv.length < 5) {
-	console.error('-------------------------------------');
-	console.error('Syntax: bot.js <token> <firstShard> <lastShard> <shardCount> (<instance>)');
-	console.error('-------------------------------------');
+	console.error(chalk.red('-------------------------------------'));
+	console.error(chalk.red('Syntax: bot.js <token> <firstShard> <lastShard> <shardCount> (<instance>)'));
+	console.error(chalk.red('-------------------------------------'));
 	process.exit(1);
 }
 const rawParams = process.argv.slice(2);
@@ -41,14 +41,14 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 });
 
 const main = async () => {
-	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.white('-------------------------------------'));
 	console.log(
-		chalk.green(
+		chalk.white(
 			`These are shards ${chalk.blue(`${firstShard}`)} to ${chalk.blue(`${lastShard}`)} ` +
 				`of ${chalk.blue(`${shardCount}`)} for ${chalk.blue(type)} instance ${chalk.blue(instance)}`
 		)
 	);
-	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.white('-------------------------------------'));
 
 	const client = new IMClient({
 		version: pkg.version,
@@ -62,21 +62,21 @@ const main = async () => {
 		config
 	});
 
-	console.log(chalk.green('-------------------------------------'));
-	console.log(chalk.green('Starting bot...'));
-	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.white('-------------------------------------'));
+	console.log(chalk.white('Starting bot...'));
+	console.log(chalk.white('-------------------------------------'));
 
 	await client.init();
 
-	console.log(chalk.green('-------------------------------------'));
-	console.log(chalk.green('Waiting for start ticket...'));
-	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.white('-------------------------------------'));
+	console.log(chalk.white('Waiting for start ticket...'));
+	console.log(chalk.white('-------------------------------------'));
 
 	await client.waitForStartupTicket();
 
-	console.log(chalk.green('-------------------------------------'));
-	console.log(chalk.green('Connecting to discord...'));
-	console.log(chalk.green('-------------------------------------'));
+	console.log(chalk.white('-------------------------------------'));
+	console.log(chalk.white('Connecting to discord...'));
+	console.log(chalk.white('-------------------------------------'));
 	await client.connect();
 };
 
