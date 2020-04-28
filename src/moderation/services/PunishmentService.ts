@@ -112,7 +112,7 @@ export class PunishmentService extends IMService {
 			memberId: user.id,
 			type: type,
 			amount: amount,
-			args: args.join(','),
+			args: args ? args.join(',') : '',
 			reason: modAndReason ? modAndReason.reason : null,
 			creatorId: null
 		});
