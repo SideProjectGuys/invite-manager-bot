@@ -90,114 +90,59 @@ export class MessagingService extends IMService {
 	}
 
 	public sendReply(message: Message, reply: EmbedOptions | string) {
-		return this.sendEmbed(message.channel, reply, message.author);
+		return this.sendEmbed(message.channel, reply);
 	}
 
-	public sendEmbed(target: TextableChannel, embed: EmbedOptions | string, fallbackUser?: User) {
-		const e = typeof embed === 'string' ? this.createEmbed({ description: embed }) : embed;
+	public sendEmbed(target: TextableChannel, embedOrText: EmbedOptions | string, failOnNoEmbds: boolean = true) {
+		const embed = typeof embedOrText === 'string' ? this.createEmbed({ description: embedOrText }) : embedOrText;
 
-		e.fields = e.fields.filter((field) => field && field.value);
+		embed.fields = embed.fields.filter((field) => field && field.value);
 
-		const content = convertEmbedToPlain(e);
-
-		const handleException = (err: Error, reportIndicent = true) => {
-			withScope((scope) => {
-				if (target instanceof GuildChannel) {
-					scope.setUser({ id: target.guild.id });
-					scope.setExtra('permissions', target.permissionsOf(this.client.user.id).json);
+		return new Promise<Message>(async (resolve, reject) => {
+			if (target instanceof GuildChannel) {
+				if (!target.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)) {
+					return reject(new Error(`I don't have permission to send messages in this channel.`));
 				}
-				scope.setExtra('channel', target.id);
-				scope.setExtra('message', embed);
-				scope.setExtra('content', content);
-				if (fallbackUser) {
-					scope.setExtra('fallbackUser', fallbackUser.id);
-				}
-				captureException(err);
-			});
-			if (reportIndicent && target instanceof GuildChannel) {
-				this.db.saveIncident(target.guild, {
-					id: null,
-					guildId: target.guild.id,
-					error: err.message,
-					details: {
-						channel: target.id,
-						embed,
-						content
-					}
-				});
-			}
-		};
-
-		return new Promise<Message>((resolve, reject) => {
-			// Fallback functions when sending message fails
-			const sendDM = async (error?: any): Promise<Message> => {
-				if (!fallbackUser) {
-					return undefined;
-				}
-
-				try {
-					const dmChannel = await fallbackUser.getDMChannel();
-					let msg =
-						'I encountered an error when trying to send a message. ' +
-						`Please report this to a developer:\n\`\`\`${error ? error.message : 'Unknown'}\`\`\``;
-					if (error && error.code === 50013) {
-						const name = this.client.user.username;
-						msg =
-							`**${name} does not have permissions to post to that channel.\n` +
-							`Please allow ${name} to send messages in the <#${target.id}> channel.**\n\n`;
-					}
-					try {
-						return await dmChannel.createMessage(msg);
-					} catch (err) {
-						if (err.code === 50007) {
-							// Cannot send messages to this user
-						} else {
-							handleException(err, false);
+				if (!target.permissionsOf(this.client.user.id).has(GuildPermission.EMBED_LINKS)) {
+					const msg = `I don't have permission to send embeds. Please give me the \`Embed Links\` permission for this channel.`;
+					if (failOnNoEmbds) {
+						return reject(new Error(msg));
+					} else {
+						try {
+							await target.createMessage(msg);
+						} catch (err) {
+							// NO-OP
 						}
-						return undefined;
+						resolve();
 					}
-				} catch (err2) {
-					handleException(err2, false);
-					return undefined;
 				}
-			};
+			}
 
-			const sendPlain = async (error?: any): Promise<Message> => {
-				// If we don't have permission to send messages try DM
-				if (
-					target instanceof GuildChannel &&
-					!target.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES)
-				) {
-					return sendDM({ code: 50013 });
+			try {
+				return resolve(await target.createMessage({ embed }));
+			} catch (err) {
+				withScope((scope) => {
+					if (target instanceof GuildChannel) {
+						scope.setUser({ id: target.guild.id });
+						scope.setExtra('permissions', target.permissionsOf(this.client.user.id).json);
+					}
+					scope.setExtra('channel', target.id);
+					scope.setExtra('message', embed);
+					captureException(err);
+				});
+				if (target instanceof GuildChannel) {
+					this.db.saveIncident(target.guild, {
+						id: null,
+						guildId: target.guild.id,
+						error: err.message,
+						details: {
+							channel: target.id,
+							embed
+						}
+					});
 				}
-
-				try {
-					return await target.createMessage(content);
-				} catch (err) {
-					handleException(err);
-					return sendDM(error);
-				}
-			};
-
-			const send = async (): Promise<Message> => {
-				// If we don't have permissions to embed links try plain content
-				if (
-					target instanceof GuildChannel &&
-					(!target.permissionsOf(this.client.user.id).has(GuildPermission.SEND_MESSAGES) ||
-						!target.permissionsOf(this.client.user.id).has(GuildPermission.EMBED_LINKS))
-				) {
-					return sendPlain();
-				}
-
-				try {
-					return await target.createMessage({ embed: e });
-				} catch (err) {
-					handleException(err);
-					return sendPlain(err);
-				}
-			};
-
-			resolve(send());
+				return reject(new Error('An error occured while sending a message.'));
+			}
 		});
 	}
 
@@ -317,7 +262,7 @@ export class MessagingService extends IMService {
 			}
 		} else {
 			author = prevMsg.author;
-			prevMsg = await this.sendEmbed(prevMsg.channel, embed, prevMsg.author);
+			prevMsg = await this.sendEmbed(prevMsg.channel, embed);
 			// If we don't have a message we probably don't have permission
 			if (!prevMsg) {
 				return;

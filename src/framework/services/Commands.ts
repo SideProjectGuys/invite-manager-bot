@@ -465,12 +465,7 @@ export class CommandsService extends IMService {
 				});
 			}
 
-			await this.msg.sendReply(
-				message,
-				t('cmd.error', {
-					error: error.message
-				})
-			);
+			await this.msg.sendEmbed(message.channel, t('cmd.error', { error: error.message }), false);
 		}
 
 		// Ignore messages that are not in guild chat or from disabled guilds
