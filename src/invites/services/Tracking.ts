@@ -805,20 +805,22 @@ export class TrackingService extends IMService {
 		const inviterDiscriminator = join.inviterDiscriminator;
 
 		let inviter: BasicMember = guild.members.get(inviterId);
-		if (!inviter) {
-			inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
-		}
-		if (!inviter) {
-			inviter = {
-				nick: null,
-				user: {
-					id: inviterId,
-					createdAt: deconstruct(inviterId),
-					username: inviterName,
-					discriminator: inviterDiscriminator,
-					avatarURL: null
-				}
-			};
+		if (inviterId) {
+			if (!inviter) {
+				inviter = await guild.getRESTMember(inviterId).catch(() => undefined);
+			}
+			if (!inviter) {
+				inviter = {
+					nick: null,
+					user: {
+						id: inviterId,
+						createdAt: deconstruct(inviterId),
+						username: inviterName,
+						discriminator: inviterDiscriminator,
+						avatarURL: null
+					}
+				};
+			}
 		}
 
 		// Auto remove leaves if enabled (and if we know the inviter)
