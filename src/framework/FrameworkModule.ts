@@ -10,7 +10,6 @@ import botConfig from './commands/config/bot-config';
 import config from './commands/config/config';
 import inviteCodeConfig from './commands/config/invite-code-config';
 import memberConfig from './commands/config/member-config';
-import modules from './commands/config/modules';
 import permissions from './commands/config/permissions';
 import setup from './commands/config/setup';
 import botInfo from './commands/info/bot-info';
@@ -62,7 +61,6 @@ export class FrameworkModule extends IMModule {
 		this.registerCommand(config);
 		this.registerCommand(inviteCodeConfig);
 		this.registerCommand(memberConfig);
-		this.registerCommand(modules);
 		this.registerCommand(permissions);
 		this.registerCommand(setup);
 
