@@ -20,6 +20,7 @@ import members from './commands/info/members';
 import ping from './commands/info/ping';
 import prefix from './commands/info/prefix';
 import support from './commands/info/support';
+import checkPremium from './commands/premium/check-premium';
 import premium from './commands/premium/premium';
 import tryPremium from './commands/premium/try-premium';
 import './models/BotSettings';
@@ -73,6 +74,7 @@ export class FrameworkModule extends IMModule {
 		this.registerCommand(prefix);
 		this.registerCommand(support);
 
+		this.registerCommand(checkPremium);
 		this.registerCommand(premium);
 		this.registerCommand(tryPremium);
 	}
