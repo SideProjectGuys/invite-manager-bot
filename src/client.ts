@@ -3,6 +3,7 @@ import { Client, Guild, Member, Message, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment, { Moment } from 'moment';
 
+import { FaqModule } from './faq/FaqModule';
 import { IMCache } from './framework/cache/Cache';
 import { GuildSettingsCache } from './framework/cache/GuildSettings';
 import { PremiumCache } from './framework/cache/Premium';
@@ -164,6 +165,7 @@ export class IMClient extends Client {
 	}
 
 	public async init() {
+		this.registerModule(FaqModule);
 		this.registerModule(FrameworkModule);
 		this.registerModule(InviteModule);
 		this.registerModule(ManagementModule);
