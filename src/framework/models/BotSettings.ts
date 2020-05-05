@@ -67,7 +67,16 @@ export class BaseBotSettings {
 	@Setting({
 		type: 'String',
 		grouping: [BASE_GROUP],
-		defaultValue: null
+		defaultValue: null,
+		validate: (_, value, { t }) => {
+			const str = value as string;
+			const hexColor = str.startsWith('#') ? str.substr(1) : str;
+			if (typeof hexColor !== 'string' || hexColor.length !== 6 || isNaN(Number(`0x${hexColor}`))) {
+				return t('cmd.botConfig.invalid.hexCodeOnly');
+			}
+
+			return null;
+		}
 	})
 	public embedDefaultColor: string;
 }

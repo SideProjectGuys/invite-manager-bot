@@ -79,7 +79,8 @@
 			},
 			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity.",
+				"hexCodeOnly": "Please provide a hex color in the following format: `#25CC51`"
 			},
 			"new": {
 				"title": "New Value"
