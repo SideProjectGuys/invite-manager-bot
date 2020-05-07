@@ -9,6 +9,7 @@ import { InviteCodeSettingsCache } from '../../framework/cache/InviteCodeSetting
 import { PremiumCache } from '../../framework/cache/Premium';
 import { Cache } from '../../framework/decorators/Cache';
 import { Service } from '../../framework/decorators/Service';
+import { Lang } from '../../framework/models/GuildSettings';
 import { InviteCode } from '../../framework/models/InviteCode';
 import { DatabaseService } from '../../framework/services/Database';
 import { RabbitMqService } from '../../framework/services/RabbitMq';
@@ -775,24 +776,7 @@ export class TrackingService extends IMService {
 		// Exit if we can't find the join
 		if (!join || !join.exactMatchCode) {
 			console.log(`Could not find join for ${member.id} in ` + `${guild.id}`);
-			if (leaveChannel) {
-				leaveChannel
-					.createMessage(
-						i18n.__(
-							{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
-							{
-								tag: member.user.username + '#' + member.user.discriminator
-							}
-						)
-					)
-					.catch(async (err) => {
-						// Missing permissions
-						if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
-							// Reset the channel
-							await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
-						}
-					});
-			}
+			await this.sendleaveUnknownInviter(lang, leaveChannel, guild, member);
 			return;
 		}
 
@@ -821,6 +805,11 @@ export class TrackingService extends IMService {
 					}
 				};
 			}
+		} else {
+			// Exit if we don't have inviterId
+			console.log(`Could not find inviterId for join ${join.id} in ` + `${guild.id}`);
+			await this.sendleaveUnknownInviter(lang, leaveChannel, guild, member);
+			return;
 		}
 
 		// Auto remove leaves if enabled (and if we know the inviter)
@@ -878,6 +867,27 @@ export class TrackingService extends IMService {
 					await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
 				}
 			});
+		}
+	}
+
+	private async sendleaveUnknownInviter(lang: Lang, leaveChannel: TextChannel, guild: Guild, member: Member) {
+		if (leaveChannel) {
+			leaveChannel
+				.createMessage(
+					i18n.__(
+						{ locale: lang, phrase: 'messages.leaveUnknownInviter' },
+						{
+							tag: member.user.username + '#' + member.user.discriminator
+						}
+					)
+				)
+				.catch(async (err) => {
+					// Missing permissions
+					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
+						// Reset the channel
+						await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
+					}
+				});
 		}
 	}
 
