@@ -122,7 +122,6 @@ export class IMClient extends Client {
 			disableEvents: {
 				TYPING_START: true,
 				PRESENCE_UPDATE: true,
-				VOICE_STATE_UPDATE: true,
 				USER_UPDATE: true
 			},
 			restMode: true,
