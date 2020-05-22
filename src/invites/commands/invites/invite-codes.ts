@@ -1,4 +1,4 @@
-import { Invite, Message } from 'eris';
+import { ChannelInvite, Message } from 'eris';
 import moment from 'moment';
 
 import { CommandContext, IMCommand } from '../../../framework/commands/Command';
@@ -32,7 +32,7 @@ export default class extends IMCommand {
 
 		let codes = await this.db.getInviteCodesForMember(guild.id, message.author.id);
 
-		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
+		const activeCodes = (await guild.getInvites().catch(() => [] as ChannelInvite[]))
 			.filter((code) => code.inviter && code.inviter.id === message.author.id)
 			.map((code) => code);
 

@@ -1,4 +1,4 @@
-import { Invite, Message } from 'eris';
+import { GuildInvite, Message } from 'eris';
 
 import { SettingsInfo } from '../../../types';
 import { InviteCodeSettingsCache } from '../../cache/InviteCodeSettings';
@@ -52,7 +52,7 @@ export default class extends IMCommand {
 
 	public async action(
 		message: Message,
-		[key, inv, value]: [string, Invite, any],
+		[key, inv, value]: [string, GuildInvite, any],
 		flags: {},
 		context: CommandContext
 	): Promise<any> {

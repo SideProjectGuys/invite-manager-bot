@@ -1,4 +1,4 @@
-import { Invite } from 'eris';
+import { AnyInvite } from 'eris';
 
 import { CommandContext } from '../commands/Command';
 
@@ -7,12 +7,12 @@ import { Resolver } from './Resolver';
 const codeRegex = /^(?:(?:https?:\/\/)?discord.gg\/)?(.*)$/;
 
 export class InviteCodeResolver extends Resolver {
-	public async resolve(value: string, { t }: CommandContext): Promise<Invite> {
+	public async resolve(value: string, { t }: CommandContext): Promise<AnyInvite> {
 		if (!value) {
 			return;
 		}
 
-		let inv: Invite;
+		let inv: AnyInvite;
 		if (codeRegex.test(value)) {
 			const id = value.match(codeRegex)[1];
 			inv = await this.client.getInvite(id);

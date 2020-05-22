@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
+import { AnyChannel, ChannelInvite, Guild, GuildAuditLog, GuildChannel, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import os from 'os';
@@ -148,7 +148,8 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private async onInviteCreate(guild: Guild, invite: Invite) {
+	private async onInviteCreate(guild: Guild, invite: ChannelInvite) {
+		console.log(typeof invite);
 		await this.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -167,7 +168,7 @@ export class TrackingService extends IMService {
 		]);
 	}
 
-	private async onDeleteInvite(guild: Guild, invite: Invite) {
+	private async onDeleteInvite(guild: Guild, invite: ChannelInvite) {
 		await this.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -404,7 +405,7 @@ export class TrackingService extends IMService {
 		}
 
 		if (usedInviteCodes.length === 0) {
-			const newInvs = await guild.getInvites().catch(() => [] as Invite[]);
+			const newInvs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 
 			for (const newInv of newInvs) {
 				const oldInv = invStore.invites.get(newInv.code);
@@ -896,7 +897,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Get the invites
-		const invs = await guild.getInvites().catch(() => [] as Invite[]);
+		const invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 
 		let invStore = this.inviteStore.get(guild.id);
 
