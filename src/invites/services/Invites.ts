@@ -85,12 +85,7 @@ export class InvitesService extends IMService {
 		const joinsPromise = this.getJoinsForGuild(guildId);
 		const customInvitesPromise = this.getCustomInvitesForGuild(guildId);
 
-		// TODO: This is typed as "any" because of a typescript bug https://github.com/microsoft/TypeScript/issues/34925
-		const [invCodes, js, customInvs]: [any[], any[], any[]] = await Promise.all([
-			inviteCodePromise,
-			joinsPromise,
-			customInvitesPromise
-		]);
+		const [invCodes, js, customInvs] = await Promise.all([inviteCodePromise, joinsPromise, customInvitesPromise]);
 
 		const entries: Map<string, LeaderboardEntry> = new Map();
 		invCodes.forEach((inv) => {
