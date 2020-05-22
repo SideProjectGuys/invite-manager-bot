@@ -60,6 +60,16 @@ export default class extends IMCommand {
 			);
 			return;
 		}
+		if (this.client.instance !== message.author.id) {
+			await this.sendReply(
+				message,
+				t('cmd.botConfig.ownerOnly', {
+					prefix: context.settings.prefix,
+					patreon: this.client.config.bot.links.patreon
+				})
+			);
+			return;
+		}
 
 		const settings = this.client.settings;
 
