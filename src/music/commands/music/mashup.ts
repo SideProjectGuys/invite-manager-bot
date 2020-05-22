@@ -26,7 +26,6 @@ export default class extends IMMusicCommand {
 	}
 
 	public async action(message: Message, [videos]: [string], flags: {}, { t, guild }: CommandContext): Promise<any> {
-		// TODO
 		const voiceChannelId = message.member.voiceState.channelID;
 		if (!voiceChannelId) {
 			await this.sendReply(message, t('music.voiceChannelRequired'));

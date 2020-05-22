@@ -7,7 +7,7 @@ export class PunishmentCache extends IMCache<PunishmentConfig[]> {
 	@Service() private punishments: PunishmentService;
 
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<PunishmentConfig[]> {

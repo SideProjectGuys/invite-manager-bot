@@ -7,7 +7,7 @@ export class StrikesCache extends IMCache<StrikeConfig[]> {
 	@Service() private strikes: StrikeService;
 
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<StrikeConfig[]> {

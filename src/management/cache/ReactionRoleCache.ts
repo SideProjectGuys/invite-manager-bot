@@ -7,7 +7,7 @@ export class ReactionRoleCache extends IMCache<ReactionRole[]> {
 	@Service() private mgmt: ManagementService;
 
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<ReactionRole[]> {

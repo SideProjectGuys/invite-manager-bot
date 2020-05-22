@@ -12,7 +12,7 @@ export class InviteCodeSettingsCache extends IMCache<Map<string, BaseInviteCodeS
 	@Service() private settings: SettingsService;
 
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	public async get<T>(key: string): Promise<Map<string, InviteCodeSettings<T>>> {

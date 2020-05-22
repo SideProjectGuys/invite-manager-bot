@@ -7,7 +7,7 @@ export class RanksCache extends IMCache<Rank[]> {
 	@Service() private ranks: RanksService;
 
 	public async init() {
-		// TODO
+		// NO-OP
 	}
 
 	protected async _get(guildId: string): Promise<Rank[]> {
