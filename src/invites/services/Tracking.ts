@@ -883,7 +883,7 @@ export class TrackingService extends IMService {
 					// Missing permissions
 					if (err.code === 50001 || err.code === 50020 || err.code === 50013) {
 						// Reset the channel
-						await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'joinMessageChannel', null);
+						await this.guildSettingsCache.setOne<InvitesGuildSettings>(guild.id, 'leaveMessageChannel', null);
 					}
 				});
 		}
