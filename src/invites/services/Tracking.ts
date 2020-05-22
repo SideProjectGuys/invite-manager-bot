@@ -245,8 +245,6 @@ export class TrackingService extends IMService {
 				settings.channels.filter((c) => c !== channel.id)
 			);
 		}
-
-		// TODO: Delete channel
 	}
 
 	private async onGuildCreate(guild: Guild) {
