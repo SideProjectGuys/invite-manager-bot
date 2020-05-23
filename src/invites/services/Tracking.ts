@@ -149,7 +149,6 @@ export class TrackingService extends IMService {
 	}
 
 	private async onInviteCreate(guild: Guild, invite: ChannelInvite) {
-		console.log(typeof invite);
 		await this.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
