@@ -63,7 +63,7 @@ export type InternalSettingsTypes =
 
 export interface SettingsInfo<T> {
 	type: InternalSettingsTypes;
-	enumValues?: string[];
+	enumValues?: string[] | (() => string[]);
 	grouping: string[];
 	defaultValue: T;
 	exampleValues?: string[];

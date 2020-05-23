@@ -2,8 +2,6 @@ import { Setting, Settings } from '../../framework/decorators/Setting';
 import { Guild } from '../../framework/models/Guild';
 import { platforms } from '../decorators/Platform';
 
-const PLATFORMS = [...platforms.keys()];
-
 const BASE_GROUP = 'music';
 enum Group {
 	general = 'general',
@@ -42,6 +40,7 @@ export class MusicGuildSettings {
 	@Setting({
 		type: 'Enum',
 		grouping: [BASE_GROUP, Group.announcement],
+		enumValues: Object.values(AnnouncementVoice),
 		defaultValue: AnnouncementVoice.Joanna,
 		possibleValues: Object.values(AnnouncementVoice)
 	})
@@ -63,7 +62,7 @@ export class MusicGuildSettings {
 
 	@Setting({
 		type: 'Enum',
-		enumValues: PLATFORMS,
+		enumValues: () => [...platforms.keys()],
 		grouping: [BASE_GROUP, Group.platform],
 		defaultValue: 'SoundCloud'
 	})
@@ -71,7 +70,7 @@ export class MusicGuildSettings {
 
 	@Setting({
 		type: 'Enum[]',
-		enumValues: PLATFORMS,
+		enumValues: () => [...platforms.keys()],
 		grouping: [BASE_GROUP, Group.platform],
 		defaultValue: []
 	})

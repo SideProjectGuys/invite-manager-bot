@@ -85,7 +85,14 @@ export class SettingsValueResolver extends Resolver {
 
 		let resolver = this.resolvers.get(type);
 		if (!resolver) {
-			resolver = new EnumResolver(this.client, info.enumValues);
+			if (!info.enumValues) {
+				throw new Error('Missing enum values for resolver: ' + key);
+			}
+
+			resolver = new EnumResolver(
+				this.client,
+				typeof info.enumValues === 'function' ? info.enumValues() : info.enumValues
+			);
 			this.resolvers.set(type, resolver);
 		}
 		return resolver;

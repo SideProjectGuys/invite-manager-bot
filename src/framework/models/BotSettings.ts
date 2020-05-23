@@ -22,6 +22,7 @@ export class BaseBotSettings {
 	@Setting({
 		type: 'Enum',
 		grouping: [BASE_GROUP],
+		enumValues: Object.values(ActivityStatus),
 		defaultValue: ActivityStatus.online,
 		possibleValues: Object.values(ActivityStatus)
 	})
@@ -37,6 +38,7 @@ export class BaseBotSettings {
 	@Setting({
 		type: 'Enum',
 		grouping: [BASE_GROUP],
+		enumValues: Object.values(ActivityType),
 		defaultValue: ActivityType.playing,
 		possibleValues: Object.values(ActivityType)
 	})
