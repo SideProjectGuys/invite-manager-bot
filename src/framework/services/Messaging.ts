@@ -95,7 +95,6 @@ export class MessagingService extends IMService {
 
 	public sendEmbed(target: TextableChannel, embedOrText: EmbedOptions | string, failOnNoEmbds: boolean = true) {
 		const embed = typeof embedOrText === 'string' ? this.createEmbed({ description: embedOrText }) : embedOrText;
-
 		embed.fields = embed.fields.filter((field) => field && field.value);
 
 		return new Promise<Message>(async (resolve, reject) => {

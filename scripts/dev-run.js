@@ -17,7 +17,7 @@ child.on('close', () => {
 
 	child = spawn(
 		'node',
-		[`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '4', '4'],
+		[`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '1', '1'],
 		{
 			stdio: 'inherit'
 		}
