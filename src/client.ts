@@ -186,6 +186,7 @@ export class IMClient extends Client {
 
 		// Setup the injections for all command resolvers
 		this.commands.forEach((cmd) => cmd.resolvers.forEach((res) => this.setupInjections(res)));
+		this.commands.forEach((cmd) => cmd.flagResolvers.forEach((res) => this.setupInjections(res)));
 
 		this.on('ready', this.onClientReady);
 		this.on('connect', this.onShardConnect);
