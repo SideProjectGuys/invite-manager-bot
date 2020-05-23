@@ -46,6 +46,7 @@
 		"moment": "2.26.0",
 		"mysql2": "2.1.0",
 		"reflect-metadata": "0.1.13",
+		"uws": "10.148.1",
 		"xmldoc": "1.1.2",
 		"ytdl-core": "2.1.4",
 		"zlib-sync": "0.1.6"
