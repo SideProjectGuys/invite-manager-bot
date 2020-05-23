@@ -21,6 +21,7 @@ export class GuildSettingsCache extends IMCache<BaseGuildSettings> {
 
 	protected async _get(guildId: string): Promise<BaseGuildSettings> {
 		const set = await this.settings.getGuildSettings(guildId);
+		console.log({ ...this.settings.getGuildDefaultSettings(), ...(set ? set.value : null) });
 		return { ...this.settings.getGuildDefaultSettings(), ...(set ? set.value : null) };
 	}
 

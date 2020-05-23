@@ -29,24 +29,17 @@ export class SettingsService extends IMService {
 	private settingsInfos: Map<SettingsBaseTypeConstructor, Map<string, SettingsInfo<any>>> = new Map();
 	private defaultSettings: Map<SettingsBaseTypeConstructor, any> = new Map();
 
-	private botDefaultSettings: any = {};
 	public getBotDefaultSettings<T = {}>(): BaseBotSettings & T {
-		return { ...this.botDefaultSettings };
+		return { ...this.defaultSettings.get(Client) };
 	}
-
-	private guildDefaultSettings: any = {};
 	public getGuildDefaultSettings<T = {}>(): BaseGuildSettings & T {
-		return { ...this.guildDefaultSettings };
+		return { ...this.defaultSettings.get(Guild) };
 	}
-
-	private inviteCodeDefaultSettings: any = {};
 	public getInviteCodeDefaultSettings<T = {}>(): BaseInviteCodeSettings & T {
-		return { ...this.inviteCodeDefaultSettings };
+		return { ...this.defaultSettings.get(InviteCode) };
 	}
-
-	private memberDefaultSettings: any = {};
 	public getMemberDefaultSettings<T = {}>(): BaseMemberSettings & T {
-		return { ...this.memberDefaultSettings };
+		return { ...this.defaultSettings.get(Member) };
 	}
 
 	public getSettingsKeys(baseClass: SettingsBaseTypeConstructor) {
