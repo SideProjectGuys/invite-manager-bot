@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
+import { AnyChannel, ChannelInvite, Guild, GuildAuditLog, GuildChannel, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import os from 'os';
@@ -108,7 +108,7 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private async onInviteCreate(guild: Guild, invite: Invite) {
+	private async onInviteCreate(guild: Guild, invite: ChannelInvite) {
 		await this.client.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -127,7 +127,7 @@ export class TrackingService extends IMService {
 		]);
 	}
 
-	private async onDeleteInvite(guild: Guild, invite: Invite) {
+	private async onDeleteInvite(guild: Guild, invite: ChannelInvite) {
 		await this.client.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -315,7 +315,7 @@ export class TrackingService extends IMService {
 			return;
 		}
 
-		let invs = await guild.getInvites().catch(() => [] as Invite[]);
+		let invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 		const lastUpdate = this.inviteStoreUpdate[guild.id];
 		const newInvs = this.getInviteCounts(invs);
 		const oldInvs = this.inviteStore[guild.id];
@@ -785,7 +785,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Get the invites
-		const invs = await guild.getInvites().catch(() => [] as Invite[]);
+		const invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
@@ -866,7 +866,7 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
+	private getInviteCounts(invites: ChannelInvite[]): { [key: string]: { uses: number; maxUses: number } } {
 		const localInvites: {
 			[key: string]: { uses: number; maxUses: number };
 		} = {};
