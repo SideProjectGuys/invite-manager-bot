@@ -18,7 +18,7 @@ export class InviteCodeResolver extends Resolver {
 			inv = await this.client.getInvite(id);
 		}
 		if (!inv) {
-			throw Error(t(`resolvers.${this.getType()}.notFound`));
+			throw Error(t(`resolvers.invitecode.notFound`));
 		}
 
 		return inv;

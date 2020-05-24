@@ -230,7 +230,8 @@
 				"canNotReadMessages": "Ik heb de **berichten lezen** rechten niet in dat kanaal.",
 				"canNotSendEmbeds": "Ik heb de **ingesloten links** rechten niet in dat kanaal.",
 				"canNotSendMessages": "Ik heb de **berichten verzenden** rechten niet in dat kanaal.",
-				"mustBeTextChannel": "Dat kanaal is geen tekst kanaal."
+				"mustBeTextChannel": "Dat kanaal is geen tekst kanaal.",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "Nieuwe Waarde"
@@ -416,7 +417,7 @@
 			}
 		},
 		"interactiveConfig": {
-			"useWeb": "Please use the {{{ configCmd }}} command or our website at {{{ link }}} to configure your bot.",
+			"useWeb": "Gebruik de {{{ configCmd }}} commando of gebruik onze website {{{ link }}} om je bot to configureren.",
 			"add": "Vul een waarde of lijst van waardes in om toe te voegen.",
 			"change": "**Huidige waarde**\n{{{ current }}}\n\n**Mogelijke waardes**\n{{{ possible }}}",
 			"current": {
@@ -501,7 +502,9 @@
 			},
 			"text": "Stel de configuraties in voor individuele invite codes.",
 			"title": "Invite Code Configuratie",
-			"noneSet": "Geen configuraties gezet!"
+			"noneSet": "Geen configuraties gezet!",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "Ik heb je een prive bericht gestuurt met al je invite codes.",
@@ -687,6 +690,10 @@
 			"done": "Gebruiker is gemute!",
 			"error": "Er is een error opgetreden tijdens het muten van deze persoon.",
 			"missingRole": "Muted role is niet gezet of bestaat niet!",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "De tijd waarvoor de gebruiker gemute wordt.",
@@ -711,7 +718,8 @@
 					"role": "De role die toegang of geen toegang moet krijgen tot het commando."
 				},
 				"description": "Configureer permissies om commando's te gebruiken."
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -733,13 +741,14 @@
 				"noSubscription": "Je hebt geen betaalde abonnement.\n\nGebruik {{{ cmd }}} voor meer informatie.",
 				"title": "Activeer premium op deze server",
 				"permissions": "Je hebt de `Server Beheren` permissies nodig om dit commando te gebruiken.",
-				"maxGuilds": "You have activated premium on the maximum number of guilds."
+				"maxGuilds": "Je hebt premium geactiveerd op je maximaal aantal guilds."
 			},
 			"check": {
 				"declined": "Je betaling voor premium is geweigerd. Zie alsjeblieft je Patreon.",
 				"done": "Je hebt een betaalde abonnement geldig tot {{{ valid }}}.\n\nGebruik {{{ cmd }}} voor meer informatie.",
 				"notFound": "Je account heeft geen premium abonnement.\n\nAls je premium hebt gekocht via Patreon, zorg dan dat je patreon account gekoppeld is aan je discord account. Voer dan het commando opnieuw uit.",
-				"title": "Check voor een Premium Abonnement"
+				"title": "Check voor een Premium Abonnement",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "Je gebruikt een custom bot. Custom bots hebben altijd premium.",
@@ -970,6 +979,8 @@
 			"alreadyUsed": "Je hebt al je free premium voor tijdelijk gebruikt! Als je deze bot goed vind, kan je altijd ervoor kiezen om de betaalde bot te kopen.",
 			"currentlyActive": "Je hebt momenteel een actieve betaalde abonnement.",
 			"prompt": "Reageer met **yes** of **no**.",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "Probeer de betaalde versie van InviteManager gratis voor een bepaalde tijd."
 			},
@@ -1003,6 +1014,7 @@
 			"canNotUnmute": "Die gebruiker kan niet geunmute worden.",
 			"done": "De gebruiker is geunmute.",
 			"missingRole": "Muted role in niet gezet of bestaat niet!",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
 					"user": "De gebruiker die geunmute wordt."
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "The videos that should be mashed together."
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,7 +1106,8 @@
 		"rewind": {
 			"self": {
 				"description": "Laat het nummer opnieuw afspelen."
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "Resultaten voor {{ term }}",
-			"noResults": "Geen resultaten gevonden!"
+			"noResults": "Geen resultaten gevonden!",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,7 +1129,8 @@
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Maak een nieuwe of verander een bestaande placeholder bericht."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "De placeholder bericht met de opgegeven id kan niet worden gevonden."
 		},
 		"reactionRole": {
@@ -1166,16 +1183,16 @@
 					"channel": "Het kanaal dat in lockdown wilt."
 				}
 			},
+			"notATextChannel": "That channel is not a text channel.",
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Het gebruik van embeds in join/leave berichten is een premium toevoeging. Premium is niet geactiveerd in deze server. Contacteer ons alsjeblieft om meer te weten te komen hoe je premium koopt.",
 	"messages": {
 		"joinUnknownInviter": "Ik kan niet vinden hoe <@{{ id }}> de server gejoind is.",
 		"joinVanityUrl": "<@{{ id }}> is de server gejoint via een vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} heeft de server verlaten, maar ik kan niet uitvinden wie hem geïnvite heeft.",
-		"unknownInviter": "Onbekend",
-		"joinServerWidget": "De gebruiker is gejoined via een server widget."
+		"joinServerWidget": "De gebruiker is gejoined via een server widget.",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,7 +1211,7 @@
 	},
 	"permissions": {
 		"adminOnly": "je hebt de permissies niet om dit commando te gebruiken.\nAlleen **Administrators** mogen dit commando gebruiken.",
-		"createInviteCode": "Maak een instant invite",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "Beheer Server",
 		"manageRoles": "Beheer Rollen",
 		"premiumOnly": "Dit commando is alleen beschikbaar voor premium gebruikers!",
@@ -1205,10 +1222,8 @@
 		"readMessageHistory": "Lees Bericht Geschiedenis",
 		"missing": "InviteManager mist de permissies {{{ permissions }}} in {{{ channel }}}",
 		"banMembers": "Verban Gebruikers",
-		"kickMembers": "KIck Gebruikers"
-	},
-	"prompt": {
-		"canceled": "Geannuleerd"
+		"kickMembers": "KIck Gebruikers",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "Geen geldige nummer.",
 			"type": "Nummer",
-			"typeInfo": "De argument zou een nummer moeten zijn"
+			"typeInfo": "De argument zou een nummer moeten zijn",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "Verschillende overeenkomende rollen gevonden. {{{ roles }}}",
@@ -1276,7 +1293,8 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "Deze argument zou een Discord Invite Code moeten zijn\n\n> Je kan alleen de invite code achter `https://discord.gg/` plaatsen om te voorkomen dat Discord een preview maakt."
+			"typeInfo": "Deze argument zou een Discord Invite Code moeten zijn\n\n> Je kan alleen de invite code achter `https://discord.gg/` plaatsen om te voorkomen dat Discord een preview maakt.",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {
@@ -1313,15 +1331,15 @@
 			"description": "Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
-			"title": "Timeframe in Seconds",
+			"title": "Tijd in seconden",
 			"description": "The timeframe whithin which messages will be considered duplicates."
 		},
 		"autoModEmojisEnabled": {
-			"title": "Enabled",
-			"description": "Automatically moderate messages with an excessive amount of emojis."
+			"title": "Ingeschakeld",
+			"description": "Berichten met een grote hoeveelheid emojis worden automatisch gemoderate."
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
-			"title": "Max # of Emojis",
+			"title": "Maximaal aantal emojis",
 			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
 		},
 		"autoModEnabled": {

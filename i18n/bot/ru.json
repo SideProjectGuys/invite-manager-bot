@@ -32,171 +32,171 @@
 				"description": "Добавляет/Убирает приглашения для пользователя"
 			},
 			"zero": "Добавление 0 приглашений реально ничего не изменит...",
-			"numberTooLarge": "The number you provided is too big.",
-			"numberTooSmall": "The number you provided is too small."
+			"numberTooLarge": "Число которое в задали слишком большое!",
+			"numberTooSmall": "Число которое в задали слишком маленькое!"
 		},
 		"addRank": {
 			"created": "Добавлена роль {{{ role }}}, для которой нужно иметь {{ invites }} приглашений и оно имеет описание: {{ description }}",
-			"roleTooHigh": "The role {{{ role }}} is higher up than my role ({{{ myRole }}}), so I won't be able to assign it to members that earn it.",
+			"roleTooHigh": "Роль {{{ role }}} выше чем {{{ myRole }}}, и я не смогу её присвоить пользователям которые получили её.",
 			"self": {
 				"args": {
-					"info": "A description that users will see so they know more about this rank.",
-					"invites": "The amount of invites needed to reach the rank.",
-					"role": "The role which the user will receive when reaching this rank."
+					"info": "Описание позволит пользователям узнать больше о ролию.",
+					"invites": "Количество приглашений требуемых для получения роли.",
+					"role": "Роль которую пользователь получит при достижении ранга."
 				},
-				"description": "Add a new rank."
+				"description": "Добавить ранг."
 			},
-			"updated": "Rank {{{ role }}} updated: Now needs {{ invites }} invites and has the following description: {{ description }}"
+			"updated": "Ранг {{{ role }}} обновлён: теперь требуется пригласить {{ invites }} людей. Описание роли: {{ description }}"
 		},
 		"ban": {
-			"canNotBan": "I cannot ban this user.",
-			"done": "The user was successfully banned.",
-			"error": "There was an error banning this user:\n{{ error }}",
-			"missingPermissions": "I need the `Ban Members` permission to use this command.",
+			"canNotBan": "Блокировка невозможна.",
+			"done": "Пользователь успешно заблокирован!",
+			"error": "Произошла тезническая ошибка в результате которой операция не выполнелась. Попробуйте позже. {{ error }}",
+			"missingPermissions": "Нет прав.",
 			"self": {
 				"args": {
 					"deleteMessageDays": "How far back messages will be deleted (in days).",
-					"reason": "Why was the user banned.",
-					"user": "User to ban."
+					"reason": "Причина блокировки.",
+					"user": "Ползоватьель которого нужно заблокировать."
 				},
-				"description": "Ban a member from the server.",
+				"description": "Заблокировать пользователя.",
 				"flags": {
 					"deleteMessageDays": "If specified will delete messages by the banned members this many days back."
 				}
 			},
-			"canNotSoftBan": "I cannot softban this user."
+			"canNotSoftBan": "Невозможна блокировка типа \"soft\"."
 		},
 		"botConfig": {
-			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `{{ prefix }}botConfig {{ key }} default` to reset it to the default value.",
+			"canNotClear": "Невозможна очистка параметра **{{ key }}**! Используйте `{{ prefix }}botConfig {{ key }} default` для отката к изначальным настройкам.",
 			"changed": {
-				"text": "This config has been changed.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it again.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default."
+				"text": "Данный параметр был успешно изменён!\nИспользуйте `{{ prefix }}botConfig {{ key }} <значение>` для повторного изменения.\nUse `{{ prefix }}botConfig {{ key }} default` для отката к изначальным настройкам."
 			},
 			"current": {
-				"clear": "Use `{{ prefix }}botConfig {{ key }} none` to clear it.",
-				"notSet": "This config is currently **not** set.\nUse `{{ prefix }}config {{ key }} <value>` to set it.",
-				"text": "This config is currently set.\nUse `{{ prefix }}botConfig {{ key }} <value>` to change it.\nUse `{{ prefix }}botConfig {{ key }} default` to reset it to the default.",
-				"title": "Current Value"
+				"clear": "Используйте `{{ prefix }}botConfig {{ key }} none` для очистки значения параметра.",
+				"notSet": "Параметр не настроен.\nUse `{{ prefix }}config {{ key }} <значение>` для настройки.",
+				"text": "Данный параметр был успешно задан!\nИспользуйте `{{ prefix }}botConfig {{ key }} <значение>` для повторного изменения.\nUse `{{ prefix }}botConfig {{ key }} default` для отката к изначальным настройкам.",
+				"title": "Значение на данный момент"
 			},
 			"customOnly": "**This command is only available for custom bots.**\nIf you are looking for your server config, please use the `{{ prefix }}config` command.\n\nVisit our patreon page to learn more about how you can get your own custom bot: {{{ patreon }}}",
 			"invalid": {
-				"twitchOnly": "Discord only supports twitch.tv URLs for the streaming activity."
+				"twitchOnly": "Discord поддерживает ссылки на трансляции twitch.tv"
 			},
 			"new": {
-				"title": "New Value"
+				"title": "Новое значение"
 			},
-			"none": "None",
-			"notSet": "These settings are not set",
+			"none": "Пусто",
+			"notSet": "Эти параметры не настроены",
 			"preview": {
-				"nextMessage": "<See next message>",
-				"title": "Preview"
+				"nextMessage": "<просмотр следующего сообщения>",
+				"title": "предварительный просмотр."
 			},
 			"previous": {
-				"title": "Previous Value"
+				"title": "Предыдущее значение"
 			},
-			"sameValue": "This config is already set to that value.",
+			"sameValue": "Параметр уже имеет данное значение.",
 			"self": {
 				"args": {
-					"key": "The bot config setting which you want to show/change.",
-					"value": "The new value of the setting."
+					"key": "Тот параметр который вы хотите изсенить.",
+					"value": "Значение параметра."
 				},
-				"description": "Show and change the config of the bot."
+				"description": "Показать/изменить значение параметра."
 			},
 			"text": "Снизу весь конфиг настроек данного бота\nИспользуй `{{ prefix }}botConfig <key> ` чтобы увидеть кождую настройку\nИспользуй `{{ prefix }}botConfig <key> <value>` чтобы настроить конфиг <key> в <value>",
-			"title": "Custom Bot Config"
+			"title": "Конфигурация"
 		},
 		"botInfo": {
 			"guilds": "Сервера",
 			"members": "Участники",
 			"premium": {
-				"active": "This server has an **active premium** subscription.",
-				"custom": "You are using a custom version of the bot!",
-				"none": "This server currently **does not** have premium.",
-				"title": "Premium"
+				"active": "У этого сервера **действует** премиум подписка!",
+				"custom": "Вы используете модифицированную версию бота.",
+				"none": "У этого сервера **нет** премиум подписки!",
+				"title": "Премиум."
 			},
 			"self": {
-				"description": "Get general information about the bot."
+				"description": "Уснайте основную информацию о боте."
 			},
 			"shards": {
 				"current": "Current Shard",
 				"total": "Total Shards"
 			},
-			"uptime": "Uptime",
+			"uptime": "Время работы",
 			"version": "Версия"
 		},
 		"caseDelete": {
-			"done": "Case deleted",
-			"notFound": "Case not found",
+			"done": "Кейс убран!",
+			"notFound": "Кейс не найден.",
 			"self": {
 				"args": {
-					"caseNumber": "Case number",
-					"reason": "The reason for removing the case."
+					"caseNumber": "ID кейса.",
+					"reason": "Причина удаления кейса."
 				},
-				"description": "Delete a specific case."
+				"description": "Убрать какой-либо кейс."
 			},
-			"title": "Case #{{ id }}"
+			"title": "Кейс #{{ id }}"
 		},
 		"caseView": {
-			"notFound": "Case not found",
+			"notFound": "Кейс не найден",
 			"self": {
 				"args": {
-					"caseNumber": "Case number"
+					"caseNumber": "Номер кейса"
 				},
-				"description": "View info about a specific case."
+				"description": "Посмотреть информацию про кейс."
 			},
-			"strike": "{{{ member }}} received {{{ amount }}} strikes for violating the {{{ violation }}} rule {{{ date }}}.",
-			"title": "Case #{{ id }}"
+			"strike": "{{{ member }}} получил {{{ amount }}} страйк(ов) в связи с нарушением правила {{{ violation }}}. {{{ date }}}.",
+			"title": "Кейс #{{ id }}"
 		},
 		"check": {
-			"noHistory": "User does not have any history.",
+			"noHistory": "У данного пользователя нет истории.",
 			"punishments": {
-				"entry": "{{ punishment }} because he had {{ amount }} strikes {{ date }}",
-				"title": "Punishments",
-				"total": "Punishments Total",
-				"totalText": "{{{ amount }}} punishments."
+				"entry": "{{ punishment }} посколько у него было {{ amount }} страйков. {{ date }}.",
+				"title": "Наказания",
+				"total": "ИТОГО наказаний",
+				"totalText": "{{{ amount }}} наказаний."
 			},
 			"self": {
 				"args": {
-					"user": "User to check."
+					"user": "Пользователь которого нужно проверить."
 				},
-				"description": "Check violation and punishment history of a user."
+				"description": "Проверьте историю наказаний пользователя."
 			},
 			"strikes": {
-				"entry": "#{{ id }} - Received {{ amount }} strikes for {{ violation }} {{ date }}",
-				"title": "Strikes",
-				"total": "Strikes Total",
-				"totalText": "Received {{{ total }}} strikes for {{{ amount }}} violations."
+				"entry": "#{{ id }} - Получил {{ amount }} страйков из-за {{ violation }}. {{ date }}.",
+				"title": "Страйки",
+				"total": "ИТОГО страйков",
+				"totalText": "Получено {{{ total }}} страйков за нарушение {{{ amount }}} правил."
 			}
 		},
 		"clean": {
 			"error": "Ошибка",
-			"invalidQuantity": "You must specify a positive amount of messages to clean",
+			"invalidQuantity": "Число убраных сообщений должно быть выше 0.",
 			"self": {
 				"args": {
-					"member": "User whose messages get deleted.",
-					"numberOfMessages": "Number of messages that will be searched.",
-					"quantity": "How many messages should be deleted.",
-					"type": "The type of messages that will be deleted."
+					"member": "Пользователь сообщения которого нужно убрать",
+					"numberOfMessages": "Количество сообщений которые должны быть найдены.",
+					"quantity": "Количество найденых сообщений которые должны быть убраны.",
+					"type": "Тип удаляемых сообщений."
 				},
-				"description": "Clean a channel of certain message types."
+				"description": "Удалить сообщения специального типа из канала."
 			},
-			"text": "Deleted {{ amount }} messages.\nThis message will be deleted in 5 seconds.",
-			"title": "Deleted Messages",
-			"textReactions": "Deleted {{ amount }} messages containing reactions."
+			"text": "Удалено {{ amount }} сообщений.\nЭто сообщение автоматически удалится через 5 секунд.",
+			"title": "Убранные сообщения",
+			"textReactions": "Удалено {{ amount }} сообщений содержащих реакции."
 		},
 		"cleanShort": {
 			"self": {
 				"args": {
-					"maxTextLength": "All messages shorter than this will be deleted.",
-					"numberOfMessages": "Number of messages that will be searched."
+					"maxTextLength": "Установите значение количества символов сообщения ниже которого удалены.",
+					"numberOfMessages": "Количество сообщений которых нужно найти."
 				},
-				"description": "Clear short messages"
+				"description": "Удалить короткие сообщения."
 			}
 		},
 		"cleanText": {
 			"self": {
 				"args": {
-					"numberOfMessages": "Number of messages that will be searched.",
-					"text": "All messages containing this word will be deleted."
+					"numberOfMessages": "Количество сообщений которые нужно найти",
+					"text": "Все сообщения с данным словом будут удалены"
 				},
 				"description": "Delete messages containing certain keywords."
 			}
@@ -230,7 +230,8 @@
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"mustBeTextChannel": "That channel is not a text channel.",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "Новое значение"
@@ -501,7 +502,9 @@
 			},
 			"text": "Set configs for individual invite codes.",
 			"title": "Invite Code Config",
-			"noneSet": "No configs set!"
+			"noneSet": "No configs set!",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "I sent you a DM with all your invite codes.",
@@ -687,6 +690,10 @@
 			"done": "User muted!",
 			"error": "There was an error muting this person.",
 			"missingRole": "Muted role not set or does not exist!",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "The duration for which the user should be muted.",
@@ -711,7 +718,8 @@
 					"role": "The role which should be granted or denied access to the command."
 				},
 				"description": "Configure permissions to use commands."
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -739,7 +747,8 @@
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info.",
 				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
-				"title": "Check for a Premium Subscription"
+				"title": "Check for a Premium Subscription",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "You are using a custom bot. Custom bots always have premium.",
@@ -970,6 +979,8 @@
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
 			"currentlyActive": "You currently have an active premium subscription!",
 			"prompt": "Please reply with **yes** or **no**.",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
 			},
@@ -1003,6 +1014,7 @@
 			"canNotUnmute": "Cannot unmute that user.",
 			"done": "User has been unmuted.",
 			"missingRole": "Muted role not set or does not exist!",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
 					"user": "The user that should be unmuted."
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "The videos that should be mashed together."
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,7 +1106,8 @@
 		"rewind": {
 			"self": {
 				"description": "Rewind the song and start from the beginning."
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "Results for {{ term }}",
-			"noResults": "No results found!"
+			"noResults": "No results found!",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,7 +1129,8 @@
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Creates a new or edits an existing placeholder message."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
 		},
 		"reactionRole": {
@@ -1166,16 +1183,16 @@
 					"channel": "The channel that you want to lock down."
 				}
 			},
+			"notATextChannel": "That channel is not a text channel.",
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
 	"messages": {
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown",
-		"joinServerWidget": "The user joined using a server widget."
+		"joinServerWidget": "The user joined using a server widget.",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,7 +1211,7 @@
 	},
 	"permissions": {
 		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
-		"createInviteCode": "Create Instant Invite",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "Упровлять сервером",
 		"manageRoles": "Manage Roles",
 		"premiumOnly": "This command is only available for premium subscribers!",
@@ -1205,10 +1222,8 @@
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
 		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
-	},
-	"prompt": {
-		"canceled": "Отменено"
+		"kickMembers": "Kick Members",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "This arguments expects a number"
+			"typeInfo": "This arguments expects a number",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
@@ -1276,7 +1293,8 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {

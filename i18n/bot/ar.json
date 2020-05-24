@@ -230,7 +230,8 @@
 				"canNotReadMessages": "ليس لدي اذن الـ **read messages** في هذه الغرفة/الروم",
 				"canNotSendEmbeds": "ليس لدي اذن الـ **embed links** في هذه الغرفة/الروم",
 				"canNotSendMessages": "ليس لدي اذن الـ **send message** في هذه الغرفة/الروم",
-				"mustBeTextChannel": "هذه الغرفة/الروم ليست للكتابة"
+				"mustBeTextChannel": "هذه الغرفة/الروم ليست للكتابة",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "اعدادات جديدة"
@@ -501,7 +502,9 @@
 			},
 			"text": "ضبط اعدادات كود الدعوات لفرد معين",
 			"title": "اعدادات كود الدعوات",
-			"noneSet": "الاعدادات لم تضبط بعد!"
+			"noneSet": "الاعدادات لم تضبط بعد!",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "تم ارسال جميع روابط الدعوات في الخاص التابع لك.",
@@ -687,6 +690,10 @@
 			"done": "تم اسكات العضو!",
 			"error": "حدث خطأ في اسكات هذا الشخص.",
 			"missingRole": "رتبة الاسكات لم تحدد أو غير موجودة!",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "المدة التي يجب اسكات المستخدم فيها.",
@@ -711,7 +718,8 @@
 					"role": "الدور الذي ينبغي منحه أو رفض الوصول إلى الأمر."
 				},
 				"description": "تهيئة الإذن ليستخدم الأوامر"
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -739,7 +747,8 @@
 				"declined": "تم رفض دفعتك للقسط ، يرجى التحقق من Patreon الخاص بك.",
 				"done": "لديك اشتراك نشط نشط صالح حتى {{{valid}}}.\nاستخدم {{{cmd}}} لمزيد من المعلومات.",
 				"notFound": "حسابك ليس لديه اشتراك متميز مرتبط.\nإذا كنت ممتازًا باستخدام Patreon ، فيرجى التأكد من ربط حساب Discord الخاص بك مع Patreon لجمع مكافآتك ، ثم قم بتشغيل هذا الأمر مرة أخرى",
-				"title": "تحقق من وجود قسط الاشتراك"
+				"title": "تحقق من وجود قسط الاشتراك",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "أنت تستخدم روبوت مخصص. الروبوتات المخصصة لها دائما قسط.",
@@ -970,6 +979,8 @@
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
 			"currentlyActive": "You currently have an active premium subscription!",
 			"prompt": "رجاءا قم بالاجابة بـ **yes** او **no**.",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
 			},
@@ -1003,6 +1014,7 @@
 			"canNotUnmute": "لا يمكن فك اسكات المستخدم.",
 			"done": "تم فك الاسكات من المستخدم.",
 			"missingRole": "Muted role not set or does not exist!",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
 					"user": "المستخدم الذي يجب فك اسكاته."
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "The videos that should be mashed together."
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,7 +1106,8 @@
 		"rewind": {
 			"self": {
 				"description": "Rewind the song and start from the beginning."
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "Results for {{ term }}",
-			"noResults": "لم يتم اجاد نتائج!"
+			"noResults": "لم يتم اجاد نتائج!",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,7 +1129,8 @@
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Creates a new or edits an existing placeholder message."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
 		},
 		"reactionRole": {
@@ -1166,16 +1183,16 @@
 					"channel": "The channel that you want to lock down."
 				}
 			},
+			"notATextChannel": "That channel is not a text channel.",
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
 	"messages": {
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "مجهول",
-		"joinServerWidget": "The user joined using a server widget."
+		"joinServerWidget": "The user joined using a server widget.",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,7 +1211,7 @@
 	},
 	"permissions": {
 		"adminOnly": "لا يوجد لديك صلاحيات لاستخدام هذا الامر.\nفقط من يمتلك **Administrators** يمكنه استخدامه",
-		"createInviteCode": "إنشاء دعوة فورية",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "Manage Server",
 		"manageRoles": "Manage Roles",
 		"premiumOnly": "هذا الامر لا يتوفر الا لمن يستخدم النسخة المدفوعة!",
@@ -1205,10 +1222,8 @@
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
 		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
-	},
-	"prompt": {
-		"canceled": "تم الغاءها"
+		"kickMembers": "Kick Members",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "ليس رقمًا صالحًا",
 			"type": "رقم",
-			"typeInfo": "This arguments expects a number"
+			"typeInfo": "This arguments expects a number",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "تم العثور على أدوار مطابقة متعددة. {{{الأدوار}}}",
@@ -1276,7 +1293,8 @@
 		},
 		"invitecode": {
 			"type": "رقم الدعوة",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {
@@ -1536,7 +1554,7 @@
 				"title": "موسيقى",
 				"description": "اعدادات الموسيقى",
 				"general": {
-					"title": "موسيقى",
+					"title": "Music",
 					"description": "إعدادات الموسيقى العامة"
 				},
 				"announcement": {

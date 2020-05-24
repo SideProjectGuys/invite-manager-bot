@@ -27,12 +27,7 @@ export default class extends Command {
 		const musicPlatform: MusicPlatform = conn.getNowPlaying().getPlatform();
 
 		if (!musicPlatform.supportsRewind) {
-			await this.sendReply(
-				message,
-				t('cmd.rewind.notSupported', {
-					platform: musicPlatform.getType()
-				})
-			);
+			await this.sendReply(message, t('cmd.rewind.notSupported', { platform: musicPlatform.getType() }));
 			return;
 		}
 

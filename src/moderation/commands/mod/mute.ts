@@ -88,7 +88,7 @@ export default class extends Command {
 				if (duration) {
 					embed.fields.push({
 						name: t('cmd.mute.unmute.title'),
-						value: t('cmd.mute.unmute.desecription', { duration: duration.humanize() })
+						value: t('cmd.mute.unmute.description', { duration: duration.humanize(false) })
 					});
 					await this.client.scheduler.addScheduledAction(
 						guild.id,
