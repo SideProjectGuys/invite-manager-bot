@@ -230,7 +230,8 @@
 				"canNotReadMessages": "I don't have permission to **read messages** in that channel.",
 				"canNotSendEmbeds": "I don't have permission to **embed links** in that channel.",
 				"canNotSendMessages": "I don't have permission to **send messages** in that channel.",
-				"mustBeTextChannel": "That channel is not a text channel."
+				"mustBeTextChannel": "That channel is not a text channel.",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "Valor novo"
@@ -501,7 +502,9 @@
 			},
 			"text": "Set configs for individual invite codes.",
 			"title": "Invite Code Config",
-			"noneSet": "No configs set!"
+			"noneSet": "No configs set!",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "Enviei-lhe uma DM com todos os códigos de seu convites.",
@@ -687,6 +690,10 @@
 			"done": "User muted!",
 			"error": "There was an error muting this person.",
 			"missingRole": "Muted role not set or does not exist!",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "The duration for which the user should be muted.",
@@ -711,7 +718,8 @@
 					"role": "The role which should be granted or denied access to the command."
 				},
 				"description": "Configure permissions to use commands."
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -739,7 +747,8 @@
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info.",
 				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
-				"title": "Check for a Premium Subscription"
+				"title": "Check for a Premium Subscription",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "You are using a custom bot. Custom bots always have premium.",
@@ -970,6 +979,8 @@
 			"alreadyUsed": "You have already used your free premium trial! If you like this bot, please consider purchasing premium.",
 			"currentlyActive": "You currently have an active premium subscription!",
 			"prompt": "Please reply with **yes** or **no**.",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "Try the premium version of InviteManager for free for a limited duration."
 			},
@@ -1003,6 +1014,7 @@
 			"canNotUnmute": "Cannot unmute that user.",
 			"done": "User has been unmuted.",
 			"missingRole": "Muted role not set or does not exist!",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
 					"user": "The user that should be unmuted."
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "The videos that should be mashed together."
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,7 +1106,8 @@
 		"rewind": {
 			"self": {
 				"description": "Rewind the song and start from the beginning."
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "Results for {{ term }}",
-			"noResults": "No results found!"
+			"noResults": "No results found!",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,7 +1129,8 @@
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Creates a new or edits an existing placeholder message."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
 		},
 		"reactionRole": {
@@ -1166,16 +1183,16 @@
 					"channel": "The channel that you want to lock down."
 				}
 			},
+			"notATextChannel": "That channel is not a text channel.",
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium.",
 	"messages": {
 		"joinUnknownInviter": "I can't figure out how <@{{ id }}> joined the server.",
 		"joinVanityUrl": "<@{{ id }}> joined the server using a vanity invite.",
 		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Unknown",
-		"joinServerWidget": "The user joined using a server widget."
+		"joinServerWidget": "The user joined using a server widget.",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,7 +1211,7 @@
 	},
 	"permissions": {
 		"adminOnly": "You do not have permission to use this command.\nOnly **Administrators** may use this command.",
-		"createInviteCode": "Create Instant Invite",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "Manage Server",
 		"manageRoles": "Manage Roles",
 		"premiumOnly": "This command is only available for premium subscribers!",
@@ -1205,10 +1222,8 @@
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager is missing the permissions {{{ permissions }}} in {{{ channel }}}",
 		"banMembers": "Ban Members",
-		"kickMembers": "Kick Members"
-	},
-	"prompt": {
-		"canceled": "Canceled"
+		"kickMembers": "Kick Members",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "Not a valid number.",
 			"type": "Number",
-			"typeInfo": "This arguments expects a number"
+			"typeInfo": "This arguments expects a number",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "Multiple matching roles found. {{{ roles }}}",
@@ -1276,7 +1293,8 @@
 		},
 		"invitecode": {
 			"type": "Invite Code",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {

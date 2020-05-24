@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.8.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.7.0...v9.8.0) (2020-05-24)
+
+### Features
+
+- **docs:** Update documentation ([00e99b9](https://github.com/SideProjectGuys/invite-manager-bot/commit/00e99b92a8f32c1d0f7f719ef8ed512f617bda17))
+- **i18n:** Update translations ([a117749](https://github.com/SideProjectGuys/invite-manager-bot/commit/a1177497a2c5e35e7504a7f932e05636f9b04637))
+- **invites:** Handle invite gateaway events ([dd3d2a2](https://github.com/SideProjectGuys/invite-manager-bot/commit/dd3d2a21141c390d2a4153bcfec6f12e623a63b0))
+- **package:** Update dependencies ([3addde5](https://github.com/SideProjectGuys/invite-manager-bot/commit/3addde529003e20d9a2299e77d23a81b67494f56))
+
+### Bug Fixes
+
+- **credits:** Update credits.ts with latest info. ([#138](https://github.com/SideProjectGuys/invite-manager-bot/issues/138)) ([e846b26](https://github.com/SideProjectGuys/invite-manager-bot/commit/e846b26ce55d25ce878a9823b22b6e23ab59f585))
+- **scheduler:** Fix scheduled functions bug ([7698091](https://github.com/SideProjectGuys/invite-manager-bot/commit/7698091ecbee49255391d1e2e77e222ca4db8be6))
+
 ## [9.7.0](https://github.com/SideProjectGuys/invite-manager-bot/compare/v9.6.2...v9.7.0) (2020-03-31)
 
 ### Features

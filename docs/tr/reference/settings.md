@@ -6,14 +6,14 @@ There are many config options that can be set. You don't have to set all of them
 
 ### Genel
 
-| Setting                                        | Description                                                |
-| ---------------------------------------------- | ---------------------------------------------------------- |
-| [Prefix](#prefix)                              | The prefix used to trigger bot commands.                   |
-| [Dil](#lang)                                   | Botun dili                                                 |
-| [Log kanalı](#logchannel)                      | Bot işlemlerinin günlüğe kaydedildiği kanal.               |
-| [Yükselt.](#getupdates)                        | Enable to receive development updates about InviteManager. |
-| [Komut kanalları](#channels)                   | The channels in which the bot will react to commands.      |
-| [Görmezden gelinen kanallar](#ignoredchannels) | Botun komutları görmezden geleceği kanallar.               |
+| Setting                                        | Description                                                              |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| [Prefix](#prefix)                              | The prefix used to trigger bot commands.                                 |
+| [Dil](#lang)                                   | Botun dili                                                               |
+| [Log kanalı](#logchannel)                      | Bot işlemlerinin günlüğe kaydedildiği kanal.                             |
+| [Yükselt.](#getupdates)                        | InviteManager hakkında geliştirme güncellemelerini almayı etkinleştirin. |
+| [Komut kanalları](#channels)                   | Botun komutlara tepki vereceği kanallar.                                 |
+| [Görmezden gelinen kanallar](#ignoredchannels) | Botun komutları görmezden geleceği kanallar.                             |
 
 ### davetler
 
@@ -48,9 +48,9 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Sahte
 
-| Setting                             | Description                          |
-| ----------------------------------- | ------------------------------------ |
-| [Auto Subtract](#autosubtractfakes) | Automatically subtract fake invites. |
+| Setting                             | Description                             |
+| ----------------------------------- | --------------------------------------- |
+| [Auto Subtract](#autosubtractfakes) | Sahte davetleri otomatik olarak çıkarın |
 
 #### rütbe
 
@@ -110,9 +110,9 @@ There are many config options that can be set. You don't have to set all of them
 
 | Setting                                              | Description                                                                             |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [Enabled](#automodlinksenabled)                      | Automatically remove messages containing links (you can set a whitelist and blacklist). |
+| [Etkin](#automodlinksenabled)                        | Automatically remove messages containing links (you can set a whitelist and blacklist). |
 | [Betaz liste](#automodlinkswhitelist)                | Kullanıcıların yayın göndermesine izin verilen bağlantıların listesi.                   |
-| [Blacklist](#automodlinksblacklist)                  | Blacklist certain links which users won't be able to post.                              |
+| [Kara liste](#automodlinksblacklist)                 | Blacklist certain links which users won't be able to post.                              |
 | [Yönlendirmeleri İzle](#automodlinksfollowredirects) | Enable this to resolve redirects for links.                                             |
 
 #### Yasaklı Kelimeler.
@@ -120,7 +120,7 @@ There are many config options that can be set. You don't have to set all of them
 | Setting                              | Description                                             |
 | ------------------------------------ | ------------------------------------------------------- |
 | [Etkin](#automodwordsenabled)        | Whether or not blacklisted words will be automoderated. |
-| [Kara liste](#automodwordsblacklist) | A list of words that are banned.                        |
+| [Kara liste](#automodwordsblacklist) | Yasaklanan kelimelerin listesi.                         |
 
 #### Büyük Harfler
 
@@ -134,7 +134,7 @@ There are many config options that can be set. You don't have to set all of them
 
 | Setting                                                           | Description                                                  |
 | ----------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Enabled](#automodduplicatetextenabled)                           | Automatically moderate duplicate messages (copy-paste spam). |
+| [Etkin](#automodduplicatetextenabled)                             | Automatically moderate duplicate messages (copy-paste spam). |
 | [Saniyede Zaman Aralığı](#automodduplicatetexttimeframeinseconds) | Hangi iletilerin kopya olarak kabul edileceği zaman dilimi.  |
 
 #### spam
@@ -151,7 +151,7 @@ There are many config options that can be set. You don't have to set all of them
 | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
 | [etkin](#automodmentionusersenabled)                         | Automatically moderate messages that mention an excessive amount of users. |
 | [Max # of Mentions](#automodmentionusersmaxnumberofmentions) | The maximum amount of users a member can mention in a message.             |
-| [Enabled](#automodmentionrolesenabled)                       | Automatically moderate messages that mention an excessive amount of roles. |
+| [Etkin](#automodmentionrolesenabled)                         | Automatically moderate messages that mention an excessive amount of roles. |
 | [Max # of Mentions](#automodmentionrolesmaxnumberofmentions) | The maximum amount of roles a member can mention in a message.             |
 
 #### Emojiler
@@ -159,12 +159,12 @@ There are many config options that can be set. You don't have to set all of them
 | Setting                                            | Description                                                                                                                                  |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Etkin](#automodemojisenabled)                     | Aşırı miktarda emoji içeren iletileri otomatik olarak denetleyin.                                                                            |
-| [Max # of Emojis](#automodemojismaxnumberofemojis) | The maximum amount of emojis a message is allowed to have before trigger the rule.                                                           |
-| [Enabled](#automodhoistenabled)                    | Kaldırmaya çalışırlarsa üyelere otomatik olarak takma adlar verin (kullanıcı listesinin en üstünde görünmek için özel karakterler kullanın). |
+| [Max # of Emojis](#automodemojismaxnumberofemojis) | Kuralı tetiklemeden önce bir iletinin sahip olabileceği maksimum emoji miktarı.                                                              |
+| [Etkin](#automodhoistenabled)                      | Kaldırmaya çalışırlarsa üyelere otomatik olarak takma adlar verin (kullanıcı listesinin en üstünde görünmek için özel karakterler kullanın). |
 
 ### Müzik
 
-#### Müzik
+#### Music
 
 | Setting                          | Description                                                          |
 | -------------------------------- | -------------------------------------------------------------------- |
@@ -258,7 +258,7 @@ Examples:
 
 ## Yükselt.
 
-Enable to receive development updates about InviteManager.
+InviteManager hakkında geliştirme güncellemelerini almayı etkinleştirin.
 
 Type: `Boolean`
 
@@ -281,7 +281,7 @@ Disable:
 
 ## Komut kanalları
 
-The channels in which the bot will react to commands.
+Botun komutlara tepki vereceği kanallar.
 
 Type: `Channel[]`
 
@@ -448,7 +448,7 @@ Disable:
 
 ## Auto Subtract
 
-Automatically subtract fake invites.
+Sahte davetleri otomatik olarak çıkarın
 
 Type: `Boolean`
 
@@ -1096,7 +1096,7 @@ Disable:
 
 ---
 
-## Enabled
+## Etkin
 
 Automatically remove messages containing links (you can set a whitelist and blacklist).
 
@@ -1140,7 +1140,7 @@ Examples:
 
 ---
 
-## Blacklist
+## Kara liste
 
 Blacklist certain links which users won't be able to post.
 
@@ -1209,7 +1209,7 @@ Disable:
 
 ## Kara liste
 
-A list of words that are banned.
+Yasaklanan kelimelerin listesi.
 
 Type: `String[]`
 
@@ -1293,7 +1293,7 @@ Examples:
 
 ---
 
-## Enabled
+## Etkin
 
 Automatically moderate duplicate messages (copy-paste spam).
 
@@ -1446,7 +1446,7 @@ Examples:
 
 ---
 
-## Enabled
+## Etkin
 
 Automatically moderate messages that mention an excessive amount of roles.
 
@@ -1515,7 +1515,7 @@ Disable:
 
 ## Max # of Emojis
 
-The maximum amount of emojis a message is allowed to have before trigger the rule.
+Kuralı tetiklemeden önce bir iletinin sahip olabileceği maksimum emoji miktarı.
 
 Type: `Number`
 
@@ -1534,7 +1534,7 @@ Examples:
 
 ---
 
-## Enabled
+## Etkin
 
 Kaldırmaya çalışırlarsa üyelere otomatik olarak takma adlar verin (kullanıcı listesinin en üstünde görünmek için özel karakterler kullanın).
 
