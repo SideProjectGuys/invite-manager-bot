@@ -132,10 +132,10 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Duplicate Messages
 
-| Setting                                                         | Description                                                                    |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [Ingeschakeld](#automodduplicatetextenabled)                    | Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam). |
-| [Timeframe in Seconds](#automodduplicatetexttimeframeinseconds) | The timeframe whithin which messages will be considered duplicates.            |
+| Setting                                                     | Description                                                                    |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [Ingeschakeld](#automodduplicatetextenabled)                | Gedupliceerde berichten worden automatisch gemoderate (kopiëren-plakken spam). |
+| [Tijd in seconden](#automodduplicatetexttimeframeinseconds) | The timeframe whithin which messages will be considered duplicates.            |
 
 #### Spam
 
@@ -156,11 +156,11 @@ There are many config options that can be set. You don't have to set all of them
 
 #### Emojis
 
-| Setting                                            | Description                                                                                                               |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [Enabled](#automodemojisenabled)                   | Automatically moderate messages with an excessive amount of emojis.                                                       |
-| [Max # of Emojis](#automodemojismaxnumberofemojis) | The maximum amount of emojis a message is allowed to have before trigger the rule.                                        |
-| [Enabled](#automodhoistenabled)                    | Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list). |
+| Setting                                                   | Description                                                                                                               |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| [Ingeschakeld](#automodemojisenabled)                     | Berichten met een grote hoeveelheid emojis worden automatisch gemoderate.                                                 |
+| [Maximaal aantal emojis](#automodemojismaxnumberofemojis) | The maximum amount of emojis a message is allowed to have before trigger the rule.                                        |
+| [Enabled](#automodhoistenabled)                           | Automatically give members nicknames if they try to hoist (use special characters to appear at the top of the user list). |
 
 ### Music
 
@@ -1316,7 +1316,7 @@ Disable:
 
 ---
 
-## Timeframe in Seconds
+## Tijd in seconden
 
 The timeframe whithin which messages will be considered duplicates.
 
@@ -1490,9 +1490,9 @@ Examples:
 
 ---
 
-## Enabled
+## Ingeschakeld
 
-Automatically moderate messages with an excessive amount of emojis.
+Berichten met een grote hoeveelheid emojis worden automatisch gemoderate.
 
 Type: `Boolean`
 
@@ -1513,7 +1513,7 @@ Disable:
 
 ---
 
-## Max # of Emojis
+## Maximaal aantal emojis
 
 The maximum amount of emojis a message is allowed to have before trigger the rule.
 

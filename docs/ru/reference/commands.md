@@ -107,7 +107,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                   | Description                                   | Usage                                |
 | ------------------------- | --------------------------------------------- | ------------------------------------ |
-| [addRank](#addRank)       | Add a new rank.                               | !addRank \<role\> \<invites\> [info] |
+| [addRank](#addRank)       | Добавить ранг.                                | !addRank \<role\> \<invites\> [info] |
 | [fixRanks](#fixRanks)     | Deletes any ranks where the role was deleted. | !fixRanks                            |
 | [ranks](#ranks)           | Show all ranks.                               | !ranks [page]                        |
 | [removeRank](#removeRank) | Remove a rank.                                | !removeRank \<rank\>                 |
@@ -116,7 +116,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                                 | Description                                               | Usage                                       |
 | --------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
-| [botConfig](#botConfig)                 | Show and change the config of the bot.                    | !botConfig [key][value]                     |
+| [botConfig](#botConfig)                 | Показать/изменить значение параметра.                     | !botConfig [key][value]                     |
 | [config](#config)                       | Show and change the config of the server.                 | !config [key][value]                        |
 | [interactiveConfig](#interactiveConfig) | Interactive Config                                        | !interactiveConfig                          |
 | [inviteCodeConfig](#inviteCodeConfig)   | Show and change the config of invite codes of the server. | !inviteCodeConfig [key][invitecode] [value] |
@@ -127,7 +127,7 @@ This argument expects a duration. The following duration types are supported:
 
 | Command             | Description                                                                       | Usage           |
 | ------------------- | --------------------------------------------------------------------------------- | --------------- |
-| [botInfo](#botInfo) | Get general information about the bot.                                            | !botInfo        |
+| [botInfo](#botInfo) | Уснайте основную информацию о боте.                                               | !botInfo        |
 | [credits](#credits) | Show developers and contributors of the bot.                                      | !credits        |
 | [getBot](#getBot)   | Get an invite link for the bot.                                                   | !getBot         |
 | [help](#help)       | Display help.                                                                     | !help [command] |
@@ -149,12 +149,12 @@ This argument expects a duration. The following duration types are supported:
 
 | Command                               | Description                                                                                                                                   | Usage                                                            |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [ban](#ban)                           | Ban a member from the server.                                                                                                                 | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
-| [caseDelete](#caseDelete)             | Delete a specific case.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
-| [caseView](#caseView)                 | View info about a specific case.                                                                                                              | !caseView \<caseNumber\>                                         |
-| [check](#check)                       | Check violation and punishment history of a user.                                                                                             | !check \<user\>                                                  |
-| [clean](#clean)                       | Clean a channel of certain message types.                                                                                                     | !clean \<type\> [numberOfMessages]                               |
-| [cleanShort](#cleanShort)             | Clear short messages                                                                                                                          | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
+| [ban](#ban)                           | Заблокировать пользователя.                                                                                                                   | !ban [-d value\|--deleteMessageDays=value] \<user\> [reason]     |
+| [caseDelete](#caseDelete)             | Убрать какой-либо кейс.                                                                                                                       | !caseDelete \<caseNumber\> [reason]                              |
+| [caseView](#caseView)                 | Посмотреть информацию про кейс.                                                                                                               | !caseView \<caseNumber\>                                         |
+| [check](#check)                       | Проверьте историю наказаний пользователя.                                                                                                     | !check \<user\>                                                  |
+| [clean](#clean)                       | Удалить сообщения специального типа из канала.                                                                                                | !clean \<type\> [numberOfMessages]                               |
+| [cleanShort](#cleanShort)             | Удалить короткие сообщения.                                                                                                                   | !cleanShort \<maxTextLength\> [numberOfMessages]                 |
 | [cleanText](#cleanText)               | Delete messages containing certain keywords.                                                                                                  | !cleanText \<text\> [numberOfMessages]                           |
 | [kick](#kick)                         | Kick a member from the server.                                                                                                                | !kick \<member\> [reason]                                        |
 | [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                     | !lockdown [-t value\|--timeout=value][channel]                   |
@@ -237,7 +237,7 @@ This argument expects a duration. The following duration types are supported:
 
 ## !addRank
 
-Add a new rank.
+Добавить ранг.
 
 ### Usage
 
@@ -253,11 +253,11 @@ Add a new rank.
 
 ### Arguments
 
-| Argument | Type              | Required | Description                                                          | Details |
-| -------- | ----------------- | -------- | -------------------------------------------------------------------- | ------- |
-| role     | [Role](#Role)     | Yes      | The role which the user will receive when reaching this rank.        |         |
-| invites  | [Number](#Number) | Yes      | The amount of invites needed to reach the rank.                      |         |
-| info     | [Text](#Text)     | No       | A description that users will see so they know more about this rank. |         |
+| Argument | Type              | Required | Description                                             | Details |
+| -------- | ----------------- | -------- | ------------------------------------------------------- | ------- |
+| role     | [Role](#Role)     | Yes      | Роль которую пользователь получит при достижении ранга. |         |
+| invites  | [Number](#Number) | Yes      | Количество приглашений требуемых для получения роли.    |         |
+| info     | [Text](#Text)     | No       | Описание позволит пользователям узнать больше о ролию.  |         |
 
 ### Examples
 
@@ -275,7 +275,7 @@ Add a new rank.
 
 ## !ban
 
-Ban a member from the server.
+Заблокировать пользователя.
 
 ### Usage
 
@@ -285,10 +285,10 @@ Ban a member from the server.
 
 ### Arguments
 
-| Argument | Type          | Required | Description              | Details |
-| -------- | ------------- | -------- | ------------------------ | ------- |
-| user     | [User](#User) | Yes      | User to ban.             |         |
-| reason   | [Text](#Text) | No       | Why was the user banned. |         |
+| Argument | Type          | Required | Description                                | Details |
+| -------- | ------------- | -------- | ------------------------------------------ | ------- |
+| user     | [User](#User) | Yes      | Ползоватьель которого нужно заблокировать. |         |
+| reason   | [Text](#Text) | No       | Причина блокировки.                        |         |
 
 ### Flags
 
@@ -304,7 +304,7 @@ Ban a member from the server.
 
 ## !botConfig
 
-Show and change the config of the bot.
+Показать/изменить значение параметра.
 
 ### Usage
 
@@ -320,10 +320,10 @@ Show and change the config of the bot.
 
 ### Arguments
 
-| Argument | Type            | Required | Description                                           | Details                                                                                                                                     |
-| -------- | --------------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| key      | [Enum](#Enum)   | No       | The bot config setting which you want to show/change. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
-| value    | [Value](#Value) | No       | The new value of the setting.                         |                                                                                                                                             |
+| Argument | Type            | Required | Description                              | Details                                                                                                                                     |
+| -------- | --------------- | -------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| key      | [Enum](#Enum)   | No       | Тот параметр который вы хотите изсенить. | Use one of the following values: `activityEnabled`, `activityMessage`, `activityStatus`, `activityType`, `activityUrl`, `embedDefaultColor` |
+| value    | [Value](#Value) | No       | Значение параметра.                      |                                                                                                                                             |
 
 ### Examples
 
@@ -337,7 +337,7 @@ Show and change the config of the bot.
 
 ## !botInfo
 
-Get general information about the bot.
+Уснайте основную информацию о боте.
 
 ### Usage
 
@@ -361,7 +361,7 @@ Get general information about the bot.
 
 ## !caseDelete
 
-Delete a specific case.
+Убрать какой-либо кейс.
 
 ### Usage
 
@@ -377,10 +377,10 @@ Delete a specific case.
 
 ### Arguments
 
-| Argument   | Type              | Required | Description                       | Details |
-| ---------- | ----------------- | -------- | --------------------------------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number                       |         |
-| reason     | [Text](#Text)     | No       | The reason for removing the case. |         |
+| Argument   | Type              | Required | Description             | Details |
+| ---------- | ----------------- | -------- | ----------------------- | ------- |
+| caseNumber | [Number](#Number) | Yes      | ID кейса.               |         |
+| reason     | [Text](#Text)     | No       | Причина удаления кейса. |         |
 
 ### Examples
 
@@ -394,7 +394,7 @@ Delete a specific case.
 
 ## !caseView
 
-View info about a specific case.
+Посмотреть информацию про кейс.
 
 ### Usage
 
@@ -412,7 +412,7 @@ View info about a specific case.
 
 | Argument   | Type              | Required | Description | Details |
 | ---------- | ----------------- | -------- | ----------- | ------- |
-| caseNumber | [Number](#Number) | Yes      | Case number |         |
+| caseNumber | [Number](#Number) | Yes      | Номер кейса |         |
 
 ### Examples
 
@@ -426,7 +426,7 @@ View info about a specific case.
 
 ## !check
 
-Check violation and punishment history of a user.
+Проверьте историю наказаний пользователя.
 
 ### Usage
 
@@ -440,9 +440,9 @@ Check violation and punishment history of a user.
 
 ### Arguments
 
-| Argument | Type          | Required | Description    | Details |
-| -------- | ------------- | -------- | -------------- | ------- |
-| user     | [User](#User) | Yes      | User to check. |         |
+| Argument | Type          | Required | Description                            | Details |
+| -------- | ------------- | -------- | -------------------------------------- | ------- |
+| user     | [User](#User) | Yes      | Пользователь которого нужно проверить. |         |
 
 ### Examples
 
@@ -460,7 +460,7 @@ Check violation and punishment history of a user.
 
 ## !clean
 
-Clean a channel of certain message types.
+Удалить сообщения специального типа из канала.
 
 ### Usage
 
@@ -474,10 +474,10 @@ Clean a channel of certain message types.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                | Details                                                                                                            |
-| ---------------- | ----------------- | -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| type             | [Enum](#Enum)     | Yes      | The type of messages that will be deleted. | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.  |                                                                                                                    |
+| Argument         | Type              | Required | Description                                       | Details                                                                                                            |
+| ---------------- | ----------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| type             | [Enum](#Enum)     | Yes      | Тип удаляемых сообщений.                          | Use one of the following values: `bots`, `embeds`, `emojis`, `images`, `links`, `mentions`, `reacted`, `reactions` |
+| numberOfMessages | [Number](#Number) | No       | Количество сообщений которые должны быть найдены. |                                                                                                                    |
 
 ### Examples
 
@@ -487,7 +487,7 @@ Clean a channel of certain message types.
 
 ## !cleanShort
 
-Clear short messages
+Удалить короткие сообщения.
 
 ### Usage
 
@@ -503,10 +503,10 @@ Clear short messages
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                     | Details |
-| ---------------- | ----------------- | -------- | ----------------------------------------------- | ------- |
-| maxTextLength    | [Number](#Number) | Yes      | All messages shorter than this will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.       |         |
+| Argument         | Type              | Required | Description                                                              | Details |
+| ---------------- | ----------------- | -------- | ------------------------------------------------------------------------ | ------- |
+| maxTextLength    | [Number](#Number) | Yes      | Установите значение количества символов сообщения ниже которого удалены. |         |
+| numberOfMessages | [Number](#Number) | No       | Количество сообщений которых нужно найти.                                |         |
 
 ### Examples
 
@@ -532,10 +532,10 @@ Delete messages containing certain keywords.
 
 ### Arguments
 
-| Argument         | Type              | Required | Description                                        | Details |
-| ---------------- | ----------------- | -------- | -------------------------------------------------- | ------- |
-| text             | [Text](#Text)     | Yes      | All messages containing this word will be deleted. |         |
-| numberOfMessages | [Number](#Number) | No       | Number of messages that will be searched.          |         |
+| Argument         | Type              | Required | Description                                 | Details |
+| ---------------- | ----------------- | -------- | ------------------------------------------- | ------- |
+| text             | [Text](#Text)     | Yes      | Все сообщения с данным словом будут удалены |         |
+| numberOfMessages | [Number](#Number) | No       | Количество сообщений которые нужно найти    |         |
 
 ### Examples
 
