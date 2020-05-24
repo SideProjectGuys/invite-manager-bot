@@ -3,21 +3,6 @@ import { Message, MessageContent, MessageFile, Permission, TextChannel } from 'e
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
 
-export class FakeChannel extends TextChannel {
-	public listener: (data: any) => void;
-
-	public createMessage(content: MessageContent, file?: MessageFile): Promise<Message> {
-		if (this.listener) {
-			this.listener(content);
-		}
-		return new Promise((resolve) => resolve());
-	}
-
-	public permissionsOf(memberID: string): Permission {
-		return new Permission(0b1111111111111111111111111111111, 0);
-	}
-}
-
 export const deconstruct = (snowflake: string) => {
 	const BINARY = idToBinary(snowflake).padStart(64, '0');
 	return parseInt(BINARY.substring(0, 42), 2) + EPOCH;
