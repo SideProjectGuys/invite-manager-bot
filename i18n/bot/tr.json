@@ -230,7 +230,8 @@
 				"canNotReadMessages": "Bu kanalda **mesajları okuma** yetkim yok.",
 				"canNotSendEmbeds": "Bu kanalda **bağlantı yerleştir** yetkim yok.",
 				"canNotSendMessages": "Bu kanalda **mesaj gönder** yetkim yok.",
-				"mustBeTextChannel": "Bu kanal bir yazı kanalı değil."
+				"mustBeTextChannel": "Bu kanal bir yazı kanalı değil.",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "Yeni Değer"
@@ -352,7 +353,7 @@
 				},
 				"description": "Yardımı gösterir."
 			},
-			"text": "This is a list of commands you can use. You can get more info about a specific command by using `{{ prefix }}help <command>` (e.g. `{{ prefix }}help add-ranks`)",
+			"text": "Bu, kullanabileceğiniz komutların bir listesidir. `{{ prefix }} yardım <command>`(ör.`{{ prefix }}help add-ranks`) kullanarak belirli bir komut hakkında daha fazla bilgi alabilirsiniz.",
 			"usage": {
 				"title": "Kullanım"
 			}
@@ -470,7 +471,7 @@
 		},
 		"inviteCodeConfig": {
 			"changed": {
-				"text": "This invite code config has been changed.\n\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>` to change it again.\nUse `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to reset it to the default."
+				"text": "Bu davet kodu yapılandırması değiştirildi.\n\nTekrar değiştirmek için `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} <value>'' kullanın.\nVarsayılana sıfırlamak için `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` kullanın."
 			},
 			"current": {
 				"clear": "Use `{{ prefix }}inviteCodeConfig {{ key }} {{ code }} none` to clear it.",
@@ -501,7 +502,9 @@
 			},
 			"text": "Bireysel davet kodları için yapılandırmalar ayarlayın.",
 			"title": "Davet Kodu Yapılandırması",
-			"noneSet": "Hiçbir yapılandırma ayarlanmadı!"
+			"noneSet": "Hiçbir yapılandırma ayarlanmadı!",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "Senin Özel Mesajlarına tüm davet kodlarını gönderdim.",
@@ -519,11 +522,11 @@
 				"description": "Tüm davet kodlarınızın bir listesini alın"
 			},
 			"temporary": {
-				"entry": "**Uses**: {{ uses }}\n**Max Age**: {{ maxAge }}\r\n**Max Uses**: {{ maxUses }}\r\n**Channel**: {{{ channel }}}\r\n**Expires**: {{ expires }}",
+				"entry": "**Kullanım**: {{ uses }}\n**Maksimum Yaş**: {{ maxAge }}\r\n**Maksimum Kullanım**: {{ maxUses }}\r\n**Kanal**: {{{ channel }}}\r\n**Sona Erme**: {{ expires }}",
 				"text": "Bu davetlerin süresi belirli bir süre sonra dolar.",
 				"title": "Geçici"
 			},
-			"title": "You have the following codes on the server {{ guild }}",
+			"title": "Sunucuda aşağıdaki kodlar var {{ guild }}",
 			"error": "Davet kodlarınızı gönderemedim, bu sunucudan özel mesajlara izin verdiğinizden emin olun."
 		},
 		"inviteDetails": {
@@ -538,8 +541,8 @@
 		},
 		"invites": {
 			"amount": {
-				"other": "{{{ target }}} has {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)",
-				"self": "You have {{ total }} invites! ({{ regular }} regular, {{ custom }} bonus, {{ fake }} fake, {{ leave }} leaves)"
+				"other": "{{{ target }}}'ın {{ total }} daveti var! ({{ normal }} düzenli, {{ custom }} bonus, {{ fake }} sahte, {{ leave }} ayrılma)",
+				"self": "Senin {{ total }} davetin var! ({{ normal }} düzenli, {{ custom }} bonus, {{ fake }} sahte, {{ leave }} ayrılma)"
 			},
 			"highestRank": {
 				"other": "{{{ target }}} şu anda en yüksek rütbeye sahip!",
@@ -687,6 +690,10 @@
 			"done": "Kullanıcı susturuldu!",
 			"error": "Bu kişinin sesi kapatılırken bir hata oluştu.",
 			"missingRole": "Susturulmuş kullanıcı rolü ayarlanmadı veya mevcut değil!",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "Kullanıcının susturulması gereken süre.",
@@ -695,7 +702,7 @@
 				},
 				"description": "Bir kullanıcı sustur",
 				"flags": {
-					"duration": "The duration to mute the user for"
+					"duration": "Kullanıcının susturulma süresi"
 				}
 			}
 		},
@@ -711,7 +718,8 @@
 					"role": "Komuta erişim izni verilmesi veya reddedilmesi gereken rol."
 				},
 				"description": "Komutları kullanmak için izinleri yapılandırın."
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -730,16 +738,17 @@
 				"customBot": "Özel bir bot kullanıyorsunuz. Özel botlar her zaman premiumludur.",
 				"done": "Bu sunucu için Premium başarıyla etkinleştirildi.",
 				"noGuild": "Bu komutu bir sunucunun içinde çalıştırmalısınız.",
-				"noSubscription": "You do not have an active premium subscription.\n\nUse {{{ cmd }}} for more info.",
+				"noSubscription": "Aktif bir premium aboneliğiniz yok.\n\nDaha fazla bilgi için {{{ cmd }}} kullanın.",
 				"title": "Bu sunucuda premium'u etkinleştir",
 				"permissions": "Bu komutu bu sunucuda kullanmak için `Sunucuyu Yönet` izinine ihtiyacınız vardır.",
-				"maxGuilds": "You have activated premium on the maximum number of guilds."
+				"maxGuilds": "Maksimum lonca sayısı için premiumu etkinleştirdiniz."
 			},
 			"check": {
 				"declined": "Prim ödemeniz reddedildi, lütfen Patreon'unuzu kontrol edin.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info.",
 				"notFound": "Hesabınızın premium aboneliği ilişkilendirilmemiş.\n\nPatreon'u kullanarak prim aldıysanız, ödüllerinizi toplamak için lütfen Discord hesabınızı Patreon'a bağladığınızdan emin olun, ardından bu komutu tekrar çalıştırın.",
-				"title": "Check for a Premium Subscription"
+				"title": "Premium Abonelik Kontrolü",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "Özel bir bot kullanıyorsunuz. Özel botlar her zaman premiumludur.",
@@ -756,20 +765,20 @@
 				},
 				"export": {
 					"text": "Botumuzu davet ettiğinizden beri sunucunuzda gerçekleşen tüm katılmaları ve ayrılmaları dışa aktarabilirsiniz.",
-					"title": "Premium Feature: History export"
+					"title": "Premium Özellik: Tarihçeyi dışa aktarım"
 				},
 				"patreon": {
 					"text": "Run {{{ cmd }}} to validate and activate your Patreon plegde.",
-					"title": "If you purchsed premium on Patreon"
+					"title": "Patreon'da premium satın aldıysanız"
 				},
 				"servers": {
-					"text": "Once you have premium you may activate it on up to 5 servers of your choosing, and you can change these 5 servers anytime.",
-					"title": "Premium Feature: Up to 5 servers"
+					"text": "Premium olur olmaz, seçtiğiniz 5 sunucuya kadar etkinleştirebilirsiniz ve  istediğiniz zaman bu 5 sunucuyu değiştirebilirsiniz.",
+					"title": "Premium Özellik: 5 sunucuya kadar"
 				}
 			},
 			"noPremium": {
 				"text": "Premium bir katmana abone olarak botun geliştirilmesine yardımcı olursunuz ve ayrıca bazı ek özellikler elde edersiniz.",
-				"title": "You currently do not have a premium subscription"
+				"title": "Şu anda bir premium aboneliğiniz yok"
 			},
 			"premium": {
 				"activate": "Use {{{ cmd }}} to activate it on this server",
@@ -788,15 +797,15 @@
 			"deletedText": "Members will no longer receive the punishment {{ punishment }}",
 			"self": {
 				"args": {
-					"args": "Arguments passed to the punishment.",
-					"punishment": "Type of punishment to use.",
-					"strikes": "Number of strikes for this punishment to be used."
+					"args": "İddialar cezaya geçti.",
+					"punishment": "Kullanılacak cezalandırma türü.",
+					"strikes": "Bu cezalandırma için kullanılacak ihtar sayısı."
 				},
 				"description": "Configure punishments when reaching a certain amount of strikes."
 			},
 			"text": "{{ strikes }} strikes are punished with a {{ punishment }}",
 			"title": "Ceza Yapılandırması",
-			"unusedPunishment": "Unused Punishment"
+			"unusedPunishment": "Kullanılmayan Cezalandırma"
 		},
 		"purge": {
 			"error": "Hata",
@@ -807,7 +816,7 @@
 					"quantity": "Kaç mesaj silinmelidir.",
 					"user": "Mesajları silinmiş olan kullanıcı."
 				},
-				"description": "Purge messages in a channel."
+				"description": "Bir kanaldaki mesajları temizleme"
 			},
 			"text": "{{ amount }} mesaj silindi.\nBu mesaj 5 saniye içinde silinecek.",
 			"title": "Silinmiş mesajlar"
@@ -938,13 +947,13 @@
 			"self": {
 				"args": {
 					"strikes": "Number of strikes.",
-					"violation": "Violation type."
+					"violation": "İhlal türü."
 				},
 				"description": "Configure strikes received for various violations."
 			},
 			"text": "The violation {{ violation }} gives a user {{ strikes }} strikes.",
 			"title": "Grev Yapılandırması",
-			"unusedViolations": "Unused violations"
+			"unusedViolations": "Kullanılmayan ihlaller"
 		},
 		"subtractFakes": {
 			"done": "Sahte Davetler Silindi!",
@@ -970,11 +979,13 @@
 			"alreadyUsed": "Ücretsiz premium denemenizi zaten kullandınız! Bu botu beğendiyseniz, lütfen premium almayı düşünün.\n ",
 			"currentlyActive": "Şu anda aktif bir premium aboneliğiniz var!",
 			"prompt": "Lütfen **evet** veya **hayır** yazarak cevap verin.\n ",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "InviteManager'ın premium sürümünü sınırlı bir süre için ücretsiz deneyin."
 			},
 			"started": "You successfully started your trial! Use `{{ prefix }}premium` to check how much time you have left.",
-			"text": "You can try out our premium features for {{ duration }}. You can only do this once. Would you like to test it now?",
+			"text": "{{ duration }} için premium özelliklerimizi deneyebilirsiniz. Bunu sadece bir kez yapabilirsiniz. Şimdi test etmek ister misiniz?",
 			"title": "InviteManager - Premium'u deneyin"
 		},
 		"unban": {
@@ -1003,9 +1014,10 @@
 			"canNotUnmute": "Bu kullanıcının susturulmasını kaldıramıyorum.",
 			"done": "Kullanıcının susturulması kaldırıldı",
 			"missingRole": "Susturulmuş rolü ayarlanmadı veya mevcut değil!",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
-					"user": "The user that should be unmuted."
+					"user": "Susturulması gereken kullanıcı"
 				},
 				"description": "Unmute a user"
 			}
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "The videos that should be mashed together."
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,11 +1106,12 @@
 		"rewind": {
 			"self": {
 				"description": "Şarkıyı geri sar ve en baştan başla."
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
-				"description": "Search for the search term and let you chose one of the results.",
+				"description": "Arama terimini arayın ve sonuçlardan birini seçmenize izin verin.",
 				"flags": {
 					"platform": "Select the platform where you want the song to be played."
 				},
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "Results for {{ term }}",
-			"noResults": "Sonuç bulunamadı!"
+			"noResults": "Sonuç bulunamadı!",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,13 +1129,14 @@
 				"args": {
 					"duration": "The position the song will be skipped to (from the beginning, in seconds)."
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
-				"description": "Skip the current song and play the next song in the queue.",
+				"description": "Geçerli şarkıyı atlayın ve sıradaki bir sonraki şarkıyı çalın.",
 				"args": {
-					"amount": "How many songs will be skipped."
+					"amount": "Kaç şarkı atlanacak."
 				}
 			}
 		},
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Creates a new or edits an existing placeholder message."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
 		},
 		"reactionRole": {
@@ -1163,19 +1180,19 @@
 					"timeout": "Kilitlemenin otomatik olarak sona erdiği zaman aşımı süresi. Kilidi manuel olarak sonlandırmak için komutu tekrar çalıştırın."
 				},
 				"args": {
-					"channel": "The channel that you want to lock down."
+					"channel": "Kilitlemek istediğiniz kanal."
 				}
 			},
-			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
+			"notATextChannel": "That channel is not a text channel.",
+			"noSuitingRoleFound": "Bir kilitleme başlatmak için uygun bir rol bulunamadı!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "Linkli katılma / ayrılma mesajınız olarak kullanmak premium bir özelliktir. Premium, bu sunucuda etkin görünmüyor. Premium satın alma hakkında daha fazla bilgi edinmek için lütfen bizimle iletişime geçin.",
 	"messages": {
 		"joinUnknownInviter": "<@{{ id }}> sunucuya nasıl katıldığını anlayamıyorum.",
 		"joinVanityUrl": "<@{{ id }}> özel bir davetle sunucuya katıldı.",
-		"leaveUnknownInviter": "{{ tag }} left the server, but I couldn't figure out who invited them.",
-		"unknownInviter": "Bilinmeyen",
-		"joinServerWidget": "Kullanıcı bir sunucu widget'ı kullanarak katıldı."
+		"leaveUnknownInviter": "{{ tag }} sunucudan ayrıldı, ancak onu kimin davet ettiğini bulamadım",
+		"joinServerWidget": "Kullanıcı bir sunucu widget'ı kullanarak katıldı.",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,21 +1211,19 @@
 	},
 	"permissions": {
 		"adminOnly": "Bu komutu kullanma izniniz yok.\nBu komutu yalnızca ** Yönetici ** kullanabilir.",
-		"createInviteCode": "Anında Davetiye Oluştur",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "Sunucuyu Yönet",
 		"manageRoles": "Rolleri Yönet",
 		"premiumOnly": "Bu komut yalnızca premium aboneler için geçerlidir!",
-		"rateLimit": "Slow down! Please wait {{ cooldown }} seconds and try again.",
+		"rateLimit": "Yavaşla! Lütfen {{ cooldown }} saniye bekleyin ve tekrar deneyin.",
 		"role": "Bu komutu kullanmak için yetkin yok\nAşağıdaki rollerden birine ihtiyacınız var: {{{roller}}}",
 		"viewAuditLogs": "Denetim Kaydını Görüntüleyin",
 		"manageMessages": "Mesajları Yönet",
 		"readMessageHistory": "Read Message History",
 		"missing": "InviteManager'da {{{ channel }}} içindeki {{{ permissions }}} izinleri eksik",
 		"banMembers": "Üyeleri Yasakla",
-		"kickMembers": "Üyeleri At"
-	},
-	"prompt": {
-		"canceled": "İptal edildi"
+		"kickMembers": "Üyeleri At",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1227,7 +1242,7 @@
 			"notFound": "Komut bulunamadı.",
 			"type": "Komut",
 			"validValues": "Use one of the following values: {{{ values }}}",
-			"typeInfo": "This argument expects a command of this bot. You can use any of the following methods to provide a command:\n\n- Use the command name: `invites`\n- Use an alias of the command: `p`"
+			"typeInfo": "Bu argüman bu botun bir komutunu bekliyor. Komut sağlamak için aşağıdaki yöntemlerden birini kullanabilirsiniz: \n\n- Komut adını kullanın: `invites`\n- Komutun takma adını kullanın: `p`"
 		},
 		"enum": {
 			"invalid": "Not a valid value.",
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "Geçerli bir numara değil.",
 			"type": "Sayı",
-			"typeInfo": "This arguments expects a number"
+			"typeInfo": "This arguments expects a number",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "Birden fazla eşleşen rol bulundu. {{{ roles }}}",
@@ -1271,12 +1288,13 @@
 			"typeInfo": "Bu argüman bir tarih bekliyor. Çeşitli formatlar kullanabilirsiniz, ancak şunları öneririz: `YYYY-AA-GG`"
 		},
 		"duration": {
-			"type": "Duration",
+			"type": "Süre",
 			"typeInfo": "This argument expects a duration. The following duration types are supported:\n\n- Seconds: `s` (`5s` = 5 seconds)\n- Minutes: `min` (`3min` = 3 minutes)\n- Hours: `h` (`4h` = 4 hours)\n- Days: `d` (`2d` = 2 days)\n- Weeks: `w` (`1w` = 1 week)\n- Months: `mo` (`6mo` = 6 months)\n- Years: `y` (`10y` = 10 years)"
 		},
 		"invitecode": {
 			"type": "Davet Kodu",
-			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview."
+			"typeInfo": "This arguments expects a Discord Invite Code.  \n\n> You can put only the part after `https://discord.gg/` to prevent Discord from creating a preview.",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {
@@ -1309,7 +1327,7 @@
 			"description": "The amount of time a member has to be in your server to be considered 'old'."
 		},
 		"autoModDuplicateTextEnabled": {
-			"title": "Enabled",
+			"title": "Etkin",
 			"description": "Automatically moderate duplicate messages (copy-paste spam)."
 		},
 		"autoModDuplicateTextTimeframeInSeconds": {
@@ -1322,14 +1340,14 @@
 		},
 		"autoModEmojisMaxNumberOfEmojis": {
 			"title": "Max # of Emojis",
-			"description": "The maximum amount of emojis a message is allowed to have before trigger the rule."
+			"description": "Kuralı tetiklemeden önce bir iletinin sahip olabileceği maksimum emoji miktarı."
 		},
 		"autoModEnabled": {
 			"title": "etkin",
 			"description": "Automatically moderate messages (specific rules can also be turned on or off, this has to be ON for ANY rule to work)."
 		},
 		"autoModHoistEnabled": {
-			"title": "Enabled",
+			"title": "Etkin",
 			"description": "Kaldırmaya çalışırlarsa üyelere otomatik olarak takma adlar verin (kullanıcı listesinin en üstünde görünmek için özel karakterler kullanın)."
 		},
 		"autoModIgnoredChannels": {
@@ -1345,11 +1363,11 @@
 			"description": "Discord Sunucu davet bağlantıları için iletileri otomatik olarak tarayın ve kaldırın."
 		},
 		"autoModLinksBlacklist": {
-			"title": "Blacklist",
+			"title": "Kara liste",
 			"description": "Blacklist certain links which users won't be able to post."
 		},
 		"autoModLinksEnabled": {
-			"title": "Enabled",
+			"title": "Etkin",
 			"description": "Automatically remove messages containing links (you can set a whitelist and blacklist)."
 		},
 		"autoModLinksFollowRedirects": {
@@ -1365,7 +1383,7 @@
 			"description": "Log any moderation actions that the bot makes."
 		},
 		"autoModMentionRolesEnabled": {
-			"title": "Enabled",
+			"title": "Etkin",
 			"description": "Automatically moderate messages that mention an excessive amount of roles."
 		},
 		"autoModMentionRolesMaxNumberOfMentions": {
@@ -1401,7 +1419,7 @@
 			"description": "The timeframe within which a user is allowed to send a maximum amount of messages."
 		},
 		"autoModWordsBlacklist": {
-			"description": "A list of words that are banned.",
+			"description": "Yasaklanan kelimelerin listesi.",
 			"title": "Kara liste"
 		},
 		"autoModWordsEnabled": {
@@ -1409,7 +1427,7 @@
 			"title": "Etkin"
 		},
 		"autoSubtractFakes": {
-			"description": "Automatically subtract fake invites.",
+			"description": "Sahte davetleri otomatik olarak çıkarın",
 			"title": "Auto Subtract"
 		},
 		"autoSubtractLeaves": {
@@ -1446,10 +1464,10 @@
 		},
 		"channels": {
 			"title": "Komut kanalları",
-			"description": "The channels in which the bot will react to commands."
+			"description": "Botun komutlara tepki vereceği kanallar."
 		},
 		"getUpdates": {
-			"description": "Enable to receive development updates about InviteManager.",
+			"description": "InviteManager hakkında geliştirme güncellemelerini almayı etkinleştirin.",
 			"title": "Yükselt."
 		},
 		"groups": {
@@ -1536,8 +1554,8 @@
 				"title": "Müzik",
 				"description": "Müzik Ayarları",
 				"general": {
-					"title": "Müzik",
-					"description": "General Music Settings"
+					"title": "Music",
+					"description": "Genel Müzik Ayarları"
 				},
 				"announcement": {
 					"title": "Duyuru",

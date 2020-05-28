@@ -151,7 +151,7 @@ export default class extends Command {
 			cmd.name === InvitesCommand.addRank ||
 			cmd.name === InvitesCommand.removeRank
 		) {
-			return this.sendReply(message, t('cmd.permissions.canNotChange'));
+			return this.sendReply(message, t('cmd.permissions.canNotChange', { cmd: cmd.name }));
 		}
 
 		const oldPerms = await this.client.db.getRolePermissions(guild.id, role.id, cmd.name);

@@ -5,7 +5,6 @@ import { Message, TextChannel } from 'eris';
 import moment from 'moment';
 
 import { BotType, ShardCommand } from '../../types';
-import { FakeChannel } from '../../util';
 
 import { IMService } from './Service';
 
@@ -386,41 +385,6 @@ export class RabbitMqService extends IMService {
 
 				await guild.leave();
 				await sendResponse({});
-				break;
-
-			case ShardCommand.SUDO:
-				if (!guild) {
-					return sendResponse({
-						error: 'Guild not found'
-					});
-				}
-
-				const channel = new FakeChannel({ id: 'fake', name: 'fake' }, guild, 100);
-				this.client.channelGuildMap[channel.id] = guild.id;
-				guild.channels.add(channel);
-
-				channel.listener = async (data) => {
-					console.log(data);
-					delete this.client.channelGuildMap[channel.id];
-					guild.channels.remove(channel);
-					await sendResponse({ data });
-				};
-
-				const args = content.args ? content.args.join(' ') : '';
-				const fakeMsg = new Message(
-					{
-						id: content.id,
-						content: `<@!${this.client.user.id}>${content.sudoCmd} ${args}`,
-						channel_id: channel.id,
-						author: this.client.users.get(content.authorId),
-						embeds: [],
-						attachments: [],
-						mentions: []
-					},
-					this.client
-				);
-				(fakeMsg as any).__sudo = true;
-				await this.client.cmds.onMessage(fakeMsg);
 				break;
 
 			case ShardCommand.OWNER_DM:

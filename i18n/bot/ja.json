@@ -230,7 +230,8 @@
 				"canNotReadMessages": "そのチャンネルでの、**メッセージを読む**権限がありません。",
 				"canNotSendEmbeds": "そのチャンネルでの、**埋め込みリンク**権限がありません。",
 				"canNotSendMessages": "そのチャンネルでの、**メッセージを送信する**権限がありません。",
-				"mustBeTextChannel": "そのチャンネルはテキストチャンネルではありません。"
+				"mustBeTextChannel": "そのチャンネルはテキストチャンネルではありません。",
+				"multipleJoinRolesIsPremium": "Multiple join roles are a premium feature."
 			},
 			"new": {
 				"title": "新しい値"
@@ -501,7 +502,9 @@
 			},
 			"text": "個々の招待リンクの設定をします。",
 			"title": "招待リンク設定",
-			"noneSet": "設定がセットされていません。"
+			"noneSet": "設定がセットされていません。",
+			"codeForOtherGuild": "This invite code is for another server.",
+			"canNotClear": "The config setting **{{ key }}** can not be cleared. You can use `inviteCodeConfig {{ key }} default` to reset it to the default value."
 		},
 		"inviteCodes": {
 			"dmSent": "あなたのすべての招待コードをあなたにDMを送りました。",
@@ -687,6 +690,10 @@
 			"done": "ユーザーがミュートされました！",
 			"error": "この人のミュート中にエラーが発生しました。",
 			"missingRole": "ミュート用の役職が設定されていないか存在しません。",
+			"unmute": {
+				"title": "Auto unmute",
+				"description": "User will be unmuted in {{{ duration }}}"
+			},
 			"self": {
 				"args": {
 					"muteDuration": "ユーザーがミュートされる期間。",
@@ -711,7 +718,8 @@
 					"role": "コマンドへのアクセスを許可または拒否する役職。"
 				},
 				"description": "コマンドを使用するための権限を設定します。"
-			}
+			},
+			"canNotChange": "The permissions for the {{{ cmd }}} command cannot be changed."
 		},
 		"ping": {
 			"self": {
@@ -739,7 +747,8 @@
 				"declined": "使用料の支払いが拒否されました。Patreonを確認してください。",
 				"done": "あなたは{{{valid}}}まで有効なプレミアム購読を有効にしています。\n\n詳細については{{{cmd}}}を使用してください。",
 				"notFound": "あなたのアカウントにはプレミアム登録が関連付けられていません。\n\nPatreonを使用してプレミアムを取得した場合は、DiscordアカウントをPatreonにリンクして報酬を集めるようにしてから、もう一度このコマンドを実行してください。",
-				"title": "プレミアム購読を確認する"
+				"title": "プレミアム購読を確認する",
+				"paused": "Your subscription currently seems to be paused, please check your Patreon."
 			},
 			"deactivate": {
 				"customBot": "カスタムボットを使用しています。 カスタムボットには常にプレミアムがあります。",
@@ -970,6 +979,8 @@
 			"alreadyUsed": "あなたはすでに無料のプレミアムトライアルを使っています！ あなたはこのボットが好きなら、プレミアムの購入を検討してください。",
 			"currentlyActive": "あなたは現在アクティブなプレミアム購読をしています！",
 			"prompt": "** yes **または** no **で返信してください。",
+			"timedOut": "The request has timed out, please try again.",
+			"canceled": "The try-premium process has been aborted.",
 			"self": {
 				"description": "プレミアム版のInviteManagerを期間限定で無料でお試しください。"
 			},
@@ -1003,6 +1014,7 @@
 			"canNotUnmute": "そのユーザーのミュートを解除することはできません。",
 			"done": "ユーザーのミュートが解除されました。",
 			"missingRole": "ミュート用の役職が設定されていないか存在しません。",
+			"error": "Could not unmute member: {{{ error }}}",
 			"self": {
 				"args": {
 					"user": "ミュートを解除する必要があるユーザー。"
@@ -1044,7 +1056,8 @@
 				"args": {
 					"videos": "ビデオを一緒にマッシュアップする必要があります"
 				}
-			}
+			},
+			"missingSecondVideo": "Missing second video link!"
 		},
 		"nowPlaying": {
 			"self": {
@@ -1093,7 +1106,8 @@
 		"rewind": {
 			"self": {
 				"description": "曲を巻き戻して最初から始めます。"
-			}
+			},
+			"notSupported": "Rewinding is not supported on {{{ platform }}}"
 		},
 		"search": {
 			"self": {
@@ -1106,7 +1120,8 @@
 				}
 			},
 			"title": "{{ term }}の検索結果",
-			"noResults": "結果が見つかりません！"
+			"noResults": "結果が見つかりません！",
+			"notSupported": "Searching is not supported on {{{ platform }}}"
 		},
 		"seek": {
 			"self": {
@@ -1114,7 +1129,8 @@
 				"args": {
 					"duration": "曲がスキップされる位置（最初から秒単位）"
 				}
-			}
+			},
+			"notSupported": "Seeking is not supported on {{{ platform }}}"
 		},
 		"skip": {
 			"self": {
@@ -1148,6 +1164,7 @@
 				},
 				"description": "Creates a new or edits an existing placeholder message."
 			},
+			"noMessage": "You need to provide a message for the placeholder",
 			"noMessageFoundInDatabase": "The placeholder message with the specified id could not be found."
 		},
 		"reactionRole": {
@@ -1166,16 +1183,16 @@
 					"channel": "The channel that you want to lock down."
 				}
 			},
+			"notATextChannel": "That channel is not a text channel.",
 			"noSuitingRoleFound": "No suitable role found to start a lockdown!"
 		}
 	},
-	"JOIN_LEAVE_EMBEDS_IS_PREMIUM": "参加/退会メッセージとして埋め込みを使用することは、プレミアム機能です。 このサーバーではプレミアムがアクティブになっていないようです。 プレミアムの購入方法の詳細については、お問い合わせください。",
 	"messages": {
 		"joinUnknownInviter": "<@ {{id}}>がどのようにサーバーに参加したのかわかりません。",
 		"joinVanityUrl": "<@ {{id}}>は一時的な招待を使用してサーバーに参加しました。",
 		"leaveUnknownInviter": "{{tag}}はサーバーを退出しましたが、誰が招待したのかわかりませんでした。",
-		"unknownInviter": "未知の",
-		"joinServerWidget": "ユーザーがサーバーウィジェットを使用して参加しました。"
+		"joinServerWidget": "ユーザーがサーバーウィジェットを使用して参加しました。",
+		"joinLeaveEmbedsIsPremium": "Using an embed as your join/leave message is a premium feature. Premium does not seem to be active on this server. Please contact us to learn more about how to purchase premium."
 	},
 	"moderation": {
 		"punishments": {
@@ -1194,7 +1211,7 @@
 	},
 	"permissions": {
 		"adminOnly": "このコマンドを使用する権限がありません。\nこのコマンドを使用できるのは**管理者**のみです。",
-		"createInviteCode": "期間制招待を作成",
+		"createInstantInvite": "Create Instant Invite",
 		"manageGuild": "サーバーの管理",
 		"manageRoles": "役職の管理",
 		"premiumOnly": "このコマンドはプレミアムメンバーにのみ利用可能です。",
@@ -1205,10 +1222,8 @@
 		"readMessageHistory": "メッセージの履歴を見る",
 		"missing": "InviteManagerは{{{ channel }}}の{{{ permissions }}}許可がありません",
 		"banMembers": "禁止メンバー",
-		"kickMembers": "キックメンバー"
-	},
-	"prompt": {
-		"canceled": "キャンセルしました。"
+		"kickMembers": "キックメンバー",
+		"memberError": "Could not get member"
 	},
 	"resolvers": {
 		"boolean": {
@@ -1245,7 +1260,9 @@
 		"number": {
 			"invalid": "不正な数です。",
 			"type": "番号",
-			"typeInfo": "この引数には数値が必要です"
+			"typeInfo": "この引数には数値が必要です",
+			"tooSmall": "That number is too small, it has to be at least {{{ min }}}.",
+			"tooLarge": "That number is too large, it has to be at most {{{ max }}}."
 		},
 		"role": {
 			"multiple": "複数の役職が見つかりました。 {{{ roles }}}",
@@ -1276,7 +1293,8 @@
 		},
 		"invitecode": {
 			"type": "招待コード",
-			"typeInfo": "この引数は、Discord Invite Codeを想定しています。\n\n> `https://discord.gg/` の後ろの部分置くことができ、Discordがプレビューを作成しないようにします。"
+			"typeInfo": "この引数は、Discord Invite Codeを想定しています。\n\n> `https://discord.gg/` の後ろの部分置くことができ、Discordがプレビューを作成しないようにします。",
+			"notFound": "The specified invite code could not be found."
 		}
 	},
 	"settings": {
@@ -1536,7 +1554,7 @@
 				"title": "音楽",
 				"description": "音楽の設定",
 				"general": {
-					"title": "音楽",
+					"title": "Music",
 					"description": "総合的な音楽の設定"
 				},
 				"announcement": {

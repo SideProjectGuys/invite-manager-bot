@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { AnyChannel, Guild, GuildAuditLog, GuildChannel, Invite, Member, Role, TextChannel } from 'eris';
+import { AnyChannel, ChannelInvite, Guild, GuildAuditLog, GuildChannel, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import os from 'os';
@@ -23,6 +23,8 @@ export class TrackingService extends IMService {
 	private inviteStoreUpdate: { [guildId: string]: number } = {};
 
 	public async init() {
+		this.client.on('inviteCreate', this.onInviteCreate.bind(this));
+		this.client.on('inviteDelete', this.onDeleteInvite.bind(this));
 		this.client.on('channelCreate', this.onChannelCreate.bind(this));
 		this.client.on('channelUpdate', this.onChannelUpdate.bind(this));
 		this.client.on('channelDelete', this.onChannelDelete.bind(this));
@@ -104,6 +106,44 @@ export class TrackingService extends IMService {
 			// tslint:disable-next-line: no-floating-promises
 			func();
 		}
+	}
+
+	private async onInviteCreate(guild: Guild, invite: ChannelInvite) {
+		await this.client.db.saveInviteCodes([
+			{
+				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
+				code: invite.code,
+				channelId: invite.channel ? invite.channel.id : null,
+				maxAge: invite.maxAge,
+				maxUses: invite.maxUses,
+				uses: invite.uses,
+				temporary: invite.temporary,
+				guildId: guild.id,
+				inviterId: invite.inviter ? invite.inviter.id : null,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: false
+			}
+		]);
+	}
+
+	private async onDeleteInvite(guild: Guild, invite: ChannelInvite) {
+		await this.client.db.saveInviteCodes([
+			{
+				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
+				code: invite.code,
+				channelId: invite.channel ? invite.channel.id : null,
+				maxAge: invite.maxAge,
+				maxUses: invite.maxUses,
+				uses: invite.uses,
+				temporary: invite.temporary,
+				guildId: guild.id,
+				inviterId: invite.inviter ? invite.inviter.id : null,
+				clearedAmount: 0,
+				isVanity: false,
+				isWidget: false
+			}
+		]);
 	}
 
 	private async onChannelCreate(channel: AnyChannel) {
@@ -275,7 +315,7 @@ export class TrackingService extends IMService {
 			return;
 		}
 
-		let invs = await guild.getInvites().catch(() => [] as Invite[]);
+		let invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 		const lastUpdate = this.inviteStoreUpdate[guild.id];
 		const newInvs = this.getInviteCounts(invs);
 		const oldInvs = this.inviteStore[guild.id];
@@ -745,7 +785,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Get the invites
-		const invs = await guild.getInvites().catch(() => [] as Invite[]);
+		const invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
@@ -826,7 +866,7 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
+	private getInviteCounts(invites: ChannelInvite[]): { [key: string]: { uses: number; maxUses: number } } {
 		const localInvites: {
 			[key: string]: { uses: number; maxUses: number };
 		} = {};

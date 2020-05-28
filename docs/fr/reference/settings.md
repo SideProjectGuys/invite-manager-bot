@@ -164,7 +164,7 @@ There are many config options that can be set. You don't have to set all of them
 
 ### Musique
 
-#### Musique
+#### Music
 
 | Setting                              | Description                                                               |
 | ------------------------------------ | ------------------------------------------------------------------------- |
