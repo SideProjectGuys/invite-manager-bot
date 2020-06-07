@@ -159,7 +159,7 @@ export default class extends IMCommand {
 			cmd.name === 'addRank' ||
 			cmd.name === 'removeRank'
 		) {
-			return this.sendReply(message, t('cmd.permissions.canNotChange'));
+			return this.sendReply(message, t('cmd.permissions.canNotChange', { cmd: cmd.name }));
 		}
 
 		const oldPerms = await this.db.getRolePermissions(guild.id, role.id, cmd.name);

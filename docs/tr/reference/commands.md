@@ -57,10 +57,10 @@ Bu argümanlar bir Discord Kanalı bekler. Kanal sağlamak için aşağıdaki y�
 
 ### Komut
 
-This argument expects a command of this bot. You can use any of the following methods to provide a command:
+Bu argüman bu botun bir komutunu bekliyor. Komut sağlamak için aşağıdaki yöntemlerden birini kullanabilirsiniz:
 
-- Use the command name: `invites`
-- Use an alias of the command: `p`
+- Komut adını kullanın: `invites`
+- Komutun takma adını kullanın: `p`
 
 ### Metin
 
@@ -72,7 +72,7 @@ This arguments expects any text. You can use quotes (`"Text with quotes"`) for t
 
 Bu argüman bir tarih bekliyor. Çeşitli formatlar kullanabilirsiniz, ancak şunları öneririz: `YYYY-AA-GG`
 
-### Duration
+### Süre
 
 This argument expects a duration. The following duration types are supported:
 
@@ -153,7 +153,7 @@ This argument expects a duration. The following duration types are supported:
 | [lockdown](#lockdown)                 | Lockdown a specific channel (Prevents anyone without special roles from sending messages)                                                 | !lockdown [-t value\|--timeout=value][channel]                   |
 | [mute](#mute)                         | Bir kullanıcı sustur                                                                                                                      | !mute [-d value\|--duration=value] \<user\> [reason]             |
 | [punishmentConfig](#punishmentConfig) | Configure punishments when reaching a certain amount of strikes.                                                                          | !punishmentConfig [punishment][strikes] [args]                   |
-| [purge](#purge)                       | Purge messages in a channel.                                                                                                              | !purge \<quantity\> [user]                                       |
+| [purge](#purge)                       | Bir kanaldaki mesajları temizleme                                                                                                         | !purge \<quantity\> [user]                                       |
 | [purgeUntil](#purgeUntil)             | Bir kanaldaki mesajları belirtilen mesaja kadar temizleyin.                                                                               | !purgeUntil \<messageID\>                                        |
 | [softBan](#softBan)                   | Ban and then automatically unban a member from the server.                                                                                | !softBan [-d value\|--deleteMessageDays=value] \<user\> [reason] |
 | [strike](#strike)                     | Add strikes to a user                                                                                                                     | !strike \<member\> \<type\> \<amount\> [reason]                  |
@@ -177,9 +177,9 @@ This argument expects a duration. The following duration types are supported:
 | [repeat](#repeat)         | Tekrar çalınacak şarkıyı ayarlayın.                                   | !repeat                                                 |
 | [resume](#resume)         | Çalınan Şarkıyı Sürdür.                                               | !resume                                                 |
 | [rewind](#rewind)         | Şarkıyı geri sar ve en baştan başla.                                  | !rewind                                                 |
-| [search](#search)         | Search for the search term and let you chose one of the results.      | !search [-p value\|--platform=value] \<search\>         |
+| [search](#search)         | Arama terimini arayın ve sonuçlardan birini seçmenize izin verin.     | !search [-p value\|--platform=value] \<search\>         |
 | [seek](#seek)             | Şarkının belirli bir bölümüne atla.                                   | !seek [duration]                                        |
-| [skip](#skip)             | Skip the current song and play the next song in the queue.            | !skip [amount]                                          |
+| [skip](#skip)             | Geçerli şarkıyı atlayın ve sıradaki bir sonraki şarkıyı çalın.        | !skip [amount]                                          |
 | [volume](#volume)         | Set the volume if an argument is passed, or show the current volume.  | !volume [volume]                                        |
 
 ### Premium
@@ -1092,15 +1092,15 @@ Lockdown a specific channel (Prevents anyone without special roles from sending 
 
 ### Arguments
 
-| Argument | Type            | Required | Description                             | Details |
-| -------- | --------------- | -------- | --------------------------------------- | ------- |
-| channel  | [Kanal](#Kanal) | No       | The channel that you want to lock down. |         |
+| Argument | Type            | Required | Description                   | Details |
+| -------- | --------------- | -------- | ----------------------------- | ------- |
+| channel  | [Kanal](#Kanal) | No       | Kilitlemek istediğiniz kanal. |         |
 
 ### Flags
 
-| Flag                    | Short     | Type                  | Description                                                                                                                   |
-| ----------------------- | --------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| &#x2011;&#x2011;timeout | &#x2011;t | [Duration](#Duration) | Kilitlemenin otomatik olarak sona erdiği zaman aşımı süresi. Kilidi manuel olarak sonlandırmak için komutu tekrar çalıştırın. |
+| Flag                    | Short     | Type          | Description                                                                                                                   |
+| ----------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;timeout | &#x2011;t | [Süre](#Süre) | Kilitlemenin otomatik olarak sona erdiği zaman aşımı süresi. Kilidi manuel olarak sonlandırmak için komutu tekrar çalıştırın. |
 
 ### Examples
 
@@ -1304,9 +1304,9 @@ Bir kullanıcı sustur
 
 ### Flags
 
-| Flag                     | Short     | Type                  | Description                       |
-| ------------------------ | --------- | --------------------- | --------------------------------- |
-| &#x2011;&#x2011;duration | &#x2011;d | [Duration](#Duration) | The duration to mute the user for |
+| Flag                     | Short     | Type          | Description                    |
+| ------------------------ | --------- | ------------- | ------------------------------ |
+| &#x2011;&#x2011;duration | &#x2011;d | [Süre](#Süre) | Kullanıcının susturulma süresi |
 
 ### Examples
 
@@ -1568,11 +1568,11 @@ Configure punishments when reaching a certain amount of strikes.
 
 ### Arguments
 
-| Argument   | Type            | Required | Description                                       | Details                                                                   |
-| ---------- | --------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
-| punishment | [Enum](#Enum)   | No       | Type of punishment to use.                        | Use one of the following values: `ban`, `kick`, `mute`, `softban`, `warn` |
-| strikes    | [Sayı](#Sayı)   | No       | Number of strikes for this punishment to be used. |                                                                           |
-| args       | [Metin](#Metin) | No       | Arguments passed to the punishment.               |                                                                           |
+| Argument   | Type            | Required | Description                                     | Details                                                                   |
+| ---------- | --------------- | -------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| punishment | [Enum](#Enum)   | No       | Kullanılacak cezalandırma türü.                 | Use one of the following values: `ban`, `kick`, `mute`, `softban`, `warn` |
+| strikes    | [Sayı](#Sayı)   | No       | Bu cezalandırma için kullanılacak ihtar sayısı. |                                                                           |
+| args       | [Metin](#Metin) | No       | İddialar cezaya geçti.                          |                                                                           |
 
 ### Examples
 
@@ -1586,7 +1586,7 @@ Configure punishments when reaching a certain amount of strikes.
 
 ## !purge
 
-Purge messages in a channel.
+Bir kanaldaki mesajları temizleme
 
 ### Usage
 
@@ -1913,7 +1913,7 @@ Tekrar çalınacak şarkıyı ayarlayın.
 
 ## !search
 
-Search for the search term and let you chose one of the results.
+Arama terimini arayın ve sonuçlardan birini seçmenize izin verin.
 
 ### Usage
 
@@ -1994,7 +1994,7 @@ Botu ayarlama ve sorunları kontrol etme konusunda yardım (örn. Eksik izinler)
 
 ## !skip
 
-Skip the current song and play the next song in the queue.
+Geçerli şarkıyı atlayın ve sıradaki bir sonraki şarkıyı çalın.
 
 ### Usage
 
@@ -2008,9 +2008,9 @@ Skip the current song and play the next song in the queue.
 
 ### Arguments
 
-| Argument | Type          | Required | Description                     | Details |
-| -------- | ------------- | -------- | ------------------------------- | ------- |
-| amount   | [Sayı](#Sayı) | No       | How many songs will be skipped. |         |
+| Argument | Type          | Required | Description          | Details |
+| -------- | ------------- | -------- | -------------------- | ------- |
+| amount   | [Sayı](#Sayı) | No       | Kaç şarkı atlanacak. |         |
 
 ### Examples
 
@@ -2098,7 +2098,7 @@ Configure strikes received for various violations.
 
 | Argument  | Type          | Required | Description        | Details                                                                                                                                                      |
 | --------- | ------------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| violation | [Enum](#Enum) | No       | Violation type.    | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
+| violation | [Enum](#Enum) | No       | İhlal türü.        | Use one of the following values: `allCaps`, `duplicateText`, `emojis`, `hoist`, `invites`, `links`, `mentionRoles`, `mentionUsers`, `quickMessages`, `words` |
 | strikes   | [Sayı](#Sayı) | No       | Number of strikes. |                                                                                                                                                              |
 
 ### Examples
@@ -2267,9 +2267,9 @@ Unmute a user
 
 ### Arguments
 
-| Argument | Type        | Required | Description                      | Details |
-| -------- | ----------- | -------- | -------------------------------- | ------- |
-| user     | [Üye](#Üye) | Yes      | The user that should be unmuted. |         |
+| Argument | Type        | Required | Description                    | Details |
+| -------- | ----------- | -------- | ------------------------------ | ------- |
+| user     | [Üye](#Üye) | Yes      | Susturulması gereken kullanıcı |         |
 
 ### Examples
 

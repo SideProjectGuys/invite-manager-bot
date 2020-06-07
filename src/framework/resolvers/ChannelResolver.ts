@@ -17,7 +17,7 @@ export class ChannelResolver extends Resolver {
 			const id = value.match(channelRegex)[1];
 			channel = guild.channels.get(id);
 			if (!channel) {
-				throw Error(t(`resolvers.${this.getType()}.notFound`));
+				throw Error(t(`resolvers.channel.notFound`));
 			}
 		} else {
 			const name = value.toLowerCase();
@@ -30,10 +30,10 @@ export class ChannelResolver extends Resolver {
 				channel = channels[0];
 			} else {
 				if (channels.length === 0) {
-					throw Error(t(`resolvers.${this.getType()}.notFound`));
+					throw Error(t(`resolvers.channel.notFound`));
 				} else {
 					throw Error(
-						t(`resolvers.${this.getType()}.multiple`, {
+						t(`resolvers.channel.multiple`, {
 							channels: channels
 								.slice(0, 10)
 								.map((c) => `\`${c.name}\``)

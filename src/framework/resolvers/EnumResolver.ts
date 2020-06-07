@@ -22,11 +22,11 @@ export class EnumResolver extends Resolver {
 		if (this.values.has(val)) {
 			return this.values.get(val);
 		}
-		throw Error(t(`resolvers.${this.getType()}.invalid`));
+		throw Error(t(`resolvers.enum.invalid`));
 	}
 
 	public getHelp({ t }: CommandContext) {
-		return t(`resolvers.${this.getType()}.validValues`, {
+		return t(`resolvers.enum.validValues`, {
 			values: [...this.values.values()]
 				.sort((a, b) => a.localeCompare(b))
 				.map((v) => '`' + v + '`')

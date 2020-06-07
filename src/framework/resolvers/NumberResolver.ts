@@ -24,24 +24,24 @@ export class NumberResolver extends Resolver {
 
 		const val = parseFloat(value);
 		if (isNaN(val) || !isFinite(val)) {
-			throw Error(t(`resolvers.${this.getType()}.invalid`));
+			throw Error(t(`resolvers.number.invalid`));
 		}
 
 		if (val < MIN_VALUE) {
-			throw Error(t(`resolvers.${this.getType()}.tooSmall`));
+			throw Error(t(`resolvers.number.tooSmall`, { min: this.min || MIN_VALUE }));
 		}
 		if (val > MAX_VALUE) {
-			throw Error(t(`resolvers.${this.getType()}.tooLarge`));
+			throw Error(t(`resolvers.number.tooLarge`, { max: this.max || MAX_VALUE }));
 		}
 
 		if (this.min) {
 			if (val < this.min) {
-				throw Error(t(`resolvers.${this.getType()}.tooSmall`));
+				throw Error(t(`resolvers.number.tooSmall`, { min: this.min }));
 			}
 		}
 		if (this.max) {
 			if (val > this.max) {
-				throw Error(t(`resolvers.${this.getType()}.tooLarge`));
+				throw Error(t(`resolvers.number.tooLarge`, { max: this.max }));
 			}
 		}
 

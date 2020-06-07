@@ -51,10 +51,10 @@ export default class extends IMCommand {
 
 			const [keyResult] = await this.msg.prompt(message, t('cmd.tryPremium.prompt'));
 			if (keyResult === PromptResult.TIMEOUT) {
-				return this.sendReply(message, t('prompt.timedOut'));
+				return this.sendReply(message, t('cmd.tryPremium.timedOut'));
 			}
 			if (keyResult === PromptResult.FAILURE) {
-				return this.sendReply(message, t('prompt.canceled'));
+				return this.sendReply(message, t('cmd.tryPremium.canceled'));
 			}
 
 			await this.db.savePremiumSubscription({

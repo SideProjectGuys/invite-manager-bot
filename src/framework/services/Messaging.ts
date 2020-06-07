@@ -167,7 +167,7 @@ export class MessagingService extends IMService {
 				return this.createEmbed(temp, false);
 			} else {
 				const lang = (await this.guildSettingsCache.get(guild.id)).lang;
-				msg += '\n\n' + i18n.__({ locale: lang, phrase: 'JOIN_LEAVE_EMBEDS_IS_PREMIUM' });
+				msg += '\n\n' + i18n.__({ locale: lang, phrase: 'messages.joinLeaveEmbedsIsPremium' });
 			}
 		} catch (e) {
 			//

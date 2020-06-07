@@ -35,7 +35,7 @@ export class UserResolver extends Resolver {
 				}));
 			}
 			if (!user) {
-				throw Error(t(`resolvers.${this.getType()}.notFound`));
+				throw Error(t(`resolvers.user.notFound`));
 			}
 		} else {
 			const fullName = value.toLowerCase();
@@ -91,10 +91,10 @@ export class UserResolver extends Resolver {
 			if (users.length === 1) {
 				user = users[0];
 			} else if (users.length === 0) {
-				throw Error(t(`resolvers.${this.getType()}.notFound`));
+				throw Error(t(`resolvers.user.notFound`));
 			} else {
 				throw Error(
-					t(`resolvers.${this.getType()}.multiple`, {
+					t(`resolvers.user.multiple`, {
 						users: users
 							.slice(0, 10)
 							.map((u) => `\`${u.username}#${u.discriminator}\``)

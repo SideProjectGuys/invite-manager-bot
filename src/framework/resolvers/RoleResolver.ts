@@ -17,7 +17,7 @@ export class RoleResolver extends Resolver {
 			const id = value.match(idRegex)[1];
 			role = guild.roles.get(id);
 			if (!role) {
-				throw Error(t(`resolvers.${this.getType()}.notFound`));
+				throw Error(t(`resolvers.role.notFound`));
 			}
 		} else {
 			const name = value.toLowerCase();
@@ -40,10 +40,10 @@ export class RoleResolver extends Resolver {
 				role = roles[0];
 			} else {
 				if (roles.length === 0) {
-					throw Error(t(`resolvers.${this.getType()}.notFound`));
+					throw Error(t(`resolvers.role.notFound`));
 				} else {
 					throw Error(
-						t(`resolvers.${this.getType()}.multiple`, {
+						t(`resolvers.role.multiple`, {
 							roles: roles
 								.slice(0, 10)
 								.map((r) => `\`${r.name}\``)

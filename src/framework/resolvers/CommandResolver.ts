@@ -21,14 +21,14 @@ export class CommandResolver extends Resolver {
 		const cmds = this.cmds.filter((c) => c.name.toLowerCase().includes(name) || c.aliases.indexOf(name) >= 0);
 
 		if (cmds.length === 0) {
-			throw Error(t(`resolvers.${this.getType()}.notFound`));
+			throw Error(t(`resolvers.command.notFound`));
 		} else if (cmds.length === 1) {
 			return cmds[0];
 		} else {
 			const cmd = cmds.find((c) => c.name.length - name.length === 0);
 			if (!cmd) {
 				throw Error(
-					t(`resolvers.${this.getType()}.multiple`, {
+					t(`resolvers.command.multiple`, {
 						commands: cmds
 							.slice(0, 10)
 							.map((c) => `\`${c.name}\``)
@@ -41,7 +41,7 @@ export class CommandResolver extends Resolver {
 	}
 
 	public getHelp({ t }: CommandContext) {
-		return t(`resolvers.${this.getType()}.validValues`, {
+		return t(`resolvers.command.validValues`, {
 			values: this.cmds.map((c) => '`' + c.name + '`').join(', ')
 		});
 	}
