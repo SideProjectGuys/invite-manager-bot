@@ -73,7 +73,7 @@ export default class extends IMCommand {
 			embed.fields.push({
 				name: t('cmd.premium.feature.patreon.title'),
 				value: t('cmd.premium.feature.patreon.text', {
-					cmd: '`' + settings.prefix + 'premium check`'
+					cmd: '`' + settings.prefix + 'check-premium patreon`'
 				})
 			});
 
@@ -112,7 +112,9 @@ export default class extends IMCommand {
 				embed.description = t('cmd.premium.activate.customBot');
 			} else if (!guild) {
 				embed.description = t('cmd.premium.activate.noGuild');
-			} else if (!message.member.permission.has(GuildPermission.MANAGE_GUILD)) {
+			} else if (!(await guild.getRESTMember(memberId))) {
+				embed.description = t('cmd.premium.activate.notInGuild');
+			} else if (!guild.members.get(memberId).permission.has(GuildPermission.MANAGE_GUILD)) {
 				embed.description = t('cmd.premium.activate.permissions');
 			} else if (isPremium) {
 				embed.description = t('cmd.premium.activate.currentlyActive');

@@ -303,7 +303,7 @@ export class IMClient extends Client {
 										'I am the pro version of InviteManager, and only available to people ' +
 										'that support me on Patreon with the pro tier.\n\n' +
 										'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-										'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+										'If you purchased premium run `!check-premium patreon` and then `!premium activate` in the server\n\n' +
 										'I will be leaving your server soon, thanks for having me!'
 								)
 								.catch(() => undefined);
@@ -400,7 +400,7 @@ export class IMClient extends Client {
 							'I am the pro version of InviteManager, and only available to people ' +
 							'that support me on Patreon with the pro tier.\n\n' +
 							'To purchase the pro tier visit https://www.patreon.com/invitemanager\n\n' +
-							'If you purchased premium run `!premium check` and then `!premium activate` in the server\n\n' +
+							'If you purchased premium run `!check-premium patreon` and then `!premium activate` in the server\n\n' +
 							'I will be leaving your server soon, thanks for having me!'
 					)
 					.catch(() => undefined);

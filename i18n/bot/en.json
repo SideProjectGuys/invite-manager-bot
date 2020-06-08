@@ -739,7 +739,8 @@
 				"declined": "Your payment for premium has been declined, plesae check your Patreon.",
 				"done": "You have an active premium subscription valid until {{{ valid }}}.\n\nUse {{{ cmd }}} for more info.",
 				"notFound": "Your account does not have a premium subscription associated.\n\nIf you aquired premium using Patreon, please make sure to link your Discord account to Patreon to collect your rewards, then run this command again.",
-				"title": "Check for a Premium Subscription"
+				"title": "Check for a Premium Subscription",
+				"paused": "Your Patreon subscription is paused or you don't have one yet. Please subscribe on our Patreon."
 			},
 			"deactivate": {
 				"customBot": "You are using a custom bot. Custom bots always have premium.",
