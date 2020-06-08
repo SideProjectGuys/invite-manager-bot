@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import { AnyChannel, ChannelInvite, Guild, GuildAuditLog, GuildChannel, Member, Role, TextChannel } from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
-import os from 'os';
 
 import { GuildSettingsCache } from '../../framework/cache/GuildSettings';
 import { InviteCodeSettingsCache } from '../../framework/cache/InviteCodeSettings';
@@ -26,7 +25,7 @@ import { JoinInvalidatedReason } from '../models/Join';
 import { InvitesService } from './Invites';
 import { RanksService } from './Ranks';
 
-const GUILDS_IN_PARALLEL = os.cpus().length;
+const GUILDS_IN_PARALLEL = 2;
 const INVITE_CREATE = 40;
 
 interface InviteStore {
