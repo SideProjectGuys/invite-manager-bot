@@ -15,12 +15,8 @@ child.on('close', () => {
 		console.log('STARTING AND WAITING FOR DEBUGGER');
 	}
 
-	child = spawn(
-		'node',
-		[`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', '--no-rabbitmq', config.devToken, '1', '1', '1'],
-		{
-			stdio: 'inherit'
-		}
-	);
+	child = spawn('node', [`--inspect${debug ? '-brk' : ''}=19229`, './bin/bot.js', config.devToken, '1', '1', '1'], {
+		stdio: 'inherit'
+	});
 	child.on('error', (error) => console.log(error));
 });

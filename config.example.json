@@ -27,27 +27,26 @@
 		}
 	},
 	"rabbitmq": {
-		"hostname": "localhost",
+		"hostname": "rabbitmq",
 		"username": "guest",
-		"password": "guest",
-		"prefix": ""
+		"password": "guest"
 	},
 	"databases": [
 		{
-			"host": "localhost",
+			"host": "db",
 			"port": 3306,
 			"user": "root",
-			"password": "",
+			"password": "password",
 			"range": {
 				"from": 0,
 				"to": 0
 			}
 		},
 		{
-			"host": "localhost",
+			"host": "db",
 			"port": 3306,
 			"user": "root",
-			"password": "",
+			"password": "password",
 			"range": {
 				"from": 1,
 				"to": 1
