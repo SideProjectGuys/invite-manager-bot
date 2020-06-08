@@ -80,6 +80,20 @@ export class DatabaseService extends IMService {
 		setInterval(() => this.syncDB(), 10000);
 	}
 
+	public async init() {
+		try {
+			for (const pool of this.pools.values()) {
+				await (await pool.getConnection()).ping();
+			}
+
+			console.log(chalk.green('Database connection looks good'));
+		} catch (err) {
+			console.error(err);
+			console.error(chalk.red('Could not create database connections'));
+			process.exit(1);
+		}
+	}
+
 	public getDbInfo(dbShardOrGuildId: number | string): [string, Pool] {
 		if (typeof dbShardOrGuildId === 'number') {
 			return [`\`im_${dbShardOrGuildId}\``, this.pools.get(dbShardOrGuildId)];
