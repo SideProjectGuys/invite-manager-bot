@@ -10,6 +10,8 @@ import { Cache } from '../decorators/Cache';
 
 import { IMService } from './Service';
 
+const RETRY_INTERVAL = 10000;
+
 interface ShardMessage {
 	id: string;
 	cmd: ShardCommand;
@@ -27,7 +29,6 @@ enum ShardCommand {
 
 export class RabbitMqService extends IMService {
 	private conn: Connection;
-	private connRetry: number = 0;
 
 	private qNameStartup: string;
 	private channelStartup: Channel;
@@ -36,7 +37,6 @@ export class RabbitMqService extends IMService {
 
 	private qName: string;
 	private channel: Channel;
-	private channelRetry: number = 0;
 	private msgQueue: any[] = [];
 
 	@Cache() private guildSettingsCache: GuildSettingsCache;
@@ -48,26 +48,29 @@ export class RabbitMqService extends IMService {
 		}
 
 		await this.initConnection();
-		await this.initChannel();
 	}
 	private async initConnection() {
 		try {
 			const conn = await connect(this.client.config.rabbitmq);
 			this.conn = conn;
 			this.conn.on('close', async (err) => {
+				console.log(chalk.yellow('RabbitMQ connection closed'));
+
 				if (err) {
 					console.error(err);
 				}
 				await this.shutdownConnection();
 
-				setTimeout(() => this.initConnection(), this.connRetry * 30);
-				this.connRetry++;
+				setTimeout(() => this.init(), RETRY_INTERVAL);
 			});
+
+			await this.initChannel();
 		} catch (err) {
 			console.error(err);
 
 			await this.shutdownConnection();
-			await this.initConnection();
+
+			setTimeout(() => this.initConnection(), RETRY_INTERVAL);
 		}
 	}
 	private async shutdownConnection() {
@@ -88,44 +91,29 @@ export class RabbitMqService extends IMService {
 			return;
 		}
 
-		this.connRetry = 0;
 		this.qName = `shard-${this.client.instance}-${this.client.firstShardId}-${this.client.lastShardId}`;
 
 		try {
 			this.channel = await this.conn.createChannel();
-			this.channel.on('close', async (err) => {
-				if (err) {
-					console.error(err);
-				}
+			this.channel.on('error', async (err) => {
+				console.log(chalk.yellow('RabbitMQ channel error'));
+				console.error(err);
 				await this.shutdownChannel();
 
-				setTimeout(() => this.initChannel(), this.channelRetry * 30);
-				this.channelRetry++;
+				setTimeout(() => this.initChannel(), RETRY_INTERVAL);
 			});
+
+			await this.assertQueues();
 
 			while (this.msgQueue.length > 0) {
 				await this.sendToManager(this.msgQueue.pop(), true);
 			}
-
-			await this.channel.assertQueue(this.qName, { durable: false, autoDelete: true });
-
-			await this.channel.assertExchange('shards_all', 'fanout', { durable: true });
-			await this.channel.bindQueue(this.qName, 'shards_all', '');
-
-			await this.channel.assertExchange('shards_one', 'topic', { durable: true });
-			for (let i = this.client.firstShardId; i <= this.client.lastShardId; i++) {
-				await this.channel.bindQueue(this.qName, 'shards_one', `${this.client.instance}.${i}`);
-			}
-
-			await this.channel.prefetch(5);
-			this.channel.consume(this.qName, (msg) => this.onShardCommand(msg), { noAck: false });
-
-			this.channelRetry = 0;
 		} catch (err) {
 			console.error(err);
 
 			await this.shutdownChannel();
-			await this.initChannel();
+
+			setTimeout(() => this.initChannel(), RETRY_INTERVAL);
 		}
 	}
 	private async shutdownChannel() {
@@ -140,6 +128,21 @@ export class RabbitMqService extends IMService {
 		}
 	}
 
+	private async assertQueues() {
+		await this.channel.assertQueue(this.qName, { durable: false, autoDelete: true });
+
+		await this.channel.assertExchange('shards_all', 'fanout', { durable: true });
+		await this.channel.bindQueue(this.qName, 'shards_all', '');
+
+		await this.channel.assertExchange('shards_one', 'topic', { durable: true });
+		for (let i = this.client.firstShardId; i <= this.client.lastShardId; i++) {
+			await this.channel.bindQueue(this.qName, 'shards_one', `${this.client.instance}.${i}`);
+		}
+
+		await this.channel.prefetch(5);
+		await this.channel.consume(this.qName, (msg) => this.onShardCommand(msg), { noAck: false });
+	}
+
 	public async waitForStartupTicket() {
 		if (!this.conn) {
 			console.log(chalk.yellow('No connection available, this is ok for single installations or in dev mode.'));
@@ -152,9 +155,7 @@ export class RabbitMqService extends IMService {
 			return;
 		}
 
-		// const startupSuffix = this.client.shardCount > BOT_SHARDING ? `-${this.client.shardId % BOT_SHARDING}` : '';
-		const startupSuffix = '';
-		this.qNameStartup = `shard-${this.client.instance}-start${startupSuffix}`;
+		this.qNameStartup = `shard-${this.client.instance}-start`;
 
 		this.channelStartup = await this.conn.createChannel();
 		this.channelStartup.on('close', async (err) => {
@@ -170,7 +171,7 @@ export class RabbitMqService extends IMService {
 				console.error(err);
 			}
 
-			console.error('Could not aquire startup ticket');
+			console.error(chalk.red('Could not aquire startup ticket'));
 			process.exit(1);
 		});
 
@@ -295,92 +296,104 @@ export class RabbitMqService extends IMService {
 	}
 
 	private async onShardCommand(msg: MQMessage) {
-		const content = JSON.parse(msg.content.toString()) as ShardMessage;
-		const cmd = content.cmd;
+		// This can happen if our queue is deleted
+		if (!msg) {
+			console.error(chalk.yellow('Received an empty RabbitMQ message - our queue may have been deleted'));
+			await this.assertQueues();
+			return;
+		}
 
-		const guildId = content.guildId;
-		const guild = this.client.guilds.get(guildId);
+		try {
+			const content = JSON.parse(msg.content.toString()) as ShardMessage;
+			const cmd = content.cmd;
 
-		console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
+			const guildId = content.guildId;
+			const guild = this.client.guilds.get(guildId);
 
-		this.channel.ack(msg, false);
+			console.log(`RECEIVED SHARD COMMAND: ${JSON.stringify(content)}`);
 
-		const sendResponse = (message: { [x: string]: any }) =>
-			this.sendToManager({
-				id: content.id,
-				cmd: content.cmd,
-				...message
-			});
+			this.channel.ack(msg, false);
 
-		switch (cmd) {
-			case ShardCommand.STATUS:
-				await this.sendStatusToManager();
-				break;
-
-			case ShardCommand.CUSTOM:
-				const self = await this.client.getSelf();
-
-				await sendResponse({
-					self,
-					guilds: this.client.guilds.map((g) => ({
-						id: g.id,
-						name: g.name,
-						icon: g.iconURL,
-						memberCount: g.memberCount
-					}))
+			const sendResponse = (message: { [x: string]: any }) =>
+				this.sendToManager({
+					id: content.id,
+					cmd: content.cmd,
+					...message
 				});
-				break;
 
-			case ShardCommand.DIAGNOSE:
-				if (!guild) {
-					return sendResponse({
-						error: `Guild ${guildId} not found`
+			switch (cmd) {
+				case ShardCommand.STATUS:
+					await this.sendStatusToManager();
+					break;
+
+				case ShardCommand.CUSTOM:
+					const self = await this.client.getSelf();
+
+					await sendResponse({
+						self,
+						guilds: this.client.guilds.map((g) => ({
+							id: g.id,
+							name: g.name,
+							icon: g.iconURL,
+							memberCount: g.memberCount
+						}))
 					});
-				}
+					break;
 
-				const owner = await this.client.getRESTUser(guild.ownerID).catch(() => undefined);
-				const settings = await this.guildSettingsCache.get(guild.id);
-				const perms = guild.members.get(this.client.user.id).permission.json;
-				const premium = await this.premiumCache.get(guildId);
-				const disabled = this.client.disabledGuilds.has(guildId);
+				case ShardCommand.DIAGNOSE:
+					if (!guild) {
+						return sendResponse({
+							error: `Guild ${guildId} not found`
+						});
+					}
 
-				const data: any = {
-					owner,
-					settings,
-					perms,
-					premium,
-					disabled,
-					service: {}
-				};
+					const owner = await this.client.getRESTUser(guild.ownerID).catch(() => undefined);
+					const settings = await this.guildSettingsCache.get(guild.id);
+					const perms = guild.members.get(this.client.user.id).permission.json;
+					const premium = await this.premiumCache.get(guildId);
+					const disabled = this.client.disabledGuilds.has(guildId);
 
-				for (const [clazz, service] of this.client.services) {
-					data.service[clazz.name.toLowerCase().replace('service', '')] = await service.getDiagnose(guild);
-				}
+					const data: any = {
+						owner,
+						settings,
+						perms,
+						premium,
+						disabled,
+						service: {}
+					};
 
-				await sendResponse(data);
-				break;
+					for (const [clazz, service] of this.client.services) {
+						data.service[clazz.name.toLowerCase().replace('service', '')] = await service.getDiagnose(guild);
+					}
 
-			case ShardCommand.FLUSH_CACHE:
-				const errors: string[] = [];
+					await sendResponse(data);
+					break;
 
-				this.client.flushCaches(guildId, content.caches);
+				case ShardCommand.FLUSH_CACHE:
+					const errors: string[] = [];
 
-				await sendResponse({ error: errors.join('\n') });
-				break;
+					this.client.flushCaches(guildId, content.caches);
 
-			case ShardCommand.LEAVE_GUILD:
-				if (!guild) {
-					return sendResponse({
-						error: 'Guild not found'
-					});
-				}
+					await sendResponse({ error: errors.join('\n') });
+					break;
 
-				await guild.leave();
-				await sendResponse({});
-				break;
+				case ShardCommand.LEAVE_GUILD:
+					if (!guild) {
+						return sendResponse({
+							error: 'Guild not found'
+						});
+					}
 
-			default:
-				console.error(`UNKNOWN COMMAND: ${cmd}`);
+					await guild.leave();
+					await sendResponse({});
+					break;
+
+				default:
+					console.error(`UNKNOWN COMMAND: ${cmd}`);
+			}
+		} catch (err) {
+			console.error(err);
+			this.channel.nack(msg, false, false);
 		}
 	}
 }
