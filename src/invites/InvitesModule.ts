@@ -4,7 +4,6 @@ import { IMModule } from '../framework/Module';
 import { InvitesCache } from './cache/InvitesCache';
 import { LeaderboardCache } from './cache/LeaderboardCache';
 import { RanksCache } from './cache/RanksCache';
-import { VanityCache } from './cache/VanityCache';
 import graph from './commands/graph';
 import addInvites from './commands/invites/add-invites';
 import clearInvites from './commands/invites/clear-invites';
@@ -45,7 +44,6 @@ export class InviteModule extends IMModule {
 		this.registerCache(InvitesCache);
 		this.registerCache(LeaderboardCache);
 		this.registerCache(RanksCache);
-		this.registerCache(VanityCache);
 
 		// Commands
 		this.registerCommand(graph);

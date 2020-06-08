@@ -17,7 +17,6 @@ import { BasicMember, GuildFeature, GuildPermission, VanityInvite } from '../../
 import { deconstruct } from '../../util';
 import { InvitesCache } from '../cache/InvitesCache';
 import { RanksCache } from '../cache/RanksCache';
-import { VanityCache } from '../cache/VanityCache';
 import { InvitesGuildSettings } from '../models/GuildSettings';
 import { InvitesInviteCodeSettings } from '../models/InviteCodeSettings';
 import { JoinInvalidatedReason } from '../models/Join';
@@ -59,7 +58,6 @@ export class TrackingService extends IMService {
 	@Cache() private premiumCache: PremiumCache;
 	@Cache() private ranksCache: RanksCache;
 	@Cache() private invitesCache: InvitesCache;
-	@Cache() private vanityCache: VanityCache;
 	@Cache() private inviteCodeSettingsCache: InviteCodeSettingsCache;
 
 	public pendingGuilds: Set<string> = new Set();
