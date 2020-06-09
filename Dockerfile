@@ -25,8 +25,8 @@ WORKDIR /home/node/app
 COPY package*.json ./
 
 ## Add the wait script to the image
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait ./wait
-RUN chown -R node:node ./wait && chmod +x ./wait
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chown -R node:node /wait && chmod +x /wait
 
 USER node
 
@@ -37,4 +37,4 @@ COPY --chown=node:node . .
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
 
-CMD ./wait && npm start
+CMD /wait && npm start

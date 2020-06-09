@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     environment:
       WAIT_HOSTS: db:3306, rabbitmq:5672
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
     links:
       - db
       - rabbitmq
@@ -39,3 +42,6 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+
+volumes:
+  node_modules:
