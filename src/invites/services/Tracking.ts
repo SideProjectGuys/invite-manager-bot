@@ -357,6 +357,7 @@ export class TrackingService extends IMService {
 
 		const usedInviteCodes: (NewInviteCode | UpdatedInviteCode)[] = [];
 		const invStore = this.inviteStore.get(guild.id);
+		const lastInvStoreUpdate = invStore.lastUpdate;
 
 		if (!invStore) {
 			console.error('Invite store for guild ' + guild.id + ' was undefined when adding member ' + member.id);
@@ -472,7 +473,7 @@ export class TrackingService extends IMService {
 			const logs = (await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null)) as GuildAuditLog;
 			if (logs && logs.entries.length) {
 				const createdCode = logs.entries.find(
-					(e) => deconstruct(e.id) > invStore.lastUpdate && invStore.invites.get(e.after.code) === undefined
+					(e) => deconstruct(e.id) > lastInvStoreUpdate && invStore.invites.get(e.after.code) === undefined
 				);
 
 				if (createdCode) {
