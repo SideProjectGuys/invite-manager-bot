@@ -478,7 +478,7 @@ export class TrackingService extends IMService {
 
 				if (createdCode) {
 					invStore.invites.set(createdCode.after.code, {
-						uses: createdCode.after.uses,
+						uses: createdCode.after.max_uses || 1, // We assume that the code has been used up
 						maxUses: createdCode.after.max_uses,
 						inviterId: createdCode.user.id,
 						channelId: createdCode.after.channel_id

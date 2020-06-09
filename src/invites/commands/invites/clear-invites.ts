@@ -62,12 +62,8 @@ export default class extends IMCommand {
 			codes.map((ic) => ic.code)
 		);
 
-		if (clearBonus) {
-			// Clear invites
-			await this.invs.clearCustomInvites(true, guild.id, memberId);
-		} else {
-			await this.invs.clearCustomInvites(false, guild.id, memberId);
-		}
+		// Clear invites
+		await this.invs.clearCustomInvites(clearBonus, guild.id, memberId);
 
 		if (memberId) {
 			this.invitesCache.flushOne(guild.id, memberId);

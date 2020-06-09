@@ -348,7 +348,7 @@ export class DatabaseService extends IMService {
 		const memberQuery = memberId ? 'AND `inviterId` = ?' : '';
 		const clearColumn = typeof clearedAmount === 'number' ? '?' : '??';
 		await pool.query(
-			`UPDATE ${db}.${TABLE.inviteCodes} SET \`clearedAmount\` = ${clearColumn} WHERE \`guildId\` = ? ${memberQuery}`,
+			`UPDATE ${db}.${TABLE.inviteCodes} SET \`clearedAmount\` = COALESCE(${clearColumn}, 0) WHERE \`guildId\` = ? ${memberQuery}`,
 			[clearedAmount, guildId, memberId]
 		);
 	}
