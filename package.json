@@ -11,7 +11,9 @@
 		"release": "npm run build && npm run docs && npm run format && standard-version",
 		"i18n": "node scripts/check-i18n.js",
 		"nxv": "node ./scripts/npm-exact-versions.js",
-		"docs": "node scripts/generate-docs.js && prettier --write \"docs/**/*.md\""
+		"docs": "node scripts/generate-docs.js && prettier --write \"docs/**/*.md\"",
+		"translate:pull": "tx pull -a",
+		"translate:push": "tx push -s"
 	},
 	"husky": {
 		"hooks": {
