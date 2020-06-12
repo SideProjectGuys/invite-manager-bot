@@ -15,7 +15,7 @@
 
 ### §{modules.moderation.title}
 
-§{modules.moderation.description:["linkStrikes":"/§{lang}/modules/moderation/strikes.md","linkPunishments":"/§{lang}/modules/moderation/punishments.md"]}
+§{modules.moderation.description:["webpanelLink":"https://app.invitemanager.gg/","linkStrikes":"/§{lang}/modules/moderation/strikes.md","linkPunishments":"/§{lang}/modules/moderation/punishments.md"]}
 
 ## §{premium.title}
 
