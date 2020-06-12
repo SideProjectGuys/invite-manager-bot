@@ -58,7 +58,7 @@
 		},
 		"webpanel": {
 			"title": "Webpanel",
-			"description": "other.webpanel.description"
+			"description": "The webpanel is available [here]({{{ webpanelLink }}})"
 		},
 		"changelog": {
 			"title": "Changelog"
