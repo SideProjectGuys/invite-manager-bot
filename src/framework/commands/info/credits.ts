@@ -9,7 +9,7 @@ const developers: string[] = ['Andy#1801', 'Valandur#3581', 'santjum#0450', 'leg
 
 // Staff
 const moderators: string[] = [
-	'malok#8571',
+	'OmeGa\'z#8571',
 	'Alan Wen#3344',
 	'GTA Tetris#4587',
 	'𝕸σσɳ유#2296',
