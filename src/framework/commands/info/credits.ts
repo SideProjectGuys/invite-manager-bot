@@ -22,11 +22,9 @@ const staff: string[] = ['Audio#0265', 'Chris.#0006', 'Gugu72#0016'];
 const translators: string[] = [
 	'legendarylol#8215',
 	'Mennoplays#5943',
-	'Simplee ♪ Li .#2222',
 	'サロにぃ/Saroniii#3621',
 	'CyberWhiteBR#7805',
 	'Gugu72#2059',
-	'ImRoyal_Raddar#0001',
 	'Lorio#0666',
 	'Lukas17#2252',
 	'Izmoqwy#0423',
