@@ -36,6 +36,7 @@ This is the code repository for the InviteManager Discord Bot.
 Starting
 
 1. Copy the `config.example.json` to `config.json` and fill in required data
+1. Ensure that you edit database `host` and rabbitmq `host` to the docker container IDs of mysql and rabbitmq
 1. `docker-compose up -d`
 
 Restarting
