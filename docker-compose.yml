@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     environment:
       WAIT_HOSTS: db:3306, rabbitmq:5672
+    restart: unless-stopped
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
