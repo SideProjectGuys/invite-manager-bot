@@ -21,7 +21,7 @@ export abstract class Cache<CachedObject> {
 		this.client = client;
 	}
 
-	public abstract async init(): Promise<void>;
+	public abstract init(): Promise<void>;
 
 	public async get(key: string): Promise<CachedObject> {
 		const cached = this.cache.get(key);
@@ -54,7 +54,7 @@ export abstract class Cache<CachedObject> {
 		return this.cacheMeta.get(key);
 	}
 
-	protected abstract async _get(key: string): Promise<CachedObject>;
+	protected abstract _get(key: string): Promise<CachedObject>;
 
 	public async set(key: string, value: CachedObject): Promise<CachedObject> {
 		this.cache.set(key, value);

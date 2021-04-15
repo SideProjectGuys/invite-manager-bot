@@ -162,6 +162,7 @@ export default class extends Command {
 				return 'up';
 			}
 
+			if (!choice) return;
 			const sel = choices[choice];
 
 			if (sel.type === 'key') {
@@ -362,7 +363,7 @@ export default class extends Command {
 
 				if (emoji && userId === authorId) {
 					await msg.removeReaction(emoji.name, userId);
-					resolve();
+					resolve(null);
 				} else if (userMsg.author && userMsg.author.id === authorId) {
 					await userMsg.delete().catch(() => undefined);
 					new SettingsValueResolver(this.client, guildSettingsInfo)
@@ -379,7 +380,7 @@ export default class extends Command {
 				this.client.removeListener('messageCreate', func);
 				this.client.removeListener('messageReactionAdd', func);
 
-				resolve();
+				resolve(null);
 			};
 
 			timeOut = setTimeout(timeOutFunc, 60000);
@@ -444,7 +445,7 @@ export default class extends Command {
 	}
 
 	private async awaitChoice(authorId: string, msg: Message) {
-		return new Promise<'prev' | 'next' | 'up' | number>(async (resolve) => {
+		return new Promise<'prev' | 'next' | 'up' | number | void>(async (resolve) => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message, emoji: Emoji, userId: string) => {
 				if (resp.id !== msg.id || authorId !== userId) {

@@ -190,7 +190,7 @@ export class CaptchaService extends IMService {
 	}
 
 	private async awaitMessage(member: Member, timeLeft: number) {
-		return new Promise<string>((resolve) => {
+		return new Promise<string | void>((resolve) => {
 			let timeOut: NodeJS.Timer;
 			const func = async (resp: Message) => {
 				if (member.id !== resp.author.id) {

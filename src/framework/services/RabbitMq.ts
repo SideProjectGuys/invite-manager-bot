@@ -164,7 +164,7 @@ export class RabbitMqService extends IMService {
 		this.waitingForTicket = true;
 
 		// Return a promise that resolves when we aquire a start ticket (a rabbitmq message)
-		return new Promise((resolve) => {
+		return new Promise<void>((resolve) => {
 			// Start listening on the queue for one message (our start ticket)
 			this.channelStartup.consume(
 				this.qNameStartup,

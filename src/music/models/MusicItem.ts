@@ -35,7 +35,7 @@ export abstract class MusicItem {
 		this.author = author;
 	}
 
-	public abstract async getStreamUrl(): Promise<string>;
+	public abstract getStreamUrl(): Promise<string>;
 
 	public toSearchEntry(index: number): { name: string; value: string } {
 		return {
