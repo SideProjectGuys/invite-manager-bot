@@ -477,8 +477,8 @@ export class RabbitMqService extends IMService {
 			cmdErrors: this.client.stats.cmdErrors,
 			httpRequests: [...req.requestStats.entries()].map(([url, stats]) => ({ url, stats })),
 			httpRequestsQueued: Object.keys(req.ratelimits)
-				.filter((endpoint) => req.ratelimits[endpoint]._queue.length > 0)
-				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint]._queue.length }]), [])
+				.filter((endpoint) => req.ratelimits[endpoint].queue.length > 0)
+				.reduce((acc, endpoint) => acc.concat([{ endpoint, count: req.ratelimits[endpoint].queue.length }]), [])
 		};
 	}
 }

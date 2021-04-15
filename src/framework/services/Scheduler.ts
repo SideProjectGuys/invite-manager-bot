@@ -7,8 +7,8 @@ import { ScheduledAction, ScheduledActionType } from '../models/ScheduledAction'
 
 import { IMService } from './Service';
 
-const SEND_MESSAGES = 0x00000800;
-const NOT_SEND_MESSAGES = 0x7ffff7ff;
+const SEND_MESSAGES = BigInt(0x00000800);
+const NOT_SEND_MESSAGES = BigInt(0x7ffff7ff);
 
 type ScheduledActionFunctions = {
 	[k in ScheduledActionType]: (guild: Guild, args: any) => Promise<void>;
@@ -131,7 +131,7 @@ export class SchedulerService extends IMService {
 		}
 
 		const override = channel.permissionOverwrites.get(roleId);
-		const newAllow = wasAllowed ? SEND_MESSAGES : 0;
+		const newAllow = wasAllowed ? SEND_MESSAGES : BigInt(0);
 
 		// tslint:disable: no-bitwise
 		await this.client.editChannelPermission(

@@ -1,7 +1,6 @@
 import { IMClient } from '../client';
 
-// tslint:disable-next-line: variable-name
-const RequestHandler = require('eris/lib/rest/RequestHandler');
+import { RequestHandler, RequestMethod } from 'eris';
 
 export interface RequestStat {
 	total: number;
@@ -16,7 +15,15 @@ export class IMRequestHandler extends RequestHandler {
 		super(client, forceQueueing);
 	}
 
-	public request(method: string, url: string, auth: boolean, body: any, file: any, _route: string, short: string) {
+	public request(
+		method: RequestMethod,
+		url: string,
+		auth: boolean,
+		body: any,
+		file: any,
+		_route: string,
+		short: boolean
+	) {
 		// This is similar to https://github.com/abalabahaha/eris/blob/master/lib/rest/RequestHandler.js#L46
 		// but we don't actually care about rate limits, so no exceptions in grouping
 		const route = url

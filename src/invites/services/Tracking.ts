@@ -1,5 +1,15 @@
 import chalk from 'chalk';
-import { AnyChannel, ChannelInvite, Guild, GuildAuditLog, GuildChannel, Member, Role, TextChannel } from 'eris';
+import {
+	AnyChannel,
+	Invite,
+	Guild,
+	GuildAuditLog,
+	GuildChannel,
+	Member,
+	Role,
+	TextChannel,
+	GuildAuditLogEntry
+} from 'eris';
 import i18n from 'i18n';
 import moment from 'moment';
 import os from 'os';
@@ -9,6 +19,28 @@ import { JoinInvalidatedReason } from '../../framework/models/Join';
 import { IMService } from '../../framework/services/Service';
 import { BasicMember, GuildPermission } from '../../types';
 import { deconstruct } from '../../util';
+
+interface AfterAuditLog {
+	[key: string]: unknown;
+}
+
+interface InviteAuditLogEntry extends AfterAuditLog {
+	code: string;
+	channel_id: string;
+	inviter_id: string;
+	max_uses: number;
+	uses: number;
+	max_age: number;
+	temporary: boolean;
+}
+
+interface GuildAuditLogOnlyInvitesEntries extends GuildAuditLogEntry {
+	after: InviteAuditLogEntry;
+}
+
+interface GuildAuditLogOnlyInvites extends GuildAuditLog {
+	entries: GuildAuditLogOnlyInvitesEntries[];
+}
 
 const GUILDS_IN_PARALLEL = os.cpus().length;
 const INVITE_CREATE = 40;
@@ -108,7 +140,7 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private async onInviteCreate(guild: Guild, invite: ChannelInvite) {
+	private async onInviteCreate(guild: Guild, invite: Invite) {
 		await this.client.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -127,7 +159,7 @@ export class TrackingService extends IMService {
 		]);
 	}
 
-	private async onDeleteInvite(guild: Guild, invite: ChannelInvite) {
+	private async onDeleteInvite(guild: Guild, invite: Invite) {
 		await this.client.db.saveInviteCodes([
 			{
 				createdAt: invite.createdAt ? new Date(invite.createdAt) : new Date(),
@@ -315,7 +347,7 @@ export class TrackingService extends IMService {
 			return;
 		}
 
-		let invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
+		let invs = await guild.getInvites().catch(() => [] as Invite[]);
 		const lastUpdate = this.inviteStoreUpdate[guild.id];
 		const newInvs = this.getInviteCounts(invs);
 		const oldInvs = this.inviteStore[guild.id];
@@ -333,11 +365,13 @@ export class TrackingService extends IMService {
 
 		if (
 			inviteCodesUsed.length === 0 &&
-			guild.members.get(this.client.user.id).permission.has(GuildPermission.VIEW_AUDIT_LOGS)
+			guild.members.get(this.client.user.id).permissions.has(GuildPermission.VIEW_AUDIT_LOGS)
 		) {
 			console.log(`USING AUDIT LOGS FOR ${member.id} IN ${guild.id}`);
 
-			const logs = await guild.getAuditLogs(50, undefined, INVITE_CREATE).catch(() => null as GuildAuditLog);
+			const logs = (await guild
+				.getAuditLogs(50, undefined, INVITE_CREATE)
+				.catch(() => null)) as GuildAuditLogOnlyInvites;
 			if (logs && logs.entries.length) {
 				const createdCodes = logs.entries
 					.filter((e) => deconstruct(e.id) > lastUpdate && newInvs[e.after.code] === undefined)
@@ -355,7 +389,7 @@ export class TrackingService extends IMService {
 						temporary: e.after.temporary,
 						createdAt: deconstruct(e.id)
 					}));
-				inviteCodesUsed = inviteCodesUsed.concat(createdCodes.map((c) => c.code));
+				inviteCodesUsed = inviteCodesUsed.concat(createdCodes.map((c) => c.code) as string[]);
 				invs = invs.concat(createdCodes as any);
 			}
 		}
@@ -785,7 +819,7 @@ export class TrackingService extends IMService {
 		}
 
 		// Get the invites
-		const invs = await guild.getInvites().catch(() => [] as ChannelInvite[]);
+		const invs = await guild.getInvites().catch(() => [] as Invite[]);
 
 		// Filter out new invite codes
 		const newInviteCodes = invs.filter(
@@ -866,7 +900,7 @@ export class TrackingService extends IMService {
 		}
 	}
 
-	private getInviteCounts(invites: ChannelInvite[]): { [key: string]: { uses: number; maxUses: number } } {
+	private getInviteCounts(invites: Invite[]): { [key: string]: { uses: number; maxUses: number } } {
 		const localInvites: {
 			[key: string]: { uses: number; maxUses: number };
 		} = {};

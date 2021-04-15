@@ -1,4 +1,4 @@
-import { ChannelInvite, RESTInvite } from 'eris';
+import { Invite } from 'eris';
 
 import { Context } from '../commands/Command';
 
@@ -7,12 +7,12 @@ import { Resolver } from './Resolver';
 const codeRegex = /^(?:(?:https?:\/\/)?discord.gg\/)?(.*)$/;
 
 export class InviteCodeResolver extends Resolver {
-	public async resolve(value: string, { t }: Context): Promise<RESTInvite> {
+	public async resolve(value: string, { t }: Context): Promise<Invite<'withoutCount'>> {
 		if (!value) {
 			return;
 		}
 
-		let inv: RESTInvite;
+		let inv: Invite<'withoutCount'>;
 		if (codeRegex.test(value)) {
 			const id = value.match(codeRegex)[1];
 			inv = await this.client.getInvite(id);

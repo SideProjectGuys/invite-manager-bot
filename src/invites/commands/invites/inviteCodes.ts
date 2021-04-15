@@ -1,4 +1,4 @@
-import { ChannelInvite, Message } from 'eris';
+import { Invite, Message } from 'eris';
 import moment from 'moment';
 
 import { IMClient } from '../../../client';
@@ -32,7 +32,7 @@ export default class extends Command {
 
 		let codes = await this.client.db.getInviteCodesForMember(guild.id, message.author.id);
 
-		const activeCodes = (await guild.getInvites().catch(() => [] as ChannelInvite[]))
+		const activeCodes = (await guild.getInvites().catch(() => [] as Invite[]))
 			.filter((code) => code.inviter && code.inviter.id === message.author.id)
 			.map((code) => code);
 

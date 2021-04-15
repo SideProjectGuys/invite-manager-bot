@@ -1,4 +1,4 @@
-import { ChannelInvite, Embed, Message } from 'eris';
+import { Invite, Embed, Message } from 'eris';
 
 import { IMClient } from '../../../client';
 import { beautify, inviteCodeSettingsInfo } from '../../../settings';
@@ -36,7 +36,7 @@ export default class extends Command {
 
 	public async action(
 		message: Message,
-		[key, inv, value]: [InviteCodeSettingsKey, ChannelInvite, any],
+		[key, inv, value]: [InviteCodeSettingsKey, Invite, any],
 		flags: {},
 		context: Context
 	): Promise<any> {

@@ -7,8 +7,8 @@ import { ScheduledActionType } from '../../../framework/models/ScheduledAction';
 import { ChannelResolver, DurationResolver } from '../../../framework/resolvers';
 import { CommandGroup, GuildPermission, ModerationCommand } from '../../../types';
 
-const SEND_MESSAGES = 0x00000800;
-const NOT_SEND_MESSAGES = 0x7ffff7ff;
+const SEND_MESSAGES = BigInt(0x00000800);
+const NOT_SEND_MESSAGES = BigInt(0x7ffff7ff);
 
 // tslint:disable: no-bitwise
 export default class extends Command {
@@ -58,7 +58,7 @@ export default class extends Command {
 
 		if (scheduledUnlockAction) {
 			const override = channel.permissionOverwrites.get(scheduledUnlockAction.args.roleId);
-			const newAllow = scheduledUnlockAction.args.wasAllowed ? SEND_MESSAGES : 0;
+			const newAllow = scheduledUnlockAction.args.wasAllowed ? SEND_MESSAGES : BigInt(0);
 			await this.client.editChannelPermission(
 				scheduledUnlockAction.args.channelId,
 				scheduledUnlockAction.args.roleId,
