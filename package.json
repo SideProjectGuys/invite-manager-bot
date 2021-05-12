@@ -36,7 +36,7 @@
 		"bufferutil": "4.0.1",
 		"canvas": "2.6.1",
 		"chalk": "4.0.0",
-		"chart.js": "2.9.3",
+		"chart.js": "2.9.4",
 		"chartjs-node-canvas": "3.0.6",
 		"chartjs-plugin-datalabels": "0.7.0",
 		"eris": "github:abalabahaha/eris#3607027f1ea64b81b302006f564ff69679b800d1",
