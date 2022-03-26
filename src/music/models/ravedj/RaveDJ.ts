@@ -49,7 +49,7 @@ export class RaveDJ extends MusicPlatform {
 	}
 
 	public async getByLink(link: string): Promise<MusicItem> {
-		const id = link.substr(link.indexOf('.dj/') + 4);
+		const id = link.slice(link.indexOf('.dj/') + 4);
 
 		const url = `https://api.red.wemesh.ca/ravedj/${id}`;
 		const opts = {

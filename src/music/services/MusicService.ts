@@ -126,7 +126,7 @@ export class MusicService extends IMService {
 	private decodeHTMLEntities(str: string) {
 		return str.replace(/&#?[0-9a-zA-Z]+;?/g, (s) => {
 			if (s.charAt(1) === '#') {
-				const code = s.charAt(2).toLowerCase() === 'x' ? parseInt(s.substr(3), 16) : parseInt(s.substr(2), 10);
+				const code = s.charAt(2).toLowerCase() === 'x' ? parseInt(s.slice(3), 16) : parseInt(s.slice(2), 10);
 
 				if (isNaN(code) || code < -32768 || code > 65535) {
 					return '';

@@ -50,7 +50,7 @@ export class MessagingService extends IMService {
 		let color = options.color ? (options.color as number | string) : parseInt('00AE86', 16);
 		// Parse colors in hashtag/hex format
 		if (typeof color === 'string') {
-			const code = color.startsWith('#') ? color.substr(1) : color;
+			const code = color.startsWith('#') ? color.slice(1) : color;
 			color = parseInt(code, 16);
 		}
 

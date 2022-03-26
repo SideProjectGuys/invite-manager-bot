@@ -145,7 +145,7 @@ export abstract class Command {
 			const flag = this.flags[i];
 			const help = this.flagResolvers.get(flag.name).getHelp(context);
 			const descr = context.t(`cmd.${this.name}.self.flags.${flag.name}`);
-			info += `**--${flag.name}**\n${descr}\n` + (help ? `${help.substr(0, 800)}\n\n` : '\n');
+			info += `**--${flag.name}**\n${descr}\n` + (help ? `${help.slice(0, 800)}\n\n` : '\n');
 		}
 		for (let i = 0; i < this.args.length; i++) {
 			const arg = this.args[i];

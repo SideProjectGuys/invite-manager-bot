@@ -360,7 +360,7 @@ export default class extends Command {
 			let text = customInvText + more + detailMsg;
 			const diff = text.length - 1024;
 			if (diff > 0) {
-				text = customInvText.substr(0, customInvText.length - diff - 3) + '...' + more;
+				text = customInvText.slice(0, -diff - 3) + '...' + more;
 			}
 
 			embed.fields.push({

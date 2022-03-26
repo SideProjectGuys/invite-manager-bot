@@ -558,11 +558,11 @@ export class IMClient extends Client {
 		if (logChannelId) {
 			const logChannel = guild.channels.get(logChannelId) as TextChannel;
 			if (logChannel) {
-				const content = message.content.substr(0, 1000) + (message.content.length > 1000 ? '...' : '');
+				const content = message.content.slice(0, 1000) + (message.content.length > 1000 ? '...' : '');
 
 				let json = JSON.stringify(data, null, 2);
 				if (json.length > 1000) {
-					json = json.substr(0, 1000) + '...';
+					json = json.slice(0, 1000) + '...';
 				}
 
 				const embed = this.msg.createEmbed({

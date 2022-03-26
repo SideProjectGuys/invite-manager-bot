@@ -286,7 +286,7 @@ export class ModerationService extends IMService {
 		if (extra) {
 			extra
 				.filter((e) => !!e.value)
-				.forEach((e) => logEmbed.fields.push({ name: e.name, value: e.value.substr(0, 1024) }));
+				.forEach((e) => logEmbed.fields.push({ name: e.name, value: e.value.slice(0, 1024) }));
 		}
 		await this.client.logModAction(guild, logEmbed);
 	}
@@ -585,7 +585,7 @@ export class ModerationService extends IMService {
 		const strike = strikesCache.find((s) => s.type === type);
 		const amount = strike ? strike.amount : 0;
 
-		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).substr(0, 32);
+		const newName = (NAME_DEHOIST_PREFIX + ' ' + name).slice(0, 32);
 		member.edit({ nick: newName }, 'Auto dehoist').catch(() => undefined);
 
 		await this.logViolationModAction(guild, member.user, type, amount, [

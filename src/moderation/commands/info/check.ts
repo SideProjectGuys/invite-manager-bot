@@ -66,7 +66,7 @@ export default class extends Command {
 		if (strikeText) {
 			embed.fields.push({
 				name: t('cmd.check.strikes.title'),
-				value: strikeText.substr(0, 1020)
+				value: strikeText.slice(0, 1020)
 			});
 		}
 
@@ -84,7 +84,7 @@ export default class extends Command {
 		if (punishmentText) {
 			embed.fields.push({
 				name: t('cmd.check.punishments.title'),
-				value: punishmentText.substr(0, 1020)
+				value: punishmentText.slice(0, 1020)
 			});
 		}
 
