@@ -74,7 +74,7 @@ for (const [file, matches] of found) {
 	for (const match of matches) {
 		let variableIndex = match.indexOf('$');
 		if (variableIndex >= 0) {
-			variablePrefixes.push(match.substr(0, variableIndex));
+			variablePrefixes.push(match.slice(0, variableIndex));
 			console.log(chalk.yellow(`⚠️ ${chalk.blue(file)}: Variable found in ${chalk.blue(match)} - skipping checks`));
 			continue;
 		}

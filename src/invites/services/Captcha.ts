@@ -111,7 +111,7 @@ export class CaptchaService extends IMService {
 		config.background = config.background || 'rgb(255,255,255)';
 		config.lineWidth = config.lineWidth || 2;
 		config.saveDir = config.saveDir || __dirname;
-		config.text = config.text || Math.random().toString().substr(2, config.size);
+		config.text = config.text || Math.random().toString().slice(2, 2 + config.size);
 		config.noise = config.noise !== false ? true : false;
 		config.noiseColor = config.noiseColor || config.color;
 		config.complexity = config.complexity || 3;

@@ -770,7 +770,7 @@ export function beautify(type: InternalSettingsTypes, value: any) {
 
 		default:
 			if (typeof value === 'string' && value.length > 1000) {
-				return '`' + value.substr(0, 1000) + '`...';
+				return '`' + value.slice(0, 1000) + '`...';
 			}
 			return `\`${value}\``;
 	}
