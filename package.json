@@ -45,7 +45,7 @@
 		"eventemitter3": "4.0.4",
 		"i18n": "0.9.1",
 		"iheart": "3.1.1",
-		"moment": "2.26.0",
+		"moment": "2.29.2",
 		"mysql2": "2.1.0",
 		"reflect-metadata": "0.1.13",
 		"uws": "10.148.1",
